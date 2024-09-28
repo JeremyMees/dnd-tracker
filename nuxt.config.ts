@@ -5,8 +5,10 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/supabase',
   ],
   eslint: {
     config: { stylistic: true },
   },
+  imports: { dirs: ['types/*.ts'] },
 })

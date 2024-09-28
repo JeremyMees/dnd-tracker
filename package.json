@@ -9,10 +9,12 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "sb:types": "npx supabase gen types --lang=typescript --project-id $(grep SUPABASE_ID .env | cut -d '=' -f2) > types/database.ts"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.5.7",
+    "@nuxtjs/supabase": "^1.4.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@tanstack/vue-query": "^5.56.2",
     "gsap": "^3.12.5",
