@@ -6,9 +6,15 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/supabase',
+    '@nuxt/image',
   ],
   eslint: {
     config: { stylistic: true },
   },
   imports: { dirs: ['types/*.ts'] },
+  image: {
+    quality: 90,
+    provider: 'imagekit',
+    imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
+  },
 })
