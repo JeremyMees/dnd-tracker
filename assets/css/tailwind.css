@@ -262,7 +262,7 @@
   }
 
   .dnd-container {
-    @apply max-w-[1800px] mx-auto w-full px-4 sm:px-8 md:px-12 lg:px-16;
+    @apply max-w-[2000px] mx-auto w-full px-4 sm:px-8 md:px-12 lg:px-16;
   }
 
   .html-richtext ul {

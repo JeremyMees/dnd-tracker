@@ -12,6 +12,11 @@ if (import.meta.client) {
   <div>
     <NuxtRouteAnnouncer />
     <NuxtLoadingIndicator />
-    <NuxtPage />
+
+    <div class="flex flex-col min-h-screen">
+      <!-- <Navbar class="fixed z-10 left-0 right-0 backdrop-blur" /> -->
+      <NuxtPage />
+      <!-- <Footer /> -->
+    </div>
   </div>
 </template>
