@@ -7,7 +7,11 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxt/image',
     '@formkit/nuxt',
+    '@pinia/nuxt',
   ],
+  components: {
+    dirs: ['~/components/block'],
+  },
   runtimeConfig: {
     public: { formkit: process.env.FORMKIT_PRO },
   },
