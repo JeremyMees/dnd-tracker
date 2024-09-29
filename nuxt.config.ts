@@ -17,4 +17,11 @@ export default defineNuxtConfig({
     provider: 'imagekit',
     imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
   },
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/login/confirm',
+      exclude: ['/'],
+    },
+  },
 })
