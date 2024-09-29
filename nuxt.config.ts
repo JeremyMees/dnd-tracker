@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@formkit/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/i18n',
+    '@nuxt/icon',
   ],
   components: {
     dirs: [
