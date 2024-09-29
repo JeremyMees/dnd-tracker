@@ -11,7 +11,10 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
   ],
   components: {
-    dirs: ['~/components/block'],
+    dirs: [
+      { path: '~/components/ui/', pathPrefix: false },
+      '~/components',
+    ],
   },
   runtimeConfig: {
     public: { formkit: process.env.FORMKIT_PRO },
