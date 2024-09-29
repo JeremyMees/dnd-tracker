@@ -13,6 +13,9 @@
     "sb:types": "npx supabase gen types --lang=typescript --project-id $(grep SUPABASE_ID .env | cut -d '=' -f2) > types/database.ts"
   },
   "dependencies": {
+    "@formkit/icons": "^1.6.7",
+    "@formkit/nuxt": "^1.6.7",
+    "@formkit/pro": "^0.127.2",
     "@nuxt/eslint": "^0.5.7",
     "@nuxt/image": "^1.8.0",
     "@nuxtjs/supabase": "^1.4.0",

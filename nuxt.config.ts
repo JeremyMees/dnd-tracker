@@ -1,17 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
-  devtools: { enabled: true },
   modules: [
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/supabase',
     '@nuxt/image',
+    '@formkit/nuxt',
   ],
-  eslint: {
-    config: { stylistic: true },
+  runtimeConfig: {
+    public: { formkit: process.env.FORMKIT_PRO },
   },
-  imports: { dirs: ['types/*.ts'] },
   image: {
     quality: 90,
     provider: 'imagekit',
@@ -24,4 +23,8 @@ export default defineNuxtConfig({
       exclude: ['/'],
     },
   },
+  eslint: { config: { stylistic: true } },
+  imports: { dirs: ['types/*.ts'] },
+  formkit: { configFile: './formkit/config.ts' },
+  devtools: { enabled: true },
 })
