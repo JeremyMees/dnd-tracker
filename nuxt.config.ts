@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@formkit/nuxt',
     '@pinia/nuxt',
+    '@nuxtjs/i18n',
   ],
   components: {
     dirs: ['~/components/block'],
@@ -26,6 +27,13 @@ export default defineNuxtConfig({
       callback: '/login/confirm',
       exclude: ['/'],
     },
+  },
+  i18n: {
+    defaultLocale: 'nl',
+    locales: [
+      { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },
+      { code: 'en', iso: 'en-US', name: 'English' },
+    ],
   },
   eslint: { config: { stylistic: true } },
   imports: { dirs: ['types/*.ts'] },

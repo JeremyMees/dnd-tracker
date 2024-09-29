@@ -1,0 +1,724 @@
+{
+  "actions": {
+    "add": "Add",
+    "addSelected": "Add selected",
+    "addAll": "Add all",
+    "select": "Select",
+    "selectOption": "Select an option",
+    "clickToSelect": "Click to select",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "roll": "Roll dice",
+    "update": "Update",
+    "link": "Go to link",
+    "heal": "Heal",
+    "damage": "Damage",
+    "reset": "Reset",
+    "remove": "Remove",
+    "bulkRemove": "Bulk remove",
+    "temp": "Temporary",
+    "rollShow": "Show dice roller",
+    "rollHide": "Hide dice roller",
+    "tryAgain": "Try again",
+    "info": "Show information",
+    "copy": "Copy",
+    "copyItem": "Copy {item}",
+    "copyClipboard": "Copied to clipboard",
+    "pasteSelected": "Paste selected",
+    "moveSelected": "Move selected",
+    "panMap": "Pan map",
+    "random": "Random",
+    "create": "Create",
+    "createItem": "Create {item}",
+    "generate": "Generate",
+    "openSettings": "Settings",
+    "closeSettings": "Close settings",
+    "drag": "Drag me",
+    "close": "Close",
+    "open": "Open",
+    "next": "Next",
+    "prev": "Previous",
+    "start": "Start",
+    "finish": "Finish",
+    "decline": "Decline",
+    "transfer": "Transfer",
+    "flip": "Flip {axis}",
+    "export": "Export",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "read": {
+      "more": "Read more",
+      "less": "Read less"
+    },
+    "buyCoffee": "Buy me a coffee",
+    "share": "Share"
+  },
+  "general": {
+    "spells": "Spells",
+    "conditions": "Conditions",
+    "magicitems": "Magic items",
+    "weapons": "Weapons",
+    "armor": "Armor",
+    "sections": "Info sections",
+    "up": "Up",
+    "down": "Down",
+    "Left": "Left",
+    "Right": "Right",
+    "campaigns": "Campaigns",
+    "campaign": "Campaign",
+    "encounters": "Encounters",
+    "encounter": "Encounter",
+    "players": "Players",
+    "player": "Player",
+    "members": "Members",
+    "summon": "Summon",
+    "lair": "Lair",
+    "npc": "Npc",
+    "monster": "Monster",
+    "monsters": "Monsters",
+    "characters": "Characters",
+    "animals": "Animals",
+    "items": "Items",
+    "nature": "Nature",
+    "notes": "Notes",
+    "total": "Total",
+    "grandTotal": "Grand total",
+    "homebrew": "Homebrew",
+    "homebrews": "Homebrews",
+    "round": "Round",
+    "month": "month",
+    "year": "year",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "oneTime": "One-time",
+    "forever": "Forever",
+    "link": "Link",
+    "noSelected": "Nothing selected",
+    "or": "of",
+    "options": "Options",
+    "alsoMax": "When you modify {field}, you also adjust the maximum",
+    "current": "Current",
+    "temp": "Temporary",
+    "max": "Max",
+    "width": "Width",
+    "height": "Height",
+    "note": "Note",
+    "infoPins": "Info pins",
+    "fantasyNameGenerator": "Fantasy name generator",
+    "globally": "Globally",
+    "synced": "Synced",
+    "syncing": "Syncing",
+    "online": "Online",
+    "offline": "Offline",
+    "table": "Table",
+    "cards": "Cards",
+    "color": "Color",
+    "name": "Name",
+    "modify": "Modify",
+    "type": "Type",
+    "actions": "Actions",
+    "rows": "Rows",
+    "concentration": "Concentration",
+    "none": "Geen",
+    "stats": "Statistics",
+    "error": {
+      "title": "Error",
+      "text": "Something went wrong"
+    },
+    "success": {
+      "title": "Success",
+      "text": "Your changes have been successfully saved!"
+    },
+    "roles": {
+      "Owner": {
+        "title": "Owner",
+        "description": "Owners can take the same actions as administrators, but they have the additional authority to end the campaign"
+      },
+      "Admin": {
+        "title": "Admin",
+        "description": "Admins can create content for a campaign, play encounters and access the campaign settings page but cannot delete the campaign"
+      },
+      "Viewer": {
+        "title": "Player",
+        "description": "Players only have the option to play encounters and not edit content"
+      }
+    },
+    "noContent": {
+      "title": "No {content} yet",
+      "text": "The quest for {content} begins here, but it's yet to be undertaken"
+    },
+    "notAllowed": "Action not allowed: you are not the owner or administrator",
+    "selectedToRemove": "Selected to remove",
+    "mail": {
+      "fail": {
+        "title": "Mail is not sent",
+        "text": "Something went wrong while trying to send the email"
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "textBlock1": {
+        "title": "Made with love",
+        "text": "At dnd-tracker, we are not of many words. We let the product speak for itself. What was an encounter tracker as a main idea quickly turned into a much bigger thing. With more and more ideas coming forward, we are currently expanding the dnd-tracker. This will make playing even more exciting, mysterious, easier AND more enjoyable.",
+        "text2": "Try the Encounter Tracker now without creating an account!",
+        "button": "Start Exploring"
+      },
+      "summary": {
+        "title": "A tracker with unique skills",
+        "item1": "Live updating between different devices",
+        "item2": "We are constantly working to optimize the product",
+        "item3": "Everything in 1 convenient place for the DM",
+        "item4": "Collaborative Dungeon Mastering",
+        "item5": "Plenty of information you can get your hands on",
+        "item6": "Fantasy name generator"
+      },
+      "textBlock2": {
+        "title": "Collaborative Dungeon Mastering",
+        "text": "Join forces with fellow Dungeon Masters in a realm where creativity knows no bounds. Our platform allows you to seamlessly collaborate on your Dungeons & Dragons campaigns, fostering a dynamic and immersive experience. Whether you're crafting epic adventures, creating homebrew, or co-managing games, our system brings DMs together, making your campaigns more thrilling and memorable."
+      },
+      "textBlock3": {
+        "title": "Enhanced Engagement",
+        "text": "Elevate your experience with our unique functionality. We've integrated a feature that enables you to attach a link to a specific encounter player. When the linked website supports it, it opens right within an iframe, so you don't have to switch between all your tabs. This keeps you engaged and immersed in the game, allowing for quick reference to monsters, player stats, or even a funny cat video."
+      },
+      "textBlock4": {
+        "title": "Weird stuff",
+        "text": "Because we are still in the start-up phase of this dnd tracker, sometimes mysterious errors may appear. Please don't hesitate and be sure to let us know so we can fix them quickly."
+      }
+    },
+    "error": {
+      "404": "Oh no.. We lost this page",
+      "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go.",
+      "goHome": "Back to home"
+    },
+    "campaigns": {
+      "campaigns": "Campaigns",
+      "add": "Create campaign",
+      "update": "Update campaign",
+      "remove": {
+        "title": "Bulk removing campaigns",
+        "subtitle": "Select campaigns to remove by clicking on them.",
+        "amount": "Remove {number} campaigns",
+        "multiple": "{number} campaigns"
+      }
+    },
+    "campaign": {
+      "content": {},
+      "settings": {
+        "add": "Add people",
+        "access": "Manage access",
+        "campaign": "Campaign settings"
+      },
+      "danger": {
+        "transfer": {
+          "title": "Transfer ownership",
+          "text": "Transfer this campaign to another user who is already a team member"
+        },
+        "delete": {
+          "title": "Delete this campaign",
+          "text": "Once you delete a campaign, there is no going back. Please be certain"
+        }
+      },
+      "join": {
+        "title": "Answer the Call to Adventure: Join {campaign} Now!",
+        "text": "Congratulations! You've received an invitation to join {campaign} as a {role}. Your opportunity to be a part of this incredible journey is right at your fingertips.",
+        "accept": "Join the Adventure"
+      },
+      "toast": {
+        "update": "Updated your campaign successfully",
+        "delete": "Removed your campaign successfully"
+      }
+    },
+    "encounters": {
+      "encounters": "Encounters",
+      "add": "Create encounter",
+      "update": "Update encounter",
+      "remove": {
+        "title": "Bulk removing encounters",
+        "subtitle": "Select encounters to remove by clicking on them.",
+        "amount": "Remove {number} encounters",
+        "multiple": "{number} encounters"
+      }
+    },
+    "encounter": {
+      "back": "Back to encounters",
+      "campaignBack": "Back to campaign",
+      "info": "You can jot something down here",
+      "override": {
+        "ac": "Override AC",
+        "hp": "Override HP"
+      },
+      "update": {
+        "name": "Update name",
+        "initiative": "Update initiative",
+        "ac": "Update AC",
+        "hp": "Update HP",
+        "link": "Update link",
+        "conditions": "Update conditions"
+      },
+      "toasts": {
+        "removed": {
+          "title": "Encounter is removed",
+          "text": "Someone removed the encounter so it can't be used anymore"
+        },
+        "died": {
+          "title": "{type} died",
+          "textMinHP": "The {type} has too many negative hp and is dead",
+          "textDeathSaves": "The {type} failed his death saves three times and is dead"
+        },
+        "stable": {
+          "title": "{type} stabilized",
+          "textDeathSaves": "The {type} saved his death saves three times and is stabilized"
+        },
+        "concentration": {
+          "title": "Make a concentration check",
+          "text": "The {type}, maintaining concentration took damage"
+        }
+      }
+    },
+    "register": {
+      "register": "Register",
+      "random": "Random avatar",
+      "consent": "By registering, you agree to our terms and conditions",
+      "toast": {
+        "success": {
+          "title": "Successfully registered",
+          "text": "Confirm your email address with the email we have sent you and afterwards you can login."
+        }
+      }
+    },
+    "login": {
+      "title": "Sign in to your account",
+      "signIn": "Sign in",
+      "new": "New user",
+      "forgot": "Forgot password"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "reset": "Reset password",
+      "toast": {
+        "success": {
+          "title": "Password successfully resetted"
+        }
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset password",
+      "reset": "Send reset email",
+      "toast": {
+        "success": {
+          "title": "Email is sent",
+          "text": "The email is sent to your mailbox."
+        }
+      }
+    },
+    "profile": {
+      "subscription": {
+        "current": "Current subscription",
+        "handle": "Handle subscription",
+        "upgrade": "Upgrade subscription"
+      },
+      "data": {
+        "title": "Personal data",
+        "subtitle": "Data Metamorphosis: Unleash the Magic!"
+      },
+      "password": {
+        "title": "Password changing Sorcery",
+        "subtitle": "Spellbound Security"
+      },
+      "updateImage": "Update image",
+      "delete": "Delete profile",
+      "toast": {
+        "success": {
+          "text": "Updated your profile successfully"
+        },
+        "delete": {
+          "text": "Removed your profile successfully"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Designed for the best dungeon masters, like you.",
+      "description": "Choose a budget-friendly plan loaded with premium features to enrich your D&D encounters, engage your players, and create epic moments.",
+      "starter": "The perfect choice for beginners and dungeon masters with 1-3 active campaigns.",
+      "medior": "The ideal choice for experienced dungeon masters who run multiple campaigns simultaneously.",
+      "pro": "The ultimate choice for professional dungeon masters and for those collaborating with multiple DMs on the same campaigns.",
+      "popular": "Most popular",
+      "encounters": "Encounters: {number}",
+      "campaigns": "Campaigns: {number}",
+      "multiple": "Multiple campaign admins",
+      "live": "Real-time updates between screens",
+      "update": "Updates: always free",
+      "cta": "Get started",
+      "text": "DnD Tracker is not managed by a large company but rather by a passionate individual with a love for both D&D and coding (and let's not forget about cats and coffee). The goal is not to get rich, which is why this is not a website with subscription fees. A one-time show of support is the greatest compliment you can give me. However, if you'd like to contribute even more, you can always consider donating a virtual cup of coffee."
+    },
+    "contact": {
+      "title": "Love to hear from you, Get in touch",
+      "send": "Send your question",
+      "success": "Contact email was successfully sent"
+    },
+    "subscribeSuccess": {
+      "title": "Thank you for subscribing to our service! 🎉",
+      "text": {
+        "one": "You're now officially part of our community, and you're one step closer to unlocking a world of exciting updates and fantastic adventures. We can't wait to share our latest news and offerings with you.",
+        "two": "In the meantime, grab your dice, gather your party, and prepare for epic adventures. Your journey with us has just begun, and together, we'll explore realms beyond imagination.",
+        "three": "Stay tuned, and let the adventures begin!"
+      }
+    },
+    "featureRequest": {
+      "status": {
+        "review": "Under review",
+        "progress": "In progress"
+      },
+      "cta": {
+        "title": "Calling All Brave Adventurers: Share Your Heroic Ideas!",
+        "text": "Brave adventurer, your counsel is sought! We yearn for your ideas and suggestions. Whether it be a heroic concept for a new feature, a refining touch for an existing one, or any other fantastical notion, be sure to let us know."
+      },
+      "nothing": "We haven't found a feature that matches these filters, but that doesn't mean you can't request it yourself! We are open to user feedback and strive to improve our services based on your suggestions.",
+      "request": "Suggest feature",
+      "sort": {
+        "title": "Sort",
+        "options": {
+          "mostVotes": "Most votes",
+          "leastVotes": "Least votes",
+          "newestFirst": "Newest first",
+          "oldestFirst": "Oldest first"
+        }
+      },
+      "filter": {
+        "title": "Made by",
+        "options": {
+          "all": "Everyone",
+          "my": "Me"
+        }
+      }
+    },
+    "noMember": {
+      "title": "You're not a team member",
+      "text": "Oops! It seems like you're not a member, and you don't have access to this content. If you believe this is a mistake, please don't hesitate to reach out to the owner or an admin for assistance."
+    },
+    "fantasyNameGenerator": {
+      "title": "Fantasy name generator",
+      "description": "Whether you're a seasoned Dungeon Master or just starting to explore the world of tabletop role-playing, our D&D Fantasy name generator has got your back. Never be at a loss for words when a player hits you with the question, \"What's the name of this NPC?\""
+    }
+  },
+  "components": {
+    "cookieBanner": {
+      "text": "Embark on an Epic Adventure: Accept Cookies to Enhance Your D&D Experience!",
+      "policy": "Cookie policy",
+      "button": "OK"
+    },
+    "hero": {
+      "start": "Let the session start"
+    },
+    "linkModal": {
+      "placeholder": "Amidst the realm of dragons and dungeons, a hero's legend remains untold, as the user has not yet linked their character's saga."
+    },
+    "inputs": {
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "usernameLabel": "Username",
+      "nameLabel": "Name",
+      "fullNameLabel": "Full name",
+      "titleLabel": "Title",
+      "backgroundLabel": "Background",
+      "campaignLabel": "Campaign",
+      "initiativeLabel": "Initiative",
+      "acLabel": "AC",
+      "hpLabel": "HP",
+      "linkLabel": "Url link",
+      "typeLabel": "Type",
+      "amountLabel": "Amount",
+      "summonerLabel": "Summoner",
+      "textLabel": "Text",
+      "questionLabel": "Your question?",
+      "challengeLabel": "Challenge rating",
+      "playerLabel": "Player",
+      "descriptionLabel": "Description",
+      "actionsLabel": "Actions",
+      "addActionLabel": "Add action",
+      "actionTypeLabel": "Action type",
+      "attackBonusLabel": "Attack bonus",
+      "damageBonusLabel": "Damage bonus",
+      "damageDiceLabel": "Damage dice",
+      "marketingLabel": "Get notified about updates",
+      "codeLabel": "Code",
+      "roleLabel": "Role of the user",
+      "newRoleLabel": "Your new role",
+      "nothing": "Nothing selected",
+      "overrideFieldLabel": "Max {field} override",
+      "optionalFieldHelp": "Optional to overwrite the current {field}",
+      "searchByUsername": "Search by username"
+    },
+    "cammpaignModal": {
+      "add": "Create a new campaign",
+      "update": "Update campaign {title}"
+    },
+    "encounterModal": {
+      "add": "Create a new encounter",
+      "update": "Update encounter {title}"
+    },
+    "addInitiativeMonster": {
+      "bestiary": "Bestiary",
+      "notFound": "We haven't found a monster to match these filters, but that doesn't mean you can't create it yourself as homebrew!",
+      "sort": {
+        "title": "Sort",
+        "options": {
+          "alphabet": "Alphabetical",
+          "mostHP": "Most HP",
+          "leastHP": "Least HP",
+          "mostAC": "Most AC",
+          "leastAC": "Least AC",
+          "mostCR": "Most CR",
+          "leastCR": "Least CR"
+        }
+      }
+    },
+    "addInitiativeCampaignHomebrew": {
+      "title": "Add campaign homebrew",
+      "initiative": {
+        "info": "when selecting a summon, you must also choose a character that will summon it.",
+        "add": "Add summon",
+        "select": "Select summoner",
+        "nothing": "Unfortunately, our quest unveils no treasures that align with your search. Perhaps another name can unlock the magical portal, or you can craft your own homebrew legends.",
+        "empty": "There's a lack of homebrew incorporated into your campaign. When you introduce homebrew elements to your campaign, you can select them here to include in your encounters."
+      }
+    },
+    "homebrewModal": {
+      "new": "Make a new homebrew",
+      "add": "Create homebrew",
+      "update": "Update homebrew",
+      "save": "Add to campaign",
+      "max": "Max campaign homebrews"
+    },
+    "homebrewTable": {
+      "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself."
+    },
+    "table": {
+      "nothing": "We haven't found any { item } that matches this search, but that doesn't mean you can't create it yourself."
+    },
+    "encounterTable": {
+      "empty": "Add a row to your encounter to get started!",
+      "headers": {
+        "name": "Name",
+        "init": "Init",
+        "ac": "AC",
+        "health": "HP",
+        "manage": "Manage",
+        "conditions": "Conditions",
+        "note": "Notes",
+        "deathSaves": "Death saves",
+        "concentration": "CON",
+        "modify": "Modify",
+        "summoner": "Summoner"
+      },
+      "quick": "Add all initiatives"
+    },
+    "actions": {
+      "link": "Link",
+      "hp": "HP actions",
+      "ac": "AC actions",
+      "condition": "Conditions",
+      "attacks": "Possible attacks"
+    },
+    "conditionModal": {
+      "fetchErrorTitle": "Error while getting conditions"
+    },
+    "navbar": {
+      "logout": "Log out",
+      "login": "Log in",
+      "register": "Register",
+      "home": "Home",
+      "contact": "Contact",
+      "about": "About us",
+      "collections": "Collections",
+      "encounters": "Encounters",
+      "campaigns": "Campaigns",
+      "profile": "Profile",
+      "pricing": "Pricing",
+      "play": "Play",
+      "fantasy": "Fantasy name generator",
+      "info": "Information",
+      "map": "Map creator",
+      "playground": "Encounter playground"
+    },
+    "confirmationModal": {
+      "title": "Delete confirmation",
+      "text": "To delete {title}, type the word DELETE into the field below"
+    },
+    "noteModal": {
+      "add": "Create note",
+      "update": "Update note"
+    },
+    "fullScreenSearch": {
+      "tooltip": "Search information",
+      "notFound": "Alas, our adventurous quest through the depths of our DnD archives has yielded no trace. The mystical tomes brimming with ancient lore and rules seem to temporarily withhold their secrets from us. But fear not! We shall not surrender! Feel free to continue your exploration in our magical realm, for who knows what epic discoveries await you."
+    },
+    "visualOptions": {
+      "tooltip": "Settings",
+      "spacing": "Tabel style",
+      "rows": "Rows to show",
+      "widgets": "Active widgets",
+      "pets": {
+        "label": "Encounter pet",
+        "barmaid": "Barmaid",
+        "cat": "Cat",
+        "chicken": "Chicken",
+        "crawler": "Crawler",
+        "dragon": "Dragon",
+        "fairy": "Fairy",
+        "redcap": "Redcap",
+        "wolf-rider": "Wolf rider"
+      }
+    },
+    "infoSearch": {
+      "show": "Show pinned items",
+      "hide": "Hide pinned items",
+      "remove": "Remove pinned items",
+      "toast": {
+        "maxTitle": "You hit your pinned limit",
+        "maxText": "The maximum of pinned info cards is 10"
+      }
+    },
+    "infoCard": {
+      "add": "Add pin",
+      "remove": "Remove pin"
+    },
+    "infoDropdown": {
+      "title": "Pinned information cards",
+      "cta": "Unlock the full potential of your encounter! Pin essential information cards now to stay organized and maximize productivity."
+    },
+    "badgeModal": {
+      "title": "Customize Your Profile with a Badge",
+      "add": "Add a badge",
+      "nothing": "No badge found with this code",
+      "already": "Code is already claimed",
+      "claim": "Claim badge"
+    },
+    "addFeatureRequestModal": {
+      "title": "Create feature request",
+      "submitted": "Your feature request has been received with enthusiasm and is currently undergoing a careful evaluation. Once it is approved, everyone will have the opportunity to vote on it. You can check if the request has been approved when the label 'Under review' is no longer visible.",
+      "another": "Create another feature request"
+    },
+    "userModal": {
+      "title": "Add people to {campaign}",
+      "select": "Select a member above",
+      "add": "Add {username} to this campaign",
+      "member": "Member of the campaign",
+      "invited": "Invitation awaiting response",
+      "toast": {
+        "invited": {
+          "title": "The invitation has been sent successfully",
+          "text": "After accepting the invitation, the person is added as a team member"
+        },
+        "alreadyInvited": {
+          "title": "This person has already received an invitation",
+          "text": "The person you have invited still has an active invitation for this campaign"
+        }
+      }
+    },
+    "transferOwnershipModal": {
+      "title": "Transfer ownership from {campaign}",
+      "text": "Are you certain about transferring ownership from the {campaign} campaign? Please note that this action is irreversible unless the new owner decides to revert it. If you are absolutely sure, Enter {campaign} in the input field and then proceed to transfer.",
+      "removed": "No more team member (removed)",
+      "toast": {
+        "success": {
+          "title": "Ownership has been successfully transferred to {username}"
+        }
+      }
+    },
+    "limitCta": {
+      "text": "You've reached the limit of your current plan. Unlock more features and benefits by upgrading now. Don't worry if you don't see your content it's not removed",
+      "cta": "Upgrade now",
+      "max": "Max {number} created by yourself or your campaign"
+    },
+    "nameGenerator": {
+      "title": "Fantasy name generator",
+      "cta": "Generate your fantasy names now!",
+      "toast": {
+        "title": "Copied {name} to clipboard"
+      }
+    },
+    "quickInitiativeModal": {
+      "title": "Quick add initiatives",
+      "roll": "Roll selected types",
+      "select": "Select types to roll for",
+      "ignore": "Ignore modifier"
+    },
+    "encounterOptions": {
+      "playgroundWarning": "Playground encounters can't be saved"
+    },
+    "bulkRemove": {
+      "title": "Bulk remove {type}",
+      "subtitle": "Select {type} for removing by clicking on it.",
+      "amount": "Remove {number} {type}",
+      "multiple": "{number} {type}"
+    },
+    "inlineConfirmation": {
+      "text": "Are you sure you want to update this? Your old value won't be saved."
+    }
+  },
+  "tour": {
+    "sure": "Are you sure that you have all the knowledge about the DnD Tracker? 🧙‍♂️",
+    "0": {
+      "title": "Welcome to your first encounter! 🐲",
+      "description": "Welcome, brave adventurer! We're thrilled to guide you through our application. Let's embark on this journey together, shall we?"
+    },
+    "1": {
+      "title": "The most basic of all basics 🎯",
+      "description": "Behold! The humble arrow buttons, your trusty companions in managing the current initiative."
+    },
+    "2": {
+      "title": "There's something brewing here 🍺",
+      "description": "Venture forth into the realm of homebrew! Craft your own concoctions to spice up your encounters."
+    },
+    "3": {
+      "title": "Let's be lazy 🛋️",
+      "description": "Why struggle over creating the same homebrews repeatedly? With just a few clicks, add your campaign's homebrew effortlessly."
+    },
+    "4": {
+      "title": "Let's be lazy again 🛌",
+      "description": "No need to hunt down monsters tirelessly. Find official monsters at your fingertips, ready to join your encounter with a single click."
+    },
+    "5": {
+      "title": "Need to roll without the math headache? 🎲",
+      "description": "Leave the calculations to us! Roll digital dice and bask in the glory of instant results for every twist of fate."
+    },
+    "6": {
+      "title": "Want some more information? 📚",
+      "description": "Seek knowledge within our hallowed tomes. Everything you need, neatly organized for your convenience. Pin it to your encounter and let the wisdom flow!"
+    },
+    "7": {
+      "title": "Hotkeys at your service 🔥",
+      "description": "Free yourself from the tyranny of the mouse! Command with keystrokes and conquer with ease."
+    },
+    "8": {
+      "title": "Unleash the power of initiative items 💪",
+      "description": "No need for a lengthy introduction! Modify names, initiatives, AC, and HP when you click on them. Notes, death saves, and concentration—easy as pie."
+    },
+    "9": {
+      "title": "Manage your initiative items with finesse 🎩",
+      "description": "The heartbeat of your initiative items! Adjust AC and HP on the fly, add conditions effortlessly. We enchant your experience by preloading links, sparing you from the hassle of opening additional browser tabs."
+    },
+    "10": {
+      "title": "Conditions for the discerning adventurer 👨‍🦯",
+      "description": "Behold the conditions bestowed upon your comrades! Hover over them and delve deeper into their effects."
+    },
+    "11": {
+      "title": "Remove or copy initiative items in a flash ⚡",
+      "description": "With swiftness and precision, remove or duplicate with a single button click."
+    },
+    "12": {
+      "title": "Never been faster to add everyone's initiative 🚀",
+      "description": "Prepare for warp speed initiative entry! Add all initiatives at once, or delegate to the dice for a touch of randomness. The choice is yours, adventurer!"
+    },
+    "13": {
+      "title": "When your brain needs a break 🧠",
+      "description": "Ease the burden and simplify your interface. Disable unnecessary functions, the choice is yours."
+    },
+    "14": {
+      "title": "Congratulations, you're now an expert! 🎉"
+    }
+  }
+}

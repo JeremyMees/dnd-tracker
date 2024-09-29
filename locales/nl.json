@@ -1,0 +1,710 @@
+{
+  "actions": {
+    "add": "Toevoegen",
+    "addSelected": "Selectie toevoegen",
+    "addAll": "Alles toevoegen",
+    "select": "Selecteer",
+    "selectOption": "Selecteer een optie",
+    "clickToSelect": "Klik om te selecteren",
+    "delete": "Verwijderen",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "roll": "Rol dobbelsteen",
+    "update": "Update",
+    "link": "Ga naar link",
+    "heal": "Genezen",
+    "damage": "Schade",
+    "reset": "Reset",
+    "remove": "Verwijderen",
+    "bulkRemove": "Bulk verwijderen",
+    "temp": "Tijdelijk",
+    "rollShow": "Toon dobbelsteenroller",
+    "rollHide": "Verberg dobbelsteenroller",
+    "tryAgain": "Probeer opnieuw",
+    "info": "Toon informatie",
+    "copy": "Kopiëren",
+    "copyItem": "{item} kopiëren",
+    "copyClipboard": "Naar klemboard gekopieerd",
+    "pasteSelected": "Geselecteerd plakken",
+    "moveSelected": "Geselecteerd bewegen",
+    "panMap": "Map verschuiven",
+    "random": "Willekeurig",
+    "create": "Creëren",
+    "createItem": "{item} creëren",
+    "generate": "Genereren",
+    "openSettings": "Instelling",
+    "closeSettings": "Sluit instelling",
+    "drag": "Sleep mij",
+    "close": "Sluiten",
+    "open": "Openen",
+    "next": "Volgende",
+    "prev": "Vorige",
+    "start": "Start",
+    "finish": "Einde",
+    "decline": "Afwijzen",
+    "transfer": "Overdragen",
+    "flip": "Flip {axis}",
+    "export": "Export",
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen",
+    "read": {
+      "more": "Lees meer",
+      "less": "Lees minder"
+    },
+    "buyCoffee": "Koop mij een koffietje",
+    "share": "Delen"
+  },
+  "general": {
+    "spells": "Spreuken",
+    "conditions": "Condities",
+    "magicitems": "Magische items",
+    "weapons": "Wapens",
+    "armor": "Pantser",
+    "sections": "Info secties",
+    "up": "Omhoog",
+    "down": "Omlaag",
+    "Left": "Links",
+    "Right": "Rechts",
+    "campaigns": "Campagnes",
+    "campaign": "Campagne",
+    "encounters": "Encounters",
+    "encounter": "Encounter",
+    "players": "Spelers",
+    "player": "Speler",
+    "members": "Leden",
+    "summon": "Summon",
+    "lair": "Lair",
+    "npc": "Npc",
+    "monster": "Monster",
+    "monsters": "Monsters",
+    "characters": "Karakters",
+    "animals": "Dieren",
+    "items": "Voorwerpen",
+    "nature": "Natuur",
+    "notes": "Notities",
+    "total": "Totaal",
+    "grandTotal": "Eindtotaal",
+    "homebrew": "Homebrew",
+    "homebrews": "Homebrews",
+    "round": "Ronde",
+    "link": "Link",
+    "month": "maand",
+    "year": "jaar",
+    "monthly": "Maandelijks",
+    "annually": "Jaarlijks",
+    "oneTime": "Eenmalig",
+    "forever": "Voor altijd",
+    "noSelected": "Niets geselecteerd",
+    "or": "of",
+    "options": "Opties",
+    "alsoMax": "Wanneer je {field} wijzigt, pas je ook het maximum aan",
+    "current": "Huidig",
+    "temp": "Tijdelijk",
+    "max": "Max",
+    "width": "Breedte",
+    "height": "Hoogte",
+    "note": "Notitie",
+    "infoPins": "Info pins",
+    "fantasyNameGenerator": "Fantasy name generator",
+    "globally": "Globaal",
+    "synced": "Gesynchroniseerd",
+    "syncing": "Synchroniseren",
+    "online": "Online",
+    "offline": "Offline",
+    "table": "Tabel",
+    "cards": "Kaarten",
+    "color": "Kleur",
+    "name": "Naam",
+    "modify": "Aanpassen",
+    "type": "Type",
+    "actions": "Acties",
+    "rows": "Rijen",
+    "concentration": "Concentratie",
+    "none": "Geen",
+    "stats": "Statistieken",
+    "error": {
+      "title": "Fout",
+      "text": "Er ging iets mis"
+    },
+    "success": {
+      "title": "Succes",
+      "text": "De wijzigingen zijn opgeslagen"
+    },
+    "roles": {
+      "Owner": {
+        "title": "Eigenaar",
+        "description": "Eigenaren kunnen dezelfde acties ondernemen als beheerders, maar ze hebben de extra bevoegdheid om de campagne te beëindigen"
+      },
+      "Admin": {
+        "title": "Beheerder",
+        "description": "Beheerders kunnen content maken voor een campagne, encounters spelen en hebben toegang tot de pagina met campagne-instellingen maar kan de campagne niet verwijderen"
+      },
+      "Viewer": {
+        "title": "Speler",
+        "description": "Spelers hebben alleen de mogelijkheid om encounters te spelen en geen inhoud aan te passen"
+      }
+    },
+    "noContent": {
+      "title": "Nog geen {content}",
+      "text": "De zoektocht naar {content} begint hier, maar moet nog worden ondernomen"
+    },
+    "notAllowed": "Actie niet toegestaan: u bent geen eigenaar of beheerder",
+    "selectedToRemove": "Geselecteerd om te verwijderen",
+    "mail": {
+      "fail": {
+        "title": "Mail is niet verstuurd",
+        "text": "Er is iets fout gegaan bij het versturen van de mail"
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "textBlock1": {
+        "title": "Met liefde gemaakt",
+        "text": "Wat begon als een encounter tracker die we voor wat vrienden ineen hebben geknutseld, werd al gauw een project om GM's echt te ondersteunen in hun campagnes. We blijven de DND Tracker uitbreiden met meer en meer ideeën en input. Zo wordt D&D spelen nog spannender, mysterieuzer en vooral vlotter.",
+        "text2": "Probeer de Encounter Tracker nu zonder account!",
+        "button": "Begin met ontdekken"
+      },
+      "summary": {
+        "title": "Een tracker met unieke skills",
+        "item1": "Live synchronisatie tussen verschillende toestellen",
+        "item2": "Regelmatige optimalisaties en nieuwe functies",
+        "item3": "Alles op één handige plaats voor de GM",
+        "item4": "Samenwerking in Dungeon Mastering",
+        "item5": "Integratie van official content met de mogelijkheid om je eigen homebrew toe te voegen",
+        "item6": "Fantasie naam generator"
+      },
+      "textBlock2": {
+        "title": "Samenwerking in Dungeon Mastering",
+        "text": "Verenig krachten met mede Dungeon Masters in een rijk waar creativiteit geen grenzen kent. Ons platform stelt je in staat om naadloos samen te werken aan je Dungeons & Dragons campagnes, waardoor een dynamische en meeslepende ervaring ontstaat. Of je nu epische avonturen smeedt, eigen homebrew creëert, of samen games beheert, ons systeem brengt DM's samen en maakt jouw campagnes nog spannender en gedenkwaardiger."
+      },
+      "textBlock3": {
+        "title": "Verbeterde betrokkenheid",
+        "text": "Verrijk je ervaring met onze unieke functionaliteit. We hebben een functie geïntegreerd waarmee je een link kunt toevoegen aan een specifieke encounter speler. Wanneer de gelinkte website dit ondersteunt, opent deze direct binnen een iframe, zodat je niet hoeft te zoeken tussen al je tabbladen. Dit houdt je betrokken en ondergedompeld in het spel en biedt de mogelijkheid voor een snelle raadpleging van monsters, spelerstatistieken, of zelfs een grappige kattenvideo."
+      },
+      "textBlock4": {
+        "title": "Vreemde gebeurtenissen",
+        "text": "Doordat deze DnD Tracker nog in zijn kinderschoenen staat, kunnen er soms mysterieuze fouten tevoorschijn komen. Aarzel niet om ons iets te laten weten, zodat we deze snel kunnen oplossen."
+      }
+    },
+    "error": {
+      "404": "Oh nee... We hebben deze pagina verloren.",
+      "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan.",
+      "goHome": "Naar de startpagina"
+    },
+    "campaigns": {
+      "campaigns": "Campagnes",
+      "add": "Campagne creëren",
+      "update": "Campagne bijwerken"
+    },
+    "campaign": {
+      "content": {},
+      "settings": {
+        "add": "Mensen toevoegen",
+        "access": "Toegang beheren",
+        "campaign": "Campagne instellingen"
+      },
+      "danger": {
+        "transfer": {
+          "title": "Overdracht van eigendom",
+          "text": "Draag deze campagne over aan een andere gebruiker die al lid is van het team"
+        },
+        "delete": {
+          "title": "Verwijder deze campagne",
+          "text": "Als je een campagne verwijdert, is er geen weg meer terug. Wees alsjeblieft zeker"
+        }
+      },
+      "join": {
+        "title": "Beantwoord de Oproep tot Avontuur: Sluit je nu aan bij {campaign}!",
+        "text": "Gefeliciteerd! Je hebt een uitnodiging ontvangen om deel te nemen aan {campaign} als een {role}. Jouw kans om deel uit te maken van dit ongelooflijke avontuur ligt nu binnen handbereik.",
+        "accept": "Ga het Avontuur aan"
+      },
+      "toast": {
+        "update": "Je campagne is succesvol bijgewerkt",
+        "delete": "Je campagne is succesvol verwijderd"
+      }
+    },
+    "encounters": {
+      "encounters": "Encounters",
+      "add": "Encounter creëren",
+      "update": "Encounter bijwerken"
+    },
+    "encounter": {
+      "back": "Terug naar encounters",
+      "campaignBack": "Terug naar campagne",
+      "info": "Je kan hier wat info neerschrijven",
+      "override": {
+        "ac": "AC overschrijven",
+        "hp": "HP overschrijven"
+      },
+      "update": {
+        "name": "Naam bijwerken",
+        "initiative": "Initiatief bijwerken",
+        "ac": "AC bijwerken",
+        "hp": "HP bijwerken",
+        "link": "Link bijwerken",
+        "conditions": "Condities bijwerken"
+      },
+      "toasts": {
+        "removed": {
+          "title": "Encounter is verwijderd",
+          "text": "Iemand heeft de encounter verwijderd, dus je kan hem niet meer gebruiken"
+        },
+        "died": {
+          "title": "{type} is gestorven",
+          "textMinHP": "De {type} heeft te veel negatieve hp en is dood",
+          "textDeathSaves": "De {type} heeft 3 keer gefaald bij death saves en is dood"
+        },
+        "stable": {
+          "title": "{type} is gestabiliseerd",
+          "textDeathSaves": "De {type} heeft 3 keer gesaved bij death saves en is gestabiliseerd"
+        },
+        "concentration": {
+          "title": "Maak een concentratie check",
+          "text": "{type} die zich concentreerde, liep schade op"
+        }
+      }
+    },
+    "register": {
+      "register": "Registreer",
+      "random": "Random avatar",
+      "consent": "Door te registreren, stemt u in met onze algemene voorwaarden.",
+      "toast": {
+        "success": {
+          "title": "Succesvol registreerd",
+          "text": "Bevestig je emailadres via de mail die we je hebben gestuurd en daarna kan je inloggen."
+        }
+      }
+    },
+    "login": {
+      "title": "Log in op uw account",
+      "signIn": "Log in",
+      "new": "Nieuwe gebruiker",
+      "forgot": "Wachtwoord vergeten"
+    },
+    "resetPassword": {
+      "title": "Wachtwoord resetten",
+      "reset": "Update wachtwoord",
+      "toast": {
+        "success": {
+          "title": "Wachtwoord succesvol veranderd"
+        }
+      }
+    },
+    "forgotPassword": {
+      "title": "Wachtwoord vergeten",
+      "reset": "Verzend reset email",
+      "toast": {
+        "success": {
+          "title": "Email is verstuurd",
+          "text": "De email is verstuurd naar jouw mailbox."
+        }
+      }
+    },
+    "profile": {
+      "subscription": {
+        "current": "Huidige abonnement",
+        "handle": "Abonnement beheren",
+        "upgrade": "Abonnement upgraden"
+      },
+      "data": {
+        "title": "Persoonlijke data",
+        "subtitle": "Data Metamorfose: Ontketen de Magie!"
+      },
+      "password": {
+        "title": "Wachtwoord wijzigende Magie",
+        "subtitle": "Betoverende Beveiliging"
+      },
+      "updateImage": "Foto updaten",
+      "delete": "Profiel Verwijderen",
+      "toast": {
+        "success": {
+          "text": "Je profiel is succesvol bijgewerkt"
+        },
+        "delete": {
+          "text": "Je profiel is succesvol verwijderd"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Gemaakt voor de beste dungeon masters, zoals jij.",
+      "description": "Kies een budgetvriendelijk plan vol met premium functies om je D&D encounters te verrijken, je spelers te betrekken, en epische momenten te creëren.",
+      "starter": "De perfecte keuze voor beginners en dungeon masters met 1-3 actieve campagnes.",
+      "medior": "De ideale keuze voor ervaren dungeon masters die gelijktijdig meerdere campagnes leiden.",
+      "pro": "De ultieme keuze voor professionele dungeon masters en voor diegenen die samenwerken met meerdere DM's aan dezelfde campagnes.",
+      "popular": "Populairste",
+      "multiple": "Meerdere campagne beheerders",
+      "live": "Real-time updates tussen schermen",
+      "update": "Updates altijd gratis",
+      "cta": "Start nu",
+      "text": "DnD Tracker wordt niet beheerd door een groot bedrijf, maar eerder door een gepassioneerde individu met liefde voor zowel D&D als coderen (en laten we vooral de katten en koffie niet vergeten). Het doel is niet om er rijk van te worden, daarom is dit geen website met abonnementskosten. Een eenmalige steunbetuiging is al het grootste compliment dat je mij kunt geven. Mocht je echter nog meer willen bijdragen, kun je altijd overwegen om mij een virtueel kopje koffie te doneren."
+    },
+    "contact": {
+      "title": "Hoor graag van je, neem contact op",
+      "send": "Verstuur je vraag",
+      "success": "Contact email is verstuurd"
+    },
+    "subscribeSuccess": {
+      "title": "Bedankt voor het abonneren op onze service! 🎉",
+      "text": {
+        "one": "Je bent nu officieel onderdeel van onze gemeenschap, en je bent slechts één stap verwijderd van het ontgrendelen van een wereld vol spannende updates en fantastische avonturen. We kunnen niet wachten om onze nieuwste nieuwtjes en aanbiedingen met je te delen.",
+        "two": "Intussen, pak je dobbelstenen, verzamel je party en bereid je voor op epische avonturen. Je reis met ons is net begonnen, en samen zullen we rijken verkennen die de verbeelding te boven gaan.",
+        "three": "Blijf op de hoogte, en laat de avonturen beginnen!"
+      }
+    },
+    "featureRequest": {
+      "status": {
+        "review": "Onder beoordeling",
+        "progress": "In uitvoering"
+      },
+      "cta": {
+        "title": "Oproep aan Moedige Avonturiers: Deel Jouw Heroïsche Ideeën!",
+        "text": "Dappere avonturier, uw raad wordt gezocht! We verlangen naar uw ideeën en suggesties. Of het nu een heldhaftig concept is voor een nieuwe functie, een verfijnende aanraking voor een bestaande, of enige andere fantastische gedachte, deel het zeker met ons."
+      },
+      "nothing": "Wij hebben geen feature gevonden die bij deze filters past, maar dat wil niet zeggen dat je het niet zelf kan aanvragen! We staan open voor gebruikersfeedback en streven naar verbetering van onze services op basis van jouw suggesties.",
+      "request": "Feature voorstellen",
+      "sort": {
+        "title": "Sorteer",
+        "options": {
+          "mostVotes": "Meeste stemmen",
+          "leastVotes": "Minste stemmen",
+          "newestFirst": "Nieuwste eerst",
+          "oldestFirst": "Oudste eerst"
+        }
+      },
+      "filter": {
+        "title": "Gemaakt door",
+        "options": {
+          "all": "Iedereen",
+          "my": "Mij"
+        }
+      }
+    },
+    "noMember": {
+      "title": "Je bent geen teamlid",
+      "text": "Oeps! Het lijkt erop dat je geen lid bent en geen toegang hebt tot deze inhoud. Als je denkt dat dit een vergissing is, aarzel dan niet om contact op te nemen met de eigenaar of een beheerder voor hulp."
+    },
+    "fantasyNameGenerator": {
+      "title": "Fantasy name generator",
+      "description": "Of je nu een doorgewinterde Dungeon Master bent of net begint met het ontdekken van de wereld van tabletop role-playing, onze D&D Fantasy name generator staat voor je klaar. Sta nooit meer sprakeloos wanneer een speler je overvalt met de vraag: \"Hoe heet deze NPC?\""
+    }
+  },
+  "components": {
+    "cookieBanner": {
+      "text": "Start een Episch Avontuur: Accepteer Cookies voor Verbetering van je D&D Ervaring!",
+      "policy": "Cookie policy",
+      "button": "Oke"
+    },
+    "hero": {
+      "start": "Laat het spelen beginnen"
+    },
+    "linkModal": {
+      "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
+    },
+    "inputs": {
+      "emailLabel": "E-mail adres",
+      "passwordLabel": "Wachtwoord",
+      "usernameLabel": "Gebruikersnaam",
+      "nameLabel": "Naam",
+      "fullNameLabel": "Volledige naam",
+      "titleLabel": "Titel",
+      "backgroundLabel": "Achtergrond",
+      "campaignLabel": "Campagne",
+      "initiativeLabel": "Initiatief",
+      "acLabel": "AC",
+      "hpLabel": "HP",
+      "linkLabel": "Url link",
+      "typeLabel": "Type",
+      "amountLabel": "Hoeveelheid",
+      "summonerLabel": "Oproeper",
+      "textLabel": "Tekst",
+      "questionLabel": "Je vraag?",
+      "challengeLabel": "Challenge rating",
+      "playerLabel": "Speler",
+      "descriptionLabel": "Omschrijving",
+      "actionsLabel": "Acties",
+      "addActionLabel": "Actie toevoegen",
+      "actionTypeLabel": "Actie type",
+      "attackBonusLabel": "Aanval bonus",
+      "damageBonusLabel": "Schade bonus",
+      "damageDiceLabel": "Schade dobbelsteen",
+      "marketingLabel": "Ontvang meldingen over updates",
+      "codeLabel": "Code",
+      "roleLabel": "Functie van de gebruiker",
+      "newRoleLabel": "Je nieuwe functie",
+      "nothing": "Nog niets geselecteerd",
+      "overrideFieldLabel": "Max {field} overschrijven",
+      "optionalFieldHelp": "Optioneel om het huidige {field} te overschrijven",
+      "searchByUsername": "Zoeken op gebruikersnaam"
+    },
+    "cammpaignModal": {
+      "add": "Maak een nieuwe campagne",
+      "update": "Update campagne {title}"
+    },
+    "encounterModal": {
+      "add": "Maak een nieuwe encounter",
+      "update": "Update encounter {title}"
+    },
+    "addInitiativeMonster": {
+      "bestiary": "Bestiary",
+      "notFound": "Wij hebben geen monster gevonden die bij deze filters past, maar dat wil niet zeggen dat je het niet zelf kan aanmaken als homebrew!",
+      "sort": {
+        "title": "Sorteer",
+        "options": {
+          "alphabet": "Alfabetisch",
+          "mostHP": "Meeste HP",
+          "leastHP": "Minste HP",
+          "mostAC": "Meeste AC",
+          "leastAC": "Minste AC",
+          "mostCR": "Meeste CR",
+          "leastCR": "Minste CR"
+        }
+      }
+    },
+    "addInitiativeCampaignHomebrew": {
+      "title": "campagne homebrew toevoegen",
+      "initiative": {
+        "info": "Wanneer je een summon selecteert, dien je ook een personage te kiezen dat deze summon oproept.",
+        "add": "Summon toevoegen",
+        "select": "Selecteer oproeper",
+        "nothing": "Helaas, onze queeste onthult geen schatten die overeenkomen met jouw zoektocht. Wellicht kan een andere naam het magische portaal openen, of je kunt je eigen homebrew legendes creëren.",
+        "empty": "Er ontbreekt homebrew in je campagne. Wanneer je homebrew introduceert in je campagne, kun je ze hier selecteren om toe te voegen in je encounters."
+      }
+    },
+    "homebrewModal": {
+      "new": "Maak een nieuwe homebrew",
+      "add": "Homebrew maken",
+      "update": "Homebrew aanpassen",
+      "save": "Toevoegen aan campagne",
+      "max": "Max campagne homebrews"
+    },
+    "homebrewTable": {
+      "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken."
+    },
+    "table": {
+      "nothing": "We hebben geen { item } gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken."
+    },
+    "encounterTable": {
+      "empty": "Voeg een rij toe aan je encounter om te starten!",
+      "headers": {
+        "name": "Naam",
+        "init": "Init",
+        "ac": "AC",
+        "health": "HP",
+        "manage": "Beheer",
+        "conditions": "Condities",
+        "note": "Notitie",
+        "deathSaves": "Death saves",
+        "concentration": "CON",
+        "modify": "Aanpassen",
+        "summoner": "Oproeper"
+      },
+      "quick": "Voeg alle initiatieven toe"
+    },
+    "actions": {
+      "link": "Link",
+      "hp": "HP acties",
+      "ac": "AC acties",
+      "condition": "Condities",
+      "attacks": "mogelijke aanvallen"
+    },
+    "conditionModal": {
+      "fetchErrorTitle": "Fout bij het ophalen van conditions"
+    },
+    "navbar": {
+      "logout": "Uitloggen",
+      "login": "Login",
+      "register": "Registreer",
+      "home": "Home",
+      "contact": "Contact",
+      "about": "Over ons",
+      "collections": "Collecties",
+      "encounters": "Encounters",
+      "campaigns": "Campagnes",
+      "profile": "Profiel",
+      "pricing": "Prijzen",
+      "play": "Spelen",
+      "fantasy": "Fantasienaam generator",
+      "info": "Informatie",
+      "map": "Map maker",
+      "playground": "Encounter playground"
+    },
+    "confirmationModal": {
+      "title": "Verwijder bevestiging",
+      "text": "Om {title} te verwijderen, typt u het woord DELETE in het onderstaande veld"
+    },
+    "noteModal": {
+      "add": "Notitie creëren",
+      "update": "Notitie bijwerken"
+    },
+    "fullScreenSearch": {
+      "tooltip": "Informatie opzoeken",
+      "notFound": "Helaas, ons avontuurlijk speurwerk in de diepten van onze DnD-archieven heeft geen enkel spoor opgeleverd. De mystieke boeken vol met eeuwenoude kennis en regels lijken tijdelijk hun geheimen voor ons verborgen te houden. Maar we geven de moed niet op! Blijf gerust rondsnuffelen in onze magische wereld, want wie weet wat voor epische vondsten je nog kunt ontdekken."
+    },
+    "visualOptions": {
+      "tooltip": "Instellingen",
+      "spacing": "Tabel stijl",
+      "rows": "Zichtbare rijen",
+      "widgets": "Actieve widgets",
+      "pets": {
+        "label": "Encounter pet",
+        "barmaid": "Barmeid",
+        "cat": "Kat",
+        "chicken": "Kip",
+        "crawler": "Kruiper",
+        "dragon": "Draak",
+        "fairy": "Fee",
+        "redcap": "Paddenstoel",
+        "wolf-rider": "Wolf rijder"
+      }
+    },
+    "infoSearch": {
+      "show": "Toon gepinde items",
+      "hide": "Verberg gepinde items",
+      "remove": "Verwijder gepinde items",
+      "toast": {
+        "maxTitle": "Je hebt je vastpin limiet bereikt",
+        "maxText": "Het maximum van gepinde infokaarten is 10"
+      }
+    },
+    "infoCard": {
+      "add": "Pin toevoegen",
+      "remove": "Verwijder pin"
+    },
+    "infoDropdown": {
+      "title": "Gepinde informatie kaarten",
+      "cta": "Ontgrendel het volledige potentieel van je encounter! Pin nu essentiële informatiekaarten vast om georganiseerd te blijven en productiviteit te maximaliseren."
+    },
+    "badgeModal": {
+      "title": "Personaliseer je profiel met een badge",
+      "add": "Badge toevoegen",
+      "nothing": "Er is geen badge gevonden met deze code",
+      "already": "De code is al geclaimd",
+      "claim": "Ontvang badge"
+    },
+    "addFeatureRequestModal": {
+      "title": "Feature request maken",
+      "submitted": "Je feature request is met enthousiasme ontvangen en ondergaat momenteel een zorgvuldige evaluatie. Zodra het is goedgekeurd, zal iedereen de mogelijkheid hebben om erop te stemmen. Je kunt controleren of verzoek is goedgekeurd zodra het label 'Onder beoordeling' niet meer zichtbaar is.",
+      "another": "Nog een feature request maken"
+    },
+    "userModal": {
+      "title": "Mensen toevoegen aan {campaign}",
+      "select": "Kies een persoon hierboven",
+      "add": "{username} toevoegen aan campaign",
+      "member": "Lid van de campagne",
+      "invited": "Uitnodiging in afwachting",
+      "toast": {
+        "invited": {
+          "title": "De uitnodiging is succesvol verstuurd",
+          "text": "Na acceptatie van de uitnodiging wordt de persoon toegevoegd als teamlid"
+        },
+        "alreadyInvited": {
+          "title": "Deze persoon heeft reeds een uitnodiging ontvangen",
+          "text": "Degene die je hebt uitgenodigd, heeft nog een lopende uitnodiging voor deze campagne"
+        }
+      }
+    },
+    "transferOwnershipModal": {
+      "title": "Overdracht van eigendom {campaign}",
+      "text": "Ben je er zeker van dat je de eigendom van de {campaign} campagne wilt overdragen? Let op dat deze actie onomkeerbaar is, tenzij de nieuwe eigenaar besluit dit terug te draaien. Als je absoluut zeker bent, voer {campaign} in het invoerveld in en ga vervolgens verder met overdragen.",
+      "removed": "Geen team lid meer (verdwijderd)",
+      "toast": {
+        "success": {
+          "title": "De eigendom is succesvol overgedragen aan {username}"
+        }
+      }
+    },
+    "limitCta": {
+      "text": "Je hebt de limiet van je huidige abonnement bereikt. Ontgrendel meer functies en voordelen door nu te upgraden. Maak je geen zorgen als je je inhoud niet ziet, deze is niet verwijderd",
+      "cta": "Nu upgraden",
+      "max": "Max {number} gecreëerd door jezelf of je campagne"
+    },
+    "nameGenerator": {
+      "title": "Fantasie naam generator",
+      "cta": "Genereer je fantasie namen nu!",
+      "toast": {
+        "title": "{name} gekopieerd naar klembord"
+      }
+    },
+    "quickInitiativeModal": {
+      "title": "Initiatieven snel toevoegen",
+      "roll": "Geselecteerde soorten rollen",
+      "select": "Selecteer de soorten om voor te rollen",
+      "ignore": "Negeer modifier"
+    },
+    "encounterOptions": {
+      "playgroundWarning": "Playground encounters kunnen niet worden opgeslagen"
+    },
+    "bulkRemove": {
+      "title": "Bulk verwijderen {type}",
+      "subtitle": "Selecteer {type} om te verwijderen door erop te klikken.",
+      "amount": "Verwijder {number} {type}",
+      "multiple": "{number} {type}"
+    },
+    "inlineConfirmation": {
+      "text": "Weet je zeker dat je dit wilt updaten? Je oude waarde wordt niet opgeslagen."
+    }
+  },
+  "tour": {
+    "sure": "Ben je zeker dat je alle kennis al hebt van de DnD Tracker? 🧙‍♂️",
+    "0": {
+      "title": "Welkom bij je eerste encounter! 🐲",
+      "description": "Welkom, dappere avonturier! We zijn enthousiast om je door onze applicatie te begeleiden. Laten we samen aan deze reis beginnen, zullen we?"
+    },
+    "1": {
+      "title": "Het meest basale van allemaal 🎯",
+      "description": "Aanschouw! De bescheiden pijlknoppen, je trouwe metgezellen bij het beheren van het huidige initiatief."
+    },
+    "2": {
+      "title": "Hier broeit iets 🍺",
+      "description": "Waag je in het rijk van homebrews! Maak je eigen homebrew om je encounter op te fleuren."
+    },
+    "3": {
+      "title": "Laten we lui zijn 🛋️",
+      "description": "Waarom moeite doen met het steeds opnieuw maken van dezelfde homebrews? Voeg met slechts een paar klikken moeiteloos je campagne's homebrews toe."
+    },
+    "4": {
+      "title": "Laten we weer lui zijn 🛌",
+      "description": "Geen noodzaak om monsters eindeloos op te jagen. Vind officiële monsters binnen handbereik, klaar om zich met één klik bij je encounter aan te sluiten."
+    },
+    "5": {
+      "title": "Wil je rollen zonder hoofdrekenen? 🎲",
+      "description": "Laat de berekeningen aan ons over! Gooi digitale dobbelstenen en geniet van de glorie van directe resultaten voor elke wending van het lot."
+    },
+    "6": {
+      "title": "Meer informatie nodig? 📚",
+      "description": "Zoek kennis in onze geheiligde boeken. Alles wat je nodig hebt, netjes georganiseerd voor jouw gemak. Pin het aan je encounter en laat de wijsheid stromen!"
+    },
+    "7": {
+      "title": "Hotkeys tot je dienst 🔥",
+      "description": "Bevrijd jezelf van de tirannie van de muis! Beheer met hotkeys en verover met gemak."
+    },
+    "8": {
+      "title": "Ontketen de kracht van initiatief items 💪",
+      "description": "Geen lange introductie nodig! Pas namen, initiatieven, AC en HP aan wanneer je erop klikt. Notities, death saves en concentratie met een fluitje van een cent."
+    },
+    "9": {
+      "title": "Beheer je initiatief items met finesse 🎩",
+      "description": "Het hart van je initiatief items! Pas AC en HP aan terwijl je bezig bent, voeg moeiteloos condities toe. Wij betoveren je ervaring door links voor te laden, waardoor je wordt gespaard van het gedoe van het openen van extra browsertabbladen."
+    },
+    "10": {
+      "title": "Condities voor de onderscheidende avonturier 👨‍🦯",
+      "description": "Aanschouw de condities die aan je kameraden zijn verleend! Zweef eroverheen en duik dieper in hun effecten."
+    },
+    "11": {
+      "title": "Verwijder of kopieer initiatief items in een flits ⚡",
+      "description": "Met snelheid en precisie, verwijder of dupliceer met een enkele knopklik."
+    },
+    "12": {
+      "title": "Nog nooit zo snel iedereens initiatief toevoegen 🚀",
+      "description": "Bereid je voor op razendsnelle initiatief invoer! Voeg alle initiatieven in één keer toe, of laat het aan de dobbelstenen over voor een vleugje willekeur. De keuze is aan jou, avonturier!"
+    },
+    "13": {
+      "title": "Als je brein een pauze nodig heeft 🧠",
+      "description": "Verminder de last en vereenvoudig je interface. Schakel onnodige functies uit, de keuze is aan jou."
+    },
+    "14": {
+      "title": "Gefeliciteerd, je bent nu een expert! 🎉"
+    }
+  }
+}
