@@ -258,11 +258,11 @@
   }
 
   .container-max {
-    @apply max-w-[1800px] mx-auto;
+    @apply max-w-[2000px] mx-auto;
   }
 
   .dnd-container {
-    @apply max-w-[2000px] mx-auto w-full px-4 sm:px-8 md:px-12 lg:px-16;
+    @apply max-w-[2000px] mx-auto w-full px-4 md:px-6 lg:px-10;
   }
 
   .html-richtext ul {

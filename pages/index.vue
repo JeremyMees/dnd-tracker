@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout>
-    <div>
+    <div class="h-[2000px]">
       tester
     </div>
   </NuxtLayout>

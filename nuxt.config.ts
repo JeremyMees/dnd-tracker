@@ -36,8 +36,8 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: 'nl',
     locales: [
-      { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },
-      { code: 'en', iso: 'en-US', name: 'English' },
+      { code: 'nl', iso: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
+      { code: 'en', iso: 'en-US', name: 'English', icon: '🇬🇧' },
     ],
   },
   eslint: { config: { stylistic: true } },

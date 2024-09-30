@@ -1,3 +1,13 @@
+<script setup lang="ts">
+function start(el: Element): void {
+  (el as HTMLDivElement).style.height = el.scrollHeight + 'px'
+}
+
+function end(el: Element): void {
+  (el as HTMLDivElement).style.height = ''
+}
+</script>
+
 <template>
   <Transition
     name="expand"
