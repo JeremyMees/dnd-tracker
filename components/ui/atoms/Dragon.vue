@@ -69,6 +69,7 @@ onMounted(() => {
         src="/dragon.webp"
         alt="Hero image"
         sizes="sm:500px md:500px lg:500px"
+        loading="lazy"
         class="w-full h-full object-cover"
       />
     </div>
