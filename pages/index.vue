@@ -3,6 +3,7 @@ import { gsap } from 'gsap'
 
 // const store = useTableStore()
 // const toast = useToastStore()
+const { t } = useI18n()
 
 const blob = ref<HTMLDivElement>()
 const dragon = ref()
@@ -50,5 +51,18 @@ if (import.meta.client) {
       class="hidden md:block -z-[1] h-[200px] w-[200px] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full from-info to-secondary bg-gradient-to-r rotates blur-[100px]"
     />
     <Hero />
+    <LazySummary
+      :title="t('pages.home.summary.title')"
+      sprite="flame"
+      :items="[
+        t('pages.home.summary.item1'),
+        t('pages.home.summary.item2'),
+        t('pages.home.summary.item3'),
+        t('pages.home.summary.item4'),
+        t('pages.home.summary.item5'),
+        t('pages.home.summary.item6'),
+      ]"
+      class="max-w-prose"
+    />
   </NuxtLayout>
 </template>
