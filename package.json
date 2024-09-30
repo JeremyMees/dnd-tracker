@@ -24,6 +24,8 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.4",
     "@tanstack/vue-query": "^5.56.2",
+    "@vueuse/core": "^11.1.0",
+    "@vueuse/nuxt": "^11.1.0",
     "gsap": "^3.12.5",
     "nuxt": "^3.13.0",
     "vue": "latest",
