@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { gsap } from 'gsap'
+import type { Dragon } from '#components'
 
 // const store = useTableStore()
 // const toast = useToastStore()
 const { t } = useI18n()
 
 const blob = ref<HTMLDivElement>()
-const dragon = ref()
+const dragon = ref<InstanceType<typeof Dragon>>()
 
 // try {
 //   await store.getSandboxEncounter()
@@ -51,11 +52,11 @@ if (import.meta.client) {
       class="hidden md:block -z-[1] h-[200px] w-[200px] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full from-info to-secondary bg-gradient-to-r rotates blur-[100px]"
     />
     <Hero />
-    <div class="flex flex-col gap-y-[100px] sm:gap-y-[150px] pb-20 pt-28 relative">
+    <div class="flex flex-col gap-y-[100px] sm:gap-y-[150px] pb-20 pt-28 relative overflow-hidden">
       <div
         data-skills
         class="space-y-20 dnd-container"
-        @mousemove="dragon.calculateEyes"
+        @mousemove="dragon && dragon.calculateEyes"
       >
         <LazySummary
           :title="t('pages.home.summary.title')"
@@ -84,6 +85,7 @@ if (import.meta.client) {
           </template>
         </LazyTitleText>
       </div>
+      <LazyDragon ref="dragon" />
     </div>
   </NuxtLayout>
 </template>
