@@ -3,10 +3,12 @@ withDefaults(
   defineProps<{
     shadow?: boolean
     noPadding?: boolean
+    container?: boolean
   }>(),
   {
     shadow: false,
     noPadding: false,
+    container: false,
   },
 )
 
@@ -27,7 +29,10 @@ onBeforeMount(() => {
         v-if="shadow"
         class="fixed !top-1/4 !left-0 !w-[50vw] !h-[50vh] fancy-shadow z-[-1] opacity-70"
       />
-      <div class="relative grow pb-[140px] flex flex-col">
+      <div
+        class="relative grow pb-[140px] flex flex-col"
+        :class="{ 'dnd-container': container }"
+      >
         <slot />
       </div>
     </div>

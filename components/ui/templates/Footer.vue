@@ -142,7 +142,7 @@ const ui = useUI()
           </p>
           <div class="flex flex-col gap-4">
             <NuxtLink
-              :to="localePath('/cookie-policy')"
+              :to="localePath('/policies/cookie')"
               class="flex"
             >
               <Icon
@@ -155,7 +155,7 @@ const ui = useUI()
               </span>
             </NuxtLink>
             <NuxtLink
-              :to="localePath('/privacy-policy')"
+              :to="localePath('/policies/privacy')"
               class="flex"
             >
               <Icon
