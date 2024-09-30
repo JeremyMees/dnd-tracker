@@ -2,9 +2,11 @@
 withDefaults(
   defineProps<{
     shadow?: boolean
+    noPadding?: boolean
   }>(),
   {
     shadow: false,
+    noPadding: false,
   },
 )
 
@@ -16,13 +18,16 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main class="pt-[150px] pb-20 grow">
+  <main
+    class="pb-20 grow"
+    :class="{ 'pt-[150px]': !noPadding }"
+  >
     <div class="relative">
       <div
         v-if="shadow"
         class="fixed !top-1/4 !left-0 !w-[50vw] !h-[50vh] fancy-shadow z-[-1] opacity-70"
       />
-      <div class="dnd-container no-scrollbar overflow-y-auto">
+      <div class="max-container no-scrollbar overflow-y-auto">
         <slot />
       </div>
     </div>
