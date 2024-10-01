@@ -1,10 +1,6 @@
 <script setup lang="ts">
 const localePath = useLocalePath()
-// const ui = useUI()
-
-const ui = {
-  showNavigation: true,
-}
+const ui = useUI()
 </script>
 
 <template>

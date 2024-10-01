@@ -2,25 +2,12 @@
 import type { Dropdown } from '#components'
 
 // const toast = useToastStore()
-// const profile = useProfile()
-// const ui = useUI()
-// const auth = useAuth()
+const profile = useProfile()
+const ui = useUI()
+const auth = useAuth()
 const isSmall = useMediaQuery('(max-width: 1024px)')
 const localePath = useLocalePath()
 const { t } = useI18n()
-
-const ui = {
-  showNavigation: true,
-  routes: [] as Route[],
-  playRoutes: [] as Route[],
-  profileRoutes: [] as Route[],
-}
-const auth = {
-  isAuthenticated: true,
-}
-const profile = {
-  data: { avatar: undefined },
-}
 
 const isOpen = ref<boolean>(false)
 const navigationVisible = ref<boolean>(true)

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/icon',
     '@vueuse/nuxt',
+    '@pinia/nuxt',
   ],
   components: {
     dirs: [

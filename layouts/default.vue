@@ -12,11 +12,11 @@ withDefaults(
   },
 )
 
-// const ui = useUI()
+const ui = useUI()
 
-// onBeforeMount(() => {
-//   ui.showNavigation = true
-// })
+onBeforeMount(() => {
+  ui.showNavigation = true
+})
 </script>
 
 <template>
