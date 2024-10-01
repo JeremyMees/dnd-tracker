@@ -121,6 +121,10 @@
     @apply font-text text-[0.5rem] leading-[0.75rem];
   }
 
+  .btn-text {
+    @apply text-[0.75rem] leading-[1.25rem] underline text-center mt-1 cursor-pointer;
+  }
+
   .btn-black {
     @apply btn bg-black/50 hover:bg-black/60 border-black;
   }
