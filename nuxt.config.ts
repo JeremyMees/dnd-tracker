@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxt/image',
     '@formkit/nuxt',
-    '@pinia/nuxt',
     '@nuxtjs/i18n',
     '@nuxt/icon',
     '@vueuse/nuxt',
