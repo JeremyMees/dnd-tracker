@@ -2,7 +2,7 @@ export const useProfile = defineStore('useProfile', () => {
   const supabase = useSupabaseClient<Database>()
   const user = useSupabaseUser()
   const auth = useAuth()
-  // const toast = useToastStore()
+  const toast = useToast()
 
   const loading = ref<boolean>(false)
   const error = ref<string>()

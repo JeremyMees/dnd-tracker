@@ -4,7 +4,7 @@ useHead({ title: 'Register' })
 
 const { t } = useI18n()
 const auth = useAuth()
-// const toast = useToastStore()
+const toast = useToast()
 const localePath = useLocalePath()
 
 const form = ref<Register>({ email: '', password: '', name: '', username: '', marketing: true })
@@ -16,25 +16,24 @@ const image = ref<string>(
 
 async function register({ __init, username, name, marketing, ...credentials }: Obj): Promise<void> {
   error.value = null
-  try {
-    isLoading.value = true
+  isLoading.value = true
 
+  try {
     await auth.register(
       credentials as Login,
       { username, name, marketing, avatar: image.value, role: 'User' },
     )
 
-    // toast.success({
-    //   title: t('pages.register.toast.success.title'),
-    //   text: t('pages.register.toast.success.text'),
-    // })
+    toast.success({
+      title: t('pages.register.toast.success.title'),
+      text: t('pages.register.toast.success.text'),
+    })
 
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
-    console.error(err)
     error.value = err.message
-    // toast.error()
+    toast.error()
   }
   finally {
     isLoading.value = false

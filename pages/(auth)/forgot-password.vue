@@ -4,7 +4,7 @@ useHead({ title: 'Forgot password' })
 
 const { t } = useI18n()
 const auth = useAuth()
-// const toast = useToastStore()
+const toast = useToast()
 const localePath = useLocalePath()
 
 const form = ref<{ email: string }>({ email: '' })
@@ -13,19 +13,21 @@ const error = ref<string | null>(null)
 
 async function forgotPassword({ __init, email }: Obj): Promise<void> {
   error.value = null
+  isLoading.value = true
+
   try {
-    isLoading.value = true
     await auth.forgotPassword(email)
-    // toast.success({
-    //   title: t('pages.forgotPassword.toast.success.title'),
-    //   text: t('pages.forgotPassword.toast.success.text'),
-    // })
+
+    toast.success({
+      title: t('pages.forgotPassword.toast.success.title'),
+      text: t('pages.forgotPassword.toast.success.text'),
+    })
+
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
-    console.error(err)
     error.value = err.message
-    // toast.error()
+    toast.error()
   }
   finally {
     isLoading.value = false

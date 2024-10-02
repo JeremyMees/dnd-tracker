@@ -4,7 +4,7 @@ useHead({ title: 'Reset password' })
 
 const { t } = useI18n()
 const auth = useAuth()
-// const toast = useToastStore()
+const toast = useToast()
 const localePath = useLocalePath()
 
 const form = ref<{ password: string }>({ password: '' })
@@ -17,13 +17,14 @@ async function resetPassword({ __init, password }: Obj): Promise<void> {
 
   try {
     await auth.updateUser({ password })
-    // toast.success({ title: t('pages.resetPassword.toast.success.title') })
+
+    toast.success({ title: t('pages.resetPassword.toast.success.title') })
+
     navigateTo(localePath('/'))
   }
   catch (err: any) {
-    console.error(err)
     error.value = err.message
-    // toast.error()
+    toast.error()
   }
   finally {
     isLoading.value = false

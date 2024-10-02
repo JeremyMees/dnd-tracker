@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Dropdown } from '#components'
 
-// const toast = useToastStore()
+const toast = useToast()
 const profile = useProfile()
 const ui = useUI()
 const auth = useAuth()
@@ -40,14 +40,14 @@ async function logout(): Promise<void> {
 
   try {
     await auth.logout()
-    // profile.data = null
+    profile.data = undefined
     isOpen.value = false
 
     setTimeout(() => navigateTo(localePath('/')), 100)
   }
   catch (err) {
     console.error(err)
-    // toast.error()
+    toast.error()
   }
 }
 </script>

@@ -3,19 +3,18 @@ import { gsap } from 'gsap'
 import type { Dragon } from '#components'
 
 // const store = useTableStore()
-// const toast = useToastStore()
+const toast = useToast()
 const { t } = useI18n()
 
 const blob = ref<HTMLDivElement>()
 const dragon = ref<InstanceType<typeof Dragon>>()
 
-// try {
-//   await store.getSandboxEncounter()
-// }
-// catch (err) {
-//   console.error(err)
-//   toast.error()
-// }
+try {
+  // await store.getSandboxEncounter()
+}
+catch (err) {
+  toast.error()
+}
 
 if (import.meta.client) {
   document.body.onmousemove = (event) => {
