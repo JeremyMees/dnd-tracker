@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ middleware: ['abort-authenticated'] })
 useHead({ title: 'Register' })
 
 const { t } = useI18n()

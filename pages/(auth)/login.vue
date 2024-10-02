@@ -1,25 +1,28 @@
 <script setup lang="ts">
+definePageMeta({ middleware: ['abort-authenticated'] })
 useHead({ title: 'Log in' })
 
 const auth = useAuth()
 const { t } = useI18n()
+const localePath = useLocalePath()
+const redirect = useCookie<string>('sb-redirect-path')
 
-const form = ref<Login>({ email: '', password: '' })
-const isLoading = ref<boolean>(false)
-const error = ref<string | null>(null)
+async function login(form: Login, node: FormNode): Promise<void> {
+  node.clearErrors()
 
-async function login({ __init, isTrusted, _vts, ...credentials }: Obj): Promise<void> {
-  error.value = null
   try {
-    isLoading.value = true
-    await auth.login(credentials as Login)
+    await auth.login(sanitizeForm<Login>(form))
+
+    setTimeout(() => {
+      const route = redirect.value || '/'
+
+      if (redirect.value) redirect.value = ''
+
+      navigateTo(localePath(route))
+    }, 100)
   }
   catch (err: any) {
-    console.error(err)
-    error.value = err.message
-  }
-  finally {
-    isLoading.value = false
+    node.setErrors(err.message)
   }
 }
 </script>
@@ -37,16 +40,9 @@ async function login({ __init, isTrusted, _vts, ...credentials }: Obj): Promise<
         :height="250"
         class="mx-auto visibility-pulse"
       />
-      <p
-        v-if="error"
-        class="text-danger text-center body-small"
-      >
-        {{ error }}
-      </p>
       <FormKit
-        v-model="form"
         type="form"
-        :actions="false"
+        :submit-label="t('pages.login.signIn')"
         @submit="login"
       >
         <FormKit
@@ -59,14 +55,6 @@ async function login({ __init, isTrusted, _vts, ...credentials }: Obj): Promise<
           type="password"
           :label="t('components.inputs.passwordLabel')"
           validation="required|length:6,50"
-        />
-        <FormKit
-          type="submit"
-          :aria-label="t('pages.login.signIn')"
-          :label="t('pages.login.signIn')"
-          :disabled="isLoading"
-          outer-class="$reset grow"
-          input-class="w-full"
         />
       </FormKit>
       <div class="flex flex-wrap gap-2 justify-center">

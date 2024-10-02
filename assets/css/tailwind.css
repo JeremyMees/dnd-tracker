@@ -26,6 +26,10 @@
   .icon {
     @apply w-6 h-6 group-hover:text-white transition-colors duration-200;
   }
+
+  .btn-text {
+    @apply text-[0.75rem] leading-[1.25rem] underline text-center mt-1 cursor-pointer;
+  }
 }
 
 @layer utilities {
@@ -119,10 +123,6 @@
 
   .body-extra-small {
     @apply font-text text-[0.5rem] leading-[0.75rem];
-  }
-
-  .btn-text {
-    @apply text-[0.75rem] leading-[1.25rem] underline text-center mt-1 cursor-pointer;
   }
 
   .btn-black {

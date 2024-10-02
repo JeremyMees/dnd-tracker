@@ -29,15 +29,16 @@ export default defineNuxtConfig({
   supabase: {
     redirectOptions: {
       login: '/login',
-      callback: '/login/confirm',
-      exclude: ['/'],
+      callback: '/',
+      include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
+      cookieRedirect: true,
     },
   },
   i18n: {
     defaultLocale: 'nl',
     locales: [
-      { code: 'nl', iso: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
-      { code: 'en', iso: 'en-US', name: 'English', icon: '🇬🇧' },
+      { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
+      { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
     ],
   },
   eslint: { config: { stylistic: true } },

@@ -22,7 +22,7 @@ export default {
     wrapper: 'flex items-center mb-1 cursor-pointer',
   },
   'family:button': {
-    input: '$remove:bg-background/50 btn-black',
+    input: '$remove:bg-background/50 btn-black w-full',
     wrapper: 'flex justify-end',
   },
   'family:dropdown': {

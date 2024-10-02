@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ middleware: ['abort-authenticated'] })
 useHead({ title: 'Forgot password' })
 
 const { t } = useI18n()
