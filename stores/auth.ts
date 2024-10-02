@@ -10,8 +10,15 @@ export const useAuth = defineStore('useAuth', () => {
     if (error) throw error
   }
 
+  async function logout(): Promise<void> {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) throw error
+  }
+
   return {
     isAuthenticated,
     login,
+    logout,
   }
 })

@@ -38,15 +38,17 @@ onMounted(() => {
 async function logout(): Promise<void> {
   if (profileDropdown.value) profileDropdown.value.close()
 
-  // try {
-  //   await auth.logout()
-  //   profile.data = null
-  //   isOpen.value = false
-  // }
-  // catch (err) {
-  //   console.error(err)
-  //   toast.error()
-  // }
+  try {
+    await auth.logout()
+    // profile.data = null
+    isOpen.value = false
+
+    setTimeout(() => navigateTo(localePath('/')), 100)
+  }
+  catch (err) {
+    console.error(err)
+    // toast.error()
+  }
 }
 </script>
 

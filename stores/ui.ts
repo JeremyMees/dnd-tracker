@@ -8,11 +8,12 @@ export const useUI = defineStore('useUI', () => {
       { label: 'components.navbar.contact', url: 'contact', requireAuth: false },
       { label: 'components.navbar.pricing', url: 'pricing', requireAuth: false },
       ...auth.isAuthenticated
-        ? [
+        ? []
+        : [
             { label: 'components.navbar.login', url: 'login', requireAuth: true },
             { label: 'components.navbar.register', url: 'register', requireAuth: true },
-          ]
-        : [],
+          ],
+
     ]
   })
 
