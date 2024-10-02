@@ -2,6 +2,10 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+const profile = useProfile()
+
+onBeforeMount(() => profile.fetch())
+
 if (import.meta.client) {
   gsap.registerPlugin(ScrollTrigger)
   ScrollTrigger.getAll().forEach((t: any) => t.kill())

@@ -1,3 +1,5 @@
+import type { StripeFields } from './stripe'
+
 export type DatabaseTable = keyof Database['public']['Tables']
 export type DatabaseEnum = keyof Database['public']['Enums']
 
@@ -62,3 +64,6 @@ export type DNDRules = Database['public']['Enums']['rules']
 export type SubscriptionType = Database['public']['Enums']['subscription_type']
 export type UserRole = Database['public']['Enums']['user_role']
 export type WeaponCategory = Database['public']['Enums']['weapon_category']
+
+// Extended Types
+export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role'>>
