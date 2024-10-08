@@ -639,7 +639,6 @@ export type Database = {
           id: string
           marketing: boolean
           name: string
-          role: string
           stripe_id: string | null
           stripe_session_id: string | null
           subscription_type: Database['public']['Enums']['subscription_type']
@@ -655,7 +654,6 @@ export type Database = {
           id: string
           marketing?: boolean
           name: string
-          role: string
           stripe_id?: string | null
           stripe_session_id?: string | null
           subscription_type?: Database['public']['Enums']['subscription_type']
@@ -671,7 +669,6 @@ export type Database = {
           id?: string
           marketing?: boolean
           name?: string
-          role?: string
           stripe_id?: string | null
           stripe_session_id?: string | null
           subscription_type?: Database['public']['Enums']['subscription_type']

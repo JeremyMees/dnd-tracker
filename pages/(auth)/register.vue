@@ -7,22 +7,15 @@ const auth = useAuth()
 const toast = useToast()
 const localePath = useLocalePath()
 
-const form = ref<Register>({ email: '', password: '', name: '', username: '', marketing: true })
-const isLoading = ref<boolean>(false)
-const error = ref<string | null>(null)
 const image = ref<string>(
   `https://api.dicebear.com/7.x/open-peeps/svg?seed=${(Math.random() + 1).toString(36).substring(7)}&size=100`,
 )
 
-async function register({ __init, username, name, marketing, ...credentials }: Obj): Promise<void> {
-  error.value = null
-  isLoading.value = true
+async function register(form: Register, node: FormNode): Promise<void> {
+  node.clearErrors()
 
   try {
-    await auth.register(
-      credentials as Login,
-      { username, name, marketing, avatar: image.value, role: 'User' },
-    )
+    await auth.register({ ...form, avatar: image.value })
 
     toast.success({
       title: t('pages.register.toast.success.title'),
@@ -32,11 +25,8 @@ async function register({ __init, username, name, marketing, ...credentials }: O
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
-    error.value = err.message
+    node.setErrors(err.message)
     toast.error()
-  }
-  finally {
-    isLoading.value = false
   }
 }
 
@@ -76,16 +66,9 @@ function handleIconClick(node: any) {
           {{ t('pages.register.random') }}
         </button>
       </div>
-      <p
-        v-if="error"
-        class="text-danger text-center"
-      >
-        {{ error }}
-      </p>
       <FormKit
-        v-model="form"
         type="form"
-        :actions="false"
+        :submit-label="t('pages.register.register')"
         @submit="register"
       >
         <FormKit
@@ -114,20 +97,13 @@ function handleIconClick(node: any) {
         <FormKit
           name="marketing"
           type="toggle"
+          :value="true"
           :label="t('components.inputs.marketingLabel')"
         />
-        <FormKit
-          type="submit"
-          :aria-label="t('pages.register.register')"
-          :disabled="isLoading"
-          input-class="w-full"
-        >
-          {{ t('pages.register.register') }}
-        </FormKit>
-        <p class="body-small text-center">
-          {{ t('pages.register.consent') }}
-        </p>
       </FormKit>
+      <p class="body-small text-center">
+        {{ t('pages.register.consent') }}
+      </p>
       <div class="flex flex-wrap gap-2 justify-center">
         <RouteLink
           url="login"

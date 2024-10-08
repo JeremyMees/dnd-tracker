@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "sb:types": "npx supabase gen types --lang=typescript --project-id $(grep SUPABASE_ID .env | cut -d '=' -f2) > types/database.ts"
+    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database.ts"
   },
   "dependencies": {
     "@formkit/icons": "^1.6.7",

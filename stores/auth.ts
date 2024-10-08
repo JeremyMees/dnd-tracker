@@ -23,9 +23,34 @@ export const useAuth = defineStore('useAuth', () => {
     if (error) throw error
   }
 
+  async function register(form: Register): Promise<void> {
+    const { email, password, ...userData } = form
+
+    const { error, data } = await supabase.auth.signUp({ email, password })
+
+    if (error) throw error
+
+    if (data?.user) {
+      const profile: ProfileInsert = {
+        ...userData,
+        email,
+        id: data.user.id,
+      }
+
+      const { error } = await supabase.from('profiles').insert([profile])
+
+      if (error) {
+        throw error?.message.includes('duplicate key')
+          ? new Error('Email already in use')
+          : error
+      }
+    }
+  }
+
   return {
     isAuthenticated,
     login,
     logout,
+    register,
   }
 })
