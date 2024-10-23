@@ -122,6 +122,13 @@
     "concentration": "Concentration",
     "none": "Geen",
     "stats": "Statistics",
+    "backgroundColor": "Background color",
+    "clothingColor": "Clothing color",
+    "facialHair": "Facial hair",
+    "skinColor": "Skin color",
+    "accessories": "Accessories",
+    "face": "Face",
+    "hair": "Hair",
     "error": {
       "title": "Error",
       "text": "Something went wrong"
@@ -275,7 +282,6 @@
     },
     "register": {
       "register": "Register",
-      "random": "Random avatar",
       "consent": "By registering, you agree to our terms and conditions",
       "toast": {
         "success": {

@@ -45,4 +45,7 @@ export default defineNuxtConfig({
   imports: { dirs: ['types/*.ts'] },
   formkit: { configFile: './formkit/config.ts' },
   devtools: { enabled: true },
+  vite: {
+    optimizeDeps: { force: true },
+  },
 })

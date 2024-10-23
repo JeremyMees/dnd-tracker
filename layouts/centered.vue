@@ -1,4 +1,6 @@
 <script setup lang="ts">
+defineProps<{ wide?: boolean }>()
+
 const localePath = useLocalePath()
 const ui = useUI()
 
@@ -31,9 +33,13 @@ if (import.meta.client) {
       :to="localePath('/')"
     />
     <div
-      class="container absolute w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
+      class="dnd-container absolute w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
+      :class="{
+        'max-w-2xl': !wide,
+        '': wide,
+      }"
     >
-      <div class="inset-0 z-[-0] fancy-shadow" />
+      <div class="inset-0 z-[-1] fancy-shadow" />
       <div
         class="bg-tracker/50 px-2 py-6 sm:p-8 rounded-lg relative border-4 border-tracker"
       >
@@ -52,7 +58,7 @@ if (import.meta.client) {
             aria-hidden="true"
           />
         </NuxtLink>
-        <div class="px-4 sm:px-8">
+        <div class="px-4 sm:px-8 mx-h-full overflow-auto max-h-[80vh]">
           <slot />
         </div>
       </div>

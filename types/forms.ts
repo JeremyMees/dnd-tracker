@@ -11,5 +11,6 @@ export interface Register extends Login {
   username: string
   name: string
   marketing: boolean
-  avatar: string
+  avatar: Avatar['url']
+  avatar_options: Avatar['extra']
 }

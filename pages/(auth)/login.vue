@@ -35,7 +35,7 @@ async function login(form: Login, node: FormNode): Promise<void> {
       </h1>
       <NuxtImg
         src="/classes.png"
-        alt="D20 logo dice"
+        alt="DnD Classes"
         :width="250"
         :height="250"
         class="mx-auto visibility-pulse"

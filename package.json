@@ -13,6 +13,8 @@
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database.ts"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.2",
+    "@dicebear/core": "^9.2.2",
     "@formkit/icons": "^1.6.7",
     "@formkit/nuxt": "^1.6.7",
     "@formkit/pro": "^0.127.2",

@@ -13,8 +13,10 @@ export function sanitizeForm<T>(data: Record<string, any>): T {
   return sanitized as T
 }
 
-export function randomAvatar(): string {
-  return `https://api.dicebear.com/7.x/open-peeps/svg?seed=${(Math.random() + 1)
-    .toString(36)
-    .substring(7)}&size=100`
+export function randomString(): string {
+  return (Math.random() + 1).toString(36).substring(7)
+}
+
+export function randomColor(): string {
+  return Math.floor(Math.random() * 16777215).toString(16)
 }

@@ -122,6 +122,13 @@
     "concentration": "Concentratie",
     "none": "Geen",
     "stats": "Statistieken",
+    "backgroundColor": "Achtergrondkleur",
+    "clothingColor": "Kledingkleur",
+    "facialHair": "Gezichtshaar",
+    "skinColor": "Huidskleur",
+    "accessories": "Accessoires",
+    "face": "Gezicht",
+    "hair": "Haar",
     "error": {
       "title": "Fout",
       "text": "Er ging iets mis"
@@ -263,7 +270,6 @@
     },
     "register": {
       "register": "Registreer",
-      "random": "Random avatar",
       "consent": "Door te registreren, stemt u in met onze algemene voorwaarden.",
       "toast": {
         "success": {

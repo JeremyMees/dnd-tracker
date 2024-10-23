@@ -107,12 +107,15 @@ async function logout(): Promise<void> {
               color="secondary"
               round
             >
-              <AnimationReveal class="flex flex-col">
+              <AnimationReveal
+                reverse
+                class="flex flex-col"
+              >
                 <img
                   v-if="profile.data?.avatar"
-                  :src="profile.data.avatar + '&flip=true'"
+                  :src="profile.data.avatar"
                   alt="Avatar image"
-                  class="w-10 p-1 scale-[1.2] rounded-full"
+                  class="w-10 scale-x-[-100%] rounded-full"
                 >
                 <Icon
                   v-else

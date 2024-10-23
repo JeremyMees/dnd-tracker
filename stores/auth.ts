@@ -33,6 +33,7 @@ export const useAuth = defineStore('useAuth', () => {
     if (data?.user) {
       const profile: ProfileInsert = {
         ...userData,
+        avatar_options: userData.avatar_options as Json,
         email,
         id: data.user.id,
       }
