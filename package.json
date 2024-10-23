@@ -31,7 +31,8 @@
     "gsap": "^3.12.5",
     "nuxt": "^3.13.0",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "vue-tippy": "^6.5.0"
   },
   "devDependencies": {
     "@iconify-json/fluent": "^1.2.2",

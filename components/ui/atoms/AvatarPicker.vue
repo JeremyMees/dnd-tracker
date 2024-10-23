@@ -55,7 +55,7 @@ function updateAvatar(key: string, value: string): void {
     </Card>
     <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit px-2 relative bottom-2 backdrop-blur">
       <button
-        class="h-7 w-7 flex flex-col items-center justify-center"
+        class="h-7 w-7 flex flex-col items-center justify-center outline-none"
         :class="{ 'border-r-2 border-primary pr-2': !hideCreatorToggle }"
         :aria-label="t('actions.random')"
         @click="avatarCreator.random()"
@@ -68,7 +68,7 @@ function updateAvatar(key: string, value: string): void {
       </button>
       <button
         v-if="!hideCreatorToggle"
-        class="h-7 w-7 flex flex-col items-center justify-center pl-1"
+        class="h-7 w-7 flex flex-col items-center justify-center outline-none pl-1"
         :aria-label="t('actions.random')"
         @click="creatorOpen = !creatorOpen"
       >

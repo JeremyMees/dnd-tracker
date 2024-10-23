@@ -48,7 +48,7 @@ function next(): void {
   <div class="flex items-center justify-between gap-2 px-2 btn-small-black min-w-[160px] overflow-hidden">
     <button
       :aria-label="t('actions.prev')"
-      class="min-w-7 min-h-7 flex items-center justify-center"
+      class="min-w-7 min-h-7 flex items-center justify-center focus:outline-primary"
       @click="prev"
     >
       <Icon
@@ -57,8 +57,8 @@ function next(): void {
         aria-hidden="true"
       />
     </button>
-    <!-- v-tippy="t(`general.${identifier === 'head' ? 'hair' : identifier}`)" -->
     <Icon
+      v-tippy="t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
       :name="icon"
       class="min-w-6 min-h-6"
       aria-hidden="true"
@@ -68,7 +68,7 @@ function next(): void {
     </span>
     <button
       :aria-label="t('actions.next')"
-      class="min-w-7 min-h-7 flex items-center justify-center"
+      class="min-w-7 min-h-7 flex items-center justify-center focus:outline-primary"
       @click="next"
     >
       <Icon
