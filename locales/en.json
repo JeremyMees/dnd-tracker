@@ -302,6 +302,10 @@
       "toast": {
         "success": {
           "title": "Password successfully resetted"
+        },
+        "error": {
+          "title": "Link is invalid or expired",
+          "text": "The link you used is invalid or expired. Please request a new one"
         }
       }
     },

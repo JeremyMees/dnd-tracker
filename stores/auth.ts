@@ -48,10 +48,26 @@ export const useAuth = defineStore('useAuth', () => {
     }
   }
 
+  async function forgotPassword(email: string): Promise<void> {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+
+    if (error) throw error
+  }
+
+  async function updatePassword(payload: { password: string }): Promise<void> {
+    const { error } = await supabase.auth.updateUser(payload)
+
+    if (error) throw error
+  }
+
   return {
     isAuthenticated,
     login,
     logout,
     register,
+    forgotPassword,
+    updatePassword,
   }
 })

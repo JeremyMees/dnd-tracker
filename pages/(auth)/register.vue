@@ -34,7 +34,7 @@ async function register(form: Register, node: FormNode): Promise<void> {
   }
 }
 
-function handleIconClick(node: any) {
+function togglePasswordInput(node: any): void {
   node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
   node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
@@ -83,7 +83,7 @@ function handleIconClick(node: any) {
               suffix-icon="eye"
               :label="t('components.inputs.passwordLabel')"
               validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
-              @suffix-icon-click="handleIconClick"
+              @suffix-icon-click="togglePasswordInput"
             />
             <FormKit
               name="marketing"

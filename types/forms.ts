@@ -14,3 +14,11 @@ export interface Register extends Login {
   avatar: Avatar['url']
   avatar_options: Avatar['extra']
 }
+
+export interface ForgotPassword {
+  email: string
+}
+
+export interface ResetPassword {
+  password: string
+}

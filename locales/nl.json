@@ -290,6 +290,10 @@
       "toast": {
         "success": {
           "title": "Wachtwoord succesvol veranderd"
+        },
+        "error": {
+          "title": "Link is ongeldig of verlopen",
+          "text": "Vraag een nieuwe link aan om je wachtwoord te resetten"
         }
       }
     },

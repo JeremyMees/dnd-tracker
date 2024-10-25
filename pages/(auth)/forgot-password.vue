@@ -7,16 +7,11 @@ const auth = useAuth()
 const toast = useToast()
 const localePath = useLocalePath()
 
-const form = ref<{ email: string }>({ email: '' })
-const isLoading = ref<boolean>(false)
-const error = ref<string | null>(null)
-
-async function forgotPassword({ __init, email }: Obj): Promise<void> {
-  error.value = null
-  isLoading.value = true
+async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<void> {
+  node.clearErrors()
 
   try {
-    await auth.forgotPassword(email)
+    await auth.forgotPassword(form.email)
 
     toast.success({
       title: t('pages.forgotPassword.toast.success.title'),
@@ -26,11 +21,8 @@ async function forgotPassword({ __init, email }: Obj): Promise<void> {
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
-    error.value = err.message
+    node.setErrors(err.message)
     toast.error()
-  }
-  finally {
-    isLoading.value = false
   }
 }
 </script>
@@ -41,16 +33,9 @@ async function forgotPassword({ __init, email }: Obj): Promise<void> {
       <h1 class="text-center pb-10">
         {{ t('pages.forgotPassword.title') }}
       </h1>
-      <p
-        v-if="error"
-        class="text-danger text-center"
-      >
-        {{ error }}
-      </p>
       <FormKit
-        v-model="form"
         type="form"
-        :actions="false"
+        :submit-label="t('pages.forgotPassword.reset')"
         @submit="forgotPassword"
       >
         <FormKit
@@ -59,14 +44,6 @@ async function forgotPassword({ __init, email }: Obj): Promise<void> {
           validation="required|length:5,50|email"
           required
         />
-        <FormKit
-          type="submit"
-          :aria-label="t('pages.forgotPassword.reset')"
-          :disabled="isLoading"
-          input-class="w-full"
-        >
-          {{ t('pages.forgotPassword.reset') }}
-        </FormKit>
       </FormKit>
       <div class="flex flex-wrap gap-2 justify-center">
         <RouteLink

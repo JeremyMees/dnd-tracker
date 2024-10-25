@@ -1,75 +1,68 @@
 <script setup lang="ts">
-definePageMeta({ middleware: ['abort-authenticated'] })
 useHead({ title: 'Reset password' })
 
 const { t } = useI18n()
 const auth = useAuth()
 const toast = useToast()
 const localePath = useLocalePath()
+const route = useRoute()
 
-const form = ref<{ password: string }>({ password: '' })
-const isLoading = ref<boolean>(false)
-const error = ref<string | null>(null)
+onMounted(() => checkIfError())
 
-async function resetPassword({ __init, password }: Obj): Promise<void> {
-  error.value = null
-  isLoading.value = true
+function checkIfError(): void {
+  const { error } = route.query
+
+  if (error) {
+    navigateTo(localePath('/forgot-password'))
+
+    toast.error({
+      title: t('pages.resetPassword.toast.error.title'),
+      text: t('pages.resetPassword.toast.error.text'),
+    })
+  }
+}
+
+async function resetPassword({ password }: ResetPassword, node: FormNode): Promise<void> {
+  node.clearErrors()
 
   try {
-    await auth.updateUser({ password })
+    await auth.updatePassword({ password })
 
     toast.success({ title: t('pages.resetPassword.toast.success.title') })
 
     navigateTo(localePath('/'))
   }
   catch (err: any) {
-    error.value = err.message
+    node.setErrors(err.message)
     toast.error()
   }
-  finally {
-    isLoading.value = false
-  }
+}
+
+function togglePasswordInput(node: any): void {
+  node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
+  node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
 </script>
 
 <template>
-  <Layout name="centered">
+  <NuxtLayout name="centered">
     <section class="space-y-6">
-      <h1 class="text-center">
+      <h1 class="text-center pb-10">
         {{ t('pages.resetPassword.title') }}
       </h1>
-      <NuxtImg
-        src="/dice.webp"
-        alt="D20 logo dice"
-        width="80"
-        height="80"
-        class="w-20 h-20 mx-auto visibility-pulse"
-      />
-      <p
-        v-if="error"
-        class="text-danger text-center"
-      >
-        {{ error }}
-      </p>
       <FormKit
-        v-model="form"
         type="form"
-        :actions="false"
+        :submit-label="t('pages.resetPassword.reset')"
         @submit="resetPassword"
       >
         <FormKit
           name="password"
           type="password"
+          suffix-icon="eye"
           :label="t('components.inputs.passwordLabel')"
           validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
+          @suffix-icon-click="togglePasswordInput"
         />
-        <FormKit
-          type="submit"
-          :aria-label="t('pages.resetPassword.reset')"
-          :disabled="isLoading"
-        >
-          {{ t('pages.resetPassword.reset') }}
-        </FormKit>
       </FormKit>
       <div class="flex flex-wrap gap-2 justify-center">
         <RouteLink
@@ -80,5 +73,5 @@ async function resetPassword({ __init, password }: Obj): Promise<void> {
         </RouteLink>
       </div>
     </section>
-  </Layout>
+  </NuxtLayout>
 </template>
