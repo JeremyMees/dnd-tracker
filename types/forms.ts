@@ -22,3 +22,9 @@ export interface ForgotPassword {
 export interface ResetPassword {
   password: string
 }
+
+export interface Contact {
+  name?: string
+  email: string
+  question: string
+}

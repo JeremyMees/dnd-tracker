@@ -1,3 +1,4 @@
+import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -31,6 +32,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    plunkApiKey: process.env.PLUNK_API_KEY,
     public: { formkit: process.env.FORMKIT_PRO },
   },
 
@@ -87,5 +89,11 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: { force: true },
+  },
+
+  nitro: {
+    rollupConfig: {
+      plugins: [vue()],
+    },
   },
 })
