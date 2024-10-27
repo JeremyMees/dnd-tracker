@@ -392,7 +392,8 @@
     },
     "fantasyNameGenerator": {
       "title": "Fantasy name generator",
-      "description": "Of je nu een doorgewinterde Dungeon Master bent of net begint met het ontdekken van de wereld van tabletop role-playing, onze D&D Fantasy name generator staat voor je klaar. Sta nooit meer sprakeloos wanneer een speler je overvalt met de vraag: \"Hoe heet deze NPC?\""
+      "description": "Of je nu een doorgewinterde Dungeon Master bent of net begint met het ontdekken van de wereld van tabletop role-playing, onze D&D Fantasy name generator staat voor je klaar. Sta nooit meer sprakeloos wanneer een speler je overvalt met de vraag: \"Hoe heet deze NPC?\"",
+      "tip": "Klik op een naam om deze naar het klembord te kopiëren"
     }
   },
   "components": {
