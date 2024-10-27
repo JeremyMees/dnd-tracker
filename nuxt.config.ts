@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/seo',
+    '@unlok-co/nuxt-stripe',
   ],
 
   components: {
@@ -32,8 +33,14 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    stripeWebhook: process.env.STRIPE_WEBHOOK,
     plunkApiKey: process.env.PLUNK_API_KEY,
     public: { formkit: process.env.FORMKIT_PRO },
+  },
+
+  stripe: {
+    server: { key: process.env.STRIPE_SK },
+    client: { key: process.env.STRIPE_PK },
   },
 
   site: {
