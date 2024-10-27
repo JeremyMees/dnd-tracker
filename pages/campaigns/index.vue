@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: ['auth'] })
-useHead({ title: 'Campaigns' })
+useSeo('Campaigns')
 </script>
 
 <template>

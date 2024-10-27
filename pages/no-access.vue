@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useHead({ title: 'No access' })
+useSeo('No access')
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useHead({ title: 'Fantasy name generator' })
+useSeo('Fantasy name generator')
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-useHead({ title: 'Feature request' })
+useSeo('Feature request')
 </script>
 
 <template>

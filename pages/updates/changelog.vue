@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useHead({ title: 'Changelogs' })
+useSeo('Changelogs')
 </script>
 
 <template>

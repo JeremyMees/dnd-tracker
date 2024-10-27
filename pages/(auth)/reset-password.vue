@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useHead({ title: 'Reset password' })
+useSeo('Reset password')
 
 const { t } = useI18n()
 const auth = useAuth()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: ['auth'] })
-useHead({ title: 'Successfully subscribed' })
+useSeo('Successfully subscribed')
 </script>
 
 <template>

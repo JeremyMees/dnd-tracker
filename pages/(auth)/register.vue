@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: ['abort-authenticated'] })
-useHead({ title: 'Register' })
+useSeo('Register')
 
 const { t } = useI18n()
 const auth = useAuth()

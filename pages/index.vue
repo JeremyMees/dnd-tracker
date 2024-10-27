@@ -2,6 +2,8 @@
 import { gsap } from 'gsap'
 import type { Dragon } from '#components'
 
+useSeo()
+
 // const store = useTableStore()
 const toast = useToast()
 const { t } = useI18n()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useHead({ title: 'Info' })
+useSeo('Info')
 </script>
 
 <template>
