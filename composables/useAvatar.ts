@@ -43,8 +43,7 @@ export function useAvatarCreator() {
   function update(selectedOptions: SelectedStyleOptions): void {
     for (const key in selectedOptions) {
       if (blackListedKeys.includes(key)) continue
-
-      if (key === 'primaryBackgroundColor') {
+      else if (key === 'primaryBackgroundColor') {
         options.value.backgroundColor = selectedOptions[key]
       }
       else options.value[key] = selectedOptions[key]
@@ -57,7 +56,13 @@ export function useAvatarCreator() {
     options.value = {
       ...Object.fromEntries(
         Object.entries(configStyleOptions).map(([key, { values }]) => {
-          return [key, randomArrayItem(values)]
+          let value = randomArrayItem(values)
+
+          if (key.includes('Color') && !value.toString().includes('#')) {
+            value = `#${value}`
+          }
+
+          return [key, value]
         }),
       ),
     }
@@ -199,6 +204,7 @@ export function useAvatarCreator() {
     avatar,
     options,
     configStyleOptions,
+    blackListedKeys,
     update,
     generate,
     random,

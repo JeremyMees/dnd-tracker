@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { togglePasswordInput } from '~/utils/ui-helpers'
+
 definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Register')
 
@@ -32,11 +34,6 @@ async function register(form: Register, node: FormNode): Promise<void> {
     node.setErrors(err.message)
     toast.error()
   }
-}
-
-function togglePasswordInput(node: any): void {
-  node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
-  node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
 </script>
 

@@ -397,6 +397,10 @@
     }
   },
   "components": {
+    "avatarPicker": {
+      "options": "In/uitschakelen avatar opties",
+      "deprecated": "Je hebt een oude avatar, kies een nieuwe"
+    },
     "cookieBanner": {
       "text": "Start een Episch Avontuur: Accepteer Cookies voor Verbetering van je D&D Ervaring!",
       "policy": "Cookie policy",

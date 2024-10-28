@@ -1,7 +1,12 @@
 <script setup lang="ts">
-const emit = defineEmits<{ change: [Avatar] }>()
+const emit = defineEmits<{
+  change: [Avatar]
+  save: [Avatar]
+}>()
 
 const props = defineProps<{
+  profile?: boolean
+  deprecatedAvatar?: boolean
   hideCreatorToggle?: boolean
   avatarBig?: boolean
   selectedOptions?: SelectedStyleOptions
@@ -9,7 +14,28 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const avatarCreator = useAvatarCreator()
-const creatorOpen = ref<boolean>(true)
+
+const creatorOpen = ref<boolean>(props.hideCreatorToggle)
+
+const isChanged = computed<boolean>(() => {
+  if (!props.selectedOptions) return true
+
+  const values: SelectedStyleOptions = {}
+
+  for (const key in props.selectedOptions) {
+    if (avatarCreator.blackListedKeys.includes(key)) continue
+
+    if (key === 'primaryBackgroundColor') {
+      values.backgroundColor = props.selectedOptions[key]
+    }
+    else values[key] = props.selectedOptions[key]
+  }
+
+  console.log({ values, avator: avatarCreator.options.value })
+
+  return Object.entries(values)
+    .some(([key, value]) => avatarCreator.options.value[key] !== value)
+})
 
 onMounted(() => {
   if (props.selectedOptions) avatarCreator.update(props.selectedOptions)
@@ -27,12 +53,22 @@ function updateAvatar(key: string, value: string): void {
     emit('change', avatarCreator.avatar.value)
   }
 }
+
+function save(): void {
+  if (avatarCreator.avatar.value) {
+    emit('save', avatarCreator.avatar.value)
+    creatorOpen.value = false
+  }
+}
 </script>
 
 <template>
   <Card
     color="background"
     class="flex flex-col items-center justify-center"
+    :class="{
+      'max-w-prose': profile,
+    }"
   >
     <Card
       round
@@ -53,10 +89,11 @@ function updateAvatar(key: string, value: string): void {
         >
       </AnimationReveal>
     </Card>
-    <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit px-2 relative bottom-2 backdrop-blur">
+    <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur">
       <button
+        v-tippy="t('actions.random')"
         class="h-7 w-7 flex flex-col items-center justify-center outline-none"
-        :class="{ 'border-r-2 border-primary pr-2': !hideCreatorToggle }"
+        :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
         :aria-label="t('actions.random')"
         @click="avatarCreator.random()"
       >
@@ -68,8 +105,10 @@ function updateAvatar(key: string, value: string): void {
       </button>
       <button
         v-if="!hideCreatorToggle"
-        class="h-7 w-7 flex flex-col items-center justify-center outline-none pl-1"
-        :aria-label="t('actions.random')"
+        v-tippy="t('components.avatarPicker.options')"
+        :aria-label="t('components.avatarPicker.options')"
+        class="h-7 w-7 flex flex-col items-center justify-center outline-none"
+        :class="{ 'border-r-2 border-primary': profile }"
         @click="creatorOpen = !creatorOpen"
       >
         <Icon
@@ -78,6 +117,39 @@ function updateAvatar(key: string, value: string): void {
           class="w-4 h-4"
         />
       </button>
+      <template v-if="profile && isChanged && avatarCreator.avatar.value">
+        <button
+          v-if="props.selectedOptions"
+          v-tippy="t('actions.reset')"
+          class="h-7 w-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary"
+          :aria-label="t('actions.reset')"
+          @click="avatarCreator.update(props.selectedOptions)"
+        >
+          <Icon
+            name="carbon:reset"
+            aria-hidden="true"
+            class="w-4 h-4 text-danger"
+          />
+        </button>
+        <button
+          v-tippy="t('actions.save')"
+          class="h-7 w-7 flex flex-col items-center justify-center outline-none"
+          :aria-label="t('actions.save')"
+          @click="save"
+        >
+          <Icon
+            name="ic:outline-save"
+            aria-hidden="true"
+            class="w-4 h-4 text-success"
+          />
+        </button>
+      </template>
+    </div>
+    <div
+      v-if="deprecatedAvatar"
+      class="text-danger text-xs mt-1"
+    >
+      {{ t('components.avatarPicker.deprecated') }}
     </div>
     <AnimationExpand>
       <div

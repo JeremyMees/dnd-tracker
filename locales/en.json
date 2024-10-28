@@ -411,6 +411,10 @@
     }
   },
   "components": {
+    "avatarPicker": {
+      "options": "Toggle avatar options",
+      "deprecated": "You have a old avatar, please update it."
+    },
     "cookieBanner": {
       "text": "Embark on an Epic Adventure: Accept Cookies to Enhance Your D&D Experience!",
       "policy": "Cookie policy",

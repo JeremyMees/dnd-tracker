@@ -1,5 +1,5 @@
-export function sanitizeForm<T>(data: Record<string, any>): T {
-  const garbage: string[] = ['__init', 'isTrusted', '_vts']
+export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[]): T {
+  const garbage: string[] = blacklist || ['__init', 'isTrusted', '_vts']
   const sanitized: Record<string, any> = {}
 
   for (const key in data) {
@@ -19,4 +19,9 @@ export function randomString(): string {
 
 export function randomColor(): string {
   return Math.floor(Math.random() * 16777215).toString(16)
+}
+
+export function togglePasswordInput(node: FormNode): void {
+  node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
+  node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }

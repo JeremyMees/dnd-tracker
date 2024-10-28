@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { togglePasswordInput } from '~/utils/ui-helpers'
+
 useSeo('Reset password')
 
 const { t } = useI18n()
@@ -36,11 +38,6 @@ async function resetPassword({ password }: ResetPassword, node: FormNode): Promi
     node.setErrors(err.message)
     toast.error()
   }
-}
-
-function togglePasswordInput(node: any): void {
-  node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
-  node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
 </script>
 
