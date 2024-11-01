@@ -1,3 +1,5 @@
+import type { UserAttributes } from '@supabase/supabase-js'
+
 export const useProfile = defineStore('useProfile', () => {
   const supabase = useSupabaseClient<Database>()
   const user = useSupabaseUser()
@@ -12,7 +14,6 @@ export const useProfile = defineStore('useProfile', () => {
     if (!data.value) return null
     else {
       const {
-        role,
         marketing,
         subscription_type,
         temp_subscription,
@@ -59,30 +60,30 @@ export const useProfile = defineStore('useProfile', () => {
     }
   }
 
-  // async function updateProfile(prof: ProfileUpdate): Promise<void> {
-  //   if (!prof.password) {
-  //     const { error: profileError } = await supabase
-  //       .from('profiles')
-  //       .update(prof as never)
-  //       .eq('id', user.value!.id)
-  //       .select('*')
+  async function updateProfile(form: ProfileUpdate & { password?: string }): Promise<void> {
+    if (!form.password) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update(form)
+        .eq('id', user.value!.id)
+        .select('*')
 
-  //     if (profileError) {
-  //       throw profileError
-  //     }
-  //   }
+      if (profileError) throw profileError
+    }
 
-  //   if (prof.email || prof.password) {
-  //     const { email, password } = prof
-  //     const { error: userErr } = await supabase.auth.updateUser(removeEmptyKeys({ email, password }))
+    if (form.email || form.password) {
+      const updateUser = removeEmptyKeys<UserAttributes>({
+        email: form.email,
+        password: form.password,
+      })
 
-  //     if (userErr) {
-  //       throw userErr
-  //     }
-  //   }
+      const { error: userErr } = await supabase.auth.updateUser(updateUser)
 
-  //   fetch()
-  // }
+      if (userErr) throw userErr
+    }
+
+    fetch()
+  }
 
   // async function deleteProfile(): Promise<void> {
   //   const id = user.value!.id
@@ -156,7 +157,7 @@ export const useProfile = defineStore('useProfile', () => {
     data,
     getSocialProfile,
     fetch,
-    // updateProfile,
+    updateProfile,
     // deleteProfile,
     // getProfileById,
     // getProfileByUsernameFuzzy,

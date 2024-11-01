@@ -20,21 +20,21 @@ const creatorOpen = ref<boolean>(props.hideCreatorToggle)
 const isChanged = computed<boolean>(() => {
   if (!props.selectedOptions) return true
 
-  const values: SelectedStyleOptions = {}
-
-  for (const key in props.selectedOptions) {
-    if (avatarCreator.blackListedKeys.includes(key)) continue
-
-    if (key === 'primaryBackgroundColor') {
-      values.backgroundColor = props.selectedOptions[key]
-    }
-    else values[key] = props.selectedOptions[key]
-  }
-
-  console.log({ values, avator: avatarCreator.options.value })
+  const values = filterUnwantedKeys(props.selectedOptions)
 
   return Object.entries(values)
-    .some(([key, value]) => avatarCreator.options.value[key] !== value)
+    .some(([key, value]) => {
+      if (key.includes('Color')) {
+        const hasHash = avatarCreator.options.value[key].toString().includes('#')
+
+        return hasHash
+          ? avatarCreator.options.value[key].toString().replace('#', '') !== value
+          : avatarCreator.options.value[key] !== value
+      }
+      else {
+        return avatarCreator.options.value[key] !== value
+      }
+    })
 })
 
 onMounted(() => {
@@ -45,6 +45,27 @@ onMounted(() => {
     emit('change', avatarCreator.avatar.value)
   }
 })
+
+function filterUnwantedKeys(selected: SelectedStyleOptions): SelectedStyleOptions {
+  const values: SelectedStyleOptions = {}
+
+  for (const key in selected) {
+    if (avatarCreator.blackListedKeys.includes(key)) continue
+
+    let value = selected[key]
+
+    if (typeof value === 'string' && value.includes('#')) {
+      value = value.replace('#', '')
+    }
+
+    if (key === 'primaryBackgroundColor') {
+      values.backgroundColor = value
+    }
+    else values[key] = value
+  }
+
+  return values
+}
 
 function updateAvatar(key: string, value: string): void {
   avatarCreator.update({ [key]: value })
@@ -123,7 +144,10 @@ function save(): void {
           v-tippy="t('actions.reset')"
           class="h-7 w-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary"
           :aria-label="t('actions.reset')"
-          @click="avatarCreator.update(props.selectedOptions)"
+          @click="() => {
+            if (props.selectedOptions) avatarCreator.update(props.selectedOptions)
+            creatorOpen = false
+          }"
         >
           <Icon
             name="carbon:reset"
