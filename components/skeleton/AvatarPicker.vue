@@ -13,8 +13,7 @@ withDefaults(
 </script>
 
 <template>
-  <Card
-    color="background"
+  <div
     class="flex flex-col items-center justify-center"
     :class="{
       'max-w-prose': profile,
@@ -32,5 +31,5 @@ withDefaults(
       <div class="w-full h-full rounded-full" />
     </Card>
     <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-20 h-7 relative bottom-2 backdrop-blur animate-pulse" />
-  </Card>
+  </div>
 </template>

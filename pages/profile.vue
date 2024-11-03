@@ -74,11 +74,11 @@ async function deleteUser(): Promise<void> {
 
 <template>
   <NuxtLayout
-    shadow
+    purple
     container
   >
     <section class="space-y-2 relative">
-      <div class="flex flex-wrap gap-y-2 gap-x-4 border-b-2 border-slate-700">
+      <div class="flex flex-wrap gap-y-2 gap-x-4 pb-4 border-b-2 border-slate-700">
         <AvatarPicker
           v-if="profile.data"
           profile
@@ -95,12 +95,18 @@ async function deleteUser(): Promise<void> {
       </div>
       <div class="flex flex-wrap items-end gap-4 pt-2 pb-4 border-b-2 border-slate-700">
         <template v-if="profile.data">
-          <!-- <Badge
-            v-for="badge in profile.data.badges"
-            :key="badge.label?.nl"
+          <Badge
+            v-for="badge in (profile.data.badges as Badge[])"
+            :key="badge.id"
             v-bind="badge"
-          /> -->
-        <!--  <BadgeModal /> -->
+          />
+          <BadgeModal />
+        </template>
+        <template v-else>
+          <SkeletonBadge
+            v-for="i in 3"
+            :key="i"
+          />
         </template>
       </div>
       <div class="flex flex-wrap gap-4 items-center justify-between pt-2 pb-4 border-b-2 border-slate-700">

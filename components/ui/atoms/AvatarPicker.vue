@@ -84,8 +84,7 @@ function save(): void {
 </script>
 
 <template>
-  <Card
-    color="background"
+  <div
     class="flex flex-col items-center justify-center"
     :class="{
       'max-w-prose': profile,
@@ -190,5 +189,5 @@ function save(): void {
         />
       </div>
     </AnimationExpand>
-  </Card>
+  </div>
 </template>

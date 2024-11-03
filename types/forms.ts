@@ -28,3 +28,7 @@ export interface Contact {
   email: string
   question: string
 }
+
+export interface BadgeClaim {
+  code: string
+}

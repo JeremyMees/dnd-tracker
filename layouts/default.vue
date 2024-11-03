@@ -4,11 +4,13 @@ withDefaults(
     shadow?: boolean
     noPadding?: boolean
     container?: boolean
+    purple?: boolean
   }>(),
   {
     shadow: false,
     noPadding: false,
     container: false,
+    purple: false,
   },
 )
 
@@ -22,7 +24,10 @@ onBeforeMount(() => {
 <template>
   <main
     class="pb-20 grow"
-    :class="{ 'pt-[150px]': !noPadding }"
+    :class="{
+      'pt-[150px]': !noPadding,
+      'bg-primary/20': purple,
+    }"
   >
     <div class="relative">
       <div
