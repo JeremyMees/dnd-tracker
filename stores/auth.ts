@@ -14,13 +14,13 @@ export const useAuth = defineStore('useAuth', () => {
   async function login(credentials: Login): Promise<void> {
     const { error } = await supabase.auth.signInWithPassword(credentials)
 
-    if (error) throw error
+    if (error) throw createError(error)
   }
 
   async function logout(): Promise<void> {
     const { error } = await supabase.auth.signOut()
 
-    if (error) throw error
+    if (error) throw createError(error)
   }
 
   async function register(form: Register): Promise<void> {
@@ -28,7 +28,7 @@ export const useAuth = defineStore('useAuth', () => {
 
     const { error, data } = await supabase.auth.signUp({ email, password })
 
-    if (error) throw error
+    if (error) throw createError(error)
 
     if (data?.user) {
       const profile: ProfileInsert = {
@@ -41,9 +41,11 @@ export const useAuth = defineStore('useAuth', () => {
       const { error } = await supabase.from('profiles').insert([profile])
 
       if (error) {
-        throw error?.message.includes('duplicate key')
-          ? new Error('Email already in use')
-          : error
+        throw createError(
+          error?.message.includes('duplicate key')
+            ? 'Email already in use'
+            : error,
+        )
       }
     }
   }
@@ -53,13 +55,13 @@ export const useAuth = defineStore('useAuth', () => {
       redirectTo: `${window.location.origin}/reset-password`,
     })
 
-    if (error) throw error
+    if (error) throw createError(error)
   }
 
   async function updatePassword(payload: { password: string }): Promise<void> {
     const { error } = await supabase.auth.updateUser(payload)
 
-    if (error) throw error
+    if (error) throw createError(error)
   }
 
   return {

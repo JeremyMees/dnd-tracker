@@ -331,7 +331,8 @@
       },
       "password": {
         "title": "Password changing Sorcery",
-        "subtitle": "Spellbound Security"
+        "subtitle": "Spellbound Security",
+        "same": "New password should be different from the old password."
       },
       "updateImage": "Update image",
       "delete": "Delete profile",

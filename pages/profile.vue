@@ -8,9 +8,8 @@ useSeo('Profile')
 const profile = useProfile()
 const toast = useToast()
 const { t } = useI18n()
-
-const needConfirmation = ref<boolean>(false)
-const isLoading = ref<boolean>(false)
+const { ask } = useConfirm()
+const localePath = useLocalePath()
 
 const formInfo = ref<ProfileUpdate>({
   email: '',
@@ -28,7 +27,7 @@ function setUserData(): void {
     name: profile.data?.name || '',
     username: profile.data?.username || '',
     marketing: profile.data?.marketing ?? true,
-  }
+  } as ProfileUpdate
 }
 
 async function updateAvatar(avatar: Avatar): Promise<void> {
@@ -50,25 +49,30 @@ const updateProfile = useThrottleFn(async (form: ProfileUpdate & { password?: st
     reset('password')
   }
   catch (err: any) {
-    node?.setErrors(err.message)
-    toast.error({ text: err.message })
+    const message = err.message === 'New password should be different from the old password.'
+      ? t('pages.profile.password.same')
+      : err.message
+
+    node?.setErrors(message)
+    toast.error({ text: message })
   }
 }, 1000)
 
 async function deleteUser(): Promise<void> {
-  needConfirmation.value = false
+  ask({
+    title: profile.data!.name,
+  }, async (confirmed: boolean) => {
+    if (!confirmed) return
 
-  // try {
-  //   await profile.deleteProfile()
-  //   toast.success({ text: t('pages.profile.toast.delete.text') })
-  // }
-  // catch (err) {
-  //   console.error(err)
-  //   toast.error()
-  // }
-  // finally {
-  //   isLoading.value = false
-  // }
+    try {
+      await profile.deleteProfile()
+      navigateTo(localePath('/'))
+      toast.success({ text: t('pages.profile.toast.delete.text') })
+    }
+    catch (err) {
+      toast.error()
+    }
+  })
 }
 </script>
 
@@ -112,7 +116,16 @@ async function deleteUser(): Promise<void> {
       <div class="flex flex-wrap gap-4 items-center justify-between pt-2 pb-4 border-b-2 border-slate-700">
         <div class="flex gap-4">
           {{ t('pages.profile.subscription.current') }}:
-          <span class="font-bold capitalize">{{ profile.data?.subscription_type }}</span>
+          <span
+            v-if="profile.data"
+            class="font-bold capitalize"
+          >
+            {{ profile.data.subscription_type }}
+          </span>
+          <SkeletonPill
+            v-else
+            class="w-10"
+          />
         </div>
       </div>
       <div
@@ -187,20 +200,18 @@ async function deleteUser(): Promise<void> {
       </div>
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-4 justify-end">
         <button
+          v-if="profile.data"
           class="btn-danger"
           :aria-label="t('pages.profile.delete')"
-          :disabled="isLoading"
-          @click="needConfirmation = true"
+          @click="deleteUser"
         >
           {{ t('pages.profile.delete') }}
         </button>
+        <SkeletonButton
+          v-else
+          class="w-[200px]"
+        />
       </div>
-      <!-- <ConfirmationModal
-        :open="needConfirmation"
-        :title="profile.data.username"
-        @close="needConfirmation = false"
-        @delete="deleteUser"
-      /> -->
     </section>
   </NuxtLayout>
 </template>

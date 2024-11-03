@@ -4,7 +4,6 @@ export const useProfile = defineStore('useProfile', () => {
   const supabase = useSupabaseClient<Database>()
   const user = useSupabaseUser()
   const auth = useAuth()
-  const toast = useToast()
 
   const loading = ref<boolean>(false)
   const error = ref<string>()
@@ -68,7 +67,7 @@ export const useProfile = defineStore('useProfile', () => {
         .eq('id', user.value!.id)
         .select('*')
 
-      if (profileError) throw profileError
+      if (profileError) throw createError(profileError)
     }
 
     if (form.email || form.password) {
@@ -79,37 +78,34 @@ export const useProfile = defineStore('useProfile', () => {
 
       const { error: userErr } = await supabase.auth.updateUser(updateUser)
 
-      if (userErr) throw userErr
+      if (userErr) throw createError(userErr)
     }
 
     fetch()
   }
 
-  // async function deleteProfile(): Promise<void> {
-  //   const id = user.value!.id
-  //   // logout user
-  //   await auth.logout()
-  //   // delete user profile and data with cascade delete
-  //   const { error: err } = await supabase
-  //     .from('profiles')
-  //     .delete()
-  //     .eq('id', id)
+  async function deleteProfile(): Promise<void> {
+    const id = user.value!.id
+    // logout user
+    await auth.logout()
+    // delete user profile and data with cascade delete
+    const { error: err } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', id)
 
-  //   if (err) {
-  //     throw err
-  //   }
-  //   // delete user auth profile
-  //   const { data: prof, error: fetchError } = await useFetch('/api/user/remove', { method: 'POST', body: { id } })
+    if (err) throw createError(err)
+    // delete user auth profile
+    const { data: prof, error: fetchError } = await useFetch('/api/user/remove', {
+      method: 'POST',
+      body: { id },
+    })
 
-  //   if (prof.value?.error) {
-  //     throw prof.value.error
-  //   }
-  //   if (fetchError.value) {
-  //     throw fetchError.value
-  //   }
+    if (prof.value?.error) throw createError(prof.value.error)
+    if (fetchError.value) throw createError(fetchError.value)
 
-  //   data.value = null
-  // }
+    data.value = undefined
+  }
 
   // async function getProfileById(id: string): Promise<SocialProfile | undefined> {
   //   try {
@@ -120,7 +116,7 @@ export const useProfile = defineStore('useProfile', () => {
   //       .single()
 
   //     if (err) {
-  //       throw err
+  //       throw  createError(err)
   //     }
 
   //     return data as unknown as SocialProfile
@@ -140,7 +136,7 @@ export const useProfile = defineStore('useProfile', () => {
   //       .limit(12)
 
   //     if (err) {
-  //       throw err
+  //       throw  createError(err)
   //     }
 
   //     return data as unknown as SocialProfile[]
@@ -158,7 +154,7 @@ export const useProfile = defineStore('useProfile', () => {
     getSocialProfile,
     fetch,
     updateProfile,
-    // deleteProfile,
+    deleteProfile,
     // getProfileById,
     // getProfileByUsernameFuzzy,
   }

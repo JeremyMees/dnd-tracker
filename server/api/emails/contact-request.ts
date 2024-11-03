@@ -25,6 +25,6 @@ export default defineEventHandler(async (event) => {
     })
   }
   catch (err) {
-    throw new Error('Failed to send email.')
+    throw createError('Failed to send email.')
   }
 })

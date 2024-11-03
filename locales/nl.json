@@ -319,7 +319,8 @@
       },
       "password": {
         "title": "Wachtwoord wijzigende Magie",
-        "subtitle": "Betoverende Beveiliging"
+        "subtitle": "Betoverende Beveiliging",
+        "same": "Het nieuwe wachtwoord moet verschillend zijn van het oude wachtwoord."
       },
       "updateImage": "Foto updaten",
       "delete": "Profiel Verwijderen",

@@ -3,6 +3,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const profile = useProfile()
+const { dialogs, handlers } = useConfirmDialogs()
 
 onBeforeMount(() => profile.fetch())
 
@@ -16,7 +17,13 @@ if (import.meta.client) {
   <div>
     <NuxtRouteAnnouncer />
     <NuxtLoadingIndicator />
-    <Toasts />
+    <ToastGroup />
+    <ConfirmDialog
+      v-for="dialog in dialogs"
+      :key="dialog.uuid"
+      v-bind="dialog"
+      v-on="handlers"
+    />
 
     <div class="flex flex-col min-h-screen">
       <Navbar class="fixed z-10 left-0 right-0 backdrop-blur" />
