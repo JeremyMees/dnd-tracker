@@ -27,7 +27,6 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.5",
     "@plunk/node": "^3.0.3",
-    "@tanstack/vue-query": "^5.56.2",
     "@unlok-co/nuxt-stripe": "^4.0.1",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vue-email/components": "^0.0.19",
