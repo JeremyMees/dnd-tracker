@@ -59,7 +59,7 @@ function routeToLogin(): void {
           class="btn-primary tracker-shadow-pulse mt-[18px]"
           :aria-label="t('pages.featureRequest.request')"
           :disabled="features.loading"
-          @click="profile.data ? isOpen = true : routeToLogin"
+          @click="profile.data ? isOpen = true : routeToLogin()"
         >
           {{ t('pages.featureRequest.request') }}
         </button>
