@@ -11,3 +11,14 @@ export interface Toast {
 }
 
 export type CreateToast = Partial<Omit<Toast, 'key' | 'type'>>
+
+export type FeatureSortBy = 'voted_most' | 'voted_least' | 'first_new' | 'first_old'
+
+export type FeatureType = 'all' | 'my'
+
+export type FeatureVote = 'like' | 'dislike'
+
+export interface FeatureVotes {
+  like: string[]
+  dislike: string[]
+}

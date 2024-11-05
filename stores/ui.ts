@@ -42,7 +42,7 @@ export const useUI = defineStore('useUI', () => {
     const page = route.name.split('___')[0]
 
     if (['profile'].includes(page)) return 'primary'
-    else if (['updates-changelog'].includes(page)) return 'secondary'
+    else if (['updates-changelog', 'updates-feature-request'].includes(page)) return 'secondary'
   })
 
   return {

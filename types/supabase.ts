@@ -69,3 +69,4 @@ export type WeaponCategory = Database['public']['Enums']['weapon_category']
 export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role'>>
 export type Badge = BadgeRow & { earned: number }
 export type BadgeEarned = Omit<Badge, 'code' | 'created_at'>
+export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & { created_by: SocialProfile, voted: FeatureVotes }
