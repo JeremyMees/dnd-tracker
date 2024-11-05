@@ -22,10 +22,7 @@
       <h2>Cookies</h2>
       <p>
         Like any other website, DnD-Tracker uses "cookies". These cookies are used to store information including visitors preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users experience by customizing our web page content based on visitors browser type and/or other information.
-        <NuxtLink
-          :to="localePath('/policies/cookie')"
-          class="inline text-primary underline"
-        >
+        <NuxtLink :to="localePath('/policies/cookie')">
           Cookie policy
         </NuxtLink>
       </p>
@@ -41,7 +38,6 @@
             to="https://stripe.com/en-be/privacy"
             target="_blank"
             rel
-            class="inline text-primary underline"
           >
             Stripe
           </NuxtLink>
@@ -95,5 +91,13 @@ p {
 
 h2 {
   @apply pt-8;
+}
+
+ul {
+  @apply list-disc pl-5 max-w-prose;
+}
+
+a {
+  @apply inline text-primary underline;
 }
 </style>

@@ -24,6 +24,7 @@
         Disabling cookies will usually result in also disabling certain functionality and features of the this site. Therefore
         it is recommended that you do not disable cookies. This Cookies Policy was created with the help of the <a
           href="https://www.termsfeed.com/cookies-policy-generator/"
+          target="_blank"
         >Cookies Policy Generator</a>.
       </p>
       <h2>The Cookies We Set</h2>
@@ -66,7 +67,10 @@
       </p>
       <p>
         For more general information on cookies, please read
-        <a href="https://www.cookiepolicygenerator.com/sample-cookies-policy/">the Cookies Policy article</a>.
+        <a
+          href="https://www.cookiepolicygenerator.com/sample-cookies-policy/"
+          target="_blank"
+        >the Cookies Policy article</a>.
       </p>
       <p>
         However if you are still looking for more information then you can contact us through one of our preferred contact
@@ -86,5 +90,13 @@ p {
 
 h2 {
   @apply pt-8;
+}
+
+ul {
+  @apply list-disc pl-5 max-w-prose;
+}
+
+a {
+  @apply inline text-primary underline;
 }
 </style>

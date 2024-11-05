@@ -163,6 +163,19 @@ const localePath = useLocalePath()
                 Privacy
               </span>
             </NuxtLink>
+            <NuxtLink
+              :to="localePath('/policies/legal')"
+              class="flex"
+            >
+              <Icon
+                name="mdi:legal"
+                class="min-w-6 min-h-6 mr-2"
+                aria-hidden="true"
+              />
+              <span>
+                Legal
+              </span>
+            </NuxtLink>
           </div>
         </div>
       </div>
