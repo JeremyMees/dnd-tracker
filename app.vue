@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const profile = useProfile()
 const { dialogs, handlers } = useConfirmDialogs()
+const ui = useUI()
 
 onBeforeMount(() => profile.fetch())
 
@@ -25,10 +26,19 @@ if (import.meta.client) {
       v-on="handlers"
     />
 
-    <div class="flex flex-col min-h-screen">
-      <Navbar class="fixed z-10 left-0 right-0 backdrop-blur" />
+    <div
+      class="flex flex-col min-h-screen"
+      :class="{
+        'bg-primary/20': ui.bgColor === 'primary',
+        'bg-secondary/20': ui.bgColor === 'secondary',
+      }"
+    >
+      <Navbar
+        v-show="ui.showNavigation"
+        class="fixed z-10 left-0 right-0 backdrop-blur"
+      />
       <NuxtPage />
-      <Footer />
+      <Footer v-show="ui.showNavigation" />
     </div>
   </div>
 </template>

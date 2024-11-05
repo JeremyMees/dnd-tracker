@@ -1,5 +1,6 @@
 export const useUI = defineStore('useUI', () => {
   const auth = useAuth()
+  const route = useRoute()
 
   const showNavigation = ref<boolean>(true)
 
@@ -35,10 +36,22 @@ export const useUI = defineStore('useUI', () => {
     { label: 'components.navbar.profile', url: 'profile', requireAuth: true },
   ])
 
+  const bgColor = computed<'primary' | 'secondary' | undefined>(() => {
+    if (!route.name || typeof route.name !== 'string') return
+
+    const page = route.name.split('___')[0]
+
+    switch (page) {
+      case 'profile': return 'primary'
+      default: return
+    }
+  })
+
   return {
     showNavigation,
     routes,
     playRoutes,
     profileRoutes,
+    bgColor,
   }
 })

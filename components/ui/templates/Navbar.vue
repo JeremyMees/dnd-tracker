@@ -62,7 +62,7 @@ async function logout(): Promise<void> {
     leave-to-class="!-translate-y-[200%]"
   >
     <nav
-      v-show="ui.showNavigation && navigationVisible"
+      v-show="navigationVisible"
       class="bg-tracker/70 border-4 border-tracker m-4 rounded-lg"
     >
       <div class="container-max p-4 flex justify-between items-center gap-4">

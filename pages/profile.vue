@@ -77,10 +77,7 @@ async function deleteUser(): Promise<void> {
 </script>
 
 <template>
-  <NuxtLayout
-    purple
-    container
-  >
+  <NuxtLayout container>
     <section class="space-y-2 relative">
       <div class="flex flex-wrap gap-y-2 gap-x-4 pb-4 border-b-2 border-slate-700">
         <AvatarPicker

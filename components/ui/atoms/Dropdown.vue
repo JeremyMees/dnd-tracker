@@ -59,21 +59,23 @@ function close(): void {
         aria-hidden="true"
       />
     </button>
-    <div
-      v-show="isOpen"
-      class="absolute z-[1] block w-max right-0"
-    >
+    <AnimationExpand>
       <div
-        class="border-4 flex flex-col gap-y-3 p-5 pr-[30px] relative rounded-b-lg rounded-tl-lg box-border text-slate-300"
-        :class="{
-          'border-primary bg-primary/80': color === 'primary',
-          'border-secondary bg-secondary/80': color === 'secondary',
-          'border-black bg-black/80': color === 'black',
-          'border-slate-700 bg-slate-700/80': color === 'gray',
-        }"
+        v-if="isOpen"
+        class="absolute z-[1] block w-max right-0"
       >
-        <slot name="content" />
+        <div
+          class="border-4 flex flex-col gap-y-3 p-5 pr-[30px] relative rounded-b-lg rounded-tl-lg box-border text-slate-300"
+          :class="{
+            'border-primary bg-primary/80': color === 'primary',
+            'border-secondary bg-secondary/80': color === 'secondary',
+            'border-black bg-black/80': color === 'black',
+            'border-slate-700 bg-slate-700/80': color === 'gray',
+          }"
+        >
+          <slot name="content" />
+        </div>
       </div>
-    </div>
+    </AnimationExpand>
   </div>
 </template>
