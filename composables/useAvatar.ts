@@ -1,18 +1,17 @@
 import type { StyleOptions } from '@dicebear/core'
 import { createAvatar } from '@dicebear/core'
 import { openPeeps } from '@dicebear/collection'
-import { red, orange, yellow, emerald, sky, violet, pink, gray } from 'tailwindcss/colors'
 
 const colors = [
-  ...[red[100], red[200], red[300], red[400], red[500]],
-  ...[orange[100], orange[200], orange[300], orange[400], orange[500]],
-  ...[yellow[100], yellow[200], yellow[300], yellow[400], yellow[500]],
-  ...[emerald[100], emerald[200], emerald[300], emerald[400], emerald[500]],
-  ...[sky[100], sky[200], sky[300], sky[400], sky[500]],
-  ...[violet[100], violet[200], violet[300], violet[400], violet[500]],
-  ...[pink[100], pink[200], pink[300], pink[400], pink[500]],
-  ...[gray[100], gray[200], gray[300], gray[400], gray[500]],
-].map(color => color.replace('#', ''))
+  'fee2e2', 'fecaca', 'fca5a5', 'f87171', 'ef4444', // red
+  'ffedd5', 'fed7aa', 'fdba74', 'fb923c', 'f97316', // orange
+  'fef9c3', 'fef08a', 'fde047', 'facc15', 'eab308', // yellow
+  'd1fae5', 'a7f3d0', '6ee7b7', '34d399', '10b981', // green
+  'e0f2fe', 'bae6fd', '7dd3fc', '38bdf8', '0ea5e9', // blue
+  'ede9fe', 'ddd6fe', 'c4b5fd', 'a78bfa', '8b5cf6', // purple
+  'fce7f3', 'fbcfe8', 'f9a8d4', 'f472b6', 'ec4899', // pink
+  'f3f4f6', 'e5e7eb', 'd1d5db', '9ca3af', '6b7280', // gray
+]
 
 const blackListedKeys = [
   'style',
