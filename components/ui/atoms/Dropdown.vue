@@ -32,7 +32,7 @@ function close(): void {
       class="border-4 flex flex-row items-center cursor-pointer gap-x-2 group duration-200 ease-in-out transition-all"
       :class="[
         round
-          ? 'rounded-full w-12 h-12 flex flex-col items-center justify-center'
+          ? 'rounded-full w-12 h-12 flex flex-col items-center justify-center overflow-hidden'
           : 'rounded-lg px-4 py-2',
         {
           'rounded-b-none': isOpen,

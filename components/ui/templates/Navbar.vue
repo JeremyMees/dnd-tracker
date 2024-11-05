@@ -95,7 +95,10 @@ async function logout(): Promise<void> {
                   :key="route.label"
                   :url="route.url"
                   class="hover:text-white"
-                  @click="isOpen = false"
+                  @click="() => {
+                    isOpen = false
+                    playDropdown?.close()
+                  }"
                 >
                   {{ t(route.label) }}
                 </RouteLink>
@@ -115,7 +118,7 @@ async function logout(): Promise<void> {
                   v-if="profile.data?.avatar"
                   :src="profile.data.avatar"
                   alt="Avatar image"
-                  class="w-10 scale-x-[-100%] rounded-full"
+                  class="w-10 scale-x-[-100%]"
                 >
                 <Icon
                   v-else
@@ -130,7 +133,10 @@ async function logout(): Promise<void> {
                   :key="route.url"
                   :label="t(route.label)"
                   :url="route.url"
-                  @click="isOpen = false"
+                  @click="() => {
+                    isOpen = false
+                    profileDropdown?.close()
+                  }"
                 />
                 <button
                   v-if="auth.isAuthenticated"
