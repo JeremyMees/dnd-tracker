@@ -8,7 +8,6 @@ useSeo()
 const toast = useToast()
 const { t } = useI18n()
 
-const blob = ref<HTMLDivElement>()
 const dragon = ref<InstanceType<typeof Dragon>>()
 
 try {
@@ -19,17 +18,6 @@ catch (err) {
 }
 
 if (import.meta.client) {
-  document.body.onmousemove = (event) => {
-    if (blob.value) {
-      const { clientX, clientY } = event
-
-      blob.value.animate({
-        left: `${clientX}px`,
-        top: `${clientY}px`,
-      }, { duration: 3000, fill: 'forwards' })
-    }
-  }
-
   gsap.to(
     '.encounter-table',
     {
@@ -48,10 +36,7 @@ if (import.meta.client) {
 
 <template>
   <NuxtLayout no-padding>
-    <div
-      ref="blob"
-      class="hidden md:block -z-[1] h-[200px] w-[200px] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full from-info to-secondary bg-gradient-to-r rotates blur-[100px]"
-    />
+    <AnimationBlob />
     <Hero />
     <div class="flex flex-col gap-y-[100px] sm:gap-y-[150px] pb-20 pt-28 relative overflow-hidden">
       <div

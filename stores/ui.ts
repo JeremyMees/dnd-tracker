@@ -41,10 +41,8 @@ export const useUI = defineStore('useUI', () => {
 
     const page = route.name.split('___')[0]
 
-    switch (page) {
-      case 'profile': return 'primary'
-      default: return
-    }
+    if (['profile'].includes(page)) return 'primary'
+    else if (['updates-changelog'].includes(page)) return 'secondary'
   })
 
   return {

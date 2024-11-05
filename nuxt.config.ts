@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/seo',
     '@unlok-co/nuxt-stripe',
+    '@nuxt/content',
   ],
 
   components: {
