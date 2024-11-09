@@ -43,28 +43,24 @@ function handleCopy(name: string): void {
         {{ t('pages.fantasyNameGenerator.description') }}
       </p>
       <div class="relative p-6 border-4 border-tracker bg-tracker/50 rounded-lg max-w-prose mx-auto w-full">
-        <ol
+        <MasonryGrid
           v-if="names.length"
-          class="grid list-disc list-inside gap-x-6"
-          :style="{
-            gridTemplateColumns: `repeat(${nameColumns.length}, minmax(0, 1fr))`,
-          }"
+          v-slot="{ column }"
+          :data="names"
+          :max-columns="2"
+          wrapper-style="grid list-disc list-inside gap-x-6"
+          column-style="flex flex-col gap-1"
+          element="ol"
         >
-          <div
-            v-for="(column, i) in nameColumns"
-            :key="i"
-            class="flex flex-col gap-1"
+          <li
+            v-for="name in column"
+            :key="name"
+            class="cursor-copy"
+            @click="handleCopy(name)"
           >
-            <li
-              v-for="name in column"
-              :key="name"
-              class="cursor-copy"
-              @click="handleCopy(name)"
-            >
-              {{ name }}
-            </li>
-          </div>
-        </ol>
+            {{ name }}
+          </li>
+        </MasonryGrid>
         <SkeletonList
           v-else
           :amount="15"

@@ -11,23 +11,19 @@ withDefaults(
 </script>
 
 <template>
-  <ul
-    class="grid list-inside gap-x-6"
-    :style="{
-      gridTemplateColumns: `repeat(${rows}, minmax(0, 1fr))`,
-    }"
+  <MasonryGrid
+    v-slot="{ column }"
+    :data="Array.from({ length: rows * amount }, () => ({}))"
+    :max-columns="rows"
+    wrapper-style="grid list-inside gap-x-6"
+    column-style="flex flex-col gap-1"
+    element="ol"
   >
-    <div
-      v-for="i in rows"
-      :key="i"
-      class="flex flex-col gap-1"
+    <li
+      v-for="j in column"
+      :key="j"
     >
-      <li
-        v-for="j in amount"
-        :key="j"
-      >
-        <div class="animate-pulse rounded-lg bg-tracker/50 h-6 border-4 border-tracker" />
-      </li>
-    </div>
-  </ul>
+      <div class="animate-pulse rounded-lg bg-tracker/50 h-6 border-4 border-tracker" />
+    </li>
+  </MasonryGrid>
 </template>
