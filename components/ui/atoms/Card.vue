@@ -30,7 +30,7 @@ withDefaults(
       'border-warning bg-warning/50': color === 'warning' && !noStyling,
       'border-danger bg-danger/50': color === 'danger' && !noStyling,
       'border-help bg-help/50': color === 'help' && !noStyling,
-      'border-background bg-background/50': color === 'background' && !noStyling,
+      'border-bg bg-bg-light/50': color === 'background' && !noStyling,
     }"
   >
     <slot />

@@ -12,7 +12,7 @@ const { t } = useI18n()
 
 <template>
   <div
-    class="fixed inset-0 flex flex-col overflow-x-hidden overflow-y-auto bg-tracker p-4 z-20"
+    class="fixed inset-0 flex flex-col overflow-x-hidden overflow-y-auto bg-bg-light p-4 z-20"
   >
     <div class="flex justify-between items-center gap-4 pb-10">
       <NuxtLink

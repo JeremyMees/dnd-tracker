@@ -10,7 +10,7 @@ withDefaults(
 
 <template>
   <div
-    class="h-12 rounded-lg bg-background animate-pulse"
+    class="h-12 rounded-lg bg-bg-light animate-pulse"
     :class="[block ? 'w-full': 'w-[120px]']"
   />
 </template>

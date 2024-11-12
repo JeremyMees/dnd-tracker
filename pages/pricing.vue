@@ -29,7 +29,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
           class="w-8 h-8 absolute -top-8 left-20"
         >
         <div class="inline-block overflow-x-auto w-full">
-          <div class="bg-tracker/50 border-4 border-tracker rounded-lg overflow-y-hidden">
+          <div class="bg-bg-light/50 border-4 border-bg rounded-lg overflow-y-hidden">
             <table class="min-w-full">
               <thead>
                 <tr>
@@ -50,7 +50,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                       </span>
                       <div
                         v-if="stripe.loading"
-                        class="w-[140px] mx-auto h-8 rounded-lg bg-tracker animate-pulse relative top-1"
+                        class="w-[140px] mx-auto h-8 rounded-lg bg-bg-light animate-pulse relative top-1"
                       />
                       <div
                         v-else-if="header.price"

@@ -61,9 +61,9 @@ const limitedNumbersList = computed<number[]>(() => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center my-3 bg-tracker/50 border-4 border-tracker w-fit mx-auto rounded-lg">
+  <div class="flex justify-center items-center my-3 bg-bg-light/50 border-4 border-bg w-fit mx-auto rounded-lg">
     <button
-      class="flex items-center justify-center w-8 h-8 border-r-4 border-tracker"
+      class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
       :class="{ 'cursor-progress': searching }"
       :disabled="page === 0 || searching"
       aria-label="First page"
@@ -77,7 +77,7 @@ const limitedNumbersList = computed<number[]>(() => {
       />
     </button>
     <button
-      class="flex items-center justify-center w-8 h-8 border-r-4 border-tracker"
+      class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
       :class="{ 'cursor-progress': searching }"
       :disabled="page === 0 || searching"
       :aria-label="t('actions.prev')"
@@ -96,7 +96,7 @@ const limitedNumbersList = computed<number[]>(() => {
         :key="pageNumber"
         :aria-label="`Page ${pageNumber}`"
         :disabled="searching"
-        class="flex items-center justify-center w-8 h-8 border-r-4 border-tracker"
+        class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
         :class="{
           'font-bold text-secondary': page === pageNumber - 1,
           'cursor-progress': searching,
@@ -108,7 +108,7 @@ const limitedNumbersList = computed<number[]>(() => {
       </button>
     </div>
     <button
-      class="flex items-center justify-center w-8 h-8 border-r-4 border-tracker"
+      class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
       :class="{ 'cursor-progress': searching }"
       :disabled="page === totalPages - 1 || searching"
       :aria-label="t('actions.next')"

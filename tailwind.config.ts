@@ -13,8 +13,10 @@ export const theme = {
       text: ['GeistMono', 'sans-serif'],
     },
     colors: {
-      background: '#121111',
-      tracker: '#21252E',
+      bg: {
+        DEFAULT: '#121111',
+        light: '#1B1D1E',
+      },
       primary: '#7333E0',
       secondary: '#D926AA',
       success: '#36D399',

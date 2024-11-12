@@ -53,7 +53,7 @@ function hideOpenButton(): boolean {
       class="mt-4 html-richtext"
       :class="{
         'line-clamp-3': !isOpen && hideOpenButton,
-        'border-b-4 pb-1 border-tracker': isOpen && ['spells', 'magicitems'].includes(type),
+        'border-b-4 pb-1 border-bg': isOpen && ['spells', 'magicitems'].includes(type),
       }"
       v-html="$md.render(hit.desc)"
     />

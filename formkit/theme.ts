@@ -1,9 +1,9 @@
 export default {
   'global': {
-    fieldset: 'border-4 border-black rounded-lg px-2 pb-1 bg-background/50',
+    fieldset: 'border-4 border-bg rounded-lg px-2 pb-1 bg-bg/50',
     help: 'text-xs text-slate-300',
     inner: 'formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none transition-all duration-200',
-    input: 'outline-none text-white bg-background/50 disabled:cursor-not-allowed placeholder:text-slate-300',
+    input: 'outline-none text-white bg-bg-light disabled:cursor-not-allowed placeholder:text-slate-300',
     legend: 'block mb-1 font-bold body-small',
     loaderIcon: 'inline-flex items-center w-4 text-slate-300 animate-spin',
     label: 'block mb-1 font-bold body-small',
@@ -14,7 +14,7 @@ export default {
     suffixIcon: 'flex items-center -ml-1 mr-2 w-5 shrink-0 [&>svg]:max-w-[1rem] [&>svg]:max-h-[1rem]',
   },
   'family:box': {
-    decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-transparent border-4 border-black peer-checked:border-primary peer-checked:bg-primary/50',
+    decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-transparent border-4 border-bg peer-checked:border-primary peer-checked:bg-primary/50',
     decoratorIcon: 'hidden',
     help: 'mb-2 mt-1.5',
     input: 'absolute w-0 h-0 overflow-hidden opacity-0 pointer-events-none peer',
@@ -22,15 +22,15 @@ export default {
     wrapper: 'flex items-center mb-1 cursor-pointer',
   },
   'family:button': {
-    input: '$remove:bg-background/50 btn-black w-full',
+    input: '$remove:bg-bg-light btn-black w-full',
     wrapper: 'flex justify-end',
   },
   'family:dropdown': {
     dropdownWrapper: 'my-2 w-full rounded-lg [&::-webkit-scrollbar]:hidden',
     emptyMessageInner: 'flex items-center justify-center text-sm p-2 text-center w-full text-slate-300 [&>span]:mr-3 [&>span]:ml-0',
-    inner: 'relative flex border-4 border-black focus-within:border-primary rounded-lg mb-1',
+    inner: 'relative flex border-4 border-bg focus-within:border-primary rounded-lg mb-1',
     input: 'w-full px-3 py-2 rounded overflow-hidden border-none outline-none',
-    listbox: 'bg-black/50 border-4 border-black rounded-lg overflow-hidden backdrop-blur',
+    listbox: 'bg-bg-light border-4 border-bg rounded-lg overflow-hidden backdrop-blur',
     listboxButton: 'flex w-12 self-stretch justify-center mx-auto',
     listitem: 'pl-5 body-small cursor-pointer relative data-[is-active="true"]:text-primary data-[is-active="true"]:aria-selected:text-primary aria-selected:text-primary aria-selected:text-primary',
     loaderIcon: 'ml-auto',
@@ -43,8 +43,8 @@ export default {
     selectIcon: 'flex box-content w-4 px-2 self-stretch grow-0 shrink-0 [&>svg]:w-[1em]',
   },
   'family:text': {
-    inner: 'bg-background/50 flex items-center border-4 border-black focus-within:border-primary rounded-lg',
-    input: 'bg-background/50 bg-transparent w-full px-3 py-2 border-none placeholder:text-slate-300',
+    inner: 'bg-bg-light flex items-center border-4 border-bg focus-within:border-primary rounded-lg',
+    input: 'bg-bg-light bg-transparent w-full px-3 py-2 border-none placeholder:text-slate-300',
   },
   'radio': {
     decorator: 'rounded-full',
@@ -57,14 +57,14 @@ export default {
     suffixIcon: '$reset w-4 ml-1 flex self-stretch grow-0 shrink-0 [&>svg]:max-w-[1em] [&>svg]:max-h-[1em] [&>svg]:m-auto',
   },
   'select': {
-    inner: 'flex relative items-center rounded-lg mb-1 border-4 border-black focus-within:border-primary',
+    inner: 'flex relative items-center rounded-lg mb-1 border-4 border-bg focus-within:border-primary',
     input: 'w-full px-3 py-2 h-10 border-none placeholder:text-slate-300 formkit-multiple:p-0 data-[placeholder="true"]:text-slate-300 formkit-multiple:data-[placeholder="true"]:text-inherit',
     selectIcon: 'flex p-[3px] shrink-0 w-5 mr-2 -ml-[1.5em] h-full pointer-events-none [&>svg]:w-[1em]',
     option: 'formkit-multiple:p-3 formkit-multiple:text-sm',
     icon: 'hidden',
   },
   'textarea': {
-    inner: 'flex rounded-lg mb-1 border-4 border-black focus-within:border-primary',
+    inner: 'flex rounded-lg mb-1 border-4 border-bg focus-within:border-primary',
     input: 'block w-full min-h-[40px] h-32 px-3 py-3 border-none text-base placeholder:text-slate-300',
   },
   'autocomplete': {
@@ -79,7 +79,7 @@ export default {
     controls: 'flex flex-col items-center justify-center bg-transparent p-2',
     fieldset: 'p-4',
     help: 'mb-2 mt-1.5',
-    item: 'flex w-full mb-2 rounded-lg border-4 border-black',
+    item: 'flex w-full mb-2 rounded-lg border-4 border-bg',
     items: 'w-full',
     moveDownIcon: 'block w-3',
     moveUpIcon: 'block w-3',
@@ -98,7 +98,7 @@ export default {
         'relative z-[2] ml-auto text-[0px] hover:text-danger pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em]',
     fileRemoveIcon: 'block text-base w-3 relative z-[2]',
     inner:
-        'relative cursor-pointer formkit-multiple:[&>button]:absolute bg-background/50',
+        'relative cursor-pointer formkit-multiple:[&>button]:absolute bg-bg/50',
     input:
         'cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',
     noFiles: 'flex w-full items-center px-3 py-2 text-slate-300',
@@ -110,7 +110,7 @@ export default {
     input: 'peer absolute opacity-0 pointer-events-none',
     innerLabel: 'text-[10px] font-bold absolute left-full top-1/2 -translate-x-full -translate-y-1/2 px-1',
     thumb: 'relative left-0 aspect-square rounded-full transition-all w-5 bg-gray-100',
-    track: 'cursor-pointer p-0.5 min-w-[3em] relative rounded-full transition-all bg-black peer-checked:bg-primary peer-checked:[&>div:last-child]:left-full peer-checked:[&>div:last-child]:-translate-x-full peer-checked:[&>div:first-child:not(:last-child)]:left-0 peer-checked:[&>div:first-child:not(:last-child)]:translate-x-0',
+    track: 'cursor-pointer p-0.5 min-w-[3em] relative rounded-full transition-all bg-bg-light peer-checked:bg-primary peer-checked:[&>div:last-child]:left-full peer-checked:[&>div:last-child]:-translate-x-full peer-checked:[&>div:first-child:not(:last-child)]:left-0 peer-checked:[&>div:first-child:not(:last-child)]:translate-x-0',
     valueLabel: 'font-bold text-sm',
     wrapper: 'flex flex-wrap items-center mb-1 disabled:!cursor-not-allowed disabled:!opacity-50',
     label: '$reset !mb-0 cursor-pointer body-small font-bold',

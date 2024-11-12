@@ -16,8 +16,10 @@ defineProps<{
       theme: {
         extend: {
           colors: {
-            background: '#2A303C',
-            tracker: '#21252E',
+            bg: {
+              DEFAULT: '#080808',
+              light: '#1B1D1E',
+            },
             primary: '#7333E0',
             secondary: '#D926AA',
             success: '#36D399',
@@ -39,7 +41,7 @@ defineProps<{
       <Preview>
         {{ preview }}
       </Preview>
-      <Body class="bg-background my-auto mx-auto text-white">
+      <Body class="bg-bg my-auto mx-auto text-white">
         <Container class="border-4 border-solid border-slate-700 rounded-[8px] my-[40px] mx-auto p-[20px] max-w-[700px]">
           <Section class="mt-[32px]">
             <Img

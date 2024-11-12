@@ -77,6 +77,10 @@
     box-shadow: 0 0 20px #4F19AA
   }
 
+  .tracker-shadow-inset {
+    box-shadow: inset 0 -10px 40px #4F19AA
+  }
+
   .visibility-pulse {
     animation: pulsate-opacity 2s ease-in-out infinite;
   }
@@ -98,7 +102,7 @@
   }
 
   html {
-    @apply font-text scroll-smooth text-white bg-background accent-black;
+    @apply font-text scroll-smooth text-white bg-bg accent-black;
   }
 
   h1, .head-1 {
@@ -258,7 +262,7 @@
   }
 
   select, option {
-    @apply text-white bg-background/50
+    @apply text-white bg-bg-light
   }
 
   .container-max {

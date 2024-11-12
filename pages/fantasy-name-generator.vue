@@ -42,7 +42,7 @@ function handleCopy(name: string): void {
       <p class="mb-5 max-w-3xl mx-auto text-center pb-10">
         {{ t('pages.fantasyNameGenerator.description') }}
       </p>
-      <div class="relative p-6 border-4 border-tracker bg-tracker/50 rounded-lg max-w-prose mx-auto w-full">
+      <div class="relative p-6 border-4 border-bg bg-bg-light/50 rounded-lg max-w-prose mx-auto w-full">
         <MasonryGrid
           v-if="names.length"
           v-slot="{ column }"

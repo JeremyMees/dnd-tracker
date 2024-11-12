@@ -39,7 +39,7 @@ const date = computed<string>(() => {
         <p class="head-3">
           {{ label[locale] }}
         </p>
-        <div class="text-[10px] bg-background w-fit px-2 py-1 rounded-lg">
+        <div class="text-[10px] bg-bg w-fit px-2 py-1 rounded-lg">
           {{ date }}
         </div>
         <p>

@@ -63,7 +63,7 @@ async function logout(): Promise<void> {
   >
     <nav
       v-show="navigationVisible"
-      class="bg-tracker/70 border-4 border-tracker m-4 rounded-lg"
+      class="bg-bg-light/50 backdrop-blur-lg border-4 border-bg m-4 rounded-lg"
     >
       <div class="container-max p-4 flex justify-between items-center gap-4">
         <NuxtLink :to="localePath('/')">
