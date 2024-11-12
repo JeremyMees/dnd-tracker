@@ -3,7 +3,10 @@ useSeo('Info')
 </script>
 
 <template>
-  <NuxtLayout shadow>
-    Info
+  <NuxtLayout
+    shadow
+    container
+  >
+    <InfoSearch />
   </NuxtLayout>
 </template>
