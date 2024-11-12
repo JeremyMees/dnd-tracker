@@ -3,7 +3,8 @@ const localePath = useLocalePath()
 </script>
 
 <template>
-  <div class="bg-bg-light/50 backdrop-blur-lg border-4 border-bg m-4 rounded-lg pt-10 pb-2">
+  <div class="bg-bg-light/50 backdrop-blur-lg border-4 border-bg m-4 rounded-lg pt-10 pb-2 relative overflow-hidden">
+    <div class="fancy-shadow" />
     <div class="container-max px-4 flex flex-col gap-20">
       <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20">
         <NuxtLink

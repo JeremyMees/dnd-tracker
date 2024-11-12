@@ -57,11 +57,7 @@ if (import.meta.client) {
           ]"
           class="max-w-prose"
         />
-        <LazyTitleText
-          button-link="playground"
-          :button-label="t('pages.home.textBlock1.button')"
-          sprite="hearth"
-        >
+        <LazyTitleText sprite="hearth">
           {{ t('pages.home.textBlock1.title') }}
           <template #text>
             {{ t('pages.home.textBlock1.text') }}
@@ -72,29 +68,11 @@ if (import.meta.client) {
         </LazyTitleText>
       </div>
       <LazyDragon ref="dragon" />
-      <div class="dnd-container grid md:grid-cols-2 gap-y-10 gap-x-20">
-        <div class="flex flex-col justify-center items-center h-full">
-          <div class="relative">
-            <div class="inset-0 z-[-1] fancy-shadow" />
-            <NuxtImg
-              src="/team.png"
-              alt="Dragon on hoard"
-              sizes="sm:1000px md:1000px lg:1000px"
-              width="500"
-              class="rounded-lg"
-              loading="lazy"
-            />
-          </div>
-        </div>
-        <div class="flex flex-col justify-center h-full">
-          <LazyTitleText sprite="orc-mage">
-            {{ t('pages.home.textBlock2.title') }}
-            <template #text>
-              {{ t('pages.home.textBlock2.text') }}
-            </template>
-          </LazyTitleText>
-        </div>
-      </div>
+      <LazyCtaBanner
+        :title="t('pages.home.textBlock2.title')"
+        :subtitle="t('pages.home.textBlock2.text')"
+        :button="t('pages.home.textBlock2.button')"
+      />
       <LazyTitleText
         center
         sprite="bedbug"

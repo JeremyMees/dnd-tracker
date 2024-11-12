@@ -169,8 +169,7 @@
       "textBlock1": {
         "title": "Made with love",
         "text": "At dnd-tracker, we are not of many words. We let the product speak for itself. What was an encounter tracker as a main idea quickly turned into a much bigger thing. With more and more ideas coming forward, we are currently expanding the dnd-tracker. This will make playing even more exciting, mysterious, easier AND more enjoyable.",
-        "text2": "Try the Encounter Tracker now without creating an account!",
-        "button": "Start Exploring"
+        "text2": "Try the Encounter Tracker now without creating an account!"
       },
       "summary": {
         "title": "A tracker with unique skills",
@@ -182,8 +181,9 @@
         "item6": "Fantasy name generator"
       },
       "textBlock2": {
-        "title": "Collaborative Dungeon Mastering",
-        "text": "Join forces with fellow Dungeon Masters in a realm where creativity knows no bounds. Our platform allows you to seamlessly collaborate on your Dungeons & Dragons campaigns, fostering a dynamic and immersive experience. Whether you're crafting epic adventures, creating homebrew, or co-managing games, our system brings DMs together, making your campaigns more thrilling and memorable."
+        "title": "Ready to upgrade your D&D experience?",
+        "text": "Unleash Your Creativity with Tools and Resources for Every Adventure.",
+        "button": "Start Creating"
       },
       "textBlock3": {
         "title": "Weird stuff",
