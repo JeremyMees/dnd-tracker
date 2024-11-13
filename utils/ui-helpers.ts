@@ -25,3 +25,30 @@ export function togglePasswordInput(node: FormNode): void {
   node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
   node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
+
+export function sortByNumber(a: number | any[], b: number | any[], acs: boolean): number {
+  a = Array.isArray(a) ? a.length : a
+  b = Array.isArray(b) ? b.length : b
+
+  if (a == null) {
+    return b == null ? 0 : 1
+  }
+  else if (b == null) {
+    return -1
+  }
+
+  return acs ? a - b : b - a
+}
+
+export function sortByString(a: string, b: string, acs: boolean): number {
+  a = a ?? ''
+  b = b ?? ''
+
+  return acs ? a.localeCompare(b) : b.localeCompare(a)
+}
+
+export function sortCreatedAt<T extends { created_at: string }>(arr: T[]): T[] {
+  return arr.sort((a, b) => {
+    return new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
+  })
+}

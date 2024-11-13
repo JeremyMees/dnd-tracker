@@ -2,7 +2,6 @@
 import type { Dropdown } from '#components'
 
 const { locale, locales } = useI18n({ useScope: 'global' })
-const test = useI18n({ useScope: 'global' })
 const cookieLang = useCookie('lang')
 const switchLocalePath = useSwitchLocalePath()
 const router = useRouter()

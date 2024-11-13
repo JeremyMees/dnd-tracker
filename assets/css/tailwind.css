@@ -294,11 +294,11 @@
   }
 
   .tr {
-    @apply border-b last:border-b-0 border-slate-700;
+    @apply border-b border-slate-700;
   }
 
   .td {
-    @apply px-2 py-1 border-r last:border-r-0 border-slate-700;
+    @apply p-2;
   }
 
   .no-scrollbar::-webkit-scrollbar {

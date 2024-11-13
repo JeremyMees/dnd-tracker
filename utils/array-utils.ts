@@ -26,13 +26,6 @@ export function searchArray<T>(arr: T[], key: keyof T, search: string): T[] {
     )
 }
 
-export function toggleSelection<T extends { id: number }>(item: T, selected: T[]): void {
-  const index: number = selected.findIndex(s => s.id === item.id)
-
-  if (index === -1) selected.push(item)
-  else selected.splice(index, 1)
-}
-
 export function shuffleArray<T>(arr: T[]): T[] {
   for (let i = 0; i < arr.length; i++) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -52,4 +45,25 @@ export function splitArray<T>(arr: T[], size: number): T[][] {
   }
 
   return result
+}
+
+export function sortArray<T extends Record<string, any>>(arr: T[], key: string, acs = true): T[] {
+  return [...arr].sort((a: T, b: T) => {
+    const aValue = getValueFromNestedKeys<T>(a, key)
+    const bValue = getValueFromNestedKeys<T>(b, key)
+
+    return typeof aValue === 'number' || Array.isArray(aValue)
+      ? sortByNumber(aValue, bValue, acs)
+      : sortByString(aValue, bValue, acs)
+  })
+}
+
+export function toggleArray<T extends { id: number }>(item: T, selected: T[]): T[] {
+  const arr = [...selected]
+  const index: number = arr.findIndex(s => s.id === item.id)
+
+  if (index === -1) arr.push(item)
+  else arr.splice(index, 1)
+
+  return arr
 }

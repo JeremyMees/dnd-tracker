@@ -12,6 +12,18 @@ export interface Toast {
 
 export type CreateToast = Partial<Omit<Toast, 'key' | 'type'>>
 
+export interface TableHeader {
+  label: string
+  sort: boolean
+  id: string
+}
+
+export interface TableFilters {
+  search: string
+  sortedBy: string
+  sortACS: boolean
+}
+
 export type FeatureSortBy = 'voted_most' | 'voted_least' | 'first_new' | 'first_old'
 
 export type FeatureType = 'all' | 'my'

@@ -16,7 +16,7 @@
     "damage": "Damage",
     "reset": "Reset",
     "remove": "Remove",
-    "bulkRemove": "Bulk remove",
+    "bulkRemove": "Remove {number} {type}",
     "temp": "Temporary",
     "rollShow": "Show dice roller",
     "rollHide": "Hide dice roller",
@@ -96,6 +96,8 @@
     "link": "Link",
     "noSelected": "Nothing selected",
     "or": "of",
+    "of": "of",
+    "page": "Page",
     "options": "Options",
     "alsoMax": "When you modify {field}, you also adjust the maximum",
     "current": "Current",
@@ -198,13 +200,7 @@
     "campaigns": {
       "campaigns": "Campaigns",
       "add": "Create campaign",
-      "update": "Update campaign",
-      "remove": {
-        "title": "Bulk removing campaigns",
-        "subtitle": "Select campaigns to remove by clicking on them.",
-        "amount": "Remove {number} campaigns",
-        "multiple": "{number} campaigns"
-      }
+      "update": "Update campaign"
     },
     "campaign": {
       "content": {},
@@ -236,13 +232,7 @@
     "encounters": {
       "encounters": "Encounters",
       "add": "Create encounter",
-      "update": "Update encounter",
-      "remove": {
-        "title": "Bulk removing encounters",
-        "subtitle": "Select encounters to remove by clicking on them.",
-        "amount": "Remove {number} encounters",
-        "multiple": "{number} encounters"
-      }
+      "update": "Update encounter"
     },
     "encounter": {
       "back": "Back to encounters",
@@ -660,12 +650,6 @@
     },
     "encounterOptions": {
       "playgroundWarning": "Playground encounters can't be saved"
-    },
-    "bulkRemove": {
-      "title": "Bulk remove {type}",
-      "subtitle": "Select {type} for removing by clicking on it.",
-      "amount": "Remove {number} {type}",
-      "multiple": "{number} {type}"
     },
     "inlineConfirmation": {
       "text": "Are you sure you want to update this? Your old value won't be saved."

@@ -13,3 +13,17 @@ export function removeEmptyKeys<T>(object: Record<string, any>, deep: boolean = 
 
   return result as T
 }
+
+export function getValueFromNestedKeys<T extends Record<string, any>>(v: T, keys: string): any {
+  let value = v
+
+  for (const key of keys.split('.')) {
+    if (!value) {
+      return value
+    }
+
+    value = value[key]
+  }
+
+  return value
+}

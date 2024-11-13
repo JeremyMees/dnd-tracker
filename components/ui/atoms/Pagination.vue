@@ -5,10 +5,10 @@ const props = withDefaults(
   defineProps<{
     totalPages: number
     perPage?: number
-    searching?: boolean
+    loading?: boolean
   }>(), {
     perPage: 20,
-    searching: false,
+    loading: false,
   },
 )
 
@@ -64,8 +64,8 @@ const limitedNumbersList = computed<number[]>(() => {
   <div class="flex justify-center items-center my-3 bg-bg-light/50 border-4 border-bg w-fit mx-auto rounded-lg">
     <button
       class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
-      :class="{ 'cursor-progress': searching }"
-      :disabled="page === 0 || searching"
+      :class="{ 'cursor-progress': loading }"
+      :disabled="page === 0 || loading"
       aria-label="First page"
       @click="handleSelect(0)"
     >
@@ -78,8 +78,8 @@ const limitedNumbersList = computed<number[]>(() => {
     </button>
     <button
       class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
-      :class="{ 'cursor-progress': searching }"
-      :disabled="page === 0 || searching"
+      :class="{ 'cursor-progress': loading }"
+      :disabled="page === 0 || loading"
       :aria-label="t('actions.prev')"
       @click="handlePrevious"
     >
@@ -95,12 +95,12 @@ const limitedNumbersList = computed<number[]>(() => {
         v-for="pageNumber in limitedNumbersList"
         :key="pageNumber"
         :aria-label="`Page ${pageNumber}`"
-        :disabled="searching"
+        :disabled="loading"
         class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
         :class="{
           'font-bold text-secondary': page === pageNumber - 1,
-          'cursor-progress': searching,
-          'hover:font-bold focus:font-bold': !searching,
+          'cursor-progress': loading,
+          'hover:font-bold focus:font-bold': !loading,
         }"
         @click="handleSelect(pageNumber - 1)"
       >
@@ -109,8 +109,8 @@ const limitedNumbersList = computed<number[]>(() => {
     </div>
     <button
       class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
-      :class="{ 'cursor-progress': searching }"
-      :disabled="page === totalPages - 1 || searching"
+      :class="{ 'cursor-progress': loading }"
+      :disabled="page === totalPages - 1 || loading"
       :aria-label="t('actions.next')"
       @click="handleNext"
     >
@@ -123,8 +123,8 @@ const limitedNumbersList = computed<number[]>(() => {
     </button>
     <button
       class="flex items-center justify-center w-8 h-8"
-      :class="{ 'cursor-progress': searching }"
-      :disabled="page === totalPages - 1 || searching"
+      :class="{ 'cursor-progress': loading }"
+      :disabled="page === totalPages - 1 || loading"
       aria-label="Last page"
       @click="handleSelect(totalPages - 1)"
     >
