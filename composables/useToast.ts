@@ -1,7 +1,6 @@
-export const useToast = defineStore('useToast', () => {
+export function useToast() {
+  const toasts = useState<Toast[]>('toasts', () => ([]))
   const { t } = useI18n()
-
-  const toasts = ref<Toast[]>([])
 
   function remove(key: number): void {
     toasts.value = toasts.value.filter(obj => obj.key !== key)
@@ -57,4 +56,4 @@ export const useToast = defineStore('useToast', () => {
     error,
     info,
   }
-})
+}

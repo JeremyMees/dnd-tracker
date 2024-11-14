@@ -110,23 +110,32 @@ async function logout(): Promise<void> {
               color="secondary"
               round
             >
-              <AnimationReveal
-                reverse
-                class="flex flex-col"
-              >
-                <img
-                  v-if="profile.data?.avatar"
-                  :src="profile.data.avatar"
-                  alt="Avatar image"
-                  class="w-10 scale-x-[-100%]"
+              <ClientOnly>
+                <AnimationReveal
+                  reverse
+                  class="flex flex-col"
                 >
-                <Icon
-                  v-else
-                  name="material-symbols:person"
-                  class="w-6 h-6 text-slate-300"
-                  aria-hidden="true"
-                />
-              </AnimationReveal>
+                  <img
+                    v-if="profile.data?.avatar"
+                    :src="profile.data.avatar"
+                    alt="Avatar image"
+                    class="w-10 scale-x-[-100%]"
+                  >
+                  <Icon
+                    v-else
+                    name="material-symbols:person"
+                    class="w-6 h-6 text-slate-300"
+                    aria-hidden="true"
+                  />
+                </AnimationReveal>
+                <template #fallback>
+                  <Icon
+                    name="material-symbols:person"
+                    class="w-6 h-6 text-slate-300 relative top-[2px]"
+                    aria-hidden="true"
+                  />
+                </template>
+              </ClientOnly>
               <template #content>
                 <RouteLink
                   v-for="route in ui.profileRoutes"
