@@ -15,12 +15,14 @@ const props = withDefaults(
     loading?: boolean
     select?: boolean
     type?: 'campaigns' | 'encounters'
+    perPage?: number
   }>(), {
     pages: 0,
     shadow: false,
     loading: false,
     select: false,
     type: 'campaigns',
+    perPage: 20,
   },
 )
 
@@ -41,9 +43,9 @@ function toggleSort(key: string): void {
   sortedBy.value = key
 }
 
-function toggleRow(row: CampaignRow): void {
+function toggleRow(row: any): void {
   selectedAll.value = false
-  selected.value = toggleArray<CampaignRow>(row, selected.value)
+  selected.value = toggleArray(row, selected.value)
 
   if (selected.value.length === props.items.length) selectedAll.value = true
 }
@@ -64,7 +66,9 @@ function toggleAll(): void {
           suffix-icon="search"
           outer-class="$reset !pb-0 max-w-[300px]"
         />
-        <slot name="header" />
+        <div class="flex gap-4 items-center">
+          <slot name="header" />
+        </div>
       </div>
       <table class="min-w-full">
         <thead>
@@ -98,7 +102,7 @@ function toggleAll(): void {
                 class="flex gap-2 items-center w-fit px-2 rounded-lg transition-colors duration-300"
                 :class="{ 'bg-slate-700': id === sortedBy }"
               >
-                <span>
+                <span class="text-slate-300 hover:text-white transition-colors duration-300">
                   {{ label }}
                 </span>
                 <Icon
@@ -143,6 +147,7 @@ function toggleAll(): void {
             :total-items="items.length"
             :total-pages="pages"
             :loading="loading"
+            :per-page="perPage"
             @paginate="$emit('paginate', $event)"
           />
         </div>
