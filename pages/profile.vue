@@ -104,7 +104,7 @@ async function deleteUser(): Promise<void> {
           />
           <button
             class="btn-text"
-            @click="modal.add({
+            @click="modal.open({
               component: 'Badge',
               header: t('components.badgeModal.title'),
             })"

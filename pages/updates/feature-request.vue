@@ -7,8 +7,6 @@ const localePath = useLocalePath()
 const modal = useModal()
 const { t } = useI18n()
 
-const isOpen = ref<boolean>(false)
-
 function routeToLogin(): void {
   navigateTo(localePath('/login'))
 }
@@ -62,7 +60,7 @@ function routeToLogin(): void {
           :disabled="features.loading"
           @click="
             profile.user
-              ? modal.add({
+              ? modal.open({
                 component: 'FeatureRequest',
                 header: t('components.addFeatureRequestModal.title'),
               })

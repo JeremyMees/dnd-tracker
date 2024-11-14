@@ -15,6 +15,10 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
+const input = ref()
+
+onMounted(() => input.value && focusInput(input.value))
+
 function deleteConfirmation(): void {
   reset('form')
   emit('confirm', props.uuid)
@@ -27,10 +31,7 @@ function close(): void {
 </script>
 
 <template>
-  <Modal
-    :open="true"
-    @close="close"
-  >
+  <Modal @close="close">
     <template #header>
       <h2>
         {{ t('components.confirmationModal.title') }}
@@ -60,6 +61,7 @@ function close(): void {
         @submit="deleteConfirmation"
       >
         <FormKit
+          ref="input"
           name="title"
           validation="required|is:delete,DELETE,Delete"
           placeholder="DELETE"

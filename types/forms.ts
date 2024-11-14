@@ -37,3 +37,7 @@ export interface FeatureForm {
   title: string
   text: string
 }
+
+export interface CampaignForm {
+  title: string
+}

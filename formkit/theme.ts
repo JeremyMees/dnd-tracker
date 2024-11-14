@@ -24,6 +24,7 @@ export default {
   'family:button': {
     input: '$remove:bg-bg-light btn-black w-full',
     wrapper: 'flex justify-end',
+    outer: '$remove:mb-4 formkit-disabled:opacity-50',
   },
   'family:dropdown': {
     dropdownWrapper: 'my-2 w-full rounded-lg [&::-webkit-scrollbar]:hidden',

@@ -451,7 +451,7 @@
       "optionalFieldHelp": "Optioneel om het huidige {field} te overschrijven",
       "searchByUsername": "Zoeken op gebruikersnaam"
     },
-    "cammpaignModal": {
+    "campaignModal": {
       "add": "Maak een nieuwe campagne",
       "update": "Update campagne {title}"
     },

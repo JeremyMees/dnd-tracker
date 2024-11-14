@@ -5,6 +5,9 @@ const toast = useToast()
 const { t } = useI18n()
 
 const isAccepted = ref<boolean>(false)
+const input = ref()
+
+onMounted(() => input.value && focusInput(input.value))
 
 async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
   node.clearErrors()
@@ -59,6 +62,7 @@ async function sendFeatureEmail(form: FeatureForm, id: number): Promise<void> {
       @submit="handleSubmit"
     >
       <FormKit
+        ref="input"
         name="title"
         :label="t('components.inputs.titleLabel')"
         validation="required|length:3,50"

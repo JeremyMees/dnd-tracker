@@ -52,3 +52,9 @@ export function sortCreatedAt<T extends { created_at: string }>(arr: T[]): T[] {
     return new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
   })
 }
+
+export function focusInput({ node }: any): void {
+  const id = node?.context?.id
+
+  if (id) document.getElementById(id)?.focus()
+}

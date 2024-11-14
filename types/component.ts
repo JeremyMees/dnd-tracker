@@ -12,7 +12,7 @@ export interface Toast {
 
 export type CreateToast = Partial<Omit<Toast, 'uuid' | 'type'>>
 
-export type ModalComponent = 'FeatureRequest' | 'Badge'
+export type ModalComponent = 'FeatureRequest' | 'Badge' | 'Campaign'
 
 export interface Modal {
   uuid: string

@@ -3,11 +3,9 @@ const emit = defineEmits<{ close: [] }>()
 
 withDefaults(
   defineProps<{
-    open?: boolean
     big?: boolean
     title?: boolean
   }>(), {
-    open: false,
     big: false,
     title: true,
   },
@@ -16,21 +14,26 @@ withDefaults(
 onKeyStroke('Escape', () => emit('close'))
 
 const { t } = useI18n()
+
+const open = ref<boolean>(false)
+
+setTimeout(() => open.value = true, 50) // delay to play animation
 </script>
 
 <template>
   <Teleport to="body">
-    <Opacity>
+    <AnimationOpacity>
       <div
         v-if="open"
-        class="fixed inset-0 bg-black/30 cursor-pointer z-20"
+        class="fixed inset-0 bg-black/50 cursor-pointer z-20"
         @click="$emit('close')"
       />
-    </Opacity>
+    </AnimationOpacity>
     <AnimationScaleOpacity>
-      <div
+      <Card
         v-if="open"
-        class="border-4 border-slate-700 backdrop-blur-xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-700/50 rounded-lg p-8 w-full z-30"
+        color="slate"
+        class="backdrop-blur-xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 w-full z-30"
         :class="[big ? 'max-w-[1000px]' : 'max-w-2xl']"
         aria-modal="true"
       >
@@ -42,20 +45,20 @@ const { t } = useI18n()
           >
             <Icon
               name="ic:round-clear"
-              class="text-danger w-8 h-8 rounded-full ring-danger group-focus-within:ring"
+              class="text-danger size-8 rounded-full ring-danger group-focus-within:ring"
               aria-hidden="true"
             />
           </button>
           <slot name="header" />
         </div>
         <div
-          class="mx-h-full overflow-auto max-h-[75vh]"
+          class="overflow-auto max-h-[75vh]"
           :class="{ 'mt-6': title }"
         >
           <slot />
         </div>
         <div class="inset-0 z-[-1] fancy-shadow" />
-      </div>
+      </Card>
     </AnimationScaleOpacity>
   </Teleport>
 </template>

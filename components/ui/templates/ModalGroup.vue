@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ModalFeatureRequest, ModalBadge } from '#components'
+import { ModalFeatureRequest, ModalBadge, ModalCampaign } from '#components'
 
-const { modals, remove } = useModal()
+const { modals, close } = useModal()
 
 const modalComponents: Record<ModalComponent, any> = {
   FeatureRequest: ModalFeatureRequest,
   Badge: ModalBadge,
+  Campaign: ModalCampaign,
 }
 </script>
 
@@ -13,8 +14,7 @@ const modalComponents: Record<ModalComponent, any> = {
   <Modal
     v-for="{ uuid, header, component, props } in modals"
     :key="uuid"
-    open
-    @close="remove(uuid)"
+    @close="close(uuid)"
   >
     <template #header>
       <h2>
@@ -24,6 +24,7 @@ const modalComponents: Record<ModalComponent, any> = {
     <component
       :is="modalComponents[component]"
       v-bind="props"
+      @close="close(uuid)"
     />
   </Modal>
 </template>

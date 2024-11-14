@@ -1,7 +1,7 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    color?: Color | 'background'
+    color?: Color | 'background' | 'slate'
     round?: boolean
     noPadding?: boolean
     noStyling?: boolean
@@ -31,6 +31,7 @@ withDefaults(
       'border-danger bg-danger/50': color === 'danger' && !noStyling,
       'border-help bg-help/50': color === 'help' && !noStyling,
       'border-bg bg-bg-light/50': color === 'background' && !noStyling,
+      'border-slate-700 bg-slate-700/50': color === 'slate' && !noStyling,
     }"
   >
     <slot />

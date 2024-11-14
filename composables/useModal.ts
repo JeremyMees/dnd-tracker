@@ -1,24 +1,29 @@
 export function useModal() {
   const modals = useState<Modal[]>('modals', () => ([]))
 
-  function remove(uuid: string): void {
+  function close(uuid: string): void {
     modals.value = modals.value.filter(obj => obj.uuid !== uuid)
   }
 
-  function add(newModal: Omit<Modal, 'uuid'>): string {
+  function open(newModal: Omit<Modal, 'uuid'>): string {
     const uuid = self.crypto.randomUUID()
 
-    modals.value = [
-      ...modals.value,
-      { ...newModal, uuid },
-    ]
+    const modalExists: boolean = modals.value
+      .findIndex(({ component }) => component === newModal.component) > -1
+
+    if (!modalExists) {
+      modals.value = [
+        ...modals.value,
+        { ...newModal, uuid },
+      ]
+    }
 
     return uuid
   }
 
   return {
     modals,
-    add,
-    remove,
+    open,
+    close,
   }
 }

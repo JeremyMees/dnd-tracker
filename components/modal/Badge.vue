@@ -4,6 +4,10 @@ import { reset } from '@formkit/core'
 const badge = useBadges()
 const { t } = useI18n()
 
+const input = ref()
+
+onMounted(() => input.value && focusInput(input.value))
+
 async function handleSubmit(form: BadgeClaim, node: FormNode): Promise<void> {
   node.clearErrors()
 
@@ -29,6 +33,7 @@ async function handleSubmit(form: BadgeClaim, node: FormNode): Promise<void> {
     @submit="handleSubmit"
   >
     <FormKit
+      ref="input"
       name="code"
       :label="t('components.inputs.codeLabel')"
       validation="required|length:3,30"

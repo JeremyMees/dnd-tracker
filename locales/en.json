@@ -453,7 +453,7 @@
       "optionalFieldHelp": "Optional to overwrite the current {field}",
       "searchByUsername": "Search by username"
     },
-    "cammpaignModal": {
+    "campaignModal": {
       "add": "Create a new campaign",
       "update": "Update campaign {title}"
     },

@@ -66,7 +66,39 @@ export type UserRole = Database['public']['Enums']['user_role']
 export type WeaponCategory = Database['public']['Enums']['weapon_category']
 
 // Extended Types
-export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role'>>
+export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role' | 'avatar_options'>>
+
+export type MinimalProfile = Pick<ProfileRow, 'avatar' | 'id' | 'username'>
+
 export type Badge = BadgeRow & { earned: number }
+
 export type BadgeEarned = Omit<Badge, 'code' | 'created_at'>
-export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & { created_by: SocialProfile, voted: FeatureVotes }
+
+export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & {
+  created_by: SocialProfile
+  voted: FeatureVotes
+}
+
+export interface TeamMember extends Omit<TeamRow, 'user' | 'campaign' | 'created_at'> {
+  user: MinimalProfile
+}
+
+export interface CampaignItem extends Omit<CampaignRow, 'team' | 'created_by'> {
+  initiative_sheets: number
+  homebrew_items: number
+  created_by: MinimalProfile
+  team: TeamMember[]
+}
+
+// Custom Types
+export interface SbRange {
+  from: number
+  to: number
+}
+
+export interface SbFilter {
+  search: string
+  sortedBy: string
+  sortACS: boolean
+  page?: number
+}
