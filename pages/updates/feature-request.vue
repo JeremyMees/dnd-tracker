@@ -4,6 +4,7 @@ useSeo('Feature request')
 const features = useFeatures()
 const profile = useProfile()
 const localePath = useLocalePath()
+const modal = useModal()
 const { t } = useI18n()
 
 const isOpen = ref<boolean>(false)
@@ -59,7 +60,14 @@ function routeToLogin(): void {
           class="btn-primary tracker-shadow-pulse mt-[18px]"
           :aria-label="t('pages.featureRequest.request')"
           :disabled="features.loading"
-          @click="profile.data ? isOpen = true : routeToLogin()"
+          @click="
+            profile.user
+              ? modal.add({
+                component: 'FeatureRequest',
+                header: t('components.addFeatureRequestModal.title'),
+              })
+              : routeToLogin()
+          "
         >
           {{ t('pages.featureRequest.request') }}
         </button>
@@ -118,10 +126,5 @@ function routeToLogin(): void {
         </p>
       </div>
     </section>
-    <AddFeatureRequestModal
-      v-if="profile.data"
-      :open="isOpen"
-      @close="isOpen = false"
-    />
   </NuxtLayout>
 </template>

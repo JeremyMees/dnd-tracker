@@ -7,6 +7,7 @@ useSeo('Profile')
 
 const profile = useProfile()
 const toast = useToast()
+const modal = useModal()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
@@ -101,7 +102,15 @@ async function deleteUser(): Promise<void> {
             :key="badge.id"
             v-bind="badge"
           />
-          <BadgeModal />
+          <button
+            class="btn-text"
+            @click="modal.add({
+              component: 'Badge',
+              header: t('components.badgeModal.title'),
+            })"
+          >
+            {{ t('components.badgeModal.claim') }}
+          </button>
         </template>
         <template v-else>
           <SkeletonBadge

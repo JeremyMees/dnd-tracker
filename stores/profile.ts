@@ -152,6 +152,7 @@ export const useProfile = defineStore('useProfile', () => {
     error,
     data,
     getSocialProfile,
+    user,
     fetch,
     updateProfile,
     deleteProfile,

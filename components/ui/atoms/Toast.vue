@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const emit = defineEmits<{ remove: [number] }>()
+const emit = defineEmits<{ remove: [string] }>()
 const props = defineProps<{ toast: Toast }>()
 
 const { t } = useI18n()
@@ -13,7 +13,7 @@ const { pause, resume } = useTimeoutPoll(() => {
 
   if (!loading.value) {
     pause()
-    emit('remove', props.toast.key)
+    emit('remove', props.toast.uuid)
   }
   else if (loader.value) {
     loader.value.style.width = `${loading.value}%`
@@ -90,7 +90,7 @@ watch(() => isHover.value, (v: boolean) => {
         class="min-w-[25px] min-h-[25px] self-start text-danger cursor-pointer"
         aria-hidden="true"
         :aria-label="t('actions.remove')"
-        @click="$emit('remove', toast.key)"
+        @click="$emit('remove', toast.uuid)"
       />
     </div>
     <div

@@ -78,8 +78,8 @@ function toggleVote(vote: FeatureVote): void {
       <div class="flex flex-col flex-1 items-start justify-between gap-y-3">
         <div class="space-y-2">
           <Avatar
-            :user="feature.created_by"
-            username
+            :img="feature.created_by.avatar"
+            :username="feature.created_by.username"
           />
           <h2 class="py-2">
             {{ feature.title }}

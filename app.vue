@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 const profile = useProfile()
 const ui = useUI()
 
-onBeforeMount(() => profile.fetch())
+profile.fetch()
 
 if (import.meta.client) {
   gsap.registerPlugin(ScrollTrigger)
@@ -21,6 +21,7 @@ if (import.meta.client) {
     <ClientOnly>
       <ToastGroup />
       <ConfirmDialogGroup />
+      <ModalGroup />
     </ClientOnly>
 
     <div

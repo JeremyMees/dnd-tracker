@@ -1,7 +1,7 @@
 export type ToastType = 'error' | 'warn' | 'info' | 'success'
 
 export interface Toast {
-  key: number
+  uuid: string
   timeout: number
   title: string
   text: string
@@ -10,7 +10,16 @@ export interface Toast {
   type: ToastType
 }
 
-export type CreateToast = Partial<Omit<Toast, 'key' | 'type'>>
+export type CreateToast = Partial<Omit<Toast, 'uuid' | 'type'>>
+
+export type ModalComponent = 'FeatureRequest' | 'Badge'
+
+export interface Modal {
+  uuid: string
+  component: ModalComponent
+  header: string
+  props?: Record<string, any>
+}
 
 export interface TableHeader {
   label: string

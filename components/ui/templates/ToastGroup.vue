@@ -14,7 +14,7 @@ const { toasts, remove } = useToast()
     >
       <Toast
         v-for="toast in toasts"
-        :key="toast.key"
+        :key="toast.uuid"
         :toast="toast"
         @remove="remove"
       />

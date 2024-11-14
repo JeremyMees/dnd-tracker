@@ -2,18 +2,18 @@ export function useToast() {
   const toasts = useState<Toast[]>('toasts', () => ([]))
   const { t } = useI18n()
 
-  function remove(key: number): void {
-    toasts.value = toasts.value.filter(obj => obj.key !== key)
+  function remove(uuid: string): void {
+    toasts.value = toasts.value.filter(obj => obj.uuid !== uuid)
   }
 
-  function add(newToast: CreateToast, type: ToastType): number {
+  function add(newToast: CreateToast, type: ToastType): string {
     const toast: Toast = {
       timeout: newToast.timeout || 5000,
       title: newToast.title ? newToast.title : type === 'error' ? t('general.error.title') : '',
       text: newToast.text ? newToast.text : type === 'error' ? t('general.error.text') : '',
       actions: newToast.actions || [],
       timed: newToast.timed ?? true,
-      key: Date.now(),
+      uuid: self.crypto.randomUUID(),
       type,
     }
 
@@ -28,22 +28,22 @@ export function useToast() {
       toasts.value = [...toasts.value, toast]
     }
 
-    return toast.key
+    return toast.uuid
   }
 
-  function success(toast: CreateToast): number {
+  function success(toast: CreateToast): string {
     return add(toast, 'success')
   }
 
-  function warn(toast: CreateToast): number {
+  function warn(toast: CreateToast): string {
     return add(toast, 'warn')
   }
 
-  function error(toast: CreateToast = {}): number {
+  function error(toast: CreateToast = {}): string {
     return add(toast, 'error')
   }
 
-  function info(toast: CreateToast): number {
+  function info(toast: CreateToast): string {
     return add(toast, 'info')
   }
 
