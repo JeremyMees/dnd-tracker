@@ -24,8 +24,6 @@ const modalComponents: Record<ModalComponent, any> = {
     <component
       :is="modalComponents[component]"
       v-bind="props"
-    >
-      test
-    </component>
+    />
   </Modal>
 </template>
