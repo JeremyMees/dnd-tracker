@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DataTable } from '#components'
+import type { DataTable, LimitCta } from '#components'
 
 definePageMeta({ middleware: ['auth'] })
 useSeo('Campaigns')
@@ -12,6 +12,8 @@ const { ask } = useConfirm()
 const { t } = useI18n()
 
 const table = ref<InstanceType<typeof DataTable>>()
+const limitCta = ref<InstanceType<typeof LimitCta>>()
+
 const search = ref<string>('')
 const sortedBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
@@ -81,6 +83,31 @@ async function deleteItems(ids: number[]): Promise<void> {
     shadow
     container
   >
+    <h1 class="pb-6">
+      {{ t('pages.campaigns.campaigns') }}
+    </h1>
+    <LimitCta
+      v-if="campaign.amount >= campaign.max"
+      ref="limitCta"
+    />
+    <AnimationExpand>
+      <Card
+        v-if="status === 'error'"
+        color="danger"
+        class="w-full max-w-prose mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+      >
+        <h2 class="text-center">
+          {{ t('general.error.text') }}
+        </h2>
+        <button
+          class="btn-black"
+          :aria-label="t('actions.tryAgain')"
+          @click="refresh()"
+        >
+          {{ t('actions.tryAgain') }}
+        </button>
+      </Card>
+    </AnimationExpand>
     <DataTable
       ref="table"
       v-model:sorted-by="sortedBy"
@@ -115,8 +142,12 @@ async function deleteItems(ids: number[]): Promise<void> {
         <button
           class="btn-primary"
           :aria-label="t('actions.create')"
-          :disabled="status === 'pending' || (campaigns !== null && campaign.amount >= campaign.max)"
-          @click="openModal()"
+          :disabled="status === 'pending'"
+          @click="() => {
+            campaign.amount >= campaign.max
+              ? limitCta?.show()
+              : openModal()
+          }"
         >
           {{ t('actions.create') }}
         </button>
@@ -144,7 +175,12 @@ async function deleteItems(ids: number[]): Promise<void> {
             />
           </td>
           <td class="td">
-            {{ row.title }}
+            <RouteLink
+              :url="campaignUrl(row, 'content')"
+              class="underline underline-offset-2 decoration-primary"
+            >
+              {{ row.title }}
+            </RouteLink>
           </td>
           <td class="td">
             {{ row.homebrew_items }}
