@@ -5,10 +5,9 @@ const props = withDefaults(
   defineProps<{
     totalPages: number
     totalItems: number
-    perPage?: number
+    perPage: number
     loading?: boolean
   }>(), {
-    perPage: 20,
     loading: false,
   },
 )

@@ -19,6 +19,7 @@ export interface Modal {
   component: ModalComponent
   header: string
   props?: Record<string, any>
+  events?: Record<string, () => any>
 }
 
 export interface TableHeader {

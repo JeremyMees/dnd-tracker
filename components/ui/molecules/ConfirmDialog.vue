@@ -17,7 +17,9 @@ const { t } = useI18n()
 
 const input = ref()
 
-onMounted(() => input.value && focusInput(input.value))
+onMounted(() => {
+  setTimeout(() => input.value && focusInput(input.value), 50) // Delay because of transition animation
+})
 
 function deleteConfirmation(): void {
   reset('form')

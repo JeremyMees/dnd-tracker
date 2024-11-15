@@ -12,7 +12,7 @@ const modalComponents: Record<ModalComponent, any> = {
 
 <template>
   <Modal
-    v-for="{ uuid, header, component, props } in modals"
+    v-for="{ uuid, header, component, props, events } in modals"
     :key="uuid"
     @close="close(uuid)"
   >
@@ -24,6 +24,7 @@ const modalComponents: Record<ModalComponent, any> = {
     <component
       :is="modalComponents[component]"
       v-bind="props"
+      v-on="events"
       @close="close(uuid)"
     />
   </Modal>

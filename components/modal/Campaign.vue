@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
 
-const emit = defineEmits<{ close: [] }>()
+const emit = defineEmits<{
+  close: []
+  finished: []
+}>()
 
-const props = withDefaults(
-  defineProps<{
-    campaign?: CampaignItem | CampaignRow
-    update?: boolean
-  }>(), {
-    update: false,
-    campaign: undefined,
-  },
-)
+const props = defineProps<{ campaign?: CampaignItem | CampaignRow }>()
 
 const store = useCampaigns()
 const profile = useProfile()
@@ -21,24 +16,21 @@ const input = ref()
 
 onMounted(() => input.value && focusInput(input.value))
 
-// if (props.update) {
-//   form.value.title = props.campaign?.title || ''
-// }
-
-function handleSubmit(form: CampaignForm, node: FormNode): void {
+async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
     const formData = sanitizeForm<CampaignForm>(form)
 
-    if (props.update) updateCampaign(formData)
-    else addCampaign(formData)
+    if (props.campaign) await updateCampaign(formData)
+    else await addCampaign(formData)
 
+    emit('finished')
     emit('close')
   }
   catch (err: any) {
-    node.setErrors(err.message)
     reset('form')
+    node.setErrors(err.message)
   }
 }
 
@@ -62,14 +54,14 @@ async function updateCampaign(data: CampaignForm): Promise<void> {
   <FormKit
     id="form"
     type="form"
-    :submit-label="t(`pages.campaigns.${update ? 'update' : 'add'}`)"
+    :submit-label="t(`pages.campaigns.${campaign ? 'update' : 'add'}`)"
     @submit="handleSubmit"
   >
     <FormKit
       ref="input"
       name="title"
       :label="t('components.inputs.titleLabel')"
-      :value="update && campaign?.title ? campaign.title : ''"
+      :value="campaign?.title ? campaign.title : ''"
       validation="required|length:3,30"
     />
   </FormKit>

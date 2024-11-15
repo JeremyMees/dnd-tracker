@@ -16,12 +16,8 @@ const search = ref<string>('')
 const sortedBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
-// const isOpen = ref<boolean>(false)
-// const isBulk = ref<boolean>(false)
-// const isUpdating = ref<boolean>(false)
-// const needConfirmation = ref<boolean>(false)
 
-const { data: campaigns, status, error, refresh, clear } = await useAsyncData(
+const { data: campaigns, status, refresh } = await useAsyncData(
   'campaigns',
   async () => await campaign.fetch({
     search: search.value,
@@ -34,8 +30,6 @@ const { data: campaigns, status, error, refresh, clear } = await useAsyncData(
   },
 )
 
-const max = computed<number>(() => getMax('campaign', profile.data?.subscription_type || 'free'))
-
 const rowSelection = computed<Record<string, boolean>>(() => {
   if (!table.value || !table.value.selected.length) return {}
 
@@ -45,14 +39,6 @@ const rowSelection = computed<Record<string, boolean>>(() => {
   }, {})
 })
 
-// const items = computed<CampaignRow[]>(() => {
-//   return searchArray(
-//     sortArray(data.value, sortedBy.value, sortACS.value),
-//     'title',
-//     search.value,
-//   )
-// })
-
 function teamAvatars(row: CampaignItem): { username: string, img: string, role: UserRole }[] {
   return sbGetTeamMembers(row).map(({ user, role }) => ({
     username: user.username,
@@ -61,28 +47,32 @@ function teamAvatars(row: CampaignItem): { username: string, img: string, role: 
   }))
 }
 
-function resetState(): void {
-  // needConfirmation.value = false
-  // isBulk.value = false
-  // isUpdating.value = false
-  // isOpen.value = false
+function openModal(campaign?: CampaignItem): void {
+  modal.open({
+    component: 'Campaign',
+    header: t(`components.campaignModal.${campaign ? 'update' : 'add'}`),
+    events: { finished: () => refresh() },
+    ...(campaign && { props: { campaign } }),
+  })
 }
 
-async function deleteItems(): Promise<void> {
-  // ask({
-  //   title: profile.data!.name,
-  // }, async (confirmed: boolean) => {
-  //   if (!confirmed) return
+async function deleteItems(ids: number[]): Promise<void> {
+  const amount = ids.length
+  const type = t(`general.${amount > 1 ? 'campaigns' : 'campaign'}`).toLowerCase()
 
-  //   try {
-  //     await profile.deleteProfile()
-  //     navigateTo(localePath('/'))
-  //     toast.success({ text: t('pages.profile.toast.delete.text') })
-  //   }
-  //   catch (err) {
-  //     toast.error()
-  //   }
-  // })
+  ask({
+    title: `${amount} ${type}`,
+  }, async (confirmed: boolean) => {
+    if (!confirmed) return
+
+    try {
+      await campaign.deleteCampaign(ids)
+      refresh()
+    }
+    catch (err) {
+      toast.error()
+    }
+  })
 }
 </script>
 
@@ -98,37 +88,35 @@ async function deleteItems(): Promise<void> {
       v-model:search="search"
       :headers="[
         { label: t('general.name'), sort: true, id: 'title' },
-        { label: t('general.encounters'), sort: true, id: 'initiative_sheets' },
-        { label: t('general.homebrew'), sort: true, id: 'homebrew_items' },
+        { label: t('general.encounters'), sort: false, id: 'initiative_sheets' },
+        { label: t('general.homebrew'), sort: false, id: 'homebrew_items' },
         { label: t('general.members'), sort: false, id: 'team' },
-        { label: t('general.modify'), sort: false, id: 'modify' },
+        { label: '', sort: false, id: 'modify' },
       ]"
       :items="campaigns || []"
-      :pages="page"
+      :pages="campaign.pages"
+      :per-page="campaign.perPage"
+      :total-items="campaign.amount"
       :loading="status === 'pending'"
-      :per-page="10"
       :owner="profile.user!.id"
-      index
+      type="campaigns"
       select
-      shadow
       @remove="deleteItems"
+      @paginate="page = $event"
     >
       <template #header>
         <span
-          v-if="campaigns !== null && status !== 'pending' && profile.data"
+          v-if="campaigns !== null && profile.data"
           class="text-[12px] text-slate-300"
-          :class="{ '!text-danger': campaigns.length >= max }"
+          :class="{ '!text-danger': campaign.amount >= campaign.max }"
         >
-          {{ campaigns.length }}/{{ max }}
+          {{ campaign.amount }}/{{ campaign.max }}
         </span>
         <button
           class="btn-primary"
           :aria-label="t('actions.create')"
-          :disabled="status === 'pending' || (campaigns !== null && campaigns.length >= max)"
-          @click="modal.open({
-            component: 'Campaign',
-            header: t('components.campaignModal.add'),
-          })"
+          :disabled="status === 'pending' || (campaigns !== null && campaign.amount >= campaign.max)"
+          @click="openModal()"
         >
           {{ t('actions.create') }}
         </button>
@@ -167,8 +155,20 @@ async function deleteItems(): Promise<void> {
           <td class="td">
             <AvatarGroup :avatars="teamAvatars(row)" />
           </td>
-          <td class="td">
-            modify
+          <td class="td flex justify-end">
+            <button
+              v-if="isAdmin(row, profile.user!.id)"
+              v-tippy="t('actions.update')"
+              class="icon-btn-info group"
+              :aria-label="t('actions.update')"
+              @click="openModal(row)"
+            >
+              <Icon
+                name="material-symbols:settings-outline"
+                class="icon-info"
+                aria-hidden="true"
+              />
+            </button>
           </td>
         </tr>
       </template>
@@ -180,9 +180,5 @@ async function deleteItems(): Promise<void> {
         {{ t('components.table.nothing', { item: t('general.campaigns').toLowerCase() }) }}
       </template>
     </DataTable>
-    <pre>
-      only allow delete if user is owner
-      {{ table?.selected }}
-    </pre>
   </NuxtLayout>
 </template>

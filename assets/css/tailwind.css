@@ -14,17 +14,12 @@
   }
 
   .icon-btn {
-    @apply body-small outline-none font-medium relative;
-    @apply active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
-    @apply before:content-[''] before:p-1 before:rounded-lg before:absolute before:-inset-1 before:duration-300 before:ease-in-out before:transition-all;
+    @apply body-small text-slate-300 rounded-lg outline-none font-medium relative size-7 flex items-center justify-center duration-300 transition-all;
+    @apply hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .icon-btn > * {
-    @apply relative z-[1];
-  }
-
-  .icon {
-    @apply w-6 h-6 group-hover:text-white transition-colors duration-200;
+    @apply relative z-[1] size-6;
   }
 
   .btn-text {
@@ -194,67 +189,35 @@
   }
 
   .icon-btn-black {
-    @apply icon-btn hover:before:bg-black/50;
+    @apply icon-btn hover:bg-black/50;
   }
 
   .icon-btn-primary {
-    @apply icon-btn hover:before:bg-primary/50;
+    @apply icon-btn hover:bg-primary/50;
   }
 
   .icon-btn-secondary {
-    @apply icon-btn hover:before:bg-secondary/50;
+    @apply icon-btn hover:bg-secondary/50;
   }
 
   .icon-btn-success {
-    @apply icon-btn hover:before:bg-success/50;
+    @apply icon-btn hover:bg-success/50;
   }
 
   .icon-btn-info {
-    @apply icon-btn hover:before:bg-info/50;
+    @apply icon-btn hover:bg-info/50;
   }
 
   .icon-btn-warning {
-    @apply icon-btn hover:before:bg-warning/50;
+    @apply icon-btn hover:bg-warning/50;
   }
 
   .icon-btn-help {
-    @apply icon-btn hover:before:bg-help/50;
+    @apply icon-btn hover:bg-help/50;
   }
 
   .icon-btn-danger {
-    @apply icon-btn hover:before:bg-danger/50;
-  }
-
-  .icon-black {
-    @apply icon text-black;
-  }
-
-  .icon-primary {
-    @apply icon text-primary;
-  }
-
-  .icon-secondary {
-    @apply icon text-secondary;
-  }
-
-  .icon-success {
-    @apply icon text-success;
-  }
-
-  .icon-info {
-    @apply icon text-info;
-  }
-
-  .icon-warning {
-    @apply icon text-warning;
-  }
-
-  .icon-help {
-    @apply icon text-help;
-  }
-
-  .icon-danger {
-    @apply icon text-danger;
+    @apply icon-btn hover:bg-danger/50;
   }
 
   kbd {

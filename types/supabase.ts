@@ -91,6 +91,28 @@ export interface CampaignItem extends Omit<CampaignRow, 'team' | 'created_by'> {
 }
 
 // Custom Types
+export interface SbQuery<T> {
+  data: T[]
+  count: number
+  totalPages: number
+}
+
+export interface SbFetchOptions {
+  table: DatabaseTable
+  fields?: string[]
+  select?: string
+  page?: number
+  perPage?: number
+  filters?: TableFilters
+  eq?: SbEq
+  fuzzy?: boolean
+}
+
+export interface SbEq {
+  field: string
+  value: string | number
+}
+
 export interface SbRange {
   from: number
   to: number

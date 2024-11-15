@@ -1,3 +1,41 @@
+export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
+  const supabase = useSupabaseClient<Database>()
+
+  const { table, select, page, perPage, filters, eq, fuzzy, fields } = options
+
+  let query = supabase
+    .from(table)
+    .select(select || '*', { count: 'estimated' })
+
+  if (typeof page === 'number' && typeof perPage === 'number') {
+    const { from, to } = sbRange(page, perPage)
+
+    query = query.range(from, to)
+  }
+
+  if (filters) {
+    query = query.order(filters.sortedBy, { ascending: filters.sortACS })
+  }
+
+  if (eq) {
+    query = query.eq(eq.field, eq.value)
+  }
+
+  if (filters?.search && fuzzy) {
+    query = query.or(sbOrQuery(fields || ['title'], filters.search))
+  }
+
+  const { data, error, count } = await query
+
+  if (error) createError(error)
+
+  return {
+    data: data as T[],
+    totalPages: perPage ? sbPages(count, perPage) : 1,
+    count: count || 0,
+  }
+}
+
 function sbOrQuery(keys: string[], search: string): string {
   let queryString = ''
 

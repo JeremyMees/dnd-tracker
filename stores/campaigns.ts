@@ -3,43 +3,48 @@ export const useCampaigns = defineStore('useCampaigns', () => {
   const profile = useProfile()
   const toast = useToast()
 
-  const campaigns = ref<CampaignRow[]>()
-  const loading = ref<boolean>(true)
-  const error = ref<string>()
+  const amount = ref<number>(0)
+  const pages = ref<number>(0)
+  const perPage = ref<number>(10)
 
-  const max = computed<number>(() => getMax('campaign', profile.data?.subscription_type || 'free'))
+  const max = computed<number>(() => getMax(
+    'campaign',
+    profile.data?.subscription_type || 'free',
+  ))
 
-  const allowedCampaigns = computed<CampaignRow[] | undefined>(() => {
-    if (!profile.data || !campaigns.value) return
-
-    // const { userArr, nonUserArr } = sortCampaignsByCreatedAt(campaigns.value, profile.data.id)
-
-    // return [...userArr.splice(0, max.value), ...nonUserArr]
-    return []
-  })
-
-  async function fetch(filter: SbFilter): Promise<CampaignItem[] | null> {
-    const { data } = await supabase
-      .from('campaigns')
-      .select(`
+  async function fetch(filter: SbFilter): Promise<CampaignItem[] | undefined> {
+    try {
+      const { data, count, totalPages } = await sbQuery<CampaignItem>({
+        table: 'campaigns',
+        select: `
           *,
-          created_by(id, username, avatar),
-          initiative_sheets(count),
-          homebrew_items(count),
-          team(
-            id,
-            role,
-            user(id, username, avatar)
-          )
-        `)
-      .order(filter.sortedBy, { ascending: filter.sortACS })
-      .returns<CampaignItem[]>()
+            created_by(id, username, avatar),
+            initiative_sheets(count),
+            homebrew_items(count),
+            team(
+              id,
+              role,
+              user(id, username, avatar)
+            )
+        `,
+        filters: filter,
+        page: filter.page,
+        perPage: perPage.value,
+        fuzzy: true,
+      })
 
-    return data?.map(campaign => ({
-      ...campaign,
-      homebrew_items: sbCount('homebrew_items', data),
-      initiative_sheets: sbCount('initiative_sheets', data),
-    })) || null
+      amount.value = count
+      pages.value = totalPages
+
+      return data?.map(campaign => ({
+        ...campaign,
+        homebrew_items: sbCount('homebrew_items', data),
+        initiative_sheets: sbCount('initiative_sheets', data),
+      }))
+    }
+    catch (err) {
+      toast.error()
+    }
   }
 
   async function getCampaignById(id: number): Promise<CampaignRow> {
@@ -47,7 +52,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .from('campaigns')
       .select(`
         *, 
-        created_by(id, created_at, username, name, avatar, email, badges), 
+        created_by(id, username, avatar, email, badges), 
         team(
           id,
           role,
@@ -62,12 +67,8 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .eq('id', id)
       .single()
 
-    if (error) {
-      throw error
-    }
-    else {
-      return data
-    }
+    if (error) throw createError(error)
+    else return data
   }
 
   async function addCampaign(campaign: CampaignInsert): Promise<void> {
@@ -75,35 +76,19 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .from('campaigns')
       .insert([campaign])
 
-    if (error) {
-      throw error
-    }
-    else {
-      // fetch()
-    }
+    if (error) throw createError(error)
   }
 
   async function deleteCampaign(id: number | number[]): Promise<void> {
-    try {
-      let query = supabase.from('campaigns').delete()
+    let query = supabase.from('campaigns').delete()
 
-      query = Array.isArray(id)
-        ? query.in('id', id)
-        : query.eq('id', id)
+    query = Array.isArray(id)
+      ? query.in('id', id)
+      : query.eq('id', id)
 
-      const { error: err } = await query
+    const { error } = await query
 
-      if (err) {
-        throw err
-      }
-      else {
-        // fetch()
-      }
-    }
-    catch (err) {
-      console.error(err)
-      toast.error()
-    }
+    if (error) throw createError(error)
   }
 
   async function updateCampaign(campaign: CampaignUpdate, id: number): Promise<void> {
@@ -112,20 +97,14 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .update(campaign as never)
       .eq('id', id)
 
-    if (error) {
-      throw error
-    }
-    else {
-      // fetch()
-    }
+    if (error) throw createError(error)
   }
 
   return {
-    loading,
-    error,
-    campaigns,
-    allowedCampaigns,
     max,
+    amount,
+    pages,
+    perPage,
     fetch,
     getCampaignById,
     addCampaign,

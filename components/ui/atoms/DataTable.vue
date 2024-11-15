@@ -3,35 +3,32 @@ import { vAutoAnimate } from '@formkit/auto-animate'
 
 defineEmits<{
   paginate: [value: number]
-  remove: []
+  remove: [items: number[]]
 }>()
 
 const props = withDefaults(
   defineProps<{
     items: any[]
     headers: TableHeader[]
-    pages?: number
-    shadow?: boolean
+    pages: number
+    perPage: number
+    totalItems: number
+    type: 'campaigns' | 'encounters'
     loading?: boolean
     select?: boolean
-    type?: 'campaigns' | 'encounters'
-    perPage?: number
   }>(), {
-    pages: 0,
-    shadow: false,
     loading: false,
     select: false,
-    type: 'campaigns',
-    perPage: 20,
   },
 )
-
-const { t } = useI18n()
 
 const sortedBy = defineModel<string>('sortedBy', { required: true })
 const sortACS = defineModel<boolean>('acs', { default: false, required: true })
 const page = defineModel<number>('page', { default: 0 })
 const search = defineModel<string>('search', { default: '' })
+
+const { t } = useI18n()
+const profile = useProfile()
 
 const selectedAll = ref<boolean>(false)
 const selected = ref<any[]>([])
@@ -51,8 +48,16 @@ function toggleRow(row: any): void {
 }
 
 function toggleAll(): void {
-  if (selected.value.length === props.items.length) selected.value = []
-  else selected.value = props.items
+  const itemsWithRights = props.items.filter((item) => {
+    const owner = isOwner(item, profile.user!.id)
+
+    return props.type === 'campaigns'
+      ? owner
+      : owner || isAdmin(item, profile.user!.id)
+  })
+
+  if (selected.value.length === itemsWithRights.length) selected.value = []
+  else selected.value = itemsWithRights
 }
 </script>
 
@@ -144,27 +149,32 @@ function toggleAll(): void {
         >
           <TablePagination
             v-model:page="page"
-            :total-items="items.length"
+            :total-items="totalItems"
             :total-pages="pages"
             :loading="loading"
             :per-page="perPage"
-            @paginate="$emit('paginate', $event)"
+            @paginate="e => {
+              selectedAll = false
+              selected = []
+              $emit('paginate', e)
+            }"
           />
         </div>
       </AnimationReveal>
-      <div
-        v-if="shadow"
-        class="inset-0 z-[-1] fancy-shadow"
-      />
+      <div class="inset-0 z-[-1] fancy-shadow" />
     </div>
     <AnimationReveal>
       <button
         v-if="selected && selected.length"
         class="btn-danger mt-4"
-        :aria-label="t('actions.bulkRemove', { number: 20 })"
-        @click="$emit('remove')"
+        :aria-label="t('actions.bulkRemove', { number: selected.length })"
+        @click="() => {
+          $emit('remove', selected.map(item => item.id))
+          selectedAll = false
+          selected = []
+        }"
       >
-        {{ t('actions.bulkRemove', { number: 20, type: t(`general.${type}`).toLowerCase() }) }}
+        {{ t('actions.bulkRemove', { number: selected.length, type: t(`general.${type}`).toLowerCase() }) }}
       </button>
     </AnimationReveal>
   </section>
