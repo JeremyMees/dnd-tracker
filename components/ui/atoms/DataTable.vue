@@ -36,8 +36,12 @@ const selected = ref<any[]>([])
 defineExpose({ toggleRow, toggleAll, toggleSort, selected })
 
 function toggleSort(key: string): void {
+  if (!props.items.length && props.loading) return
+
   sortACS.value = key === sortedBy.value ? !sortACS.value : false
   sortedBy.value = key
+  selectedAll.value = false
+  selected.value = []
 }
 
 function toggleRow(row: any): void {
@@ -101,7 +105,7 @@ function toggleAll(): void {
                 '!cursor-progress': loading,
                 '!cursor-not-allowed': items.length === 0,
               }"
-              @click="items.length !== 0 && sort && !loading && toggleSort(id)"
+              @click="sort && toggleSort(id)"
             >
               <div
                 class="flex gap-2 items-center w-fit px-2 rounded-lg transition-colors duration-300"
