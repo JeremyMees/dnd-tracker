@@ -13,6 +13,14 @@ export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[])
   return sanitized as T
 }
 
+export function scrollToId(id: string): void {
+  const el = document.getElementById(id)
+
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }
+}
+
 export function randomString(): string {
   return (Math.random() + 1).toString(36).substring(7)
 }
