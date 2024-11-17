@@ -16,7 +16,10 @@ if (import.meta.client) {
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <NuxtLoadingIndicator />
+    <NuxtLoadingIndicator
+      color="repeating-linear-gradient(to right,#7333E0 70%,#D926AA 100%)"
+      error-color="#F87272"
+    />
 
     <ClientOnly>
       <ToastGroup />
