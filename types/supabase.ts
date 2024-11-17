@@ -103,7 +103,7 @@ export interface SbFetchOptions {
   select?: string
   page?: number
   perPage?: number
-  filters?: TableFilters
+  filters?: SbFilter
   eq?: SbEq
   fuzzy?: boolean
 }
@@ -120,7 +120,8 @@ export interface SbRange {
 
 export interface SbFilter {
   search: string
-  sortedBy: string
-  sortACS: boolean
+  sortBy?: string
+  sortACS?: boolean
   page?: number
+  eq?: SbEq
 }

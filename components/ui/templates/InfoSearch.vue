@@ -10,7 +10,7 @@ const search = ref<string>('')
 const cr = ref<string>()
 
 const { data: hits, status, refresh } = await useAsyncData(
-  'campaigns',
+  'info-search',
   async () => await open5e.fetch(
     type.value,
     {

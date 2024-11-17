@@ -1,126 +1,60 @@
 export const useFeatures = defineStore('useFeatures', () => {
   const supabase = useSupabaseClient<Database>()
-  const profile = useProfile()
   const toast = useToast()
 
-  const loading = ref<boolean>(true)
-  const data = ref<FeatureRequest[]>()
-  const sortBy = ref<FeatureSortBy>('first_new')
-  const createdBy = ref<FeatureType>('all')
-  const search = ref<string>()
+  const amount = ref<number>(0)
+  const pages = ref<number>(0)
+  const perPage = ref<number>(10)
 
-  const activeFilters = computed<boolean>(() => !!search.value || createdBy.value !== 'all')
-
-  const sortedFeatures = computed<FeatureRequest[]>(() => {
-    if (data.value) {
-      let features = data.value
-
-      if (search.value) {
-        features = features.filter((f) => {
-          return f.title.toLowerCase().includes(search.value?.toLowerCase().trim() || '')
-        })
-      }
-
-      if (createdBy.value === 'my' && profile.data) {
-        features = features.filter(f => f.created_by.id === profile.data!.id)
-      }
-
-      switch (sortBy.value) {
-        case 'first_new':
-          return features.sort((a, b) => b.created_at.localeCompare(a.created_at))
-        case 'first_old':
-          return features.sort((a, b) => a.created_at.localeCompare(b.created_at))
-        case 'voted_most':
-          return features.sort((a, b) => {
-            const aTotal = a.voted.like.length + a.voted.dislike.length
-            const bTotal = b.voted.like.length + b.voted.dislike.length
-            return bTotal - aTotal
-          })
-        case 'voted_least':
-          return features.sort((a, b) => {
-            const aTotal = a.voted.like.length + a.voted.dislike.length
-            const bTotal = b.voted.like.length + b.voted.dislike.length
-            return aTotal - bTotal
-          })
-      }
-    }
-    else {
-      return []
-    }
-  })
-
-  async function fetch(): Promise<void> {
-    loading.value = true
-
+  async function fetch(filter: SbFilter, eq?: SbEq): Promise<FeatureRequest[] | undefined> {
     try {
-      const { data: results, error: err } = await supabase
-        .from('features')
-        .select('*, created_by(id, created_at, username, name, avatar, email, badges)')
-        .returns<FeatureRequest[]>()
+      const { data, count, totalPages } = await sbQuery<FeatureRequest>({
+        table: 'features',
+        select: '*, created_by(id, avatar, username)',
+        filters: filter,
+        page: filter.page,
+        perPage: perPage.value,
+        fuzzy: true,
+        ...(eq && { eq }),
+      })
 
-      if (err) throw createError(err.message)
+      amount.value = count
+      pages.value = totalPages
 
-      data.value = results
+      return data
     }
-    catch (err: any) {
-      toast.error({ text: err.message })
-    }
-    finally {
-      loading.value = false
+    catch (err) {
+      toast.error()
     }
   }
 
-  async function addFeature(feature: FeatureInsert): Promise<undefined | FeatureRequest> {
-    const { data: results, error: err } = await supabase
+  async function addFeature(feature: FeatureInsert): Promise<void> {
+    const { error } = await supabase
       .from('features')
       .insert([feature])
-      .select('*, created_by(id, created_at, username, name, avatar, email, badges)')
-      .returns<FeatureRequest[]>()
 
-    if (err) throw createError(err.message)
-
-    if (results) {
-      if (data.value) data.value.push(results[0])
-      else data.value = [results[0]]
-
-      return results[0]
-    }
+    if (error) throw createError(error.message)
   }
 
   async function vote(id: number, votes: FeatureVotes): Promise<void> {
     try {
-      const { data: results, error: err } = await supabase
+      const { error } = await supabase
         .from('features')
         .update({ voted: votes } as never)
         .eq('id', id)
-        .select('*, created_by(id, created_at, username, name, avatar, email, badges)')
-        .returns<FeatureRequest[]>()
 
-      if (err) throw createError(err.message)
-
-      if (results?.length) {
-        const index = data.value?.findIndex(f => f.id === results[0].id)
-
-        if (index !== undefined && data.value) {
-          data.value[index] = results[0]
-        }
-      }
+      if (error) throw createError(error.message)
     }
-    catch (err: any) {
-      toast.error({ text: err.message })
+    catch (err) {
+      toast.error()
     }
   }
 
-  onMounted(() => fetch())
-
   return {
-    loading,
-    data,
-    sortBy,
-    sortedFeatures,
-    search,
-    createdBy,
-    activeFilters,
+    amount,
+    pages,
+    perPage,
+    fetch,
     vote,
     addFeature,
   }

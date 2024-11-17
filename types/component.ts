@@ -28,16 +28,6 @@ export interface TableHeader {
   id: string
 }
 
-export interface TableFilters {
-  search: string
-  sortedBy: string
-  sortACS: boolean
-}
-
-export type FeatureSortBy = 'voted_most' | 'voted_least' | 'first_new' | 'first_old'
-
-export type FeatureType = 'all' | 'my'
-
 export type FeatureVote = 'like' | 'dislike'
 
 export interface FeatureVotes {

@@ -13,8 +13,8 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
     query = query.range(from, to)
   }
 
-  if (filters) {
-    query = query.order(filters.sortedBy, { ascending: filters.sortACS })
+  if (filters?.sortBy) {
+    query = query.order(filters.sortBy, { ascending: filters.sortACS || false })
   }
 
   if (eq) {

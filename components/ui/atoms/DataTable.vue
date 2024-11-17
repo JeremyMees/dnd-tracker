@@ -22,7 +22,7 @@ const props = withDefaults(
   },
 )
 
-const sortedBy = defineModel<string>('sortedBy', { required: true })
+const sortBy = defineModel<string>('sortBy', { required: true })
 const sortACS = defineModel<boolean>('acs', { default: false, required: true })
 const page = defineModel<number>('page', { default: 0 })
 const search = defineModel<string>('search', { default: '' })
@@ -38,8 +38,8 @@ defineExpose({ toggleRow, toggleAll, toggleSort, selected })
 function toggleSort(key: string): void {
   if (!props.items.length && props.loading) return
 
-  sortACS.value = key === sortedBy.value ? !sortACS.value : false
-  sortedBy.value = key
+  sortACS.value = key === sortBy.value ? !sortACS.value : false
+  sortBy.value = key
   selectedAll.value = false
   selected.value = []
 }
@@ -109,7 +109,7 @@ function toggleAll(): void {
             >
               <div
                 class="flex gap-2 items-center w-fit px-2 rounded-lg transition-colors duration-300"
-                :class="{ 'bg-slate-700': id === sortedBy }"
+                :class="{ 'bg-slate-700': id === sortBy }"
               >
                 <span class="text-slate-300 hover:text-white transition-colors duration-300">
                   {{ label }}
@@ -119,8 +119,8 @@ function toggleAll(): void {
                   name="ph:arrows-down-up-bold"
                   class="w-5 h-5 text-secondary/50 transition-all duration-300"
                   :class="{
-                    '!text-secondary': sortedBy === id,
-                    'rotate-180': sortedBy === id && !sortACS,
+                    '!text-secondary': sortBy === id,
+                    'rotate-180': sortBy === id && !sortACS,
                   }"
                   aria-hidden="true"
                 />

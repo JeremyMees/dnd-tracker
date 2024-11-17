@@ -15,7 +15,7 @@ const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const search = ref<string>('')
-const sortedBy = ref<string>('title')
+const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
 
@@ -23,12 +23,12 @@ const { data: campaigns, status, refresh } = await useAsyncData(
   'campaigns',
   async () => await campaign.fetch({
     search: search.value,
-    sortedBy: sortedBy.value,
+    sortBy: sortBy.value,
     sortACS: sortACS.value,
     page: page.value,
   }),
   {
-    watch: [search, sortedBy, sortACS, page],
+    watch: [search, sortBy, sortACS, page],
   },
 )
 
@@ -110,7 +110,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     </AnimationExpand>
     <DataTable
       ref="table"
-      v-model:sorted-by="sortedBy"
+      v-model:sort-by="sortBy"
       v-model:acs="sortACS"
       v-model:search="search"
       :headers="[
