@@ -7,7 +7,6 @@ defineProps<{
   name: string
   title: string
   text: string
-  id: number
 }>()
 </script>
 
@@ -26,9 +25,6 @@ defineProps<{
     </Text>
     <Text class="px-4">
       NAME: {{ name }},
-    </Text>
-    <Text class="px-4">
-      ID: {{ id }},
     </Text>
     <Text class="px-4">
       TITLE: {{ title }}

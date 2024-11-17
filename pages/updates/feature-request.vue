@@ -86,6 +86,7 @@ function routeToLogin(): void {
               ? modal.open({
                 component: 'FeatureRequest',
                 header: t('components.addFeatureRequestModal.title'),
+                events: { finished: () => refresh() },
               })
               : routeToLogin()
           "

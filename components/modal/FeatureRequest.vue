@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const emit = defineEmits<{ finished: [] }>()
+
 const feature = useFeatures()
 const profile = useProfile()
 const toast = useToast()
@@ -24,9 +26,10 @@ async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
       },
     }
 
-    const feat = await feature.addFeature(newFeature)
+    await feature.addFeature(newFeature)
+    await sendFeatureEmail(formData)
 
-    if (feat) await sendFeatureEmail(formData, feat.id)
+    emit('finished')
 
     isAccepted.value = true
   }
@@ -36,14 +39,13 @@ async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
   }
 }
 
-async function sendFeatureEmail(form: FeatureForm, id: number): Promise<void> {
+async function sendFeatureEmail(form: FeatureForm): Promise<void> {
   if (!profile.data) return
 
   const { error } = await useFetch('/api/emails/feature-request', {
     method: 'POST',
     body: {
       ...form,
-      id,
       name: profile.data.username,
       email: profile.data.email,
     },
