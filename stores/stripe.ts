@@ -93,7 +93,7 @@ export const useStripe = defineStore('useStripe', () => {
         lookup,
         locale,
         type,
-        customer: profile.data!.stripe_id,
+        ...(profile.data!.stripe_id && { customer: profile.data!.stripe_id }),
       },
     })
 

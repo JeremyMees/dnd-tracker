@@ -22,14 +22,17 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
       <p class="mb-16 max-w-3xl mx-auto text-center">
         {{ t('pages.pricing.description') }}
       </p>
-      <div class="relative">
+      <div class="relative max-w-4xl mx-auto">
         <img
           src="/gifs/dragon.gif"
           loading="lazy"
           class="w-8 h-8 absolute -top-8 left-20"
         >
         <div class="inline-block overflow-x-auto w-full">
-          <div class="bg-bg-light/50 border-4 border-bg rounded-lg overflow-y-hidden">
+          <Card
+            color="primary"
+            class="bg-primary/20 backdrop-blur-lg !rounded-[32px] tracker-shadow-inset overflow-y-hidden"
+          >
             <table class="min-w-full">
               <thead>
                 <tr>
@@ -39,7 +42,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                       ...stripe.shownProduct.map(({ title, price }) => { return { title, price } }),
                     ]"
                     :key="index"
-                    class="py-3 px-2 border-b border-r last:border-r-0 border-slate-700"
+                    class="py-3 px-2 border-b border-slate-700"
                   >
                     <div
                       v-if="header"
@@ -53,16 +56,11 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                         class="w-[140px] mx-auto h-8 rounded-lg bg-bg-light animate-pulse relative top-1"
                       />
                       <div
-                        v-else-if="header.price"
-                        class="font-extrabold flex items-baseline justify-center"
+                        v-else-if="header.price !== undefined"
+                        class="font-extrabold flex flex-col items-center"
                       >
-                        {{ header.price }}€ <span class="body-small"> /{{ t('general.oneTime') }} </span>
-                      </div>
-                      <div
-                        v-else
-                        class="font-extrabold flex items-baseline justify-center"
-                      >
-                        0€ <span class="body-small"> /{{ t('general.forever') }} </span>
+                        <span>{{ header.price }}€</span>
+                        <span class="body-small">{{ t('general.oneTime') }} </span>
                       </div>
                     </div>
                   </th>
@@ -74,13 +72,13 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                   :key="item"
                   class="border-b last:border-b-0 border-slate-700"
                 >
-                  <td class="px-2 py-1 border-r border-slate-700 font-bold">
+                  <td class="px-2 py-3 font-bold">
                     {{ t(item) }}
                   </td>
                   <td
                     v-for="product in stripe.shownProduct"
                     :key="product.type"
-                    class="px-2 py-1 border-r last:border-r-0 border-slate-700 text-center font-bold"
+                    class="px-2 py-1 text-center font-bold"
                   >
                     <span v-if="product.items[index].number">
                       {{ product.items[index].number }}
@@ -95,11 +93,11 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                   </td>
                 </tr>
                 <tr>
-                  <td class="px-2 py-1 border-r border-slate-700" />
+                  <td class="px-2 py-1" />
                   <td
                     v-for="product in stripe.shownProduct"
                     :key="product.type"
-                    class="px-2 py-1 border-r last:border-r-0 border-slate-700 text-center font-bold"
+                    class="px-2 py-1 text-center font-bold"
                   >
                     <SkeletonButton
                       v-if="stripe.loading"
@@ -107,13 +105,13 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                     />
                     <div
                       v-else-if="stripe.isCurrent(product.type)"
-                      class="btn-secondary w-full"
+                      class="btn-success w-full"
                     >
                       {{ t('general.current') }}
                     </div>
                     <button
                       v-else-if="!profile.data || (product.id && product.price !== 0 && stripe.isUpgradeable(product.type))"
-                      class="btn-primary w-full"
+                      class="btn-secondary w-full"
                       :aria-label="t('pages.pricing.cta')"
                       :disabled="stripe.loading"
                       @click="subscribe(product?.id || '', product.type)"
@@ -124,7 +122,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                 </tr>
               </tbody>
             </table>
-          </div>
+          </Card>
         </div>
       </div>
       <p class="mb-5 max-w-3xl mx-auto text-center pt-12">

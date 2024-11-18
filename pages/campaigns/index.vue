@@ -28,18 +28,17 @@ const { data: campaigns, status, refresh } = await useAsyncData(
     page: page.value,
   }),
   {
-    watch: [search, sortBy, sortACS, page],
+    watch: [sortBy, sortACS, page],
   },
 )
 
-const rowSelection = computed<Record<string, boolean>>(() => {
-  if (!table.value || !table.value.selected.length) return {}
+watchDebounced(
+  search,
+  () => refresh(),
+  { debounce: 500, maxWait: 1000 },
+)
 
-  return table.value.selected.reduce((acc, row) => {
-    acc[row.id] = true
-    return acc
-  }, {})
-})
+const rowSelection = computed(() => selectedRows(table.value))
 
 function teamAvatars(row: CampaignItem): { username: string, img: string, role: UserRole }[] {
   return sbGetTeamMembers(row).map(({ user, role }) => ({
@@ -84,7 +83,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     container
   >
     <h1 class="pb-6">
-      {{ t('pages.campaigns.campaigns') }}
+      {{ t('general.campaigns') }}
     </h1>
     <LimitCta
       v-if="campaign.amount >= campaign.max"
@@ -126,7 +125,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       :total-items="campaign.amount"
       :loading="status === 'pending'"
       :owner="profile.user!.id"
-      type="campaigns"
+      type="campaign"
       select
       @remove="deleteItems"
       @paginate="page = $event"
@@ -193,7 +192,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           </td>
           <td class="td flex justify-end">
             <button
-              v-if="isAdmin(row, profile.user!.id)"
+              v-if="isOwner(row, profile.user!.id)"
               v-tippy="t('actions.update')"
               class="icon-btn-info group"
               :aria-label="t('actions.update')"
@@ -213,7 +212,11 @@ async function deleteItems(ids: number[]): Promise<void> {
         v-if="!campaigns?.length && status !== 'pending'"
         #empty
       >
-        {{ t('components.table.nothing', { item: t('general.campaigns').toLowerCase() }) }}
+        {{
+          t('components.table.nothing', {
+            item: t(`general.campaign${(table?.selected || []).length > 1 ? 's' : ''}`).toLowerCase(),
+          })
+        }}
       </template>
     </DataTable>
   </NuxtLayout>

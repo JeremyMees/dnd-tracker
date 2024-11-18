@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { ModalFeatureRequest, ModalBadge, ModalCampaign } from '#components'
+import {
+  ModalFeatureRequest,
+  ModalBadge,
+  ModalCampaign,
+  ModalEncounter,
+} from '#components'
 
 const { modals, close } = useModal()
 
@@ -7,6 +12,7 @@ const modalComponents: Record<ModalComponent, any> = {
   FeatureRequest: ModalFeatureRequest,
   Badge: ModalBadge,
   Campaign: ModalCampaign,
+  Encounter: ModalEncounter,
 }
 </script>
 

@@ -1,3 +1,5 @@
+import type { DataTable } from '#components'
+
 export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[]): T {
   const garbage: string[] = blacklist || ['__init', 'isTrusted', '_vts']
   const sanitized: Record<string, any> = {}
@@ -65,4 +67,13 @@ export function focusInput({ node }: any): void {
   const id = node?.context?.id
 
   if (id) document.getElementById(id)?.focus()
+}
+
+export function selectedRows(table?: InstanceType<typeof DataTable>): Record<string, boolean> {
+  if (!table || !table.selected.length) return {}
+
+  return table.selected.reduce((acc, row) => {
+    acc[row.id] = true
+    return acc
+  }, {})
 }

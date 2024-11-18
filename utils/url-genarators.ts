@@ -12,3 +12,9 @@ export function campaignUrl(
 
   return `/campaigns/${campaign.id}${title === '-' ? '-campaign' : `-${title}`}/${type}`
 }
+
+export function encounterUrl(encounter: InitiativeRow | EncounterItem): string {
+  const title: string = encounter.title.replace(/[^a-zA-Z0-9]+/g, '-')
+
+  return `/encounters/${encounter.id}${title === '-' ? '-encounter' : `-${title}`}`
+}

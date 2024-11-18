@@ -1,17 +1,25 @@
-export function isOwner(campaign: CampaignItem, id: string): boolean {
-  return campaign.created_by.id === id
+function isEncounter(item: CampaignItem | EncounterItem): item is EncounterItem {
+  return 'activeIndex' in item
 }
 
-export function isAdmin(campaign: CampaignItem, id: string): boolean {
-  if (isOwner(campaign, id)) return true
-
-  return !!campaign.team?.find(u => u.user.id === id && u.role === 'Admin') || false
+export function isOwner(item: CampaignItem | EncounterItem, id: string): boolean {
+  return item.created_by.id === id
 }
 
-export function isMember(campaign: CampaignItem, id: string): boolean {
-  if (isOwner(campaign, id)) return true
+export function isAdmin(item: CampaignItem | EncounterItem, id: string): boolean {
+  if (isOwner(item, id)) return true
 
-  return !!campaign.team?.find(u => u.user.id === id) || false
+  const team = isEncounter(item) ? item.campaign.team : item.team
+
+  return !!team?.find(u => u.user.id === id && u.role === 'Admin') || false
+}
+
+export function isMember(item: CampaignItem | EncounterItem, id: string): boolean {
+  if (isOwner(item, id)) return true
+
+  const team = isEncounter(item) ? item.campaign.team : item.team
+
+  return !!team?.find(u => u.user.id === id) || false
 }
 
 export function hasPermission(userRole: UserRole, expected: UserRole): boolean {
@@ -23,8 +31,8 @@ export function hasPermission(userRole: UserRole, expected: UserRole): boolean {
   else return false
 }
 
-export function getRole(campaign: CampaignItem, id: string): UserRole {
-  if (isOwner(campaign, id)) return 'Owner'
-  else if (isAdmin(campaign, id)) return 'Admin'
+export function getRole(item: CampaignItem | EncounterItem, id: string): UserRole {
+  if (isOwner(item, id)) return 'Owner'
+  else if (isAdmin(item, id)) return 'Admin'
   else return 'Viewer'
 }

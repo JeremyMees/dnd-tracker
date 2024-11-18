@@ -41,3 +41,8 @@ export interface FeatureForm {
 export interface CampaignForm {
   title: string
 }
+
+export interface EncounterForm {
+  title: string
+  campaign?: number
+}

@@ -303,15 +303,15 @@ export type Database = {
           title: string
         }
         Insert: {
-          activeIndex: number
+          activeIndex?: number
           campaign?: number | null
           created_at?: string | null
-          created_by: string
+          created_by?: string
           id?: number
           info?: string | null
           info_cards?: Json
-          round: number
-          rows: Json
+          round?: number
+          rows?: Json
           settings?: Json
           title: string
         }

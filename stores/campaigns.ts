@@ -71,6 +71,21 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     else return data
   }
 
+  async function getCampaignsMinimal(): Promise<CampaignMinimal[]> {
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select(`
+        id,
+        title,
+        created_by,
+        team(user, role)
+      `)
+      .returns<CampaignMinimal[]>()
+
+    if (error) throw createError(error)
+    else return data
+  }
+
   async function addCampaign(campaign: CampaignInsert): Promise<void> {
     const { error } = await supabase
       .from('campaigns')
@@ -94,7 +109,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
   async function updateCampaign(campaign: CampaignUpdate, id: number): Promise<void> {
     const { error } = await supabase
       .from('campaigns')
-      .update(campaign as never)
+      .update(campaign)
       .eq('id', id)
 
     if (error) throw createError(error)
@@ -107,6 +122,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     perPage,
     fetch,
     getCampaignById,
+    getCampaignsMinimal,
     addCampaign,
     deleteCampaign,
     updateCampaign,

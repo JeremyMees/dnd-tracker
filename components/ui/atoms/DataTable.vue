@@ -13,7 +13,7 @@ const props = withDefaults(
     pages: number
     perPage: number
     totalItems: number
-    type: 'campaigns' | 'encounters'
+    type: 'campaign' | 'encounter'
     loading?: boolean
     select?: boolean
   }>(), {
@@ -55,7 +55,7 @@ function toggleAll(): void {
   const itemsWithRights = props.items.filter((item) => {
     const owner = isOwner(item, profile.user!.id)
 
-    return props.type === 'campaigns'
+    return props.type === 'campaign'
       ? owner
       : owner || isAdmin(item, profile.user!.id)
   })
@@ -178,7 +178,12 @@ function toggleAll(): void {
           selected = []
         }"
       >
-        {{ t('actions.bulkRemove', { number: selected.length, type: t(`general.${type}`).toLowerCase() }) }}
+        {{
+          t('actions.bulkRemove', {
+            number: selected.length,
+            type: t(`general.${type}${selected.length > 1 ? 's' : ''}`).toLowerCase(),
+          })
+        }}
       </button>
     </AnimationReveal>
   </section>
