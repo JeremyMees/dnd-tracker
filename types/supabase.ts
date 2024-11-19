@@ -90,8 +90,11 @@ export interface CampaignItem extends Omit<CampaignRow, 'team' | 'created_by'> {
   team: TeamMember[]
 }
 
-export interface CampaignMinimal extends Pick<CampaignRow, 'id' | 'title' | 'created_by'> {
-  team: TeamRow[]
+export interface CampaignMinimal {
+  id: number
+  title: string
+  created_by: MinimalProfile
+  team: TeamMember[]
 }
 
 export interface EncounterItem extends Omit<InitiativeRow, 'created_by' | 'campaign'> {

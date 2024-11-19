@@ -15,13 +15,15 @@ const toast = useToast()
 const modal = useModal()
 const encounter = useEncounters()
 const profile = useProfile()
+const clipboard = useClipboard()
 const { ask } = useConfirm()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const search = ref<string>('')
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
+const count = ref<number>(await encounter.fetchCount())
 
 const { data: encounters, status, refresh } = await useAsyncData(
   'encounters',
@@ -32,7 +34,7 @@ const { data: encounters, status, refresh } = await useAsyncData(
     page: page.value,
   }),
   {
-    watch: [search, sortBy, sortACS, page],
+    watch: [sortBy, sortACS, page],
   },
 )
 
@@ -44,19 +46,35 @@ watchDebounced(
 
 const rowSelection = computed(() => selectedRows(table.value))
 
-function teamAvatars(row: EncounterItem): { username: string, img: string, role: UserRole }[] {
-  return sbGetTeamMembers(row).map(({ user, role }) => ({
-    username: user.username,
-    img: user.avatar,
-    role,
-  }))
+async function refreshData(): Promise<void> {
+  refresh()
+  count.value = await encounter.fetchCount()
+}
+
+async function copy(item: EncounterItem): Promise<void> {
+  try {
+    await encounter.copyEncounter(item)
+    refreshData()
+  }
+  catch (err) {
+    toast.error()
+  }
+}
+
+function share(item: EncounterItem): void {
+  clipboard.copy(shareEncounterUrl(item, locale.value))
+
+  toast.info({
+    title: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
+    timeout: 2000,
+  })
 }
 
 function openModal(encounter?: EncounterItem): void {
   modal.open({
     component: 'Encounter',
     header: t(`components.encounterModal.${encounter ? 'update' : 'add'}`),
-    events: { finished: () => refresh() },
+    events: { finished: () => refreshData() },
     ...(encounter && { props: { encounter } }),
     ...(props.campaignView && {
       props: {
@@ -77,7 +95,7 @@ async function deleteItems(ids: number[]): Promise<void> {
 
     try {
       await encounter.deleteEncounter(ids)
-      refresh()
+      refreshData()
     }
     catch (err) {
       toast.error()
@@ -88,25 +106,13 @@ async function deleteItems(ids: number[]): Promise<void> {
 
 <template>
   <AnimationExpand>
-    <Card
+    <RefreshCard
       v-if="status === 'error'"
-      color="danger"
-      class="w-full max-w-prose mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
-    >
-      <h2 class="text-center">
-        {{ t('general.error.text') }}
-      </h2>
-      <button
-        class="btn-black"
-        :aria-label="t('actions.tryAgain')"
-        @click="refresh()"
-      >
-        {{ t('actions.tryAgain') }}
-      </button>
-    </Card>
+      @refresh="refreshData()"
+    />
   </AnimationExpand>
   <LimitCta
-    v-if="encounter.amount >= encounter.max"
+    v-if="campaignView && count >= encounter.max"
     ref="limitCta"
   />
   <DataTable
@@ -133,19 +139,17 @@ async function deleteItems(ids: number[]): Promise<void> {
     @paginate="page = $event"
   >
     <template #header>
-      <span
+      <ContentCount
         v-if="encounters !== null && profile.data"
-        class="text-[12px] text-slate-300"
-        :class="{ '!text-danger': encounter.amount >= encounter.max }"
-      >
-        {{ encounter.amount }}/{{ encounter.max }}
-      </span>
+        :count="count"
+        :max="encounter.max"
+      />
       <button
         class="btn-primary"
         :aria-label="t('actions.create')"
         :disabled="status === 'pending'"
         @click="() => {
-          encounter.amount >= encounter.max
+          count >= encounter.max
             ? limitCta?.show()
             : openModal()
         }"
@@ -156,7 +160,7 @@ async function deleteItems(ids: number[]): Promise<void> {
 
     <template #default="{ rows }: { rows: EncounterItem[] }">
       <tr
-        v-for="row in rows"
+        v-for="(row, i) in rows"
         :key="row.id"
         class="tr transition-colors"
         :class="{
@@ -187,28 +191,68 @@ async function deleteItems(ids: number[]): Promise<void> {
           v-if="!campaignView"
           class="td"
         >
-          {{ row.campaign?.title || '' }}
+          <RouteLink
+            v-if="row.campaign"
+            :url="campaignUrl(row, 'content')"
+            class="underline underline-offset-2 decoration-primary"
+          >
+            {{ row.campaign.title }}
+          </RouteLink>
         </td>
         <td class="td">
           {{ Array.isArray(row.rows) ? row.rows.length : 0 }}
         </td>
         <td class="td">
-          <AvatarGroup :avatars="teamAvatars(row)" />
+          <AvatarGroup
+            :key="`${i}-${row.campaign?.id}`"
+            :owner="row.created_by"
+            :team="row.campaign?.team"
+            :fetch-id="
+              row.campaign?.team?.some(member => member.user.id === row.created_by.id)
+                ? row.campaign.id
+                : undefined
+            "
+          />
         </td>
         <td class="td flex justify-end">
           <button
-            v-if="isAdmin(row, profile.user!.id)"
-            v-tippy="t('actions.update')"
-            class="icon-btn-info group"
-            :aria-label="t('actions.update')"
-            @click="openModal(row)"
+            v-tippy="t('actions.share')"
+            class="icon-btn-success"
+            :aria-label="t('actions.share')"
+            @click="share(row)"
           >
             <Icon
-              name="material-symbols:settings-outline"
-              class="icon-info"
+              name="material-symbols:share"
+              class="w-6 h-6"
               aria-hidden="true"
             />
           </button>
+          <template v-if="isAdmin(row, profile.user!.id)">
+            <button
+              v-tippy="t('actions.copy')"
+              class="icon-btn-primary"
+              :aria-label="t('actions.copy')"
+              @click="copy(row)"
+            >
+              <Icon
+                name="material-symbols:content-copy-outline-rounded"
+                class="w-6 h-6"
+                aria-hidden="true"
+              />
+            </button>
+            <button
+              v-tippy="t('actions.update')"
+              class="icon-btn-info group"
+              :aria-label="t('actions.update')"
+              @click="openModal(row)"
+            >
+              <Icon
+                name="material-symbols:settings-outline"
+                class="icon-info"
+                aria-hidden="true"
+              />
+            </button>
+          </template>
         </td>
       </tr>
     </template>

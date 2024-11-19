@@ -4,14 +4,8 @@ useSeo('Fantasy name generator')
 const { copy } = useClipboard()
 const toast = useToast()
 const { t } = useI18n()
-const isSmall = useMediaQuery('(max-width: 768px)')
 
 const names = ref<string[]>([])
-
-const nameColumns = computed<string[][]>(() => {
-  const amount = isSmall.value ? 1 : 2
-  return splitArray<string>(names.value, amount)
-})
 
 onMounted(() => generate())
 

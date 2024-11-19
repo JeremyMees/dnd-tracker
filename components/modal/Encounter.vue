@@ -32,8 +32,8 @@ async function fetchCampaigns(): Promise<void> {
 
     campaigns.value = data.filter((campaign) => {
       if (
-        campaign.created_by === id
-        || campaign.team.find(u => u.user === id && u.role !== 'Viewer')
+        campaign.created_by.id === id
+        || campaign.team.find(u => u.user.id === id && u.role !== 'Viewer')
       ) return true
     })
   }
@@ -43,35 +43,6 @@ async function fetchCampaigns(): Promise<void> {
     emit('close')
   }
 }
-
-// const campaignOptions = computed<Option[]>(() => {
-//   if (campaigns.campaigns) {
-//     return campaigns.campaigns.map((c: Campaign) => {
-//       return { label: c.title, value: c.id }
-//     })
-//   }
-//   else {
-//     return []
-//   }
-// })
-
-// onMounted(() => {
-//   if (!props.campaignId) {
-//     campaigns.fetch()
-//   }
-// })
-
-// watch(() => campaigns.campaigns, (v) => {
-//   campaign.value = !!v?.length || false
-// }, { immediate: true })
-
-// set the values from campaign when in update mode
-// whenever(() => props.update, () => {
-//   const camp = props.encounter?.campaign?.id
-
-//   form.value.title = props.encounter?.title || ''
-//   form.value.campaign = props.campaignId || camp
-// })
 
 async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> {
   node.clearErrors()
@@ -117,6 +88,7 @@ async function updateEncounter(data: EncounterForm): Promise<void> {
       ref="input"
       name="title"
       :label="t('components.inputs.titleLabel')"
+      :value="encounter?.title"
       validation="required|length:3,30"
     />
     <FormKit

@@ -17,7 +17,7 @@ if (import.meta.client) {
   <div>
     <NuxtRouteAnnouncer />
     <NuxtLoadingIndicator
-      color="repeating-linear-gradient(to right,#7333E0 70%,#D926AA 100%)"
+      color="linear-gradient(to right,#7333E0 70%,#D926AA 100%)"
       error-color="#F87272"
     />
 

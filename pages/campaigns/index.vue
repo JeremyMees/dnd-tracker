@@ -18,6 +18,7 @@ const search = ref<string>('')
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
+const count = ref<number>(await campaign.fetchCount())
 
 const { data: campaigns, status, refresh } = await useAsyncData(
   'campaigns',
@@ -40,19 +41,16 @@ watchDebounced(
 
 const rowSelection = computed(() => selectedRows(table.value))
 
-function teamAvatars(row: CampaignItem): { username: string, img: string, role: UserRole }[] {
-  return sbGetTeamMembers(row).map(({ user, role }) => ({
-    username: user.username,
-    img: user.avatar,
-    role,
-  }))
+async function refreshData(): Promise<void> {
+  refresh()
+  count.value = await campaign.fetchCount()
 }
 
 function openModal(campaign?: CampaignItem): void {
   modal.open({
     component: 'Campaign',
     header: t(`components.campaignModal.${campaign ? 'update' : 'add'}`),
-    events: { finished: () => refresh() },
+    events: { finished: () => refreshData() },
     ...(campaign && { props: { campaign } }),
   })
 }
@@ -68,7 +66,7 @@ async function deleteItems(ids: number[]): Promise<void> {
 
     try {
       await campaign.deleteCampaign(ids)
-      refresh()
+      refreshData()
     }
     catch (err) {
       toast.error()
@@ -86,26 +84,14 @@ async function deleteItems(ids: number[]): Promise<void> {
       {{ t('general.campaigns') }}
     </h1>
     <LimitCta
-      v-if="campaign.amount >= campaign.max"
+      v-if="count >= campaign.max"
       ref="limitCta"
     />
     <AnimationExpand>
-      <Card
+      <RefreshCard
         v-if="status === 'error'"
-        color="danger"
-        class="w-full max-w-prose mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
-      >
-        <h2 class="text-center">
-          {{ t('general.error.text') }}
-        </h2>
-        <button
-          class="btn-black"
-          :aria-label="t('actions.tryAgain')"
-          @click="refresh()"
-        >
-          {{ t('actions.tryAgain') }}
-        </button>
-      </Card>
+        @refresh="refreshData()"
+      />
     </AnimationExpand>
     <DataTable
       ref="table"
@@ -131,19 +117,17 @@ async function deleteItems(ids: number[]): Promise<void> {
       @paginate="page = $event"
     >
       <template #header>
-        <span
+        <ContentCount
           v-if="campaigns !== null && profile.data"
-          class="text-[12px] text-slate-300"
-          :class="{ '!text-danger': campaign.amount >= campaign.max }"
-        >
-          {{ campaign.amount }}/{{ campaign.max }}
-        </span>
+          :count="count"
+          :max="campaign.max"
+        />
         <button
           class="btn-primary"
           :aria-label="t('actions.create')"
           :disabled="status === 'pending'"
           @click="() => {
-            campaign.amount >= campaign.max
+            count >= campaign.max
               ? limitCta?.show()
               : openModal()
           }"
@@ -188,7 +172,10 @@ async function deleteItems(ids: number[]): Promise<void> {
             {{ row.initiative_sheets }}
           </td>
           <td class="td">
-            <AvatarGroup :avatars="teamAvatars(row)" />
+            <AvatarGroup
+              :owner="row.created_by"
+              :team="row.team || []"
+            />
           </td>
           <td class="td flex justify-end">
             <button

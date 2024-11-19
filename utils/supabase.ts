@@ -64,20 +64,3 @@ export function sbCount(key: string, obj: Record<string, any>): number {
   if (value && Array.isArray(value) && value.length) return value[0].count
   else return 0
 }
-
-export function sbGetTeamMembers(item: CampaignItem | EncounterItem): TeamMember[] {
-  const team = 'activeIndex' in item
-    ? item.campaign?.team || []
-    : item.team || []
-
-  console.log(team)
-
-  return [
-    {
-      user: item.created_by,
-      role: 'Owner',
-      id: 1,
-    },
-    ...team.filter((u: TeamMember) => u.user.id !== item.created_by),
-  ]
-}

@@ -26,26 +26,28 @@ export const useEncounters = defineStore('useEncounters', () => {
     )
   `
 
-  async function fetch(filter: SbFilter, eq?: SbEq, fuzzy: boolean = false): Promise<EncounterItem[] | undefined> {
-    try {
-      const { data, count, totalPages } = await sbQuery<EncounterItem>({
-        table: 'initiative_sheets',
-        page: filter.page,
-        filters: filter,
-        perPage: perPage.value,
-        select,
-        eq,
-        fuzzy,
-      })
+  async function fetch(filter: SbFilter): Promise<EncounterItem[] | undefined> {
+    const { data, count, totalPages } = await sbQuery<EncounterItem>({
+      table: 'initiative_sheets',
+      page: filter.page,
+      filters: filter,
+      perPage: perPage.value,
+      select,
+      fuzzy: true,
+    })
 
-      amount.value = count
-      pages.value = totalPages
+    amount.value = count
+    pages.value = totalPages
 
-      return data
-    }
-    catch (err) {
-      console.error(err)
-    }
+    return data
+  }
+
+  async function fetchCount(): Promise<number> {
+    const { count } = await supabase
+      .from('initiative_sheets')
+      .select('id', { count: 'exact' })
+
+    return count || 0
   }
 
   async function getEncountersByCampaign(id: number): Promise<EncounterItem[] | undefined> {
@@ -67,27 +69,20 @@ export const useEncounters = defineStore('useEncounters', () => {
     if (error) throw createError(error)
   }
 
-  // async function copyEncounter({ created_at, id, profiles, ...enc }: Encounter): Promise<Encounter | undefined> {
-  //   if (!profile.data) {
-  //     return
-  //   }
+  async function copyEncounter(item: EncounterItem): Promise<void> {
+    if (!profile.user) return
 
-  //   let encounter: UpdateEncounter = {
-  //     ...enc,
-  //     title: `copy ${enc.title}`.slice(0, 30),
-  //     created_by: profile.data.id,
-  //     campaign: undefined,
-  //   }
+    const { campaign, created_by, id, ...enc } = item
 
-  //   if (enc.campaign) {
-  //     encounter = {
-  //       ...encounter,
-  //       campaign: enc.campaign.id,
-  //     }
-  //   }
+    const encounter: InitiativeInsert = {
+      ...enc,
+      created_by: created_by.id,
+      title: `copy ${enc.title}`.slice(0, 30),
+      ...(campaign && { campaign: campaign.id }),
+    }
 
-  //   return await addEncounter(encounter as AddEncounter)
-  // }
+    await addEncounter(encounter)
+  }
 
   async function deleteEncounter(id: number | number[]): Promise<void> {
     let query = supabase.from('initiative_sheets').delete()
@@ -110,54 +105,17 @@ export const useEncounters = defineStore('useEncounters', () => {
     if (error) throw createError(error)
   }
 
-  // function shareEncounter(encounter: Encounter): void {
-  //   try {
-  //     const content = window.btoa(encodeURIComponent(encounter.id))
-  //     const url = `https://dnd-tracker.com${locale.value === 'en' ? '/en/' : '/'}playground?content=${content}`
-
-  //     copy(url)
-
-  //     toast.info({
-  //       title: t('actions.copyClipboard'),
-  //       timeout: 2000,
-  //     })
-  //   }
-  //   catch (err) {
-  //     toast.error()
-  //   }
-  // }
-
-  // function resetPagination(): void {
-  //   pages.value = 0
-  //   page.value = 0
-  //   filters.value = {
-  //     search: '',
-  //     sortedBy: 'id',
-  //     sortACS: true,
-  //   }
-  // }
-
   return {
-    // loading,
-    // searching,
-    // error,
-    // data,
-    // restrictionEncounters,
     amount,
     max,
     pages,
-    // page,
     perPage,
-    // filters,
-    // encounterCount,
-    // noItems,
     fetch,
+    fetchCount,
     getEncountersByCampaign,
     addEncounter,
-    // copyEncounter,
+    copyEncounter,
     deleteEncounter,
     updateEncounter,
-    // shareEncounter,
-    // resetPagination,
   }
 })

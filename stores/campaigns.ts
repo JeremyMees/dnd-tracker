@@ -47,6 +47,14 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     }
   }
 
+  async function fetchCount(): Promise<number> {
+    const { count } = await supabase
+      .from('campaigns')
+      .select('id', { count: 'exact' })
+
+    return count || 0
+  }
+
   async function getCampaignById(id: number): Promise<CampaignRow> {
     const { data, error } = await supabase
       .from('campaigns')
@@ -77,10 +85,35 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .select(`
         id,
         title,
-        created_by,
-        team(user, role)
+        created_by(id, username, avatar),
+        team(
+          id,
+          role,
+          user(id, username, avatar)
+        )
       `)
       .returns<CampaignMinimal[]>()
+
+    if (error) throw createError(error)
+    else return data
+  }
+
+  async function getCampaignMinimalById(id: number): Promise<CampaignMinimal> {
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select(`
+        id,
+        title,
+        created_by(id, username, avatar),
+        team(
+          id,
+          role,
+          user(id, username, avatar)
+        )
+      `)
+      .eq('id', id)
+      .returns<CampaignMinimal>()
+      .single()
 
     if (error) throw createError(error)
     else return data
@@ -121,8 +154,10 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     pages,
     perPage,
     fetch,
+    fetchCount,
     getCampaignById,
     getCampaignsMinimal,
+    getCampaignMinimalById,
     addCampaign,
     deleteCampaign,
     updateCampaign,
