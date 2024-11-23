@@ -23,7 +23,7 @@ onBeforeMount(() => {
   <main
     class="grow"
     :class="{
-      'pt-[180px]': !noPadding,
+      'pt-[140px]': !noPadding,
     }"
   >
     <div class="relative">

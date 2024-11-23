@@ -131,6 +131,9 @@
     "accessories": "Accessories",
     "face": "Face",
     "hair": "Hair",
+    "content": "Content",
+    "settings": "Settings",
+    "dangerZone": "Danger zone",
     "error": {
       "title": "Error",
       "text": "Something went wrong"

@@ -131,6 +131,9 @@
     "accessories": "Accessoires",
     "face": "Gezicht",
     "hair": "Haar",
+    "content": "Inhoud",
+    "settings": "Instellingen",
+    "dangerZone": "Gevaar zone",
     "error": {
       "title": "Fout",
       "text": "Er ging iets mis"
