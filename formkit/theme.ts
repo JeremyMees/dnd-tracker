@@ -1,6 +1,6 @@
 export default {
   'global': {
-    fieldset: 'border-4 border-bg rounded-lg px-2 pb-1 bg-bg/50',
+    fieldset: 'border-4 border-bg rounded-lg px-2 pb-1 bg-bg-light',
     help: 'text-xs text-slate-300',
     inner: 'formkit-disabled:cursor-not-allowed formkit-disabled:pointer-events-none transition-all duration-200',
     input: 'outline-none text-white bg-bg-light disabled:cursor-not-allowed placeholder:text-slate-300',
@@ -99,7 +99,7 @@ export default {
         'relative z-[2] ml-auto text-[0px] hover:text-danger pl-2 peer-data-[has-multiple=true]:text-sm peer-data-[has-multiple=true]:text-primary peer-data-[has-multiple=true]:ml-3 peer-data-[has-multiple=true]:mb-2 formkit-multiple:bottom-[0.15em] formkit-multiple:pl-0 formkit-multiple:ml-0 formkit-multiple:left-[1em] formkit-multiple:formkit-prefix-icon:left-[3.75em]',
     fileRemoveIcon: 'block text-base w-3 relative z-[2]',
     inner:
-        'relative cursor-pointer formkit-multiple:[&>button]:absolute bg-bg/50',
+        'relative cursor-pointer formkit-multiple:[&>button]:absolute bg-bg-light',
     input:
         'cursor-pointer text-transparent absolute top-0 right-0 left-0 bottom-0 opacity-0 z-[2]',
     noFiles: 'flex w-full items-center px-3 py-2 text-slate-300',

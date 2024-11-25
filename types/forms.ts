@@ -46,3 +46,9 @@ export interface EncounterForm {
   title: string
   campaign?: number
 }
+
+export interface TransformForm {
+  title: string
+  role: UserRole | 'Remove'
+  user: string
+}

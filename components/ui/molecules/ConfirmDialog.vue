@@ -45,17 +45,11 @@ function close(): void {
           name="ph:warning-bold"
           class="min-w-[30px] min-h-[30px]"
         />
-        <p>
-          <template
-            v-for="text in t('components.confirmationModal.text', { title }).split(title)"
-            :key="text"
-          >
-            {{ text }}
-            <span class="font-bold last:hidden">
-              {{ title }}
-            </span>
-          </template>
-        </p>
+        <SplitText
+          :text="t('components.confirmationModal.text', { title })"
+          :split="title"
+          classes="font-bold last:hidden"
+        />
       </div>
       <FormKit
         id="form"

@@ -49,11 +49,8 @@ const { data, status } = await useAsyncData(
         :disabled="status !== 'success' || !isOwner(data, profile.user!.id)"
       />
     </div>
-    <pre>
-      {{ isAdmin(data, profile.user!.id) }}
-    </pre>
     <div class="min-h-[40vh]">
-      <NuxtPage />
+      <NuxtPage :current="data" />
     </div>
   </NuxtLayout>
 </template>

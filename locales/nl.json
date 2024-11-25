@@ -452,7 +452,8 @@
       "nothing": "Nog niets geselecteerd",
       "overrideFieldLabel": "Max {field} overschrijven",
       "optionalFieldHelp": "Optioneel om het huidige {field} te overschrijven",
-      "searchByUsername": "Zoeken op gebruikersnaam"
+      "searchByUsername": "Zoeken op gebruikersnaam",
+      "newOwnerLabel": "Nieuwe eigenaar"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",

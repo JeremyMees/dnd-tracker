@@ -70,6 +70,8 @@ export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing'
 
 export type MinimalProfile = Pick<ProfileRow, 'avatar' | 'id' | 'username'>
 
+export type Profile = Pick<ProfileRow, 'avatar' | 'id' | 'username' | 'name' | 'email'>
+
 export type Badge = BadgeRow & { earned: number }
 
 export type BadgeEarned = Omit<Badge, 'code' | 'created_at'>
@@ -81,6 +83,10 @@ export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & {
 
 export interface TeamMember extends Omit<TeamRow, 'user' | 'campaign' | 'created_at'> {
   user: MinimalProfile
+}
+
+export interface TeamMemberFull extends Omit<TeamRow, 'user' | 'campaign' | 'created_at'> {
+  user: Profile
 }
 
 export interface CampaignItem extends Omit<CampaignRow, 'team' | 'created_by'> {
@@ -95,6 +101,23 @@ export interface CampaignMinimal {
   title: string
   created_by: MinimalProfile
   team: TeamMember[]
+}
+
+export interface CampaignFull {
+  id: number
+  title: string
+  created_by: Profile
+  team: TeamMemberFull[]
+  join_campaign: TeamMemberFull[]
+}
+
+export interface JoinCampaignItem extends Omit<JoinCampaignRow, 'user' | 'campaign'> {
+  user: MinimalProfile
+  campaign: Pick<CampaignRow, 'id' | 'title'>
+}
+
+export interface JoinCampaignKey extends Omit<JoinCampaignRow, 'user'> {
+  user: MinimalProfile
 }
 
 export interface EncounterItem extends Omit<InitiativeRow, 'created_by' | 'campaign'> {

@@ -454,7 +454,8 @@
       "nothing": "Nothing selected",
       "overrideFieldLabel": "Max {field} override",
       "optionalFieldHelp": "Optional to overwrite the current {field}",
-      "searchByUsername": "Search by username"
+      "searchByUsername": "Search by username",
+      "newOwnerLabel": "New owner"
     },
     "campaignModal": {
       "add": "Create a new campaign",
