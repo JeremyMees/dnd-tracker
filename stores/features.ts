@@ -6,7 +6,7 @@ export const useFeatures = defineStore('useFeatures', () => {
   const pages = ref<number>(0)
   const perPage = ref<number>(10)
 
-  async function fetch(filter: SbFilter, eq?: SbEq): Promise<FeatureRequest[] | undefined> {
+  async function get(filter: SbFilter, eq?: SbEq): Promise<FeatureRequest[] | undefined> {
     try {
       const { data, count, totalPages } = await sbQuery<FeatureRequest>({
         table: 'features',
@@ -54,7 +54,7 @@ export const useFeatures = defineStore('useFeatures', () => {
     amount,
     pages,
     perPage,
-    fetch,
+    get,
     vote,
     addFeature,
   }

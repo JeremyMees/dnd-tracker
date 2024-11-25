@@ -25,7 +25,7 @@ export const useProfile = defineStore('useProfile', () => {
     }
   })
 
-  async function fetch(): Promise<void> {
+  async function get(): Promise<void> {
     error.value = undefined
 
     try {
@@ -81,7 +81,7 @@ export const useProfile = defineStore('useProfile', () => {
       if (userErr) throw createError(userErr)
     }
 
-    fetch()
+    get()
   }
 
   async function deleteProfile(): Promise<void> {
@@ -153,7 +153,7 @@ export const useProfile = defineStore('useProfile', () => {
     data,
     getSocialProfile,
     user,
-    fetch,
+    get,
     updateProfile,
     deleteProfile,
     // getProfileById,

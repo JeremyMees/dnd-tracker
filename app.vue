@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 const profile = useProfile()
 const ui = useUI()
 
-profile.fetch()
+profile.get()
 
 if (import.meta.client) {
   gsap.registerPlugin(ScrollTrigger)

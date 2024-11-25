@@ -4,7 +4,7 @@ export const useOpen5e = defineStore('useOpen5e', () => {
 
   const pages = ref<number>(0)
 
-  async function fetch(type: Open5eType, filters: Open5eFilters): Promise<Open5eItem[] | undefined> {
+  async function get(type: Open5eType, filters: Open5eFilters): Promise<Open5eItem[] | undefined> {
     const queryFilters: Open5eFilters = {
       ...filters,
       page: filters.page + 1, // Open5e uses 1-based indexing
@@ -42,6 +42,6 @@ export const useOpen5e = defineStore('useOpen5e', () => {
   return {
     options,
     pages,
-    fetch,
+    get,
   }
 })

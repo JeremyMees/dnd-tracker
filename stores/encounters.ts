@@ -26,7 +26,7 @@ export const useEncounters = defineStore('useEncounters', () => {
     )
   `
 
-  async function fetch(filter: SbFilter): Promise<EncounterItem[] | undefined> {
+  async function get(filter: SbFilter): Promise<EncounterItem[] | undefined> {
     const { data, count, totalPages } = await sbQuery<EncounterItem>({
       table: 'initiative_sheets',
       page: filter.page,
@@ -42,7 +42,7 @@ export const useEncounters = defineStore('useEncounters', () => {
     return data
   }
 
-  async function fetchCount(): Promise<number> {
+  async function getCount(): Promise<number> {
     const { count } = await supabase
       .from('initiative_sheets')
       .select('id', { count: 'exact' })
@@ -110,8 +110,8 @@ export const useEncounters = defineStore('useEncounters', () => {
     max,
     pages,
     perPage,
-    fetch,
-    fetchCount,
+    get,
+    getCount,
     getEncountersByCampaign,
     addEncounter,
     copyEncounter,

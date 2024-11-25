@@ -7,7 +7,7 @@ export const useAuth = defineStore('useAuth', () => {
 
   supabase.auth.onAuthStateChange((event) => {
     if (['INITIAL_SESSION', 'USER_UPDATED', 'SIGNED_IN'].includes(event)) {
-      profile.fetch()
+      profile.get()
     }
   })
 

@@ -12,7 +12,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     profile.data?.subscription_type || 'free',
   ))
 
-  async function fetch(filter: SbFilter): Promise<CampaignItem[] | undefined> {
+  async function get(filter: SbFilter): Promise<CampaignItem[] | undefined> {
     try {
       const { data, count, totalPages } = await sbQuery<CampaignItem>({
         table: 'campaigns',
@@ -47,7 +47,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     }
   }
 
-  async function fetchCount(): Promise<number> {
+  async function getCount(): Promise<number> {
     const { count } = await supabase
       .from('campaigns')
       .select('id', { count: 'exact' })
@@ -55,24 +55,25 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     return count || 0
   }
 
-  async function getCampaignById(id: number): Promise<CampaignRow> {
+  async function getCampaignById(id: number): Promise<CampaignFull> {
     const { data, error } = await supabase
       .from('campaigns')
       .select(`
         *, 
-        created_by(id, username, avatar, email, badges), 
+        created_by(id, username, avatar, name, email), 
         team(
           id,
           role,
-          user(id, created_at, username, name, avatar, email, badges)
+          user(id, username, avatar, name, email)
         ), 
         join_campaign(
           id,
           role,
-          user(id, created_at, username, name, avatar, email, badges)
+          user(id, username, avatar, name, email)
         )
       `)
       .eq('id', id)
+      .returns<CampaignFull>()
       .single()
 
     if (error) throw createError(error)
@@ -148,18 +149,123 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     if (error) throw createError(error)
   }
 
+  async function getJoinCampaignToken(token: string): Promise<JoinCampaignItem> {
+    const { data, error } = await supabase
+      .from('join_campaign')
+      .select(`
+        *,
+        user(id, username, avatar),
+        campaign(title, id)
+      `)
+      .eq('token', token)
+      .returns<JoinCampaignKey>()
+      .single()
+
+    if (error) throw createError(error)
+    else return data
+  }
+
+  async function addJoinCampaignToken(join: JoinCampaignInsert): Promise<JoinCampaignKey> {
+    const { data, error } = await supabase
+      .from('join_campaign')
+      .insert([join])
+      .select(`
+        *,
+        user(id, username, avatar)
+      `)
+      .returns<JoinCampaignKey>()
+
+    if (error) throw createError(error)
+    else return data
+    // if (data && campaign.value) {
+    //   campaign.value.join_campaign?.push(data[0] as JoinCampaign)
+    // }
+  }
+
+  async function deleteJoinCampaignToken(id: number): Promise<void> {
+    const { error } = await supabase
+      .from('join_campaign')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw createError(error)
+
+    // if (campaign.value?.join_campaign) {
+    //   campaign.value.join_campaign = campaign.value.join_campaign.filter(h => h.id !== id)
+    // }
+  }
+
+  async function addCampaignTeamMember(member: TeamInsert, id?: number): Promise<TeamMember> {
+    const { data, error } = await supabase
+      .from('team')
+      .insert([member])
+      .select(`
+        id,
+        role,
+        user(id, username, avatar)
+      `)
+      .returns<TeamMember>()
+
+    if (error) throw createError(error)
+
+    if (id) await deleteJoinCampaignToken(id)
+
+    return data
+
+    // if (data && campaign.value) {
+    //   campaign.value.team?.push(data[0] as TeamMember)
+    // }
+  }
+
+  async function deleteCampaignTeamMember(id: number): Promise<void> {
+    const { error } = await supabase
+      .from('team')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw createError(error)
+
+    // if (campaign.value?.team) {
+    //   campaign.value.team = campaign.value.team.filter(h => h.id !== id)
+    // }
+  }
+
+  async function updateCampaignTeamMember(member: TeamUpdate, id: number): Promise<void> {
+    const { error } = await supabase
+      .from('team')
+      .update(member as never)
+      .eq('id', id)
+
+    if (error) throw createError(error)
+
+    // if (campaign.value?.team) {
+    //   const index = campaign.value.team.findIndex(e => e.id === id)
+
+    //   campaign.value.team[index] = {
+    //     ...campaign.value.team[index],
+    //     ...member,
+    //   }
+    // }
+  }
+
   return {
     max,
     amount,
     pages,
     perPage,
-    fetch,
-    fetchCount,
+    get,
+    getCount,
     getCampaignById,
     getCampaignsMinimal,
     getCampaignMinimalById,
     addCampaign,
     deleteCampaign,
     updateCampaign,
+    getJoinCampaignToken,
+    addJoinCampaignToken,
+    deleteJoinCampaignToken,
+    addCampaignTeamMember,
+    deleteCampaignTeamMember,
+    updateCampaignTeamMember,
   }
 })
