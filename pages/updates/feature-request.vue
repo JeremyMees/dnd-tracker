@@ -13,7 +13,7 @@ const page = ref<number>(0)
 
 const { data: requests, status, refresh } = await useAsyncData(
   'feature-requests',
-  async () => await features.fetch({
+  async () => await features.get({
     page: page.value,
     search: search.value,
   }, profile.user && createdBy.value === 'my'

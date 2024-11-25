@@ -11,7 +11,7 @@ const cr = ref<string>()
 
 const { data: hits, status, refresh } = await useAsyncData(
   'info-search',
-  async () => await open5e.fetch(
+  async () => await open5e.get(
     type.value,
     {
       limit: limit.value,

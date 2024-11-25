@@ -18,11 +18,11 @@ const search = ref<string>('')
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
-const count = ref<number>(await campaign.fetchCount())
+const count = ref<number>(await campaign.getCount())
 
 const { data: campaigns, status, refresh } = await useAsyncData(
   'campaigns',
-  async () => await campaign.fetch({
+  async () => await campaign.get({
     search: search.value,
     sortBy: sortBy.value,
     sortACS: sortACS.value,
@@ -43,7 +43,7 @@ const rowSelection = computed(() => selectedRows(table.value))
 
 async function refreshData(): Promise<void> {
   refresh()
-  count.value = await campaign.fetchCount()
+  count.value = await campaign.getCount()
 }
 
 function openModal(campaign?: CampaignItem): void {

@@ -23,11 +23,11 @@ const search = ref<string>('')
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
-const count = ref<number>(await encounter.fetchCount())
+const count = ref<number>(await encounter.getCount())
 
 const { data: encounters, status, refresh } = await useAsyncData(
   'encounters',
-  async () => await encounter.fetch({
+  async () => await encounter.get({
     search: search.value,
     sortBy: sortBy.value,
     sortACS: sortACS.value,
@@ -48,7 +48,7 @@ const rowSelection = computed(() => selectedRows(table.value))
 
 async function refreshData(): Promise<void> {
   refresh()
-  count.value = await encounter.fetchCount()
+  count.value = await encounter.getCount()
 }
 
 async function copy(item: EncounterItem): Promise<void> {
