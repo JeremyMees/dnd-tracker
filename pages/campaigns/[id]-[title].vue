@@ -1,9 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: ['auth', 'id-param', 'campaign-member'] })
 
-// can i maybe have a middleware that checks if the user is a member of the campaign?
-// instead on every sub page?
-
 const profile = useProfile()
 const campaign = useCampaigns()
 const route = useRoute()
