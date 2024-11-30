@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ['campaign-owner'] })
-
 const props = defineProps<{ current: CampaignFull }>()
 
 const localePath = useLocalePath()
@@ -41,7 +39,7 @@ async function transferOwnership(): Promise<void> {
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full gap-y-4 py-6">
+  <section class="flex flex-col items-center w-full gap-y-4 py-6">
     <div class="grow max-w-4xl border-4 border-danger bg-danger/50 rounded-lg">
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
         <div class="space-y-2">
@@ -85,5 +83,5 @@ async function transferOwnership(): Promise<void> {
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>

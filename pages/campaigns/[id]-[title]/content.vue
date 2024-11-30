@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-definePageMeta({ middleware: ['campaign-member'] })
+const props = defineProps<{ current: CampaignFull }>()
 </script>
 
 <template>
