@@ -5,6 +5,7 @@ import {
   ModalCampaign,
   ModalEncounter,
   ModalTransferOwnership,
+  ModalInviteMember,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -15,6 +16,7 @@ const modalComponents: Record<ModalComponent, any> = {
   Campaign: ModalCampaign,
   Encounter: ModalEncounter,
   TransferOwnership: ModalTransferOwnership,
+  InviteMember: ModalInviteMember,
 }
 </script>
 

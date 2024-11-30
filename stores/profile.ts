@@ -107,45 +107,17 @@ export const useProfile = defineStore('useProfile', () => {
     data.value = undefined
   }
 
-  // async function getProfileById(id: string): Promise<SocialProfile | undefined> {
-  //   try {
-  //     const { data, error: err } = await supabase
-  //       .from('profiles')
-  //       .select('id, created_at, username, name, avatar, email, badges')
-  //       .eq('id', id)
-  //       .single()
+  async function getProfile(match: Record<string, any>): Promise<Profile | null> {
+    const { data, error: err } = await supabase
+      .from('profiles')
+      .select('id, username, name, avatar, email')
+      .match(match)
+      .maybeSingle()
 
-  //     if (err) {
-  //       throw  createError(err)
-  //     }
+    if (err) throw createError(err)
 
-  //     return data as unknown as SocialProfile
-  //   }
-  //   catch (err) {
-  //     console.error(err)
-  //     toast.error()
-  //   }
-  // }
-
-  // async function getProfileByUsernameFuzzy(username: string): Promise<SocialProfile[] | undefined> {
-  //   try {
-  //     const { data, error: err } = await supabase
-  //       .from('profiles')
-  //       .select('id, created_at, username, name, avatar, email, badges')
-  //       .ilike('username', `%${username}%`)
-  //       .limit(12)
-
-  //     if (err) {
-  //       throw  createError(err)
-  //     }
-
-  //     return data as unknown as SocialProfile[]
-  //   }
-  //   catch (err) {
-  //     console.error(err)
-  //     toast.error()
-  //   }
-  // }
+    return data
+  }
 
   return {
     loading,
@@ -156,7 +128,6 @@ export const useProfile = defineStore('useProfile', () => {
     get,
     updateProfile,
     deleteProfile,
-    // getProfileById,
-    // getProfileByUsernameFuzzy,
+    getProfile,
   }
 })

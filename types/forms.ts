@@ -52,3 +52,18 @@ export interface TransformForm {
   role: UserRole | 'Remove'
   user: string
 }
+
+export interface UpdateRoleForm {
+  role: UserRole
+  id: string
+}
+
+export interface AddMemberForm {
+  role: UserRole
+  id: string
+  profile: Profile
+}
+
+export interface InviteMemberForm {
+  users: AddMemberForm[]
+}

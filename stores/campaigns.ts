@@ -165,10 +165,12 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     else return data
   }
 
-  async function addJoinCampaignToken(join: JoinCampaignInsert): Promise<JoinCampaignKey> {
-    const { data, error } = await supabase
+  async function addJoinCampaignToken(join: Omit<JoinCampaignInsert, 'token'>): Promise<string> {
+    const token = generateToken()
+
+    const { error } = await supabase
       .from('join_campaign')
-      .insert([join])
+      .insert([{ ...join, token }])
       .select(`
         *,
         user(id, username, avatar)
@@ -176,10 +178,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .returns<JoinCampaignKey>()
 
     if (error) throw createError(error)
-    else return data
-    // if (data && campaign.value) {
-    //   campaign.value.join_campaign?.push(data[0] as JoinCampaign)
-    // }
+    else return token
   }
 
   async function deleteJoinCampaignToken(id: number): Promise<void> {
@@ -233,7 +232,7 @@ export const useCampaigns = defineStore('useCampaigns', () => {
   async function updateCampaignTeamMember(member: TeamUpdate, id: number): Promise<void> {
     const { error } = await supabase
       .from('team')
-      .update(member as never)
+      .update(member)
       .eq('id', id)
 
     if (error) throw createError(error)

@@ -52,7 +52,9 @@
       "less": "Lees minder"
     },
     "buyCoffee": "Koop mij een koffietje",
-    "share": "Delen"
+    "share": "Delen",
+    "search": "Zoeken",
+    "invite": "Uitnodigen"
   },
   "general": {
     "spells": "Spreuken",
@@ -133,6 +135,7 @@
     "hair": "Haar",
     "content": "Inhoud",
     "settings": "Instellingen",
+    "invited": "uitgenodigd",
     "dangerZone": "Gevaar zone",
     "error": {
       "title": "Fout",
@@ -210,7 +213,8 @@
       "settings": {
         "add": "Mensen toevoegen",
         "access": "Toegang beheren",
-        "campaign": "Campagne instellingen"
+        "campaign": "Campagne instellingen",
+        "remove": "Verwijder {user} van campagne"
       },
       "danger": {
         "transfer": {
@@ -453,6 +457,7 @@
       "overrideFieldLabel": "Max {field} overschrijven",
       "optionalFieldHelp": "Optioneel om het huidige {field} te overschrijven",
       "searchByUsername": "Zoeken op gebruikersnaam",
+      "searchByEmail": "Zoeken op email",
       "newOwnerLabel": "Nieuwe eigenaar"
     },
     "campaignModal": {
@@ -605,20 +610,24 @@
       "submitted": "Je feature request is met enthousiasme ontvangen en ondergaat momenteel een zorgvuldige evaluatie. Zodra het is goedgekeurd, zal iedereen de mogelijkheid hebben om erop te stemmen. Je kunt controleren of verzoek is goedgekeurd zodra het label 'Onder beoordeling' niet meer zichtbaar is.",
       "another": "Nog een feature request maken"
     },
-    "userModal": {
+    "inviteMember": {
       "title": "Mensen toevoegen aan {campaign}",
-      "select": "Kies een persoon hierboven",
-      "add": "{username} toevoegen aan campaign",
+      "invite": "Nodig leden uit",
       "member": "Lid van de campagne",
       "invited": "Uitnodiging in afwachting",
+      "errors": {
+        "self": "Je kan jezelf niet toevoegen",
+        "alreadyAdded": "Deze persoon is al toegevoegd",
+        "alreadyInvited": "Deze persoon is al uitgenodigd",
+        "alreadySelected": "Deze persoon is al geselecteerd",
+        "notFound": "Gebruiker niet gevonden",
+        "maxMembers": "Max aantal leden bereikt",
+        "noUser": "{email} is geen gebruiker van de DnD Tracker. Stuur ze een uitnodiging om lid te worden van de DnD Tracker"
+      },
       "toast": {
         "invited": {
-          "title": "De uitnodiging is succesvol verstuurd",
-          "text": "Na acceptatie van de uitnodiging wordt de persoon toegevoegd als teamlid"
-        },
-        "alreadyInvited": {
-          "title": "Deze persoon heeft reeds een uitnodiging ontvangen",
-          "text": "Degene die je hebt uitgenodigd, heeft nog een lopende uitnodiging voor deze campagne"
+          "title": "Uitnodigingen zijn verstuurd",
+          "text": "Uitnodiging emails zijn verstuurd naar de geselecteerde gebruikers"
         }
       }
     },

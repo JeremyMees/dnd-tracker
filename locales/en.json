@@ -52,7 +52,9 @@
       "less": "Read less"
     },
     "buyCoffee": "Buy me a coffee",
-    "share": "Share"
+    "share": "Share",
+    "search": "Search",
+    "invite": "Invite"
   },
   "general": {
     "spells": "Spells",
@@ -133,6 +135,7 @@
     "hair": "Hair",
     "content": "Content",
     "settings": "Settings",
+    "invited": "Invited",
     "dangerZone": "Danger zone",
     "error": {
       "title": "Error",
@@ -210,7 +213,8 @@
       "settings": {
         "add": "Add people",
         "access": "Manage access",
-        "campaign": "Campaign settings"
+        "campaign": "Campaign settings",
+        "remove": "Remove {user} from campaign"
       },
       "danger": {
         "transfer": {
@@ -455,6 +459,7 @@
       "overrideFieldLabel": "Max {field} override",
       "optionalFieldHelp": "Optional to overwrite the current {field}",
       "searchByUsername": "Search by username",
+      "searchByEmail": "Search by email",
       "newOwnerLabel": "New owner"
     },
     "campaignModal": {
@@ -607,20 +612,24 @@
       "submitted": "Your feature request has been received with enthusiasm and is currently undergoing a careful evaluation. Once it is approved, everyone will have the opportunity to vote on it. You can check if the request has been approved when the label 'Under review' is no longer visible.",
       "another": "Create another feature request"
     },
-    "userModal": {
+    "inviteMember": {
       "title": "Add people to {campaign}",
-      "select": "Select a member above",
-      "add": "Add {username} to this campaign",
+      "invite": "Invite members",
       "member": "Member of the campaign",
       "invited": "Invitation awaiting response",
+      "errors": {
+        "self": "You can't add yourself",
+        "alreadyAdded": "This person is already a member of this campaign",
+        "alreadyInvited": "This person has already received an invitation",
+        "alreadySelected": "This person is already selected",
+        "notFound": "User not found",
+        "maxMembers": "Max members reached",
+        "noUser": "{email} is not a user of the DnD Tracker. Send them an invitation to join the DnD Tracker"
+      },
       "toast": {
         "invited": {
-          "title": "The invitation has been sent successfully",
-          "text": "After accepting the invitation, the person is added as a team member"
-        },
-        "alreadyInvited": {
-          "title": "This person has already received an invitation",
-          "text": "The person you have invited still has an active invitation for this campaign"
+          "title": "Invitations sent",
+          "text": "Invitation emails have been sent to the selected users"
         }
       }
     },

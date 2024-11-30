@@ -5,7 +5,7 @@ export function generateParams<T extends object>(data: T): string {
 }
 
 export function campaignUrl(
-  campaign: CampaignRow | CampaignItem,
+  campaign: CampaignRow | CampaignItem | CampaignFull,
   type: 'content' | 'settings' | 'danger-zone' | 'join',
 ): string {
   const title: string = campaign.title.replace(/[^a-zA-Z0-9]+/g, '-')

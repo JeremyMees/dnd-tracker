@@ -1,6 +1,6 @@
 import Plunk from '@plunk/node'
 import { render } from '@vue-email/render'
-import ContactRequest from '~/emails/ContactRequest.vue'
+import CampaignInvite from '~/emails/CampaignInvite.vue'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const plunk = new Plunk.default(plunkApiKey)
 
     const html = await render(
-      ContactRequest,
+      CampaignInvite,
       body,
       {
         pretty: true,
@@ -18,9 +18,9 @@ export default defineEventHandler(async (event) => {
     )
 
     return await plunk.emails.send({
-      from: body.email,
-      to: 'jeremy@dnd-tracker.com',
-      subject: 'New contact request/question',
+      from: 'jeremy@dnd-tracker.com',
+      to: body.email,
+      subject: 'New campaign invite',
       body: html,
     })
   }
