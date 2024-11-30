@@ -23,7 +23,7 @@ const { t } = useI18n()
   >
     <div class="flex gap-2 items-center">
       <img
-        class="inline-block size-8 rounded-full ring-2 ring-bg -scale-x-100 bg-bg-light"
+        class="inline-block size-8 rounded-full ring-2 ring-bg -scale-x-100 bg-bg-light ml-1"
         :src="img"
         :alt="`Avatar ${username}`"
       >
@@ -34,7 +34,7 @@ const { t } = useI18n()
         <span class="font-bold">
           {{ username }}
         </span>
-        <span>
+        <span class="text-slate-300">
           {{ name }}
         </span>
       </div>

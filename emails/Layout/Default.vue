@@ -62,9 +62,9 @@ defineProps<{
           </Section>
           <Hr class="border border-solid border-slate-700 my-[26px] mx-0 w-full" />
           <Text class="text-[14px] leading-[24px] px-[16px]">
-            We hope you have fun,
+            Happy adventuring,
             <br>
-            DnD-Tracker Team
+            The DnD-Tracker Team
           </Text>
           <template v-if="footer">
             <Hr class="border border-solid border-slate-700 my-[26px] mx-0 w-full" />

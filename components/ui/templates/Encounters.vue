@@ -223,7 +223,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           >
             <Icon
               name="material-symbols:share"
-              class="w-6 h-6"
+              class="size-6"
               aria-hidden="true"
             />
           </button>
@@ -236,19 +236,19 @@ async function deleteItems(ids: number[]): Promise<void> {
             >
               <Icon
                 name="material-symbols:content-copy-outline-rounded"
-                class="w-6 h-6"
+                class="size-6"
                 aria-hidden="true"
               />
             </button>
             <button
               v-tippy="t('actions.update')"
-              class="icon-btn-info group"
+              class="icon-btn-info"
               :aria-label="t('actions.update')"
               @click="openModal(row)"
             >
               <Icon
                 name="material-symbols:settings-outline"
-                class="icon-info"
+                class="size-6"
                 aria-hidden="true"
               />
             </button>

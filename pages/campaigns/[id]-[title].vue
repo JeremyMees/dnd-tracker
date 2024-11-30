@@ -8,7 +8,7 @@ const { t } = useI18n()
 
 const url = computed<string>(() => route.fullPath.split('/').slice(0, -1).join('/'))
 
-const { data, status } = await useAsyncData(
+const { data, status, refresh } = await useAsyncData(
   'campaign-detail',
   async () => await campaign.getCampaignById(+route.params.id),
 )
@@ -23,7 +23,9 @@ const { data, status } = await useAsyncData(
       <span class="text-slate-300">
         {{ t('general.campaign') }}:
       </span>
-      <span v-if="status === 'success'">{{ data.title }}</span>
+      <span v-if="status === 'success'">
+        {{ data?.title }}
+      </span>
       <div
         v-else
         class="w-[150px] h-8 rounded-full bg-bg animate-pulse"
@@ -50,7 +52,10 @@ const { data, status } = await useAsyncData(
       />
     </div>
     <div class="min-h-[40vh]">
-      <NuxtPage :current="data" />
+      <NuxtPage
+        :current="data"
+        @refresh="refresh"
+      />
     </div>
   </NuxtLayout>
 </template>

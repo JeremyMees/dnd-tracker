@@ -181,13 +181,13 @@ async function deleteItems(ids: number[]): Promise<void> {
             <button
               v-if="isOwner(row, profile.user!.id)"
               v-tippy="t('actions.update')"
-              class="icon-btn-info group"
+              class="icon-btn-info"
               :aria-label="t('actions.update')"
               @click="openModal(row)"
             >
               <Icon
                 name="material-symbols:settings-outline"
-                class="icon-info"
+                class="icon"
                 aria-hidden="true"
               />
             </button>
