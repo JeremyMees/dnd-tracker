@@ -398,7 +398,7 @@
         }
       }
     },
-    "noMember": {
+    "noAccess": {
       "title": "You're not a team member",
       "text": "Oops! It seems like you're not a member, and you don't have access to this content. If you believe this is a mistake, please don't hesitate to reach out to the owner or an admin for assistance."
     },

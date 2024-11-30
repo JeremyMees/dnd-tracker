@@ -396,7 +396,7 @@
         }
       }
     },
-    "noMember": {
+    "noAccess": {
       "title": "Je bent geen teamlid",
       "text": "Oeps! Het lijkt erop dat je geen lid bent en geen toegang hebt tot deze inhoud. Als je denkt dat dit een vergissing is, aarzel dan niet om contact op te nemen met de eigenaar of een beheerder voor hulp."
     },
