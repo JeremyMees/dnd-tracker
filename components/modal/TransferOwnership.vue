@@ -79,7 +79,7 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
     <SplitText
       :text="t('components.transferOwnershipModal.text', { campaign: current.title })"
       :split="current.title"
-      classes="font-bold last:hidden text-danger"
+      classes="font-bold text-danger"
       class="py-4 body-small"
     />
     <FormKit

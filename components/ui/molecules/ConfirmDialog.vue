@@ -48,7 +48,7 @@ function close(): void {
         <SplitText
           :text="t('components.confirmationModal.text', { title })"
           :split="title"
-          classes="font-bold last:hidden"
+          classes="font-bold"
         />
       </div>
       <FormKit
