@@ -10,7 +10,6 @@ const toast = useToast()
 const { t } = useI18n()
 const modal = useModal()
 const { ask } = useConfirm()
-const isSmall = useMediaQuery('(max-width: 768px)')
 
 const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
   return [
@@ -218,19 +217,5 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
         </FormKit>
       </div>
     </div>
-    <!--
-    <ConfirmationModal
-      v-if="selectedTeamMember || selectedInvite"
-      :open="needConfirmation"
-      :title="selectedTeamMember?.user.username || selectedInvite!.user.username"
-      @close="needConfirmation = false"
-      @delete="handleDelete"
-    />
-    <UserModal
-      v-if="store.campaign"
-      :open="isOpen"
-      :campaign="store.campaign"
-      @close="isOpen = false"
-    /> -->
   </section>
 </template>
