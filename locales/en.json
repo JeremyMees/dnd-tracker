@@ -42,6 +42,8 @@
     "start": "Start",
     "finish": "Finish",
     "decline": "Decline",
+    "accept": "Accept",
+    "join": "Join",
     "transfer": "Transfer",
     "flip": "Flip {axis}",
     "export": "Export",
@@ -227,9 +229,8 @@
         }
       },
       "join": {
-        "title": "Answer the Call to Adventure: Join {campaign} Now!",
-        "text": "Congratulations! You've received an invitation to join {campaign} as a {role}. Your opportunity to be a part of this incredible journey is right at your fingertips.",
-        "accept": "Join the Adventure"
+        "title": "Start your adventure with {campaign}!",
+        "text": "Congratulations! You've received an invitation to join {campaign} as a {role}. Your opportunity to be a part of this incredible journey is right at your fingertips."
       },
       "toast": {
         "update": "Updated your campaign successfully",

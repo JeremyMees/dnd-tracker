@@ -1,15 +1,25 @@
-export default defineNuxtRouteMiddleware(async ({ params, fullPath }) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   const supabase = useSupabaseClient<Database>()
   const localePath = useLocalePath()
   const user = useSupabaseUser()
-  const id = params.id
 
-  if (!id || isNaN(+id)) return navigateTo(localePath('/'))
+  if (!to.params.title || !to.params.id || isNaN(+to.params.id)) {
+    return navigateTo(localePath('/'))
+  }
+
+  let page: 'index' | 'content' | 'settings' | 'danger-zone' = 'index'
+
+  if (to.fullPath.includes('/content')) page = 'content'
+  else if (to.fullPath.includes('/settings')) page = 'settings'
+  else if (to.fullPath.includes('/danger-zone')) page = 'danger-zone'
+
+  // Redirect to content page if user tries to access index page
+  if (page === 'index') return navigateTo(`${to.fullPath}/content`)
 
   let expectedRole: UserRole = 'Owner'
 
-  if (fullPath.includes('/settings')) expectedRole = 'Admin'
-  else if (fullPath.includes('/content')) expectedRole = 'Viewer'
+  if (page === 'settings') expectedRole = 'Admin'
+  else if (['content', 'index'].includes(page)) expectedRole = 'Viewer'
 
   try {
     const { data, error } = await supabase
@@ -20,23 +30,29 @@ export default defineNuxtRouteMiddleware(async ({ params, fullPath }) => {
         team(
           role,
           user
+        ),
+        join_campaign(
+          role,
+          user
         )
       `)
-      .eq('id', id)
+      .eq('id', to.params.id)
       .single()
 
     if (error) throw createError(error)
 
-    if (data.created_by === user.value?.id) return // Owner can always access
+    // Owner can always access the page
+    if (data.created_by === user.value?.id) return
 
     const member = data.team.find(member => member.user === user.value?.id)
 
+    // check if user has permission to access the page
     if (member) {
       if (hasPermission(member.role, expectedRole)) return
       else return navigateTo(
         expectedRole === 'Admin'
-          ? fullPath.replace('/settings', '/content')
-          : fullPath.replace('/danger-zone', '/content'),
+          ? to.fullPath.replace('/settings', '/content')
+          : to.fullPath.replace('/danger-zone', '/content'),
       )
     }
     else return navigateTo(localePath('/no-access'))

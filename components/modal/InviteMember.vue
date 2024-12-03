@@ -12,6 +12,7 @@ const campaign = useCampaigns()
 const profile = useProfile()
 const toast = useToast()
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 const noUser = ref<string>()
 const form = ref<{ users: AddMemberForm[] }>({ users: [] })
@@ -99,7 +100,7 @@ async function addTeamMember(user: AddMemberForm): Promise<void> {
       username: user.profile.username,
       campaign: props.current.title,
       invitedBy: profile.data!.username || 'Owner',
-      inviteLink: `https://dnd-tracker.com${campaignUrl(props.current, 'join')}?token=${token}`,
+      inviteLink: `https://dnd-tracker.com${localePath('/campaigns/join')}?token=${token}&campaign=${props.current.id}`,
     },
   })
 }

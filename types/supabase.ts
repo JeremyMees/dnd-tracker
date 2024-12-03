@@ -111,8 +111,7 @@ export interface CampaignFull {
   join_campaign: TeamMemberFull[]
 }
 
-export interface JoinCampaignItem extends Omit<JoinCampaignRow, 'user' | 'campaign'> {
-  user: MinimalProfile
+export interface JoinCampaignItem extends Pick<JoinCampaignRow, 'user' | 'role' | 'id'> {
   campaign: Pick<CampaignRow, 'id' | 'title'>
 }
 

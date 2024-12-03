@@ -149,22 +149,6 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     if (error) throw createError(error)
   }
 
-  async function getJoinCampaignToken(token: string): Promise<JoinCampaignItem> {
-    const { data, error } = await supabase
-      .from('join_campaign')
-      .select(`
-        *,
-        user(id, username, avatar),
-        campaign(title, id)
-      `)
-      .eq('token', token)
-      .returns<JoinCampaignKey>()
-      .single()
-
-    if (error) throw createError(error)
-    else return data
-  }
-
   async function addJoinCampaignToken(join: Omit<JoinCampaignInsert, 'token'>): Promise<string> {
     const token = generateToken()
 
@@ -188,32 +172,16 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .eq('id', id)
 
     if (error) throw createError(error)
-
-    // if (campaign.value?.join_campaign) {
-    //   campaign.value.join_campaign = campaign.value.join_campaign.filter(h => h.id !== id)
-    // }
   }
 
-  async function addCampaignTeamMember(member: TeamInsert, id?: number): Promise<TeamMember> {
-    const { data, error } = await supabase
+  async function addCampaignTeamMember(member: TeamInsert, id?: number): Promise<void> {
+    const { error } = await supabase
       .from('team')
       .insert([member])
-      .select(`
-        id,
-        role,
-        user(id, username, avatar)
-      `)
-      .returns<TeamMember>()
 
     if (error) throw createError(error)
 
     if (id) await deleteJoinCampaignToken(id)
-
-    return data
-
-    // if (data && campaign.value) {
-    //   campaign.value.team?.push(data[0] as TeamMember)
-    // }
   }
 
   async function deleteCampaignTeamMember(id: number): Promise<void> {
@@ -223,10 +191,6 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .eq('id', id)
 
     if (error) throw createError(error)
-
-    // if (campaign.value?.team) {
-    //   campaign.value.team = campaign.value.team.filter(h => h.id !== id)
-    // }
   }
 
   async function updateCampaignTeamMember(member: TeamUpdate, id: number): Promise<void> {
@@ -236,15 +200,6 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       .eq('id', id)
 
     if (error) throw createError(error)
-
-    // if (campaign.value?.team) {
-    //   const index = campaign.value.team.findIndex(e => e.id === id)
-
-    //   campaign.value.team[index] = {
-    //     ...campaign.value.team[index],
-    //     ...member,
-    //   }
-    // }
   }
 
   return {
@@ -260,7 +215,6 @@ export const useCampaigns = defineStore('useCampaigns', () => {
     addCampaign,
     deleteCampaign,
     updateCampaign,
-    getJoinCampaignToken,
     addJoinCampaignToken,
     deleteJoinCampaignToken,
     addCampaignTeamMember,

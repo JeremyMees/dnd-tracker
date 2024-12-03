@@ -42,6 +42,8 @@
     "start": "Start",
     "finish": "Einde",
     "decline": "Afwijzen",
+    "accept": "Accepteer",
+    "join": "Deelnemen",
     "transfer": "Overdragen",
     "flip": "Flip {axis}",
     "export": "Export",
@@ -227,9 +229,8 @@
         }
       },
       "join": {
-        "title": "Beantwoord de Oproep tot Avontuur: Sluit je nu aan bij {campaign}!",
-        "text": "Gefeliciteerd! Je hebt een uitnodiging ontvangen om deel te nemen aan {campaign} als een {role}. Jouw kans om deel uit te maken van dit ongelooflijke avontuur ligt nu binnen handbereik.",
-        "accept": "Ga het Avontuur aan"
+        "title": "Start jouw avontuur met {campaign}!",
+        "text": "Gefeliciteerd! Je hebt een uitnodiging ontvangen om deel te nemen aan {campaign} als een {role}. Jouw kans om deel uit te maken van dit ongelooflijke avontuur ligt nu binnen handbereik."
       },
       "toast": {
         "update": "Je campagne is succesvol bijgewerkt",
