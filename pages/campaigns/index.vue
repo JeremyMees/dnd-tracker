@@ -73,6 +73,27 @@ async function deleteItems(ids: number[]): Promise<void> {
     }
   })
 }
+
+async function leaveCampaign(item: CampaignItem): Promise<void> {
+  const member = item.team?.find(member => member.user.id === profile.user!.id)
+
+  if (!member) return
+
+  ask({
+    title: t('general.yourself'),
+  }, async (confirmed: boolean) => {
+    if (!confirmed) return
+
+    try {
+      await campaign.deleteCampaignTeamMember(member.id)
+
+      refreshData()
+    }
+    catch (err) {
+      toast.error()
+    }
+  })
+}
 </script>
 
 <template>
@@ -179,7 +200,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           </td>
           <td class="td flex justify-end">
             <button
-              v-if="isOwner(row, profile.user!.id)"
+              v-if="isAdmin(row, profile.user!.id)"
               v-tippy="t('actions.update')"
               class="icon-btn-info"
               :aria-label="t('actions.update')"
@@ -187,6 +208,19 @@ async function deleteItems(ids: number[]): Promise<void> {
             >
               <Icon
                 name="material-symbols:settings-outline"
+                class="icon"
+                aria-hidden="true"
+              />
+            </button>
+            <button
+              v-if="!isOwner(row, profile.user!.id)"
+              v-tippy="t('actions.leave')"
+              class="icon-btn-warning"
+              :aria-label="t('actions.leave')"
+              @click="leaveCampaign(row)"
+            >
+              <Icon
+                name="ic:round-exit-to-app"
                 class="icon"
                 aria-hidden="true"
               />
