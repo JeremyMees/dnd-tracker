@@ -5,11 +5,13 @@ const emit = defineEmits<{ refresh: [] }>()
 
 const props = defineProps<{ current: CampaignFull }>()
 
+const profile = useProfile()
 const campaign = useCampaigns()
 const toast = useToast()
 const { t } = useI18n()
 const modal = useModal()
 const { ask } = useConfirm()
+const localePath = useLocalePath()
 
 const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
   return [
@@ -65,9 +67,12 @@ function inviteTeamMember(): void {
 
 async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): Promise<void> {
   const id = member.id
+  const self = member.user.id === profile.user!.id
 
   ask({
-    title: member.user.username,
+    title: self
+      ? t('general.yourself')
+      : member.user.username,
   }, async (confirmed: boolean) => {
     if (!confirmed) return
 
@@ -75,7 +80,8 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
       if (member.invite) await campaign.deleteJoinCampaignToken(id)
       else await campaign.deleteCampaignTeamMember(id)
 
-      emit('refresh')
+      if (self) navigateTo(localePath('/campaigns'))
+      else emit('refresh')
     }
     catch (err) {
       toast.error()

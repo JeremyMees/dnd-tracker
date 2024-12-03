@@ -59,6 +59,7 @@
     "invite": "Invite"
   },
   "general": {
+    "yourself": "yourself",
     "spells": "Spells",
     "conditions": "Conditions",
     "magicitems": "Magic items",
