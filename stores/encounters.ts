@@ -26,7 +26,7 @@ export const useEncounters = defineStore('useEncounters', () => {
     )
   `
 
-  async function get(filter: SbFilter): Promise<EncounterItem[] | undefined> {
+  async function get(filter: SbFilter, eq?: SbEq): Promise<EncounterItem[] | undefined> {
     const { data, count, totalPages } = await sbQuery<EncounterItem>({
       table: 'initiative_sheets',
       page: filter.page,
@@ -34,6 +34,7 @@ export const useEncounters = defineStore('useEncounters', () => {
       perPage: perPage.value,
       select,
       fuzzy: true,
+      ...(eq && { eq }),
     })
 
     amount.value = count

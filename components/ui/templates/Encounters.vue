@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import type { DataTable, LimitCta } from '#components'
 
-const props = withDefaults(
-  defineProps<{
-    campaignView?: boolean
-  }>(), {
-    campaignView: false,
-  },
-)
+const props = defineProps<{ campaignId?: number }>()
+
 const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
@@ -32,7 +27,11 @@ const { data: encounters, status, refresh } = await useAsyncData(
     sortBy: sortBy.value,
     sortACS: sortACS.value,
     page: page.value,
-  }),
+  },
+  props.campaignId
+    ? { field: 'campaign', value: props.campaignId }
+    : undefined,
+  ),
   {
     watch: [sortBy, sortACS, page],
   },
@@ -70,17 +69,15 @@ function share(item: EncounterItem): void {
   })
 }
 
-function openModal(encounter?: EncounterItem): void {
+function openModal(item?: EncounterItem): void {
   modal.open({
     component: 'Encounter',
-    header: t(`components.encounterModal.${encounter ? 'update' : 'add'}`),
+    header: t(`components.encounterModal.${item ? 'update' : 'add'}`),
     events: { finished: () => refreshData() },
-    ...(encounter && { props: { encounter } }),
-    ...(props.campaignView && {
-      props: {
-        campaignId: encounter?.campaign?.id,
-      },
-    }),
+    props: {
+      ...props,
+      ...(item && { encounter: item }),
+    },
   })
 }
 
@@ -112,7 +109,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     />
   </AnimationExpand>
   <LimitCta
-    v-if="campaignView && count >= encounter.max"
+    v-if="count >= encounter.max"
     ref="limitCta"
   />
   <DataTable
@@ -122,7 +119,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     v-model:search="search"
     :headers="[
       { label: t('general.name'), sort: true, id: 'title' },
-      ...(props.campaignView ? [] : [{ label: t('general.campaign'), sort: false, id: 'campaign.title' }]),
+      ...(props.campaignId ? [] : [{ label: t('general.campaign'), sort: false, id: 'campaign.title' }]),
       { label: t('general.rows'), sort: false, id: 'rows' },
       { label: t('general.members'), sort: false, id: 'team' },
       { label: '', sort: false, id: 'actions' },
@@ -188,7 +185,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           </RouteLink>
         </td>
         <td
-          v-if="!campaignView"
+          v-if="!campaignId"
           class="td"
         >
           <RouteLink
