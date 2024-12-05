@@ -19,18 +19,24 @@ const { data, status, refresh } = await useAsyncData(
     container
     shadow
   >
-    <h1 class="pb-4 flex flex-wrap gap-x-4 gap-y-2 items-center">
-      <span class="text-slate-300">
-        {{ t('general.campaign') }}:
-      </span>
-      <span v-if="status === 'success'">
-        {{ data?.title }}
-      </span>
-      <div
-        v-else
-        class="w-[150px] h-8 rounded-full bg-bg animate-pulse"
-      />
-    </h1>
+    <div class="pb-4 flex flex-wrap gap-x-4 gap-y-2 items-center">
+      <BackButton link="/campaigns" />
+      <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
+        <h1 class="text-slate-300">
+          {{ t('general.campaign') }}:
+        </h1>
+        <span
+          v-if="status === 'success'"
+          class="head-1"
+        >
+          {{ data?.title }}
+        </span>
+        <div
+          v-else
+          class="w-[150px] h-8 rounded-full bg-bg animate-pulse"
+        />
+      </div>
+    </div>
     <div class="flex flex-wrap gap-4 md:border-b-2 md:border-slate-700 mb-10">
       <TabItem
         :link="`${url}/content`"

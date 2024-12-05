@@ -141,6 +141,7 @@
     "settings": "Settings",
     "invited": "Invited",
     "dangerZone": "Danger zone",
+    "back": "Back",
     "error": {
       "title": "Error",
       "text": "Something went wrong"
