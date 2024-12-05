@@ -45,11 +45,16 @@ function close(): void {
           name="ph:warning-bold"
           class="min-w-[30px] min-h-[30px]"
         />
-        <SplitText
-          :text="t('components.confirmationModal.text', { title })"
-          :split="title"
-          classes="font-bold"
-        />
+        <I18nT
+          keypath="components.confirmationModal.text"
+          tag="p"
+        >
+          <template #title>
+            <span class="font-bold">
+              {{ title }}
+            </span>
+          </template>
+        </I18nT>
       </div>
       <FormKit
         id="form"

@@ -76,12 +76,17 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
         value: user.id,
       }))"
     />
-    <SplitText
-      :text="t('components.transferOwnershipModal.text', { campaign: current.title })"
-      :split="current.title"
-      classes="font-bold text-danger"
+    <I18nT
+      keypath="components.transferOwnershipModal.text"
+      tag="p"
       class="py-4 body-small"
-    />
+    >
+      <template #campaign>
+        <span class="font-bold text-danger">
+          {{ current.title }}
+        </span>
+      </template>
+    </I18nT>
     <FormKit
       name="title"
       :label="t('components.inputs.titleLabel')"

@@ -44,20 +44,25 @@ async function answerInvite(accept: boolean): Promise<void> {
   <NuxtLayout name="centered">
     <section class="space-y-6">
       <template v-if="status === 'success' && data?.campaign">
-        <SplitText
-          :text="t('pages.campaign.join.title', { campaign: data.campaign.title })"
-          :split="data.campaign.title"
-          tag="h2"
-          classes="text-primary"
-        />
-        <p class="text-slate-300">
-          {{
-            t('pages.campaign.join.text', {
-              campaign: data.campaign.title,
-              role: t(`general.roles.${data.role}.title`),
-            })
-          }}
-        </p>
+        <h2>
+          {{ t('pages.campaign.join.title', { campaign: data.campaign.title }) }}
+        </h2>
+        <I18nT
+          keypath="pages.campaign.join.text"
+          tag="p"
+          class="text-slate-300"
+        >
+          <template #campaign>
+            <span class="text-white font-bold">
+              {{ data.campaign.title }}
+            </span>
+          </template>
+          <template #role>
+            <span class="text-white font-bold">
+              {{ t(`general.roles.${data.role}.title`) }}
+            </span>
+          </template>
+        </I18nT>
         <div class="flex flex-col sm:flex-row sm:justify-end gap-2">
           <button
             :disabled="isLoading"
