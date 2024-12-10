@@ -880,6 +880,55 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      citext:
+        | {
+          Args: {
+            '': boolean
+          }
+          Returns: string
+        }
+        | {
+          Args: {
+            '': string
+          }
+          Returns: string
+        }
+        | {
+          Args: {
+            '': unknown
+          }
+          Returns: string
+        }
+      citext_hash: {
+        Args: {
+          '': string
+        }
+        Returns: number
+      }
+      citextin: {
+        Args: {
+          '': unknown
+        }
+        Returns: string
+      }
+      citextout: {
+        Args: {
+          '': string
+        }
+        Returns: unknown
+      }
+      citextrecv: {
+        Args: {
+          '': unknown
+        }
+        Returns: string
+      }
+      citextsend: {
+        Args: {
+          '': string
+        }
+        Returns: string
+      }
       gtrgm_compress: {
         Args: {
           '': unknown
@@ -968,6 +1017,7 @@ export type Database = {
         | 'Thunder'
         | 'Other'
       feature_request_status: 'review' | 'accepted' | 'progress'
+      homebrew_type: 'player' | 'summon' | 'npc' | 'monster' | 'lair'
       magic_item_type:
         | 'Wondrous item'
         | 'Armor'
