@@ -16,7 +16,7 @@ const { t, locale } = useI18n()
 
 const search = ref<string>('')
 const sortBy = ref<string>('title')
-const sortACS = ref<boolean>(false)
+const sortACS = ref<boolean>(true)
 const page = ref<number>(0)
 const count = ref<number>(await encounter.getCount())
 
@@ -190,7 +190,7 @@ async function deleteItems(ids: number[]): Promise<void> {
         >
           <RouteLink
             v-if="row.campaign"
-            :url="campaignUrl(row, 'content')"
+            :url="campaignUrl(row.campaign, 'content')"
             class="underline underline-offset-2 decoration-primary"
           >
             {{ row.campaign.title }}

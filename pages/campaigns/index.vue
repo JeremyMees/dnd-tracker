@@ -16,7 +16,7 @@ const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const search = ref<string>('')
 const sortBy = ref<string>('title')
-const sortACS = ref<boolean>(false)
+const sortACS = ref<boolean>(true)
 const page = ref<number>(0)
 const count = ref<number>(await campaign.getCount())
 
@@ -187,10 +187,10 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
             </RouteLink>
           </td>
           <td class="td">
-            {{ row.homebrew_items }}
+            {{ row.initiative_sheets }}
           </td>
           <td class="td">
-            {{ row.initiative_sheets }}
+            {{ row.homebrew_items }}
           </td>
           <td class="td">
             <AvatarGroup

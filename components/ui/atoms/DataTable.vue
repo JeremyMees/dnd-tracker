@@ -13,7 +13,7 @@ const props = withDefaults(
     pages: number
     perPage: number
     totalItems: number
-    type: 'campaign' | 'encounter'
+    type: 'campaign' | 'encounter' | 'homebrew'
     loading?: boolean
     select?: boolean
   }>(), {
@@ -23,7 +23,7 @@ const props = withDefaults(
 )
 
 const sortBy = defineModel<string>('sortBy', { required: true })
-const sortACS = defineModel<boolean>('acs', { default: false, required: true })
+const sortACS = defineModel<boolean>('acs', { default: true, required: true })
 const page = defineModel<number>('page', { default: 0 })
 const search = defineModel<string>('search', { default: '' })
 
