@@ -14,7 +14,10 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   }
 
   if (filters?.sortBy) {
-    query = query.order(filters.sortBy, { ascending: filters.sortACS || false })
+    query = query.order(filters.sortBy, {
+      ascending: filters.sortACS || false,
+      nullsFirst: false,
+    })
   }
 
   if (eq) {
