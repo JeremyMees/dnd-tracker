@@ -16,9 +16,11 @@ const props = withDefaults(
     type: 'campaign' | 'encounter' | 'homebrew'
     loading?: boolean
     select?: boolean
+    hasRights?: boolean
   }>(), {
     loading: false,
     select: false,
+    hasRights: undefined,
   },
 )
 
@@ -32,8 +34,16 @@ const profile = useProfile()
 
 const selectedAll = ref<boolean>(false)
 const selected = ref<any[]>([])
+const detailRow = ref<number>()
 
-defineExpose({ toggleRow, toggleAll, toggleSort, selected })
+defineExpose({
+  toggleRow,
+  toggleAll,
+  toggleSort,
+  toggleDetailRow,
+  selected,
+  detailRow,
+})
 
 function toggleSort(key: string): void {
   if (!props.items.length && props.loading) return
@@ -42,6 +52,11 @@ function toggleSort(key: string): void {
   sortBy.value = key
   selectedAll.value = false
   selected.value = []
+}
+
+function toggleDetailRow(id: number): void {
+  if (detailRow.value === id) detailRow.value = undefined
+  else detailRow.value = id
 }
 
 function toggleRow(row: any): void {
@@ -53,6 +68,8 @@ function toggleRow(row: any): void {
 
 function toggleAll(): void {
   const itemsWithRights = props.items.filter((item) => {
+    if (props.hasRights !== undefined) return props.hasRights
+
     const owner = isOwner(item, profile.user!.id)
 
     return props.type === 'campaign'
