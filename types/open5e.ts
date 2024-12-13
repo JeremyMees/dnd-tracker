@@ -31,7 +31,17 @@ export interface Open5eFilters {
   document__slug?: string
 }
 
-export interface Open5eItem extends PossibleAttacks, Abilities {
+export interface Open5eItem {
+  strength: number
+  dexterity: number
+  constitution: number
+  intelligence: number
+  wisdom: number
+  charisma: number
+  actions: Action[]
+  legendary_actions: Action[]
+  reactions: Action[]
+  special_abilities: Action[]
   slug: string
   desc: string
   name: string
