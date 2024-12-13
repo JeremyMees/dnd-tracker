@@ -38,8 +38,8 @@ export const useCampaigns = defineStore('useCampaigns', () => {
 
       return data?.map(campaign => ({
         ...campaign,
-        homebrew_items: sbCount('homebrew_items', data),
-        initiative_sheets: sbCount('initiative_sheets', data),
+        homebrew_items: sbCount('homebrew_items', campaign),
+        initiative_sheets: sbCount('initiative_sheets', campaign),
       }))
     }
     catch (err) {
