@@ -64,8 +64,21 @@ export type DNDRules = Database['public']['Enums']['rules']
 export type SubscriptionType = Database['public']['Enums']['subscription_type']
 export type UserRole = Database['public']['Enums']['user_role']
 export type WeaponCategory = Database['public']['Enums']['weapon_category']
+export type HomebrewType = Database['public']['Enums']['homebrew_type']
+export type ActionType = Database['public']['Enums']['action_type']
+
+// Database json schema types
+export type Action = {
+  name: string
+  desc: string
+  type: ActionType
+  attack_bonus?: number
+  damage_bonus?: number
+  damage_dice?: string
+}
 
 // Extended Types
+export type NotUpdatable = 'id' | 'created_at' | 'updated_at'
 export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role' | 'avatar_options'>>
 
 export type MinimalProfile = Pick<ProfileRow, 'avatar' | 'id' | 'username'>

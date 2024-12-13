@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database.ts"
+    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database-generated.ts"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.2",
@@ -38,6 +38,7 @@
     "gsap": "^3.12.5",
     "markdown-it": "^14.1.0",
     "nuxt": "^3.13.0",
+    "type-fest": "^4.30.1",
     "vue": "latest",
     "vue-router": "latest",
     "vue-tippy": "^6.5.0"
