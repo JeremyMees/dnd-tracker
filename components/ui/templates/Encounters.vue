@@ -129,7 +129,6 @@ async function deleteItems(ids: number[]): Promise<void> {
     :per-page="encounter.perPage"
     :total-items="encounter.amount"
     :loading="status === 'pending'"
-    :owner="profile.user!.id"
     type="encounter"
     select
     @remove="deleteItems"

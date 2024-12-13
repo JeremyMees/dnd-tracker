@@ -131,7 +131,6 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       :per-page="campaign.perPage"
       :total-items="campaign.amount"
       :loading="status === 'pending'"
-      :owner="profile.user!.id"
       type="campaign"
       select
       @remove="deleteItems"
