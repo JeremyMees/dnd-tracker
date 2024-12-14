@@ -77,3 +77,23 @@ export function selectedRows(table?: InstanceType<typeof DataTable>): Record<str
     return acc
   }, {})
 }
+
+export function homebrewIcon(type: HomebrewType): string {
+  switch (type) {
+    case 'summon': return 'mdi:magic'
+    case 'npc': return 'ph:person'
+    case 'monster': return 'la:dragon'
+    case 'lair': return 'material-symbols:castle-outline-rounded'
+    default: return 'ph:sword'
+  }
+}
+
+export function homebrewColor(type: HomebrewType): string {
+  switch (type) {
+    case 'summon': return 'text-secondary'
+    case 'npc': return 'text-success'
+    case 'monster': return 'text-danger'
+    case 'lair': return 'text-warning'
+    default: return 'text-primary'
+  }
+}

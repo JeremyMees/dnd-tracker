@@ -13,7 +13,7 @@ function generate(): void {
   names.value = []
 
   for (let i = 0; i < 30; i++) {
-    names.value.push(useRandomName())
+    names.value.push(randomName())
   }
 }
 
