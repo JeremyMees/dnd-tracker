@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DataTable, LimitCta } from '#components'
 
-const props = defineProps<{ campaignId?: number }>()
+const props = defineProps<{ campaign?: CampaignFull }>()
 
 const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
@@ -28,8 +28,8 @@ const { data: encounters, status, refresh } = await useAsyncData(
     sortACS: sortACS.value,
     page: page.value,
   },
-  props.campaignId
-    ? { field: 'campaign', value: props.campaignId }
+  props.campaign?.id
+    ? { field: 'campaign', value: props.campaign.id }
     : undefined,
   ),
   {
@@ -119,7 +119,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     v-model:search="search"
     :headers="[
       { label: t('general.name'), sort: true, id: 'title' },
-      ...(props.campaignId ? [] : [{ label: t('general.campaign'), sort: false, id: 'campaign.title' }]),
+      ...(props.campaign ? [] : [{ label: t('general.campaign'), sort: false, id: 'campaign.title' }]),
       { label: t('general.row', 2), sort: false, id: 'rows' },
       { label: t('general.member', 2), sort: false, id: 'team' },
       { label: '', sort: false, id: 'actions' },
@@ -143,7 +143,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       <button
         class="btn-primary"
         :aria-label="t('actions.create')"
-        :disabled="status === 'pending'"
+        :disabled="status === 'pending' || (campaign && !isAdmin(campaign, profile.user!.id))"
         @click="() => {
           count >= encounter.max
             ? limitCta?.show()
@@ -165,7 +165,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       >
         <td class="td max-w-6">
           <FormKit
-            v-if="row.created_by.id === profile.user!.id"
+            v-if="row.campaign ? isAdmin(row.campaign, profile.user!.id, true) : row.created_by.id === profile.user!.id"
             v-model="rowSelection[row.id]"
             type="checkbox"
             :disabled="status === 'pending'"
@@ -184,7 +184,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           </RouteLink>
         </td>
         <td
-          v-if="!campaignId"
+          v-if="!campaign"
           class="td"
         >
           <RouteLink
@@ -223,7 +223,7 @@ async function deleteItems(ids: number[]): Promise<void> {
               aria-hidden="true"
             />
           </button>
-          <template v-if="isAdmin(row, profile.user!.id)">
+          <template v-if="row.campaign ? isAdmin(row.campaign, profile.user!.id, true) : true">
             <button
               v-tippy="t('actions.copy')"
               class="icon-btn-primary"

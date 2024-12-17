@@ -70,11 +70,11 @@ function toggleAll(): void {
   const itemsWithRights = props.items.filter((item) => {
     if (props.hasRights !== undefined) return props.hasRights
 
-    const owner = isOwner(item, profile.user!.id)
+    const owner = isOwner(item, profile.user!.id, true)
 
     return props.type === 'campaign'
       ? owner
-      : owner || isAdmin(item, profile.user!.id)
+      : owner || isAdmin(item, profile.user!.id, true)
   })
 
   if (selected.value.length === itemsWithRights.length) selected.value = []

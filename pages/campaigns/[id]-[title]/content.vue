@@ -1,7 +1,16 @@
 <script lang="ts" setup>
-defineProps<{ current: CampaignFull }>()
+const props = defineProps<{ current: CampaignFull }>()
 
 const { t } = useI18n()
+// const profile = useProfile()
+
+// const permission = computed<UserRole>(() => {
+//   if (!profile.user) return 'Player'
+//   else {
+//     const member = props.current.team.find(team => team.user.id === profile.user?.id)
+//     return member?.role || 'Player'
+//   }
+// })
 </script>
 
 <template>
@@ -10,7 +19,7 @@ const { t } = useI18n()
       <h2>
         {{ t('general.encounter', 2) }}
       </h2>
-      <Encounters :campaign-id="current.id" />
+      <Encounters :campaign="current" />
     </div>
     <div class="space-y-6">
       <div class="flex gap-4 items-center">

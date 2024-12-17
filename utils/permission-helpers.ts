@@ -2,22 +2,39 @@ function isEncounter(item: CampaignItem | EncounterItem): item is EncounterItem 
   return 'activeIndex' in item
 }
 
-export function isOwner(item: CampaignItem | EncounterItem, id: string): boolean {
-  return item.created_by.id === id
+export function isOwner(
+  item: CampaignItem | EncounterItem,
+  id: string,
+  strict?: boolean,
+): boolean {
+  const team = isEncounter(item) ? item.campaign?.team || [] : item.team
+  const isMember = !!team?.find(u => u.user.id === id)
+  const isOwner = item.created_by.id === id
+
+  if (strict && isMember && isOwner) return false
+  else return isOwner
 }
 
-export function isAdmin(item: CampaignItem | EncounterItem, id: string): boolean {
-  if (isOwner(item, id)) return true
+export function isAdmin(
+  item: CampaignItem | EncounterItem,
+  id: string,
+  strict?: boolean,
+): boolean {
+  if (isOwner(item, id, strict)) return true
 
-  const team = isEncounter(item) ? item.campaign.team : item.team
+  const team = isEncounter(item) ? item.campaign?.team || [] : item.team
 
   return !!team?.find(u => u.user.id === id && u.role === 'Admin') || false
 }
 
-export function isMember(item: CampaignItem | EncounterItem, id: string): boolean {
-  if (isOwner(item, id)) return true
+export function isMember(
+  item: CampaignItem | EncounterItem,
+  id: string,
+  strict?: boolean,
+): boolean {
+  if (isOwner(item, id, strict)) return true
 
-  const team = isEncounter(item) ? item.campaign.team : item.team
+  const team = isEncounter(item) ? item.campaign?.team || [] : item.team
 
   return !!team?.find(u => u.user.id === id) || false
 }
