@@ -6,7 +6,6 @@ defineProps<{
   authenticated: boolean
 }>()
 
-const localePath = useLocalePath()
 const { t } = useI18n()
 </script>
 
@@ -15,8 +14,8 @@ const { t } = useI18n()
     class="fixed inset-0 flex flex-col overflow-x-hidden overflow-y-auto bg-bg-light p-4 z-20"
   >
     <div class="flex justify-between items-center gap-4 pb-10">
-      <NuxtLink
-        :to="localePath('/')"
+      <NuxtLinkLocale
+        to="/"
         @click="$emit('close')"
       >
         <NuxtImg
@@ -25,13 +24,13 @@ const { t } = useI18n()
           sizes="sm:500px md:500px lg:500px"
           class="h-16"
         />
-      </NuxtLink>
+      </NuxtLinkLocale>
       <button
         :aria-label="t('actions.close')"
         @click="$emit('close')"
       >
         <Icon
-          name="ic:round-clear"
+          name="tabler:x"
           class="w-10 h-10 text-danger"
           aria-hidden="true"
         />

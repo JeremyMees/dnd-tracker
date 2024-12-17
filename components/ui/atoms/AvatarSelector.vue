@@ -17,13 +17,13 @@ const current = computed<number>(() => {
 
 const icon = computed<string>(() => {
   switch (props.identifier) {
-    case 'backgroundColor': return 'mingcute:background-line'
-    case 'accessories': return 'ph:sunglasses'
-    case 'clothingColor': return 'ph:t-shirt'
-    case 'face': return 'material-symbols:face-outline'
-    case 'facialHair': return 'mingcute:beard-line'
-    case 'head': return 'ph:hair-dryer'
-    default: return 'ic:outline-color-lens'
+    case 'backgroundColor': return 'tabler:background'
+    case 'accessories': return 'tabler:eyeglass-2'
+    case 'clothingColor': return 'tabler:shirt'
+    case 'face': return 'tabler:lego'
+    case 'facialHair': return 'tabler:moustache'
+    case 'head': return 'tabler:mood-boy'
+    default: return 'tabler:palette'
   }
 })
 
@@ -53,7 +53,7 @@ function next(): void {
     >
       <Icon
         class="min-w-6 min-h-6"
-        name="ph:caret-left"
+        name="tabler:chevron-left"
         aria-hidden="true"
       />
     </button>
@@ -73,7 +73,7 @@ function next(): void {
     >
       <Icon
         class="min-w-6 min-h-6"
-        name="ph:caret-right"
+        name="tabler:chevron-right"
         aria-hidden="true"
       />
     </button>

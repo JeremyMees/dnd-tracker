@@ -80,11 +80,11 @@ export function selectedRows(table?: InstanceType<typeof DataTable>): Record<str
 
 export function homebrewIcon(type: HomebrewType): string {
   switch (type) {
-    case 'summon': return 'mdi:magic'
-    case 'npc': return 'ph:person'
-    case 'monster': return 'la:dragon'
-    case 'lair': return 'material-symbols:castle-outline-rounded'
-    default: return 'ph:sword'
+    case 'summon': return 'tabler:wand'
+    case 'npc': return 'tabler:user'
+    case 'monster': return 'tabler:bat'
+    case 'lair': return 'tabler:building-castle'
+    default: return 'tabler:sword'
   }
 }
 

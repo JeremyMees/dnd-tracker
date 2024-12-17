@@ -1,14 +1,10 @@
-<script setup lang="ts">
-const localePath = useLocalePath()
-</script>
-
 <template>
   <div class="bg-bg-light/50 backdrop-blur-lg border-4 border-bg m-4 rounded-lg pt-10 pb-2 relative overflow-hidden">
-    <div class="fancy-shadow" />
+    <div class="fancy-shadow -z-[1]" />
     <div class="container-max px-4 flex flex-col gap-20">
       <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20">
-        <NuxtLink
-          :to="localePath('/')"
+        <NuxtLinkLocale
+          to="/"
           class="mt-2"
         >
           <NuxtImg
@@ -17,7 +13,7 @@ const localePath = useLocalePath()
             width="120"
             height="100"
           />
-        </NuxtLink>
+        </NuxtLinkLocale>
         <div class="mt-4 lg:mt-0">
           <p class="mb-4 head-3">
             Contact
@@ -25,30 +21,26 @@ const localePath = useLocalePath()
           <div class="flex flex-col gap-4">
             <NuxtLink
               to="mailto:jeremy@dnd-tracker.com"
-              class="flex"
+              class="flex items-center"
             >
               <Icon
-                name="material-symbols:mail-outline-rounded"
+                name="tabler:mail"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Email
-              </span>
+              Email
             </NuxtLink>
-            <NuxtLink
-              :to="localePath('/contact')"
-              class="flex"
+            <NuxtLinkLocale
+              to="/contact"
+              class="flex items-center"
             >
               <Icon
-                name="fluent:form-24-regular"
+                name="tabler:forms"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Form
-              </span>
-            </NuxtLink>
+              Form
+            </NuxtLinkLocale>
           </div>
         </div>
         <div>
@@ -59,44 +51,38 @@ const localePath = useLocalePath()
             <NuxtLink
               to="https://www.instagram.com/dnd.tracker/"
               target="_blank"
-              class="flex"
+              class="flex items-center"
             >
               <Icon
-                name="mdi:instagram"
+                name="tabler:brand-instagram"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Instagram
-              </span>
+              Instagram
             </NuxtLink>
             <NuxtLink
-              to="https://discord.gg/NxghtztVX7"
+              to="https://bsky.app/profile/lilmees.bsky.social"
               target="_blank"
-              class="flex"
+              class="flex items-center"
             >
               <Icon
-                name="mingcute:discord-line"
+                name="tabler:brand-bluesky"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Discord
-              </span>
+              Bluesky
             </NuxtLink>
             <NuxtLink
               to="https://ko-fi.com/jeremymees"
               target="_blank"
-              class="flex"
+              class="flex items-center"
             >
               <Icon
-                name="simple-icons:kofi"
+                name="tabler:coffee"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Kofi
-              </span>
+              Kofi
             </NuxtLink>
           </div>
         </div>
@@ -105,32 +91,28 @@ const localePath = useLocalePath()
             Updates
           </p>
           <div class="flex flex-col gap-4">
-            <NuxtLink
-              :to="localePath('/updates/feature-request')"
-              class="flex"
+            <NuxtLinkLocale
+              to="/updates/feature-request"
+              class="flex items-center"
             >
               <Icon
-                name="ph:git-pull-request"
+                name="tabler:git-pull-request"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Feature requests
-              </span>
-            </NuxtLink>
-            <NuxtLink
-              :to="localePath('/updates/changelog')"
-              class="flex"
+              Feature requests
+            </NuxtLinkLocale>
+            <NuxtLinkLocale
+              to="/updates/changelog"
+              class="flex items-center"
             >
               <Icon
-                name="ph:lightning"
+                name="tabler:bolt"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Changelogs
-              </span>
-            </NuxtLink>
+              Changelogs
+            </NuxtLinkLocale>
           </div>
         </div>
         <div>
@@ -138,45 +120,39 @@ const localePath = useLocalePath()
             Policies
           </p>
           <div class="flex flex-col gap-4">
-            <NuxtLink
-              :to="localePath('/policies/cookie')"
-              class="flex"
+            <NuxtLinkLocale
+              to="/policies/cookie"
+              class="flex items-center"
             >
               <Icon
-                name="material-symbols:cookie-outline-rounded"
+                name="tabler:cookie"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Cookie
-              </span>
-            </NuxtLink>
-            <NuxtLink
-              :to="localePath('/policies/privacy')"
-              class="flex"
+              Cookie
+            </NuxtLinkLocale>
+            <NuxtLinkLocale
+              to="/policies/privacy"
+              class="flex items-center"
             >
               <Icon
-                name="ic:outline-shield"
+                name="tabler:spy"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Privacy
-              </span>
-            </NuxtLink>
-            <NuxtLink
-              :to="localePath('/policies/legal')"
-              class="flex"
+              Privacy
+            </NuxtLinkLocale>
+            <NuxtLinkLocale
+              to="/policies/legal"
+              class="flex items-center"
             >
               <Icon
-                name="mdi:legal"
+                name="tabler:gavel"
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              <span>
-                Legal
-              </span>
-            </NuxtLink>
+              Legal
+            </NuxtLinkLocale>
           </div>
         </div>
       </div>

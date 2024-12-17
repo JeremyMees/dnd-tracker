@@ -118,7 +118,7 @@ function save(): void {
         @click="avatarCreator.random()"
       >
         <Icon
-          name="la:random"
+          name="tabler:arrows-shuffle-2"
           aria-hidden="true"
           class="w-4 h-4"
         />
@@ -132,7 +132,7 @@ function save(): void {
         @click="creatorOpen = !creatorOpen"
       >
         <Icon
-          name="ph:t-shirt"
+          name="tabler:shirt"
           aria-hidden="true"
           class="w-4 h-4"
         />
@@ -149,7 +149,7 @@ function save(): void {
           }"
         >
           <Icon
-            name="carbon:reset"
+            name="tabler:backspace"
             aria-hidden="true"
             class="w-4 h-4 text-danger"
           />
@@ -161,7 +161,7 @@ function save(): void {
           @click="save"
         >
           <Icon
-            name="ic:outline-save"
+            name="tabler:device-floppy"
             aria-hidden="true"
             class="w-4 h-4 text-success"
           />

@@ -199,19 +199,6 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
           </td>
           <td class="td flex justify-end">
             <button
-              v-if="isAdmin(row, profile.user!.id)"
-              v-tippy="t('actions.update')"
-              class="icon-btn-info"
-              :aria-label="t('actions.update')"
-              @click="openModal(row)"
-            >
-              <Icon
-                name="material-symbols:settings-outline"
-                class="icon"
-                aria-hidden="true"
-              />
-            </button>
-            <button
               v-if="!isOwner(row, profile.user!.id)"
               v-tippy="t('actions.leave')"
               class="icon-btn-warning"
@@ -219,7 +206,20 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
               @click="leaveCampaign(row)"
             >
               <Icon
-                name="ic:round-exit-to-app"
+                name="tabler:door-exit"
+                class="icon"
+                aria-hidden="true"
+              />
+            </button>
+            <button
+              v-if="isAdmin(row, profile.user!.id)"
+              v-tippy="t('actions.update')"
+              class="icon-btn-info"
+              :aria-label="t('actions.update')"
+              @click="openModal(row)"
+            >
+              <Icon
+                name="tabler:edit"
                 class="icon"
                 aria-hidden="true"
               />

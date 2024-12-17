@@ -20,7 +20,7 @@ const { t } = useI18n()
             content: `${t('general.monster', 2)}, ${t('general.player', 2)}, ${t('general.npc', 2)}, ${t('general.summon', 2)} & ${t('general.lair')}`,
             delay: 0,
           }"
-          name="material-symbols:info-outline-rounded"
+          name="tabler:info-circle"
           aria-hidden="true"
           class="size-5 text-slate-300"
         />

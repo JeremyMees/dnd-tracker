@@ -39,7 +39,7 @@ function hideOpenButton(): boolean {
       @click="pinned ? $emit('unpin') : $emit('pin')"
     >
       <Icon
-        :name="pinned ? 'fluent:pin-off-16-regular' : 'fluent:pin-16-regular'"
+        :name="pinned ? 'tabler:pinned-off' : 'tabler:pin'"
         class="w-6 h-6"
         :class="[pinned ? 'text-danger' : 'text-warning']"
         aria-hidden="true"

@@ -133,7 +133,7 @@ function toggleAll(): void {
                 </span>
                 <Icon
                   v-if="sort"
-                  name="ph:arrows-down-up-bold"
+                  name="tabler:arrows-sort"
                   class="w-5 h-5 text-secondary/50 transition-all duration-300"
                   :class="{
                     '!text-secondary': sortBy === id,

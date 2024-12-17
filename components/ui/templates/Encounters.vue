@@ -218,7 +218,7 @@ async function deleteItems(ids: number[]): Promise<void> {
             @click="share(row)"
           >
             <Icon
-              name="material-symbols:share"
+              name="tabler:share"
               class="size-6"
               aria-hidden="true"
             />
@@ -231,7 +231,7 @@ async function deleteItems(ids: number[]): Promise<void> {
               @click="copy(row)"
             >
               <Icon
-                name="material-symbols:content-copy-outline-rounded"
+                name="tabler:copy"
                 class="size-6"
                 aria-hidden="true"
               />
@@ -243,7 +243,7 @@ async function deleteItems(ids: number[]): Promise<void> {
               @click="openModal(row)"
             >
               <Icon
-                name="material-symbols:settings-outline"
+                name="tabler:edit"
                 class="size-6"
                 aria-hidden="true"
               />

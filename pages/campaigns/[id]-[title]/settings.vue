@@ -120,7 +120,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
               class="flex items-center gap-2"
             >
               <Icon
-                name="mingcute:invite-line"
+                name="tabler:send"
                 :aria-hidden="true"
                 class="size-6"
               />
@@ -164,7 +164,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                       class="icon-btn-success"
                     >
                       <Icon
-                        name="ic:outline-save"
+                        name="tabler:device-floppy"
                         class="size-6"
                         aria-hidden="true"
                       />
@@ -182,7 +182,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                 @click="removeTeamMember(member)"
               >
                 <Icon
-                  name="material-symbols:delete-outline-rounded"
+                  name="tabler:trash"
                   class="size-6"
                   aria-hidden="true"
                 />

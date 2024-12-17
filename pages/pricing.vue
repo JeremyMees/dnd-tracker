@@ -85,9 +85,9 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                     </span>
                     <Icon
                       v-else
-                      :name="product.items[index].icon === 'check' ? 'material-symbols:check-small-rounded' : 'ic:round-clear'"
+                      :name="product.items[index].icon === 'check' ? 'tabler:check' : 'tabler:x'"
                       class="w-8 h-8"
-                      :class="[product.items[index].icon === 'check' ? 'text-success' : 'text-danger  ']"
+                      :class="[product.items[index].icon === 'check' ? 'text-success' : 'text-danger']"
                       aria-hidden="true"
                     />
                   </td>
@@ -138,7 +138,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
               {{ t('actions.buyCoffee') }}
             </span>
             <Icon
-              name="simple-icons:kofi"
+              name="tabler:coffee"
               class="w-5 h-5"
               aria-hidden="true"
             />

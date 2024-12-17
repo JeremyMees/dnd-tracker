@@ -192,11 +192,10 @@ async function deleteItems(ids: number[]): Promise<void> {
               :aria-label="t('actions.link')"
               :to="row.link"
               target="_blank"
-              rel="noreferrer noopener"
               class="icon-btn-success"
             >
               <Icon
-                name="ph:link-simple-horizontal"
+                name="tabler:link"
                 class="size-6"
                 aria-hidden="true"
               />
@@ -211,7 +210,7 @@ async function deleteItems(ids: number[]): Promise<void> {
               @click="table?.toggleDetailRow(row.id)"
             >
               <Icon
-                :name="table?.detailRow === row.id ? 'ic:round-clear' : 'ic:search'"
+                :name="table?.detailRow === row.id ? 'tabler:x' : 'tabler:search'"
                 class="size-6"
                 aria-hidden="true"
               />
@@ -226,7 +225,7 @@ async function deleteItems(ids: number[]): Promise<void> {
               @click="openModal(row)"
             >
               <Icon
-                name="material-symbols:settings-outline"
+                name="tabler:edit"
                 class="size-6"
                 aria-hidden="true"
               />

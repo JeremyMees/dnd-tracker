@@ -49,25 +49,25 @@ watch(() => isHover.value, (v: boolean) => {
     <div class="flex p-2 items-start gap-2 text-white">
       <Icon
         v-if="toast.type === 'info'"
-        name="material-symbols:info-outline-rounded"
+        name="tabler:info-circle"
         class="min-w-[25px] min-h-[25px] text-info"
         aria-hidden="true"
       />
       <Icon
         v-if="toast.type === 'warn'"
-        name="material-symbols:warning-outline-rounded"
+        name="tabler:alert-triangle"
         class="min-w-[25px] min-h-[25px] text-warning"
         aria-hidden="true"
       />
       <Icon
         v-if="toast.type === 'success'"
-        name="material-symbols:check-small-rounded"
+        name="tabler:check"
         class="min-w-[25px] min-h-[25px] text-success"
         aria-hidden="true"
       />
       <Icon
         v-if="toast.type === 'error'"
-        name="material-symbols:error-outline-rounded"
+        name="tabler:exclamation-circle"
         class="min-w-[25px] min-h-[25px] text-danger"
         aria-hidden="true"
       />
@@ -86,7 +86,7 @@ watch(() => isHover.value, (v: boolean) => {
         </p>
       </div>
       <Icon
-        name="ic:round-clear"
+        name="tabler:x"
         class="min-w-[25px] min-h-[25px] self-start text-danger cursor-pointer"
         aria-hidden="true"
         :aria-label="t('actions.remove')"

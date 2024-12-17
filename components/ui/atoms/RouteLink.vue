@@ -9,13 +9,11 @@ withDefaults(
     style: true,
   },
 )
-
-const localePath = useLocalePath()
 </script>
 
 <template>
-  <NuxtLink
-    :to="localePath(url.charAt(0) === '/' ? url : `/${url}`)"
+  <NuxtLinkLocale
+    :to="url.charAt(0) === '/' ? url : `/${url}`"
     class="duration-200 ease-in-out max-w-max font-bold"
     :class="{ 'text-slate-300 hover:text-white': style }"
     active-class="active-link"
@@ -25,7 +23,7 @@ const localePath = useLocalePath()
         {{ label }}
       </span>
     </slot>
-  </NuxtLink>
+  </NuxtLinkLocale>
 </template>
 
 <style scoped>

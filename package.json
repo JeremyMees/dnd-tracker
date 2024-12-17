@@ -45,14 +45,6 @@
     "vue-tippy": "^6.5.0"
   },
   "devDependencies": {
-    "@iconify-json/carbon": "^1.2.4",
-    "@iconify-json/fluent": "^1.2.2",
-    "@iconify-json/ic": "^1.2.0",
-    "@iconify-json/material-symbols": "^1.2.1",
-    "@iconify-json/mdi": "^1.2.0",
-    "@iconify-json/mingcute": "^1.2.0",
-    "@iconify-json/ph": "^1.2.0",
-    "@iconify-json/simple-icons": "^1.2.4",
     "@iconify-json/tabler": "^1.2.8",
     "typescript": "^5.6.2"
   },

@@ -42,7 +42,7 @@ function close(): void {
     <div class="text-white space-y-4">
       <div class="p-4 bg-danger/50 rounded-lg flex gap-4 items-center">
         <Icon
-          name="ph:warning-bold"
+          name="tabler:alert-triangle"
           class="min-w-[30px] min-h-[30px]"
         />
         <I18nT

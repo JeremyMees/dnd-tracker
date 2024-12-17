@@ -53,7 +53,7 @@ function checkShow(): void {
           @click="isShown=false"
         >
           <Icon
-            name="ic:round-clear"
+            name="tabler:x"
             class="text-danger size-4 rounded-full ring-danger group-focus-within:ring"
             aria-hidden="true"
           />

@@ -49,7 +49,7 @@ function handleSelect(v: number): void {
       @click="handlePrevious"
     >
       <Icon
-        name="ph:caret-left"
+        name="tabler:chevron-left"
         class="h-6 w-6 transition-opacity"
         :class="{ 'opacity-50': page === 0 }"
         aria-hidden="true"
@@ -63,7 +63,7 @@ function handleSelect(v: number): void {
       @click="handleNext"
     >
       <Icon
-        name="ph:caret-right"
+        name="tabler:chevron-right"
         class="h-6 w-6 transition-opacity"
         :class="{ 'opacity-50': page === totalPages - 1 }"
         aria-hidden="true"

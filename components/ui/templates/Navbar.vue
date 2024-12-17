@@ -66,14 +66,14 @@ async function logout(): Promise<void> {
       class="bg-bg-light/50 backdrop-blur-lg border-4 border-bg m-4 rounded-lg"
     >
       <div class="container-max p-4 flex justify-between items-center gap-4">
-        <NuxtLink :to="localePath('/')">
+        <NuxtLinkLocale to="/">
           <NuxtImg
             src="/logo.svg"
             alt="DnD Tracker logo"
             sizes="sm:500px md:500px lg:500px"
             class="h-16"
           />
-        </NuxtLink>
+        </NuxtLinkLocale>
         <div class="flex justify-end items-center gap-4">
           <div class="hidden lg:flex items-center gap-4">
             <RouteLink
@@ -123,14 +123,14 @@ async function logout(): Promise<void> {
                   >
                   <Icon
                     v-else
-                    name="material-symbols:person"
+                    name="tabler:user"
                     class="w-6 h-6 text-slate-300"
                     aria-hidden="true"
                   />
                 </AnimationReveal>
                 <template #fallback>
                   <Icon
-                    name="material-symbols:person"
+                    name="tabler:user"
                     class="w-6 h-6 text-slate-300 relative top-[2px]"
                     aria-hidden="true"
                   />
@@ -165,7 +165,7 @@ async function logout(): Promise<void> {
             @click="isOpen = true"
           >
             <Icon
-              name="ci:hamburger-lg"
+              name="tabler:menu-2"
               class="w-8 h-8 min-w-[2rem] text-white"
               aria-hidden="true"
             />

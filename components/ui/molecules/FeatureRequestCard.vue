@@ -51,7 +51,7 @@ function toggleVote(vote: FeatureVote): void {
           @click="profile.data ? toggleVote('like') : emit('login')"
         >
           <Icon
-            name="ph:arrow-up"
+            name="tabler:thumb-up"
             aria-hidden="true"
           />
           <span class="font-bold">
@@ -69,7 +69,7 @@ function toggleVote(vote: FeatureVote): void {
             {{ feature.voted.dislike.length }}
           </span>
           <Icon
-            name="ph:arrow-down"
+            name="tabler:thumb-down"
             aria-hidden="true"
           />
         </button>

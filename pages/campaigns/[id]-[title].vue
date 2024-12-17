@@ -41,19 +41,19 @@ const { data, status, refresh } = await useAsyncData(
       <TabItem
         :link="`${url}/content`"
         :label="t('general.content')"
-        icon="fluent:content-view-24-regular"
+        icon="tabler:layout"
         :disabled="status !== 'success'"
       />
       <TabItem
         :link="`${url}/settings`"
         :label="t('general.setting', 2)"
-        icon="material-symbols:settings-outline"
+        icon="tabler:settings"
         :disabled="status !== 'success' || !isAdmin(data, profile.user!.id)"
       />
       <TabItem
         :link="`${url}/danger-zone`"
         :label="t('general.dangerZone')"
-        icon="material-symbols:warning-outline"
+        icon="tabler:alert-triangle"
         :disabled="status !== 'success' || !isOwner(data, profile.user!.id)"
       />
     </div>

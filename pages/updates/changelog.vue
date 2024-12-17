@@ -27,7 +27,7 @@ const { locale } = useI18n()
         <span class="absolute z-[1] inline-flex items-center justify-center w-10 h-10 rounded-lg bg-secondary/50 left-0 -translate-x-1/2 border-4 border-secondary backdrop-blur">
           <Icon
             aria-hidden="true"
-            name="ph:lightning"
+            name="tabler:bolt"
             class="h-5 w-5 z-20"
           />
         </span>
@@ -35,7 +35,7 @@ const { locale } = useI18n()
           <div class="flex items-end gap-4 relative">
             <Icon
               aria-hidden="true"
-              name="teenyicons:left-solid"
+              name="tabler:caret-left-filled"
               class="h-10 w-10 absolute -left-12 text-black"
             />
             <p class="font-bold head-2">

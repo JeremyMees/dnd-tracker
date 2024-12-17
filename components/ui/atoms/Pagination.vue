@@ -70,7 +70,7 @@ const limitedNumbersList = computed<number[]>(() => {
       @click="handleSelect(0)"
     >
       <Icon
-        name="ph:caret-double-left"
+        name="tabler:chevrons-left"
         class="h-5 w-5 transition-colors"
         :class="{ 'text-slate-700': page === 0 }"
         aria-hidden="true"
@@ -84,7 +84,7 @@ const limitedNumbersList = computed<number[]>(() => {
       @click="handlePrevious"
     >
       <Icon
-        name="ph:caret-left"
+        name="tabler:chevron-left"
         class="h-5 w-5 transition-colors"
         :class="{ 'text-slate-700': page === 0 }"
         aria-hidden="true"
@@ -115,7 +115,7 @@ const limitedNumbersList = computed<number[]>(() => {
       @click="handleNext"
     >
       <Icon
-        name="ph:caret-right"
+        name="tabler:chevron-right"
         class="h-5 w-5 transition-colors"
         :class="{ 'text-slate-700': page === totalPages - 1 }"
         aria-hidden="true"
@@ -129,7 +129,7 @@ const limitedNumbersList = computed<number[]>(() => {
       @click="handleSelect(totalPages - 1)"
     >
       <Icon
-        name="ph:caret-double-right"
+        name="tabler:chevrons-right"
         class="h-5 w-5 transition-colors"
         :class="{ 'text-slate-700': page === totalPages - 1 }"
         aria-hidden="true"

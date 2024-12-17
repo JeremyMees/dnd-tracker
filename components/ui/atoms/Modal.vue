@@ -44,7 +44,7 @@ setTimeout(() => open.value = true, 50) // delay to play animation
             @click="$emit('close')"
           >
             <Icon
-              name="ic:round-clear"
+              name="tabler:x"
               class="text-danger size-8 rounded-full ring-danger group-focus-within:ring"
               aria-hidden="true"
             />

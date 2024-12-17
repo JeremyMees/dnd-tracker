@@ -219,7 +219,7 @@ async function inviteNewUser(email: string): Promise<void> {
                 @click="form.users.splice(index, 1)"
               >
                 <Icon
-                  name="material-symbols:delete-outline-rounded"
+                  name="tabler:trash"
                   class="size-6"
                   aria-hidden="true"
                 />
