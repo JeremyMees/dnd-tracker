@@ -135,8 +135,8 @@ export const useStripe = defineStore('useStripe', () => {
     isCurrent,
     isUpgradeable,
     labels: [
-      'general.encounters',
-      'general.campaigns',
+      'general.encounter',
+      'general.campaign',
       'pages.pricing.multiple',
       'pages.pricing.live',
       'pages.pricing.update',

@@ -62,7 +62,7 @@ function openModal(item?: HomebrewItemRow): void {
 
 async function deleteItems(ids: number[]): Promise<void> {
   const amount = ids.length
-  const type = t(`general.${amount > 1 ? 'homebrews' : 'homebrew'}`).toLowerCase()
+  const type = t('general.homebrew', amount).toLowerCase()
 
   ask({
     title: `${amount} ${type}`,
@@ -104,7 +104,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       { label: 'AC', sort: true, id: 'ac' },
       { label: 'Init mod', sort: true, id: 'initiative_modifier' },
       { label: t('general.link'), sort: false, id: 'link' },
-      { label: t('general.actions'), sort: false, id: 'actions' },
+      { label: t('general.action', 2), sort: false, id: 'actions' },
       { label: '', sort: false, id: 'modify' },
     ]"
     :items="homebrews || []"
@@ -265,7 +265,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       v-if="!homebrews?.length && status !== 'pending'"
       #empty
     >
-      {{ t('components.table.nothing', { item: t('general.homebrew').toLowerCase() }) }}
+      {{ t('components.table.nothing', { item: t('general.homebrew', 2).toLowerCase() }) }}
     </template>
   </DataTable>
 </template>

@@ -9,10 +9,10 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const allActions = computed<Option<Action[]>[]>(() => [
-  { label: 'specialAbilities', value: props.specialAbilities },
-  { label: 'legendaryActions', value: props.legendaryActions },
-  { label: 'actions', value: props.actions },
-  { label: 'reactions', value: props.reactions },
+  { label: 'specialAbility', value: props.specialAbilities },
+  { label: 'legendaryAction', value: props.legendaryActions },
+  { label: 'action', value: props.actions },
+  { label: 'reaction', value: props.reactions },
 ].filter((action): action is Option<Action[]> => !!action.value?.length),
 )
 </script>
@@ -25,7 +25,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
       class="space-y-2"
     >
       <p class="head-2">
-        {{ t(`general.${label}`) }}
+        {{ t(`general.${label}`, 2) }}
       </p>
       <Card
         color="slate"

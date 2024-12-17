@@ -57,7 +57,7 @@ function openModal(campaign?: CampaignItem): void {
 
 async function deleteItems(ids: number[]): Promise<void> {
   const amount = ids.length
-  const type = t(`general.${amount > 1 ? 'campaigns' : 'campaign'}`).toLowerCase()
+  const type = t('general.campaign', amount).toLowerCase()
 
   ask({
     title: `${amount} ${type}`,
@@ -102,7 +102,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
     container
   >
     <h1 class="pb-6">
-      {{ t('general.campaigns') }}
+      {{ t('general.campaign', 2) }}
     </h1>
     <LimitCta
       v-if="count >= campaign.max"
@@ -121,9 +121,9 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       v-model:search="search"
       :headers="[
         { label: t('general.name'), sort: true, id: 'title' },
-        { label: t('general.encounters'), sort: false, id: 'initiative_sheets' },
-        { label: t('general.homebrew'), sort: false, id: 'homebrew_items' },
-        { label: t('general.members'), sort: false, id: 'team' },
+        { label: t('general.encounter', 2), sort: false, id: 'initiative_sheets' },
+        { label: t('general.homebrew', 2), sort: false, id: 'homebrew_items' },
+        { label: t('general.member', 2), sort: false, id: 'team' },
         { label: '', sort: false, id: 'modify' },
       ]"
       :items="campaigns || []"
@@ -232,11 +232,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
         v-if="!campaigns?.length && status !== 'pending'"
         #empty
       >
-        {{
-          t('components.table.nothing', {
-            item: t(`general.campaign${(table?.selected || []).length > 1 ? 's' : ''}`).toLowerCase(),
-          })
-        }}
+        {{ t('components.table.nothing', { item: t('general.campaign', 2).toLowerCase() }) }}
       </template>
     </DataTable>
   </NuxtLayout>

@@ -83,7 +83,7 @@ function openModal(item?: EncounterItem): void {
 
 async function deleteItems(ids: number[]): Promise<void> {
   const amount = ids.length
-  const type = t(`general.${amount > 1 ? 'encounters' : 'encounter'}`).toLowerCase()
+  const type = t('general.encounter', amount).toLowerCase()
 
   ask({
     title: `${amount} ${type}`,
@@ -120,8 +120,8 @@ async function deleteItems(ids: number[]): Promise<void> {
     :headers="[
       { label: t('general.name'), sort: true, id: 'title' },
       ...(props.campaignId ? [] : [{ label: t('general.campaign'), sort: false, id: 'campaign.title' }]),
-      { label: t('general.rows'), sort: false, id: 'rows' },
-      { label: t('general.members'), sort: false, id: 'team' },
+      { label: t('general.row', 2), sort: false, id: 'rows' },
+      { label: t('general.member', 2), sort: false, id: 'team' },
       { label: '', sort: false, id: 'actions' },
     ]"
     :items="encounters || []"
@@ -257,11 +257,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       v-if="!encounters?.length && status !== 'pending'"
       #empty
     >
-      {{
-        t('components.table.nothing', {
-          item: t(`general.encounter${(table?.selected || []).length > 1 ? 's' : ''}`).toLowerCase(),
-        })
-      }}
+      {{ t('components.table.nothing', { item: t('general.encounter', 2).toLowerCase() }) }}
     </template>
   </DataTable>
 </template>

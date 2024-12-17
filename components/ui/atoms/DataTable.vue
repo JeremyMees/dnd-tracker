@@ -198,7 +198,7 @@ function toggleAll(): void {
         {{
           t('actions.bulkRemove', {
             number: selected.length,
-            type: t(`general.${type}${selected.length > 1 ? 's' : ''}`).toLowerCase(),
+            type: t(`general.${type}`, (selected || []).length).toLowerCase(),
           })
         }}
       </button>

@@ -11,7 +11,7 @@ const { t } = useI18n()
     container
   >
     <h1 class="pb-6">
-      {{ t('general.encounters') }}
+      {{ t('general.encounter', 2) }}
     </h1>
     <Encounters />
   </NuxtLayout>

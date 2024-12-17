@@ -280,11 +280,11 @@ function hideOpenButton(): boolean {
     >
       <button
         class="flex gap-2 text-white"
-        :aria-label="t(`actions.read.${isOpen ? 'less' : 'more'}`)"
+        :aria-label="t(`actions.read${isOpen ? 'Less' : 'More'}`)"
         @click="isOpen = !isOpen"
       >
         <p>
-          {{ t(`actions.read.${isOpen ? 'less' : 'more'}`) }}
+          {{ t(`actions.read${isOpen ? 'Less' : 'More'}`) }}
         </p>
         <Icon
           name="tabler:chevron-down"

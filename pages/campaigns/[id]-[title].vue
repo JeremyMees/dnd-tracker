@@ -46,7 +46,7 @@ const { data, status, refresh } = await useAsyncData(
       />
       <TabItem
         :link="`${url}/settings`"
-        :label="t('general.settings')"
+        :label="t('general.setting', 2)"
         icon="material-symbols:settings-outline"
         :disabled="status !== 'success' || !isAdmin(data, profile.user!.id)"
       />

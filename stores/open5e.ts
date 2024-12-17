@@ -31,12 +31,12 @@ export const useOpen5e = defineStore('useOpen5e', () => {
   }
 
   const options: Option<Open5eType>[] = [
-    { value: 'spells', label: t('general.spells') },
-    { value: 'conditions', label: t('general.conditions') },
-    { value: 'magicitems', label: t('general.magicitems') },
-    { value: 'weapons', label: t('general.weapons') },
+    { value: 'spells', label: t('general.spell', 2) },
+    { value: 'conditions', label: t('general.condition', 2) },
+    { value: 'magicitems', label: t('general.magicItem', 2) },
+    { value: 'weapons', label: t('general.weapon', 2) },
     { value: 'armor', label: t('general.armor') },
-    { value: 'sections', label: t('general.sections') },
+    { value: 'sections', label: t('general.section', 2) },
   ]
 
   return {
