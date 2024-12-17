@@ -2,7 +2,7 @@
 import type { Dropdown } from '#components'
 
 const { locale, locales } = useI18n({ useScope: 'global' })
-const cookieLang = useCookie('lang')
+const cookieLang = useCookie('i18n_redirected')
 const switchLocalePath = useSwitchLocalePath()
 const router = useRouter()
 const config: { locale: string } | undefined = inject(Symbol.for('FormKitConfig'))
