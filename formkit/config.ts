@@ -3,6 +3,9 @@ import { defineFormKitConfig } from '@formkit/vue'
 import { generateClasses } from '@formkit/themes'
 import { genesisIcons } from '@formkit/icons'
 import { en, nl } from '@formkit/i18n'
+import { createMultiStepPlugin } from '@formkit/addons'
+import '@formkit/addons/css/multistep'
+
 import theme from './theme'
 import { createAsteriskPlugin, createIconMessagePlugin } from './plugins'
 
@@ -12,6 +15,7 @@ export default defineFormKitConfig((): any => {
   return {
     plugins: [
       createProPlugin(key, inputs),
+      createMultiStepPlugin(),
       createAsteriskPlugin,
       createIconMessagePlugin,
     ],

@@ -15,6 +15,7 @@
   "dependencies": {
     "@dicebear/collection": "^9.2.2",
     "@dicebear/core": "^9.2.2",
+    "@formkit/addons": "^1.6.9",
     "@formkit/auto-animate": "^0.8.2",
     "@formkit/icons": "^1.6.7",
     "@formkit/nuxt": "^1.6.7",
