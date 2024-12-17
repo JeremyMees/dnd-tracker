@@ -9,6 +9,7 @@ const emit = defineEmits<{
 const props = withDefaults(
   defineProps<{
     campaignId: number
+    count: number
     item?: HomebrewItemRow
     isEncounter?: boolean
   }>(), {
@@ -16,13 +17,9 @@ const props = withDefaults(
   },
 )
 
-// const currentStore = useCurrentCampaignStore()
 const initiativeSheet = useInitiativeSheet()
 const homebrew = useHomebrews()
 const { t } = useI18n()
-
-const count = ref<number>(await homebrew.getCount(props.campaignId))
-// const form = ref<HomebrewForm>(setForm())
 
 // const summonersOptions = computed<Option[]>(() => {
 //   if (table.encounter?.rows && props.encounter) {
@@ -37,96 +34,54 @@ const count = ref<number>(await homebrew.getCount(props.campaignId))
 //   }
 // })
 
-function setForm(): HomebrewForm {
-  // return {
-  //   name: props.item?.name || '',
-  //   player: props.item?.player || '',
-  //   link: props.item?.link || '',
-  //   type: props.item?.type || ('player' as RowType),
-  //   initiative: undefined,
-  //   initiative_modifier: props.item?.initiative_modifier || undefined,
-  //   amount: 1,
-  //   summoner: undefined,
-  //   ac: props.item?.ac,
-  //   health: props.item?.health,
-  //   actions: props.item
-  //     ? [...props.item.actions, ...props.item.legendary_actions, ...props.item.reactions, ...props.item.special_abilities]
-  //     : [],
-  //   save: false,
-  // }
+async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<void> {
+  node.clearErrors()
+
+  try {
+    const { amount, initiative, summoner, save, ...steps } = sanitizeForm<HomebrewItemForm>(form)
+    const flatForm = flattenObject<HomebrewItemForm>(steps)
+
+    const formData = {
+      ...flatForm,
+      actions: castActionFieldsToNumber(flatForm.actions),
+      reactions: castActionFieldsToNumber(flatForm.reactions),
+      legendary_actions: castActionFieldsToNumber(flatForm.legendary_actions),
+      special_abilities: castActionFieldsToNumber(flatForm.special_abilities),
+    }
+
+    if (props.isEncounter) {
+      addInitiative(formData, amount || 1)
+
+      if (save && props.campaignId) addHomebrew(formData)
+    }
+    else {
+      if (props.item) await updateHomebrew(formData)
+      else await addHomebrew(formData)
+    }
+
+    emit('finished')
+    emit('close')
+  }
+  catch (err: any) {
+    reset('form')
+    node.setErrors(err.message)
+  }
 }
 
-function handleSubmit({ __init, data, slots, save, ...formData }: Obj): void {
-  // error.value = ''
-  // isLoading.value = true
-
-  // try {
-  //   const { actions, ...homebrewData } = formData
-
-  //   homebrewData.actions = []
-  //   homebrewData.legendary_actions = []
-  //   homebrewData.reactions = []
-  //   homebrewData.special_abilities = []
-
-  //   if (actions.length) {
-  //     actions.forEach((a: Action) => {
-  //       homebrewData[a.type || 'action'] = [...(homebrewData[a.type || 'action'] || []), a].map((o) => {
-  //         return {
-  //           ...o,
-  //           ...(o.damage_bonus && !isNaN(+o.damage_bonus) ? { damage_bonus: +o.damage_bonus } : {}),
-  //           ...(o.attack_bonus && !isNaN(+o.attack_bonus) ? { attack_bonus: +o.attack_bonus } : {}),
-  //         }
-  //       })
-  //     })
-  //   }
-
-  //   if (props.encounter) {
-  //     addInitiative(homebrewData)
-
-  //     if (save && table.encounter?.campaign?.id) {
-  //       const { amount, initiative, summoner, ...payload } = homebrewData
-
-  //       addHomebrew(payload, table.encounter.campaign.id)
-  //     }
-  //   }
-  //   else {
-  //     delete homebrewData.amount
-  //     props.update ? updateHomebrew(homebrewData) : addHomebrew(homebrewData)
-  //   }
-
-  //   reset('form')
-  //   closeModal()
-  // }
-  // catch (err: any) {
-  //   console.error(err)
-  //   error.value = err.message
-  // }
-  // finally {
-  //   isLoading.value = false
-  // }
+async function addHomebrew(data: HomebrewItemForm): Promise<void> {
+  await homebrew.addHomebrew({
+    ...data,
+    campaign: props.campaignId,
+  })
 }
 
-async function updateHomebrew(formData: Obj): Promise<void> {
-  // if (!props.item?.id) {
-  //   return
-  // }
-
-  // const updated = removeEmptyKeys<Homebrew>(formData)
-  // await homebrewStore.updateHomebrew(updated, props.item.id as number)
-
-  // emit('updated', updated)
+async function updateHomebrew(data: HomebrewItemForm): Promise<void> {
+  if (props.item) {
+    await homebrew.updateHomebrew(data, props.item.id)
+  }
 }
 
-async function addHomebrew(formData: Obj, id?: number): Promise<void> {
-  // await homebrewStore.addHomebrew(
-  //   removeEmptyKeys<AddHomebrew>({
-  //     ...formData,
-  //     campaign: id || currentStore?.campaign?.id,
-  //   }),
-  // )
-}
-
-async function addInitiative({ amount, ...data }: Obj): Promise<void> {
+async function addInitiative(data: HomebrewItemForm, amount: number): Promise<void> {
   // if (!table.encounter?.rows) {
   //   return
   // }
@@ -156,6 +111,16 @@ async function addInitiative({ amount, ...data }: Obj): Promise<void> {
   //   rows: [...table.encounter.rows, ...rows],
   // } as UpdateEncounter)
 }
+
+function castActionFieldsToNumber(actions: Action[]): Action[] {
+  return actions.map((action) => {
+    return {
+      ...action,
+      ...(action.damage_bonus && !isNaN(+action.damage_bonus) ? { damage_bonus: +action.damage_bonus } : {}),
+      ...(action.attack_bonus && !isNaN(+action.attack_bonus) ? { attack_bonus: +action.attack_bonus } : {}),
+    }
+  })
+}
 </script>
 
 <template>
@@ -166,180 +131,198 @@ async function addInitiative({ amount, ...data }: Obj): Promise<void> {
     :submit-label="t(`components.homebrewModal.${item ? 'update' : 'add'}`)"
     @submit="handleSubmit"
   >
-    <div
-      :class="{
-        'grid sm:grid-cols-2 gap-x-3': (value?.type === 'monster' || value?.type === 'summon') && isEncounter,
-      }"
+    <FormKit
+      id="multi-step"
+      type="multi-step"
+      name="steps"
+      wrapper-class="w-full !max-w-none mb-4"
+      steps-class="bg-slate-700/50 !border-4 !px-2 !pt-2"
+      outer-class="$remove:mb-4"
+      tabs-class="!mt-0 !bg-slate-700/50 !border-4"
+      tab-class="!bg-transparent !text-slate-300 data-[active=true]:!text-white"
+      tab-label-class="!font-bold"
     >
       <FormKit
-        id="type"
-        type="select"
-        name="type"
-        :value="item?.type"
-        :label="t('components.inputs.typeLabel')"
-        :placeholder="t('components.inputs.nothing')"
-        validation="required"
-        :options="[
-          { label: t('general.player'), value: 'player' },
-          { label: t('general.summon'), value: 'summon' },
-          { label: t('general.npc'), value: 'npc' },
-          { label: t('general.monster'), value: 'monster' },
-          { label: t('general.lair'), value: 'lair' },
-        ]"
-        outer-class="grow"
-      />
-      <FormKit
-        v-if="(value?.type === 'monster' || value?.type === 'summon') && isEncounter"
-        value="1"
-        name="amount"
-        type="number"
-        min="1"
-        max="15"
-        :label="t('components.inputs.amountLabel')"
-        validation="between:1,15|number|required"
-        outer-class="grow"
-      />
-    </div>
-    <FormKit
-      v-if="isEncounter && value?.type === 'summon'"
-      type="select"
-      name="summoner"
-      :label="t('components.inputs.summonerLabel')"
-      :placeholder="t('components.inputs.nothing')"
-      validation="required"
-    />
-    <!-- :options="summonersOptions" -->
-    <div :class="{ 'grid sm:grid-cols-2 gap-x-3': value?.type === 'player' && !isEncounter }">
-      <FormKit
-        name="name"
-        :label="t('components.inputs.nameLabel')"
-        validation="required|length:3,30"
-        outer-class="grow"
-        suffix-icon="random"
-        @suffix-icon-click="(node: FormKitNode) => node.input(randomName())"
-      />
-      <FormKit
-        v-if="value?.type === 'player' && !isEncounter"
-        name="player"
-        :label="t('components.inputs.playerLabel')"
-        validation="length:3,30"
-        outer-class="grow"
-      />
-    </div>
-    <div :class="{ 'grid sm:grid-cols-2 gap-x-3': isEncounter }">
-      <FormKit
-        v-if="isEncounter"
-        name="initiative"
-        type="number"
-        min="1"
-        max="50"
-        :label="t('components.inputs.initiativeLabel')"
-        validation="between:1,50|number"
-        suffix-icon="dice"
-        @suffix-icon-click="(node: FormKitNode) => node.input(randomRoll(20))"
-      />
-      <FormKit
-        name="initiative_modifier"
-        max="20"
-        min="-20"
-        type="number"
-        :label="`${t('components.inputs.initiativeLabel')} (MODIFIER)`"
-        validation="between:-20,20|number"
-      />
-    </div>
-    <div
-      v-if="value?.type !== 'lair'"
-      class="grid sm:grid-cols-2 gap-x-3"
-    >
-      <FormKit
-        name="ac"
-        type="number"
-        min="1"
-        max="100"
-        :label="t('components.inputs.acLabel')"
-        validation="between:1,100|number"
-        outer-class="grow"
-      />
-      <FormKit
-        name="health"
-        type="number"
-        min="1"
-        max="1000"
-        :label="t('components.inputs.hpLabel')"
-        validation="between:1,1000|number"
-        outer-class="grow"
-      />
-    </div>
-    <FormKit
-      name="link"
-      type="url"
-      :label="t('components.inputs.linkLabel')"
-      validation="url"
-    />
-    <FormKit
-      type="repeater"
-      name="actions"
-      :label="t('components.inputs.actionsLabel')"
-      :add-label="t('components.inputs.addActionLabel')"
-      :max="20"
-      :min="0"
-      :remove-control="true"
-    >
-      <FormKit
-        type="select"
-        name="type"
-        :label="t('components.inputs.actionTypeLabel')"
-        :placeholder="t('components.inputs.nothing')"
-        validation="required"
-        :options="[
-          { label: 'Action', value: 'actions' },
-          { label: 'Legendary action', value: 'legendary_actions' },
-          { label: 'Reaction', value: 'reactions' },
-          { label: 'Special ability', value: 'special_abilities' },
-        ]"
-      />
-      <FormKit
-        name="name"
-        :label="t('components.inputs.nameLabel')"
-        validation="required|length:3,30"
-      />
-      <FormKit
-        name="desc"
-        type="textarea"
-        :label="t('components.inputs.descriptionLabel')"
-        validation="required|length:10,1000"
-      />
-      <div class="flex gap-x-3">
+        type="step"
+        name="info"
+        :next-label="t('actions.next')"
+        :previous-label="t('actions.prev')"
+      >
+        <div
+          :class="{
+            'grid sm:grid-cols-2 gap-x-3': (value?.type === 'monster' || value?.type === 'summon') && isEncounter,
+          }"
+        >
+          <FormKit
+            type="select"
+            name="type"
+            :value="item?.type || 'player'"
+            :label="t('components.inputs.typeLabel')"
+            :placeholder="t('components.inputs.nothing')"
+            validation="required"
+            :options="[
+              { label: t('general.player'), value: 'player' },
+              { label: t('general.summon'), value: 'summon' },
+              { label: t('general.npc'), value: 'npc' },
+              { label: t('general.monster'), value: 'monster' },
+              { label: t('general.lair'), value: 'lair' },
+            ]"
+            outer-class="grow"
+          />
+          <FormKit
+            v-if="(value?.type === 'monster' || value?.type === 'summon') && isEncounter"
+            value="1"
+            name="amount"
+            type="number"
+            min="1"
+            max="15"
+            :label="t('components.inputs.amountLabel')"
+            validation="between:1,15|number|required"
+            outer-class="grow"
+          />
+        </div>
         <FormKit
-          name="damage_dice"
-          placeholder="2d6"
-          :label="t('components.inputs.damageDiceLabel')"
-          validation="length:3,15"
-          outer-class="grow"
+          v-if="isEncounter && value?.type === 'summon'"
+          type="select"
+          name="summoner"
+          :label="t('components.inputs.summonerLabel')"
+          :placeholder="t('components.inputs.nothing')"
+          validation="required"
         />
+        <!-- :options="summonersOptions" -->
+        <div :class="{ 'grid sm:grid-cols-2 gap-x-3': value?.type === 'player' && !isEncounter }">
+          <FormKit
+            name="name"
+            :value="item?.name"
+            :label="t('components.inputs.nameLabel')"
+            validation="required|length:3,30"
+            outer-class="grow"
+            suffix-icon="random"
+            @suffix-icon-click="(node: FormKitNode) => node.input(randomName())"
+          />
+          <FormKit
+            v-if="value?.type === 'player' && !isEncounter"
+            name="player"
+            :value="item?.player"
+            :label="t('components.inputs.playerLabel')"
+            validation="length:3,30"
+            outer-class="grow"
+          />
+        </div>
+        <div :class="{ 'grid sm:grid-cols-2 gap-x-3': isEncounter }">
+          <FormKit
+            v-if="isEncounter"
+            name="initiative"
+            type="number"
+            min="1"
+            max="50"
+            :label="t('components.inputs.initiativeLabel')"
+            validation="between:1,50|number"
+            suffix-icon="dice"
+            @suffix-icon-click="(node: FormKitNode) => node.input(randomRoll(20))"
+          />
+          <FormKit
+            name="initiative_modifier"
+            type="number"
+            :value="item?.initiative_modifier?.toString()"
+            :label="`${t('components.inputs.initiativeLabel')} (MODIFIER)`"
+            max="20"
+            min="-20"
+            validation="between:-20,20|number"
+          />
+        </div>
+        <div
+          v-if="value?.type !== 'lair'"
+          class="grid sm:grid-cols-2 gap-x-3"
+        >
+          <FormKit
+            name="ac"
+            type="number"
+            :value="item?.ac?.toString()"
+            :label="t('components.inputs.acLabel')"
+            min="1"
+            max="100"
+            validation="between:1,100|number"
+            outer-class="grow"
+          />
+          <FormKit
+            name="health"
+            type="number"
+            :value="item?.health?.toString()"
+            :label="t('components.inputs.hpLabel')"
+            min="1"
+            max="1000"
+            validation="between:1,1000|number"
+            outer-class="grow"
+          />
+        </div>
         <FormKit
-          name="damage_bonus"
-          type="number"
-          min="1"
-          max="100"
-          :label="t('components.inputs.damageBonusLabel')"
-          validation="between:1,100|number"
-          outer-class="grow"
+          name="link"
+          type="url"
+          :value="item?.link ?? undefined"
+          :label="t('components.inputs.linkLabel')"
+          validation="url"
         />
+      </FormKit>
+      <FormKit
+        type="step"
+        name="actions"
+        :next-label="t('actions.next')"
+        :previous-label="t('actions.prev')"
+      >
         <FormKit
-          name="attack_bonus"
-          type="number"
-          min="1"
-          max="100"
-          :label="t('components.inputs.attackBonusLabel')"
-          validation="between:1,100|number"
-          outer-class="grow"
-        />
-      </div>
+          type="repeater"
+          name="actions"
+          :value="item?.actions || []"
+          :label="t('components.inputs.actionsLabel')"
+          :add-label="t('actions.add')"
+          max="10"
+          min="0"
+          :remove-control="true"
+        >
+          <FormAttackInputs type="actions" />
+        </FormKit>
+        <FormKit
+          type="repeater"
+          name="reactions"
+          :value="item?.reactions || []"
+          :label="t('components.inputs.reactionsLabel')"
+          :add-label="t('actions.add')"
+          max="10"
+          min="0"
+          :remove-control="true"
+        >
+          <FormAttackInputs type="reactions" />
+        </FormKit>
+        <FormKit
+          type="repeater"
+          name="legendary_actions"
+          :value="item?.legendary_actions || []"
+          :label="t('components.inputs.legendaryActionsLabel')"
+          :add-label="t('actions.add')"
+          max="10"
+          min="0"
+          :remove-control="true"
+        >
+          <FormAttackInputs type="reactions" />
+        </FormKit>
+        <FormKit
+          type="repeater"
+          name="special_abilities"
+          :value="item?.special_abilities || []"
+          :label="t('components.inputs.specialAbilitiesLabel')"
+          :add-label="t('actions.add')"
+          max="10"
+          min="0"
+          :remove-control="true"
+        >
+          <FormAttackInputs type="special_abilities" />
+        </FormKit>
+      </FormKit>
     </FormKit>
     <div
       v-if="isEncounter && !initiativeSheet.isSandbox && !initiativeSheet.isPlayground"
-      class="flex flex-col gap-x-2"
+      class="flex flex-col gap-x-2 mb-2"
     >
       <FormKit
         :disabled="count >= homebrew.max"
@@ -357,3 +340,11 @@ async function addInitiative({ amount, ...data }: Obj): Promise<void> {
     </div>
   </FormKit>
 </template>
+
+<style>
+:root {
+  --multistep-color-success: #7333E0;
+  --multistep-color-border: #334155;
+  --multistep-color-danger: #F87272;
+}
+</style>

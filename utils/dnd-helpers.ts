@@ -10,6 +10,7 @@ export function randomName(): string {
 
   return `${first} ${last}`
 }
+
 export function randomRoll(max: number): number {
   return Math.floor(Math.random() * max) + 1
 }

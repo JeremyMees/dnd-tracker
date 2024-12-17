@@ -67,3 +67,10 @@ export interface AddMemberForm {
 export interface InviteMemberForm {
   users: AddMemberForm[]
 }
+
+export interface HomebrewItemForm extends Omit<HomebrewItemInsert, 'campaign' | NotUpdatable> {
+  amount?: number
+  initiative?: number
+  summoner?: string
+  save?: boolean
+}

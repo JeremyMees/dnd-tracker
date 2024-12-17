@@ -457,6 +457,9 @@
       "playerLabel": "Player",
       "descriptionLabel": "Description",
       "actionsLabel": "Actions",
+      "reactionsLabel": "Reactions",
+      "legendaryActionsLabel": "Legendary actions",
+      "specialAbilitiesLabel": "Special abilities",
       "addActionLabel": "Add action",
       "actionTypeLabel": "Action type",
       "attackBonusLabel": "Attack bonus",
@@ -512,7 +515,9 @@
       "add": "Create homebrew",
       "update": "Update homebrew",
       "save": "Add to campaign",
-      "max": "Max campaign homebrews"
+      "max": "Max campaign homebrews",
+      "actionPage": "Action page",
+      "infoPage": "Info page"
     },
     "homebrewTable": {
       "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself."

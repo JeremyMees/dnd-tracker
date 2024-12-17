@@ -27,3 +27,26 @@ export function getValueFromNestedKeys<T extends Record<string, any>>(v: T, keys
 
   return value
 }
+
+export function flattenObject<T>(obj: Record<string, any>): T {
+  const result: Record<string, any> = {}
+
+  function recurse(currentObj: Record<string, any>): void {
+    for (const key in currentObj) {
+      if (Object.prototype.hasOwnProperty.call(currentObj, key)) {
+        const value = currentObj[key]
+
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          recurse(value)
+        }
+        else {
+          result[key] = value
+        }
+      }
+    }
+  }
+
+  recurse(obj)
+
+  return result as T
+}

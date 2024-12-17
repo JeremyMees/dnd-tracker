@@ -455,6 +455,9 @@
       "playerLabel": "Speler",
       "descriptionLabel": "Omschrijving",
       "actionsLabel": "Acties",
+      "reactionsLabel": "Reacties",
+      "legendaryActionsLabel": "Legendarische acties",
+      "specialAbilitiesLabel": "Speciale vaardigheden",
       "addActionLabel": "Actie toevoegen",
       "actionTypeLabel": "Actie type",
       "attackBonusLabel": "Aanval bonus",
@@ -510,7 +513,9 @@
       "add": "Homebrew creëren",
       "update": "Homebrew bijwerken",
       "save": "Toevoegen aan campagne",
-      "max": "Max campagne homebrews"
+      "max": "Max campagne homebrews",
+      "actionPage": "Actie pagina",
+      "infoPage": "Info pagina"
     },
     "homebrewTable": {
       "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken."

@@ -11,7 +11,7 @@ const modal = useModal()
 const homebrew = useHomebrews()
 const profile = useProfile()
 const { ask } = useConfirm()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const search = ref<string>('')
 const sortBy = ref<string>('name')
@@ -34,10 +34,6 @@ const { data: homebrews, status, refresh } = await useAsyncData(
   },
 )
 
-// new work for campaign notes update them to a new page and use a better wjsiwyg editor
-// when player creates encounter he's the owner but it should be checking if the player is the owner of the campaign to have delete
-// create should also look at the roles of the player for encounters
-
 watchDebounced(
   search,
   () => refresh(),
@@ -58,28 +54,29 @@ function openModal(item?: HomebrewItemRow): void {
     events: { finished: () => refreshData() },
     props: {
       campaignId: props.campaign.id,
+      count: count.value,
       ...(item && { item }),
     },
   })
 }
 
 async function deleteItems(ids: number[]): Promise<void> {
-  // const amount = ids.length
-  // const type = t(`general.${amount > 1 ? 'encounters' : 'encounter'}`).toLowerCase()
+  const amount = ids.length
+  const type = t(`general.${amount > 1 ? 'homebrews' : 'homebrew'}`).toLowerCase()
 
-  // ask({
-  //   title: `${amount} ${type}`,
-  // }, async (confirmed: boolean) => {
-  //   if (!confirmed) return
+  ask({
+    title: `${amount} ${type}`,
+  }, async (confirmed: boolean) => {
+    if (!confirmed) return
 
-  //   try {
-  //     await encounter.deleteEncounter(ids)
-  //     refreshData()
-  //   }
-  //   catch (err) {
-  //     toast.error()
-  //   }
-  // })
+    try {
+      await homebrew.deleteHomebrew(ids)
+      refreshData()
+    }
+    catch (err) {
+      toast.error()
+    }
+  })
 }
 </script>
 
