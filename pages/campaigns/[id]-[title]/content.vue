@@ -1,16 +1,7 @@
 <script lang="ts" setup>
-const props = defineProps<{ current: CampaignFull }>()
+defineProps<{ current: CampaignFull }>()
 
 const { t } = useI18n()
-// const profile = useProfile()
-
-// const permission = computed<UserRole>(() => {
-//   if (!profile.user) return 'Player'
-//   else {
-//     const member = props.current.team.find(team => team.user.id === profile.user?.id)
-//     return member?.role || 'Player'
-//   }
-// })
 </script>
 
 <template>

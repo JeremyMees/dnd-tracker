@@ -48,13 +48,13 @@ const { data, status, refresh } = await useAsyncData(
         :link="`${url}/settings`"
         :label="t('general.setting', 2)"
         icon="tabler:settings"
-        :disabled="status !== 'success' || !isAdmin(data, profile.user!.id)"
+        :disabled="status !== 'success' || !data || !isAdmin(data, profile.user!.id)"
       />
       <TabItem
         :link="`${url}/danger-zone`"
         :label="t('general.dangerZone')"
         icon="tabler:alert-triangle"
-        :disabled="status !== 'success' || !isOwner(data, profile.user!.id)"
+        :disabled="status !== 'success' || !data || !isOwner(data, profile.user!.id)"
       />
     </div>
     <div class="min-h-[40vh]">

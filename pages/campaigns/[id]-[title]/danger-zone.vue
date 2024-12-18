@@ -53,7 +53,7 @@ async function transferOwnership(): Promise<void> {
         <div class="flex justify-end">
           <button
             :aria-label="t('actions.transfer')"
-            :disabled="!current.team?.length || !isOwner(current, profile.user?.id)"
+            :disabled="!current.team?.length || !current || !isOwner(current, profile.user!.id)"
             class="btn-black"
             @click="transferOwnership"
           >
@@ -74,7 +74,7 @@ async function transferOwnership(): Promise<void> {
         <div class="flex justify-end">
           <button
             :aria-label="t('actions.delete')"
-            :disabled="!isOwner(current, profile.user?.id)"
+            :disabled="!current || !isOwner(current, profile.user!.id)"
             class="btn-black"
             @click="deleteCampaign"
           >

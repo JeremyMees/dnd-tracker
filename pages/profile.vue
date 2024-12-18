@@ -34,7 +34,7 @@ function setUserData(): void {
 async function updateAvatar(avatar: Avatar): Promise<void> {
   return updateProfile({
     avatar: avatar.url,
-    avatar_options: avatar.extra as Json,
+    avatar_options: avatar.extra as Record<string, string | number>,
   })
 }
 
@@ -98,9 +98,14 @@ async function deleteUser(): Promise<void> {
       <div class="flex flex-wrap items-end gap-4 pt-2 pb-4 border-b-2 border-slate-700">
         <template v-if="profile.data">
           <Badge
-            v-for="badge in (profile.data.badges as Badge[])"
+            v-for="badge in profile.data.badges"
             :key="badge.id"
-            v-bind="badge"
+            :label="badge.label"
+            :icon="badge.icon"
+            :background="badge.background"
+            :color="badge.color"
+            :description="badge.description"
+            :earned="badge.earned"
           />
           <button
             class="btn-text"

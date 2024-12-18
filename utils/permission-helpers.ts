@@ -1,9 +1,11 @@
-function isEncounter(item: CampaignItem | EncounterItem): item is EncounterItem {
+type PermissionItem = CampaignItem | CampaignFull | CampaignMinimal | EncounterItem
+
+function isEncounter(item: PermissionItem): item is EncounterItem {
   return 'activeIndex' in item
 }
 
 export function isOwner(
-  item: CampaignItem | EncounterItem,
+  item: PermissionItem,
   id: string,
   strict?: boolean,
 ): boolean {
@@ -16,7 +18,7 @@ export function isOwner(
 }
 
 export function isAdmin(
-  item: CampaignItem | EncounterItem,
+  item: PermissionItem,
   id: string,
   strict?: boolean,
 ): boolean {
@@ -28,7 +30,7 @@ export function isAdmin(
 }
 
 export function isMember(
-  item: CampaignItem | EncounterItem,
+  item: PermissionItem,
   id: string,
   strict?: boolean,
 ): boolean {
@@ -48,9 +50,13 @@ export function hasPermission(userRole: UserRole, expected: UserRole): boolean {
   else return false
 }
 
-export function getRole(item: CampaignItem | EncounterItem, id: string): UserRole {
-  if (isOwner(item, id)) return 'Owner'
-  else if (isAdmin(item, id)) return 'Admin'
+export function getRole(
+  item: PermissionItem,
+  id: string,
+  strict?: boolean,
+): UserRole {
+  if (isOwner(item, id, strict)) return 'Owner'
+  else if (isAdmin(item, id, strict)) return 'Admin'
   else return 'Viewer'
 }
 

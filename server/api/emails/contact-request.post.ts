@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
   const { plunkApiKey } = useRuntimeConfig()
 
   try {
+    // @ts-expect-error Plunk is not a constructor error
     const plunk = new Plunk.default(plunkApiKey)
 
     const html = await render(
@@ -17,8 +18,8 @@ export default defineEventHandler(async (event) => {
       },
     )
 
-    return await plunk.emails.send({
-      from: body.email,
+    await plunk.emails.send({
+      from: 'jeremy@dnd-tracker.com',
       to: 'jeremy@dnd-tracker.com',
       subject: 'New contact request/question',
       body: html,

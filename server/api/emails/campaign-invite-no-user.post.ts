@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
   const { plunkApiKey } = useRuntimeConfig()
 
   try {
+    // @ts-expect-error Plunk is not a constructor error
     const plunk = new Plunk.default(plunkApiKey)
 
     const html = await render(

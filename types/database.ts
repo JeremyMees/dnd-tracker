@@ -29,6 +29,34 @@ export type Database = MergeDeep<
             special_abilities?: Action[]
           }
         }
+        profiles: {
+          Row: {
+            badges: BadgeJson[]
+            avatar_options?: Record<string, string | number>
+          }
+          Insert: {
+            badges?: BadgeJson[]
+            avatar_options?: Record<string, string | number>
+          }
+          Update: {
+            badges?: BadgeJson[]
+            avatar_options?: Record<string, string | number>
+          }
+        }
+        badges: {
+          Row: {
+            description: I18NText
+            label: I18NText
+          }
+          Insert: {
+            description: I18NText
+            label: I18NText
+          }
+          Update: {
+            description?: I18NText
+            label?: I18NText
+          }
+        }
       }
     }
   }

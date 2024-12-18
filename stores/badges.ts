@@ -1,5 +1,5 @@
 export const useBadges = defineStore('useBadges', () => {
-  const supabase = useSupabaseClient()
+  const supabase = useSupabaseClient<Database>()
   const profile = useProfile()
   const { t } = useI18n()
 
@@ -14,8 +14,8 @@ export const useBadges = defineStore('useBadges', () => {
       throw createError(t('components.badgeModal.nothing'))
     }
     else if (result && profile.data?.badges) {
-      const badges = profile.data.badges as BadgeEarned[]
-      const badge: BadgeEarned = { ...result, earned: Date.now() }
+      const badges = profile.data.badges
+      const badge: BadgeJson = { ...result, earned: Date.now() }
 
       if (Array.isArray(badges) && !badges.find(b => b.id === badge.id)) {
         badges.push(badge)

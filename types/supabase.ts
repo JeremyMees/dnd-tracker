@@ -68,13 +68,21 @@ export type HomebrewType = Database['public']['Enums']['homebrew_type']
 export type ActionType = Database['public']['Enums']['action_type']
 
 // Database json schema types
-export type Action = {
+export interface Action {
   name: string
   desc: string
   type: ActionType
   attack_bonus?: number
   damage_bonus?: number
   damage_dice?: string
+}
+
+export type I18NText = Record<string, string>
+
+export interface BadgeJson extends Omit<BadgeRow, 'description' | 'label' | 'code' | 'created_at'> {
+  description: I18NText
+  label: I18NText
+  earned: number
 }
 
 // Extended Types
@@ -86,8 +94,6 @@ export type MinimalProfile = Pick<ProfileRow, 'avatar' | 'id' | 'username'>
 export type Profile = Pick<ProfileRow, 'avatar' | 'id' | 'username' | 'name' | 'email'>
 
 export type Badge = BadgeRow & { earned: number }
-
-export type BadgeEarned = Omit<Badge, 'code' | 'created_at'>
 
 export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & {
   created_by: SocialProfile
@@ -134,12 +140,7 @@ export interface JoinCampaignKey extends Omit<JoinCampaignRow, 'user'> {
 
 export interface EncounterItem extends Omit<InitiativeRow, 'created_by' | 'campaign'> {
   created_by: MinimalProfile
-  campaign: {
-    id: number
-    title: string
-    created_by: MinimalProfile
-    team: TeamMember[]
-  }
+  campaign: CampaignMinimal
 }
 
 // Custom Types

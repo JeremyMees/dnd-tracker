@@ -109,6 +109,7 @@ export default defineNuxtConfig({
 
   nitro: {
     rollupConfig: {
+      // @ts-expect-error need this to render email templates
       plugins: [vue()],
     },
   },

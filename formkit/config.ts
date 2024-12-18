@@ -16,8 +16,8 @@ export default defineFormKitConfig((): any => {
     plugins: [
       createProPlugin(key, inputs),
       createMultiStepPlugin(),
-      createAsteriskPlugin,
-      createIconMessagePlugin,
+      createAsteriskPlugin(),
+      createIconMessagePlugin(),
     ],
     icons: {
       ...genesisIcons,

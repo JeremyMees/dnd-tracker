@@ -244,7 +244,7 @@ export type Database = {
           player: string | null
           reactions: Json
           special_abilities: Json
-          type: string
+          type: Database['public']['Enums']['homebrew_type']
         }
         Insert: {
           ac?: number | null
@@ -260,7 +260,7 @@ export type Database = {
           player?: string | null
           reactions: Json
           special_abilities: Json
-          type?: string
+          type?: Database['public']['Enums']['homebrew_type']
         }
         Update: {
           ac?: number | null
@@ -276,7 +276,7 @@ export type Database = {
           player?: string | null
           reactions?: Json
           special_abilities?: Json
-          type?: string
+          type?: Database['public']['Enums']['homebrew_type']
         }
         Relationships: [
           {
