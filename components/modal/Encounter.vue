@@ -15,7 +15,6 @@ const store = useEncounters()
 const campaign = useCampaigns()
 const profile = useProfile()
 const toast = useToast()
-const { t } = useI18n()
 
 const input = ref()
 const campaigns = ref<CampaignMinimal[]>()
@@ -81,13 +80,13 @@ async function updateEncounter(data: EncounterForm): Promise<void> {
   <FormKit
     id="form"
     type="form"
-    :submit-label="t(`pages.encounters.${encounter ? 'update' : 'add'}`)"
+    :submit-label="$t(`pages.encounters.${encounter ? 'update' : 'add'}`)"
     @submit="handleSubmit"
   >
     <FormKit
       ref="input"
       name="title"
-      :label="t('components.inputs.titleLabel')"
+      :label="$t('components.inputs.titleLabel')"
       :value="encounter?.title"
       validation="required|length:3,30"
     />
@@ -95,8 +94,8 @@ async function updateEncounter(data: EncounterForm): Promise<void> {
       v-if="!campaignId"
       name="campaign"
       type="select"
-      :label="t('components.inputs.campaignLabel')"
-      :placeholder="t('general.noSelected')"
+      :label="$t('components.inputs.campaignLabel')"
+      :placeholder="$t('general.noSelected')"
       :disabled="!campaigns"
       :value="encounter?.campaign?.id"
       :options="campaigns?.map(c => ({ label: c.title, value: c.id })) || []"

@@ -60,25 +60,25 @@ async function sendFeatureEmail(form: FeatureForm): Promise<void> {
     <FormKit
       id="form"
       type="form"
-      :submit-label="t('actions.create')"
+      :submit-label="$t('actions.create')"
       @submit="handleSubmit"
     >
       <FormKit
         ref="input"
         name="title"
-        :label="t('components.inputs.titleLabel')"
+        :label="$t('components.inputs.titleLabel')"
         validation="required|length:3,50"
       />
       <FormKit
         type="textarea"
         name="text"
         :maxlength="500"
-        :label="t('components.inputs.descriptionLabel')"
+        :label="$t('components.inputs.descriptionLabel')"
         validation="required|length:10,500"
       />
     </FormKit>
   </template>
   <p v-else>
-    {{ t('components.addFeatureRequestModal.submitted') }}
+    {{ $t('components.addFeatureRequestModal.submitted') }}
   </p>
 </template>

@@ -13,8 +13,6 @@ withDefaults(
 
 onKeyStroke('Escape', () => emit('close'))
 
-const { t } = useI18n()
-
 const open = ref<boolean>(false)
 
 setTimeout(() => open.value = true, 50) // delay to play animation
@@ -40,7 +38,7 @@ setTimeout(() => open.value = true, 50) // delay to play animation
         <div class="relative pb-4">
           <button
             class="absolute -top-7 -right-7 group"
-            :aria-label="t('actions.close')"
+            :aria-label="$t('actions.close')"
             @click="$emit('close')"
           >
             <Icon

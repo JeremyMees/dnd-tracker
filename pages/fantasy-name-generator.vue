@@ -31,10 +31,10 @@ function handleCopy(name: string): void {
   <NuxtLayout container>
     <div class="flex flex-col pt-6 pb-16 gap-10">
       <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center">
-        {{ t('pages.fantasyNameGenerator.title') }}
+        {{ $t('pages.fantasyNameGenerator.title') }}
       </h1>
       <p class="mb-5 max-w-3xl mx-auto text-center pb-10">
-        {{ t('pages.fantasyNameGenerator.description') }}
+        {{ $t('pages.fantasyNameGenerator.description') }}
       </p>
       <div class="relative p-6 border-4 border-bg bg-bg-light/50 rounded-lg max-w-prose mx-auto w-full">
         <MasonryGrid
@@ -61,14 +61,14 @@ function handleCopy(name: string): void {
         />
         <div class="flex justify-end gap-2 items-center pt-6">
           <p class="text-slate-300 body-extra-small">
-            {{ t('pages.fantasyNameGenerator.tip') }}
+            {{ $t('pages.fantasyNameGenerator.tip') }}
           </p>
           <button
             :disabled="!names.length"
             class="btn-primary"
             @click="generate"
           >
-            {{ t('actions.generate') }}
+            {{ $t('actions.generate') }}
           </button>
         </div>
         <div class="abolsute inset-0 z-[-1] fancy-shadow" />

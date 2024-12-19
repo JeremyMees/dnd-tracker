@@ -6,7 +6,6 @@ useSeo()
 
 // const store = useTableStore()
 const toast = useToast()
-const { t } = useI18n()
 
 const dragon = ref<InstanceType<typeof Dragon>>()
 
@@ -45,42 +44,42 @@ if (import.meta.client) {
         @mousemove="dragon && dragon.calculateEyes"
       >
         <LazySummary
-          :title="t('pages.home.summary.title')"
+          :title="$t('pages.home.summary.title')"
           sprite="flame"
           :items="[
-            t('pages.home.summary.item1'),
-            t('pages.home.summary.item2'),
-            t('pages.home.summary.item3'),
-            t('pages.home.summary.item4'),
-            t('pages.home.summary.item5'),
-            t('pages.home.summary.item6'),
+            $t('pages.home.summary.item1'),
+            $t('pages.home.summary.item2'),
+            $t('pages.home.summary.item3'),
+            $t('pages.home.summary.item4'),
+            $t('pages.home.summary.item5'),
+            $t('pages.home.summary.item6'),
           ]"
           class="max-w-prose"
         />
         <LazyTitleText sprite="hearth">
-          {{ t('pages.home.textBlock1.title') }}
+          {{ $t('pages.home.textBlock1.title') }}
           <template #text>
-            {{ t('pages.home.textBlock1.text') }}
+            {{ $t('pages.home.textBlock1.text') }}
             <span class="mt-3">
-              {{ t('pages.home.textBlock1.text2') }}
+              {{ $t('pages.home.textBlock1.text2') }}
             </span>
           </template>
         </LazyTitleText>
       </div>
       <LazyDragon ref="dragon" />
       <LazyCtaBanner
-        :title="t('pages.home.textBlock2.title')"
-        :subtitle="t('pages.home.textBlock2.text')"
-        :button="t('pages.home.textBlock2.button')"
+        :title="$t('pages.home.textBlock2.title')"
+        :subtitle="$t('pages.home.textBlock2.text')"
+        :button="$t('pages.home.textBlock2.button')"
       />
       <LazyTitleText
         center
         sprite="bedbug"
         class="dnd-container"
       >
-        {{ t('pages.home.textBlock3.title') }}
+        {{ $t('pages.home.textBlock3.title') }}
         <template #text>
-          {{ t('pages.home.textBlock3.text') }}
+          {{ $t('pages.home.textBlock3.text') }}
         </template>
       </LazyTitleText>
     </div>

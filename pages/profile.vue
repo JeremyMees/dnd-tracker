@@ -111,10 +111,10 @@ async function deleteUser(): Promise<void> {
             class="btn-text"
             @click="modal.open({
               component: 'Badge',
-              header: t('components.badgeModal.title'),
+              header: $t('components.badgeModal.title'),
             })"
           >
-            {{ t('components.badgeModal.claim') }}
+            {{ $t('components.badgeModal.claim') }}
           </button>
         </template>
         <template v-else>
@@ -126,7 +126,7 @@ async function deleteUser(): Promise<void> {
       </div>
       <div class="flex flex-wrap gap-4 items-center justify-between pt-2 pb-4 border-b-2 border-slate-700">
         <div class="flex gap-4">
-          {{ t('pages.profile.subscription.current') }}:
+          {{ $t('pages.profile.subscription.current') }}:
           <span
             v-if="profile.data"
             class="font-bold capitalize"
@@ -144,38 +144,38 @@ async function deleteUser(): Promise<void> {
       >
         <div class="md:min-w-[300px]">
           <h2>
-            {{ t('pages.profile.data.title') }}
+            {{ $t('pages.profile.data.title') }}
           </h2>
           <p class="pt-2">
-            {{ t('pages.profile.data.subtitle') }}
+            {{ $t('pages.profile.data.subtitle') }}
           </p>
         </div>
         <div class="grow max-w-4xl">
           <FormKit
             v-model="formInfo"
             type="form"
-            :submit-label="t('actions.save')"
+            :submit-label="$t('actions.save')"
             @submit="updateProfile"
           >
             <FormKit
               name="name"
-              :label="t('components.inputs.nameLabel')"
+              :label="$t('components.inputs.nameLabel')"
               validation="required|length:3,30|alpha_spaces"
             />
             <FormKit
               name="username"
-              :label="t('components.inputs.usernameLabel')"
+              :label="$t('components.inputs.usernameLabel')"
               validation="required|length:3,15|alpha_spaces"
             />
             <FormKit
               name="email"
-              :label="t('components.inputs.emailLabel')"
+              :label="$t('components.inputs.emailLabel')"
               validation="required|length:5,50|email"
             />
             <FormKit
               name="marketing"
               type="toggle"
-              :label="t('components.inputs.marketingLabel')"
+              :label="$t('components.inputs.marketingLabel')"
             />
           </FormKit>
         </div>
@@ -185,24 +185,24 @@ async function deleteUser(): Promise<void> {
       >
         <div class="md:min-w-[300px]">
           <h2>
-            {{ t('pages.profile.password.title') }}
+            {{ $t('pages.profile.password.title') }}
           </h2>
           <p class="pt-2">
-            {{ t('pages.profile.password.subtitle') }}
+            {{ $t('pages.profile.password.subtitle') }}
           </p>
         </div>
         <div class="grow max-w-4xl">
           <FormKit
             id="password"
             type="form"
-            :submit-label="t('actions.save')"
+            :submit-label="$t('actions.save')"
             @submit="updateProfile"
           >
             <FormKit
               name="password"
               type="password"
               suffix-icon="eye"
-              :label="t('components.inputs.passwordLabel')"
+              :label="$t('components.inputs.passwordLabel')"
               validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
               @suffix-icon-click="togglePasswordInput"
             />
@@ -213,10 +213,10 @@ async function deleteUser(): Promise<void> {
         <button
           v-if="profile.data"
           class="btn-danger"
-          :aria-label="t('pages.profile.delete')"
+          :aria-label="$t('pages.profile.delete')"
           @click="deleteUser"
         >
-          {{ t('pages.profile.delete') }}
+          {{ $t('pages.profile.delete') }}
         </button>
         <SkeletonButton
           v-else

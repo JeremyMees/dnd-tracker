@@ -95,7 +95,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
     <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-slate-700">
       <div class="md:min-w-[300px]">
         <h2>
-          {{ t('pages.campaign.settings.access') }}
+          {{ $t('pages.campaign.settings.access') }}
           <span class="text-[12px]">
             (max 10)
           </span>
@@ -125,16 +125,16 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                 class="size-6"
               />
               <span class="text-slate-300">
-                {{ t('general.invited') }}
+                {{ $t('general.invited') }}
               </span>
             </div>
             <div v-else-if="member.role === 'Owner'">
-              {{ t(`general.roles.Owner.title`) }}
+              {{ $t(`general.roles.Owner.title`) }}
             </div>
             <FormKit
               v-else
               type="form"
-              :submit-label="t('pages.campaigns.update')"
+              :submit-label="$t('pages.campaigns.update')"
               form-class="flex items-center gap-2"
               @submit="changeRole"
             >
@@ -143,8 +143,8 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                 name="role"
                 type="select"
                 :options="[
-                  { value: 'Viewer', label: t('general.roles.Viewer.title') },
-                  { value: 'Admin', label: t('general.roles.Admin.title') },
+                  { value: 'Viewer', label: $t('general.roles.Viewer.title') },
+                  { value: 'Admin', label: $t('general.roles.Admin.title') },
                 ]"
                 outer-class="$remove:mb-4 w-full"
                 inner-class="$remove:mb-1"
@@ -159,8 +159,8 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                   <AnimationReveal>
                     <button
                       v-if="value?.role && value.role !== member.role"
-                      v-tippy="t('actions.save')"
-                      :aria-label="t('actions.save')"
+                      v-tippy="$t('actions.save')"
+                      :aria-label="$t('actions.save')"
                       class="icon-btn-success"
                     >
                       <Icon
@@ -175,9 +175,9 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
             </FormKit>
             <div class="flex sm:justify-end items-center">
               <button
-                v-tippy="t('actions.delete')"
+                v-tippy="$t('actions.delete')"
                 :disabled="member.role === 'Owner'"
-                :aria-label="t('actions.delete')"
+                :aria-label="$t('actions.delete')"
                 class="icon-btn-danger"
                 @click="removeTeamMember(member)"
               >
@@ -192,11 +192,11 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
         </Card>
         <button
           class="btn-black w-full mt-4"
-          :aria-label="t('pages.campaign.settings.add')"
+          :aria-label="$t('pages.campaign.settings.add')"
           :disabled="[...current.team, ...current.join_campaign].length >= 9"
           @click="inviteTeamMember"
         >
-          {{ t('pages.campaign.settings.add') }}
+          {{ $t('pages.campaign.settings.add') }}
         </button>
       </div>
     </div>
@@ -204,20 +204,20 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
     <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 pt-6">
       <div class="md:min-w-[300px]">
         <h2>
-          {{ t('pages.campaign.settings.campaign') }}
+          {{ $t('pages.campaign.settings.campaign') }}
         </h2>
       </div>
       <div class="grow max-w-4xl">
         <FormKit
           id="form"
           type="form"
-          :submit-label="t('pages.campaigns.update')"
+          :submit-label="$t('pages.campaigns.update')"
           @submit="updateCampaign"
         >
           <FormKit
             :value="current.title"
             name="title"
-            :label="t('components.inputs.titleLabel')"
+            :label="$t('components.inputs.titleLabel')"
             validation="required|length:3,30"
           />
         </FormKit>

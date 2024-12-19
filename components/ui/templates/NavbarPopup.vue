@@ -5,8 +5,6 @@ defineProps<{
   dropDownRoutes: Route[]
   authenticated: boolean
 }>()
-
-const { t } = useI18n()
 </script>
 
 <template>
@@ -26,7 +24,7 @@ const { t } = useI18n()
         />
       </NuxtLinkLocale>
       <button
-        :aria-label="t('actions.close')"
+        :aria-label="$t('actions.close')"
         @click="$emit('close')"
       >
         <Icon
@@ -42,12 +40,12 @@ const { t } = useI18n()
         class="flex flex-col gap-y-2"
       >
         <RouteLink
-          :label="t('components.navbar.login')"
+          :label="$t('components.navbar.login')"
           url="login"
           @click="$emit('close')"
         />
         <RouteLink
-          :label="t('components.navbar.register')"
+          :label="$t('components.navbar.register')"
           url="register"
           @click="$emit('close')"
         />
@@ -55,14 +53,14 @@ const { t } = useI18n()
       <RouteLink
         v-for="route in routes"
         :key="route.url"
-        :label="t(route.label)"
+        :label="$t(route.label)"
         :url="route.url"
         @click="$emit('close')"
       />
       <RouteLink
         v-for="route in dropDownRoutes"
         :key="route.url"
-        :label="t(route.label)"
+        :label="$t(route.label)"
         :url="route.url"
         @click="$emit('close')"
       />
@@ -71,7 +69,7 @@ const { t } = useI18n()
         class="text-danger hover:text-white cursor-pointer duration-200 ease-in-out max-w-max font-bold pt-4"
         @click="$emit('logout')"
       >
-        {{ t('components.navbar.logout') }}
+        {{ $t('components.navbar.logout') }}
       </div>
     </div>
   </div>

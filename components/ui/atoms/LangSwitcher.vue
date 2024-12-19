@@ -12,11 +12,11 @@ const dropdown = ref<InstanceType<typeof Dropdown>>()
 const currentLocale = computed(() => locales.value.find(l => l.code === locale.value))
 
 onMounted(() => {
-  if (cookieLang.value) setLang(cookieLang.value)
+  if (cookieLang.value) setLang(cookieLang.value as 'nl' | 'en')
   else setLang(router.currentRoute.value.fullPath.includes('/en/') ? 'en' : 'nl')
 })
 
-function setLang(lang: string): void {
+function setLang(lang: 'nl' | 'en'): void {
   cookieLang.value = lang
   locale.value = lang
 

@@ -2,7 +2,6 @@
 import { reset } from '@formkit/core'
 
 const badge = useBadges()
-const { t } = useI18n()
 
 const input = ref()
 
@@ -29,13 +28,13 @@ async function handleSubmit(form: BadgeClaim, node: FormNode): Promise<void> {
   <FormKit
     id="form"
     type="form"
-    :submit-label="t('components.badgeModal.add')"
+    :submit-label="$t('components.badgeModal.add')"
     @submit="handleSubmit"
   >
     <FormKit
       ref="input"
       name="code"
-      :label="t('components.inputs.codeLabel')"
+      :label="$t('components.inputs.codeLabel')"
       validation="required|length:3,30"
     />
   </FormKit>

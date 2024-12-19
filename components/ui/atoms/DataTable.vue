@@ -29,7 +29,6 @@ const sortACS = defineModel<boolean>('acs', { default: true, required: true })
 const page = defineModel<number>('page', { default: 0 })
 const search = defineModel<string>('search', { default: '' })
 
-const { t } = useI18n()
 const profile = useProfile()
 
 const selectedAll = ref<boolean>(false)
@@ -188,7 +187,7 @@ function toggleAll(): void {
       <button
         v-if="selected && selected.length"
         class="btn-danger mt-4"
-        :aria-label="t('actions.bulkRemove', { number: selected.length })"
+        :aria-label="$t('actions.bulkRemove', { number: selected.length })"
         @click="() => {
           $emit('remove', selected.map(item => item.id))
           selectedAll = false
@@ -196,9 +195,9 @@ function toggleAll(): void {
         }"
       >
         {{
-          t('actions.bulkRemove', {
+          $t('actions.bulkRemove', {
             number: selected.length,
-            type: t(`general.${type}`, (selected || []).length).toLowerCase(),
+            type: $t(`general.${type}`, (selected || []).length).toLowerCase(),
           })
         }}
       </button>

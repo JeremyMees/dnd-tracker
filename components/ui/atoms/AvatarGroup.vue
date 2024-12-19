@@ -16,7 +16,6 @@ const props = withDefaults(
   },
 )
 
-const { t } = useI18n()
 const campaign = useCampaigns()
 
 const persons = ref<Person[]>([])
@@ -103,7 +102,7 @@ function teamMembersToAvatar(members: TeamMember[]): Person[] {
               {{ username }}
             </span>
             <span v-if="role">
-              ({{ t(`general.roles.${role}.title`) }})
+              ({{ $t(`general.roles.${role}.title`) }})
             </span>
           </div>
         </div>

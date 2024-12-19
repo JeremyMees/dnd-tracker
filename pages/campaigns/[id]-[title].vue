@@ -4,7 +4,6 @@ definePageMeta({ middleware: ['auth', 'id-param', 'campaign-member'] })
 const profile = useProfile()
 const campaign = useCampaigns()
 const route = useRoute()
-const { t } = useI18n()
 
 const url = computed<string>(() => route.fullPath.split('/').slice(0, -1).join('/'))
 
@@ -23,7 +22,7 @@ const { data, status, refresh } = await useAsyncData(
       <BackButton link="/campaigns" />
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
         <h1 class="text-slate-300">
-          {{ t('general.campaign') }}:
+          {{ $t('general.campaign') }}:
         </h1>
         <span
           v-if="status === 'success'"
@@ -40,19 +39,19 @@ const { data, status, refresh } = await useAsyncData(
     <div class="flex flex-wrap gap-4 md:border-b-2 md:border-slate-700 mb-10">
       <TabItem
         :link="`${url}/content`"
-        :label="t('general.content')"
+        :label="$t('general.content')"
         icon="tabler:layout"
         :disabled="status !== 'success'"
       />
       <TabItem
         :link="`${url}/settings`"
-        :label="t('general.setting', 2)"
+        :label="$t('general.setting', 2)"
         icon="tabler:settings"
         :disabled="status !== 'success' || !data || !isAdmin(data, profile.user!.id)"
       />
       <TabItem
         :link="`${url}/danger-zone`"
-        :label="t('general.dangerZone')"
+        :label="$t('general.dangerZone')"
         icon="tabler:alert-triangle"
         :disabled="status !== 'success' || !data || !isOwner(data, profile.user!.id)"
       />

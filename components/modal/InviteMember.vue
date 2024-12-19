@@ -132,7 +132,7 @@ async function inviteNewUser(email: string): Promise<void> {
         name="email"
         type="search"
         prefix-icon="search"
-        :placeholder="t('components.inputs.searchByEmail')"
+        :placeholder="$t('components.inputs.searchByEmail')"
         outer-class="$reset !mb-0 grow"
         validation="required|email"
       />
@@ -140,9 +140,9 @@ async function inviteNewUser(email: string): Promise<void> {
         type="submit"
         outer-class="$reset !mb-0"
         input-class="$remove:btn-black btn-primary"
-        :aria-label="t('actions.search')"
+        :aria-label="$t('actions.search')"
       >
-        {{ t('actions.search') }}
+        {{ $t('actions.search') }}
       </FormKit>
     </div>
   </FormKit>
@@ -154,14 +154,14 @@ async function inviteNewUser(email: string): Promise<void> {
       class="flex flex-col md:flex-row md:items-center gap-4 backdrop-blur-xl my-4"
     >
       <p class="body-small">
-        {{ t('components.inviteMember.errors.noUser', { email: noUser }) }}
+        {{ $t('components.inviteMember.errors.noUser', { email: noUser }) }}
       </p>
       <div class="flex justify-end">
         <button
           class="btn-primary whitespace-nowrap"
           @click="inviteNewUser(noUser)"
         >
-          {{ t('actions.invite') }}
+          {{ $t('actions.invite') }}
         </button>
       </div>
     </Card>
@@ -173,7 +173,7 @@ async function inviteNewUser(email: string): Promise<void> {
       id="form"
       v-model="form"
       type="form"
-      :submit-label="t('components.inviteMember.invite')"
+      :submit-label="$t('components.inviteMember.invite')"
       :submit-attrs="{ wrapperClass: 'mt-4' }"
       form-class="pt-4"
       @submit="handleSubmit"
@@ -204,8 +204,8 @@ async function inviteNewUser(email: string): Promise<void> {
               name="role"
               type="select"
               :options="[
-                { value: 'Viewer', label: t('general.roles.Viewer.title') },
-                { value: 'Admin', label: t('general.roles.Admin.title') },
+                { value: 'Viewer', label: $t('general.roles.Viewer.title') },
+                { value: 'Admin', label: $t('general.roles.Admin.title') },
               ]"
               validation="required"
               outer-class="$remove:mb-4 w-[200px]"
@@ -213,8 +213,8 @@ async function inviteNewUser(email: string): Promise<void> {
             />
             <div class="sm:flex justify-end">
               <button
-                v-tippy="t('actions.delete')"
-                :aria-label="t('actions.delete')"
+                v-tippy="$t('actions.delete')"
+                :aria-label="$t('actions.delete')"
                 class="icon-btn-danger"
                 @click="form.users.splice(index, 1)"
               >

@@ -5,7 +5,6 @@ const features = useFeatures()
 const profile = useProfile()
 const localePath = useLocalePath()
 const modal = useModal()
-const { t } = useI18n()
 
 const createdBy = ref<'all' | 'my'>('all')
 const search = ref<string>('')
@@ -61,37 +60,37 @@ function routeToLogin(): void {
           v-model="search"
           type="search"
           name="search"
-          :label="t('components.inputs.titleLabel')"
+          :label="$t('components.inputs.titleLabel')"
           outer-class="$reset grow !pb-0"
         />
         <FormKit
           v-if="profile.user"
           v-model="createdBy"
           :disabled="status === 'pending'"
-          :label="t('pages.featureRequest.filter.title')"
+          :label="$t('pages.featureRequest.filter.title')"
           name="created by"
           type="select"
           :options="[
-            { label: t('pages.featureRequest.filter.options.my'), value: 'my' },
-            { label: t('pages.featureRequest.filter.options.all'), value: 'all' },
+            { label: $t('pages.featureRequest.filter.options.my'), value: 'my' },
+            { label: $t('pages.featureRequest.filter.options.all'), value: 'all' },
           ]"
           outer-class="$reset !pb-0"
         />
         <button
           class="btn-primary tracker-shadow-pulse mt-[18px]"
-          :aria-label="t('pages.featureRequest.request')"
+          :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
           @click="
             profile.user
               ? modal.open({
                 component: 'FeatureRequest',
-                header: t('components.addFeatureRequestModal.title'),
+                header: $t('components.addFeatureRequestModal.title'),
                 events: { finished: () => refresh() },
               })
               : routeToLogin()
           "
         >
-          {{ t('pages.featureRequest.request') }}
+          {{ $t('pages.featureRequest.request') }}
         </button>
       </Card>
 
@@ -139,7 +138,7 @@ function routeToLogin(): void {
           class="flex flex-col justify-center gap-4 border-4 border-black bg-black/30 rounded-lg p-4"
         >
           <p>
-            {{ t('pages.featureRequest.nothing') }}
+            {{ $t('pages.featureRequest.nothing') }}
           </p>
         </div>
       </template>
@@ -149,10 +148,10 @@ function routeToLogin(): void {
         class="flex flex-col justify-center gap-4 border-4 border-black bg-black/30 rounded-lg p-4"
       >
         <h3 class="pb-2">
-          {{ t('pages.featureRequest.cta.title') }}
+          {{ $t('pages.featureRequest.cta.title') }}
         </h3>
         <p>
-          {{ t('pages.featureRequest.cta.text') }}
+          {{ $t('pages.featureRequest.cta.text') }}
         </p>
       </div>
     </section>

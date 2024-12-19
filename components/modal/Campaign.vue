@@ -10,7 +10,6 @@ const props = defineProps<{ campaign?: CampaignItem | CampaignRow }>()
 
 const store = useCampaigns()
 const profile = useProfile()
-const { t } = useI18n()
 
 const input = ref()
 
@@ -54,13 +53,13 @@ async function updateCampaign(data: CampaignForm): Promise<void> {
   <FormKit
     id="form"
     type="form"
-    :submit-label="t(`pages.campaigns.${campaign ? 'update' : 'add'}`)"
+    :submit-label="$t(`pages.campaigns.${campaign ? 'update' : 'add'}`)"
     @submit="handleSubmit"
   >
     <FormKit
       ref="input"
       name="title"
-      :label="t('components.inputs.titleLabel')"
+      :label="$t('components.inputs.titleLabel')"
       :value="campaign?.title ? campaign.title : ''"
       validation="required|length:3,30"
     />

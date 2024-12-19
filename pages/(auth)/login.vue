@@ -3,7 +3,6 @@ definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Log in')
 
 const auth = useAuth()
-const { t } = useI18n()
 const localePath = useLocalePath()
 const redirect = useCookie<string>('sb-redirect-path')
 
@@ -31,7 +30,7 @@ async function login(form: Login, node: FormNode): Promise<void> {
   <NuxtLayout name="centered">
     <section class="space-y-6">
       <h1 class="text-center">
-        {{ t('pages.login.title') }}
+        {{ $t('pages.login.title') }}
       </h1>
       <NuxtImg
         src="/classes.png"
@@ -42,18 +41,18 @@ async function login(form: Login, node: FormNode): Promise<void> {
       />
       <FormKit
         type="form"
-        :submit-label="t('pages.login.signIn')"
+        :submit-label="$t('pages.login.signIn')"
         @submit="login"
       >
         <FormKit
           name="email"
-          :label="t('components.inputs.emailLabel')"
+          :label="$t('components.inputs.emailLabel')"
           validation="required|length:5,50|email"
         />
         <FormKit
           name="password"
           type="password"
-          :label="t('components.inputs.passwordLabel')"
+          :label="$t('components.inputs.passwordLabel')"
           validation="required|length:6,50"
         />
       </FormKit>
@@ -62,13 +61,13 @@ async function login(form: Login, node: FormNode): Promise<void> {
           url="register"
           class="btn-text"
         >
-          {{ t('pages.login.new') }}
+          {{ $t('pages.login.new') }}
         </RouteLink>
         <RouteLink
           url="forgot-password"
           class="btn-text"
         >
-          {{ t('pages.login.forgot') }}
+          {{ $t('pages.login.forgot') }}
         </RouteLink>
       </div>
     </section>

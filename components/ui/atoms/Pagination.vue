@@ -13,7 +13,6 @@ const props = withDefaults(
 )
 
 const page = defineModel<number>('page', { required: true })
-const { t } = useI18n()
 
 function handleNext(): void {
   handleSelect(Math.min(page.value + 1, props.totalPages))
@@ -80,7 +79,7 @@ const limitedNumbersList = computed<number[]>(() => {
       class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
       :class="{ 'cursor-progress': loading }"
       :disabled="page === 0 || loading"
-      :aria-label="t('actions.prev')"
+      :aria-label="$t('actions.prev')"
       @click="handlePrevious"
     >
       <Icon
@@ -111,7 +110,7 @@ const limitedNumbersList = computed<number[]>(() => {
       class="flex items-center justify-center w-8 h-8 border-r-4 border-bg"
       :class="{ 'cursor-progress': loading }"
       :disabled="page === totalPages - 1 || loading"
-      :aria-label="t('actions.next')"
+      :aria-label="$t('actions.next')"
       @click="handleNext"
     >
       <Icon

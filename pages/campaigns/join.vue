@@ -3,7 +3,6 @@ definePageMeta({ middleware: ['auth', 'valid-token'] })
 
 const toast = useToast()
 const localePath = useLocalePath()
-const { t } = useI18n()
 const route = useRoute()
 
 const isLoading = ref<boolean>(false)
@@ -45,7 +44,7 @@ async function answerInvite(accept: boolean): Promise<void> {
     <section class="space-y-6">
       <template v-if="status === 'success' && data?.campaign">
         <h2>
-          {{ t('pages.campaign.join.title', { campaign: data.campaign.title }) }}
+          {{ $t('pages.campaign.join.title', { campaign: data.campaign.title }) }}
         </h2>
         <I18nT
           keypath="pages.campaign.join.text"
@@ -59,7 +58,7 @@ async function answerInvite(accept: boolean): Promise<void> {
           </template>
           <template #role>
             <span class="text-white font-bold">
-              {{ t(`general.roles.${data.role}.title`) }}
+              {{ $t(`general.roles.${data.role}.title`) }}
             </span>
           </template>
         </I18nT>
@@ -69,14 +68,14 @@ async function answerInvite(accept: boolean): Promise<void> {
             class="btn-danger"
             @click="answerInvite(false)"
           >
-            {{ t('actions.decline') }}
+            {{ $t('actions.decline') }}
           </button>
           <button
             :disabled="isLoading"
             class="btn-success"
             @click="answerInvite(true)"
           >
-            {{ t('actions.join') }}
+            {{ $t('actions.join') }}
           </button>
         </div>
       </template>

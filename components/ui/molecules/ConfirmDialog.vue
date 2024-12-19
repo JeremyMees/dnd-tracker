@@ -13,8 +13,6 @@ const props = defineProps<{
   callback: (confirmed: boolean) => any
 }>()
 
-const { t } = useI18n()
-
 const input = ref()
 
 onMounted(() => {
@@ -36,7 +34,7 @@ function close(): void {
   <Modal @close="close">
     <template #header>
       <h2>
-        {{ t('components.confirmationModal.title') }}
+        {{ $t('components.confirmationModal.title') }}
       </h2>
     </template>
     <div class="text-white space-y-4">
@@ -72,18 +70,18 @@ function close(): void {
             <button
               type="button"
               class="btn-black"
-              :aria-label="t('actions.cancel')"
+              :aria-label="$t('actions.cancel')"
               @click="$emit('decline', uuid)"
             >
-              {{ t('actions.cancel') }}
+              {{ $t('actions.cancel') }}
             </button>
             <FormKit
               type="submit"
               outer-class="$reset !mb-0"
               input-class="$remove:btn-black btn-danger"
-              :aria-label="t('actions.delete')"
+              :aria-label="$t('actions.delete')"
             >
-              {{ t('actions.delete') }}
+              {{ $t('actions.delete') }}
             </FormKit>
           </div>
         </template>

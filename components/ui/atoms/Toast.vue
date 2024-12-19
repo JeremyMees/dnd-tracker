@@ -2,8 +2,6 @@
 const emit = defineEmits<{ remove: [string] }>()
 const props = defineProps<{ toast: Toast }>()
 
-const { t } = useI18n()
-
 const loader = ref<HTMLDivElement>()
 const isHover = ref<boolean>(false)
 const loading = ref<number>(100)
@@ -89,7 +87,7 @@ watch(() => isHover.value, (v: boolean) => {
         name="tabler:x"
         class="min-w-[25px] min-h-[25px] self-start text-danger cursor-pointer"
         aria-hidden="true"
-        :aria-label="t('actions.remove')"
+        :aria-label="$t('actions.remove')"
         @click="$emit('remove', toast.uuid)"
       />
     </div>

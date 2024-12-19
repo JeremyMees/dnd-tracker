@@ -1,8 +1,6 @@
 <script setup lang="ts">
 defineProps<{ link: string }>()
 
-const { t } = useI18n()
-
 const textVisible = ref<boolean>(true)
 const button = ref<HTMLButtonElement>()
 
@@ -34,7 +32,7 @@ function animateText() {
         v-if="textVisible"
         class="font-bold"
       >
-        {{ t('general.back') }}
+        {{ $t('general.back') }}
       </span>
     </RouteLink>
   </div>

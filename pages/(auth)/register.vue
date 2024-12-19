@@ -44,7 +44,7 @@ async function register(form: Register, node: FormNode): Promise<void> {
   >
     <section class="space-y-6">
       <h1 class="text-center">
-        {{ t('pages.register.register') }}
+        {{ $t('pages.register.register') }}
       </h1>
       <div class="flex flex-col lg:flex-row gap-x-6 gap-y-6">
         <AvatarPicker
@@ -56,29 +56,29 @@ async function register(form: Register, node: FormNode): Promise<void> {
         <div class="flex-grow">
           <FormKit
             type="form"
-            :submit-label="t('pages.register.register')"
+            :submit-label="$t('pages.register.register')"
             @submit="register"
           >
             <FormKit
               name="name"
-              :label="t('components.inputs.fullNameLabel')"
+              :label="$t('components.inputs.fullNameLabel')"
               validation="required|length:3,30|alpha_spaces"
             />
             <FormKit
               name="username"
-              :label="t('components.inputs.usernameLabel')"
+              :label="$t('components.inputs.usernameLabel')"
               validation="required|length:3,15|alpha_spaces"
             />
             <FormKit
               name="email"
-              :label="t('components.inputs.emailLabel')"
+              :label="$t('components.inputs.emailLabel')"
               validation="required|length:5,50|email"
             />
             <FormKit
               name="password"
               type="password"
               suffix-icon="eye"
-              :label="t('components.inputs.passwordLabel')"
+              :label="$t('components.inputs.passwordLabel')"
               validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
               @suffix-icon-click="togglePasswordInput"
             />
@@ -86,24 +86,24 @@ async function register(form: Register, node: FormNode): Promise<void> {
               name="marketing"
               type="toggle"
               :value="true"
-              :label="t('components.inputs.marketingLabel')"
+              :label="$t('components.inputs.marketingLabel')"
             />
           </FormKit>
           <p class="body-small text-center">
-            {{ t('pages.register.consent') }}
+            {{ $t('pages.register.consent') }}
           </p>
           <div class="flex flex-wrap gap-2 justify-center">
             <RouteLink
               url="login"
               class="btn-text"
             >
-              {{ t('pages.login.signIn') }}
+              {{ $t('pages.login.signIn') }}
             </RouteLink>
             <RouteLink
               url="forgot-password"
               class="btn-text"
             >
-              {{ t('pages.login.forgot') }}
+              {{ $t('pages.login.forgot') }}
             </RouteLink>
           </div>
         </div>

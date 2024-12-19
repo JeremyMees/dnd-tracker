@@ -97,14 +97,14 @@ async function deleteItems(ids: number[]): Promise<void> {
     v-model:acs="sortACS"
     v-model:search="search"
     :headers="[
-      { label: t('general.name'), sort: true, id: 'name' },
-      { label: t('general.type'), sort: true, id: 'type' },
-      { label: t('general.player'), sort: true, id: 'player' },
+      { label: $t('general.name'), sort: true, id: 'name' },
+      { label: $t('general.type'), sort: true, id: 'type' },
+      { label: $t('general.player'), sort: true, id: 'player' },
       { label: 'HP', sort: true, id: 'health' },
       { label: 'AC', sort: true, id: 'ac' },
       { label: 'Init mod', sort: true, id: 'initiative_modifier' },
-      { label: t('general.link'), sort: false, id: 'link' },
-      { label: t('general.action', 2), sort: false, id: 'actions' },
+      { label: $t('general.link'), sort: false, id: 'link' },
+      { label: $t('general.action', 2), sort: false, id: 'actions' },
       { label: '', sort: false, id: 'modify' },
     ]"
     :items="homebrews || []"
@@ -126,7 +126,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       />
       <button
         class="btn-primary"
-        :aria-label="t('actions.create')"
+        :aria-label="$t('actions.create')"
         :disabled="status === 'pending' || !isAdmin(campaign, profile.user!.id)"
         @click="() => {
           count >= homebrew.max
@@ -134,7 +134,7 @@ async function deleteItems(ids: number[]): Promise<void> {
             : openModal()
         }"
       >
-        {{ t('actions.create') }}
+        {{ $t('actions.create') }}
       </button>
     </template>
 
@@ -171,7 +171,7 @@ async function deleteItems(ids: number[]): Promise<void> {
               size="20"
               aria-hidden="true"
             />
-            {{ t(`general.${row.type}`) }}
+            {{ $t(`general.${row.type}`) }}
           </td>
           <td class="td">
             {{ row.player || '' }}
@@ -188,8 +188,8 @@ async function deleteItems(ids: number[]): Promise<void> {
           <td class="td">
             <NuxtLink
               v-if="row.link"
-              v-tippy="t('actions.link')"
-              :aria-label="t('actions.link')"
+              v-tippy="$t('actions.link')"
+              :aria-label="$t('actions.link')"
               :to="row.link"
               target="_blank"
               class="icon-btn-success"
@@ -204,8 +204,8 @@ async function deleteItems(ids: number[]): Promise<void> {
           <td class="td">
             <button
               v-if="row.actions?.length || row.reactions?.length || row.special_abilities?.length || row.legendary_actions?.length"
-              v-tippy="t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-              :aria-label="t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+              v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+              :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
               :class="table?.detailRow === row.id ? 'icon-btn-danger' : 'icon-btn-help'"
               @click="table?.toggleDetailRow(row.id)"
             >
@@ -219,9 +219,9 @@ async function deleteItems(ids: number[]): Promise<void> {
           <td class="td flex justify-end">
             <button
               v-if="isAdmin(campaign, profile.user!.id)"
-              v-tippy="t('actions.update')"
+              v-tippy="$t('actions.update')"
               class="icon-btn-info"
-              :aria-label="t('actions.update')"
+              :aria-label="$t('actions.update')"
               @click="openModal(row)"
             >
               <Icon
@@ -249,10 +249,10 @@ async function deleteItems(ids: number[]): Promise<void> {
             <div class="flex justify-end">
               <button
                 class="btn-danger"
-                :aria-label="t('actions.close')"
+                :aria-label="$t('actions.close')"
                 @click="table?.toggleDetailRow(row.id)"
               >
-                {{ t('actions.close') }}
+                {{ $t('actions.close') }}
               </button>
             </div>
           </td>
@@ -264,7 +264,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       v-if="!homebrews?.length && status !== 'pending'"
       #empty
     >
-      {{ t('components.table.nothing', { item: t('general.homebrew', 2).toLowerCase() }) }}
+      {{ $t('components.table.nothing', { item: $t('general.homebrew', 2).toLowerCase() }) }}
     </template>
   </DataTable>
 </template>

@@ -44,20 +44,20 @@ async function transferOwnership(): Promise<void> {
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
         <div class="space-y-2">
           <h3>
-            {{ t('pages.campaign.danger.transfer.title') }}
+            {{ $t('pages.campaign.danger.transfer.title') }}
           </h3>
           <p>
-            {{ t('pages.campaign.danger.transfer.text') }}
+            {{ $t('pages.campaign.danger.transfer.text') }}
           </p>
         </div>
         <div class="flex justify-end">
           <button
-            :aria-label="t('actions.transfer')"
+            :aria-label="$t('actions.transfer')"
             :disabled="!current.team?.length || !current || !isOwner(current, profile.user!.id)"
             class="btn-black"
             @click="transferOwnership"
           >
-            {{ t('actions.transfer') }}
+            {{ $t('actions.transfer') }}
           </button>
         </div>
       </div>
@@ -65,20 +65,20 @@ async function transferOwnership(): Promise<void> {
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
         <div class="space-y-2">
           <h3>
-            {{ t('pages.campaign.danger.delete.title') }}
+            {{ $t('pages.campaign.danger.delete.title') }}
           </h3>
           <p>
-            {{ t('pages.campaign.danger.delete.text') }}
+            {{ $t('pages.campaign.danger.delete.text') }}
           </p>
         </div>
         <div class="flex justify-end">
           <button
-            :aria-label="t('actions.delete')"
+            :aria-label="$t('actions.delete')"
             :disabled="!current || !isOwner(current, profile.user!.id)"
             class="btn-black"
             @click="deleteCampaign"
           >
-            {{ t('actions.delete') }}
+            {{ $t('actions.delete') }}
           </button>
         </div>
       </div>

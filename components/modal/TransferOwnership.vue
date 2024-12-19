@@ -52,25 +52,25 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
   <FormKit
     id="form"
     type="form"
-    :submit-label="t('actions.transfer')"
+    :submit-label="$t('actions.transfer')"
     @submit="handleSubmit"
   >
     <FormKit
       name="role"
       type="radio"
       validation="required"
-      :label="t('components.inputs.newRoleLabel')"
+      :label="$t('components.inputs.newRoleLabel')"
       :options="[
-        { label: t('general.roles.Admin.title'), value: 'Admin' },
-        { label: t('general.roles.Viewer.title'), value: 'Viewer' },
-        { label: t('components.transferOwnershipModal.removed'), value: 'Remove' },
+        { label: $t('general.roles.Admin.title'), value: 'Admin' },
+        { label: $t('general.roles.Viewer.title'), value: 'Viewer' },
+        { label: $t('components.transferOwnershipModal.removed'), value: 'Remove' },
       ]"
     />
     <FormKit
       name="user"
       type="radio"
       validation="required"
-      :label="t('components.inputs.newOwnerLabel')"
+      :label="$t('components.inputs.newOwnerLabel')"
       :options="current.team.map(({ user }) => ({
         label: `${user.name} (${user.username})`,
         value: user.id,
@@ -89,7 +89,7 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
     </I18nT>
     <FormKit
       name="title"
-      :label="t('components.inputs.titleLabel')"
+      :label="$t('components.inputs.titleLabel')"
       :validation="`required|is:${current.title}`"
       :placeholder="current.title"
     />

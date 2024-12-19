@@ -1,7 +1,5 @@
 <script setup lang="ts">
 defineProps<{ type: ActionType }>()
-
-const { t } = useI18n()
 </script>
 
 <template>
@@ -12,20 +10,20 @@ const { t } = useI18n()
   />
   <FormKit
     name="name"
-    :label="t('components.inputs.nameLabel')"
+    :label="$t('components.inputs.nameLabel')"
     validation="required|length:3,30"
   />
   <FormKit
     name="desc"
     type="textarea"
-    :label="t('components.inputs.descriptionLabel')"
+    :label="$t('components.inputs.descriptionLabel')"
     validation="required|length:10,1000"
   />
   <div class="flex gap-x-3">
     <FormKit
       name="damage_dice"
       placeholder="2d6"
-      :label="t('components.inputs.damageDiceLabel')"
+      :label="$t('components.inputs.damageDiceLabel')"
       validation="length:3,15"
       outer-class="grow"
     />
@@ -34,7 +32,7 @@ const { t } = useI18n()
       type="number"
       min="1"
       max="100"
-      :label="t('components.inputs.damageBonusLabel')"
+      :label="$t('components.inputs.damageBonusLabel')"
       validation="between:1,100|number"
       outer-class="grow"
     />
@@ -43,7 +41,7 @@ const { t } = useI18n()
       type="number"
       min="1"
       max="100"
-      :label="t('components.inputs.attackBonusLabel')"
+      :label="$t('components.inputs.attackBonusLabel')"
       validation="between:1,100|number"
       outer-class="grow"
     />

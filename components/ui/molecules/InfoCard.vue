@@ -14,7 +14,6 @@ const props = withDefaults(
 )
 
 const { $md } = useNuxtApp()
-const { t } = useI18n()
 
 const isOpen = ref<boolean>(false)
 
@@ -32,7 +31,7 @@ function hideOpenButton(): boolean {
     <button
       v-if="allowPin"
       v-tippy="{
-        content: t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
+        content: $t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
         placement: 'left',
       }"
       class="absolute right-2 top-2"
@@ -280,11 +279,11 @@ function hideOpenButton(): boolean {
     >
       <button
         class="flex gap-2 text-white"
-        :aria-label="t(`actions.read${isOpen ? 'Less' : 'More'}`)"
+        :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"
         @click="isOpen = !isOpen"
       >
         <p>
-          {{ t(`actions.read${isOpen ? 'Less' : 'More'}`) }}
+          {{ $t(`actions.read${isOpen ? 'Less' : 'More'}`) }}
         </p>
         <Icon
           name="tabler:chevron-down"

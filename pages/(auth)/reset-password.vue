@@ -45,18 +45,18 @@ async function resetPassword({ password }: ResetPassword, node: FormNode): Promi
   <NuxtLayout name="centered">
     <section class="space-y-6">
       <h1 class="text-center pb-10">
-        {{ t('pages.resetPassword.title') }}
+        {{ $t('pages.resetPassword.title') }}
       </h1>
       <FormKit
         type="form"
-        :submit-label="t('pages.resetPassword.reset')"
+        :submit-label="$t('pages.resetPassword.reset')"
         @submit="resetPassword"
       >
         <FormKit
           name="password"
           type="password"
           suffix-icon="eye"
-          :label="t('components.inputs.passwordLabel')"
+          :label="$t('components.inputs.passwordLabel')"
           validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
           @suffix-icon-click="togglePasswordInput"
         />
@@ -66,7 +66,7 @@ async function resetPassword({ password }: ResetPassword, node: FormNode): Promi
           url="/"
           class="btn-text"
         >
-          {{ t('actions.cancel') }}
+          {{ $t('actions.cancel') }}
         </RouteLink>
       </div>
     </section>

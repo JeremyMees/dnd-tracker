@@ -19,7 +19,6 @@ const props = withDefaults(
 
 const initiativeSheet = useInitiativeSheet()
 const homebrew = useHomebrews()
-const { t } = useI18n()
 
 // const summonersOptions = computed<Option[]>(() => {
 //   if (table.encounter?.rows && props.encounter) {
@@ -128,7 +127,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
     id="form"
     v-slot="{ value }"
     type="form"
-    :submit-label="t(`components.homebrewModal.${item ? 'update' : 'add'}`)"
+    :submit-label="$t(`components.homebrewModal.${item ? 'update' : 'add'}`)"
     @submit="handleSubmit"
   >
     <FormKit
@@ -145,8 +144,8 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       <FormKit
         type="step"
         name="info"
-        :next-label="t('actions.next')"
-        :previous-label="t('actions.prev')"
+        :next-label="$t('actions.next')"
+        :previous-label="$t('actions.prev')"
       >
         <div
           :class="{
@@ -157,15 +156,15 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             type="select"
             name="type"
             :value="item?.type || 'player'"
-            :label="t('components.inputs.typeLabel')"
-            :placeholder="t('components.inputs.nothing')"
+            :label="$t('components.inputs.typeLabel')"
+            :placeholder="$t('components.inputs.nothing')"
             validation="required"
             :options="[
-              { label: t('general.player'), value: 'player' },
-              { label: t('general.summon'), value: 'summon' },
-              { label: t('general.npc'), value: 'npc' },
-              { label: t('general.monster'), value: 'monster' },
-              { label: t('general.lair'), value: 'lair' },
+              { label: $t('general.player'), value: 'player' },
+              { label: $t('general.summon'), value: 'summon' },
+              { label: $t('general.npc'), value: 'npc' },
+              { label: $t('general.monster'), value: 'monster' },
+              { label: $t('general.lair'), value: 'lair' },
             ]"
             outer-class="grow"
           />
@@ -176,7 +175,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             type="number"
             min="1"
             max="15"
-            :label="t('components.inputs.amountLabel')"
+            :label="$t('components.inputs.amountLabel')"
             validation="between:1,15|number|required"
             outer-class="grow"
           />
@@ -185,8 +184,8 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           v-if="isEncounter && value?.type === 'summon'"
           type="select"
           name="summoner"
-          :label="t('components.inputs.summonerLabel')"
-          :placeholder="t('components.inputs.nothing')"
+          :label="$t('components.inputs.summonerLabel')"
+          :placeholder="$t('components.inputs.nothing')"
           validation="required"
         />
         <!-- :options="summonersOptions" -->
@@ -194,7 +193,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           <FormKit
             name="name"
             :value="item?.name"
-            :label="t('components.inputs.nameLabel')"
+            :label="$t('components.inputs.nameLabel')"
             validation="required|length:3,30"
             outer-class="grow"
             suffix-icon="random"
@@ -204,7 +203,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             v-if="value?.type === 'player' && !isEncounter"
             name="player"
             :value="item?.player"
-            :label="t('components.inputs.playerLabel')"
+            :label="$t('components.inputs.playerLabel')"
             validation="length:3,30"
             outer-class="grow"
           />
@@ -216,7 +215,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             type="number"
             min="1"
             max="50"
-            :label="t('components.inputs.initiativeLabel')"
+            :label="$t('components.inputs.initiativeLabel')"
             validation="between:1,50|number"
             suffix-icon="dice"
             @suffix-icon-click="(node: FormKitNode) => node.input(randomRoll(20))"
@@ -225,7 +224,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             name="initiative_modifier"
             type="number"
             :value="item?.initiative_modifier?.toString()"
-            :label="`${t('components.inputs.initiativeLabel')} (MODIFIER)`"
+            :label="`${$t('components.inputs.initiativeLabel')} (MODIFIER)`"
             max="20"
             min="-20"
             validation="between:-20,20|number"
@@ -239,7 +238,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             name="ac"
             type="number"
             :value="item?.ac?.toString()"
-            :label="t('components.inputs.acLabel')"
+            :label="$t('components.inputs.acLabel')"
             min="1"
             max="100"
             validation="between:1,100|number"
@@ -249,7 +248,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             name="health"
             type="number"
             :value="item?.health?.toString()"
-            :label="t('components.inputs.hpLabel')"
+            :label="$t('components.inputs.hpLabel')"
             min="1"
             max="1000"
             validation="between:1,1000|number"
@@ -260,22 +259,22 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           name="link"
           type="url"
           :value="item?.link ?? undefined"
-          :label="t('components.inputs.linkLabel')"
+          :label="$t('components.inputs.linkLabel')"
           validation="url"
         />
       </FormKit>
       <FormKit
         type="step"
         name="actions"
-        :next-label="t('actions.next')"
-        :previous-label="t('actions.prev')"
+        :next-label="$t('actions.next')"
+        :previous-label="$t('actions.prev')"
       >
         <FormKit
           type="repeater"
           name="actions"
           :value="item?.actions || []"
-          :label="t('components.inputs.actionsLabel')"
-          :add-label="t('actions.add')"
+          :label="$t('components.inputs.actionsLabel')"
+          :add-label="$t('actions.add')"
           max="10"
           min="0"
           :remove-control="true"
@@ -286,8 +285,8 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           type="repeater"
           name="reactions"
           :value="item?.reactions || []"
-          :label="t('components.inputs.reactionsLabel')"
-          :add-label="t('actions.add')"
+          :label="$t('components.inputs.reactionsLabel')"
+          :add-label="$t('actions.add')"
           max="10"
           min="0"
           :remove-control="true"
@@ -298,8 +297,8 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           type="repeater"
           name="legendary_actions"
           :value="item?.legendary_actions || []"
-          :label="t('components.inputs.legendaryActionsLabel')"
-          :add-label="t('actions.add')"
+          :label="$t('components.inputs.legendaryActionsLabel')"
+          :add-label="$t('actions.add')"
           max="10"
           min="0"
           :remove-control="true"
@@ -310,8 +309,8 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           type="repeater"
           name="special_abilities"
           :value="item?.special_abilities || []"
-          :label="t('components.inputs.specialAbilitiesLabel')"
-          :add-label="t('actions.add')"
+          :label="$t('components.inputs.specialAbilitiesLabel')"
+          :add-label="$t('actions.add')"
           max="10"
           min="0"
           :remove-control="true"
@@ -327,7 +326,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       <FormKit
         :disabled="count >= homebrew.max"
         name="save"
-        :label="t('components.homebrewModal.save')"
+        :label="$t('components.homebrewModal.save')"
         type="toggle"
         outer-class="$reset !mb-0"
       />
@@ -335,7 +334,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
         v-if="count >= homebrew.max"
         class="text-danger body-small pb-2"
       >
-        {{ t('components.homebrewModal.max') }}
+        {{ $t('components.homebrewModal.max') }}
       </span>
     </div>
   </FormKit>

@@ -31,16 +31,16 @@ async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<voi
   <NuxtLayout name="centered">
     <section class="space-y-6">
       <h1 class="text-center pb-10">
-        {{ t('pages.forgotPassword.title') }}
+        {{ $t('pages.forgotPassword.title') }}
       </h1>
       <FormKit
         type="form"
-        :submit-label="t('pages.forgotPassword.reset')"
+        :submit-label="$t('pages.forgotPassword.reset')"
         @submit="forgotPassword"
       >
         <FormKit
           name="email"
-          :label="t('components.inputs.emailLabel')"
+          :label="$t('components.inputs.emailLabel')"
           validation="required|length:5,50|email"
           required
         />
@@ -50,13 +50,13 @@ async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<voi
           url="register"
           class="btn-text"
         >
-          {{ t('pages.login.new') }}
+          {{ $t('pages.login.new') }}
         </RouteLink>
         <RouteLink
           url="login"
           class="btn-text"
         >
-          {{ t('pages.login.signIn') }}
+          {{ $t('pages.login.signIn') }}
         </RouteLink>
       </div>
     </section>

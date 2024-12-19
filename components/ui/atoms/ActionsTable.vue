@@ -6,8 +6,6 @@ const props = defineProps<{
   reactions?: Action[]
 }>()
 
-const { t } = useI18n()
-
 const allActions = computed<Option<Action[]>[]>(() => [
   { label: 'specialAbility', value: props.specialAbilities },
   { label: 'legendaryAction', value: props.legendaryActions },
@@ -25,7 +23,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
       class="space-y-2"
     >
       <p class="head-2">
-        {{ t(`general.${label}`, 2) }}
+        {{ $t(`general.${label}`, 2) }}
       </p>
       <Card
         color="slate"

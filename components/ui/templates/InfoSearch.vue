@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const open5e = useOpen5e()
-const { t } = useI18n()
 
 const sortBy = ref<Open5eSortBy>('name')
 const type = ref<Open5eType>('spells')
@@ -56,13 +55,13 @@ function paginate(newPage: number): void {
       <FormKit
         v-model="search"
         type="search"
-        :label="t('components.inputs.nameLabel')"
+        :label="$t('components.inputs.nameLabel')"
         outer-class="$reset !pb-0 grow"
       />
       <FormKit
         v-model="type"
         type="select"
-        :label="t('components.inputs.typeLabel')"
+        :label="$t('components.inputs.typeLabel')"
         :options="open5e.options"
         outer-class="$reset !pb-0 grow"
         @input="search = ''"
@@ -102,7 +101,7 @@ function paginate(newPage: number): void {
       v-if="status !== 'pending' && !hits?.length && search !== ''"
       class="text-center max-w-prose mx-auto"
     >
-      {{ t('components.fullScreenSearch.notFound') }}
+      {{ $t('components.fullScreenSearch.notFound') }}
     </p>
   </div>
 </template>

@@ -102,7 +102,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
     container
   >
     <h1 class="pb-6">
-      {{ t('general.campaign', 2) }}
+      {{ $t('general.campaign', 2) }}
     </h1>
     <LimitCta
       v-if="count >= campaign.max"
@@ -120,10 +120,10 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       v-model:acs="sortACS"
       v-model:search="search"
       :headers="[
-        { label: t('general.name'), sort: true, id: 'title' },
-        { label: t('general.encounter', 2), sort: false, id: 'initiative_sheets' },
-        { label: t('general.homebrew', 2), sort: false, id: 'homebrew_items' },
-        { label: t('general.member', 2), sort: false, id: 'team' },
+        { label: $t('general.name'), sort: true, id: 'title' },
+        { label: $t('general.encounter', 2), sort: false, id: 'initiative_sheets' },
+        { label: $t('general.homebrew', 2), sort: false, id: 'homebrew_items' },
+        { label: $t('general.member', 2), sort: false, id: 'team' },
         { label: '', sort: false, id: 'modify' },
       ]"
       :items="campaigns || []"
@@ -144,7 +144,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
         />
         <button
           class="btn-primary"
-          :aria-label="t('actions.create')"
+          :aria-label="$t('actions.create')"
           :disabled="status === 'pending'"
           @click="() => {
             count >= campaign.max
@@ -152,7 +152,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
               : openModal()
           }"
         >
-          {{ t('actions.create') }}
+          {{ $t('actions.create') }}
         </button>
       </template>
 
@@ -200,9 +200,9 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
           <td class="td flex justify-end">
             <button
               v-if="!isOwner(row, profile.user!.id)"
-              v-tippy="t('actions.leave')"
+              v-tippy="$t('actions.leave')"
               class="icon-btn-warning"
-              :aria-label="t('actions.leave')"
+              :aria-label="$t('actions.leave')"
               @click="leaveCampaign(row)"
             >
               <Icon
@@ -213,9 +213,9 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
             </button>
             <button
               v-if="isAdmin(row, profile.user!.id)"
-              v-tippy="t('actions.update')"
+              v-tippy="$t('actions.update')"
               class="icon-btn-info"
-              :aria-label="t('actions.update')"
+              :aria-label="$t('actions.update')"
               @click="openModal(row)"
             >
               <Icon
@@ -232,7 +232,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
         v-if="!campaigns?.length && status !== 'pending'"
         #empty
       >
-        {{ t('components.table.nothing', { item: t('general.campaign', 2).toLowerCase() }) }}
+        {{ $t('components.table.nothing', { item: $t('general.campaign', 2).toLowerCase() }) }}
       </template>
     </DataTable>
   </NuxtLayout>

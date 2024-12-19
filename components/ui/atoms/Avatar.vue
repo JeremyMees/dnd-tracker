@@ -12,8 +12,6 @@ withDefaults(
     showName: false,
   },
 )
-
-const { t } = useI18n()
 </script>
 
 <template>
@@ -49,7 +47,7 @@ const { t } = useI18n()
           v-if="role"
           class="body-small"
         >
-          ({{ t(`general.roles.${role}.title`) }})
+          ({{ $t(`general.roles.${role}.title`) }})
         </span>
       </div>
     </template>

@@ -12,7 +12,6 @@ const props = defineProps<{
   selectedOptions?: SelectedStyleOptions
 }>()
 
-const { t } = useI18n()
 const avatarCreator = useAvatarCreator()
 
 const creatorOpen = ref<boolean>(props.hideCreatorToggle)
@@ -111,10 +110,10 @@ function save(): void {
     </Card>
     <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur">
       <button
-        v-tippy="t('actions.random')"
+        v-tippy="$t('actions.random')"
         class="h-7 w-7 flex flex-col items-center justify-center outline-none"
         :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
-        :aria-label="t('actions.random')"
+        :aria-label="$t('actions.random')"
         @click="avatarCreator.random()"
       >
         <Icon
@@ -125,8 +124,8 @@ function save(): void {
       </button>
       <button
         v-if="!hideCreatorToggle"
-        v-tippy="t('components.avatarPicker.options')"
-        :aria-label="t('components.avatarPicker.options')"
+        v-tippy="$t('components.avatarPicker.options')"
+        :aria-label="$t('components.avatarPicker.options')"
         class="h-7 w-7 flex flex-col items-center justify-center outline-none"
         :class="{ 'border-r-2 border-primary': profile }"
         @click="creatorOpen = !creatorOpen"
@@ -140,9 +139,9 @@ function save(): void {
       <template v-if="profile && isChanged && avatarCreator.avatar.value">
         <button
           v-if="props.selectedOptions"
-          v-tippy="t('actions.reset')"
+          v-tippy="$t('actions.reset')"
           class="h-7 w-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary"
-          :aria-label="t('actions.reset')"
+          :aria-label="$t('actions.reset')"
           @click="() => {
             if (props.selectedOptions) avatarCreator.update(props.selectedOptions)
             creatorOpen = false
@@ -155,9 +154,9 @@ function save(): void {
           />
         </button>
         <button
-          v-tippy="t('actions.save')"
+          v-tippy="$t('actions.save')"
           class="h-7 w-7 flex flex-col items-center justify-center outline-none"
-          :aria-label="t('actions.save')"
+          :aria-label="$t('actions.save')"
           @click="save"
         >
           <Icon
@@ -172,7 +171,7 @@ function save(): void {
       v-if="deprecatedAvatar"
       class="text-danger text-xs mt-1"
     >
-      {{ t('components.avatarPicker.deprecated') }}
+      {{ $t('components.avatarPicker.deprecated') }}
     </div>
     <AnimationExpand>
       <div

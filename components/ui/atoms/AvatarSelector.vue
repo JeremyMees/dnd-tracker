@@ -7,8 +7,6 @@ const props = defineProps<{
   selected?: string | number
 }>()
 
-const { t } = useI18n()
-
 const current = computed<number>(() => {
   return props.selected
     ? props.options.findIndex((option: string) => option === props.selected)
@@ -47,7 +45,7 @@ function next(): void {
 <template>
   <div class="flex items-center justify-between gap-2 px-2 btn-small-black min-w-[160px] overflow-hidden">
     <button
-      :aria-label="t('actions.prev')"
+      :aria-label="$t('actions.prev')"
       class="min-w-7 min-h-7 flex items-center justify-center focus:outline-primary"
       @click="prev"
     >
@@ -58,7 +56,7 @@ function next(): void {
       />
     </button>
     <Icon
-      v-tippy="t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
+      v-tippy="$t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
       :name="icon"
       class="min-w-6 min-h-6"
       aria-hidden="true"
@@ -67,7 +65,7 @@ function next(): void {
       {{ current + 1 }}/{{ options.length }}
     </span>
     <button
-      :aria-label="t('actions.next')"
+      :aria-label="$t('actions.next')"
       class="min-w-7 min-h-7 flex items-center justify-center focus:outline-primary"
       @click="next"
     >

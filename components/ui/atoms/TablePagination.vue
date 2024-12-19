@@ -45,7 +45,7 @@ function handleSelect(v: number): void {
       class="flex items-center justify-center w-6 h-6"
       :class="{ 'cursor-progress': loading }"
       :disabled="page === 0 || loading"
-      :aria-label="t('actions.prev')"
+      :aria-label="$t('actions.prev')"
       @click="handlePrevious"
     >
       <Icon
@@ -59,7 +59,7 @@ function handleSelect(v: number): void {
       class="flex items-center justify-center w-6 h-6"
       :class="{ 'cursor-progress': loading }"
       :disabled="page === totalPages - 1 || loading"
-      :aria-label="t('actions.next')"
+      :aria-label="$t('actions.next')"
       @click="handleNext"
     >
       <Icon

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { t } = useI18n()
-
 const isShown = ref<boolean>(false)
 const cookie = useCookie<number>('limit_cta')
 const removeTimer = ref()
@@ -49,7 +47,7 @@ function checkShow(): void {
       >
         <button
           class="absolute top-0 right-0 group"
-          :aria-label="t('actions.close')"
+          :aria-label="$t('actions.close')"
           @click="isShown=false"
         >
           <Icon
@@ -59,14 +57,14 @@ function checkShow(): void {
           />
         </button>
         <p class="body-small">
-          {{ t('components.limitCta.text') }}
+          {{ $t('components.limitCta.text') }}
         </p>
         <div class="flex justify-end">
           <RouteLink
             url="/pricing"
             class="btn-primary whitespace-nowrap"
           >
-            {{ t('components.limitCta.cta') }}
+            {{ $t('components.limitCta.cta') }}
           </RouteLink>
         </div>
       </Card>

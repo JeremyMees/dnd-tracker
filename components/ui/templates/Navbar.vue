@@ -7,7 +7,6 @@ const ui = useUI()
 const auth = useAuth()
 const isSmall = useMediaQuery('(max-width: 1024px)')
 const localePath = useLocalePath()
-const { t } = useI18n()
 
 const isOpen = ref<boolean>(false)
 const navigationVisible = ref<boolean>(true)
@@ -79,7 +78,7 @@ async function logout(): Promise<void> {
             <RouteLink
               v-for="link in ui.routes"
               :key="link.url"
-              :label="t(link.label)"
+              :label="$t(link.label)"
               :url="link.url"
             />
           </div>
@@ -88,7 +87,7 @@ async function logout(): Promise<void> {
               ref="playDropdown"
               chevron
             >
-              {{ t('components.navbar.play') }}
+              {{ $t('components.navbar.play') }}
               <template #content>
                 <RouteLink
                   v-for="route in ui.playRoutes"
@@ -100,7 +99,7 @@ async function logout(): Promise<void> {
                     playDropdown?.close()
                   }"
                 >
-                  {{ t(route.label) }}
+                  {{ $t(route.label) }}
                 </RouteLink>
               </template>
             </Dropdown>
@@ -140,7 +139,7 @@ async function logout(): Promise<void> {
                 <RouteLink
                   v-for="route in ui.profileRoutes"
                   :key="route.url"
-                  :label="t(route.label)"
+                  :label="$t(route.label)"
                   :url="route.url"
                   @click="() => {
                     isOpen = false
@@ -152,7 +151,7 @@ async function logout(): Promise<void> {
                   class="text-warning hover:text-white max-w-max font-bold"
                   @click="logout"
                 >
-                  {{ t('components.navbar.logout') }}
+                  {{ $t('components.navbar.logout') }}
                 </button>
               </template>
             </Dropdown>
