@@ -34,7 +34,7 @@ export const useHomebrews = defineStore('useHomebrews', () => {
     return count || 0
   }
 
-  async function getHomebrew(match: Omit<HomebrewItemUpdate, NotUpdatable>): Promise<HomebrewItemRow | undefined> {
+  async function getHomebrew(match: HomebrewItemUpdate): Promise<HomebrewItemRow | undefined> {
     const { data, error } = await supabase.from('homebrew_items')
       .select('*')
       .match(match)
@@ -45,9 +45,9 @@ export const useHomebrews = defineStore('useHomebrews', () => {
   }
 
   async function addHomebrew(homebrew: HomebrewItemInsert): Promise<void> {
-    const { error } = await supabase.from('homebrew_items')
+    const { error } = await supabase
+      .from('homebrew_items')
       .insert([homebrew])
-      .select('*')
 
     if (error) throw createError(error)
   }
@@ -65,10 +65,10 @@ export const useHomebrews = defineStore('useHomebrews', () => {
   }
 
   async function updateHomebrew(homebrew: Omit<HomebrewItemUpdate, NotUpdatable>, id: number): Promise<void> {
-    const { error } = await supabase.from('homebrew_items')
-      .update(homebrew as never)
+    const { error } = await supabase
+      .from('homebrew_items')
+      .update(homebrew)
       .eq('id', id)
-      .select('*')
 
     if (error) throw createError(error)
   }
