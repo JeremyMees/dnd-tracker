@@ -13,10 +13,12 @@ const props = withDefaults(
     content?: string
     charLimit?: number
     placeholder?: string
+    color?: 'background' | 'slate'
   }>(), {
     content: '',
     charLimit: 5000,
     placeholder: 'components.tipTapEditor.placeholder',
+    color: 'background',
   },
 )
 
@@ -26,6 +28,7 @@ const editor = ref<Editor>()
 const isOpen = ref<boolean>(false)
 const dropdown = ref<HTMLDivElement>()
 const invalidHTML = ref<boolean>(false)
+const isFocused = ref<boolean>(false)
 
 onClickOutside(dropdown, () => close())
 onKeyStroke('Escape', () => close())
@@ -52,6 +55,12 @@ onMounted(() => {
     },
     onUpdate() {
       sanitizeBeforeUpdate()
+    },
+    onFocus() {
+      isFocused.value = true
+    },
+    onBlur() {
+      isFocused.value = false
     },
   })
 })
@@ -90,11 +99,21 @@ function setLink() {
   <ClientOnly>
     <Card
       v-if="editor"
-      color="slate"
+      :color="color"
       no-padding
       class="py-2 px-0"
+      :class="{
+        'border-primary': isFocused,
+        '!bg-bg-light': color === 'background',
+      }"
     >
-      <div class="border-b border-slate-700 pb-1 px-2 mb-2 flex items-center gap-x-2 flex-wrap">
+      <div
+        class="border-b pb-1 px-2 mb-2 flex items-center gap-x-2 flex-wrap"
+        :class="{
+          'border-bg': color === 'background',
+          'border-slate-700': color === 'slate',
+        }"
+      >
         <div
           ref="dropdown"
           class="relative group w-fit"
@@ -170,7 +189,13 @@ function setLink() {
             </div>
           </AnimationExpand>
         </div>
-        <div class="flex items-center border-r border-slate-700 pr-2">
+        <div
+          class="flex items-center border-r pr-2"
+          :class="{
+            'border-bg': color === 'background',
+            'border-slate-700': color === 'slate',
+          }"
+        >
           <button
             v-tippy="$t('general.link')"
             :aria-label="$t('general.link')"
@@ -249,7 +274,13 @@ function setLink() {
             />
           </button>
         </div>
-        <div class="flex items-center border-r border-slate-700 pr-2">
+        <div
+          class="flex items-center border-r pr-2"
+          :class="{
+            'border-bg': color === 'background',
+            'border-slate-700': color === 'slate',
+          }"
+        >
           <button
             v-tippy="$t('general.bold')"
             :aria-label="$t('general.bold')"
