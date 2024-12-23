@@ -1,3 +1,4 @@
+import sanitizeHtml from 'sanitize-html'
 import type { DataTable } from '#components'
 
 export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[]): T {
@@ -96,4 +97,13 @@ export function homebrewColor(type: HomebrewType): string {
     case 'lair': return 'text-warning'
     default: return 'text-primary'
   }
+}
+
+export function sanitizeHTML(dirty: string): string {
+  return sanitizeHtml(dirty, {
+    allowedTags: ['h1', 'h2', 'h3', 'p', 'a', 'ol', 'ul', 'li', 'blockquote', 'hr'],
+    allowedAttributes: {
+      a: ['href', 'name', 'target', 'rel'],
+    },
+  }).replaceAll('<hr />', '<hr>')
 }

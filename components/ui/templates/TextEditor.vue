@@ -5,7 +5,6 @@ import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
-import sanitizeHtml from 'sanitize-html'
 
 const emit = defineEmits<{ updated: [string] }>()
 
@@ -26,6 +25,7 @@ const { t } = useI18n()
 const editor = ref<Editor>()
 const isOpen = ref<boolean>(false)
 const dropdown = ref<HTMLDivElement>()
+const invalidHTML = ref<boolean>(false)
 
 onClickOutside(dropdown, () => close())
 onKeyStroke('Escape', () => close())
@@ -36,18 +36,16 @@ onMounted(() => {
   editor.value = new Editor({
     content: props.content,
     extensions: [
+      Highlight,
+      Link,
+      Placeholder.configure({ placeholder: t(props.placeholder) }),
+      CharacterCount.configure({ limit: props.charLimit }),
       StarterKit.configure({
         codeBlock: false,
         hardBreak: false,
         code: false,
         heading: { levels: [1, 2, 3] },
       }),
-      Highlight.configure(),
-      Link.configure(),
-      Placeholder.configure({
-        placeholder: t(props.placeholder),
-      }),
-      CharacterCount.configure({ limit: props.charLimit }),
     ],
     editorProps: {
       attributes: { spellcheck: 'false' },
@@ -63,16 +61,13 @@ onBeforeUnmount(() => editor.value?.destroy())
 const sanitizeBeforeUpdate = useDebounceFn(() => {
   if (!editor.value) return
 
+  invalidHTML.value = false
+
   const dirty = editor.value.getHTML()
+  const clean = sanitizeHTML(dirty)
 
-  const clean = sanitizeHtml(dirty, {
-    allowedAttributes: {
-      ...sanitizeHtml.defaults.allowedAttributes,
-      a: ['href', 'name', 'target', 'rel'],
-    },
-  })
-
-  emit('updated', clean)
+  if (dirty === clean) emit('updated', clean)
+  else invalidHTML.value = true
 }, 500, { maxWait: 2500 })
 
 function setLink() {
@@ -352,7 +347,10 @@ function setLink() {
           </button>
         </div>
       </div>
-      <EditorContent :editor="editor" />
+      <EditorContent
+        :editor="editor"
+        :class="{ 'html-invalid': invalidHTML }"
+      />
       <div class="flex items-center gap-2 px-2 pt-4">
         <PercentageDial
           :limit="charLimit"
@@ -376,6 +374,10 @@ function setLink() {
 </template>
 
 <style>
+.html-invalid .tiptap {
+  @apply !outline-danger;
+}
+
 .tiptap {
   @apply first:mt-0 outline-none py-2 px-4 min-h-20;
 
