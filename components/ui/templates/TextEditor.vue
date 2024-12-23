@@ -5,6 +5,9 @@ import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
+import sanitizeHtml from 'sanitize-html'
+
+const emit = defineEmits<{ updated: [string] }>()
 
 const props = withDefaults(
   defineProps<{
@@ -49,10 +52,28 @@ onMounted(() => {
     editorProps: {
       attributes: { spellcheck: 'false' },
     },
+    onUpdate() {
+      sanitizeBeforeUpdate()
+    },
   })
 })
 
 onBeforeUnmount(() => editor.value?.destroy())
+
+const sanitizeBeforeUpdate = useDebounceFn(() => {
+  if (!editor.value) return
+
+  const dirty = editor.value.getHTML()
+
+  const clean = sanitizeHtml(dirty, {
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      a: ['href', 'name', 'target', 'rel'],
+    },
+  })
+
+  emit('updated', clean)
+}, 500, { maxWait: 2500 })
 
 function setLink() {
   if (!editor.value) return
