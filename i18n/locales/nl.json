@@ -56,9 +56,25 @@
     "share": "Delen",
     "search": "Zoeken",
     "invite": "Uitnodigen",
-    "leave": "Verlaten"
+    "leave": "Verlaten",
+    "clearFormatting": "Opmaak verwijderen",
+    "highlight": "Markeren",
+    "undo": "Ongedaan maken",
+    "redo": "Opnieuw doen",
+    "unlink": "Link verwijderen"
   },
   "general": {
+    "word": "Woord | Woorden",
+    "bold": "Bold",
+    "italic": "Italic",
+    "strikeThrough": "Strikethrough",
+    "unOrderedList": "Unorderd list",
+    "orderedList": "Orderd list",
+    "quote": "Quote",
+    "horizontalRule": "Horizontale regel",
+    "text": "Tekst",
+    "paragraph": "Paragraaf",
+    "heading": "Titel",
     "yourself": "jezelf",
     "spell": "Spreuk | Spreuken",
     "condition": "Conditie | Condities",
@@ -405,6 +421,9 @@
     }
   },
   "components": {
+    "tipTapEditor": {
+      "placeholder": "Voeg hier je notitie toe…"
+    },
     "avatarPicker": {
       "options": "In/uitschakelen avatar opties",
       "deprecated": "Je hebt een oude avatar, kies een nieuwe"

@@ -56,9 +56,25 @@
     "share": "Share",
     "search": "Search",
     "invite": "Invite",
-    "leave": "Leave"
+    "leave": "Leave",
+    "clearFormatting": "Clear formatting",
+    "highlight": "Highlight",
+    "undo": "Undo",
+    "redo": "Redo",
+    "unlink": "Unlink"
   },
   "general": {
+    "word": "Word | Words",
+    "bold": "Bold",
+    "italic": "Italic",
+    "strikeThrough": "Strikethrough",
+    "unOrderedList": "Unorderd list",
+    "orderedList": "Orderd list",
+    "quote": "Quote",
+    "horizontalRule": "Horizontal rule",
+    "text": "Text",
+    "paragraph": "Paragraph",
+    "heading": "Heading",
     "yourself": "yourself",
     "spell": "Spell | Spells",
     "condition": "Condition | Conditions",
@@ -405,6 +421,9 @@
     }
   },
   "components": {
+    "tipTapEditor": {
+      "placeholder": "Add your note here…"
+    },
     "avatarPicker": {
       "options": "Toggle avatar options",
       "deprecated": "You have a old avatar, please update it."
