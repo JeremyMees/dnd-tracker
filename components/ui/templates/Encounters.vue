@@ -170,7 +170,7 @@ async function deleteItems(ids: number[]): Promise<void> {
             type="checkbox"
             :disabled="status === 'pending'"
             outer-class="$reset !pb-0"
-            wrapper-class="$remove:mb-0"
+            wrapper-class="$remove:mb-1"
             decorator-class="$remove:mr-2"
             @click="table?.toggleRow(row)"
           />
