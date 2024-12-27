@@ -179,7 +179,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
           </td>
           <td class="td">
             <RouteLink
-              :url="campaignUrl(row, 'content')"
+              :url="campaignUrl(row, 'encounters')"
               class="underline underline-offset-2 decoration-primary"
             >
               {{ row.title }}

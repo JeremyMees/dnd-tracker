@@ -32,7 +32,7 @@ async function transferOwnership(): Promise<void> {
     header: t('components.transferOwnershipModal.title', { campaign: props.current.title }),
     props: { current: props.current },
     events: {
-      finished: () => navigateTo(route.fullPath.replace('danger-zone', 'content')),
+      finished: () => navigateTo(route.fullPath.replace('danger-zone', 'encounters')),
     },
   })
 }

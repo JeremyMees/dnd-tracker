@@ -6,7 +6,7 @@ export function generateParams<T extends object>(data: T): string {
 
 export function campaignUrl(
   campaign: Record<string, any> & { id: number, title: string },
-  type: 'content' | 'settings' | 'danger-zone',
+  type: 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone',
 ): string {
   const title: string = campaign.title.replace(/[^a-zA-Z0-9]+/g, '-')
 

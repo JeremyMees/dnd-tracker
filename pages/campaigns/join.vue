@@ -26,7 +26,7 @@ async function answerInvite(accept: boolean): Promise<void> {
       body: { token: route.query.token },
     })
 
-    const url = accept ? campaignUrl(data.value!.campaign, 'content') : '/'
+    const url = accept ? campaignUrl(data.value!.campaign, 'encounters') : '/'
 
     navigateTo(localePath(url))
   }

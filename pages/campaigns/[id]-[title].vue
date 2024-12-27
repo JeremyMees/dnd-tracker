@@ -38,9 +38,21 @@ const { data, status, refresh } = await useAsyncData(
     </div>
     <div class="flex flex-wrap gap-4 md:border-b-2 md:border-slate-700 mb-10">
       <TabItem
-        :link="`${url}/content`"
-        :label="$t('general.content')"
-        icon="tabler:layout"
+        :link="`${url}/encounters`"
+        :label="$t('general.encounter', 2)"
+        icon="tabler:list-details"
+        :disabled="status !== 'success'"
+      />
+      <TabItem
+        :link="`${url}/homebrews`"
+        :label="$t('general.homebrew', 2)"
+        icon="tabler:beer"
+        :disabled="status !== 'success'"
+      />
+      <TabItem
+        :link="`${url}/notes`"
+        :label="$t('general.note', 2)"
+        icon="tabler:notes"
         :disabled="status !== 'success'"
       />
       <TabItem

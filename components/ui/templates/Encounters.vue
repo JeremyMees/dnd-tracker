@@ -189,7 +189,7 @@ async function deleteItems(ids: number[]): Promise<void> {
         >
           <RouteLink
             v-if="row.campaign"
-            :url="campaignUrl(row.campaign, 'content')"
+            :url="campaignUrl(row.campaign, 'encounters')"
             class="underline underline-offset-2 decoration-primary"
           >
             {{ row.campaign.title }}

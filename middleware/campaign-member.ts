@@ -7,19 +7,21 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo(localePath('/'))
   }
 
-  let page: 'index' | 'content' | 'settings' | 'danger-zone' = 'index'
+  let page: 'index' | 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone' = 'index'
 
-  if (to.fullPath.includes('/content')) page = 'content'
+  if (to.fullPath.includes('/encounters')) page = 'encounters'
+  else if (to.fullPath.includes('/homebrews')) page = 'homebrews'
+  else if (to.fullPath.includes('/notes')) page = 'notes'
   else if (to.fullPath.includes('/settings')) page = 'settings'
   else if (to.fullPath.includes('/danger-zone')) page = 'danger-zone'
 
-  // Redirect to content page if user tries to access index page
-  if (page === 'index') return navigateTo(`${to.fullPath}/content`)
+  // Redirect to encounters page if user tries to access index page
+  if (page === 'index') return navigateTo(`${to.fullPath}/encounters`)
 
   let expectedRole: UserRole = 'Owner'
 
   if (page === 'settings') expectedRole = 'Admin'
-  else if (['content', 'index'].includes(page)) expectedRole = 'Viewer'
+  else if (['encounters', 'index', 'homebrews', 'notes'].includes(page)) expectedRole = 'Viewer'
 
   try {
     const { data, error } = await supabase
@@ -51,8 +53,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
       if (hasPermission(member.role, expectedRole)) return
       else return navigateTo(
         expectedRole === 'Admin'
-          ? to.fullPath.replace('/settings', '/content')
-          : to.fullPath.replace('/danger-zone', '/content'),
+          ? to.fullPath.replace('/settings', '/encounters')
+          : to.fullPath.replace('/danger-zone', '/encounters'),
       )
     }
     else return navigateTo(localePath('/no-access'))
