@@ -101,7 +101,7 @@ export function homebrewColor(type: HomebrewType): string {
 
 export function sanitizeHTML(dirty: string): string {
   return sanitizeHtml(dirty, {
-    allowedTags: ['h1', 'h2', 'h3', 'p', 'a', 'ol', 'ul', 'li', 'blockquote', 'hr'],
+    allowedTags: ['h1', 'h2', 'h3', 'p', 'a', 'ol', 'ul', 'li', 'blockquote', 'hr', 'mark'],
     allowedAttributes: {
       a: ['href', 'name', 'target', 'rel'],
     },
