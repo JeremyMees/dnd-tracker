@@ -104,7 +104,6 @@ async function deleteItems(ids: number[]): Promise<void> {
       { label: 'AC', sort: true, id: 'ac' },
       { label: 'Init mod', sort: true, id: 'initiative_modifier' },
       { label: $t('general.link'), sort: false, id: 'link' },
-      { label: $t('general.action', 2), sort: false, id: 'actions' },
       { label: '', sort: false, id: 'modify' },
     ]"
     :items="homebrews || []"
@@ -149,7 +148,7 @@ async function deleteItems(ids: number[]): Promise<void> {
             'bg-danger/20': rowSelection[row.id],
           }"
         >
-          <td class="td max-w-6">
+          <td class="td max-w-[60px] flex flex-col sm:flex-row items-center gap-2">
             <FormKit
               v-if="isAdmin(campaign, profile.user!.id)"
               v-model="rowSelection[row.id]"
@@ -160,6 +159,19 @@ async function deleteItems(ids: number[]): Promise<void> {
               decorator-class="$remove:mr-2"
               @click="table?.toggleRow(row)"
             />
+            <button
+              v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+              :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+              :class="table?.detailRow === row.id ? 'icon-btn-danger' : 'icon-btn-help'"
+              @click="table?.toggleDetailRow(row.id)"
+            >
+              <Icon
+                name="tabler:chevron-down"
+                aria-hidden="true"
+                :class="{ 'rotate-180': table?.detailRow === row.id }"
+                class="transition-transform duration-200 ease-in-out"
+              />
+            </button>
           </td>
           <td class="td">
             {{ row.name }}
@@ -201,21 +213,6 @@ async function deleteItems(ids: number[]): Promise<void> {
               />
             </NuxtLink>
           </td>
-          <td class="td">
-            <button
-              v-if="row.actions?.length || row.reactions?.length || row.special_abilities?.length || row.legendary_actions?.length"
-              v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-              :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-              :class="table?.detailRow === row.id ? 'icon-btn-danger' : 'icon-btn-help'"
-              @click="table?.toggleDetailRow(row.id)"
-            >
-              <Icon
-                :name="table?.detailRow === row.id ? 'tabler:x' : 'tabler:search'"
-                class="size-6"
-                aria-hidden="true"
-              />
-            </button>
-          </td>
           <td class="td flex justify-end">
             <button
               v-if="isAdmin(campaign, profile.user!.id)"
@@ -240,12 +237,21 @@ async function deleteItems(ids: number[]): Promise<void> {
             class="td space-y-4 w-full"
             :colspan="10"
           >
-            <ActionsTable
-              :actions="row.actions"
-              :legendary-actions="row.legendary_actions"
-              :reactions="row.reactions"
-              :special-abilities="row.special_abilities"
-            />
+            <div class="max-h-[350px] sm:max-h-[600px] overflow-y-auto">
+              <ActionsTable
+                v-if="row.actions.length || row.legendary_actions.length || row.reactions.length || row.special_abilities.length"
+                :actions="row.actions"
+                :legendary-actions="row.legendary_actions"
+                :reactions="row.reactions"
+                :special-abilities="row.special_abilities"
+              />
+              <p
+                v-else
+                class="text-slate-300"
+              >
+                {{ $t('components.homebrewTable.noActions') }}
+              </p>
+            </div>
             <div class="flex justify-end">
               <button
                 class="btn-danger"
