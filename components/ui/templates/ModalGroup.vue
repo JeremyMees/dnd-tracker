@@ -7,6 +7,7 @@ import {
   ModalTransferOwnership,
   ModalInviteMember,
   ModalHomebrew,
+  ModalNote,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -19,6 +20,7 @@ const modalComponents: Record<ModalComponent, any> = {
   TransferOwnership: ModalTransferOwnership,
   InviteMember: ModalInviteMember,
   Homebrew: ModalHomebrew,
+  Note: ModalNote,
 }
 </script>
 

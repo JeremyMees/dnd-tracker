@@ -20,6 +20,7 @@ export type ModalComponent =
   | 'TransferOwnership'
   | 'InviteMember'
   | 'Homebrew'
+  | 'Note'
 
 export interface Modal {
   uuid: string

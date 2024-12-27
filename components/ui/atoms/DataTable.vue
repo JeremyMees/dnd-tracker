@@ -13,7 +13,7 @@ const props = withDefaults(
     pages: number
     perPage: number
     totalItems: number
-    type: 'campaign' | 'encounter' | 'homebrew'
+    type: 'campaign' | 'encounter' | 'homebrew' | 'note'
     loading?: boolean
     select?: boolean
     hasRights?: boolean

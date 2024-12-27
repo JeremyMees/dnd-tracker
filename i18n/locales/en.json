@@ -64,6 +64,8 @@
     "unlink": "Unlink"
   },
   "general": {
+    "title": "Title | Titles",
+    "createdAt": "Created at",
     "word": "Word | Words",
     "bold": "Bold",
     "italic": "Italic",
@@ -478,7 +480,8 @@
       "optionalFieldHelp": "Optional to overwrite the current {field}",
       "searchByUsername": "Search by username",
       "searchByEmail": "Search by email",
-      "newOwnerLabel": "New owner"
+      "newOwnerLabel": "New owner",
+      "textRequired": "Text is required"
     },
     "campaignModal": {
       "add": "Create a new campaign",
@@ -524,7 +527,8 @@
       "infoPage": "Info page"
     },
     "homebrewTable": {
-      "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself."
+      "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself.",
+      "noActions": "When you add actions to a homebrew, they will be displayed here."
     },
     "table": {
       "nothing": "We haven't found any { item } that matches this search, but that doesn't mean you can't create it yourself."
@@ -580,6 +584,7 @@
     },
     "noteModal": {
       "add": "Create note",
+      "new": "Create a new note",
       "update": "Update note"
     },
     "fullScreenSearch": {

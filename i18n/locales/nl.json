@@ -64,6 +64,8 @@
     "unlink": "Link verwijderen"
   },
   "general": {
+    "title": "Titel | Titels",
+    "createdAt": "Gemaakt op",
     "word": "Woord | Woorden",
     "bold": "Bold",
     "italic": "Italic",
@@ -478,7 +480,8 @@
       "optionalFieldHelp": "Optioneel om het huidige {field} te overschrijven",
       "searchByUsername": "Zoeken op gebruikersnaam",
       "searchByEmail": "Zoeken op email",
-      "newOwnerLabel": "Nieuwe eigenaar"
+      "newOwnerLabel": "Nieuwe eigenaar",
+      "textRequired": "Tekst is verplicht"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",
@@ -524,7 +527,8 @@
       "infoPage": "Info pagina"
     },
     "homebrewTable": {
-      "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken."
+      "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken.",
+      "noActions": "Wanneer je acties toevoegt aan een homebrew, worden ze hier weergegeven."
     },
     "table": {
       "nothing": "We hebben geen { item } gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken."
@@ -580,6 +584,7 @@
     },
     "noteModal": {
       "add": "Notitie creëren",
+      "new": "Maak een nieuwe notitie",
       "update": "Notitie bijwerken"
     },
     "fullScreenSearch": {

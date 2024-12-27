@@ -74,3 +74,8 @@ export interface HomebrewItemForm extends Omit<HomebrewItemInsert, 'campaign' | 
   summoner?: string
   save?: boolean
 }
+
+export interface NoteForm {
+  title: string
+  text: string
+}
