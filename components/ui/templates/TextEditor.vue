@@ -122,6 +122,7 @@ function setLink() {
           <button
             class="group-hover:bg-slate-700 px-1 pt-1 rounded-lg rounded-b-none flex flex-row items-center cursor-pointer duration-200 ease-in-out transition-all"
             aria-label="Text style dropdown"
+            type="button"
             @mouseenter="isOpen = true"
           >
             <span class="duration-200 font-bold body-small min-w-10">
@@ -144,6 +145,7 @@ function setLink() {
             >
               <div class="flex flex-col gap-y-1 p-2 relative rounded-b-lg rounded-tr-lg bg-slate-700">
                 <button
+                  type="button"
                   :aria-label="$t('general.paragraph')"
                   :class="{
                     '!bg-bg-light': editor.isActive('paragraph'),
@@ -166,6 +168,7 @@ function setLink() {
                 <button
                   v-for="level in 3"
                   :key="level"
+                  type="button"
                   :aria-label="`${$t('general.heading')} ${level}`"
                   :class="{
                     '!bg-bg-light': editor.isActive('heading', { level }),
@@ -198,6 +201,7 @@ function setLink() {
         >
           <button
             v-tippy="$t('general.link')"
+            type="button"
             :aria-label="$t('general.link')"
             :class="{ '!bg-primary/100': editor.isActive('link') }"
             class="icon-btn-primary size-6 text-white"
@@ -211,6 +215,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('actions.unlink')"
+            type="button"
             :aria-label="$t('actions.unlink')"
             class="icon-btn-primary size-6 text-white"
             :disabled="!editor.isActive('link')"
@@ -224,6 +229,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('general.unOrderedList')"
+            type="button"
             :aria-label="$t('general.unOrderedList')"
             :class="{ '!bg-primary/100': editor.isActive('bulletList') }"
             class="icon-btn-primary size-6 text-white"
@@ -250,6 +256,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('general.quote')"
+            type="button"
             :aria-label="$t('general.quote')"
             :class="{ '!bg-primary/100': editor.isActive('blockquote') }"
             class="icon-btn-primary size-6 text-white"
@@ -263,6 +270,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('general.horizontalRule')"
+            type="button"
             :aria-label="$t('general.horizontalRule')"
             class="icon-btn-primary size-6 text-white"
             @click="editor.chain().focus().setHorizontalRule().run()"
@@ -283,6 +291,7 @@ function setLink() {
         >
           <button
             v-tippy="$t('general.bold')"
+            type="button"
             :aria-label="$t('general.bold')"
             :disabled="!editor.can().chain().focus().toggleBold().run()"
             :class="{ '!bg-primary/100': editor.isActive('bold') }"
@@ -297,6 +306,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('general.italic')"
+            type="button"
             :aria-label="$t('general.italic')"
             :disabled="!editor.can().chain().focus().toggleItalic().run()"
             :class="{ '!bg-primary/100': editor.isActive('italic') }"
@@ -311,6 +321,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('general.strikeThrough')"
+            type="button"
             :aria-label="$t('general.strikeThrough')"
             :disabled="!editor.can().chain().focus().toggleStrike().run()"
             :class="{ '!bg-primary/100': editor.isActive('strike') }"
@@ -325,6 +336,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('actions.highlight')"
+            type="button"
             :aria-label="$t('actions.highlight')"
             :class="{ '!bg-primary/100': editor.isActive('highlight') }"
             class="icon-btn-primary size-6 text-white"
@@ -338,6 +350,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('actions.clearFormatting')"
+            type="button"
             :aria-label="$t('actions.clearFormatting')"
             class="icon-btn-primary size-6 text-white"
             @click="editor.chain().focus().unsetAllMarks().run()"
@@ -352,6 +365,7 @@ function setLink() {
         <div class="flex items-center">
           <button
             v-tippy="$t('actions.undo')"
+            type="button"
             :aria-label="$t('actions.undo')"
             :disabled="!editor.can().chain().focus().undo().run()"
             class="icon-btn-primary size-6 text-white"
@@ -365,6 +379,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('actions.redo')"
+            type="button"
             :aria-label="$t('actions.redo')"
             :disabled="!editor.can().chain().focus().redo().run()"
             class="icon-btn-primary size-6 text-white"
@@ -381,6 +396,7 @@ function setLink() {
       <EditorContent
         :editor="editor"
         :class="{ 'html-invalid': invalidHTML }"
+        class="html-richtext"
       />
       <div class="flex items-center gap-2 px-2 pt-4">
         <PercentageDial
@@ -401,6 +417,7 @@ function setLink() {
         </div>
       </div>
     </Card>
+    <slot name="error" />
   </ClientOnly>
 </template>
 
@@ -411,30 +428,6 @@ function setLink() {
 
 .tiptap {
   @apply first:mt-0 outline-none py-2 px-4 min-h-20;
-
-  mark {
-    @apply bg-gradient-to-tr from-primary to-secondary rounded-md text-white box-decoration-clone px-1 py-[2px];
-  }
-
-  blockquote {
-    @apply border-primary border-l-4 pl-2;
-  }
-
-  ul {
-    @apply list-disc ml-5;
-  }
-
-  ol {
-    @apply list-decimal ml-8;
-  }
-
-  hr {
-    @apply border-slate-700 my-4;
-  }
-
-  a {
-    @apply underline underline-offset-4 decoration-primary;
-  }
 
   p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
