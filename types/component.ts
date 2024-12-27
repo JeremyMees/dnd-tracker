@@ -21,13 +21,15 @@ export type ModalComponent =
   | 'InviteMember'
   | 'Homebrew'
   | 'Note'
+  | 'Mail'
 
 export interface Modal {
   uuid: string
   component: ModalComponent
   header: string
+  subHeader?: string
   props?: Record<string, any>
-  events?: Record<string, () => any>
+  events?: Record<string, (...args: any[]) => any>
 }
 
 export interface TableHeader {
