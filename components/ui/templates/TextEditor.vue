@@ -243,6 +243,7 @@ function setLink() {
           </button>
           <button
             v-tippy="$t('general.orderedList')"
+            type="button"
             :aria-label="$t('general.orderedList')"
             :class="{ '!bg-primary/100': editor.isActive('orderedList') }"
             class="icon-btn-primary size-6 text-white"
