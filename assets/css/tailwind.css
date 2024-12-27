@@ -236,24 +236,60 @@
     @apply max-w-[2000px] mx-auto w-full px-4 md:px-6 lg:px-10;
   }
 
-  .html-richtext ul {
-    @apply list-disc list-outside ml-5 mb-5;
+  .md-richtext {
+    ul {
+      @apply list-disc list-outside ml-5 mb-5;
+    }
+
+    ol {
+      @apply list-decimal ml-5 mb-5;
+    }
+  
+    li {
+      @apply mb-1 last:mb-0;
+    }
+
+    p {
+      @apply mb-4 last:mb-0;
+    }
+
+    a, u {
+      @apply text-primary;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      @apply pb-1;
+    }
   }
 
-  .html-richtext ol {
-    @apply list-decimal ml-5 mb-5;
-  }
+  .html-richtext {
+    mark {
+      @apply bg-gradient-to-tr from-primary to-secondary rounded-md text-white box-decoration-clone px-1 py-[2px];
+    }
+  
+    blockquote {
+      @apply border-primary border-l-4 pl-2;
+    }
+  
+    ul {
+      @apply list-disc ml-5;
+    }
+  
+    ol {
+      @apply list-decimal ml-8;
+    }
+  
+    hr {
+      @apply border-slate-700 my-4;
+    }
+  
+    a {
+      @apply underline underline-offset-4 decoration-primary;
+    }
 
-  .html-richtext li {
-    @apply mb-1 last:mb-0;
-  }
-
-  .html-richtext p {
-    @apply mb-4 last:mb-0;
-  }
-
-  .html-richtext a, u {
-    @apply text-primary;
+    p {
+      @apply pb-2 last:pb-0;
+    }
   }
 
   .tr {
