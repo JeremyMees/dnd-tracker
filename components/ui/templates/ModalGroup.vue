@@ -8,6 +8,7 @@ import {
   ModalInviteMember,
   ModalHomebrew,
   ModalNote,
+  ModalMail,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -21,12 +22,13 @@ const modalComponents: Record<ModalComponent, any> = {
   InviteMember: ModalInviteMember,
   Homebrew: ModalHomebrew,
   Note: ModalNote,
+  Mail: ModalMail,
 }
 </script>
 
 <template>
   <Modal
-    v-for="{ uuid, header, component, props, events } in modals"
+    v-for="{ uuid, header, subHeader, component, props, events } in modals"
     :key="uuid"
     @close="close(uuid)"
   >
@@ -34,6 +36,12 @@ const modalComponents: Record<ModalComponent, any> = {
       <h2>
         {{ header }}
       </h2>
+      <h4
+        v-if="subHeader"
+        class="mt-2 text-slate-300 font-bold"
+      >
+        {{ subHeader }}
+      </h4>
     </template>
     <component
       :is="modalComponents[component]"

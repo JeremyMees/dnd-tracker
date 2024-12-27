@@ -11,6 +11,7 @@ const note = useNotes()
 const profile = useProfile()
 const { ask } = useConfirm()
 const { t, locale } = useI18n()
+const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
 
 const search = ref<string>('')
 const sortBy = ref<string>('created_at')
@@ -54,6 +55,21 @@ function openModal(item?: NoteRow): void {
   })
 }
 
+function openMailModal(item: NoteRow): void {
+  modal.open({
+    component: 'Mail',
+    header: t('components.mailModal.title', { type: t('general.note').toLowerCase() }),
+    subHeader: item.title,
+    events: { send: (addresses: string[]) => sendNoteAsMail(item, addresses) },
+    props: {
+      sender: {
+        name: profile.data!.username,
+        avatar: profile.data!.avatar,
+      },
+    },
+  })
+}
+
 async function deleteItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.note', amount).toLowerCase()
@@ -71,6 +87,33 @@ async function deleteItems(ids: number[]): Promise<void> {
       toast.error()
     }
   })
+}
+
+async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void> {
+  try {
+    await Promise.all(addresses.map(async (email) => {
+      await $fetch('/api/emails/share-note', {
+        method: 'POST',
+        body: {
+          email,
+          noteContent: note.text,
+          noteTitle: note.title,
+          campaign: props.current.title,
+          sharedBy: profile.data!.username,
+        },
+      })
+    }))
+
+    startCoolDown(note.id, 15)
+
+    toast.success({ title: t('general.mail.success.title') })
+  }
+  catch (err) {
+    toast.error({
+      text: t('general.mail.fail.text'),
+      title: t('general.mail.fail.title'),
+    })
+  }
 }
 </script>
 
@@ -166,6 +209,25 @@ async function deleteItems(ids: number[]): Promise<void> {
               }}
             </td>
             <td class="td flex justify-end">
+              <div
+                v-if="isInCoolDown(row.id)"
+                class="mt-auto text-slate-300 body-small w-7"
+              >
+                {{ getRemainingTime(row.id) }}s
+              </div>
+              <button
+                v-tippy="$t('actions.sendMail')"
+                :aria-label="$t('actions.sendMail')"
+                :disabled="isInCoolDown(row.id)"
+                class="icon-btn-primary"
+                @click="openMailModal(row)"
+              >
+                <Icon
+                  name="tabler:send"
+                  class="size-6"
+                  aria-hidden="true"
+                />
+              </button>
               <button
                 v-if="isAdmin(current, profile.user!.id)"
                 v-tippy="$t('actions.update')"

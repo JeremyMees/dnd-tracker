@@ -3,6 +3,7 @@
     "add": "Toevoegen",
     "addSelected": "Selectie toevoegen",
     "addAll": "Alles toevoegen",
+    "addAnother": "Nog een toevoegen",
     "select": "Selecteer",
     "selectOption": "Selecteer een optie",
     "clickToSelect": "Klik om te selecteren",
@@ -61,7 +62,8 @@
     "highlight": "Markeren",
     "undo": "Ongedaan maken",
     "redo": "Opnieuw doen",
-    "unlink": "Link verwijderen"
+    "unlink": "Link verwijderen",
+    "sendMail": "Email versturen"
   },
   "general": {
     "title": "Titel | Titels",
@@ -186,6 +188,9 @@
       "fail": {
         "title": "Mail is niet verstuurd",
         "text": "Er is iets fout gegaan bij het versturen van de mail"
+      },
+      "success": {
+        "title": "Mail is succesvol verzonden"
       }
     }
   },
@@ -423,6 +428,9 @@
     }
   },
   "components": {
+    "mailModal": {
+      "title": "Stuur {type} per e-mail"
+    },
     "tipTapEditor": {
       "placeholder": "Voeg hier je notitie toe…"
     },

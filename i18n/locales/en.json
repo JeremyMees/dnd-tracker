@@ -3,6 +3,7 @@
     "add": "Add",
     "addSelected": "Add selected",
     "addAll": "Add all",
+    "addAnother": "Add another",
     "select": "Select",
     "selectOption": "Select an option",
     "clickToSelect": "Click to select",
@@ -61,7 +62,8 @@
     "highlight": "Highlight",
     "undo": "Undo",
     "redo": "Redo",
-    "unlink": "Unlink"
+    "unlink": "Unlink",
+    "sendMail": "Send mail"
   },
   "general": {
     "title": "Title | Titles",
@@ -186,6 +188,9 @@
       "fail": {
         "title": "Mail is not sent",
         "text": "Something went wrong while trying to send the email"
+      },
+      "success": {
+        "title": "Mail is sent successfully"
       }
     }
   },
@@ -423,6 +428,9 @@
     }
   },
   "components": {
+    "mailModal": {
+      "title": "Send {type} via email"
+    },
     "tipTapEditor": {
       "placeholder": "Add your note here…"
     },

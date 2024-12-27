@@ -79,3 +79,7 @@ export interface NoteForm {
   title: string
   text: string
 }
+
+export interface MailForm {
+  mail: string[]
+}
