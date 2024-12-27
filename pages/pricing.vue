@@ -42,7 +42,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                       ...stripe.shownProduct.map(({ title, price }) => { return { title, price } }),
                     ]"
                     :key="index"
-                    class="py-3 px-2 border-b border-slate-700"
+                    class="py-3 px-2 border-b border-primary"
                   >
                     <div
                       v-if="header"
@@ -70,10 +70,10 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                 <tr
                   v-for="(item, index) in stripe.labels"
                   :key="item"
-                  class="border-b last:border-b-0 border-slate-700"
+                  class="border-b last:border-b-0 border-primary"
                 >
                   <td class="px-2 py-3 font-bold">
-                    {{ t(item) }}
+                    {{ t(item, 2) }}
                   </td>
                   <td
                     v-for="product in stripe.shownProduct"
@@ -125,7 +125,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
           </Card>
         </div>
       </div>
-      <p class="mb-5 max-w-3xl mx-auto text-center pt-12">
+      <p class="mb-5 max-w-3xl mx-auto text-center pt-12 text-slate-300">
         {{ t('pages.pricing.text') }}
       </p>
       <div class="flex justify-center">
@@ -139,7 +139,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
             </span>
             <Icon
               name="tabler:coffee"
-              class="w-5 h-5"
+              class="size-5"
               aria-hidden="true"
             />
           </div>

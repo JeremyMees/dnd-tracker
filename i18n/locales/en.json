@@ -199,7 +199,7 @@
       "textBlock1": {
         "title": "Made with love",
         "text": "At dnd-tracker, we are not of many words. We let the product speak for itself. What was an encounter tracker as a main idea quickly turned into a much bigger thing. With more and more ideas coming forward, we are currently expanding the dnd-tracker. This will make playing even more exciting, mysterious, easier AND more enjoyable.",
-        "text2": "Try the Encounter Tracker now without creating an account!"
+        "button": "Try without an account"
       },
       "summary": {
         "title": "A tracker with unique skills",

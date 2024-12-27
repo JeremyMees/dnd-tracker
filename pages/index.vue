@@ -56,13 +56,14 @@ if (import.meta.client) {
           ]"
           class="max-w-prose"
         />
-        <LazyTitleText sprite="hearth">
+        <LazyTitleText
+          sprite="hearth"
+          :button-label="$t('pages.home.textBlock1.button')"
+          button-link="/playground"
+        >
           {{ $t('pages.home.textBlock1.title') }}
           <template #text>
             {{ $t('pages.home.textBlock1.text') }}
-            <span class="mt-3">
-              {{ $t('pages.home.textBlock1.text2') }}
-            </span>
           </template>
         </LazyTitleText>
       </div>
