@@ -49,7 +49,7 @@ function hideOpenButton(): boolean {
     </p>
     <div
       v-if="hit.desc"
-      class="mt-4 html-richtext"
+      class="mt-4 md-richtext"
       :class="{
         'line-clamp-3': !isOpen && hideOpenButton,
         'border-b-4 pb-1 border-bg': isOpen && ['spells', 'magicitems'].includes(type),
