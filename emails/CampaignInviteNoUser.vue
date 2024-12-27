@@ -16,10 +16,10 @@ defineProps<{
     heading="Campaign invite"
     :preview="`Join ${campaign} on DnD Tracker`"
   >
-    <Text class="px-4">
+    <Text>
       Hi,
     </Text>
-    <Text class="px-4">
+    <Text>
       Great news!
       <strong>{{ invitedBy }}</strong>
       has invited you to join the
@@ -28,10 +28,10 @@ defineProps<{
       <strong>DnD Tracker</strong>,
       your ultimate tool for planning and tracking epic D&D adventures.
     </Text>
-    <Text class="px-4">
+    <Text>
       To get started, create your free account on DnD Tracker:
     </Text>
-    <Text class="px-4">
+    <Text>
       👉
       <Link
         href="https://dnd-tracker.com/register"
@@ -40,10 +40,10 @@ defineProps<{
         Create an Account & Join the Campaign
       </Link>
     </Text>
-    <Text class="px-4">
+    <Text>
       Once your account is set up, you’ll automatically be able to join the campaign and dive into the adventure!
     </Text>
-    <Text class="px-4">
+    <Text>
       We’re thrilled to have you join the community and can’t wait to see your creativity come to life.
     </Text>
   </DefaultEmail>

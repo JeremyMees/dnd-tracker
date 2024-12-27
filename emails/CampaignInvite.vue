@@ -18,10 +18,10 @@ defineProps<{
     heading="Campaign invite"
     :preview="`Join ${campaign} on DnD Tracker`"
   >
-    <Text class="px-4">
+    <Text>
       Hi {{ username }},
     </Text>
-    <Text class="px-4">
+    <Text>
       Great news!
       <strong>{{ invitedBy }}</strong>
       has invited you to join the
@@ -29,10 +29,10 @@ defineProps<{
       campaign on
       <strong>DnD Tracker</strong>.
     </Text>
-    <Text class="px-4">
+    <Text>
       Ready to start your next adventure?
     </Text>
-    <Text class="px-4">
+    <Text>
       👉
       <Link
         :href="inviteLink"
@@ -41,7 +41,7 @@ defineProps<{
         Join the campaign
       </Link>
     </Text>
-    <Text class="px-4">
+    <Text>
       We’re excited to have you onboard and can’t wait to see what stories unfold!
     </Text>
   </DefaultEmail>

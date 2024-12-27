@@ -17,19 +17,19 @@ defineProps<{
     heading="New feature request"
     :preview="`feature request from ${name}`"
   >
-    <Text class="px-4">
+    <Text>
       DATE: {{ new Date().toLocaleDateString('nl-NL') }},
     </Text>
-    <Text class="px-4">
+    <Text>
       EMAIL: {{ email }},
     </Text>
-    <Text class="px-4">
+    <Text>
       NAME: {{ name }},
     </Text>
-    <Text class="px-4">
+    <Text>
       TITLE: {{ title }}
     </Text>
-    <Text class="px-4">
+    <Text>
       TEXT: {{ text }}
     </Text>
   </DefaultEmail>

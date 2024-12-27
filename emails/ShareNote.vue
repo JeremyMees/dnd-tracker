@@ -30,7 +30,7 @@ defineProps<{
     </Text>
     <Hr class="border-t-slate-700" />
     <div
-      class="pt-[26px] text-[0.875rem] leading-[1.25rem]"
+      class="pt-[26px]"
       v-html="noteContent"
     />
   </DefaultEmail>
