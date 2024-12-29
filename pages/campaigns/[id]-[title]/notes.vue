@@ -191,9 +191,9 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
                 @click="table?.toggleDetailRow(row.id)"
               >
                 <Icon
-                  name="tabler:chevron-down"
+                  name="tabler:chevron-right"
                   aria-hidden="true"
-                  :class="{ 'rotate-180': table?.detailRow === row.id }"
+                  :class="{ 'rotate-90': table?.detailRow === row.id }"
                   class="transition-transform duration-200 ease-in-out"
                 />
               </button>
