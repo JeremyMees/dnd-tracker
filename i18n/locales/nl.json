@@ -221,7 +221,7 @@
       }
     },
     "error": {
-      "404": "Oh nee... We hebben deze pagina verloren.",
+      "404": "Oh nee...",
       "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan.",
       "goHome": "Naar de startpagina"
     },

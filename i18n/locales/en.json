@@ -221,7 +221,7 @@
       }
     },
     "error": {
-      "404": "Oh no.. We lost this page",
+      "404": "Oh no..",
       "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go.",
       "goHome": "Back to home"
     },
