@@ -3,6 +3,7 @@ const url = 'https://dnd-tracker.com'
 const description = 'Track your DnD encounters effortlessly with our website. Get real-time updates, manage players & battles, and never miss a beat. Try it now!'
 const logo = `${url}/socials.png`
 const name = 'DnD Tracker'
+const email = 'jeremy@dnd-tracker.com'
 
 export default {
   url,
@@ -10,6 +11,7 @@ export default {
   logo,
   description,
   name,
+  email,
   keywords: [
     'D&D 5e encounter tracker',
     'Dungeon Master tools D&D',

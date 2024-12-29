@@ -31,6 +31,7 @@ export default defineNuxtConfig({
     '/no-access': { robots: false },
     '/reset-password': { robots: false },
     '/subscribe-success': { robots: false },
+    '/campaigns/join': { robots: false },
   },
 
   runtimeConfig: {
@@ -56,15 +57,6 @@ export default defineNuxtConfig({
   ogImage: {
     enabled: true,
     defaults: { alt: seo.name },
-  },
-
-  schemaOrg: {
-    identity: {
-      type: 'Organization',
-      name: seo.name,
-      url: seo.url,
-      logo: seo.logo,
-    },
   },
 
   image: {
