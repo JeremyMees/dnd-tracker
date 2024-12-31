@@ -107,3 +107,18 @@ export function sanitizeHTML(dirty: string): string {
     },
   }).replaceAll('<hr />', '<hr>')
 }
+
+export const indexCorrect = (rows: InitiativeSheetRow[]): InitiativeSheetRow[] => {
+  const sortedObjects = [...rows] // Make shallow copy
+  const corrected: InitiativeSheetRow[] = []
+
+  // Sort the array based on the initiative value in descending order
+  sortedObjects.sort((a, b) => b.initiative - a.initiative)
+
+  // Add the index to each object
+  sortedObjects.forEach((obj, index) => {
+    corrected.push({ ...obj, index })
+  })
+
+  return corrected
+}

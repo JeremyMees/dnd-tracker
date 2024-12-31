@@ -9,6 +9,20 @@ export type Database = MergeDeep<
   {
     public: {
       Tables: {
+        initiative_sheets: {
+          Row: {
+            rows: InitiativeSheetRow[]
+            settings: InitiativeSettings
+          }
+          Insert: {
+            rows: InitiativeSheetRow[]
+            settings?: InitiativeSettings
+          }
+          Update: {
+            rows?: InitiativeSheetRow[]
+            settings?: InitiativeSettings
+          }
+        }
         homebrew_items: {
           Row: {
             actions: Action[]

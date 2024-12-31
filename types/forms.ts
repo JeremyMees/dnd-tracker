@@ -83,3 +83,10 @@ export interface NoteForm {
 export interface MailForm {
   mail: string[]
 }
+
+export interface InitiativeSettingsForm {
+  spacing: TableSpacing
+  rows: string[]
+  widgets: string[]
+  pet?: InitiativePet
+}

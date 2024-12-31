@@ -299,7 +299,7 @@ export type Database = {
           info_cards: Json
           round: number
           rows: Json
-          settings: Json
+          settings: Json | null
           title: string
         }
         Insert: {
@@ -311,8 +311,8 @@ export type Database = {
           info?: string | null
           info_cards?: Json
           round?: number
-          rows?: Json
-          settings?: Json
+          rows: Json
+          settings?: Json | null
           title: string
         }
         Update: {
@@ -325,7 +325,7 @@ export type Database = {
           info_cards?: Json
           round?: number
           rows?: Json
-          settings?: Json
+          settings?: Json | null
           title?: string
         }
         Relationships: [
@@ -1023,6 +1023,15 @@ export type Database = {
         | 'Other'
       feature_request_status: 'review' | 'accepted' | 'progress'
       homebrew_type: 'player' | 'summon' | 'npc' | 'monster' | 'lair'
+      initiative_pet:
+        | 'cat'
+        | 'chicken'
+        | 'barmaid'
+        | 'crawler'
+        | 'dragon'
+        | 'fairy'
+        | 'redcap'
+        | 'wolf-rider'
       magic_item_type:
         | 'Wondrous item'
         | 'Armor'
@@ -1074,6 +1083,7 @@ export type Database = {
         | 'Varies'
       rules: '5e'
       subscription_type: 'free' | 'medior' | 'pro'
+      table_spacing: 'compact' | 'normal' | 'cozy'
       user_role: 'Viewer' | 'Admin' | 'Owner'
       weapon_category:
         | 'Martial Melee Weapons'

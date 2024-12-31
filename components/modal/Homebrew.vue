@@ -320,7 +320,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       </FormKit>
     </FormKit>
     <div
-      v-if="isEncounter && !initiativeSheet.isSandbox && !initiativeSheet.isPlayground"
+      v-if="isEncounter && !initiativeSheet.isPlayground"
       class="flex flex-col gap-x-2 mb-2"
     >
       <FormKit

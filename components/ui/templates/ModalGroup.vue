@@ -9,6 +9,7 @@ import {
   ModalHomebrew,
   ModalNote,
   ModalMail,
+  ModalInitiativeSettings,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -23,6 +24,7 @@ const modalComponents: Record<ModalComponent, any> = {
   Homebrew: ModalHomebrew,
   Note: ModalNote,
   Mail: ModalMail,
+  InitiativeSettings: ModalInitiativeSettings,
 }
 </script>
 
