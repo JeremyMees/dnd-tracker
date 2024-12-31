@@ -1,13 +1,11 @@
 <script setup lang="ts">
-defineProps<{
-  pet: 'cat' | 'chicken' | 'barmaid' | 'crawler' | 'dragon' | 'fairy' | 'redcap' | 'wolf-rider'
-}>()
+defineProps<{ pet: InitiativePet }>()
 </script>
 
 <template>
   <img
     :src="`/gifs/${pet}.gif`"
     loading="lazy"
-    class="size-8"
+    class="size-6"
   >
 </template>
