@@ -13,30 +13,30 @@ withDefaults(
 )
 
 const ui = useUI()
-
-onBeforeMount(() => {
-  ui.showNavigation = true
-})
 </script>
 
 <template>
-  <main
-    class="grow"
-    :class="{
-      'pt-[140px]': !noPadding,
-    }"
-  >
-    <div class="relative">
-      <div
-        v-if="shadow"
-        class="fixed !top-1/4 !left-0 !w-[50vw] !h-[50vh] fancy-shadow z-[-1] opacity-70"
-      />
-      <div
-        class="relative grow pb-[140px] flex flex-col"
-        :class="{ 'dnd-container': container }"
-      >
-        <slot />
+  <div>
+    <Navbar class="fixed z-10 left-0 right-0 backdrop-blur"/>
+    <main
+      class="grow"
+      :class="{
+        'pt-[140px]': !noPadding,
+      }"
+    >
+      <div class="relative">
+        <div
+          v-if="shadow"
+          class="fixed !top-1/4 !left-0 !w-[50vw] !h-[50vh] fancy-shadow z-[-1] opacity-70"
+        />
+        <div
+          class="relative grow pb-[140px] flex flex-col"
+          :class="{ 'dnd-container': container }"
+        >
+          <slot />
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+    <Footer />
+  </div>
 </template>

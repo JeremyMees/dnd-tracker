@@ -34,12 +34,7 @@ if (import.meta.client) {
         'bg-secondary/20': ui.bgColor === 'secondary',
       }"
     >
-      <Navbar
-        v-show="ui.showNavigation"
-        class="fixed z-10 left-0 right-0 backdrop-blur"
-      />
       <NuxtPage />
-      <Footer v-show="ui.showNavigation" />
     </div>
   </div>
 </template>

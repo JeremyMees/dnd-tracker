@@ -2,8 +2,6 @@ export const useUI = defineStore('useUI', () => {
   const auth = useAuth()
   const route = useRoute()
 
-  const showNavigation = ref<boolean>(true)
-
   const routes = computed<Route[]>(() => {
     return [
       { label: 'components.navbar.contact', url: 'contact', requireAuth: false },
@@ -46,7 +44,6 @@ export const useUI = defineStore('useUI', () => {
   })
 
   return {
-    showNavigation,
     routes,
     playRoutes,
     profileRoutes,

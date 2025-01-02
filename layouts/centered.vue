@@ -1,9 +1,5 @@
 <script setup lang="ts">
 defineProps<{ wide?: boolean }>()
-
-const ui = useUI()
-
-onBeforeMount(() => ui.showNavigation = false)
 </script>
 
 <template>
@@ -17,7 +13,6 @@ onBeforeMount(() => ui.showNavigation = false)
       class="dnd-container absolute w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
       :class="{
         'max-w-2xl': !wide,
-        '': wide,
       }"
     >
       <div class="inset-0 z-[-1] fancy-shadow" />
