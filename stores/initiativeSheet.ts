@@ -4,9 +4,9 @@ import playgroundValues from '~/constants/playground-initiative'
 export const useInitiativeSheet = defineStore('useInitiativeSheet', () => {
   const supabase = useSupabaseClient<Database>()
   const channel = supabase.channel('initiative_sheets')
-  const toast = useToast()
+  const route = useRoute()
 
-  const isPlayground = ref<boolean>(true)
+  const isPlayground = computed<boolean>(() => route.fullPath.includes('/playground'))
 
   async function get(id?: number): Promise<InitiativeSheet | undefined> {
     if (!id) return playgroundValues
