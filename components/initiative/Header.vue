@@ -9,11 +9,14 @@ defineProps<{ data: InitiativeSheet }>()
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row gap-4 items-center justify-between container-max w-full p-4">
+  <div class="flex flex-col sm:flex-row gap-4 items-center justify-between container-max w-full">
     <div class="flex gap-2 items-center">
-      <p class="text-slate-300">
-        {{ $t('general.round') }}: {{ data.round }}
-      </p>
+      <span class="text-slate-300">
+        {{ $t('general.round') }}:
+        <span class="font-bold text-white">
+          {{ data.round }}
+        </span>
+      </span>
       <button
         v-tippy="{ content: $t('actions.reset') }"
         :disabled="!data.rows.length"
@@ -28,16 +31,15 @@ defineProps<{ data: InitiativeSheet }>()
         />
       </button>
     </div>
-    <h1>{{ data.title }}</h1>
     <div
       id="tour-1"
-      class="flex gap-2 items-center bg-secondary/50 rounded-lg border-4 border-secondary"
+      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"
         :disabled="data.round === 1 && data.activeIndex === 0"
         :aria-label="$t('actions.prev')"
-        class="group disabled:cursor-not-allowed duration-300 ease-in-out p-2 border-r-2 border-secondary flex flex-col items-center"
+        class="group disabled:cursor-not-allowed duration-300 ease-in-out py-1 pl-1 pr-2 border-r-2 border-primary flex flex-col items-center"
         @click="$emit('previous')"
       >
         <Icon
@@ -53,7 +55,7 @@ defineProps<{ data: InitiativeSheet }>()
         v-tippy="{ content: $t('actions.next') }"
         :disabled="!data.rows.length"
         :aria-label="$t('actions.next')"
-        class="p-2 border-l-2 border-secondary flex flex-col items-center"
+        class="py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"
         @click="$emit('next')"
       >
         <Icon
