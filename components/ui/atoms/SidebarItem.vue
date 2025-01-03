@@ -7,9 +7,11 @@ withDefaults(
     label: string
     minimized: boolean
     url?: string
+    tooltip?: boolean
     color?: Color | 'white'
   }>(), {
     color: 'white',
+    tooltip: true,
   },
 )
 </script>
@@ -18,7 +20,9 @@ withDefaults(
   <component
     :is="url ? RouteLink : 'button'"
     v-tippy="{
-      content: minimized ? label : '',
+      content: tooltip
+        ? minimized ? label : ''
+        : '',
       placement: 'right',
       delay: 0,
     }"

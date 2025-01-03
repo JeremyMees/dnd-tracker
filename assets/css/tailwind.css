@@ -221,7 +221,7 @@
   }
 
   kbd {
-    @apply border-2 rounded p-1;
+    @apply border-2 border-slate-700 rounded p-1 flex flex-col items-center justify-center w-fit text-xs;
   }
 
   select, option {

@@ -118,14 +118,74 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           />
         </li>
         <li>
-          <SidebarItem
-            :label="$t('general.hotkey', 2)"
-            icon="tabler:keyboard"
-            :minimized="!!sidebar?.isMinimized"
-            @click="() => {
-              if (sidebar?.isOpen) sidebar.isOpen = false
+          <tippy
+            v-tippy="{
+              content: !!sidebar?.isMinimized ? $t('general.hotkey', 2) : '',
+              placement: 'right',
+              delay: 0,
             }"
-          />
+            trigger="click"
+          >
+            <SidebarItem
+              :label="$t('general.hotkey', 2)"
+              icon="tabler:keyboard"
+              :minimized="!!sidebar?.isMinimized"
+              :tooltip="false"
+            />
+            <template #content>
+              <div class="p-4 space-y-2 overflow-auto">
+                <p class="head-3 pb-4">
+                  {{ $t('general.hotkey', 2) }}
+                </p>
+                <div class="space-y-4">
+                  <div class="space-y-2 pb-4 border-slate-700 border-b-2">
+                    <p class="font-medium">
+                      {{ $t('actions.prev') }}
+                    </p>
+                    <div class="flex items-center border-b border-slate-700 pb-2">
+                      <kbd class="flex flex-row">
+                        <span>Ctrl</span>
+                        <span class="mx-1 text-slate-300">/</span>
+                        <span>Cmd</span>
+                        <span class="mx-1 text-slate-300">/</span>
+                        <span>Shift</span>
+                      </kbd>
+                      <span class="mx-1 text-slate-300">+</span>
+                      <kbd>
+                        <Icon
+                          name="tabler:arrow-left"
+                          class="size-4"
+                        />
+                      </kbd>
+                    </div>
+                    <kbd>PageUp</kbd>
+                  </div>
+                  <div class="space-y-2">
+                    <p class="font-medium">
+                      {{ $t('actions.next') }}
+                    </p>
+                    <div class="flex items-center border-b border-slate-700 pb-2">
+                      <kbd class="flex flex-row">
+                        <span>Ctrl</span>
+                        <span class="mx-1 text-slate-300">/</span>
+                        <span>Cmd</span>
+                        <span class="mx-1 text-slate-300">/</span>
+                        <span>Shift</span>
+                      </kbd>
+                      <span class="mx-1 text-slate-300">+</span>
+                      <kbd>
+                        <Icon
+                          name="tabler:arrow-right"
+                          class="size-4"
+                        />
+                      </kbd>
+                    </div>
+                    <kbd>PageDown</kbd>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </tippy>
         </li>
       </ul>
     </template>
