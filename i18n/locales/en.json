@@ -1,5 +1,7 @@
 {
   "actions": {
+    "expand": "Expand",
+    "collapse": "Collapse",
     "add": "Add",
     "addSelected": "Add selected",
     "addAll": "Add all",
@@ -66,7 +68,11 @@
     "sendMail": "Send mail"
   },
   "general": {
-    "setting": "Setting | Settings",
+    "hotkey": "Hotkey | Hotkeys",
+    "bestiary": "Bestiary",
+    "campaignHomebrew": "Campaign homebrew",
+    "newHomebrew": "New homebrew",
+    "info": "Information",
     "title": "Title | Titles",
     "createdAt": "Created at",
     "word": "Word | Words",
@@ -429,6 +435,9 @@
     }
   },
   "components": {
+    "sidebar": {
+      "open": "Open sidebar"
+    },
     "mailModal": {
       "title": "Send {type} via email"
     },
@@ -501,7 +510,6 @@
       "update": "Update encounter {title}"
     },
     "addInitiativeMonster": {
-      "bestiary": "Bestiary",
       "notFound": "We haven't found a monster to match these filters, but that doesn't mean you can't create it yourself as homebrew!",
       "sort": {
         "title": "Sort",

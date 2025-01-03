@@ -1,5 +1,7 @@
 {
   "actions": {
+    "expand": "Uitklappen",
+    "collapse": "Inklappen",
     "add": "Toevoegen",
     "addSelected": "Selectie toevoegen",
     "addAll": "Alles toevoegen",
@@ -66,7 +68,11 @@
     "sendMail": "Email versturen"
   },
   "general": {
-    "setting": "Instelling | Instellingen",
+    "hotkey": "Hotkey | Hotkeys",
+    "bestiary": "Bestiary",
+    "campaignHomebrew": "Campagne homebrew",
+    "newHomebrew": "Nieuwe homebrew",
+    "info": "Informatie",
     "title": "Titel | Titels",
     "createdAt": "Gemaakt op",
     "word": "Woord | Woorden",
@@ -429,6 +435,9 @@
     }
   },
   "components": {
+    "sidebar": {
+      "open": "Zijbalk openen"
+    },
     "mailModal": {
       "title": "Stuur {type} per e-mail"
     },
@@ -501,7 +510,6 @@
       "update": "Update encounter {title}"
     },
     "addInitiativeMonster": {
-      "bestiary": "Bestiary",
       "notFound": "Wij hebben geen monster gevonden die bij deze filters past, maar dat wil niet zeggen dat je het niet zelf kan aanmaken als homebrew!",
       "sort": {
         "title": "Sorteer",
