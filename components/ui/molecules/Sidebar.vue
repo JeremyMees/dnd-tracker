@@ -2,11 +2,17 @@
 const isSmall = useMediaQuery('(max-width: 1024px)')
 
 const isOpen = ref<boolean>(false)
-const isMinimized = ref<boolean>(true)
+const isMinimized = ref<boolean>(false)
 
 defineExpose({ isMinimized, isOpen })
 
 onKeyStroke('Escape', () => isOpen.value = false)
+
+onMounted(() => {
+  setTimeout(() => {
+    if (!isSmall.value) isMinimized.value = true
+  }, 4000)
+})
 </script>
 
 <template>
@@ -69,10 +75,10 @@ onKeyStroke('Escape', () => isOpen.value = false)
       />
     </AnimationOpacity>
     <div class="grow bg-bg pb-6 pt-4">
-      <div class="hidden lg:block pb-4 mb-4 border-slate-700 border-b-2 px-4 md:px-6 lg:px-10">
+      <div class="hidden lg:block pb-4 mb-4 border-slate-700 border-b-2 px-4">
         <slot name="sidebar-header" />
       </div>
-      <div class="lg:dnd-container">
+      <div class="px-4">
         <slot />
       </div>
     </div>
