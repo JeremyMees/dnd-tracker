@@ -27,6 +27,8 @@ export default defineNuxtConfig({
     ],
   },
 
+  css: ['@/assets/css/tippy.css'],
+
   routeRules: {
     '/no-access': { robots: false },
     '/reset-password': { robots: false },

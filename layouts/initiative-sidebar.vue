@@ -119,18 +119,13 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
         </li>
         <li>
           <tippy
-            v-tippy="{
-              content: !!sidebar?.isMinimized ? $t('general.hotkey', 2) : '',
-              placement: 'right',
-              delay: 0,
-            }"
             trigger="click"
+            placement="right"
           >
             <SidebarItem
               :label="$t('general.hotkey', 2)"
               icon="tabler:keyboard"
               :minimized="!!sidebar?.isMinimized"
-              :tooltip="false"
             />
             <template #content>
               <div class="p-4 space-y-2 overflow-auto">
