@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { RouteLink } from '#components'
+
 withDefaults(
   defineProps<{
     icon: string
     label: string
     minimized: boolean
+    url?: string
     color?: Color | 'white'
   }>(), {
     color: 'white',
@@ -12,14 +15,16 @@ withDefaults(
 </script>
 
 <template>
-  <button
+  <component
+    :is="url ? RouteLink : 'button'"
     v-tippy="{
       content: minimized ? label : '',
       placement: 'right',
       delay: 0,
     }"
+    :url="url"
     :aria-label="label"
-    class="whitespace-nowrap flex items-center w-full p-2 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-white group transition-all duration-300"
+    class="whitespace-nowrap flex items-center max-w-none w-full p-2 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-white group transition-all duration-300"
   >
     <Icon
       :name="icon"
@@ -45,5 +50,5 @@ withDefaults(
         {{ label }}
       </span>
     </AnimationSlideIn>
-  </button>
+  </component>
 </template>

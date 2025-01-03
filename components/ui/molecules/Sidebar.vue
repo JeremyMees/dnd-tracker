@@ -69,7 +69,7 @@ onKeyStroke('Escape', () => isOpen.value = false)
       />
     </AnimationOpacity>
     <div class="grow bg-bg pb-6 pt-4">
-      <div class="hidden lg:block pb-4 border-slate-700 border-b-2 px-4 md:px-6 lg:px-10">
+      <div class="hidden lg:block pb-4 mb-4 border-slate-700 border-b-2 px-4 md:px-6 lg:px-10">
         <slot name="sidebar-header" />
       </div>
       <div class="lg:dnd-container">
