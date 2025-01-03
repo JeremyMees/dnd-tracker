@@ -2,7 +2,7 @@
 const isSmall = useMediaQuery('(max-width: 1024px)')
 
 const isOpen = ref<boolean>(false)
-const isMinimized = ref<boolean>(false)
+const isMinimized = ref<boolean>(true)
 
 defineExpose({ isMinimized, isOpen })
 
