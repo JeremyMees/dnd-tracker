@@ -32,7 +32,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('general.info')"
             icon="tabler:search"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             color="success"
             @click="() => {
               if (sidebar?.isOpen) sidebar.isOpen = false
@@ -44,7 +44,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('actions.roll')"
             icon="tabler:hexagon"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             color="secondary"
             @click="() => {
               if (sidebar?.isOpen) sidebar.isOpen = false
@@ -56,7 +56,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('general.bestiary')"
             icon="tabler:bat"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             color="danger"
             @click="() => {
               if (sidebar?.isOpen) sidebar.isOpen = false
@@ -68,7 +68,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('general.campaignHomebrew')"
             icon="tabler:meeple"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             color="primary"
             @click="() => {
               if (sidebar?.isOpen) sidebar.isOpen = false
@@ -80,7 +80,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('general.newHomebrew')"
             icon="tabler:beer"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             color="warning"
             @click="() => {
               if (sidebar?.isOpen) sidebar.isOpen = false
@@ -94,7 +94,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
             id="tour-13"
             :label="$t('general.setting', 2)"
             icon="tabler:settings"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             @click="() => {
               if (sidebar?.isOpen) sidebar.isOpen = false
               $emit('openSettings')
@@ -105,7 +105,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('general.encounter', 2)"
             icon="tabler:list-details"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             url="encounters"
           />
         </li>
@@ -113,7 +113,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
           <SidebarItem
             :label="$t('general.campaign')"
             icon="tabler:layout-dashboard"
-            :minimized="!!sidebar?.isMinimized"
+            :minimized="sidebar?.isMinimized || false"
             :url="campaignUrl(campaign, 'encounters')"
           />
         </li>
@@ -125,7 +125,7 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
             <SidebarItem
               :label="$t('general.hotkey', 2)"
               icon="tabler:keyboard"
-              :minimized="!!sidebar?.isMinimized"
+              :minimized="sidebar?.isMinimized || false"
             />
             <template #content>
               <div class="p-4 space-y-2 overflow-auto">

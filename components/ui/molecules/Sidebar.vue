@@ -46,10 +46,7 @@ onMounted(() => {
       >
         <div class="h-full flex flex-col justify-between px-3 py-4 overflow-y-auto overflow-x-hidden bg-bg">
           <slot name="sidebar-content" />
-          <div
-            v-if="!isSmall"
-            class="space-y-2 font-bold body-small"
-          >
+          <div class="space-y-2 font-bold body-small">
             <hr class="border-t-slate-700">
             <SidebarItem
               :label="$t('general.back')"
