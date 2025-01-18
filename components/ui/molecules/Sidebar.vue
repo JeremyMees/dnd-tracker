@@ -16,8 +16,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row py-6 lg:py-0 dnd-container lg:max-w-none lg:px-0">
-    <div class="flex items-center gap-x-6">
+  <div class="max-h-dvh h-full flex flex-col lg:flex-row py-6 lg:py-0 dnd-container lg:max-w-none lg:px-0">
+    <div class="flex items-center gap-x-6 pb-4">
       <button
         v-if="isSmall"
         v-tippy="{
@@ -41,7 +41,7 @@ onMounted(() => {
     <AnimationSlideIn position="left">
       <aside
         v-if="(isOpen && isSmall) || !isSmall"
-        class="fixed lg:relative top-0 left-0 z-20 max-w-64 h-screen transition-transform translate-x-0 border-slate-700 border-r-2"
+        class="fixed lg:relative top-0 left-0 z-20 max-w-64 h-screen transition-transform translate-x-0 flex"
         aria-label="Sidebar"
       >
         <div class="h-full flex flex-col justify-between px-3 py-4 overflow-y-auto overflow-x-hidden bg-bg">
@@ -62,6 +62,11 @@ onMounted(() => {
             />
           </div>
         </div>
+        <button
+          :class="isMinimized ? 'cursor-e-resize' : 'cursor-w-resize'"
+          class="w-[2px] bg-slate-700"
+          @click="isMinimized = !isMinimized"
+        />
       </aside>
     </AnimationSlideIn>
     <AnimationOpacity>
@@ -71,7 +76,7 @@ onMounted(() => {
         @click="isOpen = false"
       />
     </AnimationOpacity>
-    <div class="grow bg-bg pb-6 pt-4">
+    <div class="grow bg-bg pb-6 pt-4 overflow-y-auto">
       <div class="hidden lg:block pb-4 mb-4 border-slate-700 border-b-2 px-4">
         <slot name="sidebar-header" />
       </div>
