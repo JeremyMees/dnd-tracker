@@ -23,6 +23,10 @@ export type ModalComponent =
   | 'Note'
   | 'Mail'
   | 'InitiativeSettings'
+  | 'InitiativeRowName'
+  | 'InitiativeRowInit'
+  | 'InitiativeRowHealth'
+  | 'InitiativeRowAc'
 
 export interface Modal {
   uuid: string

@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const sheet = useInitiativeSheet()
 
-const rowsDefault = ['summoner', 'ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+const rowsDefault = ['ac', 'health', 'manage', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 const widgetsDefault = ['note', 'info-pins', 'fantasy-name-generator']
 
 async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
@@ -62,14 +62,14 @@ async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promi
       :label="$t('components.initiativeSettings.rows')"
       :value="settings.modified ? (settings.rows || []) : rowsDefault"
       :options="[
-        { label: 'Summond by', value: 'summoner' },
         { label: 'AC', value: 'ac' },
         { label: 'HP', value: 'health' },
-        { label: 'Conditions', value: 'conditions' },
-        { label: 'Note', value: 'note' },
+        { label: $t('general.action', 2), value: 'manage' },
+        { label: $t('general.condition', 2), value: 'conditions' },
+        { label: $t('general.note'), value: 'note' },
         { label: 'Death saves', value: 'deathSaves' },
-        { label: 'Concentration', value: 'concentration' },
-        { label: 'Modify', value: 'modify' },
+        { label: $t('general.concentration'), value: 'concentration' },
+        { label: $t('general.modify'), value: 'modify' },
       ]"
     />
     <FormKit

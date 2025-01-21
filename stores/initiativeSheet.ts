@@ -34,6 +34,8 @@ export const useInitiativeSheet = defineStore('useInitiativeSheet', () => {
   }
 
   async function updateInitiativeSheet(sheet: Omit<InitiativeUpdate, NotUpdatable>, id: number): Promise<void> {
+    if (isPlayground.value) return
+
     const { error } = await supabase
       .from('initiative_sheets')
       .update(sheet)

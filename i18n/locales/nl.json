@@ -65,10 +65,17 @@
     "undo": "Ongedaan maken",
     "redo": "Opnieuw doen",
     "unlink": "Link verwijderen",
-    "sendMail": "Email versturen"
+    "sendMail": "Email versturen",
+    "moveUp": "Omhoog",
+    "moveDown": "Omlaag",
+    "changeInitiative": "Initiatief wijzigen"
   },
   "general": {
+    "initiative": "Initiatief | Initiatieven",
+    "level": "Niveau | Niveaus",
+    "summoner": "Oproeper",
     "hotkey": "Hotkey | Hotkeys",
+    "modifierKeys": "Modificatie toetsen",
     "bestiary": "Bestiary",
     "campaignHomebrew": "Campagne homebrew",
     "newHomebrew": "Nieuwe homebrew",
@@ -289,19 +296,6 @@
         "removed": {
           "title": "Encounter is verwijderd",
           "text": "Iemand heeft de encounter verwijderd, dus je kan hem niet meer gebruiken"
-        },
-        "died": {
-          "title": "{type} is gestorven",
-          "textMinHP": "De {type} heeft te veel negatieve hp en is dood",
-          "textDeathSaves": "De {type} heeft 3 keer gefaald bij death saves en is dood"
-        },
-        "stable": {
-          "title": "{type} is gestabiliseerd",
-          "textDeathSaves": "De {type} heeft 3 keer gesaved bij death saves en is gestabiliseerd"
-        },
-        "concentration": {
-          "title": "Maak een concentratie check",
-          "text": "{type} die zich concentreerde, liep schade op"
         }
       }
     },
@@ -435,6 +429,21 @@
     }
   },
   "components": {
+    "initiativeTable": {
+      "died": {
+        "title": "{type} is gestorven",
+        "textMinHP": "De {type} heeft te veel negatieve hp en is dood",
+        "textDeathSaves": "De {type} heeft 3 keer gefaald bij death saves en is dood"
+      },
+      "stable": {
+        "title": "{type} is gestabiliseerd",
+        "textDeathSaves": "De {type} heeft 3 keer gesaved bij death saves en is gestabiliseerd"
+      },
+      "concentration": {
+        "title": "Maak een concentratie check",
+        "text": "{type} die zich concentreerde, liep schade op"
+      }
+    },
     "sidebar": {
       "open": "Zijbalk openen"
     },
@@ -557,15 +566,15 @@
         "init": "Init",
         "ac": "AC",
         "health": "HP",
-        "manage": "Beheer",
+        "manage": "Acties",
         "conditions": "Condities",
         "note": "Notitie",
-        "deathSaves": "Death saves",
+        "deathSaves": "Saves",
         "concentration": "CON",
-        "modify": "Aanpassen",
-        "summoner": "Oproeper"
+        "modify": "Aanpassen"
       },
-      "quick": "Voeg alle initiatieven toe"
+      "quick": "Voeg alle initiatieven toe",
+      "noActions": "Wanneer je acties toevoegt aan een homebrew, worden ze hier weergegeven."
     },
     "actions": {
       "link": "Link",

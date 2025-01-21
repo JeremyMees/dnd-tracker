@@ -133,49 +133,43 @@ const sidebar = ref<InstanceType<typeof Sidebar>>()
                   {{ $t('general.hotkey', 2) }}
                 </p>
                 <div class="space-y-4">
-                  <div class="space-y-2 pb-4 border-slate-700 border-b-2">
+                  <div class="space-y-2">
                     <p class="font-medium">
-                      {{ $t('actions.prev') }}
+                      {{ $t('general.modifierKeys') }}
                     </p>
-                    <div class="flex items-center border-b border-slate-700 pb-2">
-                      <kbd class="flex flex-row">
-                        <span>Ctrl</span>
-                        <span class="mx-1 text-slate-300">/</span>
-                        <span>Cmd</span>
-                        <span class="mx-1 text-slate-300">/</span>
-                        <span>Shift</span>
-                      </kbd>
-                      <span class="mx-1 text-slate-300">+</span>
-                      <kbd>
-                        <Icon
-                          name="tabler:arrow-left"
-                          class="size-4"
-                        />
-                      </kbd>
-                    </div>
-                    <kbd>PageUp</kbd>
+                    <span class="flex flex-row">
+                      <kbd>⌃</kbd>
+                      <span class="mx-1 text-slate-300">/</span>
+                      <kbd>⌘</kbd>
+                      <span class="mx-1 text-slate-300">/</span>
+                      <kbd>⇧</kbd>
+                    </span>
                   </div>
                   <div class="space-y-2">
                     <p class="font-medium">
-                      {{ $t('actions.next') }}
+                      {{ $t('actions.changeInitiative') }}
                     </p>
-                    <div class="flex items-center border-b border-slate-700 pb-2">
-                      <kbd class="flex flex-row">
-                        <span>Ctrl</span>
+                    <div class="flex items-center">
+                      <span class="mr-1 body-small text-slate-300">
+                        MOD +
+                      </span>
+                      <span class="flex flex-row">
+                        <kbd>←</kbd>
                         <span class="mx-1 text-slate-300">/</span>
-                        <span>Cmd</span>
-                        <span class="mx-1 text-slate-300">/</span>
-                        <span>Shift</span>
-                      </kbd>
-                      <span class="mx-1 text-slate-300">+</span>
-                      <kbd>
-                        <Icon
-                          name="tabler:arrow-right"
-                          class="size-4"
-                        />
-                      </kbd>
+                        <kbd>→</kbd>
+                      </span>
                     </div>
-                    <kbd>PageDown</kbd>
+                  </div>
+                  <div class="space-y-2">
+                    <p class="font-medium">
+                      {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
+                    </p>
+                    <div class="flex items-center">
+                      <span class="mr-1 text-slate-300">MOD +</span>
+                      <span class="flex flex-row">
+                        <kbd>⏎</kbd>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -92,7 +92,6 @@ export interface ActionOpen5E {
 export interface DeathSaves {
   fail: [boolean, boolean, boolean]
   save: [boolean, boolean, boolean]
-  stable: boolean
 }
 
 export interface InitiativeSheetRow {

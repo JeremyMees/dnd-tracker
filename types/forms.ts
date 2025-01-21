@@ -90,3 +90,7 @@ export interface InitiativeSettingsForm {
   widgets: string[]
   pet?: InitiativePet
 }
+
+export interface NameForm {
+  name: string
+}

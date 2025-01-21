@@ -221,7 +221,7 @@
   }
 
   kbd {
-    @apply border-2 border-slate-700 rounded p-1 flex flex-col items-center justify-center w-fit text-xs;
+    @apply border border-slate-300 rounded size-6 flex items-center justify-center border-b-2;
   }
 
   select, option {
@@ -297,7 +297,11 @@
   }
 
   .td {
-    @apply p-2;
+    @apply p-4 align-middle;
+  }
+
+  .th {
+    @apply h-12 px-4 text-left align-middle font-medium;
   }
 
   .no-scrollbar::-webkit-scrollbar {

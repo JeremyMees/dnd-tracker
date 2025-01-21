@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const props = defineProps<{
-  specialAbilities?: Action[]
-  legendaryActions?: Action[]
-  actions?: Action[]
-  reactions?: Action[]
+  specialAbilities?: (Action | ActionOpen5E)[]
+  legendaryActions?: (Action | ActionOpen5E)[]
+  actions?: (Action | ActionOpen5E)[]
+  reactions?: (Action | ActionOpen5E)[]
 }>()
 
 const allActions = computed<Option<Action[]>[]>(() => [

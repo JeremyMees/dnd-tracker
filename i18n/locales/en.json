@@ -65,10 +65,17 @@
     "undo": "Undo",
     "redo": "Redo",
     "unlink": "Unlink",
-    "sendMail": "Send mail"
+    "sendMail": "Send mail",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "changeInitiative": "Change initiative"
   },
   "general": {
+    "initiative": "Initiative | Initiatives",
+    "level": "Level | Levels",
+    "summoner": "Summoner",
     "hotkey": "Hotkey | Hotkeys",
+    "modifierKeys": "Modifier keys",
     "bestiary": "Bestiary",
     "campaignHomebrew": "Campaign homebrew",
     "newHomebrew": "New homebrew",
@@ -289,19 +296,6 @@
         "removed": {
           "title": "Encounter is removed",
           "text": "Someone removed the encounter so it can't be used anymore"
-        },
-        "died": {
-          "title": "{type} died",
-          "textMinHP": "The {type} has too many negative hp and is dead",
-          "textDeathSaves": "The {type} failed his death saves three times and is dead"
-        },
-        "stable": {
-          "title": "{type} stabilized",
-          "textDeathSaves": "The {type} saved his death saves three times and is stabilized"
-        },
-        "concentration": {
-          "title": "Make a concentration check",
-          "text": "The {type}, maintaining concentration took damage"
         }
       }
     },
@@ -435,6 +429,21 @@
     }
   },
   "components": {
+    "initiativeTable": {
+      "died": {
+        "title": "{type} is dead",
+        "textMinHP": "The {type} has too many negative hp and is dead",
+        "textDeathSaves": "The {type} failed his death saves three times and is dead"
+      },
+      "stable": {
+        "title": "{type} stabilized",
+        "textDeathSaves": "The {type} saved his death saves three times and is stabilized"
+      },
+      "concentration": {
+        "title": "Make a concentration check",
+        "text": "The {type}, maintaining concentration took damage"
+      }
+    },
     "sidebar": {
       "open": "Open sidebar"
     },
@@ -557,15 +566,15 @@
         "init": "Init",
         "ac": "AC",
         "health": "HP",
-        "manage": "Manage",
+        "manage": "Actions",
         "conditions": "Conditions",
         "note": "Notes",
-        "deathSaves": "Death saves",
+        "deathSaves": "Saves",
         "concentration": "CON",
-        "modify": "Modify",
-        "summoner": "Summoner"
+        "modify": "Modify"
       },
-      "quick": "Add all initiatives"
+      "quick": "Add all initiatives",
+      "noActions": "When you add actions to an initiative, they will be displayed here."
     },
     "actions": {
       "link": "Link",

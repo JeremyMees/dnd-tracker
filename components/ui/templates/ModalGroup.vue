@@ -1,30 +1,38 @@
 <script setup lang="ts">
 import {
-  ModalFeatureRequest,
-  ModalBadge,
-  ModalCampaign,
-  ModalEncounter,
-  ModalTransferOwnership,
-  ModalInviteMember,
-  ModalHomebrew,
-  ModalNote,
-  ModalMail,
-  ModalInitiativeSettings,
+  LazyModalFeatureRequest,
+  LazyModalBadge,
+  LazyModalCampaign,
+  LazyModalEncounter,
+  LazyModalTransferOwnership,
+  LazyModalInviteMember,
+  LazyModalHomebrew,
+  LazyModalNote,
+  LazyModalMail,
+  LazyInitiativeModalSettings,
+  LazyInitiativeModalRowName,
+  LazyInitiativeModalRowInit,
+  LazyInitiativeModalRowHealth,
+  LazyInitiativeModalRowAc,
 } from '#components'
 
 const { modals, close } = useModal()
 
 const modalComponents: Record<ModalComponent, any> = {
-  FeatureRequest: ModalFeatureRequest,
-  Badge: ModalBadge,
-  Campaign: ModalCampaign,
-  Encounter: ModalEncounter,
-  TransferOwnership: ModalTransferOwnership,
-  InviteMember: ModalInviteMember,
-  Homebrew: ModalHomebrew,
-  Note: ModalNote,
-  Mail: ModalMail,
-  InitiativeSettings: ModalInitiativeSettings,
+  FeatureRequest: LazyModalFeatureRequest,
+  Badge: LazyModalBadge,
+  Campaign: LazyModalCampaign,
+  Encounter: LazyModalEncounter,
+  TransferOwnership: LazyModalTransferOwnership,
+  InviteMember: LazyModalInviteMember,
+  Homebrew: LazyModalHomebrew,
+  Note: LazyModalNote,
+  Mail: LazyModalMail,
+  InitiativeSettings: LazyInitiativeModalSettings,
+  InitiativeRowName: LazyInitiativeModalRowName,
+  InitiativeRowInit: LazyInitiativeModalRowInit,
+  InitiativeRowHealth: LazyInitiativeModalRowHealth,
+  InitiativeRowAc: LazyInitiativeModalRowAc,
 }
 </script>
 

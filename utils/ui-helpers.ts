@@ -108,7 +108,7 @@ export function sanitizeHTML(dirty: string): string {
   }).replaceAll('<hr />', '<hr>')
 }
 
-export const indexCorrect = (rows: InitiativeSheetRow[]): InitiativeSheetRow[] => {
+export function indexCorrect(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
   const sortedObjects = [...rows] // Make shallow copy
   const corrected: InitiativeSheetRow[] = []
 
@@ -121,4 +121,8 @@ export const indexCorrect = (rows: InitiativeSheetRow[]): InitiativeSheetRow[] =
   })
 
   return corrected
+}
+
+export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
+  return sheet.rows.findIndex(row => row.id === id)
 }
