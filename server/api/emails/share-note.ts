@@ -18,11 +18,20 @@ export default defineEventHandler(async (event) => {
       },
     )
 
+    const text = await render(
+      ShareNote,
+      body,
+      {
+        plainText: true,
+      },
+    )
+
     return await plunk.emails.send({
       from: 'jeremy@dnd-tracker.com',
       to: body.email,
       subject: `New Note Shared from ${body.campaign}!`,
       body: html,
+      text,
     })
   }
   catch (err) {

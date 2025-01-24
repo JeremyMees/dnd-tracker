@@ -18,11 +18,20 @@ export default defineEventHandler(async (event) => {
       },
     )
 
+    const text = await render(
+      FeatureRequest,
+      body,
+      {
+        plainText: true,
+      },
+    )
+
     return await plunk.emails.send({
       from: 'jeremy@dnd-tracker.com',
       to: 'jeremy@dnd-tracker.com',
       subject: 'New feature request',
       body: html,
+      text,
     })
   }
   catch (err) {

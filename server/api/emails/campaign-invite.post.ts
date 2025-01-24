@@ -18,11 +18,20 @@ export default defineEventHandler(async (event) => {
       },
     )
 
+    const text = await render(
+      CampaignInvite,
+      body,
+      {
+        plainText: true,
+      },
+    )
+
     return await plunk.emails.send({
       from: 'jeremy@dnd-tracker.com',
       to: body.email,
       subject: 'New campaign invite',
       body: html,
+      text,
     })
   }
   catch (err) {
