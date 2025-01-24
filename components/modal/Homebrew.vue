@@ -62,7 +62,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('Homebrew')
     node.setErrors(err.message)
   }
 }
@@ -124,21 +124,21 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
 
 <template>
   <FormKit
-    id="form"
+    id="Homebrew"
     v-slot="{ value }"
     type="form"
-    :submit-label="$t(`components.homebrewModal.${item ? 'update' : 'add'}`)"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
       id="multi-step"
       type="multi-step"
       name="steps"
-      wrapper-class="w-full !max-w-none mb-4"
-      steps-class="bg-slate-700/50 !border-4 !px-2 !pt-2"
+      wrapper-class="w-full !max-w-none"
+      steps-class="!border-none !p-0"
       outer-class="$remove:mb-4"
-      tabs-class="!mt-0 !bg-slate-700/50 !border-4"
-      tab-class="!bg-transparent !text-slate-300 data-[active=true]:!text-white"
+      tabs-class="!mt-0 mb-4 !bg-background/50 !rounded-lg"
+      tab-class="!text-muted-foreground data-[active=true]:!text-foreground data-[active=true]:!bg-secondary-foreground rounded-lg"
       tab-label-class="!font-bold"
     >
       <FormKit
@@ -188,7 +188,6 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           :placeholder="$t('components.inputs.nothing')"
           validation="required"
         />
-        <!-- :options="summonersOptions" -->
         <div :class="{ 'grid sm:grid-cols-2 gap-x-3': value?.type === 'player' && !isEncounter }">
           <FormKit
             name="name"
@@ -332,7 +331,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       />
       <span
         v-if="count >= homebrew.max"
-        class="text-danger body-small pb-2"
+        class="text-destructive body-small pb-2"
       >
         {{ $t('components.homebrewModal.max') }}
       </span>
@@ -343,7 +342,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
 <style>
 :root {
   --multistep-color-success: #7333E0;
-  --multistep-color-border: #334155;
-  --multistep-color-danger: #F87272;
+  --multistep-color-border: transparent;
+  --multistep-color-destructive: #F87272;
 }
 </style>
