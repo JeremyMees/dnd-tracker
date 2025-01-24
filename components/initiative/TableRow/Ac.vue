@@ -14,7 +14,7 @@ defineProps<{ item: InitiativeSheetRow }>()
         <Icon
           v-if="item.ac === null"
           name="tabler:plus"
-          class="size-5 min-w-5 text-slate-700"
+          class="size-5 min-w-5 text-secondary"
           aria-hidden="true"
         />
         <span v-else>{{ item.ac }}</span>
@@ -28,7 +28,7 @@ defineProps<{ item: InitiativeSheetRow }>()
       </button>
       <span
         v-if="item.maxAc !== item.ac"
-        class="body-extra-small text-slate-300"
+        class="body-extra-small text-muted-foreground"
       >
         {{ $t('general.max') }}: {{ item.maxAc }}
       </span>

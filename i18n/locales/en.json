@@ -11,6 +11,7 @@
     "clickToSelect": "Click to select",
     "delete": "Delete",
     "cancel": "Cancel",
+    "continue": "Continue",
     "save": "Save",
     "roll": "Roll dice",
     "update": "Update",
@@ -242,7 +243,13 @@
     "campaigns": {
       "campaigns": "Campaigns",
       "add": "Create campaign",
-      "update": "Update campaign"
+      "update": "Update campaign",
+      "dialog": {
+        "leave": {
+          "title": "Leave this campaign",
+          "text": "If you leave this campaign, you will lose access to it and will be removed from the team"
+        }
+      }
     },
     "campaign": {
       "content": {},
@@ -250,7 +257,17 @@
         "add": "Add people",
         "access": "Manage access",
         "campaign": "Campaign settings",
-        "remove": "Remove {user} from campaign"
+        "remove": "Remove {user} from campaign",
+        "dialog": {
+          "leave": {
+            "title": "Leave this campaign",
+            "text": "If you leave this campaign, you will lose access to it and will be removed from the team"
+          },
+          "remove": {
+            "title": "Remove {user} from campaign",
+            "text": "If you remove {user} from this campaign, they will lose access to it and will be removed from the team"
+          }
+        }
       },
       "danger": {
         "transfer": {
@@ -362,6 +379,12 @@
         "delete": {
           "text": "Removed your profile successfully"
         }
+      },
+      "dialog": {
+        "delete": {
+          "title": "Delete profile",
+          "text": "Once you delete your profile, there's no going back. This action cannot be reversed or recovered."
+        }
       }
     },
     "pricing": {
@@ -429,6 +452,9 @@
     }
   },
   "components": {
+    "pagination": {
+      "page": "Page {page} of {pages}"
+    },
     "initiativeTable": {
       "died": {
         "title": "{type} is dead",
@@ -587,6 +613,10 @@
       "fetchErrorTitle": "Error while getting conditions"
     },
     "navbar": {
+      "pages": "Pages",
+      "upgrade": "Upgrade to Pro",
+      "changelog": "Changelog",
+      "featureRequest": "Feature request",
       "logout": "Log out",
       "login": "Log in",
       "register": "Register",
@@ -600,13 +630,13 @@
       "pricing": "Pricing",
       "play": "Play",
       "fantasy": "Fantasy name generator",
-      "info": "Information",
+      "dnd-content": "DnD content",
       "map": "Map creator",
       "playground": "Encounter playground"
     },
     "confirmationModal": {
-      "title": "Delete confirmation",
-      "text": "To delete {title}, type the word DELETE into the field below"
+      "title": "Are you absolutely sure?",
+      "text": "Once you delete this item, there's no going back. This action cannot be reversed or recovered."
     },
     "noteModal": {
       "add": "Create note",

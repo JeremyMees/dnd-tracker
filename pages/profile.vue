@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { useToast } from '~/components/ui/toast/use-toast'
 import { togglePasswordInput } from '~/utils/ui-helpers'
 
 definePageMeta({ middleware: ['auth'] })
 useSeo('Profile')
 
 const profile = useProfile()
-const toast = useToast()
+const { toast } = useToast()
 const modal = useModal()
 const { t } = useI18n()
 const { ask } = useConfirm()
@@ -46,7 +47,11 @@ const updateProfile = useThrottleFn(async (form: ProfileUpdate & { password?: st
 
     await profile.updateProfile(payload)
 
-    toast.success({ title: t('pages.profile.toast.success.text') })
+    toast({
+      description: t('pages.profile.toast.success.text'),
+      variant: 'success',
+    })
+
     reset('password')
   }
   catch (err: any) {
@@ -55,23 +60,36 @@ const updateProfile = useThrottleFn(async (form: ProfileUpdate & { password?: st
       : err.message
 
     node?.setErrors(message)
-    toast.error({ text: message })
+
+    toast({
+      description: message,
+      variant: 'destructive',
+    })
   }
 }, 1000)
 
 async function deleteUser(): Promise<void> {
   ask({
-    title: profile.data!.name,
+    title: t('pages.profile.dialog.delete.title'),
+    description: t('pages.profile.dialog.delete.text'),
   }, async (confirmed: boolean) => {
     if (!confirmed) return
 
     try {
       await profile.deleteProfile()
       navigateTo(localePath('/'))
-      toast.success({ text: t('pages.profile.toast.delete.text') })
+
+      toast({
+        description: t('pages.profile.toast.delete.text'),
+        variant: 'success',
+      })
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   })
 }
@@ -80,22 +98,17 @@ async function deleteUser(): Promise<void> {
 <template>
   <NuxtLayout container>
     <section class="space-y-2 relative">
-      <div class="flex flex-wrap gap-y-2 gap-x-4 pb-4 border-b-2 border-slate-700">
+      <div class="flex flex-wrap justify-center gap-y-2 gap-x-4 pb-6">
         <AvatarPicker
-          v-if="profile.data"
           profile
           avatar-big
           :deprecated-avatar="profile.data && !profile.data?.avatar_options"
           :selected-options="profile.data?.avatar_options as SelectedStyleOptions || undefined"
           @save="updateAvatar"
         />
-        <SkeletonAvatarPicker
-          v-else
-          avatar-big
-          profile
-        />
       </div>
-      <div class="flex flex-wrap items-end gap-4 pt-2 pb-4 border-b-2 border-slate-700">
+      <UiSeparator />
+      <div class="flex flex-wrap items-end gap-4 py-6">
         <template v-if="profile.data">
           <Badge
             v-for="badge in profile.data.badges"
@@ -103,7 +116,6 @@ async function deleteUser(): Promise<void> {
             :label="badge.label"
             :icon="badge.icon"
             :background="badge.background"
-            :color="badge.color"
             :description="badge.description"
             :earned="badge.earned"
           />
@@ -112,19 +124,22 @@ async function deleteUser(): Promise<void> {
             @click="modal.open({
               component: 'Badge',
               header: $t('components.badgeModal.title'),
+              submit: $t('components.badgeModal.add'),
             })"
           >
             {{ $t('components.badgeModal.claim') }}
           </button>
         </template>
         <template v-else>
-          <SkeletonBadge
+          <UiSkeleton
             v-for="i in 3"
             :key="i"
+            class="w-[150px] h-10"
           />
         </template>
       </div>
-      <div class="flex flex-wrap gap-4 items-center justify-between pt-2 pb-4 border-b-2 border-slate-700">
+      <UiSeparator />
+      <div class="flex flex-wrap gap-4 items-center justify-between py-6">
         <div class="flex gap-4">
           {{ $t('pages.profile.subscription.current') }}:
           <span
@@ -133,15 +148,14 @@ async function deleteUser(): Promise<void> {
           >
             {{ profile.data.subscription_type }}
           </span>
-          <SkeletonPill
+          <UiSkeleton
             v-else
-            class="w-10"
+            class="w-10 h-6 rounded-full"
           />
         </div>
       </div>
-      <div
-        class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-slate-700"
-      >
+      <UiSeparator />
+      <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
         <div class="md:min-w-[300px]">
           <h2>
             {{ $t('pages.profile.data.title') }}
@@ -150,7 +164,7 @@ async function deleteUser(): Promise<void> {
             {{ $t('pages.profile.data.subtitle') }}
           </p>
         </div>
-        <div class="grow max-w-4xl">
+        <div class="grow md:max-w-xl">
           <FormKit
             v-model="formInfo"
             type="form"
@@ -180,9 +194,8 @@ async function deleteUser(): Promise<void> {
           </FormKit>
         </div>
       </div>
-      <div
-        class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-slate-700"
-      >
+      <UiSeparator />
+      <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
         <div class="md:min-w-[300px]">
           <h2>
             {{ $t('pages.profile.password.title') }}
@@ -191,7 +204,7 @@ async function deleteUser(): Promise<void> {
             {{ $t('pages.profile.password.subtitle') }}
           </p>
         </div>
-        <div class="grow max-w-4xl">
+        <div class="grow md:max-w-xl">
           <FormKit
             id="password"
             type="form"
@@ -209,18 +222,19 @@ async function deleteUser(): Promise<void> {
           </FormKit>
         </div>
       </div>
-      <div class="flex flex-wrap gap-x-4 gap-y-2 pt-4 justify-end">
+      <UiSeparator />
+      <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <button
           v-if="profile.data"
-          class="btn-danger"
+          class="btn-destructive"
           :aria-label="$t('pages.profile.delete')"
           @click="deleteUser"
         >
           {{ $t('pages.profile.delete') }}
         </button>
-        <SkeletonButton
+        <UiSkeleton
           v-else
-          class="w-[200px]"
+          class="h-12 rounded-lg w-[200px]"
         />
       </div>
     </section>

@@ -14,29 +14,32 @@ const { data, status, refresh } = await useAsyncData(
 </script>
 
 <template>
-  <NuxtLayout
-    container
-    shadow
-  >
-    <div class="pb-4 flex flex-wrap gap-x-4 gap-y-2 items-center">
-      <BackButton link="/campaigns" />
+  <NuxtLayout name="sidebar">
+    <template #header>
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
-        <h1 class="text-slate-300">
+        <NuxtLinkLocale to="/campaigns">
+          <Icon
+            name="tabler:arrow-left"
+            class="w-4 h-4"
+            :aria-hidden="true"
+          />
+        </NuxtLinkLocale>
+        <h2 class="text-muted-foreground">
           {{ $t('general.campaign') }}:
-        </h1>
-        <span
-          v-if="status === 'success'"
-          class="head-1"
-        >
-          {{ data?.title }}
-        </span>
-        <div
-          v-else
-          class="w-[150px] h-8 rounded-full bg-bg animate-pulse"
-        />
+          <span
+            v-if="status === 'success'"
+            class="text-foreground"
+          >
+            {{ data?.title }}
+          </span>
+          <UiSkeleton
+            v-else
+            class="w-[150px] h-8 rounded-full"
+          />
+        </h2>
       </div>
-    </div>
-    <div class="flex flex-wrap gap-4 md:border-b-2 md:border-slate-700 mb-10">
+    </template>
+    <div class="flex flex-wrap gap-4 lg:border-b-2 lg:border-secondary mb-10">
       <TabItem
         :link="`${url}/encounters`"
         :label="$t('general.encounter', 2)"

@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
+
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
 }>()
 
-const toast = useToast()
+const { toast } = useToast()
 const { t } = useI18n()
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
@@ -37,9 +39,10 @@ function checkForDeathSaveNotifications(): void {
   const type = t(`general.${props.item.type}`)
   const toastType = savedFully ? 'stable' : 'died'
 
-  toast.info({
+  toast({
     title: t(`components.initiativeTable.${toastType}.title`, { type }),
-    text: t(`components.initiativeTable.${toastType}.textDeathSaves`, { type }),
+    description: t(`components.initiativeTable.${toastType}.textDeathSaves`, { type }),
+    variant: toastType === 'stable' ? 'success' : 'destructive',
   })
 }
 </script>
@@ -50,7 +53,7 @@ function checkForDeathSaveNotifications(): void {
       class="grid gap-1 w-fit mx-auto"
       :class="{
         'bg-success/20 p-2 rounded-lg': item.deathSaves?.save.every(Boolean) && !item.deathSaves?.fail.every(Boolean),
-        'bg-danger/20 p-2 rounded-lg': item.deathSaves?.fail.every(Boolean) && !item.deathSaves?.save.every(Boolean),
+        'bg-destructive/20 p-2 rounded-lg': item.deathSaves?.fail.every(Boolean) && !item.deathSaves?.save.every(Boolean),
       }"
     >
       <div
@@ -64,7 +67,7 @@ function checkForDeathSaveNotifications(): void {
           class="size-4 rounded border-2"
           :class="{
             'border-success bg-success bg-opacity-20': i === 0,
-            'border-danger bg-danger bg-opacity-20': i === 1,
+            'border-destructive bg-destructive bg-opacity-20': i === 1,
             '!bg-opacity-100': value && i === 0 || value && i === 1,
           }"
           @click="updateDeathSave(j, i === 0)"

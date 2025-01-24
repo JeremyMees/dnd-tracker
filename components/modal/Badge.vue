@@ -15,10 +15,10 @@ async function handleSubmit(form: BadgeClaim, node: FormNode): Promise<void> {
 
     await badge.addBadge(code)
 
-    reset('form')
+    reset('Badge')
   }
   catch (err: any) {
-    reset('form')
+    reset('Badge')
     node.setErrors(err.message)
   }
 }
@@ -26,9 +26,9 @@ async function handleSubmit(form: BadgeClaim, node: FormNode): Promise<void> {
 
 <template>
   <FormKit
-    id="form"
+    id="Badge"
     type="form"
-    :submit-label="$t('components.badgeModal.add')"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -36,6 +36,7 @@ async function handleSubmit(form: BadgeClaim, node: FormNode): Promise<void> {
       name="code"
       :label="$t('components.inputs.codeLabel')"
       validation="required|length:3,30"
+      outer-class="$remove:mb-4"
     />
   </FormKit>
 </template>

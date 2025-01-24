@@ -52,7 +52,7 @@ function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
     >
       <Icon
         name="tabler:plus"
-        class="size-5 min-w-5 text-slate-700"
+        class="size-5 min-w-5 text-secondary"
         aria-hidden="true"
       />
     </button>

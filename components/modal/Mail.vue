@@ -22,7 +22,7 @@ async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('Mail')
     node.setErrors(err.message)
   }
 }
@@ -30,9 +30,9 @@ async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
 
 <template>
   <FormKit
-    id="form"
+    id="Mail"
     type="form"
-    :submit-label="$t('actions.sendMail')"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -54,12 +54,19 @@ async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
         @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
       />
       <button
+        v-if="items.length < 10"
         type="button"
-        class="mb-4 btn-text"
+        class="btn-text"
         @click="() => node.input(value?.concat(''))"
       >
         {{ $t('actions.addAnother') }}
       </button>
+      <span
+        v-else
+        class="text-destructive"
+      >
+        {{ $t('general.max') }} 10
+      </span>
     </FormKit>
   </FormKit>
 </template>

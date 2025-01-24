@@ -22,12 +22,10 @@ withDefaults(
       theme: {
         extend: {
           colors: {
-            bg: {
-              DEFAULT: '#080808',
-              light: '#1B1D1E',
-            },
+            background: '#0A0A0B',
             primary: '#7333E0',
-            secondary: '#D926AA',
+            secondary: '#1C1B22',
+            tertiary: '#D926AA',
             success: '#36D399',
             info: '#3ABFF8',
             warning: '#FBBD23',
@@ -47,8 +45,8 @@ withDefaults(
       <Preview>
         {{ preview }}
       </Preview>
-      <Body class="bg-bg my-auto mx-auto text-white">
-        <Container class="border-4 border-solid border-slate-700 rounded-[8px] my-[40px] mx-auto p-[20px] max-w-[700px]">
+      <Body class="my-auto mx-auto">
+        <Container class="border-4 border-solid border-secondary rounded-[8px] my-[40px] mx-auto p-[20px] max-w-[700px]">
           <Section class="mt-[32px]">
             <div class="flex justify-center">
               <svg

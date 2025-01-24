@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
+
 const emit = defineEmits<{ finished: [] }>()
 
 const feature = useFeatures()
 const profile = useProfile()
-const toast = useToast()
+const { toast } = useToast()
 const { t } = useI18n()
 
 const isAccepted = ref<boolean>(false)
@@ -34,7 +36,10 @@ async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
     isAccepted.value = true
   }
   catch (err: any) {
-    toast.error({ text: err.message })
+    toast({
+      description: err.message,
+      variant: 'destructive',
+    })
     node.setErrors(err.message)
   }
 }
@@ -58,9 +63,9 @@ async function sendFeatureEmail(form: FeatureForm): Promise<void> {
 <template>
   <template v-if="!isAccepted">
     <FormKit
-      id="form"
+      id="FeatureRequest"
       type="form"
-      :submit-label="$t('actions.create')"
+      :actions="false"
       @submit="handleSubmit"
     >
       <FormKit
@@ -75,10 +80,14 @@ async function sendFeatureEmail(form: FeatureForm): Promise<void> {
         :maxlength="500"
         :label="$t('components.inputs.descriptionLabel')"
         validation="required|length:10,500"
+        outer-class="$remove:mb-4"
       />
     </FormKit>
   </template>
-  <p v-else>
+  <p
+    v-else
+    class="text-muted-foreground"
+  >
     {{ $t('components.addFeatureRequestModal.submitted') }}
   </p>
 </template>

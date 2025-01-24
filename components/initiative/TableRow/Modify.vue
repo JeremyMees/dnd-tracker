@@ -44,7 +44,7 @@ function deleteRow(): void {
       <button
         v-tippy="$t('actions.delete')"
         :aria-label="$t('actions.delete')"
-        class="icon-btn-danger"
+        class="icon-btn-destructive"
         @click="deleteRow"
       >
         <Icon

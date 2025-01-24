@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { gsap } from 'gsap'
+import { useToast } from '~/components/ui/toast/use-toast'
 import type { Dragon } from '#components'
 
 useSeo()
 
 // const store = useTableStore()
-const toast = useToast()
+const { toast } = useToast()
+const { t } = useI18n()
 
 const dragon = ref<InstanceType<typeof Dragon>>()
 
@@ -13,7 +15,11 @@ try {
   // await store.getSandboxEncounter()
 }
 catch (err) {
-  toast.error()
+  toast({
+    description: t('general.error.text'),
+    title: t('general.error.title'),
+    variant: 'destructive',
+  })
 }
 
 if (import.meta.client) {

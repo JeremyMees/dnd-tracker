@@ -1,5 +1,7 @@
+import { useToast } from '~/components/ui/toast/use-toast'
+
 export const useOpen5e = defineStore('useOpen5e', () => {
-  const toast = useToast()
+  const { toast } = useToast()
   const { t } = useI18n()
 
   const pages = ref<number>(0)
@@ -26,7 +28,11 @@ export const useOpen5e = defineStore('useOpen5e', () => {
       }
     }
     catch (err: any) {
-      toast.error({ text: err.message })
+      toast({
+        title: t('general.error.title'),
+        description: err.message,
+        variant: 'destructive',
+      })
     }
   }
 

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const profile = useProfile()
 const ui = useUI()
+const { dialogs, handlers } = useConfirmDialogs()
 
 profile.get()
 
@@ -21,18 +22,21 @@ if (import.meta.client) {
       error-color="#F87272"
     />
 
-    <ClientOnly>
-      <ToastGroup />
-      <ConfirmDialogGroup />
-      <ModalGroup />
-    </ClientOnly>
+    <UiToaster />
+    <ModalGroup />
+    <ConfirmDialog
+      v-for="dialog in dialogs"
+      :key="dialog.uuid"
+      v-bind="dialog"
+      v-on="handlers"
+    />
 
     <div
-      class="flex flex-col min-h-screen"
       :class="{
-        'bg-primary/20': ui.bgColor === 'primary',
-        'bg-secondary/20': ui.bgColor === 'secondary',
+        'bg-primary/10': ui.bgColor === 'primary',
+        'bg-tertiary/10': ui.bgColor === 'tertiary',
       }"
+      class="flex flex-col min-h-screen"
     >
       <NuxtPage />
     </div>

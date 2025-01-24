@@ -16,17 +16,17 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
     container
   >
     <section class="mb-8 lg:mb-12">
-      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center">
+      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center text-foreground">
         {{ t('pages.pricing.title') }}
       </h1>
-      <p class="mb-16 max-w-3xl mx-auto text-center">
+      <p class="mb-16 max-w-3xl mx-auto text-center text-muted-foreground">
         {{ t('pages.pricing.description') }}
       </p>
-      <div class="relative max-w-4xl mx-auto">
+      <div class="relative max-w-4xl mx-auto py-20">
         <img
           src="/gifs/dragon.gif"
           loading="lazy"
-          class="w-8 h-8 absolute -top-8 left-20"
+          class="w-8 h-8 absolute top-12 left-20"
         >
         <div class="inline-block overflow-x-auto w-full">
           <Card
@@ -51,9 +51,9 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                       <span>
                         {{ header.title }}
                       </span>
-                      <div
+                      <UiSkeleton
                         v-if="stripe.loading"
-                        class="w-[140px] mx-auto h-8 rounded-lg bg-bg-light animate-pulse relative top-1"
+                        class="w-[140px] mx-auto h-8 relative top-1"
                       />
                       <div
                         v-else-if="header.price !== undefined"
@@ -87,7 +87,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                       v-else
                       :name="product.items[index].icon === 'check' ? 'tabler:check' : 'tabler:x'"
                       class="w-8 h-8"
-                      :class="[product.items[index].icon === 'check' ? 'text-success' : 'text-danger']"
+                      :class="[product.items[index].icon === 'check' ? 'text-success' : 'text-destructive']"
                       aria-hidden="true"
                     />
                   </td>
@@ -99,9 +99,9 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                     :key="product.type"
                     class="px-2 py-1 text-center font-bold"
                   >
-                    <SkeletonButton
+                    <UiSkeleton
                       v-if="stripe.loading"
-                      block
+                      class="h-12 rounded-lg w-full"
                     />
                     <div
                       v-else-if="stripe.isCurrent(product.type)"
@@ -111,7 +111,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                     </div>
                     <button
                       v-else-if="!profile.data || (product.id && product.price !== 0 && stripe.isUpgradeable(product.type))"
-                      class="btn-secondary w-full"
+                      class="btn-tertiary w-full"
                       :aria-label="t('pages.pricing.cta')"
                       :disabled="stripe.loading"
                       @click="subscribe(product?.id || '', product.type)"
@@ -125,7 +125,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
           </Card>
         </div>
       </div>
-      <p class="mb-5 max-w-3xl mx-auto text-center pt-12 text-slate-300">
+      <p class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground">
         {{ t('pages.pricing.text') }}
       </p>
       <div class="flex justify-center">

@@ -5,12 +5,9 @@ useSeo('Encounters')
 
 <template>
   <NuxtLayout
-    shadow
-    container
+    name="sidebar"
+    :header="$t('general.encounter', 2)"
   >
-    <h1 class="pb-6">
-      {{ $t('general.encounter', 2) }}
-    </h1>
     <Encounters />
   </NuxtLayout>
 </template>

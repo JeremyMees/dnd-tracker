@@ -16,13 +16,13 @@ defineProps<{ item: InitiativeSheetRow }>()
         v-if="item.type !== 'lair'"
         v-tippy="$t('components.actions.hp')"
         :aria-label="$t('components.actions.hp')"
-        class="icon-btn-danger"
+        class="icon-btn-destructive"
         @click="$emit('openHp')"
       >
         <Icon
           name="tabler:heart"
           :aria-hidden="true"
-          class="size-5 min-w-5 text-danger"
+          class="size-5 min-w-5 text-destructive"
         />
       </button>
       <div v-else />

@@ -60,7 +60,7 @@ function next(): void {
         @previous="previous"
         @next="next"
       />
-      <div class="relative w-full overflow-auto rounded-lg bg-bg-light">
+      <div class="relative w-full overflow-auto rounded-lg bg-foreground">
         <table class="w-full">
           <thead>
             <tr :class="`spacing-${props.data.settings.spacing || 'normal'}`">
@@ -74,13 +74,13 @@ function next(): void {
                   v-tippy="$t('components.encounterTable.quick')"
                   :aria-label="$t('components.encounterTable.quick')"
                   :disabled="!data.rows.length"
-                  class="icon-btn-secondary group"
+                  class="icon-btn-tertiary group"
                   @click="console.log('open quick init')"
                 >
                   <Icon
                     id="tour-12"
                     name="tabler:sparkles"
-                    class="!size-4 text-secondary"
+                    class="!size-4 text-tertiary"
                     aria-hidden="true"
                   />
                 </button>
@@ -119,13 +119,13 @@ function next(): void {
                   `spacing-${data.settings.spacing || 'normal'}`,
                   { 'border !border-primary': index === data.activeIndex },
                 ]"
-                class="border-t border-slate-700 transition-all duration-200 ease-in-out"
+                class="border-t border-secondary transition-all duration-200 ease-in-out"
               >
                 <td>
                   <button
                     v-tippy="$t(`actions.${collapsedRow === row.id ? 'hide' : 'show'}`)"
                     :aria-label="$t(`actions.${collapsedRow === row.id ? 'hide' : 'show'}`)"
-                    :class="collapsedRow === row.id ? 'icon-btn-danger' : 'icon-btn-help'"
+                    :class="collapsedRow === row.id ? 'icon-btn-destructive' : 'icon-btn-help'"
                     @click="collapsedRow = collapsedRow === row.id ? undefined : row.id"
                   >
                     <Icon
@@ -217,14 +217,14 @@ function next(): void {
                     />
                     <p
                       v-else
-                      class="text-slate-300"
+                      class="text-muted-foreground"
                     >
                       {{ $t('components.encounterTable.noActions') }}
                     </p>
                   </div>
                   <div class="flex justify-end">
                     <button
-                      class="btn-danger"
+                      class="btn-destructive"
                       :aria-label="$t('actions.close')"
                       @click="collapsedRow = undefined"
                     >

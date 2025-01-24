@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { useToast } from '~/components/ui/toast/use-toast'
 
 const emit = defineEmits<{
   close: []
@@ -9,7 +10,7 @@ const emit = defineEmits<{
 const props = defineProps<{ current: CampaignFull }>()
 
 const campaign = useCampaigns()
-const toast = useToast()
+const { toast } = useToast()
 const { t } = useI18n()
 
 async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> {
@@ -34,15 +35,16 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
     await campaign.deleteCampaignTeamMember(newOwner.id)
     await campaign.updateCampaign({ created_by: newOwner.user.id }, campaignId)
 
-    toast.success({
-      title: t('components.transferOwnershipModal.toast.success.title', { username: newOwner.user.username }),
+    toast({
+      description: t('components.transferOwnershipModal.toast.success.title', { username: newOwner.user.username }),
+      variant: 'success',
     })
 
     emit('finished')
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('TransferOwnership')
     node.setErrors(err.message)
   }
 }
@@ -50,9 +52,9 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
 
 <template>
   <FormKit
-    id="form"
+    id="TransferOwnership"
     type="form"
-    :submit-label="$t('actions.transfer')"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -82,7 +84,7 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
       class="py-4 body-small"
     >
       <template #campaign>
-        <span class="font-bold text-danger">
+        <span class="font-bold text-destructive">
           {{ current.title }}
         </span>
       </template>
@@ -92,6 +94,7 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
       :label="$t('components.inputs.titleLabel')"
       :validation="`required|is:${current.title}`"
       :placeholder="current.title"
+      outer-class="$remove:mb-4"
     />
   </FormKit>
 </template>

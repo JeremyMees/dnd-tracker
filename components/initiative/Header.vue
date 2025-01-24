@@ -11,9 +11,9 @@ defineProps<{ data: InitiativeSheet }>()
 <template>
   <div class="flex flex-col sm:flex-row gap-4 items-center justify-between container-max w-full">
     <div class="flex gap-2 items-center">
-      <span class="text-slate-300">
+      <span class="text-muted-foreground">
         {{ $t('general.round') }}:
-        <span class="font-bold text-white">
+        <span class="font-bold text-foreground">
           {{ data.round }}
         </span>
       </span>
@@ -26,7 +26,7 @@ defineProps<{ data: InitiativeSheet }>()
       >
         <Icon
           name="tabler:refresh"
-          class="size-6 text-danger"
+          class="size-6 text-destructive"
           aria-hidden="true"
         />
       </button>

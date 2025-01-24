@@ -10,33 +10,35 @@ defineProps<{ wide?: boolean }>()
       to="/"
     />
     <div
-      class="dnd-container absolute w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
-      :class="{
-        'max-w-2xl': !wide,
-      }"
+      class="sm:dnd-container absolute w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
     >
       <div class="inset-0 z-[-1] fancy-shadow" />
       <div
-        class="bg-bg-light/50 px-2 py-6 sm:p-8 rounded-lg relative border-4 border-bg"
+        :class="[wide ? 'max-w-[1000px]' : 'max-w-prose']"
+        class="bg-muted/50 py-4 px-2 sm:p-6 sm:rounded-lg relative border-4 border-muted mx-auto"
       >
         <img
           src="/gifs/wolf-rider.gif"
           loading="lazy"
-          class="w-8 h-8 absolute -top-8"
+          class="size-8 absolute -top-8"
         >
         <NuxtLinkLocale
           to="/"
-          class="group"
+          class="absolute size-4 right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         >
           <Icon
             name="tabler:x"
-            class="w-8 h-8 text-danger cursor-pointer absolute right-4 top-4 rounded-full ring-danger group-focus-within:ring"
+            class="size-4 min-w-4"
             aria-hidden="true"
           />
         </NuxtLinkLocale>
-        <div class="px-4 sm:px-8 mx-h-full overflow-auto max-h-[80vh]">
-          <slot />
-        </div>
+        <section class="px-4 mx-h-full max-h-[90dvh] flex flex-col gap-y-6">
+          <slot name="header" />
+          <div class="overflow-y-auto">
+            <slot />
+          </div>
+          <slot name="footer" />
+        </section>
       </div>
     </div>
   </div>

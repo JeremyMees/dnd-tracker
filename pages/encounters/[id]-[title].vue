@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
+
 definePageMeta({ middleware: ['auth', 'id-param'] })
 
 const profile = useProfile()
 const route = useRoute()
 const sheet = useInitiativeSheet()
-const toast = useToast()
+const { toast } = useToast()
 const modal = useModal()
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -22,9 +24,10 @@ onMounted(() => {
   if (realtimeData.value) {
     sheet.subscribeInitiativeSheet(+route.params.id, (payload) => {
       if (payload.eventType === 'DELETE') {
-        toast.info({
+        toast({
           title: t('pages.encounter.toasts.removed.title'),
-          text: t('pages.encounter.toasts.removed.text'),
+          description: t('pages.encounter.toasts.removed.text'),
+          variant: 'warning',
         })
 
         navigateTo(localePath('/encounters'))
@@ -59,7 +62,11 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
     await refresh()
   }
   catch (err) {
-    toast.error()
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
   }
 }
 

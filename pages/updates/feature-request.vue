@@ -15,6 +15,7 @@ const { data: requests, status, refresh } = await useAsyncData(
   async () => await features.get({
     page: page.value,
     search: search.value,
+    sortBy: 'created_at',
   }, profile.user && createdBy.value === 'my'
     ? {
         field: 'created_by',
@@ -53,7 +54,7 @@ function routeToLogin(): void {
   >
     <section class="max-w-4xl mx-auto w-full space-y-6">
       <Card
-        color="background"
+        color="secondary"
         class="flex flex-wrap items-center gap-x-4 gap-y-2"
       >
         <FormKit
@@ -77,7 +78,7 @@ function routeToLogin(): void {
           outer-class="$reset !pb-0"
         />
         <button
-          class="btn-primary tracker-shadow-pulse mt-[18px]"
+          class="btn-primary mt-5"
           :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
           @click="
@@ -85,6 +86,7 @@ function routeToLogin(): void {
               ? modal.open({
                 component: 'FeatureRequest',
                 header: $t('components.addFeatureRequestModal.title'),
+                submit: $t('actions.create'),
                 events: { finished: () => refresh() },
               })
               : routeToLogin()
@@ -96,7 +98,7 @@ function routeToLogin(): void {
 
       <!-- Loading feature request -->
       <div
-        v-if="status === 'pending'"
+        v-if="status === 'pending' && !requests?.length"
         class="flex flex-col gap-4"
       >
         <SkeletonFeatureRequestCard
@@ -104,7 +106,7 @@ function routeToLogin(): void {
           :key="i"
         />
       </div>
-      <template v-else-if="status === 'success'">
+      <template v-else-if="requests?.length">
         <!-- Feature requests -->
         <div
           v-if="requests?.length"
@@ -124,18 +126,21 @@ function routeToLogin(): void {
               @login="routeToLogin"
             />
           </template>
+
           <Pagination
             v-if="features.pages > 1"
             v-model:page="page"
-            :total-pages="features.pages"
-            class="mt-2"
+            :pages="features.pages"
+            :per-page="features.perPage"
+            styled
+            class="mt-2 mx-auto"
             @paginate="paginate"
           />
         </div>
         <!-- Nothing found while sorting -->
         <div
           v-else-if="requests.length === 0 && (search || createdBy === 'my')"
-          class="flex flex-col justify-center gap-4 border-4 border-black bg-black/30 rounded-lg p-4"
+          class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
         >
           <p>
             {{ $t('pages.featureRequest.nothing') }}
@@ -145,7 +150,7 @@ function routeToLogin(): void {
       <!-- No feature request found -->
       <div
         v-else-if="requests?.length === 0 && (!search || createdBy === 'all')"
-        class="flex flex-col justify-center gap-4 border-4 border-black bg-black/30 rounded-lg p-4"
+        class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
       >
         <h3 class="pb-2">
           {{ $t('pages.featureRequest.cta.title') }}

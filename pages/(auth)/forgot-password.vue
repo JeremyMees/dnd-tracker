@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
+
 definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Forgot password')
 
 const { t } = useI18n()
 const auth = useAuth()
-const toast = useToast()
+const { toast } = useToast()
 const localePath = useLocalePath()
 
 async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<void> {
@@ -13,52 +15,62 @@ async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<voi
   try {
     await auth.forgotPassword(form.email)
 
-    toast.success({
+    toast({
       title: t('pages.forgotPassword.toast.success.title'),
-      text: t('pages.forgotPassword.toast.success.text'),
+      description: t('pages.forgotPassword.toast.success.text'),
+      variant: 'success',
     })
 
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
     node.setErrors(err.message)
-    toast.error()
+
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
   }
 }
 </script>
 
 <template>
   <NuxtLayout name="centered">
-    <section class="space-y-6">
-      <h1 class="text-center pb-10">
+    <template #header>
+      <h1 class="text-center">
         {{ $t('pages.forgotPassword.title') }}
       </h1>
+    </template>
+
+    <FormKit
+      type="form"
+      :submit-label="$t('pages.forgotPassword.reset')"
+      @submit="forgotPassword"
+    >
       <FormKit
-        type="form"
-        :submit-label="$t('pages.forgotPassword.reset')"
-        @submit="forgotPassword"
-      >
-        <FormKit
-          name="email"
-          :label="$t('components.inputs.emailLabel')"
-          validation="required|length:5,50|email"
-          required
-        />
-      </FormKit>
+        name="email"
+        :label="$t('components.inputs.emailLabel')"
+        validation="required|length:5,50|email"
+        required
+      />
+    </FormKit>
+
+    <template #footer>
       <div class="flex flex-wrap gap-2 justify-center">
-        <RouteLink
-          url="register"
+        <NuxtLinkLocale
+          to="/register"
           class="btn-text"
         >
           {{ $t('pages.login.new') }}
-        </RouteLink>
-        <RouteLink
-          url="login"
+        </NuxtLinkLocale>
+        <NuxtLinkLocale
+          to="/login"
           class="btn-text"
         >
           {{ $t('pages.login.signIn') }}
-        </RouteLink>
+        </NuxtLinkLocale>
       </div>
-    </section>
+    </template>
   </NuxtLayout>
 </template>

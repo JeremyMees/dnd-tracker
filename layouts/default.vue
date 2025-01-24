@@ -11,8 +11,6 @@ withDefaults(
     container: false,
   },
 )
-
-const ui = useUI()
 </script>
 
 <template>
@@ -21,7 +19,7 @@ const ui = useUI()
     <main
       class="grow"
       :class="{
-        'pt-[140px]': !noPadding,
+        'pt-[180px]': !noPadding,
       }"
     >
       <div class="relative">

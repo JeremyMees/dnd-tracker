@@ -54,7 +54,7 @@ async function moveRow(up: boolean): Promise<void> {
         <Icon
           v-if="item.initiative < 0"
           name="tabler:plus"
-          class="size-5 min-w-5 text-slate-700"
+          class="size-5 min-w-5 text-secondary"
           aria-hidden="true"
         />
         <span v-else>{{ item.initiative }}</span>
@@ -73,7 +73,7 @@ async function moveRow(up: boolean): Promise<void> {
         >
           <Icon
             name="tabler:caret-up"
-            class="size-5 min-w-5 text-secondary"
+            class="size-5 min-w-5 text-tertiary"
             aria-hidden="true"
           />
         </button>
@@ -87,7 +87,7 @@ async function moveRow(up: boolean): Promise<void> {
         >
           <Icon
             name="tabler:caret-down"
-            class="size-5 min-w-5 text-secondary"
+            class="size-5 min-w-5 text-tertiary"
             aria-hidden="true"
           />
         </button>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 
 definePageMeta({ middleware: ['auth'] })
 useSeo('Campaigns')
 
-const toast = useToast()
+const { toast } = useToast()
 const modal = useModal()
 const campaign = useCampaigns()
 const profile = useProfile()
@@ -50,6 +51,7 @@ function openModal(campaign?: CampaignItem): void {
   modal.open({
     component: 'Campaign',
     header: t(`components.campaignModal.${campaign ? 'update' : 'add'}`),
+    submit: t(`pages.campaigns.${campaign ? 'update' : 'add'}`),
     events: { finished: () => refreshData() },
     ...(campaign && { props: { campaign } }),
   })
@@ -60,7 +62,7 @@ async function deleteItems(ids: number[]): Promise<void> {
   const type = t('general.campaign', amount).toLowerCase()
 
   ask({
-    title: `${amount} ${type}`,
+    title: `${t('actions.delete')} ${amount} ${type}`,
   }, async (confirmed: boolean) => {
     if (!confirmed) return
 
@@ -69,7 +71,11 @@ async function deleteItems(ids: number[]): Promise<void> {
       refreshData()
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   })
 }
@@ -80,7 +86,8 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
   if (!member) return
 
   ask({
-    title: t('general.yourself'),
+    title: t('pages.campaigns.dialog.leave.title'),
+    description: t('pages.campaigns.dialog.leave.text'),
   }, async (confirmed: boolean) => {
     if (!confirmed) return
 
@@ -90,7 +97,11 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       refreshData()
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   })
 }
@@ -98,12 +109,9 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
 
 <template>
   <NuxtLayout
-    shadow
-    container
+    name="sidebar"
+    :header="$t('general.campaign', 2)"
   >
-    <h1 class="pb-6">
-      {{ $t('general.campaign', 2) }}
-    </h1>
     <LimitCta
       v-if="count >= campaign.max"
       ref="limitCta"
@@ -162,7 +170,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
           :key="row.id"
           class="tr transition-colors"
           :class="{
-            'bg-danger/20': rowSelection[row.id],
+            'bg-destructive/20': rowSelection[row.id],
           }"
         >
           <td class="td max-w-6">
@@ -178,12 +186,12 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
             />
           </td>
           <td class="td">
-            <RouteLink
-              :url="campaignUrl(row, 'encounters')"
+            <NuxtLinkLocale
+              :to="campaignUrl(row, 'encounters')"
               class="underline underline-offset-2 decoration-primary"
             >
               {{ row.title }}
-            </RouteLink>
+            </NuxtLinkLocale>
           </td>
           <td class="td">
             {{ row.initiative_sheets }}

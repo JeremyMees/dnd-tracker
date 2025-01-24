@@ -23,7 +23,7 @@ withDefaults(
       v-for="j in column"
       :key="j"
     >
-      <div class="animate-pulse rounded-lg bg-bg-light/50 h-6 border-4 border-bg-light" />
+      <UiSkeleton class="h-6 border-4 rounded-full" />
     </li>
   </MasonryGrid>
 </template>

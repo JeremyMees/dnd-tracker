@@ -1,8 +1,11 @@
 export interface ConfirmConfig {
-  title: string
+  title?: string
+  description?: string
+  confirmText?: string
+  declineText?: string
 }
 
-export interface PopulatedConfirmConfig extends ConfirmConfig {
+export interface PopulatedConfirmConfig extends Required<ConfirmConfig> {
   uuid: string
   loading: boolean
   callback: (confirmed: boolean) => any
@@ -43,17 +46,22 @@ export function useConfirmDialogs() {
 }
 
 export function useConfirm() {
+  const { t } = useI18n()
   const { dialogs } = useConfirmDialogs()
 
   function ask(config: ConfirmConfig, callback: (confirmed: boolean) => any) {
     dialogs.value.push(
       Object.assign(
-        config,
         {
-          uuid: self.crypto.randomUUID(),
+          uuid: crypto.randomUUID(),
           callback,
           loading: false,
+          title: t('components.confirmationModal.title'),
+          description: t('components.confirmationModal.text'),
+          confirmText: t('actions.continue'),
+          declineText: t('actions.cancel'),
         },
+        config,
       ),
     )
   }

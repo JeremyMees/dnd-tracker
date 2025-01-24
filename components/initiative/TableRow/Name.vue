@@ -47,7 +47,7 @@ function openModal(): void {
         </span>
         <span
           v-if="item.summoner?.name"
-          class="body-extra-small text-slate-300"
+          class="body-extra-small text-muted-foreground"
         >
           {{ $t('general.summoner') }}: {{ item.summoner.name }}
         </span>

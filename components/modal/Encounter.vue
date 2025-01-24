@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { useToast } from '~/components/ui/toast/use-toast'
 
 const emit = defineEmits<{
   close: []
@@ -14,7 +15,8 @@ const props = defineProps<{
 const store = useEncounters()
 const campaign = useCampaigns()
 const profile = useProfile()
-const toast = useToast()
+const { toast } = useToast()
+const { t } = useI18n()
 
 const input = ref()
 const campaigns = ref<CampaignMinimal[]>()
@@ -37,7 +39,11 @@ async function fetchCampaigns(): Promise<void> {
     })
   }
   catch (err: any) {
-    toast.error()
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
 
     emit('close')
   }
@@ -58,14 +64,14 @@ async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> 
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('Encounter')
     node.setErrors(err.message)
   }
 }
 
 async function addEncounter(data: EncounterForm): Promise<void> {
   if (profile.user) {
-    await store.addEncounter(data)
+    await store.addEncounter({ ...data, rows: [] })
   }
 }
 
@@ -78,9 +84,9 @@ async function updateEncounter(data: EncounterForm): Promise<void> {
 
 <template>
   <FormKit
-    id="form"
+    id="Encounter"
     type="form"
-    :submit-label="$t(`pages.encounters.${encounter ? 'update' : 'add'}`)"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -99,6 +105,7 @@ async function updateEncounter(data: EncounterForm): Promise<void> {
       :disabled="!campaigns"
       :value="encounter?.campaign?.id"
       :options="campaigns?.map(c => ({ label: c.title, value: c.id })) || []"
+      outer-class="$remove:mb-4"
     />
   </FormKit>
 </template>

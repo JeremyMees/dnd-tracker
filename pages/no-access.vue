@@ -4,10 +4,13 @@ useSeo('No access')
 
 <template>
   <NuxtLayout name="centered">
-    <h2>
-      {{ $t('pages.noAccess.title') }}
-    </h2>
-    <p class="mt-4">
+    <template #header>
+      <h2>
+        {{ $t('pages.noAccess.title') }}
+      </h2>
+    </template>
+
+    <p>
       {{ $t('pages.noAccess.text') }}
     </p>
   </NuxtLayout>

@@ -1,6 +1,9 @@
+import { useToast } from '~/components/ui/toast/use-toast'
+
 export const useFeatures = defineStore('useFeatures', () => {
   const supabase = useSupabaseClient<Database>()
-  const toast = useToast()
+  const { toast } = useToast()
+  const { t } = useI18n()
 
   const amount = ref<number>(0)
   const pages = ref<number>(0)
@@ -24,7 +27,11 @@ export const useFeatures = defineStore('useFeatures', () => {
       return data
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   }
 
@@ -46,7 +53,11 @@ export const useFeatures = defineStore('useFeatures', () => {
       if (error) throw createError(error.message)
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   }
 

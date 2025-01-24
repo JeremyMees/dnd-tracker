@@ -39,7 +39,7 @@ async function handleSubmit(form: NoteForm, node: FormNode): Promise<void> {
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('Note')
     node.setErrors(err.message)
   }
 }
@@ -59,9 +59,9 @@ async function updateNote(data: NoteUpdate): Promise<void> {
 
 <template>
   <FormKit
-    id="form"
+    id="Note"
     type="form"
-    :submit-label="$t(`components.noteModal.${note ? 'update' : 'add'}`)"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -79,15 +79,14 @@ async function updateNote(data: NoteUpdate): Promise<void> {
       validation="required|length:10,5000"
     />
 
-    <div class="pb-4">
-      <TextEditor
-        :content="text"
-        @updated="text = $event"
-      >
-        <template #error>
-          <FormKitMessages :node="hiddenText?.node" />
-        </template>
-      </TextEditor>
-    </div>
+    <TextEditor
+      color="background"
+      :content="text"
+      @updated="text = $event"
+    >
+      <template #error>
+        <FormKitMessages :node="hiddenText?.node" />
+      </template>
+    </TextEditor>
   </FormKit>
 </template>

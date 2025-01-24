@@ -8,7 +8,7 @@ defineProps<{ item: InitiativeSheetRow }>()
   <td>
     <div
       :class="{
-        'bg-danger/20 p-2 rounded-lg w-fit': item.health !== null && item.health === 0,
+        'bg-destructive/20 p-2 rounded-lg w-fit': item.health !== null && item.health === 0,
       }"
       class="flex flex-col gap-y-1"
     >
@@ -19,12 +19,12 @@ defineProps<{ item: InitiativeSheetRow }>()
         <Icon
           v-if="item.health === null"
           name="tabler:plus"
-          class="size-5 min-w-5 text-slate-700"
+          class="size-5 min-w-5 text-secondary"
           aria-hidden="true"
         />
         <span
           v-else
-          :class="{ 'text-danger': item.health === 0 }"
+          :class="{ 'text-destructive': item.health === 0 }"
         >
           {{ item.health }}
         </span>
@@ -38,7 +38,7 @@ defineProps<{ item: InitiativeSheetRow }>()
       </button>
       <span
         v-if="item.maxHealth !== item.health"
-        class="body-extra-small text-slate-300"
+        class="body-extra-small text-muted-foreground"
       >
         {{ $t('general.max') }}: {{ item.maxHealth }}
       </span>

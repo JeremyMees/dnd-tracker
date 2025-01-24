@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
+
 useSeo('Fantasy name generator')
 
 const { copy } = useClipboard()
-const toast = useToast()
+const { toast } = useToast()
 const { t } = useI18n()
 
 const names = ref<string[]>([])
@@ -20,59 +22,66 @@ function generate(): void {
 function handleCopy(name: string): void {
   copy(name)
 
-  toast.info({
-    title: t('components.nameGenerator.toast.title', { name }),
-    timeout: 2000,
+  toast({
+    title: 'dit is een test title',
+    description: t('components.nameGenerator.toast.title', { name }),
+    variant: 'info',
   })
 }
 </script>
 
 <template>
-  <NuxtLayout container>
-    <div class="flex flex-col pt-6 pb-16 gap-10">
-      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center">
+  <NuxtLayout
+    container
+    shadow
+  >
+    <div class="mb-8 lg:mb-12">
+      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center text-foreground">
         {{ $t('pages.fantasyNameGenerator.title') }}
       </h1>
-      <p class="mb-5 max-w-3xl mx-auto text-center pb-10">
+      <p class="mb-16 max-w-3xl mx-auto text-center text-muted-foreground">
         {{ $t('pages.fantasyNameGenerator.description') }}
       </p>
-      <div class="relative p-6 border-4 border-bg bg-bg-light/50 rounded-lg max-w-prose mx-auto w-full">
-        <MasonryGrid
-          v-if="names.length"
-          v-slot="{ column }"
-          :data="names"
-          :max-columns="2"
-          wrapper-style="grid list-disc list-inside gap-x-6"
-          column-style="flex flex-col gap-1"
-          element="ol"
-        >
-          <li
-            v-for="name in column"
-            :key="name"
-            class="cursor-copy"
-            @click="handleCopy(name)"
+      <UiCard class="max-w-3xl mx-auto">
+        <UiCardContent class="pt-6">
+          <MasonryGrid
+            v-if="names.length"
+            v-slot="{ column }"
+            :data="names"
+            :max-columns="2"
+            wrapper-style="grid list-disc list-inside gap-x-6"
+            column-style="flex flex-col gap-1"
+            element="ol"
           >
-            {{ name }}
-          </li>
-        </MasonryGrid>
-        <SkeletonList
-          v-else
-          :amount="15"
-        />
-        <div class="flex justify-end gap-2 items-center pt-6">
-          <p class="text-slate-300 body-extra-small">
-            {{ $t('pages.fantasyNameGenerator.tip') }}
-          </p>
-          <button
-            :disabled="!names.length"
-            class="btn-primary"
-            @click="generate"
-          >
-            {{ $t('actions.generate') }}
-          </button>
-        </div>
-        <div class="abolsute inset-0 z-[-1] fancy-shadow" />
-      </div>
+            <li
+              v-for="name in column"
+              :key="name"
+              class="cursor-copy"
+              @click="handleCopy(name)"
+            >
+              {{ name }}
+            </li>
+          </MasonryGrid>
+          <SkeletonList
+            v-else
+            :amount="15"
+          />
+        </UiCardContent>
+        <UiCardFooter>
+          <div class="flex w-full justify-end gap-2 items-center">
+            <p class="text-muted-foreground body-extra-small">
+              {{ $t('pages.fantasyNameGenerator.tip') }}
+            </p>
+            <button
+              :disabled="!names.length"
+              class="btn-primary"
+              @click="generate"
+            >
+              {{ $t('actions.generate') }}
+            </button>
+          </div>
+        </UiCardFooter>
+      </UiCard>
     </div>
   </NuxtLayout>
 </template>

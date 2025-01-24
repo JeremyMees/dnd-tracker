@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { useToast } from '~/components/ui/toast/use-toast'
 
 const emit = defineEmits<{
   close: []
@@ -10,7 +11,7 @@ const props = defineProps<{ current: CampaignFull }>()
 
 const campaign = useCampaigns()
 const profile = useProfile()
-const toast = useToast()
+const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
 
@@ -72,9 +73,10 @@ async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<voi
 
     await Promise.all(users.map(async user => addTeamMember(user)))
 
-    toast.success({
+    toast({
       title: t('components.inviteMember.toast.invited.title'),
-      text: t('components.inviteMember.toast.invited.text'),
+      description: t('components.inviteMember.toast.invited.text'),
+      variant: 'success',
     })
 
     emit('finished')
@@ -127,7 +129,7 @@ async function inviteNewUser(email: string): Promise<void> {
     :actions="false"
     @submit="handleSearch"
   >
-    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+    <div class="flex flex-col sm:flex-row sm:items-start gap-2">
       <FormKit
         name="email"
         type="search"
@@ -183,7 +185,7 @@ async function inviteNewUser(email: string): Promise<void> {
         type="list"
         name="users"
         dynamic
-        class="border-2 border-slate-700 rounded-lg p-4 mb-4"
+        class="border-2 border-secondary rounded-lg p-4 mb-4"
       >
         <FormKit
           v-for="(item, index) in (value as AddMemberForm[])"
@@ -191,15 +193,32 @@ async function inviteNewUser(email: string): Promise<void> {
           type="group"
           :index="index"
         >
-          <div class="grid sm:grid-cols-3 items-center gap-4 border-t-2 border-slate-700 py-2 first:pt-0 first:border-t-0">
-            <Avatar
+          <div class="grid sm:grid-cols-3 items-center gap-4 border-t-2 border-secondary py-2 first:pt-0 first:border-t-0">
+            <div
               v-if="item.profile"
-              :img="item.profile.avatar"
-              :username="item.profile.username"
-              :name="item.profile.name"
-              show-name
-              trigger=""
-            />
+              class="flex items-end gap-2"
+            >
+              <UiAvatar class="border-2 border-primary">
+                <UiAvatarImage
+                  :src="item.profile.avatar"
+                  :alt="item.profile.username"
+                />
+                <UiAvatarFallback>
+                  <Icon
+                    name="tabler:user"
+                    class="size-6 min-w-6 text-muted-foreground"
+                  />
+                </UiAvatarFallback>
+              </UiAvatar>
+              <div class="flex flex-col">
+                <p class="body-small font-bold">
+                  {{ item.profile.username }}
+                </p>
+                <p class="body-small text-muted-foreground">
+                  {{ item.role }}
+                </p>
+              </div>
+            </div>
             <FormKit
               name="role"
               type="select"
@@ -215,7 +234,7 @@ async function inviteNewUser(email: string): Promise<void> {
               <button
                 v-tippy="$t('actions.delete')"
                 :aria-label="$t('actions.delete')"
-                class="icon-btn-danger"
+                class="icon-btn-destructive"
                 @click="form.users.splice(index, 1)"
               >
                 <Icon

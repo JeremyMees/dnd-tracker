@@ -1,8 +1,10 @@
+import { useToast } from '~/components/ui/toast/use-toast'
+
 export const useCampaigns = defineStore('useCampaigns', () => {
   const supabase = useSupabaseClient<Database>()
   const profile = useProfile()
-  const toast = useToast()
-
+  const { toast } = useToast()
+  const { t } = useI18n()
   const amount = ref<number>(0)
   const pages = ref<number>(0)
   const perPage = ref<number>(10)
@@ -43,7 +45,11 @@ export const useCampaigns = defineStore('useCampaigns', () => {
       }))
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   }
 

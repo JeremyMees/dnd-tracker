@@ -89,11 +89,21 @@ export function homebrewIcon(type: HomebrewType): string {
   }
 }
 
+export function homebrewBgColor(type: HomebrewType): string {
+  switch (type) {
+    case 'summon': return 'bg-tertiary'
+    case 'npc': return 'bg-success'
+    case 'monster': return 'bg-destructive'
+    case 'lair': return 'bg-warning'
+    default: return 'bg-primary'
+  }
+}
+
 export function homebrewColor(type: HomebrewType): string {
   switch (type) {
-    case 'summon': return 'text-secondary'
+    case 'summon': return 'text-tertiary'
     case 'npc': return 'text-success'
-    case 'monster': return 'text-danger'
+    case 'monster': return 'text-destructive'
     case 'lair': return 'text-warning'
     default: return 'text-primary'
   }

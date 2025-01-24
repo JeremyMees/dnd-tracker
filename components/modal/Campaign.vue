@@ -28,7 +28,7 @@ async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('Campaign')
     node.setErrors(err.message)
   }
 }
@@ -51,9 +51,9 @@ async function updateCampaign(data: CampaignForm): Promise<void> {
 
 <template>
   <FormKit
-    id="form"
+    id="Campaign"
     type="form"
-    :submit-label="$t(`pages.campaigns.${campaign ? 'update' : 'add'}`)"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -62,6 +62,7 @@ async function updateCampaign(data: CampaignForm): Promise<void> {
       :label="$t('components.inputs.titleLabel')"
       :value="campaign?.title ? campaign.title : ''"
       validation="required|length:3,30"
+      outer-class="$remove:mb-4"
     />
   </FormKit>
 </template>

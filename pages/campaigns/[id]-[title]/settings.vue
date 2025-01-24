@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reset } from '@formkit/core'
+import { useToast } from '~/components/ui/toast/use-toast'
 
 const emit = defineEmits<{ refresh: [] }>()
 
@@ -7,7 +8,7 @@ const props = defineProps<{ current: CampaignFull }>()
 
 const profile = useProfile()
 const campaign = useCampaigns()
-const toast = useToast()
+const { toast } = useToast()
 const { t } = useI18n()
 const modal = useModal()
 const { ask } = useConfirm()
@@ -33,11 +34,20 @@ async function updateCampaign(form: CampaignForm, node: FormNode): Promise<void>
 
     await campaign.updateCampaign(formData, props.current.id)
 
-    toast.success({ title: t('pages.campaign.toast.update') })
+    toast({
+      description: t('pages.campaign.toast.update'),
+      variant: 'success',
+    })
   }
   catch (err: any) {
     reset('form')
-    toast.error()
+
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
+
     node.setErrors(err.message)
   }
 }
@@ -51,7 +61,12 @@ async function changeRole(form: UpdateRoleForm, node: FormNode): Promise<void> {
     await campaign.updateCampaignTeamMember({ role }, +id)
   }
   catch (err: any) {
-    toast.error()
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
+
     node.setErrors(err.message)
   }
 }
@@ -71,8 +86,11 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
 
   ask({
     title: self
-      ? t('general.yourself')
-      : member.user.username,
+      ? t('pages.campaign.settings.dialog.leave.title')
+      : t('pages.campaign.settings.dialog.remove.title', { user: member.user.username }),
+    description: self
+      ? t('pages.campaign.settings.dialog.leave.text')
+      : t('pages.campaign.settings.dialog.remove.text', { user: member.user.username }),
   }, async (confirmed: boolean) => {
     if (!confirmed) return
 
@@ -84,7 +102,11 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
       else emit('refresh')
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   })
 }
@@ -92,7 +114,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
 
 <template>
   <section class="space-y-2">
-    <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-slate-700">
+    <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-secondary">
       <div class="md:min-w-[300px]">
         <h2>
           {{ $t('pages.campaign.settings.access') }}
@@ -102,19 +124,30 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
         </h2>
       </div>
       <div class="grow max-w-4xl">
-        <Card class="overflow-x-auto overflow-y-hidden w-full">
+        <Card
+          color="secondary"
+          class="overflow-x-auto overflow-y-hidden w-full"
+        >
           <div
             v-for="member in members"
             :key="member.user.id"
-            class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between body-small border-b border-slate-700 mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
+            class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between body-small border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
           >
-            <Avatar
-              :username="member.user.username"
-              :img="member.user.avatar"
-              :name="member.user.name"
-              trigger=""
-              show-name
-            />
+            <UiAvatar
+              v-tippy="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
+              class="border-2 border-background"
+            >
+              <UiAvatarImage
+                :src="member.user.avatar"
+                :alt="member.user.username"
+              />
+              <UiAvatarFallback>
+                <Icon
+                  name="tabler:user"
+                  class="size-6 min-w-6 text-muted-foreground"
+                />
+              </UiAvatarFallback>
+            </UiAvatar>
             <div
               v-if="member?.invite"
               class="flex items-center gap-2"
@@ -124,7 +157,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                 :aria-hidden="true"
                 class="size-6"
               />
-              <span class="text-slate-300">
+              <span class="text-muted-foreground">
                 {{ $t('general.invited') }}
               </span>
             </div>
@@ -178,7 +211,7 @@ async function removeTeamMember(member: TeamMemberFull & { invite?: boolean }): 
                 v-tippy="$t('actions.delete')"
                 :disabled="member.role === 'Owner'"
                 :aria-label="$t('actions.delete')"
-                class="icon-btn-danger"
+                class="icon-btn-destructive"
                 @click="removeTeamMember(member)"
               >
                 <Icon

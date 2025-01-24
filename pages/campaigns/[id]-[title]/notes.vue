@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable } from '#components'
 
 const props = defineProps<{ current: CampaignFull }>()
 
 const table = ref<InstanceType<typeof DataTable>>()
 
-const toast = useToast()
+const { toast } = useToast()
 const modal = useModal()
 const note = useNotes()
 const profile = useProfile()
@@ -47,6 +48,7 @@ function openModal(item?: NoteRow): void {
   modal.open({
     component: 'Note',
     header: t(`components.noteModal.${item ? 'update' : 'new'}`),
+    submit: t(`components.noteModal.${item ? 'update' : 'add'}`),
     events: { finished: () => refreshData() },
     props: {
       campaignId: props.current.id,
@@ -60,6 +62,7 @@ function openMailModal(item: NoteRow): void {
     component: 'Mail',
     header: t('components.mailModal.title', { type: t('general.note').toLowerCase() }),
     subHeader: item.title,
+    submit: t('actions.sendMail'),
     events: { send: (addresses: string[]) => sendNoteAsMail(item, addresses) },
     props: {
       sender: {
@@ -74,9 +77,7 @@ async function deleteItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.note', amount).toLowerCase()
 
-  ask({
-    title: `${amount} ${type}`,
-  }, async (confirmed: boolean) => {
+  ask({}, async (confirmed: boolean) => {
     if (!confirmed) return
 
     try {
@@ -84,7 +85,11 @@ async function deleteItems(ids: number[]): Promise<void> {
       refreshData()
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   })
 }
@@ -106,12 +111,16 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
 
     startCoolDown(note.id, 15)
 
-    toast.success({ title: t('general.mail.success.title') })
+    toast({
+      description: t('general.mail.success.title'),
+      variant: 'success',
+    })
   }
   catch (err) {
-    toast.error({
-      text: t('general.mail.fail.text'),
-      title: t('general.mail.fail.title'),
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
     })
   }
 }
@@ -170,7 +179,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
           <tr
             class="tr transition-colors"
             :class="{
-              'bg-danger/20': rowSelection[row.id],
+              'bg-destructive/20': rowSelection[row.id],
             }"
           >
             <td class="td max-w-[60px] flex flex-col sm:flex-row items-center gap-2">
@@ -187,7 +196,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
               <button
                 v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
                 :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-                :class="table?.detailRow === row.id ? 'icon-btn-danger' : 'icon-btn-help'"
+                :class="table?.detailRow === row.id ? 'icon-btn-destructive' : 'icon-btn-help'"
                 @click="table?.toggleDetailRow(row.id)"
               >
                 <Icon
@@ -211,7 +220,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
             <td class="td flex justify-end">
               <div
                 v-if="isInCoolDown(row.id)"
-                class="mt-auto text-slate-300 body-small w-7"
+                class="mt-auto text-muted-foreground body-small w-7"
               >
                 {{ getRemainingTime(row.id) }}s
               </div>
@@ -257,7 +266,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
               />
               <div class="flex justify-end">
                 <button
-                  class="btn-danger"
+                  class="btn-destructive"
                   :aria-label="$t('actions.close')"
                   @click="table?.toggleDetailRow(row.id)"
                 >

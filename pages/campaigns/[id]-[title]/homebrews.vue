@@ -13,7 +13,7 @@ defineProps<{ current: CampaignFull }>()
         }"
         name="tabler:info-circle"
         aria-hidden="true"
-        class="size-5 text-slate-300"
+        class="size-5 text-muted-foreground"
       />
       <div class="hidden md:flex gap-1 body-extra-small" />
     </div>

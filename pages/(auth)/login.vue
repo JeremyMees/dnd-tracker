@@ -28,48 +28,52 @@ async function login(form: Login, node: FormNode): Promise<void> {
 
 <template>
   <NuxtLayout name="centered">
-    <section class="space-y-6">
+    <template #header>
       <h1 class="text-center">
         {{ $t('pages.login.title') }}
       </h1>
-      <NuxtImg
-        src="/classes.png"
-        alt="DnD Classes"
-        :width="250"
-        :height="250"
-        class="mx-auto visibility-pulse"
+    </template>
+
+    <NuxtImg
+      src="/classes.png"
+      alt="DnD Classes"
+      :width="250"
+      :height="250"
+      class="mx-auto visibility-pulse"
+    />
+    <FormKit
+      type="form"
+      :submit-label="$t('pages.login.signIn')"
+      @submit="login"
+    >
+      <FormKit
+        name="email"
+        :label="$t('components.inputs.emailLabel')"
+        validation="required|length:5,50|email"
       />
       <FormKit
-        type="form"
-        :submit-label="$t('pages.login.signIn')"
-        @submit="login"
-      >
-        <FormKit
-          name="email"
-          :label="$t('components.inputs.emailLabel')"
-          validation="required|length:5,50|email"
-        />
-        <FormKit
-          name="password"
-          type="password"
-          :label="$t('components.inputs.passwordLabel')"
-          validation="required|length:6,50"
-        />
-      </FormKit>
+        name="password"
+        type="password"
+        :label="$t('components.inputs.passwordLabel')"
+        validation="required|length:6,50"
+      />
+    </FormKit>
+
+    <template #footer>
       <div class="flex flex-wrap gap-2 justify-center">
-        <RouteLink
-          url="register"
+        <NuxtLinkLocale
+          to="/register"
           class="btn-text"
         >
           {{ $t('pages.login.new') }}
-        </RouteLink>
-        <RouteLink
-          url="forgot-password"
+        </NuxtLinkLocale>
+        <NuxtLinkLocale
+          to="/forgot-password"
           class="btn-text"
         >
           {{ $t('pages.login.forgot') }}
-        </RouteLink>
+        </NuxtLinkLocale>
       </div>
-    </section>
+    </template>
   </NuxtLayout>
 </template>

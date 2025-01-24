@@ -18,14 +18,19 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@unlok-co/nuxt-stripe',
     '@nuxt/content',
+    'shadcn-nuxt',
+    '@nuxtjs/color-mode',
   ],
 
-  components: {
-    dirs: [
-      { path: '~/components/ui/', pathPrefix: false },
-      '~/components',
-    ],
-  },
+  components: [
+    { path: '~/components', pathPrefix: false },
+    { path: '~/components/ui', prefix: 'Ui' },
+    { path: '~/components/modal', prefix: 'Modal' },
+    { path: '~/components/form', prefix: 'Form' },
+    { path: '~/components/initiative', prefix: 'Initiative' },
+    { path: '~/components/skeleton', prefix: 'Skeleton' },
+    { path: '~/components/animation', prefix: 'Animation' },
+  ],
 
   css: ['@/assets/css/tippy.css'],
 
@@ -88,6 +93,10 @@ export default defineNuxtConfig({
       { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
     ],
   },
+
+  colorMode: { fallback: 'dark' },
+
+  shadcn: { prefix: 'ui' },
 
   eslint: { config: { stylistic: true } },
 

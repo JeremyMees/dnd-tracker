@@ -28,7 +28,7 @@ defineProps<{
       campaign, titled
       "<strong>{{ noteTitle }}</strong>".
     </Text>
-    <Hr class="border-t-slate-700" />
+    <Hr class="border-t-secondary" />
     <div
       class="pt-[26px]"
       v-html="noteContent"

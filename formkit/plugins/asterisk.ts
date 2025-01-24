@@ -23,7 +23,7 @@ export default function createAsteriskPlugin(): FormKitPlugin {
             $el: 'span',
             if: '$state.required',
             attrs: {
-              class: 'text-secondary',
+              class: 'text-tertiary',
             },
             children: ['*'],
           }],

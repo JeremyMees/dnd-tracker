@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
 import { togglePasswordInput } from '~/utils/ui-helpers'
 
 useSeo('Reset password')
 
 const { t } = useI18n()
 const auth = useAuth()
-const toast = useToast()
+const { toast } = useToast()
 const localePath = useLocalePath()
 const route = useRoute()
 
@@ -17,9 +18,10 @@ function checkIfError(): void {
   if (error) {
     navigateTo(localePath('/forgot-password'))
 
-    toast.error({
+    toast({
       title: t('pages.resetPassword.toast.error.title'),
-      text: t('pages.resetPassword.toast.error.text'),
+      description: t('pages.resetPassword.toast.error.text'),
+      variant: 'destructive',
     })
   }
 }
@@ -30,45 +32,57 @@ async function resetPassword({ password }: ResetPassword, node: FormNode): Promi
   try {
     await auth.updatePassword({ password })
 
-    toast.success({ title: t('pages.resetPassword.toast.success.title') })
+    toast({
+      description: t('pages.resetPassword.toast.success.text'),
+      variant: 'success',
+    })
 
     navigateTo(localePath('/'))
   }
   catch (err: any) {
     node.setErrors(err.message)
-    toast.error()
+
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
   }
 }
 </script>
 
 <template>
   <NuxtLayout name="centered">
-    <section class="space-y-6">
+    <template #header>
       <h1 class="text-center pb-10">
         {{ $t('pages.resetPassword.title') }}
       </h1>
+    </template>
+
+    <FormKit
+      type="form"
+      :submit-label="$t('pages.resetPassword.reset')"
+      @submit="resetPassword"
+    >
       <FormKit
-        type="form"
-        :submit-label="$t('pages.resetPassword.reset')"
-        @submit="resetPassword"
-      >
-        <FormKit
-          name="password"
-          type="password"
-          suffix-icon="eye"
-          :label="$t('components.inputs.passwordLabel')"
-          validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
-          @suffix-icon-click="togglePasswordInput"
-        />
-      </FormKit>
+        name="password"
+        type="password"
+        suffix-icon="eye"
+        :label="$t('components.inputs.passwordLabel')"
+        validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
+        @suffix-icon-click="togglePasswordInput"
+      />
+    </FormKit>
+
+    <template #footer>
       <div class="flex flex-wrap gap-2 justify-center">
-        <RouteLink
-          url="/"
+        <NuxtLinkLocale
+          to="/"
           class="btn-text"
         >
           {{ $t('actions.cancel') }}
-        </RouteLink>
+        </NuxtLinkLocale>
       </div>
-    </section>
+    </template>
   </NuxtLayout>
 </template>

@@ -4,7 +4,7 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
 
 <template>
   <Section class="text-center my-[26px]">
-    <Hr class="border-t-slate-700" />
+    <Hr class="border-t-secondary" />
     <table class="w-full">
       <tbody class="w-full">
         <tr class="w-full">
@@ -40,11 +40,11 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
           >
             <Link
               href="https://dnd-tracker.com"
-              class="text-[16px] font-semibold leading-[24px] text-white"
+              class="text-[16px] font-semibold leading-[24px]"
             >
               DnD Tracker
             </Link>
-            <Text class="mb-0 mt-[12px] text-[16px] leading-[24px] text-slate-700">
+            <Text class="mb-0 mt-[12px] text-[16px] leading-[24px]">
               Keep adventuring
             </Text>
           </td>
@@ -125,7 +125,7 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
           <td align="center">
             <Link
               href="mailto:jeremy@dnd-tracker.com"
-              class="my-[8px] text-[16px] font-semibold leading-[24px] text-slate-700"
+              class="my-[8px] text-[16px] font-semibold leading-[24px]"
             >
               jeremy@dnd-tracker.com
             </Link>

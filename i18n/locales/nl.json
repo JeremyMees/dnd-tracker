@@ -11,6 +11,7 @@
     "clickToSelect": "Klik om te selecteren",
     "delete": "Verwijderen",
     "cancel": "Annuleren",
+    "continue": "Doorgaan",
     "save": "Opslaan",
     "roll": "Rol dobbelsteen",
     "update": "Update",
@@ -242,7 +243,13 @@
     "campaigns": {
       "campaigns": "Campagnes",
       "add": "Campagne creëren",
-      "update": "Campagne bijwerken"
+      "update": "Campagne bijwerken",
+      "dialog": {
+        "leave": {
+          "title": "Verlaat deze campagne",
+          "text": "Als je deze campagne verlaat, verliest je toegang tot deze campagne en wordt je verwijderd van het team"
+        }
+      }
     },
     "campaign": {
       "content": {},
@@ -250,7 +257,17 @@
         "add": "Mensen toevoegen",
         "access": "Toegang beheren",
         "campaign": "Campagne instellingen",
-        "remove": "Verwijder {user} van campagne"
+        "remove": "Verwijder {user} van campagne",
+        "dialog": {
+          "leave": {
+            "title": "Verlaat deze campagne",
+            "text": "Als je deze campagne verlaat, verliest je toegang tot deze campagne en wordt je verwijderd van het team"
+          },
+          "remove": {
+            "title": "Verwijder {user} van campagne",
+            "text": "Als je {user} verwijdert, verliest deze toegang tot deze campagne en wordt deze verwijderd van het team"
+          }
+        }
       },
       "danger": {
         "transfer": {
@@ -362,6 +379,12 @@
         "delete": {
           "text": "Je profiel is succesvol verwijderd"
         }
+      },
+      "dialog": {
+        "delete": {
+          "title": "Profiel verwijderen",
+          "text": "Eens als je je profiel verwijdert, is er geen terug te keren. Deze actie kan niet worden ongedaan gemaakt."
+        }
       }
     },
     "pricing": {
@@ -429,6 +452,9 @@
     }
   },
   "components": {
+    "pagination": {
+      "page": "Pagina {page} van {pages}"
+    },
     "initiativeTable": {
       "died": {
         "title": "{type} is gestorven",
@@ -587,6 +613,10 @@
       "fetchErrorTitle": "Fout bij het ophalen van conditions"
     },
     "navbar": {
+      "pages": "Pagina's",
+      "upgrade": "Upgrade naar Pro",
+      "changelog": "Changelog",
+      "featureRequest": "Feature request",
       "logout": "Uitloggen",
       "login": "Login",
       "register": "Registreer",
@@ -600,13 +630,13 @@
       "pricing": "Prijzen",
       "play": "Spelen",
       "fantasy": "Fantasienaam generator",
-      "info": "Informatie",
+      "dnd-content": "DnD content",
       "map": "Map maker",
       "playground": "Encounter playground"
     },
     "confirmationModal": {
-      "title": "Verwijder bevestiging",
-      "text": "Om {title} te verwijderen, typt u het woord DELETE in het onderstaande veld"
+      "title": "Weet je het absoluut zeker?",
+      "text": "Eens je dit item verwijdert, is er geen terug te keren. Deze actie kan niet worden ongedaan gemaakt."
     },
     "noteModal": {
       "add": "Notitie creëren",

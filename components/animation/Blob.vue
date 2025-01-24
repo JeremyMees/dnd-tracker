@@ -18,6 +18,6 @@ if (import.meta.client) {
 <template>
   <div
     ref="blob"
-    class="hidden md:block -z-[1] h-[200px] w-[200px] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full from-info to-secondary bg-gradient-to-r rotates blur-[100px]"
+    class="hidden md:block -z-[1] h-[200px] w-[200px] fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full from-info to-tertiary bg-gradient-to-r rotates blur-[100px]"
   />
 </template>

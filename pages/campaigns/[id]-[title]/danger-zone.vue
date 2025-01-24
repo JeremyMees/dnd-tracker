@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import { useToast } from '~/components/ui/toast/use-toast'
+
 const props = defineProps<{ current: CampaignFull }>()
 
 const localePath = useLocalePath()
 const route = useRoute()
-const toast = useToast()
+const { toast } = useToast()
 const campaign = useCampaigns()
 const profile = useProfile()
 const modal = useModal()
@@ -11,9 +13,7 @@ const { ask } = useConfirm()
 const { t } = useI18n()
 
 async function deleteCampaign(): Promise<void> {
-  ask({
-    title: `${props.current.title}`,
-  }, async (confirmed: boolean) => {
+  ask({}, async (confirmed: boolean) => {
     if (!confirmed) return
 
     try {
@@ -21,7 +21,11 @@ async function deleteCampaign(): Promise<void> {
       navigateTo(localePath('/campaigns'))
     }
     catch (err) {
-      toast.error()
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
     }
   })
 }
@@ -30,6 +34,7 @@ async function transferOwnership(): Promise<void> {
   modal.open({
     component: 'TransferOwnership',
     header: t('components.transferOwnershipModal.title', { campaign: props.current.title }),
+    submit: t('actions.transfer'),
     props: { current: props.current },
     events: {
       finished: () => navigateTo(route.fullPath.replace('danger-zone', 'encounters')),
@@ -40,7 +45,7 @@ async function transferOwnership(): Promise<void> {
 
 <template>
   <section class="flex flex-col items-center w-full gap-y-4 py-6">
-    <div class="grow max-w-4xl border-4 border-danger bg-danger/50 rounded-lg">
+    <div class="grow max-w-4xl border-4 border-destructive bg-destructive/50 rounded-lg">
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
         <div class="space-y-2">
           <h3>
@@ -61,7 +66,7 @@ async function transferOwnership(): Promise<void> {
           </button>
         </div>
       </div>
-      <div class="w-full border-2 border-danger" />
+      <div class="w-full border-2 border-destructive" />
       <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
         <div class="space-y-2">
           <h3>
