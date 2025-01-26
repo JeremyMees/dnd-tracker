@@ -1,5 +1,6 @@
 {
   "actions": {
+    "back": "Back",
     "expand": "Expand",
     "collapse": "Collapse",
     "add": "Add",
@@ -297,6 +298,7 @@
       "back": "Back to encounters",
       "campaignBack": "Back to campaign",
       "info": "You can jot something down here",
+      "options": "Encounter options",
       "override": {
         "ac": "Override AC",
         "hp": "Override HP"

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { SIDEBAR_WIDTH_MOBILE, useSidebar } from './utils'
 import type { SidebarProps } from '.'
 import { Sheet, SheetContent } from '@/components//ui/sheet'
 import { cn } from '@/utils/shadcn'
-import { SIDEBAR_WIDTH_MOBILE, useSidebar } from './utils'
 
 defineOptions({
   inheritAttrs: false,
@@ -15,6 +15,8 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 })
 
 const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+
+defineExpose({ state })
 </script>
 
 <template>

@@ -17,15 +17,20 @@ const { data, status, refresh } = await useAsyncData(
   <NuxtLayout name="sidebar">
     <template #header>
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
-        <NuxtLinkLocale to="/campaigns">
+        <NuxtLinkLocale
+          v-tippy="$t('actions.back')"
+          to="/campaigns"
+        >
           <Icon
             name="tabler:arrow-left"
             class="w-4 h-4"
             :aria-hidden="true"
           />
         </NuxtLinkLocale>
-        <h2 class="text-muted-foreground">
-          {{ $t('general.campaign') }}:
+        <h2 class="text-muted-foreground flex gap-2">
+          <span class="hidden md:block">
+            {{ $t('general.campaign') }}:
+          </span>
           <span
             v-if="status === 'success'"
             class="text-foreground"
