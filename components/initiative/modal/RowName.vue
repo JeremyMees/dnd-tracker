@@ -22,7 +22,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('RowName')
     node.setErrors(err.message)
   }
 }
@@ -30,15 +30,16 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
 
 <template>
   <FormKit
-    id="form"
+    id="RowName"
     type="form"
-    :submit-label="$t('actions.save')"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
       name="name"
       :label="$t('components.inputs.nameLabel')"
       :value="name"
+      outer-class="$remove:mb-4"
     />
   </FormKit>
 </template>

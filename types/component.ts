@@ -27,6 +27,7 @@ export type ModalComponent =
   | 'InitiativeRowInit'
   | 'InitiativeRowHealth'
   | 'InitiativeRowAc'
+  | 'DiceRoll'
 
 export interface Modal {
   uuid: string

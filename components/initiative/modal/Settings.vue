@@ -31,7 +31,7 @@ async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promi
     emit('close')
   }
   catch (err: any) {
-    reset('form')
+    reset('InitiativeSettings')
     node.setErrors(err.message)
   }
 }
@@ -39,9 +39,9 @@ async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promi
 
 <template>
   <FormKit
-    id="form"
+    id="InitiativeSettings"
     type="form"
-    :submit-label="$t('actions.save')"
+    :actions="false"
     @submit="handleSubmit"
   >
     <FormKit
@@ -100,6 +100,7 @@ async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promi
         { label: $t('components.initiativeSettings.pets.redcap'), value: 'redcap' },
         { label: $t('components.initiativeSettings.pets.wolf-rider'), value: 'wolf-rider' },
       ]"
+      outer-class="$remove:mb-4"
     />
   </FormKit>
 </template>

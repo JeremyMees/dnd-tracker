@@ -118,7 +118,8 @@ export default {
   },
   'togglebuttons': {
     wrapper: 'flex flex-col',
-    options: 'flex gap-2',
-    input: 'ring-0 aria-pressed:border-primary focus-within:border-primary',
+    options: 'flex gap-1 flex-wrap mb-4',
+    option: 'w-10 h-10 flex items-center justify-center cursor-pointer rounded-lg overflow-hidden',
+    input: '$remove:btn-black bg-muted rounded-lg p-2 border-4 border-secondary ring-0 aria-pressed:border-primary focus-within:border-primary',
   },
 }

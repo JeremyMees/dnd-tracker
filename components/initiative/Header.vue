@@ -9,7 +9,12 @@ defineProps<{ data: InitiativeSheet }>()
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row gap-4 items-center justify-between container-max w-full">
+  <div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full">
+    <InitiativePet
+      v-if="data?.settings?.pet"
+      :pet="data.settings.pet"
+      class="max-[350px]:hidden absolute top-14 sm:top-6 left-4"
+    />
     <div class="flex gap-2 items-center">
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
@@ -33,7 +38,7 @@ defineProps<{ data: InitiativeSheet }>()
     </div>
     <div
       id="tour-1"
-      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"
+      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary text-white"
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"
@@ -44,7 +49,7 @@ defineProps<{ data: InitiativeSheet }>()
       >
         <Icon
           name="tabler:chevron-left"
-          class="group-disabled:opacity-40 size-6"
+          class="group-disabled:opacity-50 size-6"
           aria-hidden="true"
         />
       </button>

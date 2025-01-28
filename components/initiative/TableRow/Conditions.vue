@@ -40,6 +40,7 @@ function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
         v-for="condition in item.conditions"
         :key="condition.name"
         removable
+        color="muted"
         :condition="condition"
         @update="updateEffect($event)"
         @remove="removeEffect($event)"

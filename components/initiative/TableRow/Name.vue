@@ -6,11 +6,13 @@ const props = defineProps<{
 }>()
 
 const modal = useModal()
+const { t } = useI18n()
 
 function openModal(): void {
   modal.open({
     component: 'InitiativeRowName',
     header: 'Name',
+    submit: t('actions.save'),
     props: {
       encounterId: props.sheet.id,
       name: props.item.name,
@@ -41,7 +43,7 @@ function openModal(): void {
         class="size-5 min-w-5"
         aria-hidden="true"
       />
-      <div class="flex flex-col gap-y-1">
+      <div class="flex flex-col gap-y-1 text-left">
         <span>
           {{ item.name }}
         </span>

@@ -473,7 +473,8 @@
       }
     },
     "sidebar": {
-      "open": "Open sidebar"
+      "open": "Open sidebar",
+      "rolled": "Rolled {amount} {dice}"
     },
     "mailModal": {
       "title": "Send {type} via email"

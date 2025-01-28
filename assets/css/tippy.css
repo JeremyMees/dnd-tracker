@@ -1,7 +1,7 @@
 .tippy-box[data-theme~='dnd'] {
-  @apply rounded-lg bg-black text-white;
+  @apply rounded-lg bg-muted text-foreground;
 }
 
 .tippy-arrow {
-  @apply !text-black;
+  @apply !text-muted;
 }

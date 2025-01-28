@@ -11,7 +11,7 @@ const modal = useModal()
 const { t } = useI18n()
 const localePath = useLocalePath()
 
-const { data, status, refresh } = await useAsyncData(
+const { data, refresh } = await useAsyncData(
   'initiative-sheet',
   async () => await sheet.get(+route.params.id),
 )
@@ -107,10 +107,10 @@ function tweakSettings(): void {
             {{ $t('general.encounter') }}:
           </span>
           <span
-            v-if="status === 'success'"
+            v-if="data?.title"
             class="text-foreground"
           >
-            {{ data?.title }}
+            {{ data.title }}
           </span>
           <UiSkeleton
             v-else
@@ -127,131 +127,12 @@ function tweakSettings(): void {
       :update="handleUpdate"
     />
 
-    <template #sidebar-content="{ isExpanded }">
-      <UiSidebarGroup>
-        <UiSidebarGroupLabel class="font-bold">
-          {{ $t('pages.encounter.options') }}
-        </UiSidebarGroupLabel>
-        <UiSidebarMenu>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: `DnD ${$t('general.content')}`,
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="`DnD ${$t('general.content')}`"
-                @click="tweakSettings"
-              >
-                <Icon
-                  name="tabler:search"
-                  class="size-4 min-w-4 text-success"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  DnD {{ $t('general.content') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('actions.roll'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('actions.roll')"
-                @click="tweakSettings"
-              >
-                <Icon
-                  name="tabler:hexagon"
-                  class="size-4 min-w-4 text-tertiary"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('actions.roll') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
-              <button
-                :aria-label="$t('general.bestiary')"
-                @click="tweakSettings"
-              >
-                <Icon
-                  name="tabler:bat"
-                  class="size-4 min-w-4 text-destructive"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('general.bestiary') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
-              <button
-                :aria-label="$t('general.campaignHomebrew')"
-                @click="tweakSettings"
-              >
-                <Icon
-                  name="tabler:meeple"
-                  class="size-4 min-w-4 text-primary"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('general.campaignHomebrew') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('general.newHomebrew'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('general.newHomebrew')"
-                @click="tweakSettings"
-              >
-                <Icon
-                  name="tabler:beer"
-                  class="size-4 min-w-4 text-warning"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('general.newHomebrew') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('general.setting', 2),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('general.setting', 2)"
-                @click="tweakSettings"
-              >
-                <Icon
-                  name="tabler:settings"
-                  class="size-4 min-w-4"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('general.setting', 2) }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-        </UiSidebarMenu>
-      </UiSidebarGroup>
-      <UiSeparator />
+    <template #sidebar-content="{ isExpanded, toggleSidebar }">
+      <EncounterSidebar
+        :is-expanded="isExpanded"
+        @toggle-sidebar="toggleSidebar"
+        @tweak-settings="tweakSettings"
+      />
     </template>
   </NuxtLayout>
 </template>

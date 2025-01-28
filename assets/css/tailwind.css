@@ -227,12 +227,20 @@
     @apply font-text text-[0.5rem] leading-[0.75rem];
   }
 
+  .btn-foreground {
+    @apply btn bg-foreground/50 hover:bg-foreground/60 border-foreground;
+  }
+
   .btn-black {
     @apply btn bg-black/50 hover:bg-black/60 border-black;
   }
 
   .btn-primary {
     @apply btn bg-primary/50 hover:bg-primary/60 border-primary;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary/50 hover:bg-secondary/60 border-secondary;
   }
 
   .btn-tertiary {

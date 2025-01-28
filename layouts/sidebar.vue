@@ -41,6 +41,7 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
           <slot
             name="sidebar-content"
             :is-expanded="isExpanded"
+            :toggle-sidebar="sidebar?.toggleSidebar"
           />
           <template
             v-for="sidebarItem in [

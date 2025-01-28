@@ -59,16 +59,17 @@ function checkForDeathSaveNotifications(): void {
       <div
         v-for="(save, i) in [item.deathSaves?.save, item.deathSaves?.fail]"
         :key="`save-${i}`"
-        class="grid grid-cols-3 gap-1"
+        class="grid grid-cols-3 gap-1 w-14"
       >
         <button
           v-for="(value, j) in save"
           :key="`${value}-${j}`"
           class="size-4 rounded border-2"
           :class="{
-            'border-success bg-success bg-opacity-20': i === 0,
-            'border-destructive bg-destructive bg-opacity-20': i === 1,
-            '!bg-opacity-100': value && i === 0 || value && i === 1,
+            'border-success bg-success/20': i === 0,
+            'border-destructive bg-destructive/20': i === 1,
+            '!bg-success': value && i === 0,
+            '!bg-destructive': value && i === 1,
           }"
           @click="updateDeathSave(j, i === 0)"
         />

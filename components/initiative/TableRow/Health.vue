@@ -38,7 +38,7 @@ defineProps<{ item: InitiativeSheetRow }>()
       </button>
       <span
         v-if="item.maxHealth !== item.health"
-        class="body-extra-small text-muted-foreground"
+        class="body-extra-small text-muted-foreground whitespace-nowrap"
       >
         {{ $t('general.max') }}: {{ item.maxHealth }}
       </span>

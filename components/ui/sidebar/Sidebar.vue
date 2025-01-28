@@ -14,9 +14,9 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'offcanvas',
 })
 
-const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } = useSidebar()
 
-defineExpose({ state })
+defineExpose({ state, toggleSidebar })
 </script>
 
 <template>

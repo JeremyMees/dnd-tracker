@@ -94,3 +94,8 @@ export interface InitiativeSettingsForm {
 export interface NameForm {
   name: string
 }
+
+export interface RollForm {
+  dice: string
+  amount: number
+}

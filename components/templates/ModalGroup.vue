@@ -14,6 +14,7 @@ import {
   LazyInitiativeModalRowInit,
   LazyInitiativeModalRowHealth,
   LazyInitiativeModalRowAc,
+  LazyModalDiceRoll,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -33,6 +34,7 @@ const modalComponents: Record<ModalComponent, any> = {
   InitiativeRowInit: LazyInitiativeModalRowInit,
   InitiativeRowHealth: LazyInitiativeModalRowHealth,
   InitiativeRowAc: LazyInitiativeModalRowAc,
+  DiceRoll: LazyModalDiceRoll,
 }
 </script>
 

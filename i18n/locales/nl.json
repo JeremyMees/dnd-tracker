@@ -473,7 +473,8 @@
       }
     },
     "sidebar": {
-      "open": "Zijbalk openen"
+      "open": "Zijbalk openen",
+      "rolled": "Rolde {amount} {dice}"
     },
     "mailModal": {
       "title": "Stuur {type} per e-mail"

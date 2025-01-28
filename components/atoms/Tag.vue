@@ -11,12 +11,12 @@ const props = withDefaults(
     removable?: boolean
     addable?: boolean
     selected?: boolean
-    color?: Color | 'slate'
+    color?: Color | 'secondary' | 'muted'
   }>(), {
     removable: false,
     addable: false,
     selected: false,
-    color: 'slate',
+    color: 'secondary',
   },
 )
 
@@ -38,14 +38,15 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
     class="px-2 py-1 text-xs rounded-full flex gap-2 w-fit items-center text-white border-2 transition-colors duration-200"
     :class="{
       'bg-black/50 border-black': color === 'black',
-      'bg-secondary/50 border-secondary': color === 'slate',
+      'bg-secondary/50 border-secondary': color === 'secondary',
       'bg-primary/50 border-primary': color === 'primary',
       'bg-tertiary/50 border-tertiary': color === 'tertiary',
       'bg-success/50 border-success': color === 'success',
       'bg-info/50 border-info': color === 'info',
       'bg-warning/50 border-warning': color === 'warning',
       'bg-help/50 border-help': color === 'help',
-      'bg-destructive/50  border-destructive': color === 'danger',
+      'bg-destructive/50 border-destructive': color === 'danger',
+      'bg-muted-foreground/50 border-muted-foreground': color === 'muted',
       'border-white': selected,
     }"
   >
