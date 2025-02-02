@@ -182,32 +182,34 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
               'bg-destructive/20': rowSelection[row.id],
             }"
           >
-            <td class="td max-w-[60px] flex flex-col sm:flex-row items-center gap-2">
-              <FormKit
-                v-if="isAdmin(current, profile.user!.id)"
-                v-model="rowSelection[row.id]"
-                type="checkbox"
-                :disabled="status === 'pending'"
-                outer-class="$reset !pb-0"
-                wrapper-class="$remove:mb-1"
-                decorator-class="$remove:mr-2"
-                @click="table?.toggleRow(row)"
-              />
-              <button
-                v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-                :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-                :class="table?.detailRow === row.id ? 'icon-btn-destructive' : 'icon-btn-help'"
-                @click="table?.toggleDetailRow(row.id)"
-              >
-                <Icon
-                  name="tabler:chevron-right"
-                  aria-hidden="true"
-                  :class="{ 'rotate-90': table?.detailRow === row.id }"
-                  class="transition-transform duration-200 ease-in-out"
-                />
-              </button>
-            </td>
             <td class="td">
+              <div class="max-w-[60px] flex items-center gap-2">
+                <FormKit
+                  v-if="isAdmin(current, profile.user!.id)"
+                  v-model="rowSelection[row.id]"
+                  type="checkbox"
+                  :disabled="status === 'pending'"
+                  outer-class="$reset !pb-0"
+                  wrapper-class="$remove:mb-1"
+                  decorator-class="$remove:mr-2"
+                  @click="table?.toggleRow(row)"
+                />
+                <button
+                  v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+                  :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+                  :class="table?.detailRow === row.id ? 'icon-btn-destructive' : 'icon-btn-help'"
+                  @click="table?.toggleDetailRow(row.id)"
+                >
+                  <Icon
+                    name="tabler:chevron-right"
+                    aria-hidden="true"
+                    :class="{ 'rotate-90': table?.detailRow === row.id }"
+                    class="size-5 transition-transform duration-200 ease-in-out"
+                  />
+                </button>
+              </div>
+            </td>
+            <td class="td truncate">
               {{ row.title }}
             </td>
             <td class="td">
@@ -217,39 +219,41 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
                   : ''
               }}
             </td>
-            <td class="td flex justify-end">
-              <div
-                v-if="isInCoolDown(row.id)"
-                class="mt-auto text-muted-foreground body-small w-7"
-              >
-                {{ getRemainingTime(row.id) }}s
+            <td class="td">
+              <div class="flex justify-end">
+                <div
+                  v-if="isInCoolDown(row.id)"
+                  class="mt-auto text-muted-foreground body-small w-7"
+                >
+                  {{ getRemainingTime(row.id) }}s
+                </div>
+                <button
+                  v-tippy="$t('actions.sendMail')"
+                  :aria-label="$t('actions.sendMail')"
+                  :disabled="isInCoolDown(row.id)"
+                  class="icon-btn-primary"
+                  @click="openMailModal(row)"
+                >
+                  <Icon
+                    name="tabler:send"
+                    class="size-5"
+                    aria-hidden="true"
+                  />
+                </button>
+                <button
+                  v-if="isAdmin(current, profile.user!.id)"
+                  v-tippy="$t('actions.update')"
+                  class="icon-btn-info"
+                  :aria-label="$t('actions.update')"
+                  @click="openModal(row)"
+                >
+                  <Icon
+                    name="tabler:edit"
+                    class="size-5"
+                    aria-hidden="true"
+                  />
+                </button>
               </div>
-              <button
-                v-tippy="$t('actions.sendMail')"
-                :aria-label="$t('actions.sendMail')"
-                :disabled="isInCoolDown(row.id)"
-                class="icon-btn-primary"
-                @click="openMailModal(row)"
-              >
-                <Icon
-                  name="tabler:send"
-                  class="size-6"
-                  aria-hidden="true"
-                />
-              </button>
-              <button
-                v-if="isAdmin(current, profile.user!.id)"
-                v-tippy="$t('actions.update')"
-                class="icon-btn-info"
-                :aria-label="$t('actions.update')"
-                @click="openModal(row)"
-              >
-                <Icon
-                  name="tabler:edit"
-                  class="size-6"
-                  aria-hidden="true"
-                />
-              </button>
             </td>
           </tr>
           <tr

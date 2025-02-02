@@ -154,30 +154,32 @@ async function deleteItems(ids: number[]): Promise<void> {
             'bg-destructive/20': rowSelection[row.id],
           }"
         >
-          <td class="td max-w-[60px] flex flex-col sm:flex-row items-center gap-2">
-            <FormKit
-              v-if="isAdmin(campaign, profile.user!.id)"
-              v-model="rowSelection[row.id]"
-              type="checkbox"
-              :disabled="status === 'pending'"
-              outer-class="$reset !pb-0"
-              wrapper-class="$remove:mb-1"
-              decorator-class="$remove:mr-2"
-              @click="table?.toggleRow(row)"
-            />
-            <button
-              v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-              :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
-              :class="table?.detailRow === row.id ? 'icon-btn-destructive' : 'icon-btn-help'"
-              @click="table?.toggleDetailRow(row.id)"
-            >
-              <Icon
-                name="tabler:chevron-right"
-                aria-hidden="true"
-                :class="{ 'rotate-90': table?.detailRow === row.id }"
-                class="transition-transform duration-200 ease-in-out"
+          <td class="td">
+            <div class="max-w-[60px] flex items-center gap-2">
+              <FormKit
+                v-if="isAdmin(campaign, profile.user!.id)"
+                v-model="rowSelection[row.id]"
+                type="checkbox"
+                :disabled="status === 'pending'"
+                outer-class="$reset !pb-0"
+                wrapper-class="$remove:mb-1"
+                decorator-class="$remove:mr-2"
+                @click="table?.toggleRow(row)"
               />
-            </button>
+              <button
+                v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+                :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
+                :class="table?.detailRow === row.id ? 'icon-btn-destructive' : 'icon-btn-help'"
+                @click="table?.toggleDetailRow(row.id)"
+              >
+                <Icon
+                  name="tabler:chevron-right"
+                  aria-hidden="true"
+                  :class="{ 'rotate-90': table?.detailRow === row.id }"
+                  class="transition-transform duration-200 ease-in-out size-5"
+                />
+              </button>
+            </div>
           </td>
           <td class="td">
             {{ row.name }}
@@ -216,25 +218,27 @@ async function deleteItems(ids: number[]): Promise<void> {
             >
               <Icon
                 name="tabler:link"
-                class="size-6"
+                class="size-5"
                 aria-hidden="true"
               />
             </NuxtLink>
           </td>
-          <td class="td flex justify-end">
-            <button
-              v-if="isAdmin(campaign, profile.user!.id)"
-              v-tippy="$t('actions.update')"
-              class="icon-btn-info"
-              :aria-label="$t('actions.update')"
-              @click="openModal(row)"
-            >
-              <Icon
-                name="tabler:edit"
-                class="size-6"
-                aria-hidden="true"
-              />
-            </button>
+          <td class="td">
+            <div class="flex justify-end">
+              <button
+                v-if="isAdmin(campaign, profile.user!.id)"
+                v-tippy="$t('actions.update')"
+                class="icon-btn-info"
+                :aria-label="$t('actions.update')"
+                @click="openModal(row)"
+              >
+                <Icon
+                  name="tabler:edit"
+                  class="size-5"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
           </td>
         </tr>
         <tr

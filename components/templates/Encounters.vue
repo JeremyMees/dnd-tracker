@@ -220,45 +220,47 @@ async function deleteItems(ids: number[]): Promise<void> {
             "
           />
         </td>
-        <td class="td flex justify-end">
-          <button
-            v-tippy="t('actions.share')"
-            class="icon-btn-success"
-            :aria-label="t('actions.share')"
-            @click="share(row)"
-          >
-            <Icon
-              name="tabler:share"
-              class="size-6"
-              aria-hidden="true"
-            />
-          </button>
-          <template v-if="row.campaign ? isAdmin(row.campaign, profile.user!.id, true) : true">
+        <td class="td">
+          <div class="flex justify-end">
             <button
-              v-tippy="t('actions.copy')"
-              class="icon-btn-primary"
-              :aria-label="t('actions.copy')"
-              @click="copy(row)"
+              v-tippy="t('actions.share')"
+              class="icon-btn-success"
+              :aria-label="t('actions.share')"
+              @click="share(row)"
             >
               <Icon
-                name="tabler:copy"
-                class="size-6"
+                name="tabler:share"
+                class="size-5"
                 aria-hidden="true"
               />
             </button>
-            <button
-              v-tippy="t('actions.update')"
-              class="icon-btn-info"
-              :aria-label="t('actions.update')"
-              @click="openModal(row)"
-            >
-              <Icon
-                name="tabler:edit"
-                class="size-6"
-                aria-hidden="true"
-              />
-            </button>
-          </template>
+            <template v-if="row.campaign ? isAdmin(row.campaign, profile.user!.id, true) : true">
+              <button
+                v-tippy="t('actions.copy')"
+                class="icon-btn-primary"
+                :aria-label="t('actions.copy')"
+                @click="copy(row)"
+              >
+                <Icon
+                  name="tabler:copy"
+                  class="size-5"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                v-tippy="t('actions.update')"
+                class="icon-btn-info"
+                :aria-label="t('actions.update')"
+                @click="openModal(row)"
+              >
+                <Icon
+                  name="tabler:edit"
+                  class="size-5"
+                  aria-hidden="true"
+                />
+              </button>
+            </template>
+          </div>
         </td>
       </tr>
     </template>

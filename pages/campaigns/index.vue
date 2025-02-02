@@ -22,7 +22,7 @@ const sortACS = ref<boolean>(true)
 const page = ref<number>(0)
 
 const { data: count } = useCampaignCount()
-const { mutateAsync: deleteCampaign } = useCampaignRemove()
+const { mutateAsync: removeCampaign } = useCampaignRemove()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 
 const { data, isPending: campaignsPending, isError: campaignsError } = useCampaignListing(
@@ -56,7 +56,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     title: `${t('actions.delete')} ${amount} ${type}`,
   }, async (confirmed: boolean) => {
     if (confirmed) {
-      await deleteCampaign(ids)
+      await removeCampaign({ id: ids })
     }
   })
 }
@@ -180,33 +180,35 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
               :team="row.team || []"
             />
           </td>
-          <td class="td flex justify-end">
-            <button
-              v-if="!isOwner(row, profile.user!.id)"
-              v-tippy="$t('actions.leave')"
-              class="icon-btn-warning"
-              :aria-label="$t('actions.leave')"
-              @click="leaveCampaign(row)"
-            >
-              <Icon
-                name="tabler:door-exit"
-                class="icon"
-                aria-hidden="true"
-              />
-            </button>
-            <button
-              v-if="isAdmin(row, profile.user!.id)"
-              v-tippy="$t('actions.update')"
-              class="icon-btn-info"
-              :aria-label="$t('actions.update')"
-              @click="openModal(row)"
-            >
-              <Icon
-                name="tabler:edit"
-                class="icon"
-                aria-hidden="true"
-              />
-            </button>
+          <td class="td">
+            <div class="flex justify-end">
+              <button
+                v-if="!isOwner(row, profile.user!.id)"
+                v-tippy="$t('actions.leave')"
+                class="icon-btn-warning"
+                :aria-label="$t('actions.leave')"
+                @click="leaveCampaign(row)"
+              >
+                <Icon
+                  name="tabler:door-exit"
+                  class="size-5"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                v-if="isAdmin(row, profile.user!.id)"
+                v-tippy="$t('actions.update')"
+                class="icon-btn-info"
+                :aria-label="$t('actions.update')"
+                @click="openModal(row)"
+              >
+                <Icon
+                  name="tabler:edit"
+                  class="size-5"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
           </td>
         </tr>
       </template>

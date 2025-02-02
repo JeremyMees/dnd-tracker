@@ -128,13 +128,13 @@ function toggleAll(): void {
                 class="flex gap-2 items-center w-fit px-2 rounded-lg transition-colors duration-300"
                 :class="{ 'bg-secondary': id === sortBy }"
               >
-                <span class="text-muted-foreground hover:text-foreground transition-colors duration-300">
+                <span class="truncate text-muted-foreground hover:text-foreground transition-colors duration-300">
                   {{ label }}
                 </span>
                 <Icon
                   v-if="sort"
                   name="tabler:arrows-sort"
-                  class="w-5 h-5 text-tertiary/50 transition-all duration-300"
+                  class="size-5 min-w-5 text-tertiary/50 transition-all duration-300"
                   :class="{
                     '!text-tertiary': sortBy === id,
                     'rotate-180': sortBy === id && !sortACS,
