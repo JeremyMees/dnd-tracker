@@ -282,7 +282,17 @@
       },
       "join": {
         "title": "Start your adventure with {campaign}!",
-        "text": "Congratulations! You've received an invitation to join {campaign} as a {role}. Your opportunity to be a part of this incredible journey is right at your fingertips."
+        "text": "Congratulations! You've received an invitation to join {campaign} as a {role}. Your opportunity to be a part of this incredible journey is right at your fingertips.",
+        "toast": {
+          "accept": {
+            "title": "You've accepted the invitation",
+            "text": "You've accepted the invitation to join {campaign} as a {role}"
+          },
+          "decline": {
+            "title": "You've declined the invitation",
+            "text": "You've declined the invitation to join {campaign}"
+          }
+        }
       },
       "toast": {
         "update": "Updated your campaign successfully",
@@ -454,6 +464,20 @@
     }
   },
   "components": {
+    "toast": {
+      "delete": {
+        "error": "Something went wrong while deleting the {type}",
+        "success": "Successfully deleted the {type}"
+      },
+      "create": {
+        "error": "Something went wrong while creating the {type}",
+        "success": "Successfully created the {type}"
+      },
+      "update": {
+        "error": "Something went wrong while updating the {type}",
+        "success": "Successfully updated the {type}"
+      }
+    },
     "pagination": {
       "page": "Page {page} of {pages}"
     },

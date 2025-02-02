@@ -13,32 +13,20 @@ const props = defineProps<{
 }>()
 
 const store = useEncounters()
-const campaign = useCampaigns()
 const profile = useProfile()
 const { toast } = useToast()
 const { t } = useI18n()
 
 const input = ref()
-const campaigns = ref<CampaignMinimal[]>()
+
+const { data: campaigns, isError } = useCampaignMinimalListing(profile.user!.id)
 
 onMounted(() => {
   if (input.value) focusInput(input.value)
-  fetchCampaigns()
 })
 
-async function fetchCampaigns(): Promise<void> {
-  try {
-    const id = profile.user!.id
-    const data = await campaign.getCampaignsMinimal()
-
-    campaigns.value = data.filter((campaign) => {
-      if (
-        campaign.created_by.id === id
-        || campaign.team.find(u => u.user.id === id && u.role !== 'Viewer')
-      ) return true
-    })
-  }
-  catch (err: any) {
+watch(isError, (err) => {
+  if (err) {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),
@@ -47,7 +35,7 @@ async function fetchCampaigns(): Promise<void> {
 
     emit('close')
   }
-}
+})
 
 async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> {
   node.clearErrors()

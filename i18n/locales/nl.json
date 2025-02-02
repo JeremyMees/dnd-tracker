@@ -282,7 +282,17 @@
       },
       "join": {
         "title": "Start jouw avontuur met {campaign}!",
-        "text": "Gefeliciteerd! Je hebt een uitnodiging ontvangen om deel te nemen aan {campaign} als een {role}. Jouw kans om deel uit te maken van dit ongelooflijke avontuur ligt nu binnen handbereik."
+        "text": "Gefeliciteerd! Je hebt een uitnodiging ontvangen om deel te nemen aan {campaign} als een {role}. Jouw kans om deel uit te maken van dit ongelooflijke avontuur ligt nu binnen handbereik.",
+        "toast": {
+          "accept": {
+            "title": "Je hebt de uitnodiging geaccepteerd",
+            "text": "Je hebt de uitnodiging geaccepteerd om deel te nemen aan {campaign} als een {role}"
+          },
+          "decline": {
+            "title": "Je hebt de uitnodiging afgewezen",
+            "text": "Je hebt de uitnodiging afgewezen om deel te nemen aan {campaign}"
+          }
+        }
       },
       "toast": {
         "update": "Je campagne is succesvol bijgewerkt",
@@ -454,6 +464,20 @@
     }
   },
   "components": {
+    "toast": {
+      "delete": {
+        "error": "Er is iets fout gegaan bij het verwijderen van de {type}",
+        "success": "Succesvol verwijderd de {type}"
+      },
+      "create": {
+        "error": "Er is iets fout gegaan bij het creëren van de {type}",
+        "success": "Succesvol gemaakt de {type}"
+      },
+      "update": {
+        "error": "Er is iets fout gegaan bij het bijwerken van de {type}",
+        "success": "Succesvol bijgewerkt de {type}"
+      }
+    },
     "pagination": {
       "page": "Pagina {page} van {pages}"
     },

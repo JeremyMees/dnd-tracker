@@ -16,7 +16,7 @@ const props = withDefaults(
   },
 )
 
-const campaign = useCampaigns()
+const query = useCampaignMinimalDetail(props.fetchId)
 
 const persons = ref<Person[]>([])
 
@@ -37,10 +37,8 @@ async function fetchTeam(members: Person[]): Promise<void> {
   }
 
   try {
-    const { created_by, team } = await campaign.getCampaignMinimalById(props.fetchId!)
-
-    if (team && created_by) {
-      addOwnerAndTeam(created_by, teamMembersToAvatar(team))
+    if (query && query.data?.value?.team && query.data?.value?.created_by) {
+      addOwnerAndTeam(query.data.value.created_by, teamMembersToAvatar(query.data.value.team))
     }
   }
   catch (err: any) {

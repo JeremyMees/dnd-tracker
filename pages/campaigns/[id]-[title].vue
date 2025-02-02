@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
+
 definePageMeta({ middleware: ['auth', 'id-param', 'campaign-member'] })
 
 const profile = useProfile()
-const campaign = useCampaigns()
 const route = useRoute()
+const queryClient = useQueryClient()
 
 const url = computed<string>(() => route.fullPath.split('/').slice(0, -1).join('/'))
 
-const { data, status, refresh } = await useAsyncData(
-  'campaign-detail',
-  async () => await campaign.getCampaignById(+route.params.id),
-)
+const { data, status } = useCampaignDetail(+route.params.id)
 </script>
 
 <template>
@@ -79,7 +78,7 @@ const { data, status, refresh } = await useAsyncData(
     <div class="min-h-[40vh]">
       <NuxtPage
         :current="data"
-        @refresh="refresh"
+        @refresh="queryClient.invalidateQueries({ queryKey: ['useCampaignDetail'] })"
       />
     </div>
   </NuxtLayout>

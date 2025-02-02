@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-const emit = defineEmits<{
-  close: []
-  finished: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{ current: CampaignFull }>()
 
-const campaign = useCampaigns()
 const profile = useProfile()
 const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
+const queryClient = useQueryClient()
 
 const noUser = ref<string>()
 const form = ref<{ users: AddMemberForm[] }>({ users: [] })
+
+const { mutateAsync: createJoinCampaignToken } = useJoinTokenCreate()
 
 async function handleSearch({ email }: { email: string }, node: FormNode): Promise<void> {
   node.clearErrors()
@@ -59,10 +59,7 @@ function validateUser(email: string): string | undefined {
   else if (join_campaign.some(({ user }) => user.email === email)) return 'alreadyInvited'
   else if (form.value.users.some(({ profile }) => profile.email === email)) return 'alreadySelected'
   else if ([...form.value.users, ...team, ...join_campaign].length >= 9) return 'maxMembers'
-  else if (
-    created_by.email === email
-    || team.some(({ user }) => user.email === email)
-  ) return 'alreadyAdded'
+  else if (created_by.email === email || team.some(({ user }) => user.email === email)) return 'alreadyAdded'
 }
 
 async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<void> {
@@ -73,13 +70,14 @@ async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<voi
 
     await Promise.all(users.map(async user => addTeamMember(user)))
 
+    queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', props.current.id] })
+
     toast({
       title: t('components.inviteMember.toast.invited.title'),
       description: t('components.inviteMember.toast.invited.text'),
       variant: 'success',
     })
 
-    emit('finished')
     emit('close')
   }
   catch (err: any) {
@@ -89,10 +87,15 @@ async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<voi
 }
 
 async function addTeamMember(user: AddMemberForm): Promise<void> {
-  const token = await campaign.addJoinCampaignToken({
-    user: user.id,
-    campaign: props.current.id,
-    role: user.role,
+  const token = await createJoinCampaignToken({
+    data: {
+      user: user.id,
+      campaign: props.current.id,
+      role: user.role,
+    },
+    onError: (error: string) => {
+      throw createError(error)
+    },
   })
 
   await $fetch('/api/emails/campaign-invite', {

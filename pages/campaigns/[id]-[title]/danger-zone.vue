@@ -6,27 +6,28 @@ const props = defineProps<{ current: CampaignFull }>()
 const localePath = useLocalePath()
 const route = useRoute()
 const { toast } = useToast()
-const campaign = useCampaigns()
 const profile = useProfile()
 const modal = useModal()
 const { ask } = useConfirm()
 const { t } = useI18n()
 
-async function deleteCampaign(): Promise<void> {
+const { mutateAsync: removeCampaign } = useCampaignRemove()
+
+async function remove(): Promise<void> {
   ask({}, async (confirmed: boolean) => {
     if (!confirmed) return
 
-    try {
-      await campaign.deleteCampaign(props.current.id)
-      navigateTo(localePath('/campaigns'))
-    }
-    catch (err) {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
-    }
+    await removeCampaign({
+      id: props.current.id,
+      onSuccess: () => navigateTo(localePath('/campaigns')),
+      onError: () => {
+        toast({
+          title: t('general.error.title'),
+          description: t('general.error.text'),
+          variant: 'destructive',
+        })
+      },
+    })
   })
 }
 
@@ -81,7 +82,7 @@ async function transferOwnership(): Promise<void> {
             :aria-label="$t('actions.delete')"
             :disabled="!current || !isOwner(current, profile.user!.id)"
             class="btn-black"
-            @click="deleteCampaign"
+            @click="remove"
           >
             {{ $t('actions.delete') }}
           </button>

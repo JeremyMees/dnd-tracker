@@ -31,6 +31,21 @@ async function answerInvite(accept: boolean): Promise<void> {
 
     const url = accept ? campaignUrl(data.value!.campaign, 'encounters') : '/'
 
+    if (accept) {
+      toast({
+        title: t('pages.campaign.join.toast.accept.title'),
+        description: t('pages.campaign.join.toast.accept.text', { campaign: data.value!.campaign.title, role: data.value!.role }),
+        variant: 'success',
+      })
+    }
+    else {
+      toast({
+        title: t('pages.campaign.join.toast.decline.title'),
+        description: t('pages.campaign.join.toast.decline.text', { campaign: data.value!.campaign.title }),
+        variant: 'destructive',
+      })
+    }
+
     navigateTo(localePath(url))
   }
   catch (err: any) {

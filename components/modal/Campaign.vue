@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
 
-const emit = defineEmits<{
-  close: []
-  finished: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{ campaign?: CampaignItem | CampaignRow }>()
 
-const store = useCampaigns()
 const profile = useProfile()
+const { mutateAsync: createCampaign } = useCampaignCreate()
+const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
 const input = ref()
 
@@ -18,33 +16,29 @@ onMounted(() => input.value && focusInput(input.value))
 async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
-  try {
-    const formData = sanitizeForm<CampaignForm>(form)
-
-    if (props.campaign) await updateCampaign(formData)
-    else await addCampaign(formData)
-
-    emit('finished')
-    emit('close')
-  }
-  catch (err: any) {
+  const onError = (error: string) => {
     reset('Campaign')
-    node.setErrors(err.message)
+    node.setErrors(error)
   }
-}
 
-async function addCampaign(data: CampaignForm): Promise<void> {
-  if (profile.user) {
-    await store.addCampaign({
-      ...data,
-      created_by: profile.user.id,
+  const onSuccess = () => emit('close')
+
+  const formData = sanitizeForm<CampaignForm>(form)
+
+  if (props.campaign) {
+    await updateCampaign({
+      data: formData,
+      id: props.campaign.id,
+      onError,
+      onSuccess,
     })
   }
-}
-
-async function updateCampaign(data: CampaignForm): Promise<void> {
-  if (props.campaign) {
-    await store.updateCampaign(data, props.campaign.id)
+  else {
+    await createCampaign({
+      data: { ...formData, created_by: profile.user!.id },
+      onError,
+      onSuccess,
+    })
   }
 }
 </script>

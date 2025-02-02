@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 
 definePageMeta({ middleware: ['auth'] })
 useSeo('Campaigns')
 
-const { toast } = useToast()
 const modal = useModal()
-const campaign = useCampaigns()
 const profile = useProfile()
 const { ask } = useConfirm()
+const { toast } = useToast()
 const { t } = useI18n()
+const queryClient = useQueryClient()
 
 const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
@@ -19,40 +20,30 @@ const search = ref<string>('')
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(true)
 const page = ref<number>(0)
-const count = ref<number>(await campaign.getCount())
 
-const { data: campaigns, status, refresh } = await useAsyncData(
-  'campaigns',
-  async () => await campaign.get({
+const { data: count } = useCampaignCount()
+const { mutateAsync: deleteCampaign } = useCampaignRemove()
+const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
+
+const { data, isPending: campaignsPending, isError: campaignsError } = useCampaignListing(
+  computed(() => ({
     search: search.value,
     sortBy: sortBy.value,
     sortACS: sortACS.value,
     page: page.value,
-  }),
-  {
-    watch: [sortBy, sortACS, page],
-  },
-)
-
-watchDebounced(
-  search,
-  () => refresh(),
-  { debounce: 500, maxWait: 1000 },
+  })),
 )
 
 const rowSelection = computed(() => selectedRows(table.value))
 
-async function refreshData(): Promise<void> {
-  refresh()
-  count.value = await campaign.getCount()
-}
+const max = computed<number>(() => getMax('campaign', profile.data?.subscription_type || 'free'))
 
 function openModal(campaign?: CampaignItem): void {
   modal.open({
     component: 'Campaign',
     header: t(`components.campaignModal.${campaign ? 'update' : 'add'}`),
     submit: t(`pages.campaigns.${campaign ? 'update' : 'add'}`),
-    events: { finished: () => refreshData() },
+    events: { finished: () => queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] }) },
     ...(campaign && { props: { campaign } }),
   })
 }
@@ -64,18 +55,8 @@ async function deleteItems(ids: number[]): Promise<void> {
   ask({
     title: `${t('actions.delete')} ${amount} ${type}`,
   }, async (confirmed: boolean) => {
-    if (!confirmed) return
-
-    try {
-      await campaign.deleteCampaign(ids)
-      refreshData()
-    }
-    catch (err) {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
+    if (confirmed) {
+      await deleteCampaign(ids)
     }
   })
 }
@@ -92,9 +73,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
     if (!confirmed) return
 
     try {
-      await campaign.deleteCampaignTeamMember(member.id)
-
-      refreshData()
+      await removeTeamMember({ member: member.id, campaign: item.id })
     }
     catch (err) {
       toast({
@@ -113,13 +92,13 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
     :header="$t('general.campaign', 2)"
   >
     <LimitCta
-      v-if="count >= campaign.max"
+      v-if="count >= max"
       ref="limitCta"
     />
     <AnimationExpand>
       <RefreshCard
-        v-if="status === 'error'"
-        @refresh="refreshData()"
+        v-if="campaignsError"
+        @refresh="queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })"
       />
     </AnimationExpand>
     <DataTable
@@ -134,11 +113,11 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
         { label: $t('general.member', 2), sort: false, id: 'team' },
         { label: '', sort: false, id: 'modify' },
       ]"
-      :items="campaigns || []"
-      :pages="campaign.pages"
-      :per-page="campaign.perPage"
-      :total-items="campaign.amount"
-      :loading="status === 'pending'"
+      :items="data?.campaigns || []"
+      :pages="data?.pages || 0"
+      :per-page="10"
+      :total-items="data?.amount || 0"
+      :loading="campaignsPending"
       type="campaign"
       select
       @remove="deleteItems"
@@ -146,19 +125,15 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
     >
       <template #header>
         <ContentCount
-          v-if="campaigns !== null && profile.data"
+          v-if="data?.campaigns !== null && profile.data && count"
           :count="count"
-          :max="campaign.max"
+          :max="max"
         />
         <button
           class="btn-primary"
           :aria-label="$t('actions.create')"
-          :disabled="status === 'pending'"
-          @click="() => {
-            count >= campaign.max
-              ? limitCta?.show()
-              : openModal()
-          }"
+          :disabled="campaignsPending"
+          @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
         >
           {{ $t('actions.create') }}
         </button>
@@ -178,7 +153,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
               v-if="row.created_by.id === profile.user!.id"
               v-model="rowSelection[row.id]"
               type="checkbox"
-              :disabled="status === 'pending'"
+              :disabled="campaignsPending"
               outer-class="$reset !pb-0"
               wrapper-class="$remove:mb-1"
               decorator-class="$remove:mr-2"
@@ -237,7 +212,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       </template>
 
       <template
-        v-if="!campaigns?.length && status !== 'pending'"
+        v-if="!data?.campaigns?.length && !campaignsPending"
         #empty
       >
         {{ $t('components.table.nothing', { item: $t('general.campaign', 2).toLowerCase() }) }}

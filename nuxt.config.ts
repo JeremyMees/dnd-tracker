@@ -100,7 +100,7 @@ export default defineNuxtConfig({
 
   eslint: { config: { stylistic: true } },
 
-  imports: { dirs: ['types/*.ts'] },
+  imports: { dirs: ['types/*.ts', 'queries/*.ts'] },
 
   formkit: { configFile: './formkit/config.ts' },
 

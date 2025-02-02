@@ -9,44 +9,58 @@ const emit = defineEmits<{
 
 const props = defineProps<{ current: CampaignFull }>()
 
-const campaign = useCampaigns()
 const { toast } = useToast()
 const { t } = useI18n()
+
+const { mutateAsync: createTeamMember } = useTeamMemberCreate()
+const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
+const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
 async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
-  try {
-    const formData = sanitizeForm<TransformForm>(form)
-    const oldOwner = props.current.created_by
-    const newOwner = props.current.team?.find(t => t.user.id === formData.user)
-    const campaignId = props.current.id
+  const formData = sanitizeForm<TransformForm>(form)
+  const oldOwner = props.current.created_by
+  const newOwner = props.current.team?.find(t => t.user.id === formData.user)
+  const campaignId = props.current.id
 
-    if (!newOwner) return
+  const onError = (err: string) => {
+    reset('TransferOwnership')
+    node.setErrors(err)
+  }
 
-    if (formData.role !== 'Remove') {
-      await campaign.addCampaignTeamMember({
+  if (!newOwner) return
+
+  if (formData.role !== 'Remove') {
+    await createTeamMember({
+      data: {
         role: formData.role,
         user: oldOwner.id,
         campaign: campaignId,
-      })
-    }
-
-    await campaign.deleteCampaignTeamMember(newOwner.id)
-    await campaign.updateCampaign({ created_by: newOwner.user.id }, campaignId)
-
-    toast({
-      description: t('components.transferOwnershipModal.toast.success.title', { username: newOwner.user.username }),
-      variant: 'success',
+      },
+      onError,
     })
+  }
 
-    emit('finished')
-    emit('close')
-  }
-  catch (err: any) {
-    reset('TransferOwnership')
-    node.setErrors(err.message)
-  }
+  await removeTeamMember({
+    member: newOwner.id,
+    campaign: campaignId,
+    onError,
+  })
+
+  await updateCampaign({
+    data: { created_by: newOwner.user.id },
+    id: campaignId,
+    onError,
+  })
+
+  toast({
+    description: t('components.transferOwnershipModal.toast.success.title', { username: newOwner.user.username }),
+    variant: 'success',
+  })
+
+  emit('finished')
+  emit('close')
 }
 </script>
 
