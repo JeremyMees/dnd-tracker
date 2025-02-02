@@ -219,7 +219,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
           </div>
         </Card>
         <button
-          class="btn-black w-full mt-4"
+          class="btn-foreground w-full mt-4"
           :aria-label="$t('pages.campaign.settings.add')"
           :disabled="[...current.team, ...current.join_campaign].length >= 9"
           @click="invite"

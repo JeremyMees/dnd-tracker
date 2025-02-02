@@ -60,7 +60,7 @@ async function transferOwnership(): Promise<void> {
           <button
             :aria-label="$t('actions.transfer')"
             :disabled="!current.team?.length || !current || !isOwner(current, profile.user!.id)"
-            class="btn-black"
+            class="btn-foreground"
             @click="transferOwnership"
           >
             {{ $t('actions.transfer') }}
@@ -81,7 +81,7 @@ async function transferOwnership(): Promise<void> {
           <button
             :aria-label="$t('actions.delete')"
             :disabled="!current || !isOwner(current, profile.user!.id)"
-            class="btn-black"
+            class="btn-foreground"
             @click="remove"
           >
             {{ $t('actions.delete') }}

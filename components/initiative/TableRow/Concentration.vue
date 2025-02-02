@@ -27,7 +27,7 @@ function updateConcentration(): void {
       @click="updateConcentration"
     >
       <Icon
-        :name="`tabler:${item.concentration ? 'brain' : 'point'}`"
+        :name="`tabler:${item.concentration ? 'circle-filled' : 'circle-dotted'}`"
         :aria-hidden="true"
         class="size-5 min-w-5"
       />

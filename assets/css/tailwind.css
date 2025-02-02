@@ -4,7 +4,7 @@
 
 @layer components {
   .btn {
-    @apply py-2 px-6 rounded-lg outline-none border-4 text-white duration-200 ease-in-out font-bold transition-all;
+    @apply py-2 px-6 rounded-lg outline-none border-4 text-foreground duration-200 ease-in-out font-bold transition-all;
     @apply focus-within:border-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
@@ -228,11 +228,11 @@
   }
 
   .btn-foreground {
-    @apply btn bg-foreground/50 hover:bg-foreground/60 border-foreground;
+    @apply btn !text-background bg-foreground/50 hover:bg-foreground/60 border-foreground;
   }
 
-  .btn-black {
-    @apply btn bg-black/50 hover:bg-black/60 border-black;
+  .btn-background {
+    @apply btn bg-background/50 hover:bg-background/60 border-background;
   }
 
   .btn-primary {
@@ -267,8 +267,12 @@
     @apply btn bg-destructive/50 hover:bg-destructive/60 border-destructive;
   }
 
-  .btn-small-black {
-    @apply btn-small bg-black/50 hover:bg-black/60 border-black;
+  .btn-small-foreground {
+    @apply btn-small !text-background bg-foreground/50 hover:bg-foreground/60 border-foreground;
+  }
+
+  .btn-small-background {
+    @apply btn-small bg-background/50 hover:bg-background/60 border-background;
   }
 
   .btn-small-primary {
@@ -299,8 +303,12 @@
     @apply btn-small bg-destructive/50 hover:bg-destructive/60 border-destructive;
   }
 
-  .icon-btn-black {
-    @apply icon-btn hover:bg-black/50;
+  .icon-btn-foreground {
+    @apply icon-btn hover:bg-foreground/50;
+  }
+
+  .icon-btn-background {
+    @apply icon-btn hover:bg-background/50;
   }
 
   .icon-btn-primary {

@@ -62,7 +62,7 @@ const modalComponents: Record<ModalComponent, any> = {
         <button
           type="submit"
           :form="modal.component"
-          class="btn-black w-full"
+          class="btn-foreground w-full"
         >
           {{ modal.submit }}
         </button>

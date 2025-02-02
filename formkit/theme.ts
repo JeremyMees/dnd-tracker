@@ -14,7 +14,7 @@ export default {
     suffixIcon: 'flex items-center -ml-1 mr-2 w-5 shrink-0 [&>svg]:max-w-[1rem] [&>svg]:max-h-[1rem]',
   },
   'family:box': {
-    decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-transparent border-4 border-background peer-checked:border-primary peer-checked:bg-primary/50',
+    decorator: 'block relative h-5 w-5 mr-2 rounded-lg bg-muted-foreground/50 border-2 border-muted-foreground peer-checked:border-primary peer-checked:bg-primary/50',
     decoratorIcon: 'hidden',
     help: 'mb-2 mt-1.5',
     input: 'absolute w-0 h-0 overflow-hidden opacity-0 pointer-events-none peer',
@@ -22,7 +22,7 @@ export default {
     wrapper: 'flex items-center mb-1 cursor-pointer',
   },
   'family:button': {
-    input: '$remove:bg-muted $remove:text-foreground text-white btn-black w-full',
+    input: '$remove:bg-muted $remove:text-foreground text-white btn-foreground w-full',
     wrapper: 'flex justify-end',
     outer: '$remove:mb-4 formkit-disabled:opacity-50',
   },
@@ -120,6 +120,6 @@ export default {
     wrapper: 'flex flex-col',
     options: 'flex gap-1 flex-wrap mb-4',
     option: 'w-10 h-10 flex items-center justify-center cursor-pointer rounded-lg overflow-hidden',
-    input: '$remove:btn-black bg-muted rounded-lg p-2 border-4 border-secondary ring-0 aria-pressed:border-primary focus-within:border-primary',
+    input: '$remove:btn-foreground bg-muted rounded-lg p-2 border-4 border-secondary ring-0 aria-pressed:border-primary focus-within:border-primary',
   },
 }

@@ -91,7 +91,7 @@ defineExpose({ roll })
       v-if="!form"
       type="submit"
       :label="$t('actions.roll')"
-      input-class="py-2 px-2 $remove:btn-black btn-secondary"
+      input-class="py-2 px-2"
     />
   </div>
 </template>

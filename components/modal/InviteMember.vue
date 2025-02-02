@@ -144,7 +144,6 @@ async function inviteNewUser(email: string): Promise<void> {
       <FormKit
         type="submit"
         outer-class="$reset !mb-0"
-        input-class="$remove:btn-black btn-primary"
         :aria-label="$t('actions.search')"
       >
         {{ $t('actions.search') }}
