@@ -8,7 +8,6 @@ useSeo('Profile')
 
 const profile = useProfile()
 const { toast } = useToast()
-const modal = useModal()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
@@ -106,37 +105,6 @@ async function deleteUser(): Promise<void> {
           :selected-options="profile.data?.avatar_options as SelectedStyleOptions || undefined"
           @save="updateAvatar"
         />
-      </div>
-      <UiSeparator />
-      <div class="flex flex-wrap items-end gap-4 py-6">
-        <template v-if="profile.data">
-          <Badge
-            v-for="badge in profile.data.badges"
-            :key="badge.id"
-            :label="badge.label"
-            :icon="badge.icon"
-            :background="badge.background"
-            :description="badge.description"
-            :earned="badge.earned"
-          />
-          <button
-            class="btn-text"
-            @click="modal.open({
-              component: 'Badge',
-              header: $t('components.badgeModal.title'),
-              submit: $t('components.badgeModal.add'),
-            })"
-          >
-            {{ $t('components.badgeModal.claim') }}
-          </button>
-        </template>
-        <template v-else>
-          <UiSkeleton
-            v-for="i in 3"
-            :key="i"
-            class="w-[150px] h-10"
-          />
-        </template>
       </div>
       <UiSeparator />
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">

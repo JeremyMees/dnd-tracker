@@ -7,9 +7,6 @@ export type DatabaseEnum = keyof Database['public']['Enums']
 export type ArmorRow = Database['public']['Tables']['armor']['Row']
 export type ArmorInsert = Database['public']['Tables']['armor']['Insert']
 export type ArmorUpdate = Database['public']['Tables']['armor']['Update']
-export type BadgeRow = Database['public']['Tables']['badges']['Row']
-export type BadgeInsert = Database['public']['Tables']['badges']['Insert']
-export type BadgeUpdate = Database['public']['Tables']['badges']['Update']
 export type CampaignRow = Database['public']['Tables']['campaigns']['Row']
 export type CampaignInsert = Database['public']['Tables']['campaigns']['Insert']
 export type CampaignUpdate = Database['public']['Tables']['campaigns']['Update']
@@ -140,14 +137,6 @@ export interface InitiativeSettings {
   pet?: InitiativePet
 }
 
-export type I18NText = Record<string, string>
-
-export interface BadgeJson extends Omit<BadgeRow, 'description' | 'label' | 'code' | 'created_at'> {
-  description: I18NText
-  label: I18NText
-  earned: number
-}
-
 // Extended Types
 export type NotUpdatable = 'id' | 'created_at' | 'updated_at'
 
@@ -156,8 +145,6 @@ export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing'
 export type MinimalProfile = Pick<ProfileRow, 'avatar' | 'id' | 'username'>
 
 export type Profile = Pick<ProfileRow, 'avatar' | 'id' | 'username' | 'name' | 'email'>
-
-export type Badge = BadgeRow & { earned: number }
 
 export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & {
   created_by: SocialProfile

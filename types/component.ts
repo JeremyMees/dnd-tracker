@@ -14,7 +14,6 @@ export type CreateToast = Partial<Omit<Toast, 'uuid' | 'type'>>
 
 export type ModalComponent =
   | 'FeatureRequest'
-  | 'Badge'
   | 'Campaign'
   | 'Encounter'
   | 'TransferOwnership'

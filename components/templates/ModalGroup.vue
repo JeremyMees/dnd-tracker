@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   LazyModalFeatureRequest,
-  LazyModalBadge,
   LazyModalCampaign,
   LazyModalEncounter,
   LazyModalTransferOwnership,
@@ -21,7 +20,6 @@ const { modals, close } = useModal()
 
 const modalComponents: Record<ModalComponent, any> = {
   FeatureRequest: LazyModalFeatureRequest,
-  Badge: LazyModalBadge,
   Campaign: LazyModalCampaign,
   Encounter: LazyModalEncounter,
   TransferOwnership: LazyModalTransferOwnership,

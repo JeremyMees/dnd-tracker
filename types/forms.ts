@@ -29,10 +29,6 @@ export interface Contact {
   question: string
 }
 
-export interface BadgeClaim {
-  code: string
-}
-
 export interface FeatureForm {
   title: string
   text: string
