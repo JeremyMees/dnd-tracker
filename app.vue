@@ -38,6 +38,7 @@ if (import.meta.client) {
       }"
       class="flex flex-col min-h-screen"
     >
+      <WarningBanner />
       <NuxtPage />
     </div>
   </div>
