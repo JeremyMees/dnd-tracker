@@ -42,7 +42,7 @@ const { data, status } = useCampaignDetail(+route.params.id)
           </span>
           <UiSkeleton
             v-else
-            class="w-[150px] h-8 rounded-full"
+            class="w-[150px] h-6 rounded-full"
           />
         </h2>
       </div>
