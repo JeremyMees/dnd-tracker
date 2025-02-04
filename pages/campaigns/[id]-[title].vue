@@ -3,7 +3,8 @@ import { useQueryClient } from '@tanstack/vue-query'
 
 definePageMeta({
   auth: true,
-  middleware: ['id-param', 'campaign-member'],
+  path: '/campaigns/:id(\\d+)-:title/:page?',
+  middleware: ['campaign-member'],
 })
 
 const profile = useProfile()

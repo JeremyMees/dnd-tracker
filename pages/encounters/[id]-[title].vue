@@ -3,7 +3,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 definePageMeta({
   auth: true,
-  middleware: ['id-param'],
+  path: '/encounters/:id(\\d+)-:title/:page?',
 })
 
 const profile = useProfile()
