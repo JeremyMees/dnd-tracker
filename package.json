@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "@iconify-json/tabler": "^1.2.8",
+    "@tanstack/eslint-plugin-query": "^5.66.0",
     "@types/markdown-it": "^14.1.2",
     "@types/sanitize-html": "^2.13.0",
     "typescript": "^5.6.2",
