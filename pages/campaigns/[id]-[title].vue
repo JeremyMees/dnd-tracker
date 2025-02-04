@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 
-definePageMeta({ middleware: ['auth', 'id-param', 'campaign-member'] })
+definePageMeta({
+  auth: true,
+  middleware: ['id-param', 'campaign-member'],
+})
 
 const profile = useProfile()
 const route = useRoute()

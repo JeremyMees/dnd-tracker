@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 
-definePageMeta({ middleware: ['auth', 'valid-token'] })
+definePageMeta({
+  auth: true,
+  middleware: ['valid-token'],
+})
 
 const { toast } = useToast()
 const { t } = useI18n()

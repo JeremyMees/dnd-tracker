@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: ['auth'] })
+definePageMeta({ auth: true })
 useSeo('Encounters')
 </script>
 

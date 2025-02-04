@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 
-definePageMeta({ middleware: ['auth', 'id-param'] })
+definePageMeta({
+  auth: true,
+  middleware: ['id-param'],
+})
 
 const profile = useProfile()
 const route = useRoute()

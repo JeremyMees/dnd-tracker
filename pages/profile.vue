@@ -3,7 +3,7 @@ import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { togglePasswordInput } from '~/utils/ui-helpers'
 
-definePageMeta({ middleware: ['auth'] })
+definePageMeta({ auth: true })
 useSeo('Profile')
 
 const profile = useProfile()

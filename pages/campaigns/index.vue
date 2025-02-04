@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 
-definePageMeta({ middleware: ['auth'] })
+definePageMeta({ auth: true })
 useSeo('Campaigns')
 
 const modal = useModal()
