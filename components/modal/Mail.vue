@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
 
-const emit = defineEmits<{
-  close: []
-  send: [mail: string[]]
-}>()
+const emit = defineEmits<{ close: [] }>()
+const props = defineProps<{ send: (addresses: string[]) => void }>()
 
 const input = ref()
 
@@ -18,7 +16,7 @@ async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
   try {
     const formData = sanitizeForm<MailForm>(form)
 
-    emit('send', formData.mail)
+    props.send(formData.mail)
     emit('close')
   }
   catch (err: any) {
@@ -49,8 +47,15 @@ async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
         :index="index"
         :label="$t('components.inputs.emailLabel')"
         validation="required|length:5,50|email"
-        suffix-icon="trash"
-        :sections-schema="{ suffixIcon: { $el: 'button' } }"
+        :suffix-icon="index !== 0 ? 'trash' : undefined"
+        :sections-schema="{
+          suffixIcon: {
+            $el: 'button',
+            $attrs: {
+              type: 'button',
+            },
+          },
+        }"
         @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
       />
       <button

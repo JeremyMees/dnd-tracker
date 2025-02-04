@@ -2,22 +2,19 @@
 import { FormKitMessages } from '@formkit/vue'
 import { reset } from '@formkit/core'
 
-const emit = defineEmits<{
-  close: []
-  finished: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{
   campaignId: number
   note?: NoteRow
 }>()
 
-const store = useNotes()
-const profile = useProfile()
-
 const input = ref()
 const hiddenText = ref()
 const text = ref<string>(props.note?.text || '')
+
+const { mutateAsync: createNote } = useNoteCreate()
+const { mutateAsync: updateNote } = useNoteUpdate()
 
 onMounted(() => {
   if (input.value) focusInput(input.value)
@@ -26,33 +23,30 @@ onMounted(() => {
 async function handleSubmit(form: NoteForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
-  try {
-    const formData = {
-      ...sanitizeForm<NoteForm>(form),
-      campaign: props.campaignId,
-    }
-
-    if (props.note) await updateNote(formData)
-    else await addNote(formData)
-
-    emit('finished')
-    emit('close')
-  }
-  catch (err: any) {
+  const onError = (err: string) => {
     reset('Note')
-    node.setErrors(err.message)
+    node.setErrors(err)
   }
-}
 
-async function addNote(data: NoteInsert): Promise<void> {
-  if (profile.user) {
-    await store.addNote(data)
+  const formData = {
+    ...sanitizeForm<NoteForm>(form),
+    campaign: props.campaignId,
   }
-}
 
-async function updateNote(data: NoteUpdate): Promise<void> {
   if (props.note) {
-    await store.updateNote(data, props.note.id)
+    await updateNote({
+      data: formData,
+      id: props.note.id,
+      onSuccess: () => emit('close'),
+      onError,
+    })
+  }
+  else {
+    await createNote({
+      data: formData,
+      onSuccess: () => emit('close'),
+      onError,
+    })
   }
 }
 </script>

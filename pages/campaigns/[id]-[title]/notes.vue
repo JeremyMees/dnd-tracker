@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable } from '#components'
 
@@ -8,48 +9,38 @@ const table = ref<InstanceType<typeof DataTable>>()
 
 const { toast } = useToast()
 const modal = useModal()
-const note = useNotes()
 const profile = useProfile()
 const { ask } = useConfirm()
 const { t, locale } = useI18n()
 const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
+const queryClient = useQueryClient()
 
 const search = ref<string>('')
+const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
 const sortBy = ref<string>('created_at')
 const sortACS = ref<boolean>(false)
 const page = ref<number>(0)
-const count = ref<number>(await note.getCount(props.current.id))
+const max = 100
 
-const { data: notes, status, refresh } = await useAsyncData(
-  'notes',
-  async () => await note.get({
-    search: search.value,
-    sortBy: sortBy.value,
-    sortACS: sortACS.value,
-    page: page.value,
-  },
-  { field: 'campaign', value: props.current.id },
-  ),
-  {
-    watch: [sortBy, sortACS, page],
-  },
-)
+const { data: count } = useNoteCount(props.current.id)
+const { mutateAsync: removeNote } = useNoteRemove()
 
-watchDebounced(search, () => refresh(), { debounce: 500, maxWait: 1000 })
+const { data, status } = useNoteListing(computed(() => ({
+  search: debouncedSearch.value,
+  sortBy: sortBy.value,
+  sortACS: sortACS.value,
+  page: page.value,
+  campaign: props.current.id,
+  eq: { field: 'campaign', value: props.current.id },
+})))
 
 const rowSelection = computed(() => selectedRows(table.value))
-
-async function refreshData(): Promise<void> {
-  refresh()
-  count.value = await note.getCount(props.current.id)
-}
 
 function openModal(item?: NoteRow): void {
   modal.open({
     component: 'Note',
     header: t(`components.noteModal.${item ? 'update' : 'new'}`),
     submit: t(`components.noteModal.${item ? 'update' : 'add'}`),
-    events: { finished: () => refreshData() },
     props: {
       campaignId: props.current.id,
       ...(item && { note: item }),
@@ -63,34 +54,15 @@ function openMailModal(item: NoteRow): void {
     header: t('components.mailModal.title', { type: t('general.note').toLowerCase() }),
     subHeader: item.title,
     submit: t('actions.sendMail'),
-    events: { send: (addresses: string[]) => sendNoteAsMail(item, addresses) },
     props: {
-      sender: {
-        name: profile.data!.username,
-        avatar: profile.data!.avatar,
-      },
+      send: (addresses: string[]) => sendNoteAsMail(item, addresses),
     },
   })
 }
 
 async function deleteItems(ids: number[]): Promise<void> {
-  const amount = ids.length
-  const type = t('general.note', amount).toLowerCase()
-
   ask({}, async (confirmed: boolean) => {
-    if (!confirmed) return
-
-    try {
-      await note.deleteNote(ids)
-      refreshData()
-    }
-    catch (err) {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
-    }
+    if (confirmed) await removeNote({ id: ids })
   })
 }
 
@@ -131,7 +103,10 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
     <AnimationExpand>
       <RefreshCard
         v-if="status === 'error'"
-        @refresh="refreshData()"
+        @refresh="() => {
+          queryClient.invalidateQueries({ queryKey: ['useNoteListing'] })
+          queryClient.invalidateQueries({ queryKey: ['useNoteCount'] })
+        }"
       />
     </AnimationExpand>
     <DataTable
@@ -144,10 +119,10 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
         { label: $t('general.createdAt'), sort: true, id: 'created_at' },
         { label: '', sort: false, id: 'modify' },
       ]"
-      :items="notes || []"
-      :pages="note.pages"
-      :per-page="note.perPage"
-      :total-items="note.amount"
+      :items="data?.notes || []"
+      :pages="data?.pages || 0"
+      :per-page="10"
+      :total-items="data?.amount || 0"
       :loading="status === 'pending'"
       :has-rights="isAdmin(current, profile.user!.id)"
       type="note"
@@ -157,14 +132,14 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
     >
       <template #header>
         <ContentCount
-          v-if="notes !== null && profile.data"
+          v-if="data?.notes !== null && profile.data && count"
           :count="count"
-          :max="note.max"
+          :max="max"
         />
         <button
           class="btn-primary"
           :aria-label="$t('actions.create')"
-          :disabled="status === 'pending' || !isAdmin(current, profile.user!.id) || count >= note.max"
+          :disabled="status === 'pending' || !profile.user || !isAdmin(current, profile.user.id) || (count || 0) >= max"
           @click="openModal()"
         >
           {{ $t('actions.create') }}
@@ -283,7 +258,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
       </template>
 
       <template
-        v-if="!notes?.length && status !== 'pending'"
+        v-if="!data?.notes?.length && status !== 'pending'"
         #empty
       >
         {{ $t('components.table.nothing', { item: $t('general.note', 2).toLowerCase() }) }}
