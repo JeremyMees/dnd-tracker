@@ -13,13 +13,13 @@ const props = defineProps<{
 }>()
 
 const store = useEncounters()
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 
 const input = ref()
 
-const { data: campaigns, isError } = useCampaignMinimalListing(profile.user!.id)
+const { data: campaigns, isError } = useCampaignMinimalListing(user.value.id)
 
 onMounted(() => {
   if (input.value) focusInput(input.value)
@@ -58,7 +58,7 @@ async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> 
 }
 
 async function addEncounter(data: EncounterForm): Promise<void> {
-  if (profile.user) {
+  if (user.value) {
     await store.addEncounter({ ...data, rows: [] })
   }
 }

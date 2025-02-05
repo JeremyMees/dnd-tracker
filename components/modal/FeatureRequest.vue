@@ -4,7 +4,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 const emit = defineEmits<{ finished: [] }>()
 
 const feature = useFeatures()
-const profile = useProfile()
+const { user } = useAuthentication()
 const { toast } = useToast()
 const { t } = useI18n()
 
@@ -21,9 +21,9 @@ async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
 
     const newFeature: FeatureInsert = {
       ...formData,
-      created_by: profile.data!.id,
+      created_by: user.value!.id,
       voted: {
-        like: [profile.data!.id],
+        like: [user.value!.id],
         dislike: [],
       },
     }
@@ -45,14 +45,14 @@ async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
 }
 
 async function sendFeatureEmail(form: FeatureForm): Promise<void> {
-  if (!profile.data) return
+  if (!user.value) return
 
   const { error } = await useFetch('/api/emails/feature-request', {
     method: 'POST',
     body: {
       ...form,
-      name: profile.data.username,
-      email: profile.data.email,
+      name: user.value.username,
+      email: user.value.email,
     },
   })
 

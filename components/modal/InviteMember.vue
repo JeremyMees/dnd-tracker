@@ -7,7 +7,7 @@ const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{ current: CampaignFull }>()
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -27,7 +27,8 @@ async function handleSearch({ email }: { email: string }, node: FormNode): Promi
 
     if (error) throw createError(error)
 
-    const user = await profile.getProfile({ email })
+    const { data } = useProfileDetailMinimal({ email })
+    const user = await data.value
 
     if (user) {
       form.value.users.push({
@@ -40,14 +41,14 @@ async function handleSearch({ email }: { email: string }, node: FormNode): Promi
 
     reset('search')
   }
-  catch (err: any) {
+  catch ({ message }: any) {
     reset('search')
 
-    if (['self', 'alreadyAdded', 'alreadyInvited', 'alreadySelected', 'maxMembers'].includes(err.message)) {
-      node.setErrors(t(`components.inviteMember.errors.${err.message}`))
+    if (['self', 'alreadyAdded', 'alreadyInvited', 'alreadySelected', 'maxMembers'].includes(message)) {
+      node.setErrors(t(`components.inviteMember.errors.${message}`))
     }
     else {
-      node.setErrors(err.message)
+      node.setErrors(message)
     }
   }
 }
@@ -55,7 +56,7 @@ async function handleSearch({ email }: { email: string }, node: FormNode): Promi
 function validateUser(email: string): string | undefined {
   const { team, join_campaign, created_by } = props.current
 
-  if (email === profile.data?.email) return 'self'
+  if (email === user.value.email) return 'self'
   else if (join_campaign.some(({ user }) => user.email === email)) return 'alreadyInvited'
   else if (form.value.users.some(({ profile }) => profile.email === email)) return 'alreadySelected'
   else if ([...form.value.users, ...team, ...join_campaign].length >= 9) return 'maxMembers'
@@ -86,12 +87,12 @@ async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<voi
   }
 }
 
-async function addTeamMember(user: AddMemberForm): Promise<void> {
+async function addTeamMember(member: AddMemberForm): Promise<void> {
   const token = await createJoinCampaignToken({
     data: {
-      user: user.id,
+      user: member.id,
       campaign: props.current.id,
-      role: user.role,
+      role: member.role,
     },
     onError: (error: string) => {
       throw createError(error)
@@ -101,10 +102,10 @@ async function addTeamMember(user: AddMemberForm): Promise<void> {
   await $fetch('/api/emails/campaign-invite', {
     method: 'POST',
     body: {
-      email: user.profile.email,
-      username: user.profile.username,
+      email: member.profile.email,
+      username: member.profile.username,
       campaign: props.current.title,
-      invitedBy: profile.data!.username || 'Owner',
+      invitedBy: user.value.username || 'Owner',
       inviteLink: `https://dnd-tracker.com${localePath('/campaigns/join')}?token=${token}&campaign=${props.current.id}`,
     },
   })
@@ -116,7 +117,7 @@ async function inviteNewUser(email: string): Promise<void> {
     body: {
       email,
       campaign: props.current.title,
-      invitedBy: profile.data!.username || 'Owner',
+      invitedBy: user.value.username || 'Owner',
     },
   })
 

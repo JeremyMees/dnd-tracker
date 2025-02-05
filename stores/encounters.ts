@@ -1,6 +1,6 @@
 export const useEncounters = defineStore('useEncounters', () => {
   const supabase = useSupabaseClient<Database>()
-  const profile = useProfile()
+  const user = useAuthenticatedUser()
 
   const amount = ref<number>(0)
   const pages = ref<number>(0)
@@ -8,7 +8,7 @@ export const useEncounters = defineStore('useEncounters', () => {
 
   const max = computed<number>(() => getMax(
     'encounter',
-    profile.data?.subscription_type || 'free',
+    user.value.subscription_type,
   ))
 
   const select = `
@@ -71,8 +71,6 @@ export const useEncounters = defineStore('useEncounters', () => {
   }
 
   async function copyEncounter(item: EncounterItem): Promise<void> {
-    if (!profile.user) return
-
     const { campaign, created_by, id, ...enc } = item
 
     const encounter: InitiativeInsert = {

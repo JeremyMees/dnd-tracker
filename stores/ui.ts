@@ -1,6 +1,5 @@
 export const useUI = defineStore('useUI', () => {
-  const auth = useAuth()
-  const profile = useProfile()
+  const { user } = useAuthentication()
   const route = useRoute()
 
   const routes = computed<Route[]>(() => {
@@ -17,7 +16,7 @@ export const useUI = defineStore('useUI', () => {
         requireAuth: false,
         icon: 'tabler:credit-card',
       },
-      ...auth.isAuthenticated
+      ...user.value
         ? []
         : [
             {
@@ -39,7 +38,7 @@ export const useUI = defineStore('useUI', () => {
 
   const playRoutes = computed<Route[]>(() => {
     return [
-      ...auth.isAuthenticated
+      ...user.value
         ? [
             {
               label: 'components.navbar.campaigns',
@@ -95,7 +94,7 @@ export const useUI = defineStore('useUI', () => {
       requireAuth: false,
       icon: 'tabler:bulb',
     },
-    ...profile.data?.subscription_type !== 'pro'
+    ...user.value?.subscription_type !== 'pro'
       ? []
       : [
           {

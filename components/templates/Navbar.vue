@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 
+const { user, logout } = useAuthentication()
+const ui = useUI()
 const { toast } = useToast()
 const { t } = useI18n()
-const profile = useProfile()
-const ui = useUI()
-const auth = useAuth()
 const isSmall = useMediaQuery('(max-width: 1024px)')
-const localePath = useLocalePath()
 
 const isOpen = ref<boolean>(false)
 const navigationVisible = ref<boolean>(true)
@@ -26,15 +24,12 @@ onMounted(() => {
   }
 })
 
-async function logout(): Promise<void> {
+async function logoutUser(): Promise<void> {
   try {
-    await auth.logout()
-    profile.data = undefined
+    await logout()
     isOpen.value = false
-
-    setTimeout(() => navigateTo(localePath('/')), 100)
   }
-  catch (err) {
+  catch {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),
@@ -108,21 +103,17 @@ async function logout(): Promise<void> {
             <UiDropdownMenu>
               <UiDropdownMenuTrigger class="mt-1">
                 <UiAvatar
-                  :class="[auth.isAuthenticated ? 'border-tertiary' : 'border-muted-foreground']"
+                  :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
                   class="border-4"
                   size="base"
                 >
                   <UiAvatarImage
-                    v-if="profile.data"
-                    :src="profile.data.avatar"
+                    :src="user?.avatar ?? ''"
                     alt="Avatar image"
                   />
-                  <UiAvatarFallback
-                    v-else
-                    class="h-6"
-                  >
+                  <UiAvatarFallback class="h-6">
                     <Icon
-                      :name="auth.isAuthenticated ? 'tabler:user' : 'tabler:settings'"
+                      :name="user ? 'tabler:user' : 'tabler:settings'"
                       class="size-6 min-w-6 text-muted-foreground"
                     />
                   </UiAvatarFallback>
@@ -132,6 +123,7 @@ async function logout(): Promise<void> {
                 class="w-60"
                 align="start"
                 :routes="ui.profileRoutes"
+                @logout="logoutUser"
               />
             </UiDropdownMenu>
           </div>
@@ -190,7 +182,7 @@ async function logout(): Promise<void> {
                   v-for="route in ui.profileRoutes"
                   :key="route.label"
                 >
-                  <UiDropdownMenuItem v-if="route.requireAuth ? auth.isAuthenticated : true">
+                  <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
                     <NuxtLinkLocale
                       :to="route.url"
                       class="flex items-center gap-2"
@@ -209,12 +201,12 @@ async function logout(): Promise<void> {
                   <LangSwitcher />
                   <ColorModeSwitcher />
                 </div>
-                <template v-if="auth.isAuthenticated">
+                <template v-if="user">
                   <UiDropdownMenuSeparator />
                   <UiDropdownMenuItem>
                     <button
                       class="text-destructive flex items-center gap-2"
-                      @click="logout"
+                      @click="logoutUser"
                     >
                       <Icon
                         name="tabler:logout"

@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
-
 useSeo('Playground')
 
-const profile = useProfile()
 const route = useRoute()
 const sheet = useInitiativeSheet()
-const { toast } = useToast()
-const { t } = useI18n()
-const localePath = useLocalePath()
 
 const { data, status, refresh } = await useAsyncData(
   'initiative-sheet',

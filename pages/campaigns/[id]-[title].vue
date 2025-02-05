@@ -7,7 +7,7 @@ definePageMeta({
   middleware: ['campaign-member'],
 })
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const route = useRoute()
 const queryClient = useQueryClient()
 
@@ -70,13 +70,13 @@ const { data, status } = useCampaignDetail(+route.params.id)
         :link="`${url}/settings`"
         :label="$t('general.setting', 2)"
         icon="tabler:settings"
-        :disabled="status !== 'success' || !data || !isAdmin(data, profile.user!.id)"
+        :disabled="status !== 'success' || !data || !isAdmin(data, user.id)"
       />
       <TabItem
         :link="`${url}/danger-zone`"
         :label="$t('general.dangerZone')"
         icon="tabler:alert-triangle"
-        :disabled="status !== 'success' || !data || !isOwner(data, profile.user!.id)"
+        :disabled="status !== 'success' || !data || !isOwner(data, user.id)"
       />
     </div>
     <div class="min-h-[40vh]">

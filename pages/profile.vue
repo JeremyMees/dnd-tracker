@@ -6,90 +6,83 @@ import { togglePasswordInput } from '~/utils/ui-helpers'
 definePageMeta({ auth: true })
 useSeo('Profile')
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
 
 const formInfo = ref<ProfileUpdate>({
-  email: '',
-  name: '',
-  username: '',
-  marketing: true,
+  email: user.value.email || '',
+  name: user.value.name || '',
+  username: user.value.username || '',
+  marketing: user.value.marketing ?? true,
 })
 
-if (profile.data) setUserData()
-else whenever(() => profile.data, () => setUserData())
-
-function setUserData(): void {
-  formInfo.value = {
-    email: profile.data?.email || '',
-    name: profile.data?.name || '',
-    username: profile.data?.username || '',
-    marketing: profile.data?.marketing ?? true,
-  } as ProfileUpdate
-}
+const { mutateAsync: updateProfile } = useProfileUpdate()
+const { mutateAsync: removeProfile } = useProfileRemove()
 
 async function updateAvatar(avatar: Avatar): Promise<void> {
-  return updateProfile({
+  return handleUpdateProfile({
     avatar: avatar.url,
     avatar_options: avatar.extra as Record<string, string | number>,
   })
 }
 
-const updateProfile = useThrottleFn(async (form: ProfileUpdate & { password?: string }, node?: FormNode): Promise<void> => {
+const handleUpdateProfile = useThrottleFn(async (form: ProfileUpdate & { password?: string }, node?: FormNode): Promise<void> => {
   node?.clearErrors()
 
-  try {
-    const payload = sanitizeForm<ProfileUpdate & { password?: string }>(form)
+  await updateProfile({
+    data: sanitizeForm<ProfileUpdate & { password?: string }>(form),
+    id: user.value.id,
+    onSuccess: () => {
+      toast({
+        description: t('pages.profile.toast.success.text'),
+        variant: 'success',
+      })
 
-    await profile.updateProfile(payload)
+      reset('password')
+    },
+    onError: (error) => {
+      const message = error === 'New password should be different from the old password.'
+        ? t('pages.profile.password.same')
+        : error
 
-    toast({
-      description: t('pages.profile.toast.success.text'),
-      variant: 'success',
-    })
+      node?.setErrors(message)
 
-    reset('password')
-  }
-  catch (err: any) {
-    const message = err.message === 'New password should be different from the old password.'
-      ? t('pages.profile.password.same')
-      : err.message
-
-    node?.setErrors(message)
-
-    toast({
-      description: message,
-      variant: 'destructive',
-    })
-  }
+      toast({
+        description: message,
+        variant: 'destructive',
+      })
+    },
+  })
 }, 1000)
 
-async function deleteUser(): Promise<void> {
+async function handleRemoveUser(): Promise<void> {
   ask({
     title: t('pages.profile.dialog.delete.title'),
     description: t('pages.profile.dialog.delete.text'),
   }, async (confirmed: boolean) => {
     if (!confirmed) return
 
-    try {
-      await profile.deleteProfile()
-      navigateTo(localePath('/'))
+    await removeProfile({
+      id: user.value.id,
+      onSuccess: () => {
+        navigateTo(localePath('/'))
 
-      toast({
-        description: t('pages.profile.toast.delete.text'),
-        variant: 'success',
-      })
-    }
-    catch (err) {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
-    }
+        toast({
+          description: t('pages.profile.toast.delete.text'),
+          variant: 'success',
+        })
+      },
+      onError: () => {
+        toast({
+          title: t('general.error.title'),
+          description: t('general.error.text'),
+          variant: 'destructive',
+        })
+      },
+    })
   })
 }
 </script>
@@ -101,8 +94,8 @@ async function deleteUser(): Promise<void> {
         <AvatarPicker
           profile
           avatar-big
-          :deprecated-avatar="profile.data && !profile.data?.avatar_options"
-          :selected-options="profile.data?.avatar_options as SelectedStyleOptions || undefined"
+          :deprecated-avatar="!user.avatar_options"
+          :selected-options="user.avatar_options as SelectedStyleOptions || undefined"
           @save="updateAvatar"
         />
       </div>
@@ -110,16 +103,9 @@ async function deleteUser(): Promise<void> {
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
         <div class="flex gap-4">
           {{ $t('pages.profile.subscription.current') }}:
-          <span
-            v-if="profile.data"
-            class="font-bold capitalize"
-          >
-            {{ profile.data.subscription_type }}
+          <span class="font-bold capitalize">
+            {{ user.subscription_type }}
           </span>
-          <UiSkeleton
-            v-else
-            class="w-10 h-6 rounded-full"
-          />
         </div>
       </div>
       <UiSeparator />
@@ -137,7 +123,7 @@ async function deleteUser(): Promise<void> {
             v-model="formInfo"
             type="form"
             :submit-label="$t('actions.save')"
-            @submit="updateProfile"
+            @submit="handleUpdateProfile"
           >
             <FormKit
               name="name"
@@ -177,7 +163,7 @@ async function deleteUser(): Promise<void> {
             id="password"
             type="form"
             :submit-label="$t('actions.save')"
-            @submit="updateProfile"
+            @submit="handleUpdateProfile"
           >
             <FormKit
               name="password"
@@ -193,17 +179,12 @@ async function deleteUser(): Promise<void> {
       <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <button
-          v-if="profile.data"
           class="btn-destructive"
           :aria-label="$t('pages.profile.delete')"
-          @click="deleteUser"
+          @click="handleRemoveUser"
         >
           {{ $t('pages.profile.delete') }}
         </button>
-        <UiSkeleton
-          v-else
-          class="h-12 rounded-lg w-[200px]"
-        />
       </div>
     </section>
   </NuxtLayout>

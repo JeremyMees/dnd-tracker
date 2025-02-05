@@ -7,10 +7,10 @@ definePageMeta({ auth: true })
 useSeo('Campaigns')
 
 const modal = useModal()
-const profile = useProfile()
 const { ask } = useConfirm()
 const { toast } = useToast()
 const { t } = useI18n()
+const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
 
 const table = ref<InstanceType<typeof DataTable>>()
@@ -36,7 +36,7 @@ const { data, isPending: campaignsPending, isError: campaignsError } = useCampai
 
 const rowSelection = computed(() => selectedRows(table.value))
 
-const max = computed<number>(() => getMax('campaign', profile.data?.subscription_type || 'free'))
+const max = computed<number>(() => getMax('campaign', user.value.subscription_type || 'free'))
 
 function openModal(campaign?: CampaignItem): void {
   modal.open({
@@ -62,7 +62,7 @@ async function deleteItems(ids: number[]): Promise<void> {
 }
 
 async function leaveCampaign(item: CampaignItem): Promise<void> {
-  const member = item.team?.find(member => member.user.id === profile.user!.id)
+  const member = item.team?.find(member => member.user.id === user.value.id)
 
   if (!member) return
 
@@ -127,7 +127,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
     >
       <template #header>
         <ContentCount
-          v-if="data?.campaigns !== null && profile.data && count"
+          v-if="data?.campaigns !== null && count"
           :count="count"
           :max="max"
         />
@@ -152,7 +152,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
         >
           <td class="td max-w-6">
             <FormKit
-              v-if="row.created_by.id === profile.user!.id"
+              v-if="row.created_by.id === user.id"
               v-model="rowSelection[row.id]"
               type="checkbox"
               :disabled="campaignsPending"
@@ -185,7 +185,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
           <td class="td">
             <div class="flex justify-end">
               <button
-                v-if="!isOwner(row, profile.user!.id)"
+                v-if="!isOwner(row, user.id)"
                 v-tippy="$t('actions.leave')"
                 class="icon-btn-warning"
                 :aria-label="$t('actions.leave')"
@@ -198,7 +198,7 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
                 />
               </button>
               <button
-                v-if="isAdmin(row, profile.user!.id)"
+                v-if="isAdmin(row, user.id)"
                 v-tippy="$t('actions.update')"
                 class="icon-btn-info"
                 :aria-label="$t('actions.update')"

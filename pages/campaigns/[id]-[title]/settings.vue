@@ -4,7 +4,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 const props = defineProps<{ current: CampaignFull }>()
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 const modal = useModal()
@@ -66,7 +66,7 @@ function invite(): void {
 
 async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<void> {
   const id = member.id
-  const self = member.user.id === profile.user!.id
+  const self = member.user.id === user.value.id
   const campaign = props.current.id
 
   ask({

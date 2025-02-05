@@ -2,15 +2,15 @@
 definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Log in')
 
-const auth = useAuth()
+const { login } = useAuthentication()
 const localePath = useLocalePath()
 const redirect = useCookie<string>('sb-redirect-path')
 
-async function login(form: Login, node: FormNode): Promise<void> {
+async function handleLogin(form: Login, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    await auth.login(sanitizeForm<Login>(form))
+    await login(sanitizeForm<Login>(form))
 
     setTimeout(() => {
       const route = redirect.value || '/'
@@ -44,7 +44,7 @@ async function login(form: Login, node: FormNode): Promise<void> {
     <FormKit
       type="form"
       :submit-label="$t('pages.login.signIn')"
-      @submit="login"
+      @submit="handleLogin"
     >
       <FormKit
         name="email"

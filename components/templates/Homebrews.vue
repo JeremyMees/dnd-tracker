@@ -10,7 +10,7 @@ const limitCta = ref<InstanceType<typeof LimitCta>>()
 const { toast } = useToast()
 const modal = useModal()
 const homebrew = useHomebrews()
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { ask } = useConfirm()
 const { t } = useI18n()
 
@@ -117,7 +117,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     :per-page="homebrew.perPage"
     :total-items="homebrew.amount"
     :loading="status === 'pending'"
-    :has-rights="isAdmin(campaign, profile.user!.id)"
+    :has-rights="isAdmin(campaign, user.id)"
     type="homebrew"
     select
     @remove="deleteItems"
@@ -125,14 +125,14 @@ async function deleteItems(ids: number[]): Promise<void> {
   >
     <template #header>
       <ContentCount
-        v-if="homebrews !== null && profile.data"
+        v-if="homebrews !== null && user"
         :count="count"
         :max="homebrew.max"
       />
       <button
         class="btn-primary"
         :aria-label="$t('actions.create')"
-        :disabled="status === 'pending' || !isAdmin(campaign, profile.user!.id)"
+        :disabled="status === 'pending' || !isAdmin(campaign, user.id)"
         @click="() => {
           count >= homebrew.max
             ? limitCta?.show()
@@ -157,7 +157,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           <td class="td">
             <div class="max-w-[60px] flex items-center gap-2">
               <FormKit
-                v-if="isAdmin(campaign, profile.user!.id)"
+                v-if="isAdmin(campaign, user.id)"
                 v-model="rowSelection[row.id]"
                 type="checkbox"
                 :disabled="status === 'pending'"
@@ -226,7 +226,7 @@ async function deleteItems(ids: number[]): Promise<void> {
           <td class="td">
             <div class="flex justify-end">
               <button
-                v-if="isAdmin(campaign, profile.user!.id)"
+                v-if="isAdmin(campaign, user.id)"
                 v-tippy="$t('actions.update')"
                 class="icon-btn-info"
                 :aria-label="$t('actions.update')"

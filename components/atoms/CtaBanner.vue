@@ -5,7 +5,7 @@ defineProps<{
   button: string
 }>()
 
-const auth = useAuth()
+const { user } = useAuthentication()
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const auth = useAuth()
           {{ subtitle }}
         </p>
         <NuxtLinkLocale
-          :to="auth.isAuthenticated ? '/pricing' : '/login'"
+          :to="user ? '/pricing' : '/login'"
           :style="false"
           class="btn-tertiary"
         >

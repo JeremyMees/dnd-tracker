@@ -5,7 +5,7 @@ const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{ campaign?: CampaignItem | CampaignRow }>()
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { mutateAsync: createCampaign } = useCampaignCreate()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
@@ -35,7 +35,7 @@ async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
   }
   else {
     await createCampaign({
-      data: { ...formData, created_by: profile.user!.id },
+      data: { ...formData, created_by: user.value.id },
       onError,
       onSuccess,
     })

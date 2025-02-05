@@ -10,10 +10,10 @@ const limitCta = ref<InstanceType<typeof LimitCta>>()
 const { toast } = useToast()
 const modal = useModal()
 const encounter = useEncounters()
-const profile = useProfile()
 const clipboard = useClipboard()
 const { ask } = useConfirm()
 const { t, locale } = useI18n()
+const user = useAuthenticatedUser()
 
 const search = ref<string>('')
 const sortBy = ref<string>('title')
@@ -146,14 +146,14 @@ async function deleteItems(ids: number[]): Promise<void> {
   >
     <template #header>
       <ContentCount
-        v-if="encounters !== null && profile.data"
+        v-if="encounters !== null && user"
         :count="count"
         :max="encounter.max"
       />
       <button
         class="btn-primary"
         :aria-label="t('actions.create')"
-        :disabled="status === 'pending' || (campaign && !isAdmin(campaign, profile.user!.id))"
+        :disabled="status === 'pending' || (campaign && !isAdmin(campaign, user.id))"
         @click="() => {
           count >= encounter.max
             ? limitCta?.show()
@@ -175,7 +175,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       >
         <td class="td max-w-6">
           <FormKit
-            v-if="row.campaign ? isAdmin(row.campaign, profile.user!.id, true) : row.created_by.id === profile.user!.id"
+            v-if="row.campaign ? isAdmin(row.campaign, user.id, true) : row.created_by.id === user.id"
             v-model="rowSelection[row.id]"
             type="checkbox"
             :disabled="status === 'pending'"
@@ -234,7 +234,7 @@ async function deleteItems(ids: number[]): Promise<void> {
                 aria-hidden="true"
               />
             </button>
-            <template v-if="row.campaign ? isAdmin(row.campaign, profile.user!.id, true) : true">
+            <template v-if="row.campaign ? isAdmin(row.campaign, user.id, true) : true">
               <button
                 v-tippy="t('actions.copy')"
                 class="icon-btn-primary"

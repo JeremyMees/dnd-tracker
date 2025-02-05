@@ -6,19 +6,19 @@ definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Register')
 
 const { t } = useI18n()
-const auth = useAuth()
+const { register } = useAuthentication()
 const { toast } = useToast()
 const localePath = useLocalePath()
 
 const avatar = ref<Avatar>()
 
-async function register(form: Register, node: FormNode): Promise<void> {
+async function handleRegister(form: Register, node: FormNode): Promise<void> {
   node.clearErrors()
 
   if (!avatar.value) return
 
   try {
-    await auth.register({
+    await register({
       ...form,
       avatar: avatar.value.url,
       avatar_options: avatar.value.extra,
@@ -66,7 +66,7 @@ async function register(form: Register, node: FormNode): Promise<void> {
         <FormKit
           type="form"
           :submit-label="$t('pages.register.register')"
-          @submit="register"
+          @submit="handleRegister"
         >
           <FormKit
             name="name"

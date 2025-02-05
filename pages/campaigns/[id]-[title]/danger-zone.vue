@@ -6,7 +6,7 @@ const props = defineProps<{ current: CampaignFull }>()
 const localePath = useLocalePath()
 const route = useRoute()
 const { toast } = useToast()
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const modal = useModal()
 const { ask } = useConfirm()
 const { t } = useI18n()
@@ -59,7 +59,7 @@ async function transferOwnership(): Promise<void> {
         <div class="flex justify-end">
           <button
             :aria-label="$t('actions.transfer')"
-            :disabled="!current.team?.length || !current || !isOwner(current, profile.user!.id)"
+            :disabled="!current.team?.length || !current || !isOwner(current, user.id)"
             class="btn-foreground"
             @click="transferOwnership"
           >
@@ -80,7 +80,7 @@ async function transferOwnership(): Promise<void> {
         <div class="flex justify-end">
           <button
             :aria-label="$t('actions.delete')"
-            :disabled="!current || !isOwner(current, profile.user!.id)"
+            :disabled="!current || !isOwner(current, user.id)"
             class="btn-foreground"
             @click="remove"
           >

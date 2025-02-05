@@ -7,7 +7,7 @@ const emit = defineEmits<{
 const props = defineProps<{ feature: FeatureRequest }>()
 
 const { locale, t } = useI18n()
-const profile = useProfile()
+const { user } = useAuthentication()
 
 const date = computed<string>(() => {
   const dateString = new Date(props.feature.created_at)
@@ -15,22 +15,22 @@ const date = computed<string>(() => {
 })
 
 const hasVoted = computed<FeatureVote | undefined>(() => {
-  if (!profile.data) return undefined
-  else if (props.feature.voted.like.includes(profile.data.id)) return 'like'
-  else if (props.feature.voted.dislike.includes(profile.data.id)) return 'dislike'
+  if (!user.value) return undefined
+  else if (props.feature.voted.like.includes(user.value.id)) return 'like'
+  else if (props.feature.voted.dislike.includes(user.value.id)) return 'dislike'
   else return undefined
 })
 
 function toggleVote(vote: FeatureVote): void {
-  if (!profile.data) return
+  if (!user.value) return
 
   if (hasVoted.value === vote) {
-    props.feature.voted[vote] = props.feature.voted[vote].filter(id => id !== profile.data!.id)
+    props.feature.voted[vote] = props.feature.voted[vote].filter(id => id !== user.value!.id)
   }
-  else props.feature.voted[vote].push(profile.data.id)
+  else props.feature.voted[vote].push(user.value.id)
 
   const reset: FeatureVote = vote === 'like' ? 'dislike' : 'like'
-  props.feature.voted[reset] = props.feature.voted[reset].filter(id => id !== profile.data!.id)
+  props.feature.voted[reset] = props.feature.voted[reset].filter(id => id !== user.value!.id)
 
   emit('update', props.feature.voted)
 }
@@ -71,7 +71,7 @@ function toggleVote(vote: FeatureVote): void {
             :class="{
               '!bg-primary/50 !border-primary': hasVoted === 'like',
             }"
-            @click="profile.data ? toggleVote('like') : emit('login')"
+            @click="user ? toggleVote('like') : emit('login')"
           >
             <Icon
               name="tabler:thumb-up"
@@ -86,7 +86,7 @@ function toggleVote(vote: FeatureVote): void {
             :class="{
               '!bg-primary/50 !border-primary': hasVoted === 'dislike',
             }"
-            @click="profile.data ? toggleVote('dislike') : emit('login')"
+            @click="user ? toggleVote('dislike') : emit('login')"
           >
             <span class="font-bold text-xs">
               {{ feature.voted.dislike.length }}

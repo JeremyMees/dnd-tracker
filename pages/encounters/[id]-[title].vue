@@ -6,7 +6,7 @@ definePageMeta({
   path: '/encounters/:id(\\d+)-:title/:page?',
 })
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const route = useRoute()
 const sheet = useInitiativeSheet()
 const { toast } = useToast()
@@ -20,7 +20,7 @@ const { data, refresh } = await useAsyncData(
 )
 
 const realtimeData = computed<boolean>(() => {
-  return hasCorrectSubscription(profile.data?.subscription_type || 'free', 'medior')
+  return hasCorrectSubscription(user.value.subscription_type, 'medior')
 })
 
 onMounted(() => {

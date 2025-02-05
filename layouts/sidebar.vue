@@ -1,13 +1,29 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
+
 defineProps<{ header?: string }>()
 
-const profile = useProfile()
+const { user, logout } = useAuthentication()
 const ui = useUI()
-const auth = useAuth()
 const route = useRoute()
+const { toast } = useToast()
+const { t } = useI18n()
 const sidebar = ref()
 
 const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
+
+async function logoutUser(): Promise<void> {
+  try {
+    await logout()
+  }
+  catch {
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
+  }
+}
 </script>
 
 <template>
@@ -87,7 +103,7 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
         <UiSidebarFooter>
           <ClientOnly>
             <NuxtLinkLocale
-              v-if="profile.data && profile.data.subscription_type !== 'pro'"
+              v-if="user && user.subscription_type !== 'pro'"
               v-tippy="{
                 content: $t('components.navbar.upgrade'),
                 placement: 'right',
@@ -115,28 +131,28 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
               <UiSidebarMenuItem>
                 <UiDropdownMenu>
                   <UiDropdownMenuTrigger as-child>
-                    <UiSidebarMenuButton
-                      v-if="profile.data"
-                      size="lg"
-                    >
+                    <UiSidebarMenuButton size="lg">
                       <UiAvatar
                         class="border-tertiary border-2"
                         size="xs"
                       >
                         <UiAvatarImage
-                          :src="profile.data.avatar"
+                          :src="user?.avatar ?? ''"
                           alt="Avatar image"
                         />
                         <UiAvatarFallback class="h-6">
                           <Icon
-                            :name="auth.isAuthenticated ? 'tabler:user' : 'tabler:settings'"
+                            :name="user ? 'tabler:user' : 'tabler:settings'"
                             class="size-6 min-w-6 text-muted-foreground"
                           />
                         </UiAvatarFallback>
                       </UiAvatar>
-                      <div class="grid flex-1 text-left text-sm leading-tight">
-                        <span class="truncate font-semibold">{{ profile.data.username }}</span>
-                        <span class="truncate text-xs text-muted-foreground">{{ profile.data.name }}</span>
+                      <div
+                        v-if="user"
+                        class="grid flex-1 text-left text-sm leading-tight"
+                      >
+                        <span class="truncate font-semibold">{{ user.username }}</span>
+                        <span class="truncate text-xs text-muted-foreground">{{ user.name }}</span>
                       </div>
                       <Icon
                         name="tabler:caret-up-down"
@@ -150,6 +166,7 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
                     align="end"
                     :side-offset="4"
                     :routes="ui.profileRoutes"
+                    @logout="logoutUser"
                   />
                 </UiDropdownMenu>
               </UiSidebarMenuItem>

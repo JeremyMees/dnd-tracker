@@ -2,11 +2,8 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const profile = useProfile()
 const ui = useUI()
 const { dialogs, handlers } = useConfirmDialogs()
-
-profile.get()
 
 if (import.meta.client) {
   gsap.registerPlugin(ScrollTrigger)

@@ -2,7 +2,7 @@
 useSeo('Feature request')
 
 const features = useFeatures()
-const profile = useProfile()
+const { user } = useAuthentication()
 const localePath = useLocalePath()
 const modal = useModal()
 
@@ -16,10 +16,10 @@ const { data: requests, status, refresh } = await useAsyncData(
     page: page.value,
     search: search.value,
     sortBy: 'created_at',
-  }, profile.user && createdBy.value === 'my'
+  }, user.value && createdBy.value === 'my'
     ? {
         field: 'created_by',
-        value: profile.user.id,
+        value: user.value.id,
       }
     : undefined), {
     watch: [createdBy, page],
@@ -65,7 +65,7 @@ function routeToLogin(): void {
           outer-class="$reset grow !pb-0"
         />
         <FormKit
-          v-if="profile.user"
+          v-if="user"
           v-model="createdBy"
           :disabled="status === 'pending'"
           :label="$t('pages.featureRequest.filter.title')"
@@ -82,7 +82,7 @@ function routeToLogin(): void {
           :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
           @click="
-            profile.user
+            user
               ? modal.open({
                 component: 'FeatureRequest',
                 header: $t('components.addFeatureRequestModal.title'),
@@ -119,7 +119,7 @@ function routeToLogin(): void {
             <FeatureRequestCard
               v-if="
                 feature.status !== 'review'
-                  || (feature.status === 'review' && feature.created_by.id === profile.data?.id)
+                  || (feature.status === 'review' && feature.created_by.id === user?.id)
               "
               :feature="feature"
               @update="vote(feature.id, $event)"

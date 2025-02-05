@@ -5,15 +5,19 @@ definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Forgot password')
 
 const { t } = useI18n()
-const auth = useAuth()
 const { toast } = useToast()
 const localePath = useLocalePath()
+const supabase = useSupabaseClient<Database>()
 
 async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    await auth.forgotPassword(form.email)
+    const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+
+    if (error) throw createError(error)
 
     toast({
       title: t('pages.forgotPassword.toast.success.title'),

@@ -5,10 +5,10 @@ import { togglePasswordInput } from '~/utils/ui-helpers'
 useSeo('Reset password')
 
 const { t } = useI18n()
-const auth = useAuth()
 const { toast } = useToast()
 const localePath = useLocalePath()
 const route = useRoute()
+const supabase = useSupabaseClient<Database>()
 
 onMounted(() => checkIfError())
 
@@ -30,7 +30,9 @@ async function resetPassword({ password }: ResetPassword, node: FormNode): Promi
   node.clearErrors()
 
   try {
-    await auth.updatePassword({ password })
+    const { error } = await supabase.auth.updateUser({ password })
+
+    if (error) throw createError(error)
 
     toast({
       description: t('pages.resetPassword.toast.success.text'),

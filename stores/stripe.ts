@@ -1,8 +1,7 @@
 export const useStripe = defineStore('useStripe', () => {
   const { t } = useI18n()
   const localePath = useLocalePath()
-  const profile = useProfile()
-  const user = useSupabaseUser()
+  const user = useAuthenticatedUser()
 
   const loading = ref<boolean>(true)
   const products = ref<ProductPricing[]>([
@@ -58,7 +57,7 @@ export const useStripe = defineStore('useStripe', () => {
   ])
 
   const shownProduct = computed<ProductPricing[]>(() => {
-    if (profile?.data?.subscription_type === 'medior') {
+    if (user.value.subscription_type === 'medior') {
       return products.value.filter(p => p.type !== 'pro')
     }
     else {
@@ -82,7 +81,7 @@ export const useStripe = defineStore('useStripe', () => {
   }
 
   async function subscribe(lookup: string, locale: string, type: StripeSubscriptionType): Promise<void> {
-    if (!user || !profile.data) {
+    if (!user.value) {
       navigateTo(localePath('/login'))
     }
 
@@ -93,7 +92,7 @@ export const useStripe = defineStore('useStripe', () => {
         lookup,
         locale,
         type,
-        ...(profile.data!.stripe_id && { customer: profile.data!.stripe_id }),
+        ...(user.value.stripe_id && { customer: user.value.stripe_id }),
       },
     })
 
@@ -103,17 +102,17 @@ export const useStripe = defineStore('useStripe', () => {
   }
 
   function isCurrent(type: StripeSubscriptionType): boolean {
-    if (!profile.data) {
+    if (!user.value) {
       return false
     }
 
-    const current = profile.data.subscription_type || 'free'
+    const current = user.value.subscription_type || 'free'
 
     return type === current
   }
 
   function isUpgradeable(type: StripeSubscriptionType): boolean {
-    const current = profile.data?.subscription_type || 'free'
+    const current = user.value.subscription_type || 'free'
 
     if (current === 'free') {
       return true

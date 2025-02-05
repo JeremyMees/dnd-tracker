@@ -3,7 +3,7 @@ useSeo('Pricing')
 
 const { locale, t } = useI18n({ useScope: 'global' })
 const stripe = useStripe()
-const profile = useProfile()
+const { user } = useAuthentication()
 
 async function subscribe(id: string, type: StripeSubscriptionType): Promise<void> {
   await stripe.subscribe(id, locale.value, type)
@@ -110,7 +110,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                       {{ t('general.current') }}
                     </div>
                     <button
-                      v-else-if="!profile.data || (product.id && product.price !== 0 && stripe.isUpgradeable(product.type))"
+                      v-else-if="!user || (product.id && product.price !== 0 && stripe.isUpgradeable(product.type))"
                       class="btn-tertiary w-full"
                       :aria-label="t('pages.pricing.cta')"
                       :disabled="stripe.loading"

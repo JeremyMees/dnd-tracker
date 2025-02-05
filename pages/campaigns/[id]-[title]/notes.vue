@@ -9,7 +9,7 @@ const table = ref<InstanceType<typeof DataTable>>()
 
 const { toast } = useToast()
 const modal = useModal()
-const profile = useProfile()
+const user = useAuthenticatedUser()
 const { ask } = useConfirm()
 const { t, locale } = useI18n()
 const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
@@ -76,7 +76,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
           noteContent: note.text,
           noteTitle: note.title,
           campaign: props.current.title,
-          sharedBy: profile.data!.username,
+          sharedBy: user.value.username,
         },
       })
     }))
@@ -124,7 +124,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
       :per-page="10"
       :total-items="data?.amount || 0"
       :loading="status === 'pending'"
-      :has-rights="isAdmin(current, profile.user!.id)"
+      :has-rights="isAdmin(current, user.id)"
       type="note"
       select
       @remove="deleteItems"
@@ -132,14 +132,14 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
     >
       <template #header>
         <ContentCount
-          v-if="data?.notes !== null && profile.data && count"
+          v-if="data?.notes !== null && count"
           :count="count"
           :max="max"
         />
         <button
           class="btn-primary"
           :aria-label="$t('actions.create')"
-          :disabled="status === 'pending' || !profile.user || !isAdmin(current, profile.user.id) || (count || 0) >= max"
+          :disabled="status === 'pending' || !isAdmin(current, user.id) || (count || 0) >= max"
           @click="openModal()"
         >
           {{ $t('actions.create') }}
@@ -160,7 +160,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
             <td class="td">
               <div class="max-w-[60px] flex items-center gap-2">
                 <FormKit
-                  v-if="isAdmin(current, profile.user!.id)"
+                  v-if="isAdmin(current, user.id)"
                   v-model="rowSelection[row.id]"
                   type="checkbox"
                   :disabled="status === 'pending'"
@@ -216,7 +216,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
                   />
                 </button>
                 <button
-                  v-if="isAdmin(current, profile.user!.id)"
+                  v-if="isAdmin(current, user.id)"
                   v-tippy="$t('actions.update')"
                   class="icon-btn-info"
                   :aria-label="$t('actions.update')"

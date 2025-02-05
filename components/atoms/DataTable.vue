@@ -29,7 +29,7 @@ const sortACS = defineModel<boolean>('acs', { default: true, required: true })
 const page = defineModel<number>('page', { default: 0 })
 const search = defineModel<string>('search', { default: '' })
 
-const profile = useProfile()
+const user = useAuthenticatedUser()
 
 const selectedAll = ref<boolean>(false)
 const selected = ref<any[]>([])
@@ -69,11 +69,11 @@ function toggleAll(): void {
   const itemsWithRights = props.items.filter((item) => {
     if (props.hasRights !== undefined) return props.hasRights
 
-    const owner = isOwner(item, profile.user!.id, true)
+    const owner = isOwner(item, user.value.id, true)
 
     return props.type === 'campaign'
       ? owner
-      : owner || isAdmin(item, profile.user!.id, true)
+      : owner || isAdmin(item, user.value.id, true)
   })
 
   if (selected.value.length === itemsWithRights.length) selected.value = []
