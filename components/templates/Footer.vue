@@ -7,9 +7,9 @@
           class="mt-2"
         >
           <NuxtImg
-            src="/icon-logo.svg"
+            src="/text-logo.svg"
             alt="DnD Tracker logo"
-            width="120"
+            width="200"
             height="100"
           />
         </NuxtLinkLocale>

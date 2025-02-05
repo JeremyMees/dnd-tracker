@@ -63,7 +63,7 @@ async function logout(): Promise<void> {
             src="/logo.svg"
             alt="DnD Tracker logo"
             sizes="sm:500px md:500px lg:500px"
-            class="h-16"
+            class="h-12"
           />
         </NuxtLinkLocale>
         <div class="flex justify-end items-center gap-4">

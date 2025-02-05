@@ -148,19 +148,18 @@ function toggleAll(): void {
         <tbody v-auto-animate>
           <slot :rows="items" />
 
-          <tr
-            v-if="!items || !items.length"
-            class="py-20"
-          >
-            <td
-              :colspan="select ? headers.length + 1 : headers.length"
-              class="py-20 px-5 font-bold"
-            >
-              <div class="max-w-prose mx-auto text-center">
-                <slot name="empty" />
-              </div>
-            </td>
-          </tr>
+          <template v-if="!items || !items.length">
+            <tr class="py-20">
+              <td
+                :colspan="select ? headers.length + 1 : headers.length"
+                class="py-20 px-5 font-bold"
+              >
+                <div class="max-w-prose mx-auto text-center">
+                  <slot name="empty" />
+                </div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
       <AnimationReveal>

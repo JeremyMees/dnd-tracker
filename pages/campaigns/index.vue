@@ -95,12 +95,14 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       v-if="count >= max"
       ref="limitCta"
     />
-    <AnimationExpand>
-      <RefreshCard
-        v-if="campaignsError"
-        @refresh="queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })"
-      />
-    </AnimationExpand>
+    <ClientOnly>
+      <AnimationExpand>
+        <RefreshCard
+          v-if="campaignsError"
+          @refresh="queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })"
+        />
+      </AnimationExpand>
+    </ClientOnly>
     <DataTable
       ref="table"
       v-model:sort-by="sortBy"

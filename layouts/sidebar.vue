@@ -85,28 +85,30 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
           </template>
         </UiSidebarContent>
         <UiSidebarFooter>
-          <NuxtLinkLocale
-            v-if="profile.data && profile.data.subscription_type !== 'pro'"
-            v-tippy="{
-              content: $t('components.navbar.upgrade'),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            to="/pricing"
-            class="bg-gradient-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 body-small"
-          >
-            <Icon
-              name="tabler:sparkles"
-              class="size-4 min-w-4"
-            />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
-              {{ $t('components.navbar.upgrade') }}
-            </span>
-            <Icon
-              name="tabler:arrow-right"
-              class="size-4 min-w-4 ml-auto group-data-[collapsible=icon]:hidden"
-            />
-          </NuxtLinkLocale>
+          <ClientOnly>
+            <NuxtLinkLocale
+              v-if="profile.data && profile.data.subscription_type !== 'pro'"
+              v-tippy="{
+                content: $t('components.navbar.upgrade'),
+                placement: 'right',
+                onShow: () => !isExpanded,
+              }"
+              to="/pricing"
+              class="bg-gradient-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 body-small"
+            >
+              <Icon
+                name="tabler:sparkles"
+                class="size-4 min-w-4"
+              />
+              <span class="group-data-[collapsible=icon]:hidden truncate">
+                {{ $t('components.navbar.upgrade') }}
+              </span>
+              <Icon
+                name="tabler:arrow-right"
+                class="size-4 min-w-4 ml-auto group-data-[collapsible=icon]:hidden"
+              />
+            </NuxtLinkLocale>
+          </ClientOnly>
           <UiSeparator />
           <UiAlertDialog>
             <UiSidebarMenu>
