@@ -23,8 +23,7 @@ function handleCopy(name: string): void {
   copy(name)
 
   toast({
-    title: 'dit is een test title',
-    description: t('components.nameGenerator.toast.title', { name }),
+    title: t('components.nameGenerator.toast.title', { name }),
     variant: 'info',
   })
 }
