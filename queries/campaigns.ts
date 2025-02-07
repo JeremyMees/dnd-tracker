@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useCampaignDetail(id: number) {
@@ -61,6 +61,7 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
         initiative_sheets: sbCount('initiative_sheets', campaign),
       })),
     }),
+    placeholderData: keepPreviousData,
   })
 }
 

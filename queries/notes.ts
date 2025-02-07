@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useNoteListing(data: ComputedRef<SbFilter>) {
@@ -17,6 +17,7 @@ export function useNoteListing(data: ComputedRef<SbFilter>) {
       pages: totalPages,
       notes: data,
     }),
+    placeholderData: keepPreviousData,
   })
 }
 
