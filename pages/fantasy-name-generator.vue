@@ -32,17 +32,11 @@ function handleCopy(name: string): void {
 
 <template>
   <NuxtLayout
-    container
-    shadow
+    name="sidebar"
+    :header="$t('components.navbar.fantasy')"
   >
-    <div class="mb-8 lg:mb-12">
-      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center text-foreground">
-        {{ $t('pages.fantasyNameGenerator.title') }}
-      </h1>
-      <p class="mb-16 max-w-3xl mx-auto text-center text-muted-foreground">
-        {{ $t('pages.fantasyNameGenerator.description') }}
-      </p>
-      <UiCard class="max-w-3xl mx-auto">
+    <div class="flex flex-col justify-center h-full">
+      <UiCard class="w-full dnd-container">
         <UiCardContent class="pt-6">
           <MasonryGrid
             v-if="names.length"

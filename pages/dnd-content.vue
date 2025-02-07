@@ -4,8 +4,8 @@ useSeo('DnD Content')
 
 <template>
   <NuxtLayout
-    shadow
-    container
+    name="sidebar"
+    :header="$t('components.navbar.dnd-content')"
   >
     <DnDContentSearch />
   </NuxtLayout>
