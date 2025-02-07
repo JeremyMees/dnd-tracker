@@ -17,6 +17,7 @@ const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const search = ref<string>('')
+const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(true)
 const page = ref<number>(0)
@@ -27,7 +28,7 @@ const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 
 const { data, isPending: campaignsPending, isError: campaignsError } = useCampaignListing(
   computed(() => ({
-    search: search.value,
+    search: debouncedSearch.value,
     sortBy: sortBy.value,
     sortACS: sortACS.value,
     page: page.value,

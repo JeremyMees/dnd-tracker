@@ -23,8 +23,8 @@ export type Open5eSortBy =
   | '-cr'
 
 export interface Open5eFilters {
-  limit: number
   page: number
+  limit?: number
   search?: string
   cr?: string
   ordering?: Open5eSortBy

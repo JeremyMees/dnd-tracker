@@ -73,6 +73,7 @@
     "changeInitiative": "Change initiative"
   },
   "general": {
+    "rule": "Rule | Rules",
     "initiative": "Initiative | Initiatives",
     "level": "Level | Levels",
     "summoner": "Summoner",
@@ -458,8 +459,6 @@
       "text": "Oops! It seems like you're not a member, and you don't have access to this content. If you believe this is a mistake, please don't hesitate to reach out to the owner or an admin for assistance."
     },
     "fantasyNameGenerator": {
-      "title": "Fantasy name generator",
-      "description": "Whether you're a seasoned Dungeon Master or just starting to explore the world of tabletop role-playing, our D&D Fantasy name generator has got your back. Never be at a loss for words when a player hits you with the question, \"What's the name of this NPC?\"",
       "tip": "Click on the generated name to copy it to your clipboard"
     }
   },
@@ -670,9 +669,10 @@
       "new": "Create a new note",
       "update": "Update note"
     },
-    "fullScreenSearch": {
+    "dndContentSearch": {
       "tooltip": "Search information",
-      "notFound": "Alas, our adventurous quest through the depths of our DnD archives has yielded no trace. The mystical tomes brimming with ancient lore and rules seem to temporarily withhold their secrets from us. But fear not! We shall not surrender! Feel free to continue your exploration in our magical realm, for who knows what epic discoveries await you."
+      "notFound": "Alas, our adventurous quest through the depths of our DnD archives has yielded no trace. The mystical tomes brimming with ancient lore and rules seem to temporarily withhold their secrets from us. But fear not! We shall not surrender! Feel free to continue your exploration in our magical realm, for who knows what epic discoveries await you.",
+      "error": "Something went wrong while loading the DnD content"
     },
     "initiativeSettings": {
       "spacing": "Tabel style",

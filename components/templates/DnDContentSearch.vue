@@ -1,64 +1,56 @@
 <script setup lang="ts">
-const open5e = useOpen5e()
-
 const sortBy = ref<Open5eSortBy>('name')
 const type = ref<Open5eType>('spells')
 const page = ref<number>(0)
 const limit = ref<number>(20)
 const search = ref<string>('')
+const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
 const cr = ref<string>()
 
-const { data: hits, status, refresh } = await useAsyncData(
-  'info-search',
-  async () => await open5e.get(
-    type.value,
-    {
-      limit: limit.value,
-      page: page.value,
-      ...(search.value && { search: search.value }),
-      ...(cr.value && { cr: cr.value }),
-      ...(sortBy.value && { ordering: sortBy.value }),
-    },
-  ), {
-    watch: [page, limit, sortBy, cr],
+const { data, status } = useOpen5eListing(computed(() => ({
+  type: type.value,
+  filters: {
+    page: page.value,
+    ...(debouncedSearch.value && { search: debouncedSearch.value }),
+    ...(cr.value && { cr: cr.value }),
+    ...(sortBy.value && { ordering: sortBy.value }),
   },
-)
+})))
 
-watchDebounced([search, type], (newValue, oldValue) => {
-  const [newSearch, newType] = newValue
-  const [oldSearch, oldType] = oldValue
+watch(search, () => page.value = 0)
 
-  if (newSearch !== oldSearch) page.value = 0
-
-  if (newType !== oldType) {
-    sortBy.value = 'name'
-    page.value = 0
-  }
-
-  refresh()
-},
-{ debounce: 500, maxWait: 1000 },
-)
+watch(type, () => {
+  search.value = ''
+  page.value = 0
+  sortBy.value = 'name'
+})
 </script>
 
 <template>
-  <div class="flex flex-col py-6 gap-10 max-h-full">
+  <div class="flex flex-col gap-4 max-h-full">
     <Card
       color="secondary"
-      class="flex items-start gap-4 max-w-prose w-full mx-auto"
+      class="flex flex-wrap items-center gap-4 w-full dnd-container"
     >
       <FormKit
         v-model="search"
         type="search"
         :label="$t('components.inputs.nameLabel')"
-        outer-class="$reset !pb-0 grow"
+        outer-class="$reset !pb-0 flex-1"
       />
       <FormKit
         v-model="type"
         type="select"
         :label="$t('components.inputs.typeLabel')"
-        :options="open5e.options"
-        outer-class="$reset !pb-0 grow"
+        :options="[
+          { value: 'spells', label: $t('general.spell', 2) },
+          { value: 'conditions', label: $t('general.condition', 2) },
+          { value: 'magicitems', label: $t('general.magicItem', 2) },
+          { value: 'weapons', label: $t('general.weapon', 2) },
+          { value: 'armor', label: $t('general.armor') },
+          { value: 'sections', label: $t('general.section', 2) },
+        ]"
+        outer-class="$reset !pb-0 flex-1"
         @input="search = ''"
       />
     </Card>
@@ -74,9 +66,9 @@ watchDebounced([search, type], (newValue, oldValue) => {
       />
     </MasonryGrid>
     <MasonryGrid
-      v-else-if="hits?.length"
+      v-else-if="data?.items?.length"
       v-slot="{ column }"
-      :data="hits"
+      :data="data.items"
     >
       <ContentCard
         v-for="(hit, j) in column"
@@ -88,19 +80,25 @@ watchDebounced([search, type], (newValue, oldValue) => {
     </MasonryGrid>
 
     <Pagination
-      v-if="open5e.pages > 1 && status !== 'pending' && hits?.length"
+      v-if="data?.pages > 1 && status !== 'pending' && data?.items?.length"
       v-model:page="page"
-      :pages="open5e.pages"
+      :pages="data.pages"
       :per-page="limit"
       styled
       class="mx-auto"
       @paginate="scrollToId('el')"
     />
     <p
-      v-if="status !== 'pending' && !hits?.length && search !== ''"
-      class="text-center max-w-prose mx-auto"
+      v-if="status === 'error'"
+      class="text-center max-w-prose mx-auto text-muted-foreground"
     >
-      {{ $t('components.fullScreenSearch.notFound') }}
+      {{ $t('components.dndContentSearch.error') }}
+    </p>
+    <p
+      v-if="status !== 'pending' && !data?.items?.length && search !== ''"
+      class="text-center max-w-prose mx-auto text-muted-foreground"
+    >
+      {{ $t('components.dndContentSearch.notFound') }}
     </p>
   </div>
 </template>

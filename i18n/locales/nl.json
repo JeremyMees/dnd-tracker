@@ -73,6 +73,7 @@
     "changeInitiative": "Initiatief wijzigen"
   },
   "general": {
+    "rule": "Regel | Regels",
     "initiative": "Initiatief | Initiatieven",
     "level": "Niveau | Niveaus",
     "summoner": "Oproeper",
@@ -458,8 +459,6 @@
       "text": "Oeps! Het lijkt erop dat je geen lid bent en geen toegang hebt tot deze inhoud. Als je denkt dat dit een vergissing is, aarzel dan niet om contact op te nemen met de eigenaar of een beheerder voor hulp."
     },
     "fantasyNameGenerator": {
-      "title": "Fantasy name generator",
-      "description": "Of je nu een doorgewinterde Dungeon Master bent of net begint met het ontdekken van de wereld van tabletop role-playing, onze D&D Fantasy name generator staat voor je klaar. Sta nooit meer sprakeloos wanneer een speler je overvalt met de vraag: \"Hoe heet deze NPC?\"",
       "tip": "Klik op een naam om deze naar het klembord te kopiëren"
     }
   },
@@ -670,9 +669,10 @@
       "new": "Maak een nieuwe notitie",
       "update": "Notitie bijwerken"
     },
-    "fullScreenSearch": {
+    "dndContentSearch": {
       "tooltip": "Informatie opzoeken",
-      "notFound": "Helaas, ons avontuurlijk speurwerk in de diepten van onze DnD-archieven heeft geen enkel spoor opgeleverd. De mystieke boeken vol met eeuwenoude kennis en regels lijken tijdelijk hun geheimen voor ons verborgen te houden. Maar we geven de moed niet op! Blijf gerust rondsnuffelen in onze magische wereld, want wie weet wat voor epische vondsten je nog kunt ontdekken."
+      "notFound": "Helaas, ons avontuurlijk speurwerk in de diepten van onze DnD-archieven heeft geen enkel spoor opgeleverd. De mystieke boeken vol met eeuwenoude kennis en regels lijken tijdelijk hun geheimen voor ons verborgen te houden. Maar we geven de moed niet op! Blijf gerust rondsnuffelen in onze magische wereld, want wie weet wat voor epische vondsten je nog kunt ontdekken.",
+      "error": "Er is iets fout gegaan bij het laden van de DnD content"
     },
     "initiativeSettings": {
       "spacing": "Tabel stijl",
