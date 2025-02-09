@@ -24,15 +24,22 @@ const hasVoted = computed<FeatureVote | undefined>(() => {
 function toggleVote(vote: FeatureVote): void {
   if (!user.value) return
 
-  if (hasVoted.value === vote) {
-    props.feature.voted[vote] = props.feature.voted[vote].filter(id => id !== user.value!.id)
+  const userId = user.value.id
+  const votes = {
+    like: [...props.feature.voted.like],
+    dislike: [...props.feature.voted.dislike],
   }
-  else props.feature.voted[vote].push(user.value.id)
 
-  const reset: FeatureVote = vote === 'like' ? 'dislike' : 'like'
-  props.feature.voted[reset] = props.feature.voted[reset].filter(id => id !== user.value!.id)
+  if (hasVoted.value === vote) {
+    votes[vote] = votes[vote].filter(id => id !== userId)
+  }
+  else {
+    const oppositeVote: FeatureVote = vote === 'like' ? 'dislike' : 'like'
+    if (!votes[vote].includes(userId)) votes[vote].push(userId)
+    votes[oppositeVote] = votes[oppositeVote].filter(id => id !== userId)
+  }
 
-  emit('update', props.feature.voted)
+  emit('update', votes)
 }
 </script>
 

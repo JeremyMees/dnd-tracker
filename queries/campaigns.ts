@@ -126,7 +126,7 @@ export function useCampaignCount() {
   const supabase = useSupabaseClient<Database>()
 
   return useQuery({
-    queryKey: ['useCampaignListing'],
+    queryKey: ['useCampaignCount'],
     queryFn: async () => await supabase.from('campaigns').select('id', { count: 'exact' }),
     select: ({ count }) => count || 0,
   })
@@ -150,6 +150,7 @@ export function useCampaignCreate() {
       if (onSuccess) onSuccess()
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
 
       toast({
         description: t('components.toast.create.success', { type }),
@@ -188,6 +189,7 @@ export function useCampaignUpdate() {
       if (onSuccess) onSuccess()
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
 
       toast({
@@ -234,7 +236,7 @@ export function useCampaignRemove() {
       if (onSuccess) onSuccess()
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-
+      queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
       if (Array.isArray(id)) id.forEach(id => queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] }))
       else queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
 

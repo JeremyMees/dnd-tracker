@@ -73,6 +73,7 @@
     "changeInitiative": "Change initiative"
   },
   "general": {
+    "featureRequest": "Feature request | Feature requests",
     "rule": "Rule | Rules",
     "initiative": "Initiative | Initiatives",
     "level": "Level | Levels",
@@ -715,9 +716,7 @@
       "claim": "Claim badge"
     },
     "addFeatureRequestModal": {
-      "title": "Create feature request",
-      "submitted": "Your feature request has been received with enthusiasm and is currently undergoing a careful evaluation. Once it is approved, everyone will have the opportunity to vote on it. You can check if the request has been approved when the label 'Under review' is no longer visible.",
-      "another": "Create another feature request"
+      "title": "Create feature request"
     },
     "inviteMember": {
       "title": "Add people to {campaign}",

@@ -1,50 +1,26 @@
 <script setup lang='ts'>
 useSeo('Feature request')
 
-const features = useFeatures()
 const { user } = useAuthentication()
 const localePath = useLocalePath()
 const modal = useModal()
 
-const createdBy = ref<'all' | 'my'>('all')
 const search = ref<string>('')
+const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
+const createdBy = ref<'all' | 'my'>('all')
 const page = ref<number>(0)
 
-const { data: requests, status, refresh } = await useAsyncData(
-  'feature-requests',
-  async () => await features.get({
-    page: page.value,
-    search: search.value,
-    sortBy: 'created_at',
-  }, user.value && createdBy.value === 'my'
-    ? {
-        field: 'created_by',
-        value: user.value.id,
-      }
-    : undefined), {
-    watch: [createdBy, page],
-  },
-)
+const { mutateAsync: vote } = useFeatureVote()
 
-watchDebounced(
-  search,
-  () => refresh(),
-  { debounce: 500, maxWait: 1000 },
-)
-
-async function vote(id: number, vote: FeatureVotes): Promise<void> {
-  await features.vote(id, vote)
-  refresh()
-}
-
-function paginate(newPage: number): void {
-  page.value = newPage
-  scrollToId('el')
-}
-
-function routeToLogin(): void {
-  navigateTo(localePath('/login'))
-}
+const { data, status } = useFeatureListing(computed(() => ({
+  search: debouncedSearch.value,
+  sortBy: 'created_at',
+  sortACS: false,
+  page: page.value,
+  eq: user.value && createdBy.value === 'my'
+    ? { field: 'created_by', value: user.value.id }
+    : undefined,
+})))
 </script>
 
 <template>
@@ -87,9 +63,8 @@ function routeToLogin(): void {
                 component: 'FeatureRequest',
                 header: $t('components.addFeatureRequestModal.title'),
                 submit: $t('actions.create'),
-                events: { finished: () => refresh() },
               })
-              : routeToLogin()
+              : navigateTo(localePath('/login'))
           "
         >
           {{ $t('pages.featureRequest.request') }}
@@ -98,7 +73,7 @@ function routeToLogin(): void {
 
       <!-- Loading feature request -->
       <div
-        v-if="status === 'pending' && !requests?.length"
+        v-if="status === 'pending' && !data?.features?.length"
         class="flex flex-col gap-4"
       >
         <SkeletonFeatureRequestCard
@@ -106,14 +81,14 @@ function routeToLogin(): void {
           :key="i"
         />
       </div>
-      <template v-else-if="requests?.length">
+      <template v-else-if="data?.features?.length">
         <!-- Feature requests -->
         <div
-          v-if="requests?.length"
+          v-if="data?.features?.length"
           class="flex flex-col gap-4"
         >
           <template
-            v-for="feature in requests"
+            v-for="feature in data.features"
             :key="feature.id"
           >
             <FeatureRequestCard
@@ -122,24 +97,27 @@ function routeToLogin(): void {
                   || (feature.status === 'review' && feature.created_by.id === user?.id)
               "
               :feature="feature"
-              @update="vote(feature.id, $event)"
-              @login="routeToLogin"
+              @update="vote({ id: feature.id, votes: $event })"
+              @login="navigateTo(localePath('/login'))"
             />
           </template>
 
           <Pagination
-            v-if="features.pages > 1"
+            v-if="data?.pages > 1"
             v-model:page="page"
-            :pages="features.pages"
-            :per-page="features.perPage"
+            :pages="data.pages"
+            :per-page="10"
             styled
             class="mt-2 mx-auto"
-            @paginate="paginate"
+            @paginate="(newPage) => {
+              page = newPage
+              scrollToId('el')
+            }"
           />
         </div>
         <!-- Nothing found while sorting -->
         <div
-          v-else-if="requests.length === 0 && (search || createdBy === 'my')"
+          v-else-if="data?.features?.length === 0 && (search || createdBy === 'my')"
           class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
         >
           <p>
@@ -149,7 +127,7 @@ function routeToLogin(): void {
       </template>
       <!-- No feature request found -->
       <div
-        v-else-if="requests?.length === 0 && (!search || createdBy === 'all')"
+        v-else-if="data?.features?.length === 0 && (!search || createdBy === 'all')"
         class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
       >
         <h3 class="pb-2">
