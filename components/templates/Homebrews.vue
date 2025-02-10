@@ -278,10 +278,14 @@ async function deleteItems(ids: number[]): Promise<void> {
       </template>
     </template>
 
-    <template
-      v-if="!homebrews?.length && status !== 'pending'"
-      #empty
-    >
+    <template #loading>
+      <SkeletonHomebrewTableRow
+        v-for="i in 10"
+        :key="i"
+      />
+    </template>
+
+    <template #empty>
       {{ $t('components.table.nothing', { item: $t('general.homebrew', 2).toLowerCase() }) }}
     </template>
   </DataTable>

@@ -146,15 +146,22 @@ function toggleAll(): void {
           </tr>
         </thead>
         <tbody v-auto-animate>
-          <slot :rows="items" />
+          <slot
+            v-if="loading"
+            name="loading"
+          />
+          <slot
+            v-else
+            :rows="items"
+          />
 
-          <template v-if="!items || !items.length">
+          <template v-if="(!items || !items.length) && !loading">
             <tr class="py-20">
               <td
                 :colspan="select ? headers.length + 1 : headers.length"
                 class="py-20 px-5 font-bold"
               >
-                <div class="max-w-prose mx-auto text-center">
+                <div class="max-w-prose mx-auto text-center text-muted-foreground">
                   <slot name="empty" />
                 </div>
               </td>

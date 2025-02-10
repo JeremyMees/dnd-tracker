@@ -257,10 +257,14 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
         </template>
       </template>
 
-      <template
-        v-if="!data?.notes?.length && status !== 'pending'"
-        #empty
-      >
+      <template #loading>
+        <SkeletonNoteTableRow
+          v-for="i in 10"
+          :key="i"
+        />
+      </template>
+
+      <template #empty>
         {{ $t('components.table.nothing', { item: $t('general.note', 2).toLowerCase() }) }}
       </template>
     </DataTable>

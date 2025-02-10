@@ -216,10 +216,14 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
         </tr>
       </template>
 
-      <template
-        v-if="!data?.campaigns?.length && !campaignsPending"
-        #empty
-      >
+      <template #loading>
+        <SkeletonCampaignTableRow
+          v-for="i in 10"
+          :key="i"
+        />
+      </template>
+
+      <template #empty>
         {{ $t('components.table.nothing', { item: $t('general.campaign', 2).toLowerCase() }) }}
       </template>
     </DataTable>

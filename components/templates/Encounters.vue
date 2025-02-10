@@ -222,10 +222,14 @@ async function deleteItems(ids: number[]): Promise<void> {
       </tr>
     </template>
 
-    <template
-      v-if="!data?.encounters?.length && status !== 'pending'"
-      #empty
-    >
+    <template #loading>
+      <SkeletonEncounterTableRow
+        v-for="i in 10"
+        :key="i"
+      />
+    </template>
+
+    <template #empty>
       {{ t('components.table.nothing', { item: t('general.encounter', 2).toLowerCase() }) }}
     </template>
   </DataTable>
