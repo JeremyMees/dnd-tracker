@@ -476,6 +476,10 @@
       "update": {
         "error": "Er is iets fout gegaan bij het bijwerken van de {type}",
         "success": "Succesvol bijgewerkt de {type}"
+      },
+      "copy": {
+        "error": "Er is iets fout gegaan bij het kopiëren van de {type}",
+        "success": "Succesvol gekopieerd de {type}"
       }
     },
     "pagination": {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 
@@ -9,61 +10,34 @@ const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { toast } = useToast()
 const modal = useModal()
-const encounter = useEncounters()
 const clipboard = useClipboard()
 const { ask } = useConfirm()
 const { t, locale } = useI18n()
 const user = useAuthenticatedUser()
+const queryClient = useQueryClient()
 
 const search = ref<string>('')
+const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
 const sortBy = ref<string>('title')
 const sortACS = ref<boolean>(true)
 const page = ref<number>(0)
-const count = ref<number>(await encounter.getCount())
 
-const { data: encounters, status, refresh } = await useAsyncData(
-  'encounters',
-  async () => await encounter.get({
-    search: search.value,
-    sortBy: sortBy.value,
-    sortACS: sortACS.value,
-    page: page.value,
-  },
-  props.campaign?.id
-    ? { field: 'campaign', value: props.campaign.id }
-    : undefined,
-  ),
-  {
-    watch: [sortBy, sortACS, page],
-  },
-)
-
-watchDebounced(
-  search,
-  () => refresh(),
-  { debounce: 500, maxWait: 1000 },
-)
-
+const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
 const rowSelection = computed(() => selectedRows(table.value))
 
-async function refreshData(): Promise<void> {
-  refresh()
-  count.value = await encounter.getCount()
-}
+const { data: count } = useEncounterCount()
+const { mutateAsync: removeEncounter } = useEncounterRemove()
+const { mutateAsync: copyEncounter } = useEncounterCopy()
 
-async function copy(item: EncounterItem): Promise<void> {
-  try {
-    await encounter.copyEncounter(item)
-    refreshData()
-  }
-  catch (err) {
-    toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
-      variant: 'destructive',
-    })
-  }
-}
+const { data, status } = useEncounterListing(computed(() => ({
+  search: debouncedSearch.value,
+  sortBy: sortBy.value,
+  sortACS: sortACS.value,
+  page: page.value,
+  eq: props.campaign?.id
+    ? { field: 'campaign', value: props.campaign.id }
+    : undefined,
+})))
 
 function share(item: EncounterItem): void {
   clipboard.copy(shareEncounterUrl(item, locale.value))
@@ -79,7 +53,6 @@ function openModal(item?: EncounterItem): void {
     component: 'Encounter',
     header: t(`components.encounterModal.${item ? 'update' : 'add'}`),
     submit: t(`pages.encounters.${item ? 'update' : 'add'}`),
-    events: { finished: () => refreshData() },
     props: {
       ...(item && { encounter: item }),
       campaignId: props.campaign?.id,
@@ -94,19 +67,7 @@ async function deleteItems(ids: number[]): Promise<void> {
   ask({
     title: `${t('actions.delete')} ${amount} ${type}`,
   }, async (confirmed: boolean) => {
-    if (!confirmed) return
-
-    try {
-      await encounter.deleteEncounter(ids)
-      refreshData()
-    }
-    catch (err) {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
-    }
+    if (confirmed) await removeEncounter({ id: ids })
   })
 }
 </script>
@@ -115,11 +76,11 @@ async function deleteItems(ids: number[]): Promise<void> {
   <AnimationExpand>
     <RefreshCard
       v-if="status === 'error'"
-      @refresh="refreshData()"
+      @refresh="queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })"
     />
   </AnimationExpand>
   <LimitCta
-    v-if="count >= encounter.max"
+    v-if="count >= max"
     ref="limitCta"
   />
   <DataTable
@@ -134,10 +95,10 @@ async function deleteItems(ids: number[]): Promise<void> {
       { label: t('general.member', 2), sort: false, id: 'team' },
       { label: '', sort: false, id: 'actions' },
     ]"
-    :items="encounters || []"
-    :pages="encounter.pages"
-    :per-page="encounter.perPage"
-    :total-items="encounter.amount"
+    :items="data?.encounters || []"
+    :pages="data?.pages || 0"
+    :per-page="10"
+    :total-items="data?.amount || 0"
     :loading="status === 'pending'"
     type="encounter"
     select
@@ -146,19 +107,15 @@ async function deleteItems(ids: number[]): Promise<void> {
   >
     <template #header>
       <ContentCount
-        v-if="encounters !== null && user"
+        v-if="data?.encounters !== null && count"
         :count="count"
-        :max="encounter.max"
+        :max="max"
       />
       <button
         class="btn-primary"
         :aria-label="t('actions.create')"
         :disabled="status === 'pending' || (campaign && !isAdmin(campaign, user.id))"
-        @click="() => {
-          count >= encounter.max
-            ? limitCta?.show()
-            : openModal()
-        }"
+        @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
       >
         {{ t('actions.create') }}
       </button>
@@ -239,7 +196,7 @@ async function deleteItems(ids: number[]): Promise<void> {
                 v-tippy="t('actions.copy')"
                 class="icon-btn-primary"
                 :aria-label="t('actions.copy')"
-                @click="copy(row)"
+                @click="copyEncounter({ data: row })"
               >
                 <Icon
                   name="tabler:copy"
@@ -266,7 +223,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     </template>
 
     <template
-      v-if="!encounters?.length && status !== 'pending'"
+      v-if="!data?.encounters?.length && status !== 'pending'"
       #empty
     >
       {{ t('components.table.nothing', { item: t('general.encounter', 2).toLowerCase() }) }}

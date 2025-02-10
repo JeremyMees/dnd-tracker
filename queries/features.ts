@@ -38,7 +38,7 @@ export function useFeatureCreate() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.featureRequest')
+  const type = t('general.featureRequest').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ data }: { data: FeatureInsert } & QueryDefaults) => {

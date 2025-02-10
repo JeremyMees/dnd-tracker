@@ -2,23 +2,21 @@
 import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-const emit = defineEmits<{
-  close: []
-  finished: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{
   encounter?: EncounterItem
   campaignId?: number
 }>()
 
-const store = useEncounters()
 const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 
 const input = ref()
 
+const { mutateAsync: updateEncounter } = useEncounterUpdate()
+const { mutateAsync: addEncounter } = useEncounterCreate()
 const { data: campaigns, isError } = useCampaignMinimalListing(user.value.id)
 
 onMounted(() => {
@@ -40,32 +38,31 @@ watch(isError, (err) => {
 async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
-  try {
-    const formData = sanitizeForm<EncounterForm>(form)
+  const onSuccess = () => emit('close')
 
-    if (props.campaignId) formData.campaign = props.campaignId
-
-    if (props.encounter) await updateEncounter(formData)
-    else await addEncounter(formData)
-
-    emit('finished')
-    emit('close')
-  }
-  catch (err: any) {
+  const onError = (error: string) => {
     reset('Encounter')
-    node.setErrors(err.message)
+    node.setErrors(error)
   }
-}
 
-async function addEncounter(data: EncounterForm): Promise<void> {
-  if (user.value) {
-    await store.addEncounter({ ...data, rows: [] })
-  }
-}
+  const formData = sanitizeForm<EncounterForm>(form)
 
-async function updateEncounter(data: EncounterForm): Promise<void> {
+  if (props.campaignId) formData.campaign = props.campaignId
+
   if (props.encounter) {
-    await store.updateEncounter(data, props.encounter.id)
+    await updateEncounter({
+      data: formData,
+      id: props.encounter.id,
+      onSuccess,
+      onError,
+    })
+  }
+  else {
+    await addEncounter({
+      data: { ...formData, rows: [] },
+      onSuccess,
+      onError,
+    })
   }
 }
 </script>

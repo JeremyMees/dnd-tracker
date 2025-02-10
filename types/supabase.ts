@@ -192,6 +192,8 @@ export interface JoinCampaignKey extends Omit<JoinCampaignRow, 'user'> {
 export interface EncounterItem extends Omit<InitiativeRow, 'created_by' | 'campaign'> {
   created_by: MinimalProfile
   campaign: CampaignMinimal
+  homebrew_items: number
+  initiative_sheets: number
 }
 
 export interface InitiativeSheet extends Omit<InitiativeRow, 'campaign'> {

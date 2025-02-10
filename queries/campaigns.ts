@@ -138,7 +138,7 @@ export function useCampaignCreate() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.campaign')
+  const type = t('general.campaign').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ data }: { data: CampaignInsert } & QueryDefaults) => {
@@ -178,7 +178,8 @@ export function useCampaignUpdate() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.campaign')
+  const type = t('general.campaign').toLowerCase()
+
   return useMutation({
     mutationFn: async ({ data, id }: { data: Omit<CampaignUpdate, NotUpdatable>, id: number } & QueryDefaults) => {
       const { error } = await supabase.from('campaigns').update(data).eq('id', id)
@@ -218,7 +219,7 @@ export function useCampaignRemove() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.campaign')
+  const type = t('general.campaign').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {

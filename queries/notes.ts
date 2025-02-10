@@ -37,7 +37,7 @@ export function useNoteCreate() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.note')
+  const type = t('general.note').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ data }: { data: NoteInsert } & QueryDefaults) => {
@@ -77,7 +77,7 @@ export function useNoteUpdate() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.note')
+  const type = t('general.note').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ data, id }: { data: Omit<NoteUpdate, NotUpdatable>, id: number } & QueryDefaults) => {
@@ -117,7 +117,7 @@ export function useNoteRemove() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  const type = t('general.note')
+  const type = t('general.note').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {

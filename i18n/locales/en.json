@@ -476,6 +476,10 @@
       "update": {
         "error": "Something went wrong while updating the {type}",
         "success": "Successfully updated the {type}"
+      },
+      "copy": {
+        "error": "Something went wrong while copying the {type}",
+        "success": "Successfully copied the {type}"
       }
     },
     "pagination": {
