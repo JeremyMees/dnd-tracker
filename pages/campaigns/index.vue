@@ -100,7 +100,10 @@ async function leaveCampaign(item: CampaignItem): Promise<void> {
       <AnimationExpand>
         <RefreshCard
           v-if="campaignsError"
-          @refresh="queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })"
+          @refresh="() => {
+            queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+            queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
+          }"
         />
       </AnimationExpand>
     </ClientOnly>

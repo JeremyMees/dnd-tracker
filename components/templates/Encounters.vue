@@ -76,7 +76,10 @@ async function deleteItems(ids: number[]): Promise<void> {
   <AnimationExpand>
     <RefreshCard
       v-if="status === 'error'"
-      @refresh="queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })"
+      @refresh="() => {
+        queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
+        queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
+      }"
     />
   </AnimationExpand>
   <LimitCta
