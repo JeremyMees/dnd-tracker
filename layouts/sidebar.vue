@@ -5,7 +5,7 @@ defineProps<{ header?: string }>()
 
 const { user, logout } = useAuthentication()
 const route = useRoute()
-const { playRoutes, routes } = useUi()
+const { playRoutes, routes, profileRoutes } = useUi()
 const { toast } = useToast()
 const { t } = useI18n()
 const sidebar = ref()
@@ -28,7 +28,7 @@ async function logoutUser(): Promise<void> {
 
 <template>
   <div class="min-h-full">
-    <UiSidebarProvider @update:state="console.log('tester')">
+    <UiSidebarProvider>
       <UiSidebar
         ref="sidebar"
         collapsible="icon"
@@ -165,7 +165,7 @@ async function logoutUser(): Promise<void> {
                     side="bottom"
                     align="end"
                     :side-offset="4"
-                    :routes="ui.profileRoutes"
+                    :routes="profileRoutes"
                     @logout="logoutUser"
                   />
                 </UiDropdownMenu>
