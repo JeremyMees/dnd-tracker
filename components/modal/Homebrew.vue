@@ -18,7 +18,11 @@ const props = withDefaults(
 )
 
 const initiativeSheet = useInitiativeSheet()
-const homebrew = useHomebrews()
+
+const { mutateAsync: createHomebrew } = useHomebrewCreate()
+const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
+
+const max = 100
 
 // const summonersOptions = computed<Option[]>(() => {
 //   if (table.encounter?.rows && props.encounter) {
@@ -36,48 +40,65 @@ const homebrew = useHomebrews()
 async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
-  try {
-    const { amount, initiative, summoner, save, ...steps } = sanitizeForm<HomebrewItemForm>(form)
-    const flatForm = flattenObject<HomebrewItemForm>(steps)
+  const { amount, initiative, summoner, save, ...steps } = sanitizeForm<HomebrewItemForm>(form)
+  const flatForm = flattenObject<HomebrewItemForm>(steps)
 
-    const formData = {
-      ...flatForm,
-      actions: castActionFieldsToNumber(flatForm.actions),
-      reactions: castActionFieldsToNumber(flatForm.reactions),
-      legendary_actions: castActionFieldsToNumber(flatForm.legendary_actions),
-      special_abilities: castActionFieldsToNumber(flatForm.special_abilities),
-    }
+  const formData = {
+    ...flatForm,
+    actions: castActionFieldsToNumber(flatForm.actions),
+    reactions: castActionFieldsToNumber(flatForm.reactions),
+    legendary_actions: castActionFieldsToNumber(flatForm.legendary_actions),
+    special_abilities: castActionFieldsToNumber(flatForm.special_abilities),
+  }
 
-    if (props.isEncounter) {
-      addInitiative(formData, amount || 1)
+  const onSuccess = () => emit('close')
 
-      if (save && props.campaignId) addHomebrew(formData)
+  const onError = (error: string) => {
+    reset('Homebrew')
+    node.setErrors(error)
+  }
+
+  if (props.isEncounter) {
+    addInitiative(formData, amount || 1)
+
+    if (save && props.campaignId) {
+      await create({
+        data: {
+          ...formData,
+          campaign: props.campaignId,
+        },
+        onSuccess,
+        onError,
+      })
     }
     else {
-      if (props.item) await updateHomebrew(formData)
-      else await addHomebrew(formData)
+      onSuccess()
     }
-
-    emit('finished')
-    emit('close')
   }
-  catch (err: any) {
-    reset('Homebrew')
-    node.setErrors(err.message)
+  else {
+    if (props.item) {
+      await updateHomebrew({
+        data: formData,
+        id: props.item.id,
+        onSuccess,
+        onError,
+      })
+    }
+    else {
+      await create({
+        data: {
+          ...formData,
+          campaign: props.campaignId,
+        },
+        onSuccess,
+        onError,
+      })
+    }
   }
 }
 
-async function addHomebrew(data: HomebrewItemForm): Promise<void> {
-  await homebrew.addHomebrew({
-    ...data,
-    campaign: props.campaignId,
-  })
-}
-
-async function updateHomebrew(data: HomebrewItemForm): Promise<void> {
-  if (props.item) {
-    await homebrew.updateHomebrew(data, props.item.id)
-  }
+async function create(options: { data: HomebrewItemInsert, onSuccess: () => void, onError: (error: string) => void }): Promise<void> {
+  await createHomebrew(options)
 }
 
 async function addInitiative(data: HomebrewItemForm, amount: number): Promise<void> {
@@ -323,14 +344,14 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       class="flex flex-col gap-x-2 mb-2"
     >
       <FormKit
-        :disabled="count >= homebrew.max"
+        :disabled="count >= max"
         name="save"
         :label="$t('components.homebrewModal.save')"
         type="toggle"
         outer-class="$reset !mb-0"
       />
       <span
-        v-if="count >= homebrew.max"
+        v-if="count >= max"
         class="text-destructive body-small pb-2"
       >
         {{ $t('components.homebrewModal.max') }}
