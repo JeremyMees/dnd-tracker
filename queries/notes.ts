@@ -10,7 +10,6 @@ export function useNoteListing(data: ComputedRef<SbFilter>) {
       page: data.value.page,
       perPage: 10,
       fuzzy: true,
-      ...(data.value.eq && { eq: data.value.eq }),
     }),
     select: ({ data, count, totalPages }) => ({
       amount: count,

@@ -1,7 +1,8 @@
 export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   const supabase = useSupabaseClient<Database>()
 
-  const { table, select, page, perPage, filters, eq, fuzzy, fields } = options
+  const { table, select, page, perPage, filters, fuzzy, fields } = options
+  const { eq, search, sortBy, sortACS } = filters || {}
 
   let query = supabase
     .from(table)
@@ -13,9 +14,9 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
     query = query.range(from, to)
   }
 
-  if (filters?.sortBy) {
-    query = query.order(filters.sortBy, {
-      ascending: filters.sortACS || false,
+  if (sortBy) {
+    query = query.order(sortBy, {
+      ascending: sortACS || false,
       nullsFirst: false,
     })
   }
@@ -24,8 +25,8 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
     query = query.eq(eq.field, eq.value)
   }
 
-  if (filters?.search && fuzzy) {
-    query = query.or(sbOrQuery(fields || ['title'], filters.search))
+  if (search && fuzzy) {
+    query = query.or(sbOrQuery(fields || ['title'], search))
   }
 
   const { data, error, count } = await query

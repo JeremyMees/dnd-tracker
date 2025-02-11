@@ -223,7 +223,6 @@ export interface SbFetchOptions {
   page?: number
   perPage?: number
   filters?: SbFilter
-  eq?: SbEq
   fuzzy?: boolean
 }
 
