@@ -4,8 +4,8 @@ import { useToast } from '~/components/ui/toast/use-toast'
 defineProps<{ header?: string }>()
 
 const { user, logout } = useAuthentication()
-const ui = useUI()
 const route = useRoute()
+const { playRoutes, routes } = useUi()
 const { toast } = useToast()
 const { t } = useI18n()
 const sidebar = ref()
@@ -61,8 +61,8 @@ async function logoutUser(): Promise<void> {
           />
           <template
             v-for="sidebarItem in [
-              { title: 'components.navbar.play', routes: ui.playRoutes },
-              { title: 'components.navbar.pages', routes: ui.routes },
+              { title: 'components.navbar.play', routes: playRoutes },
+              { title: 'components.navbar.pages', routes: routes },
             ]"
             :key="sidebarItem.title"
           >

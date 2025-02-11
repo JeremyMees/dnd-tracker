@@ -2,13 +2,18 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const ui = useUI()
 const { dialogs, handlers } = useConfirmDialogs()
+const route = useRoute()
 
 if (import.meta.client) {
   gsap.registerPlugin(ScrollTrigger)
   ScrollTrigger.getAll().forEach((t: any) => t.kill())
 }
+
+const pageName = computed(() => !route.name || typeof route.name !== 'string'
+  ? ''
+  : route.name.split('___')[0],
+)
 </script>
 
 <template>
@@ -30,8 +35,8 @@ if (import.meta.client) {
 
     <div
       :class="{
-        'bg-primary/10': ui.bgColor === 'primary',
-        'bg-tertiary/10': ui.bgColor === 'tertiary',
+        'bg-primary/10': ['profile', 'pricing'].includes(pageName),
+        'bg-tertiary/10': ['updates-changelog', 'updates-feature-request'].includes(pageName),
       }"
       class="flex flex-col min-h-screen"
     >

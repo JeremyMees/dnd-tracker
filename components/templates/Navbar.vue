@@ -2,7 +2,7 @@
 import { useToast } from '~/components/ui/toast/use-toast'
 
 const { user, logout } = useAuthentication()
-const ui = useUI()
+const { playRoutes, routes, profileRoutes } = useUi()
 const { toast } = useToast()
 const { t } = useI18n()
 const isSmall = useMediaQuery('(max-width: 1024px)')
@@ -64,7 +64,7 @@ async function logoutUser(): Promise<void> {
         <div class="flex justify-end items-center gap-4">
           <div class="hidden lg:flex items-center gap-4">
             <NuxtLinkLocale
-              v-for="link in ui.routes"
+              v-for="link in routes"
               :key="link.url"
               :to="link.url"
             >
@@ -83,7 +83,7 @@ async function logoutUser(): Promise<void> {
                 align="start"
               >
                 <UiDropdownMenuItem
-                  v-for="route in ui.playRoutes"
+                  v-for="route in playRoutes"
                   :key="route.label"
                 >
                   <NuxtLinkLocale
@@ -122,7 +122,7 @@ async function logoutUser(): Promise<void> {
               <ProfileMenu
                 class="w-60"
                 align="start"
-                :routes="ui.profileRoutes"
+                :routes="profileRoutes"
                 @logout="logoutUser"
               />
             </UiDropdownMenu>
@@ -145,7 +145,7 @@ async function logoutUser(): Promise<void> {
                 align="start"
               >
                 <UiDropdownMenuItem
-                  v-for="route in ui.routes"
+                  v-for="route in routes"
                   :key="route.label"
                 >
                   <NuxtLinkLocale
@@ -162,7 +162,7 @@ async function logoutUser(): Promise<void> {
                 </UiDropdownMenuItem>
                 <UiDropdownMenuSeparator />
                 <UiDropdownMenuItem
-                  v-for="route in ui.playRoutes"
+                  v-for="route in playRoutes"
                   :key="route.label"
                 >
                   <NuxtLinkLocale
@@ -179,7 +179,7 @@ async function logoutUser(): Promise<void> {
                 </UiDropdownMenuItem>
                 <UiDropdownMenuSeparator />
                 <template
-                  v-for="route in ui.profileRoutes"
+                  v-for="route in profileRoutes"
                   :key="route.label"
                 >
                   <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
