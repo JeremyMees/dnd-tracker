@@ -81,6 +81,7 @@ const { data, status } = useCampaignDetail(+route.params.id)
     </div>
     <div class="min-h-[40vh]">
       <NuxtPage
+        v-if="data"
         :current="data"
         @refresh="queryClient.invalidateQueries({ queryKey: ['useCampaignDetail'] })"
       />
