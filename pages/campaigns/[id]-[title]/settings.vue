@@ -150,9 +150,9 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
               <Icon
                 name="tabler:send"
                 :aria-hidden="true"
-                class="size-4"
+                class="size-4 text-muted-foreground"
               />
-              <span class="text-muted-foreground">
+              <span>
                 {{ $t('general.invited') }}
               </span>
             </div>

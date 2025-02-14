@@ -12,6 +12,7 @@ const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const queryClient = useQueryClient()
+const supabase = useSupabaseClient<Database>()
 
 const noUser = ref<string>()
 const form = ref<{ users: AddMemberForm[] }>({ users: [] })
@@ -27,8 +28,19 @@ async function handleSearch({ email }: { email: string }, node: FormNode): Promi
 
     if (error) throw createError(error)
 
-    const { data } = useProfileDetailMinimal({ email })
-    const user = await data.value
+    const user = await queryClient.fetchQuery({
+      queryKey: ['useProfileDetailMinimal', { email }],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, username, name, avatar, email')
+          .match({ email })
+          .maybeSingle()
+
+        if (error) throw createError(error)
+        return data
+      },
+    })
 
     if (user) {
       form.value.users.push({

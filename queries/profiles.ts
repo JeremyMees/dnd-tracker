@@ -23,24 +23,6 @@ export function useProfileDetail(id: string) {
   })
 }
 
-export function useProfileDetailMinimal(match: Record<string, any>) {
-  const supabase = useSupabaseClient<Database>()
-
-  return useQuery({
-    queryKey: ['useProfileDetailMinimal', match],
-    queryFn: async () => await supabase
-      .from('profiles')
-      .select('id, username, name, avatar, email')
-      .match(match)
-      .maybeSingle(),
-    select: async ({ data, error }) => {
-      if (error) throw createError(error)
-
-      return data
-    },
-  })
-}
-
 export function useProfileUpdate() {
   const supabase = useSupabaseClient<Database>()
   const queryClient = useQueryClient()
