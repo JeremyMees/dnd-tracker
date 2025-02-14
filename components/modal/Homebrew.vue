@@ -1,26 +1,22 @@
 <script setup lang="ts">
 import { reset, type FormKitNode } from '@formkit/core'
 
-const emit = defineEmits<{
-  close: []
-  finished: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = withDefaults(
   defineProps<{
     campaignId: number
     count: number
     item?: HomebrewItemRow
-    isEncounter?: boolean
+    encounterId?: number
   }>(), {
-    isEncounter: false,
+    encounterId: undefined,
   },
 )
 
-const initiativeSheet = useInitiativeSheet()
-
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
+const { mutateAsync: updateInitiativeSheet } = useInitiativeSheetDetailUpdate()
 
 const max = 100
 
@@ -58,7 +54,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
     node.setErrors(error)
   }
 
-  if (props.isEncounter) {
+  if (props.encounterId) {
     addInitiative(formData, amount || 1)
 
     if (save && props.campaignId) {
@@ -97,7 +93,11 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
   }
 }
 
-async function create(options: { data: HomebrewItemInsert, onSuccess: () => void, onError: (error: string) => void }): Promise<void> {
+async function create(options: {
+  data: HomebrewItemInsert
+  onSuccess: () => void
+  onError: (error: string) => void
+}): Promise<void> {
   await createHomebrew(options)
 }
 
@@ -170,7 +170,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       >
         <div
           :class="{
-            'grid sm:grid-cols-2 gap-x-3': (value?.type === 'monster' || value?.type === 'summon') && isEncounter,
+            'grid sm:grid-cols-2 gap-x-3': (value?.type === 'monster' || value?.type === 'summon') && encounterId,
           }"
         >
           <FormKit
@@ -190,7 +190,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             outer-class="grow"
           />
           <FormKit
-            v-if="(value?.type === 'monster' || value?.type === 'summon') && isEncounter"
+            v-if="(value?.type === 'monster' || value?.type === 'summon') && encounterId"
             value="1"
             name="amount"
             type="number"
@@ -202,14 +202,14 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
           />
         </div>
         <FormKit
-          v-if="isEncounter && value?.type === 'summon'"
+          v-if="encounterId && value?.type === 'summon'"
           type="select"
           name="summoner"
           :label="$t('components.inputs.summonerLabel')"
           :placeholder="$t('components.inputs.nothing')"
           validation="required"
         />
-        <div :class="{ 'grid sm:grid-cols-2 gap-x-3': value?.type === 'player' && !isEncounter }">
+        <div :class="{ 'grid sm:grid-cols-2 gap-x-3': value?.type === 'player' && !encounterId }">
           <FormKit
             name="name"
             :value="item?.name"
@@ -220,7 +220,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             @suffix-icon-click="(node: FormKitNode) => node.input(randomName())"
           />
           <FormKit
-            v-if="value?.type === 'player' && !isEncounter"
+            v-if="value?.type === 'player' && !encounterId"
             name="player"
             :value="item?.player"
             :label="$t('components.inputs.playerLabel')"
@@ -228,9 +228,9 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             outer-class="grow"
           />
         </div>
-        <div :class="{ 'grid sm:grid-cols-2 gap-x-3': isEncounter }">
+        <div :class="{ 'grid sm:grid-cols-2 gap-x-3': encounterId }">
           <FormKit
-            v-if="isEncounter"
+            v-if="encounterId"
             name="initiative"
             type="number"
             min="1"
@@ -340,7 +340,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
       </FormKit>
     </FormKit>
     <div
-      v-if="isEncounter && !initiativeSheet.isPlayground"
+      v-if="encounterId && !$route.fullPath.includes('/playground')"
       class="flex flex-col gap-x-2 mb-2"
     >
       <FormKit

@@ -18,11 +18,14 @@ function openModal(): void {
       name: props.item.name,
       submit: async (value: string) => {
         const index = getCurrentRowIndex(props.sheet, props.item.id)
-        const rows = props.sheet.rows
+        const rows = [...props.sheet.rows]
 
         if (index === -1) return
 
-        rows[index].name = value
+        rows[index] = {
+          ...rows[index],
+          name: value,
+        }
 
         await props.update({ rows })
       },

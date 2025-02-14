@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
 
-const emit = defineEmits<{
-  close: []
-  finished: [settings: InitiativeSettings]
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{
   encounterId: number
   settings: InitiativeSettings
 }>()
 
-const sheet = useInitiativeSheet()
+const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
 const rowsDefault = ['ac', 'health', 'manage', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 const widgetsDefault = ['note', 'info-pins', 'fantasy-name-generator']
@@ -19,21 +16,20 @@ const widgetsDefault = ['note', 'info-pins', 'fantasy-name-generator']
 async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
-  try {
-    const formData = {
-      ...sanitizeForm<InitiativeSettingsForm>(form),
-      modified: true,
-    }
-
-    await sheet.updateInitiativeSheet({ settings: formData }, props.encounterId)
-
-    emit('finished', formData)
-    emit('close')
-  }
-  catch (err: any) {
-    reset('InitiativeSettings')
-    node.setErrors(err.message)
-  }
+  await update({
+    data: {
+      settings: {
+        ...sanitizeForm<InitiativeSettingsForm>(form),
+        modified: true,
+      },
+    },
+    id: props.encounterId,
+    onSuccess: () => emit('close'),
+    onError: (error) => {
+      reset('InitiativeSettings')
+      node.setErrors(error)
+    },
+  })
 }
 </script>
 

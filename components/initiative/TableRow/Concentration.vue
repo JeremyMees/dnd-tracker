@@ -7,11 +7,14 @@ const props = defineProps<{
 
 function updateConcentration(): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = props.sheet.rows
+  const rows = [...props.sheet.rows]
 
   if (index === -1) return
 
-  rows[index].concentration = !rows[index].concentration
+  rows[index] = {
+    ...rows[index],
+    concentration: !rows[index].concentration,
+  }
 
   props.update({ rows })
 }

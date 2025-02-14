@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
 
-const emit = defineEmits<{
-  close: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{
   encounterId: number
@@ -22,7 +20,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
     emit('close')
   }
   catch (err: any) {
-    reset('RowName')
+    reset('InitiativeRowName')
     node.setErrors(err.message)
   }
 }
@@ -30,7 +28,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
 
 <template>
   <FormKit
-    id="RowName"
+    id="InitiativeRowName"
     type="form"
     :actions="false"
     @submit="handleSubmit"

@@ -12,27 +12,35 @@ const { t } = useI18n()
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = props.sheet.rows
+  const rows = [...props.sheet.rows]
 
   if (index === -1) return
   if (!props.item.deathSaves) return
 
-  const deathSaves = props.item.deathSaves
+  const deathSaves = {
+    save: [...props.item.deathSaves.save],
+    fail: [...props.item.deathSaves.fail],
+  }
 
   if (save) deathSaves.save[saveIndex] = !deathSaves.save[saveIndex]
   else deathSaves.fail[saveIndex] = !deathSaves.fail[saveIndex]
 
-  rows[index].deathSaves = deathSaves
+  rows[index] = {
+    ...rows[index],
+    deathSaves: {
+      save: deathSaves.save as [boolean, boolean, boolean],
+      fail: deathSaves.fail as [boolean, boolean, boolean],
+    },
+  }
 
-  checkForDeathSaveNotifications()
+  checkForDeathSaveNotifications(deathSaves)
 
   props.update({ rows })
 }
 
-function checkForDeathSaveNotifications(): void {
-  const { save, fail } = props.item.deathSaves!
-  const savedFully = save.every(Boolean)
-  const failedFully = fail.every(Boolean)
+function checkForDeathSaveNotifications(deathSaves: { save: boolean[], fail: boolean[] }): void {
+  const savedFully = deathSaves.save.every(Boolean)
+  const failedFully = deathSaves.fail.every(Boolean)
 
   if ((savedFully && failedFully) || (!savedFully && !failedFully)) return
 

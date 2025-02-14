@@ -114,6 +114,7 @@ function next(): void {
                 { 'bg-primary/10': index === data.activeIndex },
               ]"
               class="border-t border-secondary transition-all duration-200 ease-in-out"
+              @dblclick="collapsedRow = collapsedRow === row.id ? undefined : row.id"
             >
               <td>
                 <button

@@ -20,8 +20,8 @@ const canGoDown = computed(() => {
 })
 
 async function moveRow(up: boolean): Promise<void> {
-  const rows = props.sheet.rows
   const index = currentRowIndex.value
+  const rows = [...props.sheet.rows]
 
   // Validate indexes are within bounds
   if (up && index <= 0) return
@@ -31,8 +31,16 @@ async function moveRow(up: boolean): Promise<void> {
 
   // Swap indexes between current and target rows
   const currentIndex = rows[index].index
-  rows[index].index = rows[targetIndex].index
-  rows[targetIndex].index = currentIndex
+
+  rows[index] = {
+    ...rows[index],
+    index: rows[targetIndex].index,
+  }
+
+  rows[targetIndex] = {
+    ...rows[targetIndex],
+    index: currentIndex,
+  }
 
   // When moving up, update all following indexes to maintain sequence
   if (up) {

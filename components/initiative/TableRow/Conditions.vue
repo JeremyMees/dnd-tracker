@@ -20,11 +20,14 @@ function removeEffect(name: string): void {
 
 function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = props.sheet.rows
+  const rows = [...props.sheet.rows]
 
   if (index === -1) return
 
-  rows[index].conditions = rows[index].conditions.map(r => r.name === condition.name ? condition : r)
+  rows[index] = {
+    ...rows[index],
+    conditions: rows[index].conditions.map(r => r.name === condition.name ? condition : r),
+  }
 
   props.update({ rows })
 }

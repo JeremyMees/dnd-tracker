@@ -1,57 +1,70 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 definePageMeta({
   auth: true,
-  path: '/encounters/:id(\\d+)-:title/:page?',
+  path: '/encounters/:id(\\d+)-:title',
 })
 
-const user = useAuthenticatedUser()
 const route = useRoute()
-const sheet = useInitiativeSheet()
+const localePath = useLocalePath()
+const user = useAuthenticatedUser()
+const queryClient = useQueryClient()
+
 const { toast } = useToast()
 const modal = useModal()
 const { t } = useI18n()
-const localePath = useLocalePath()
 
-const { data, refresh } = await useAsyncData(
-  'initiative-sheet',
-  async () => await sheet.get(+route.params.id),
-)
+const supabase = useSupabaseClient<Database>()
+const channel = supabase.channel('initiative_sheets')
 
-const realtimeData = computed<boolean>(() => {
-  return hasCorrectSubscription(user.value.subscription_type, 'medior')
-})
+const EncounterId = computed(() => +route.params.id)
+const realtimeData = computed(() => hasCorrectSubscription(user.value.subscription_type, 'medior'))
+
+const { data } = useInitiativeSheetDetail(EncounterId.value)
+const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
 onMounted(() => {
   if (realtimeData.value) {
-    sheet.subscribeInitiativeSheet(+route.params.id, (payload) => {
-      if (payload.eventType === 'DELETE') {
-        toast({
-          title: t('pages.encounter.toasts.removed.title'),
-          description: t('pages.encounter.toasts.removed.text'),
-          variant: 'warning',
-        })
+    channel.on('postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'initiative_sheets',
+        filter: `id=eq.${EncounterId.value}`,
+      },
+      async (payload) => {
+        if (payload.eventType === 'DELETE') {
+          toast({
+            title: t('pages.encounter.toasts.removed.title'),
+            description: t('pages.encounter.toasts.removed.text'),
+            variant: 'warning',
+          })
 
-        navigateTo(localePath('/encounters'))
-      }
-      else {
-        const { campaign, created_at, id, ...updated } = payload.new
-        data.value = { ...data.value, ...updated } as InitiativeSheet
-      }
-    })
+          navigateTo(localePath('/encounters'))
+        }
+        else if (payload.new && Object.keys(payload.new).length > 0) {
+          await queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', EncounterId.value] })
+        }
+      },
+    )
+      .subscribe()
   }
 })
 
-onBeforeUnmount(() => sheet.unsubscribeInitiativeSheet())
+onBeforeUnmount(() => {
+  if (channel) {
+    channel.unsubscribe()
+    supabase.removeChannel(channel)
+  }
+})
 
 async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable>): Promise<void> {
   if (!data.value) return
 
-  if (payload.rows?.length) payload.rows = indexCorrect(payload.rows)
-
-  try {
-    await sheet.updateInitiativeSheet({
+  await update({
+    data: {
       ...payload,
       ...(
         typeof payload.campaign === 'number'
@@ -60,17 +73,9 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
             ? { campaign: payload.campaign.id }
             : { campaign: undefined }
       ),
-    }, +route.params.id)
-
-    await refresh()
-  }
-  catch (err) {
-    toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
-      variant: 'destructive',
-    })
-  }
+    },
+    id: EncounterId.value,
+  })
 }
 
 function tweakSettings(): void {
@@ -80,9 +85,6 @@ function tweakSettings(): void {
     component: 'InitiativeSettings',
     header: t('general.setting', 2),
     submit: t('actions.save'),
-    events: { finished: (settings) => {
-      if (data.value) data.value.settings = settings
-    } },
     props: {
       encounterId: +route.params.id,
       settings: data.value.settings,
@@ -126,7 +128,7 @@ function tweakSettings(): void {
     <InitiativeTable
       v-if="data"
       :encounter="+route.params.id"
-      :data="data"
+      :data="(data as unknown as InitiativeSheet)"
       :update="handleUpdate"
     />
 

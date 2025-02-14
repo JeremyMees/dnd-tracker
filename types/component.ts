@@ -23,9 +23,6 @@ export type ModalComponent =
   | 'Mail'
   | 'InitiativeSettings'
   | 'InitiativeRowName'
-  | 'InitiativeRowInit'
-  | 'InitiativeRowHealth'
-  | 'InitiativeRowAc'
   | 'DiceRoll'
 
 export interface Modal {

@@ -7,16 +7,21 @@ const props = defineProps<{
 
 function copyRow(): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = props.sheet.rows
+  const rows = [...props.sheet.rows]
 
   if (index === -1) return
 
-  props.update({ rows: [...rows, { ...props.item, id: crypto.randomUUID() }] })
+  props.update({
+    rows: [
+      ...rows,
+      { ...props.item, id: crypto.randomUUID() },
+    ],
+  })
 }
 
 function deleteRow(): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
-  let rows = props.sheet.rows
+  let rows = [...props.sheet.rows]
 
   if (index === -1) return
 

@@ -9,11 +9,14 @@ const note = ref<string>(props.item.note || '')
 
 watchDebounced(note, () => {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = props.sheet.rows
+  const rows = [...props.sheet.rows]
 
   if (index === -1) return
 
-  rows[index].note = note.value
+  rows[index] = {
+    ...rows[index],
+    note: note.value,
+  }
 
   props.update({ rows })
 }, { debounce: 500, maxWait: 1000 })
