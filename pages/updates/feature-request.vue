@@ -15,7 +15,7 @@ const { mutateAsync: vote } = useFeatureVote()
 const { data, status } = useFeatureListing(computed(() => ({
   search: debouncedSearch.value,
   sortBy: 'created_at',
-  sortACS: false,
+  sortDesc: true,
   page: page.value,
   eq: user.value && createdBy.value === 'my'
     ? { field: 'created_by', value: user.value.id }

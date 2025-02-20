@@ -3,7 +3,18 @@ import animate from 'tailwindcss-animate'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
-  safelist: ['dark-mode'],
+  safelist: [
+    'dark-mode',
+    'icon-btn-foreground',
+    'icon-btn-background',
+    'icon-btn-primary',
+    'icon-btn-tertiary',
+    'icon-btn-success',
+    'icon-btn-info',
+    'icon-btn-warning',
+    'icon-btn-help',
+    'icon-btn-destructive',
+  ],
   prefix: '',
   content: [
     './pages/**/*.{vue,js}',

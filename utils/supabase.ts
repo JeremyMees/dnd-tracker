@@ -2,7 +2,7 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   const supabase = useSupabaseClient<Database>()
 
   const { table, select, page, perPage, filters, fuzzy, fields } = options
-  const { eq, search, sortBy, sortACS } = filters || {}
+  const { eq, search, sortBy, sortDesc } = filters || {}
 
   let query = supabase
     .from(table)
@@ -16,7 +16,7 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
 
   if (sortBy) {
     query = query.order(sortBy, {
-      ascending: sortACS || false,
+      ascending: sortDesc !== undefined ? !sortDesc : true,
       nullsFirst: false,
     })
   }

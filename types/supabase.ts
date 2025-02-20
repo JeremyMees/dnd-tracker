@@ -239,7 +239,7 @@ export interface SbRange {
 export interface SbFilter {
   search: string
   sortBy?: string
-  sortACS?: boolean
+  sortDesc?: boolean
   page?: number
   eq?: SbEq
 }

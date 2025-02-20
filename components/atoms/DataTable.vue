@@ -1,212 +1,250 @@
 <script setup lang="ts">
-import { vAutoAnimate } from '@formkit/auto-animate'
+import type { ColumnDef, PaginationState, Row, SortingState, TableOptions } from '@tanstack/vue-table'
+import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
 
-defineEmits<{
-  paginate: [value: number]
-  remove: [items: number[]]
+const emit = defineEmits<{
+  remove: [number[]]
+  invalidate: []
 }>()
 
-const props = withDefaults(
-  defineProps<{
-    items: any[]
-    headers: TableHeader[]
-    pages: number
-    perPage: number
-    totalItems: number
-    type: 'campaign' | 'encounter' | 'homebrew' | 'note'
-    loading?: boolean
-    select?: boolean
-    hasRights?: boolean
-  }>(), {
-    loading: false,
-    select: false,
-    hasRights: undefined,
-  },
-)
+const props = defineProps<{
+  columns: ColumnDef<any, any>[]
+  data: any[]
+  loading: boolean
+  options?: Partial<TableOptions<any>>
+  emptyMessage?: string
+  permission?: (item: any) => Promise<boolean>
+}>()
 
-const sortBy = defineModel<string>('sortBy', { required: true })
-const sortACS = defineModel<boolean>('acs', { default: true, required: true })
-const page = defineModel<number>('page', { default: 0 })
-const search = defineModel<string>('search', { default: '' })
+const globalFilter = ref<string>('')
+const sorting = ref<SortingState>(props.options?.initialState?.sorting || [])
+const pagination = ref<PaginationState>({ pageIndex: 0, pageSize: 10 })
+const rowSelectionPermissions = ref<Record<string, boolean>>({})
 
-const user = useAuthenticatedUser()
-
-const selectedAll = ref<boolean>(false)
-const selected = ref<any[]>([])
-const detailRow = ref<number>()
-
-defineExpose({
-  toggleRow,
-  toggleAll,
-  toggleSort,
-  toggleDetailRow,
-  selected,
-  detailRow,
+// Convert 0-based to 1-based for Radix
+const internalPage = computed({
+  get: () => pagination.value.pageIndex + 1,
+  set: (value: number) => pagination.value.pageIndex = value - 1,
 })
 
-function toggleSort(key: string): void {
-  if (!props.items.length && props.loading) return
+const selectedRowLength = computed(() => table.getSelectedRowModel().rows.length)
 
-  sortACS.value = key === sortBy.value ? !sortACS.value : false
-  sortBy.value = key
-  selectedAll.value = false
-  selected.value = []
-}
+watch(
+  () => props.data,
+  async (value) => {
+    if (value?.length) await fetchPermissions()
+  },
+  { immediate: true, deep: true },
+)
 
-function toggleDetailRow(id: number): void {
-  if (detailRow.value === id) detailRow.value = undefined
-  else detailRow.value = id
-}
+const table = useVueTable({
+  ...props.options,
+  data: computed(() => props.data),
+  columns: props.columns,
+  manualPagination: true,
+  manualSorting: true,
+  manualFiltering: true,
+  enableRowSelection: (row: Row<any>) => rowSelectionPermissions.value[row.original.id],
+  getCoreRowModel: getCoreRowModel(),
+  getRowId: row => row.id,
+  onSortingChange: (updaterOrValue) => {
+    valueUpdater(updaterOrValue, sorting)
+    pagination.value.pageIndex = 0
+    emit('invalidate')
+  },
+  onGlobalFilterChange: (updaterOrValue) => {
+    valueUpdater(updaterOrValue, globalFilter)
+    pagination.value.pageIndex = 0
+    emit('invalidate')
+  },
+  state: {
+    get globalFilter() { return globalFilter.value },
+    get pagination() { return pagination.value },
+    get sorting() { return sorting.value },
+  },
+})
 
-function toggleRow(row: any): void {
-  selectedAll.value = false
-  selected.value = toggleArray(row, selected.value)
+defineExpose({ vueTable: table })
 
-  if (selected.value.length === props.items.length) selectedAll.value = true
-}
+async function fetchPermissions() {
+  const permissions: Record<string, boolean> = {}
 
-function toggleAll(): void {
-  const itemsWithRights = props.items.filter((item) => {
-    if (props.hasRights !== undefined) return props.hasRights
+  for (const item of props.data) {
+    permissions[item.id] = props.permission ? await props.permission(item) : true
+  }
 
-    const owner = isOwner(item, user.value.id, true)
-
-    return props.type === 'campaign'
-      ? owner
-      : owner || isAdmin(item, user.value.id, true)
-  })
-
-  if (selected.value.length === itemsWithRights.length) selected.value = []
-  else selected.value = itemsWithRights
+  rowSelectionPermissions.value = permissions
 }
 </script>
 
 <template>
-  <section class="inline-block overflow-x-auto overflow-y-hidden w-full">
-    <div class="pb-2 flex justify-between gap-8">
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col-reverse sm:flex-row gap-2 justify-between items-center">
       <FormKit
-        v-model="search"
+        :value="table.getState().globalFilter"
         type="search"
-        suffix-icon="search"
-        outer-class="$reset !pb-0 max-w-[300px]"
-        inner-class="$remove:border-background border-secondary $remove:bg-muted bg-secondary/50"
+        name="search"
+        prefix-icon="search"
+        outer-class="$remove:mb-4 w-full sm:w-auto"
+        inner-class="$remove:border-background $remove:bg-muted border-secondary bg-secondary/50"
+        @input="table.setGlobalFilter($event)"
       />
-      <div class="flex gap-4 items-center">
-        <slot name="header" />
+      <div class="flex justify-end w-full sm:w-auto">
+        <slot name="top" />
       </div>
     </div>
-    <div class="bg-secondary/50 border-4 border-secondary rounded-lg relative overflow-y-hidden">
-      <table class="min-w-full">
-        <thead>
-          <tr class="border-b border-secondary">
-            <th
-              v-if="select"
-              class="td"
-            >
-              <FormKit
-                v-model="selectedAll"
-                type="checkbox"
-                :disabled="loading || !items.length"
-                outer-class="$reset !pb-0"
-                wrapper-class="$remove:mb-0"
-                decorator-class="$remove:mr-2"
-                @click="toggleAll"
-              />
-            </th>
-            <th
-              v-for="{ label, sort, id } in headers"
-              :key="label"
-              class="py-2"
-              :class="{
-                'cursor-pointer': sort,
-                '!cursor-progress': loading,
-                '!cursor-not-allowed': items.length === 0,
-              }"
-              @click="sort && toggleSort(id)"
+
+    <div class="rounded-lg border-4 border-secondary bg-secondary/50">
+      <UiTable>
+        <UiTableHeader>
+          <UiTableRow
+            v-for="headerGroup in table.getHeaderGroups()"
+            :key="headerGroup.id"
+            class="hover:bg-transparent"
+          >
+            <UiTableHead
+              v-for="header in headerGroup.headers"
+              :key="header.id"
+              :data-pinned="header.column.getIsPinned()"
+              :class="cn(
+                { 'sticky bg-background/95': header.column.getIsPinned() },
+                header.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
+                header.column.getCanSort() ? 'cursor-pointer select-none' : '',
+              )"
+              @click="header.column.getToggleSortingHandler()?.($event)"
             >
               <div
-                class="flex gap-2 items-center w-fit px-2 rounded-lg transition-colors duration-300"
-                :class="{ 'bg-secondary': id === sortBy }"
+                class="flex items-center gap-2 w-fit"
+                :class="{
+                  'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
+                }"
               >
-                <span class="truncate text-muted-foreground hover:text-foreground transition-colors duration-300">
-                  {{ label }}
-                </span>
+                <FlexRender
+                  v-if="!header.isPlaceholder"
+                  :render="header.column.columnDef.header"
+                  :props="header.getContext()"
+                />
                 <Icon
-                  v-if="sort"
-                  name="tabler:arrows-sort"
-                  class="size-5 min-w-5 text-tertiary/50 transition-all duration-300"
-                  :class="{
-                    '!text-tertiary': sortBy === id,
-                    'rotate-180': sortBy === id && !sortACS,
-                  }"
-                  aria-hidden="true"
+                  v-if="header.column.getIsSorted()"
+                  :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
+                  class="size-4"
                 />
               </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody v-auto-animate>
+            </UiTableHead>
+          </UiTableRow>
+        </UiTableHeader>
+
+        <UiTableBody>
+          <template v-if="table.getRowModel().rows?.length">
+            <template
+              v-for="row in table.getRowModel().rows"
+              :key="row.id"
+            >
+              <UiTableRow :data-state="row.getIsSelected() && 'selected'">
+                <UiTableCell
+                  v-for="cell in row.getVisibleCells()"
+                  :key="cell.id"
+                  :data-pinned="cell.column.getIsPinned()"
+                  :class="cn(
+                    { 'sticky bg-background/95': cell.column.getIsPinned() },
+                    cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
+                  )"
+                >
+                  <FlexRender
+                    :render="cell.column.columnDef.cell"
+                    :props="cell.getContext()"
+                  />
+                </UiTableCell>
+              </UiTableRow>
+              <UiTableRow v-if="row.getIsExpanded()">
+                <UiTableCell :colspan="row.getAllCells().length">
+                  {{ row.original }}
+                </UiTableCell>
+              </UiTableRow>
+            </template>
+          </template>
+
           <slot
-            v-if="loading"
+            v-else-if="loading"
             name="loading"
           />
-          <slot
-            v-else
-            :rows="items"
-          />
 
-          <template v-if="(!items || !items.length) && !loading">
-            <tr class="py-20">
-              <td
-                :colspan="select ? headers.length + 1 : headers.length"
-                class="py-20 px-5 font-bold"
-              >
-                <div class="max-w-prose mx-auto text-center text-muted-foreground">
-                  <slot name="empty" />
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-      <AnimationReveal>
+          <UiTableRow v-else>
+            <UiTableCell
+              :colspan="columns.length"
+              class="h-24 text-center"
+            >
+              {{ emptyMessage || '' }}
+            </UiTableCell>
+          </UiTableRow>
+        </UiTableBody>
+      </UiTable>
+
+      <div
+        :class="[
+          selectedRowLength ? 'flex-col md:flex-row justify-between' : 'justify-end',
+        ]"
+        class="p-4 border-t border-secondary flex items-center gap-2"
+      >
         <div
-          v-if="pages > 1"
-          class="flex justify-end p-2"
+          v-if="selectedRowLength"
+          class="text-sm text-muted-foreground"
         >
-          <Pagination
-            v-model:page="page"
-            :pages="pages"
-            :per-page="perPage"
-            :loading="loading"
-            @paginate="e => {
-              selectedAll = false
-              selected = []
-              $emit('paginate', e)
-            }"
-          />
+          {{
+            $t('components.pagination.selected', {
+              selected: selectedRowLength,
+              items: data?.length || 0,
+            })
+          }}
         </div>
-      </AnimationReveal>
-      <div class="inset-0 z-[-1] fancy-shadow" />
+
+        <UiPagination
+          v-model:page="internalPage"
+          :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
+          :items-per-page="pagination.pageSize"
+          :disabled="loading"
+        >
+          <UiPaginationList class="flex items-center gap-6 w-fit">
+            <div class="text-sm text-muted-foreground">
+              {{
+                $t('components.pagination.page', {
+                  page: internalPage,
+                  pages: Math.max(1, options?.pageCount || 0),
+                })
+              }}
+            </div>
+            <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background">
+              <UiPaginationFirst
+                :disabled="!table.getCanPreviousPage()"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationPrev
+                :disabled="!table.getCanPreviousPage()"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationNext
+                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationLast
+                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                class="border-0"
+              />
+            </div>
+          </UiPaginationList>
+        </UiPagination>
+      </div>
     </div>
+
     <AnimationReveal>
       <button
-        v-if="selected && selected.length"
-        class="btn-destructive mt-4"
-        :aria-label="$t('actions.bulkRemove', { number: selected.length })"
-        @click="() => {
-          $emit('remove', selected.map(item => item.id))
-          selectedAll = false
-          selected = []
-        }"
+        v-if="selectedRowLength"
+        class="btn-destructive mt-2"
+        :aria-label="$t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength)"
+        @click="$emit('remove', table.getSelectedRowModel().rows.map(row => row.original.id))"
       >
-        {{
-          $t('actions.bulkRemove', {
-            number: selected.length,
-            type: $t(`general.${type}`, (selected || []).length).toLowerCase(),
-          })
-        }}
+        {{ $t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength) }}
       </button>
     </AnimationReveal>
-  </section>
+  </div>
 </template>
