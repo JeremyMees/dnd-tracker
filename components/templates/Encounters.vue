@@ -2,11 +2,9 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
+import { generateColumns, initialState } from '~/tables/encounter-listing'
 
 const props = defineProps<{ campaign?: CampaignFull }>()
-
-const table = ref<InstanceType<typeof DataTable>>()
-const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { toast } = useToast()
 const modal = useModal()
@@ -16,37 +14,41 @@ const { t, locale } = useI18n()
 const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
 
-const search = ref<string>('')
-const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
-const sortBy = ref<string>('title')
-const sortACS = ref<boolean>(true)
-const page = ref<number>(0)
-
-const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
-const rowSelection = computed(() => selectedRows(table.value))
+const table = ref<InstanceType<typeof DataTable>>()
+const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { data: count } = useEncounterCount()
 const { mutateAsync: removeEncounter } = useEncounterRemove()
 const { mutateAsync: copyEncounter } = useEncounterCopy()
 
-const { data, status } = useEncounterListing(computed(() => ({
-  search: debouncedSearch.value,
-  sortBy: sortBy.value,
-  sortACS: sortACS.value,
-  page: page.value,
-  eq: props.campaign?.id
-    ? { field: 'campaign', value: props.campaign.id }
-    : undefined,
-})))
+const { data, status } = useEncounterListing(computed(() => {
+  const pagination = table.value?.vueTable.getState().pagination
+  const sorting = table.value?.vueTable.getState().sorting
+  const search = table.value?.vueTable.getState().globalFilter
 
-function share(item: EncounterItem): void {
-  clipboard.copy(shareEncounterUrl(item, locale.value))
+  return {
+    search,
+    sortBy: sorting?.length ? sorting[0].id : initialState.sorting?.[0]?.id,
+    sortDesc: sorting?.length ? sorting[0].desc : initialState.sorting?.[0]?.desc,
+    page: pagination ? pagination.pageIndex : 0,
+    eq: props.campaign?.id ? { field: 'campaign', value: props.campaign.id } : undefined,
+  }
+}))
 
-  toast({
-    description: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
-    variant: 'info',
-  })
-}
+const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
+
+const columns = generateColumns({
+  onShare: (item: EncounterItem) => {
+    clipboard.copy(shareEncounterUrl(item, locale.value))
+
+    toast({
+      description: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
+      variant: 'info',
+    })
+  },
+  onUpdate: (item: EncounterItem) => openModal(item),
+  onCopy: async (data: { data: EncounterItem }) => await copyEncounter({ data: data.data }),
+})
 
 function openModal(item?: EncounterItem): void {
   modal.open({
@@ -60,7 +62,7 @@ function openModal(item?: EncounterItem): void {
   })
 }
 
-async function deleteItems(ids: number[]): Promise<void> {
+async function removeItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.encounter', amount).toLowerCase()
 
@@ -69,6 +71,11 @@ async function deleteItems(ids: number[]): Promise<void> {
   }, async (confirmed: boolean) => {
     if (confirmed) await removeEncounter({ id: ids })
   })
+}
+
+function invalidateQueries(): void {
+  queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
+  queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
 }
 </script>
 
@@ -82,20 +89,68 @@ async function deleteItems(ids: number[]): Promise<void> {
       }"
     />
   </AnimationExpand>
+
   <LimitCta
-    v-if="count >= max"
+    v-if="count && count >= max"
     ref="limitCta"
   />
+
   <DataTable
     ref="table"
+    :columns="columns"
+    :data="data?.encounters || []"
+    :total="data?.amount || 0"
+    :loading="status === 'pending'"
+    :options="{
+      pageCount: data?.pages ?? -1,
+      initialState: {
+        ...initialState,
+        columnVisibility: {
+          ...initialState.columnVisibility,
+          campaign: !campaign, // Hide campaign column if on campaign page
+        },
+      },
+    }"
+    :permission="(item: EncounterItem) => allows(canUpdateEncounter, item)"
+    :empty-message="$t('components.table.nothing', { item: $t('general.encounter', 2).toLowerCase() })"
+    @remove="removeItems"
+    @invalidate="invalidateQueries"
+  >
+    <template #top>
+      <div class="flex justify-end items-center gap-4">
+        <ContentCount
+          :loading="data?.encounters === null"
+          :count="count"
+          :max="max"
+        />
+        <button
+          class="btn-primary"
+          :aria-label="$t('actions.create')"
+          :disabled="status === 'pending'"
+          @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
+        >
+          {{ $t('actions.create') }}
+        </button>
+      </div>
+    </template>
+
+    <template #loading>
+      <SkeletonEncounterTableRow
+        v-for="i in 10"
+        :key="i"
+      />
+    </template>
+  </DataTable>
+
+  <!-- <DataTable
+    ref="table"
     v-model:sort-by="sortBy"
-    v-model:acs="sortACS"
+    v-model:desc="sortDesc"
     v-model:search="search"
     :headers="[
       { label: t('general.name'), sort: true, id: 'title' },
       ...(props.campaign ? [] : [{ label: t('general.campaign'), sort: false, id: 'campaign.title' }]),
       { label: t('general.row', 2), sort: false, id: 'rows' },
-      { label: t('general.member', 2), sort: false, id: 'team' },
       { label: '', sort: false, id: 'actions' },
     ]"
     :items="data?.encounters || []"
@@ -103,6 +158,7 @@ async function deleteItems(ids: number[]): Promise<void> {
     :per-page="10"
     :total-items="data?.amount || 0"
     :loading="status === 'pending'"
+    :rights="[isEncounterAdmin]"
     type="encounter"
     select
     @remove="deleteItems"
@@ -126,7 +182,7 @@ async function deleteItems(ids: number[]): Promise<void> {
 
     <template #default="{ rows }: { rows: EncounterItem[] }">
       <tr
-        v-for="(row, i) in rows"
+        v-for="row in rows"
         :key="row.id"
         class="tr transition-colors"
         :class="{
@@ -134,16 +190,20 @@ async function deleteItems(ids: number[]): Promise<void> {
         }"
       >
         <td class="td max-w-6">
-          <FormKit
-            v-if="row.campaign ? isAdmin(row.campaign, user.id, true) : row.created_by.id === user.id"
-            v-model="rowSelection[row.id]"
-            type="checkbox"
-            :disabled="status === 'pending'"
-            outer-class="$reset !pb-0"
-            wrapper-class="$remove:mb-1"
-            decorator-class="$remove:mr-2"
-            @click="table?.toggleRow(row)"
-          />
+          <Can
+            :ability="row.campaign ? isCampaignAdmin : isEncounterOwner"
+            :args="row.campaign ? [row.campaign, true] : [row]"
+          >
+            <FormKit
+              v-model="rowSelection[row.id]"
+              type="checkbox"
+              :disabled="status === 'pending'"
+              outer-class="$reset !pb-0"
+              wrapper-class="$remove:mb-1"
+              decorator-class="$remove:mr-2"
+              @click="table?.toggleRow(row)"
+            />
+          </Can>
         </td>
         <td class="td">
           <NuxtLinkLocale
@@ -169,18 +229,6 @@ async function deleteItems(ids: number[]): Promise<void> {
           {{ Array.isArray(row.rows) ? row.rows.length : 0 }}
         </td>
         <td class="td">
-          <AvatarGroup
-            :key="`${i}-${row.campaign?.id}`"
-            :owner="row.created_by"
-            :team="row.campaign?.team"
-            :fetch-id="
-              row.campaign?.team?.some(member => member.user.id === row.created_by.id)
-                ? row.campaign.id
-                : undefined
-            "
-          />
-        </td>
-        <td class="td">
           <div class="flex justify-end">
             <button
               v-tippy="t('actions.share')"
@@ -194,7 +242,10 @@ async function deleteItems(ids: number[]): Promise<void> {
                 aria-hidden="true"
               />
             </button>
-            <template v-if="row.campaign ? isAdmin(row.campaign, user.id, true) : true">
+            <Can
+              :ability="row.campaign ? isCampaignAdmin : isEncounterAdmin"
+              :args="row.campaign ? [row.campaign, true] : [row]"
+            >
               <button
                 v-tippy="t('actions.copy')"
                 class="icon-btn-primary"
@@ -219,7 +270,7 @@ async function deleteItems(ids: number[]): Promise<void> {
                   aria-hidden="true"
                 />
               </button>
-            </template>
+            </Can>
           </div>
         </td>
       </tr>
@@ -235,5 +286,5 @@ async function deleteItems(ids: number[]): Promise<void> {
     <template #empty>
       {{ t('components.table.nothing', { item: t('general.encounter', 2).toLowerCase() }) }}
     </template>
-  </DataTable>
+  </DataTable> -->
 </template>
