@@ -46,6 +46,11 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       header: t('general.member', 2),
       cell: ({ row }) => row.original.team.length + 1,
     }),
+    columnHelper.accessor('created_at', {
+      enableGlobalFilter: false,
+      header: t('general.createdAt'),
+      cell: ({ row }) => formatDate(row.getValue('created_at')),
+    }),
     columnHelper.display({
       enableGlobalFilter: false,
       enableSorting: false,
@@ -67,5 +72,5 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
 }
 
 export const initialState: InitialTableState = {
-  sorting: [{ id: 'title', desc: false }],
+  sorting: [{ id: 'created_at', desc: true }],
 }

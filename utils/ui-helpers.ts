@@ -126,3 +126,18 @@ export function indexCorrect(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
 export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
   return sheet.rows.findIndex(row => row.id === id)
 }
+
+export function formatDate(date: string | Date): string {
+  const { locale } = useI18n()
+
+  const formatter = new Intl.DateTimeFormat(
+    locale.value,
+    {
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+    },
+  )
+
+  return formatter.format(new Date(date))
+}
