@@ -1,16 +1,18 @@
-import { useQueryClient } from '@tanstack/vue-query'
+export interface AuthUser extends ProfileRow {}
 
 export function useAuthentication() {
-  const user = useState<ProfileRow | null>('auth-user', () => null)
+  const user = useState<AuthUser | null>('auth-user', () => null)
   const ready = useState<boolean>('auth-ready', () => false)
 
   const supabase = useSupabaseClient<Database>()
   const supabaseUser = useSupabaseUser()
-  const queryClient = useQueryClient()
   const localePath = useLocalePath()
 
   supabase.auth.onAuthStateChange((event) => {
-    if (['INITIAL_SESSION', 'USER_UPDATED', 'SIGNED_IN'].includes(event)) {
+    if (['USER_UPDATED', 'SIGNED_IN'].includes(event)) {
+      fetch()
+    }
+    else if (event === 'INITIAL_SESSION' && !user.value) {
       fetch()
     }
   })
@@ -61,34 +63,22 @@ export function useAuthentication() {
 
   async function fetch(): Promise<void> {
     if (supabaseUser.value) {
-      const cachedData = queryClient.getQueryData<ProfileRow>(['useProfileDetail', supabaseUser.value.id])
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', supabaseUser.value.id)
+        .single()
 
-      if (cachedData) {
-        user.value = cachedData
+      if (error?.details.includes('Results contain 0 rows')) {
+        await logout()
       }
-      else {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', supabaseUser.value.id)
-          .single()
 
-        if (error?.details.includes('Results contain 0 rows')) {
-          await logout()
-        }
+      if (error) throw createError(error)
 
-        if (error) throw createError(error)
-
-        if (data) {
-          user.value = data
-          queryClient.setQueryData(['useProfileDetail', supabaseUser.value.id], data)
-        }
-      }
+      if (data) user.value = data
     }
 
-    if (!ready.value) {
-      ready.value = true
-    }
+    if (!ready.value) ready.value = true
   }
 
   return {
@@ -104,7 +94,7 @@ export const useAuthenticatedUser = () => {
   const { user } = useAuthentication()
 
   return computed(() => {
-    const userValue = unref(user)
+    const userValue: AuthUser | null = unref(user)
 
     if (!userValue) throw createError('useAuthenticatedUser() can only be used in protected pages')
 

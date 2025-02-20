@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
+    'nuxt-authorization',
   ],
 
   components: [
@@ -100,7 +101,7 @@ export default defineNuxtConfig({
 
   eslint: { config: { stylistic: true } },
 
-  imports: { dirs: ['types/*.ts', 'queries/*.ts'] },
+  imports: { dirs: ['types/*.ts', 'queries/*.ts', 'shared/utils/*.ts'] },
 
   formkit: { configFile: './formkit/config.ts' },
 
