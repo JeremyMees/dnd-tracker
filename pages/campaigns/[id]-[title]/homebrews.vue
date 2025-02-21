@@ -1,37 +1,41 @@
 <script lang="ts" setup>
 import { useQueryClient } from '@tanstack/vue-query'
 import type { DataTable, LimitCta } from '#components'
+import { generateColumns, expandedMarkup, initialState } from '~/tables/homebrew-listing'
 
 const props = defineProps<{ current: CampaignFull }>()
 
-const table = ref<InstanceType<typeof DataTable>>()
-const limitCta = ref<InstanceType<typeof LimitCta>>()
-
 const modal = useModal()
-const user = useAuthenticatedUser()
 const { ask } = useConfirm()
 const { t } = useI18n()
 const queryClient = useQueryClient()
+const hasRights = await allows(isCampaignAdmin, props.current)
 
-const search = ref<string>('')
-const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
-const sortBy = ref<string>('name')
-const sortACS = ref<boolean>(true)
-const page = ref<number>(0)
+const table = ref<InstanceType<typeof DataTable>>()
+const limitCta = ref<InstanceType<typeof LimitCta>>()
 const max = 100
-
-const rowSelection = computed(() => selectedRows(table.value))
 
 const { data: count } = useHomebrewCount(props.current.id)
 const { mutateAsync: removeHomebrew } = useHomebrewRemove()
 
-const { data, status } = useHomebrewListing(computed(() => ({
-  search: debouncedSearch.value,
-  sortBy: sortBy.value,
-  sortACS: sortACS.value,
-  page: page.value,
-  eq: { field: 'campaign', value: props.current.id },
-})))
+const { data, status } = useHomebrewListing(computed(() => {
+  const pagination = table.value?.vueTable.getState().pagination
+  const sorting = table.value?.vueTable.getState().sorting
+  const search = table.value?.vueTable.getState().globalFilter
+
+  return {
+    search,
+    sortBy: sorting?.length ? sorting[0].id : initialState.sorting?.[0]?.id,
+    sortDesc: sorting?.length ? sorting[0].desc : initialState.sorting?.[0]?.desc,
+    page: pagination ? pagination.pageIndex : 0,
+    eq: { field: 'campaign', value: props.current.id },
+  }
+}))
+
+const columns = generateColumns({
+  onUpdate: (item: HomebrewItemRow) => openModal(item),
+  hasRights,
+})
 
 function openModal(item?: HomebrewItemRow): void {
   modal.open({
@@ -46,7 +50,7 @@ function openModal(item?: HomebrewItemRow): void {
   })
 }
 
-async function deleteItems(ids: number[]): Promise<void> {
+async function removeItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.homebrew', amount).toLowerCase()
 
@@ -55,6 +59,11 @@ async function deleteItems(ids: number[]): Promise<void> {
   }, async (confirmed: boolean) => {
     if (confirmed) await removeHomebrew({ id: ids })
   })
+}
+
+function invalidateQueries(): void {
+  queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
+  queryClient.invalidateQueries({ queryKey: ['useHomebrewCount'] })
 }
 </script>
 
@@ -73,23 +82,65 @@ async function deleteItems(ids: number[]): Promise<void> {
       />
       <div class="hidden md:flex gap-1 body-extra-small" />
     </div>
+
     <AnimationExpand>
       <RefreshCard
         v-if="status === 'error'"
-        @refresh="() => {
-          queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
-          queryClient.invalidateQueries({ queryKey: ['useHomebrewCount'] })
-        }"
+        @refresh="invalidateQueries"
       />
     </AnimationExpand>
+
     <LimitCta
-      v-if="count >= max"
+      v-if="count && count >= max"
       ref="limitCta"
     />
+
     <DataTable
       ref="table"
+      :columns="columns"
+      :data="data?.homebrews || []"
+      :total="data?.amount || 0"
+      :loading="status === 'pending'"
+      :options="{
+        pageCount: data?.pages ?? -1,
+        initialState,
+      }"
+      :permission="hasRights"
+      :expanded-markup="expandedMarkup"
+      :empty-message="$t('components.table.nothing', { item: $t('general.homebrew', 2).toLowerCase() })"
+      @remove="removeItems"
+      @invalidate="invalidateQueries"
+    >
+      <template #top>
+        <div class="flex justify-end items-center gap-4">
+          <ContentCount
+            :loading="data?.homebrews === null"
+            :count="count"
+            :max="max"
+          />
+          <button
+            class="btn-primary"
+            :aria-label="$t('actions.create')"
+            :disabled="status === 'pending'"
+            @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
+          >
+            {{ $t('actions.create') }}
+          </button>
+        </div>
+      </template>
+
+      <template #loading>
+        <SkeletonHomebrewTableRow
+          v-for="i in 10"
+          :key="i"
+        />
+      </template>
+    </DataTable>
+
+    <!-- <DataTable
+      ref="table"
       v-model:sort-by="sortBy"
-      v-model:acs="sortACS"
+      v-model:desc="sortDesc"
       v-model:search="search"
       :headers="[
         { label: $t('general.name'), sort: true, id: 'name' },
@@ -106,7 +157,7 @@ async function deleteItems(ids: number[]): Promise<void> {
       :per-page="10"
       :total-items="data?.amount || 0"
       :loading="status === 'pending'"
-      :has-rights="isAdmin(current, user.id)"
+      :has-rights="hasRights"
       type="homebrew"
       select
       @remove="deleteItems"
@@ -114,18 +165,23 @@ async function deleteItems(ids: number[]): Promise<void> {
     >
       <template #header>
         <ContentCount
-          v-if="data?.homebrews !== null && count"
+          v-if="data?.homebrews !== null"
           :count="count"
           :max="max"
         />
-        <button
-          class="btn-primary"
-          :aria-label="$t('actions.create')"
-          :disabled="status === 'pending' || !isAdmin(current, user.id)"
-          @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
+        <Can
+          :ability="isCampaignAdmin"
+          :args="[current]"
         >
-          {{ $t('actions.create') }}
-        </button>
+          <button
+            class="btn-primary"
+            :aria-label="$t('actions.create')"
+            :disabled="status === 'pending'"
+            @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
+          >
+            {{ $t('actions.create') }}
+          </button>
+        </Can>
       </template>
 
       <template #default="{ rows }: { rows: HomebrewItemRow[] }">
@@ -141,16 +197,20 @@ async function deleteItems(ids: number[]): Promise<void> {
           >
             <td class="td">
               <div class="max-w-[60px] flex items-center gap-2">
-                <FormKit
-                  v-if="isAdmin(current, user.id)"
-                  v-model="rowSelection[row.id]"
-                  type="checkbox"
-                  :disabled="status === 'pending'"
-                  outer-class="$reset !pb-0"
-                  wrapper-class="$remove:mb-1"
-                  decorator-class="$remove:mr-2"
-                  @click="table?.toggleRow(row)"
-                />
+                <Can
+                  :ability="isCampaignAdmin"
+                  :args="[current]"
+                >
+                  <FormKit
+                    v-model="rowSelection[row.id]"
+                    type="checkbox"
+                    :disabled="status === 'pending'"
+                    outer-class="$reset !pb-0"
+                    wrapper-class="$remove:mb-1"
+                    decorator-class="$remove:mr-2"
+                    @click="table?.toggleRow(row)"
+                  />
+                </Can>
                 <button
                   v-tippy="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
                   :aria-label="$t(`actions.${table?.detailRow === row.id ? 'hide' : 'show'}`)"
@@ -210,19 +270,23 @@ async function deleteItems(ids: number[]): Promise<void> {
             </td>
             <td class="td">
               <div class="flex justify-end">
-                <button
-                  v-if="isAdmin(current, user.id)"
-                  v-tippy="$t('actions.update')"
-                  class="icon-btn-info"
-                  :aria-label="$t('actions.update')"
-                  @click="openModal(row)"
+                <Can
+                  :ability="isCampaignAdmin"
+                  :args="[current]"
                 >
-                  <Icon
-                    name="tabler:edit"
-                    class="size-5"
-                    aria-hidden="true"
-                  />
-                </button>
+                  <button
+                    v-tippy="$t('actions.update')"
+                    class="icon-btn-info"
+                    :aria-label="$t('actions.update')"
+                    @click="openModal(row)"
+                  >
+                    <Icon
+                      name="tabler:edit"
+                      class="size-5"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </Can>
               </div>
             </td>
           </tr>
@@ -273,6 +337,6 @@ async function deleteItems(ids: number[]): Promise<void> {
       <template #empty>
         {{ $t('components.table.nothing', { item: $t('general.homebrew', 2).toLowerCase() }) }}
       </template>
-    </DataTable>
+    </DataTable> -->
   </div>
 </template>

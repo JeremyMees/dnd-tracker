@@ -78,7 +78,7 @@ export interface Action {
 
 export interface ActionOpen5E {
   name: string
-  description: {
+  desc: {
     en: string
   }
   attack_bonus?: number

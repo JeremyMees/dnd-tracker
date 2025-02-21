@@ -6,6 +6,7 @@ export function useHomebrewListing(data: ComputedRef<SbFilter>) {
     queryKey: ['useHomebrewListing', data],
     queryFn: () => sbQuery<HomebrewItemRow>({
       table: 'homebrew_items',
+      fields: ['name', 'player'],
       filters: data.value,
       page: data.value.page,
       perPage: 10,

@@ -21,7 +21,7 @@
     "damage": "Schade",
     "reset": "Reset",
     "remove": "Verwijderen",
-    "bulkRemove": "Verwijder {number} {type}",
+    "bulkRemove": "Verwijder {number} rij|Verwijder {number} rijen",
     "temp": "Tijdelijk",
     "show": "Toon",
     "hide": "Verberg",
@@ -73,6 +73,9 @@
     "changeInitiative": "Initiatief wijzigen"
   },
   "general": {
+    "hp": "HP",
+    "ac": "AC",
+    "initiativeModifier": "Initiatief modifier",
     "featureRequest": "Feature verzoek | Feature verzoeken",
     "rule": "Regel | Regels",
     "initiative": "Initiatief | Initiatieven",
@@ -483,7 +486,8 @@
       }
     },
     "pagination": {
-      "page": "Pagina {page} van {pages}"
+      "page": "Pagina {page} van {pages}",
+      "selected": "{selected} van {items} rijen geselecteerd"
     },
     "initiativeTable": {
       "died": {

@@ -21,7 +21,7 @@
     "damage": "Damage",
     "reset": "Reset",
     "remove": "Remove",
-    "bulkRemove": "Remove {number} {type}",
+    "bulkRemove": "Remove {number} row|Remove {number} rows",
     "temp": "Temporary",
     "show": "Show",
     "hide": "Hide",
@@ -73,6 +73,9 @@
     "changeInitiative": "Change initiative"
   },
   "general": {
+    "hp": "HP",
+    "ac": "AC",
+    "initiativeModifier": "Initiative modifier",
     "featureRequest": "Feature request | Feature requests",
     "rule": "Rule | Rules",
     "initiative": "Initiative | Initiatives",
@@ -483,7 +486,8 @@
       }
     },
     "pagination": {
-      "page": "Page {page} of {pages}"
+      "page": "Page {page} of {pages}",
+      "selected": "{selected} of {items} row(s) selected"
     },
     "initiativeTable": {
       "died": {
