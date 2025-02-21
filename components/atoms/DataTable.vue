@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ColumnDef, PaginationState, Row, SortingState, TableOptions } from '@tanstack/vue-table'
-import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
+import { FlexRender, getCoreRowModel, getExpandedRowModel, useVueTable } from '@tanstack/vue-table'
 
 const emit = defineEmits<{
   remove: [number[]]
@@ -13,7 +13,8 @@ const props = defineProps<{
   loading: boolean
   options?: Partial<TableOptions<any>>
   emptyMessage?: string
-  permission?: (item: any) => Promise<boolean>
+  permission?: boolean | ((item: any) => Promise<boolean>)
+  expandedMarkup?: (row: Row<any>) => VNode
 }>()
 
 const globalFilter = ref<string>('')
@@ -46,6 +47,7 @@ const table = useVueTable({
   manualFiltering: true,
   enableRowSelection: (row: Row<any>) => rowSelectionPermissions.value[row.original.id],
   getCoreRowModel: getCoreRowModel(),
+  getExpandedRowModel: getExpandedRowModel(),
   getRowId: row => row.id,
   onSortingChange: (updaterOrValue) => {
     valueUpdater(updaterOrValue, sorting)
@@ -70,7 +72,9 @@ async function fetchPermissions() {
   const permissions: Record<string, boolean> = {}
 
   for (const item of props.data) {
-    permissions[item.id] = props.permission ? await props.permission(item) : true
+    if (typeof props.permission === 'boolean') permissions[item.id] = props.permission
+    else if (typeof props.permission === 'function') permissions[item.id] = await props.permission(item)
+    else permissions[item.id] = true
   }
 
   rowSelectionPermissions.value = permissions
@@ -156,9 +160,12 @@ async function fetchPermissions() {
                   />
                 </UiTableCell>
               </UiTableRow>
-              <UiTableRow v-if="row.getIsExpanded()">
+              <UiTableRow
+                v-if="expandedMarkup && row.getIsExpanded()"
+                class="hover:bg-transparent"
+              >
                 <UiTableCell :colspan="row.getAllCells().length">
-                  {{ row.original }}
+                  <FlexRender :render="expandedMarkup(row)" />
                 </UiTableCell>
               </UiTableRow>
             </template>
@@ -181,9 +188,7 @@ async function fetchPermissions() {
       </UiTable>
 
       <div
-        :class="[
-          selectedRowLength ? 'flex-col md:flex-row justify-between' : 'justify-end',
-        ]"
+        :class="[selectedRowLength ? 'flex-col md:flex-row justify-between' : 'justify-end']"
         class="p-4 border-t border-secondary flex items-center gap-2"
       >
         <div

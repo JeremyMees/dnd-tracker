@@ -22,6 +22,7 @@ module.exports = {
     './components/**/*.{vue,js}',
     './plugins/**/*.{js,ts}',
     './formkit/theme.ts',
+    './tables/**/*.{js,ts}',
   ],
   theme: {
     container: {
