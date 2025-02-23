@@ -32,6 +32,7 @@ export function iconButton(
   content: string,
   color: Color,
   cb: () => void,
+  disabled = false,
 ): VNode {
   return h(Tippy, { content },
     h('button', {
@@ -39,6 +40,7 @@ export function iconButton(
       ariaLabel: content,
       class: `icon-btn-${color}`,
       onClick: cb,
+      disabled,
     }, iconElement(icon)),
   )
 }
