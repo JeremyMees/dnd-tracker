@@ -31,7 +31,8 @@ const { user } = useAuthentication()
           src="/cta.png"
           alt="Cta Banner"
           sizes="sm:1000px md:1000px lg:1000px"
-          width="700"
+          width="2600"
+          height="1440"
           class="rounded-lg"
           loading="lazy"
         />

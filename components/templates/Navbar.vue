@@ -57,6 +57,8 @@ async function logoutUser(): Promise<void> {
           <NuxtImg
             src="/logo.svg"
             alt="DnD Tracker logo"
+            width="356"
+            height="125"
             sizes="sm:500px md:500px lg:500px"
             class="h-12"
           />

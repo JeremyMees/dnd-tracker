@@ -70,6 +70,8 @@ onMounted(() => {
         alt="Hero image"
         sizes="sm:500px md:500px lg:500px"
         loading="lazy"
+        width="2475"
+        height="2100"
         class="w-full h-full object-cover"
       />
     </div>

@@ -9,8 +9,8 @@
           <NuxtImg
             src="/text-logo.svg"
             alt="DnD Tracker logo"
-            width="200"
-            height="100"
+            width="201"
+            height="62"
           />
         </NuxtLinkLocale>
         <div class="mt-4 lg:mt-0">

@@ -39,15 +39,19 @@ async function logoutUser(): Promise<void> {
             class="group-data-[collapsible=icon]:py-0 py-2"
           >
             <NuxtImg
-              src="/text-logo.svg"
+              src="/logo.svg"
               alt="DnD Tracker logo"
-              sizes="sm:150px md:150px lg:150px"
+              width="356"
+              height="125"
+              sizes="sm:150px"
               class="h-10 group-data-[collapsible=icon]:hidden"
             />
             <NuxtImg
               src="/icon-logo.svg"
               alt="DnD Tracker logo"
-              sizes="sm:150px md:150px lg:150px"
+              width="147"
+              height="125"
+              sizes="sm:150px"
               class="h-10 hidden group-data-[collapsible=icon]:block"
             />
           </NuxtLinkLocale>

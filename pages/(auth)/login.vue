@@ -37,9 +37,9 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
     <NuxtImg
       src="/classes.png"
       alt="DnD Classes"
-      :width="250"
-      :height="250"
-      class="mx-auto visibility-pulse"
+      width="2480"
+      height="3508"
+      class="mx-auto visibility-pulse w-[250px]"
     />
     <FormKit
       type="form"
