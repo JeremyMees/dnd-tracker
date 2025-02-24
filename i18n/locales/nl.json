@@ -276,6 +276,7 @@
         }
       },
       "danger": {
+        "noPermission": "Je hebt geen toegang tot deze pagina",
         "transfer": {
           "title": "Overdracht van eigendom",
           "text": "Draag deze campagne over aan een andere gebruiker die al lid is van het team"

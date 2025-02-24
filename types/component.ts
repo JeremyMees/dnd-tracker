@@ -85,3 +85,10 @@ export interface InfoCard {
   prerequisite?: string
   effects_desc?: string[]
 }
+
+export interface Tab {
+  link: string
+  label: string
+  icon: string
+  disabled?: boolean
+}

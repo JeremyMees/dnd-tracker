@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
+
 definePageMeta({
   auth: true,
   path: '/campaigns/:id(\\d+)-:title/:page?',
@@ -6,10 +8,85 @@ definePageMeta({
 })
 
 const route = useRoute()
+const { t } = useI18n()
+const queryClient = useQueryClient()
+const supabase = useSupabaseClient<Database>()
 
-const url = computed<string>(() => route.fullPath.split('/').slice(0, -1).join('/'))
+const status = ref<'pending' | 'success' | 'error'>('pending')
+const campaign = ref<CampaignFull>()
+const admin = ref<boolean>(false)
+const owner = ref<boolean>(false)
 
-const { data, status } = useCampaignDetail(+route.params.id)
+try {
+  const { data, error } = await queryClient.fetchQuery({
+    queryKey: ['useCampaignDetail', route.params.id],
+    queryFn: async () => await supabase
+      .from('campaigns')
+      .select(`
+          *, 
+          created_by(id, username, avatar, name, email), 
+          team(
+            id,
+            role,
+            user(id, username, avatar, name, email)
+          ), 
+          join_campaign(
+            id,
+            role,
+            user(id, username, avatar, name, email)
+          )
+        `)
+      .eq('id', route.params.id)
+      .single(),
+  })
+
+  if (error) throw createError(error)
+  else if (data) {
+    campaign.value = data
+    admin.value = await allows(isCampaignAdmin, data)
+    owner.value = await allows(isCampaignOwner, data)
+    status.value = 'success'
+  }
+}
+catch {
+  status.value = 'error'
+}
+
+const tabs = computed<Tab[]>(() => {
+  const url = route.fullPath.split('/').slice(0, -1).join('/')
+
+  return [
+    {
+      link: `${url}/encounters`,
+      label: t('general.encounter', 2),
+      icon: 'tabler:list-details',
+    },
+    {
+      link: `${url}/homebrews`,
+      label: t('general.homebrew', 2),
+      icon: 'tabler:beer',
+    },
+    {
+      link: `${url}/notes`,
+      label: t('general.note', 2),
+      icon: 'tabler:notes',
+    },
+    ...(admin.value
+      ? [{
+          link: `${url}/settings`,
+          label: t('general.setting', 2),
+          icon: 'tabler:settings',
+        }]
+      : []),
+    ...(owner.value
+      ? [{
+          link: `${url}/danger-zone`,
+          label: t('general.dangerZone'),
+          icon: 'tabler:alert-triangle',
+        }]
+      : []),
+  ]
+})
 </script>
 
 <template>
@@ -30,79 +107,47 @@ const { data, status } = useCampaignDetail(+route.params.id)
           <span class="hidden md:block">
             {{ $t('general.campaign') }}:
           </span>
-          <ClientOnly>
-            <span
-              v-if="status === 'success' && data?.title"
-              class="text-foreground"
-            >
-              {{ data.title }}
-            </span>
-            <UiSkeleton
-              v-else
-              class="w-[150px] h-6 rounded-full"
-            />
-            <template #fallback>
-              <UiSkeleton class="w-[150px] h-6 rounded-full" />
-            </template>
-          </ClientOnly>
+          <span
+            v-if="status === 'success' && campaign?.title"
+            class="text-foreground"
+          >
+            {{ campaign.title }}
+          </span>
+          <UiSkeleton
+            v-else
+            class="w-[150px] h-6 rounded-full"
+          />
         </h2>
       </div>
     </template>
-    <ClientOnly>
-      <div class="flex flex-wrap gap-4 lg:border-b-2 lg:border-secondary mb-10">
-        <TabItem
-          :link="`${url}/encounters`"
-          :label="$t('general.encounter', 2)"
-          icon="tabler:list-details"
-          :disabled="status !== 'success'"
-        />
-        <TabItem
-          :link="`${url}/homebrews`"
-          :label="$t('general.homebrew', 2)"
-          icon="tabler:beer"
-          :disabled="status !== 'success'"
-        />
-        <TabItem
-          :link="`${url}/notes`"
-          :label="$t('general.note', 2)"
-          icon="tabler:notes"
-          :disabled="status !== 'success'"
-        />
-        <Can
-          v-if="data"
-          :ability="isCampaignAdmin"
-          :args="[data]"
-        >
-          <TabItem
-            :link="`${url}/settings`"
-            :label="$t('general.setting', 2)"
-            icon="tabler:settings"
-            :disabled="status !== 'success'"
-          />
-        </Can>
-        <Can
-          v-if="data"
-          :ability="isCampaignOwner"
-          :args="[data]"
-        >
-          <TabItem
-            :link="`${url}/danger-zone`"
-            :label="$t('general.dangerZone')"
-            icon="tabler:alert-triangle"
-            :disabled="status !== 'success'"
-          />
-        </Can>
-      </div>
-    </ClientOnly>
+    <div class="flex flex-wrap gap-4 lg:border-b-2 lg:border-secondary mb-10">
+      <TabItem
+        v-for="tab in tabs"
+        :key="tab.link"
+        :link="tab.link"
+        :label="tab.label"
+        :icon="tab.icon"
+        :disabled="status !== 'success'"
+      />
+    </div>
     <div class="min-h-[40vh]">
       <NuxtPage
-        v-if="data"
-        :current="data"
+        v-if="status === 'success'"
+        :current="campaign"
       />
-      <UiSkeleton
-        v-else
-        class="h-[40vh]"
-      />
+      <Card
+        v-else-if="status === 'error'"
+        color="danger"
+        class="h-[40vh] flex flex-col items-center justify-center gap-2"
+      >
+        <Icon
+          name="tabler:alert-triangle"
+          class="size-10"
+        />
+        <p class="head-3">
+          {{ $t('general.error.text') }}
+        </p>
+      </Card>
     </div>
   </NuxtLayout>
 </template>
