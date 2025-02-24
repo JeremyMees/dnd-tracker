@@ -52,6 +52,15 @@ type CampaignMember = {
   }[]
 }
 
+function hasPermission(userRole: UserRole, expected: UserRole): boolean {
+  if (
+    userRole === 'Owner'
+    || userRole === expected
+    || (userRole === 'Admin' && expected === 'Viewer')
+  ) return true
+  else return false
+}
+
 function determinePageType(fullPath: string): string {
   const pages = {
     '/encounters': 'encounters',
