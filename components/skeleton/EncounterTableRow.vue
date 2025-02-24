@@ -13,6 +13,9 @@
       <UiSkeleton class="w-[75px] h-5 rounded-full" />
     </UiTableCell>
     <UiTableCell>
+      <UiSkeleton class="w-[80px] h-5 rounded-full" />
+    </UiTableCell>
+    <UiTableCell>
       <div class="flex justify-end gap-1">
         <UiSkeleton class="size-5 rounded-lg" />
         <UiSkeleton class="size-5 rounded-lg" />

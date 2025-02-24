@@ -11,6 +11,7 @@ interface ColumnOptions {
 
 export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
   const { t } = useI18n()
+  const user = useAuthenticatedUser()
 
   return [
     columnHelper.display({
@@ -42,6 +43,22 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
       cell: ({ row }) => formatDate(row.getValue('created_at')),
+    }),
+    columnHelper.display({
+      enableGlobalFilter: false,
+      enableSorting: false,
+      header: t('general.role'),
+      cell: ({ row }) => {
+        const hasTeam = row.original.campaign?.team
+        const owner = isOwner(row.original, user.value.id)
+        const admin = hasTeam ? isAdmin(row.original.campaign.team, user.value.id) : false
+        const member = hasTeam ? isMember(row.original.campaign.team, user.value.id) : false
+
+        if (admin) return t('general.admin')
+        if (member) return t('general.member')
+        if (owner) return t('general.owner')
+        return t('general.viewer')
+      },
     }),
     columnHelper.display({
       enableGlobalFilter: false,

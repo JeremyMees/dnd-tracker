@@ -10,6 +10,7 @@ interface ColumnOptions {
 
 export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
   const { t } = useI18n()
+  const user = useAuthenticatedUser()
   return [
     columnHelper.display({
       enableGlobalFilter: false,
@@ -50,6 +51,21 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
       cell: ({ row }) => formatDate(row.getValue('created_at')),
+    }),
+    columnHelper.display({
+      enableGlobalFilter: false,
+      enableSorting: false,
+      header: t('general.role'),
+      cell: ({ row }) => {
+        const admin = isAdmin(row.original.team, user.value.id)
+        const owner = isOwner(row.original, user.value.id)
+        const member = isMember(row.original.team, user.value.id)
+
+        if (admin) return t('general.admin')
+        if (member) return t('general.member')
+        if (owner) return t('general.owner')
+        return t('general.viewer')
+      },
     }),
     columnHelper.display({
       enableGlobalFilter: false,
