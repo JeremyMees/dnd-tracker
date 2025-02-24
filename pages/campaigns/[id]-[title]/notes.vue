@@ -15,9 +15,8 @@ const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
 const queryClient = useQueryClient()
 
 const table = ref<InstanceType<typeof DataTable>>()
+const hasRights = isOwner(props.current, user.value.id) || isAdmin(props.current.team, user.value.id)
 const max = 100
-
-const hasRights = await allows(isCampaignAdmin, props.current)
 
 const { data: count } = useNoteCount(props.current.id)
 const { mutateAsync: removeNote } = useNoteRemove()

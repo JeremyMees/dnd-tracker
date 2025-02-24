@@ -47,7 +47,7 @@ const columns = generateColumns({
     })
   },
   onUpdate: (item: EncounterItem) => openModal(item),
-  onCopy: async (data: { data: EncounterItem }) => await copyEncounter({ data: data.data }),
+  onCopy: async ({ data }: { data: EncounterItem }) => await copyEncounter({ data }),
 })
 
 function openModal(item?: EncounterItem): void {
@@ -80,65 +80,58 @@ function invalidateQueries(): void {
 </script>
 
 <template>
-  <AnimationExpand>
-    <RefreshCard
-      v-if="status === 'error'"
-      @refresh="() => {
-        queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-        queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
-      }"
-    />
-  </AnimationExpand>
-
-  <LimitCta
-    v-if="count && count >= max"
-    ref="limitCta"
-  />
-
-  <DataTable
-    ref="table"
-    :columns="columns"
-    :data="data?.encounters || []"
-    :total="data?.amount || 0"
-    :loading="status === 'pending'"
-    :options="{
-      pageCount: data?.pages ?? -1,
-      initialState: {
-        ...initialState,
-        columnVisibility: {
-          ...initialState.columnVisibility,
-          campaign: !campaign, // Hide campaign column if on campaign page
-        },
-      },
-    }"
-    :permission="(item: EncounterItem) => allows(canUpdateEncounter, item)"
-    :empty-message="$t('components.table.nothing', { item: $t('general.encounter', 2).toLowerCase() })"
-    @remove="removeItems"
-    @invalidate="invalidateQueries"
-  >
-    <template #top>
-      <div class="flex justify-end items-center gap-4">
-        <ContentCount
-          :loading="data?.encounters === null"
-          :count="count"
-          :max="max"
-        />
-        <button
-          class="btn-primary"
-          :aria-label="$t('actions.create')"
-          :disabled="status === 'pending'"
-          @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
-        >
-          {{ $t('actions.create') }}
-        </button>
-      </div>
-    </template>
-
-    <template #loading>
-      <SkeletonEncounterTableRow
-        v-for="i in 10"
-        :key="i"
+  <div>
+    <AnimationExpand>
+      <RefreshCard
+        v-if="status === 'error'"
+        @refresh="invalidateQueries"
       />
-    </template>
-  </DataTable>
+    </AnimationExpand>
+
+    <LimitCta
+      v-if="count && count >= max"
+      ref="limitCta"
+    />
+
+    <DataTable
+      ref="table"
+      :columns="columns"
+      :data="data?.encounters || []"
+      :total="data?.amount || 0"
+      :loading="status === 'pending'"
+      :options="{
+        pageCount: data?.pages ?? -1,
+        initialState,
+      }"
+      :permission="(item: EncounterItem) => allows(canUpdateEncounter, item)"
+      :empty-message="$t('components.table.nothing', { item: $t('general.encounter', 2).toLowerCase() })"
+      @remove="removeItems"
+      @invalidate="invalidateQueries"
+    >
+      <template #top>
+        <div class="flex justify-end items-center gap-4">
+          <ContentCount
+            :loading="data?.encounters === null"
+            :count="count"
+            :max="max"
+          />
+          <button
+            class="btn-primary"
+            :aria-label="$t('actions.create')"
+            :disabled="status === 'pending'"
+            @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
+          >
+            {{ $t('actions.create') }}
+          </button>
+        </div>
+      </template>
+
+      <template #loading>
+        <SkeletonEncounterTableRow
+          v-for="i in 10"
+          :key="i"
+        />
+      </template>
+    </DataTable>
+  </div>
 </template>

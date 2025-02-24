@@ -55,18 +55,16 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       enableGlobalFilter: false,
       enableSorting: false,
       id: 'actions',
-      cell: ({ row }) => {
-        return permission(
-          isCampaignAdmin,
-          [row.original],
-          [
-            iconButton('tabler:door-exit', t('actions.leave'), 'warning', () => onLeave(row.original)),
-            iconButton('tabler:edit', t('actions.update'), 'info', () => onUpdate(row.original)),
-          ],
-          'flex justify-end',
-          'div',
-        )
-      },
+      cell: ({ row }) => permission(
+        isCampaignAdmin,
+        [row.original],
+        [
+          iconButton('tabler:door-exit', t('actions.leave'), 'warning', () => onLeave(row.original)),
+          iconButton('tabler:edit', t('actions.update'), 'info', () => onUpdate(row.original)),
+        ],
+        'flex justify-end',
+        'div',
+      ),
     }),
   ]
 }

@@ -21,7 +21,7 @@ export function iconLabelElement(
   return h(Tippy, {
     class: 'flex items-center gap-2',
     content: tooltip,
-  }, [
+  }, () => [
     iconElement(icon, color, size),
     h('span', label),
   ])
@@ -35,7 +35,7 @@ export function iconButton(
   disabled = false,
 ): VNode {
   return h(Tippy, { content },
-    h('button', {
+    () => h('button', {
       tippy: content,
       ariaLabel: content,
       class: `icon-btn-${color}`,
@@ -53,12 +53,12 @@ export function iconLink(
   external = false,
 ): VNode {
   return h(Tippy, { content },
-    h(NuxtLinkLocale, {
+    () => h(NuxtLinkLocale, {
       to,
       class: `icon-btn-${color}`,
       ariaLabel: content,
       target: external ? '_blank' : undefined,
-    }, iconElement(icon)),
+    }, () => iconElement(icon)),
   )
 }
 
@@ -73,7 +73,7 @@ export function linkButton(
     class: style ?? 'underline underline-offset-2 decoration-primary',
     ariaLabel: typeof content === 'string' ? content : '',
     target: external ? '_blank' : undefined,
-  }, content)
+  }, typeof content === 'string' ? () => content : content)
 }
 
 export function selectButton(
@@ -94,7 +94,7 @@ export function expandButton(
   cb: (event: unknown) => void,
 ): VNode {
   return h(Tippy, { content },
-    h('button', {
+    () => h('button', {
       ariaLabel: content,
       class: expanded ? 'icon-btn-destructive' : 'icon-btn-help',
       onClick: cb,
@@ -119,7 +119,7 @@ export function permission(
     args,
     class: style ?? 'flex items-center',
     as: as ?? 'div',
-  }, children)
+  }, () => children)
 }
 
 export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
@@ -131,35 +131,37 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
       h(Card, {
         class: 'p-2',
         color: 'secondary',
-      }, [
-        ...actionArray.map(action => h('ul', {
-          class: 'flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc',
-        }, [
-          h('li', { class: 'flex flex-wrap gap-x-4 items-center' }, [
-            h('span', `${action.name}:`),
-            h('span', { class: 'body-small text-muted-foreground' }, action.desc),
-          ]),
-          (action.attack_bonus || action.damage_dice) && h('div', {
-            class: 'flex flex-wrap gap-x-4 items-center mt-2',
+      }, () =>
+        h('div', {}, actionArray.map(action =>
+          h('ul', {
+            class: 'flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc',
           }, [
-            action.attack_bonus && h('div', {
-              class: 'flex flex-wrap gap-x-2 items-center',
-            }, [
-              h('span', 'To hit:'),
-              h('span', { class: 'body-small text-muted-foreground' }, `+${action.attack_bonus}`),
+            h('li', { class: 'flex flex-wrap gap-x-4 items-center' }, [
+              h('span', {}, action.name + ':'),
+              h('span', { class: 'body-small text-muted-foreground' }, action.desc),
             ]),
-            action.damage_dice && h('div', {
-              class: 'flex flex-wrap gap-x-2 items-center',
+            (action.attack_bonus || action.damage_dice) && h('div', {
+              class: 'flex flex-wrap gap-x-4 items-center mt-2',
             }, [
-              h('span', 'Dice:'),
-              h('span', { class: 'body-small text-muted-foreground' }, [
-                action.damage_dice,
-                action.damage_bonus && ` +${action.damage_bonus}`,
-              ].filter(Boolean).join('')),
+              action.attack_bonus && h('div', {
+                class: 'flex flex-wrap gap-x-2 items-center',
+              }, [
+                h('span', {}, 'To hit:'),
+                h('span', { class: 'body-small text-muted-foreground' }, `+${action.attack_bonus}`),
+              ]),
+              action.damage_dice && h('div', {
+                class: 'flex flex-wrap gap-x-2 items-center',
+              }, [
+                h('span', {}, 'Dice:'),
+                h('span', { class: 'body-small text-muted-foreground' }, [
+                  action.damage_dice,
+                  action.damage_bonus && ` +${action.damage_bonus}`,
+                ].filter(Boolean).join('')),
+              ]),
             ]),
           ]),
-        ])),
-      ]),
+        )),
+      ),
     ])
   }
 
@@ -168,19 +170,16 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
     item.reactions?.length ? generateRow(t('general.reaction', 2), item.reactions) : '',
     item.legendary_actions?.length ? generateRow(t('general.legendaryAction', 2), item.legendary_actions) : '',
     item.special_abilities?.length ? generateRow(t('general.specialAbility', 2), item.special_abilities) : '',
-  ])
+  ].filter(Boolean))
 }
 
 export function homebrewTag(type: HomebrewType): VNode {
   const { t } = useI18n()
 
   return h('div', {
-    class: 'text-xs bg-muted py-[2px] px-2 rounded-full w-fit',
-  }, iconLabelElement(
-    homebrewIcon(type),
-    t(`general.${type}`),
-    t(`general.${type}`),
-    homebrewColor(type),
-    'size-4 min-w-4',
-  ))
+    class: 'text-xs bg-muted py-[2px] px-2 rounded-full w-fit flex items-center gap-2',
+  }, [
+    iconElement(homebrewIcon(type), homebrewColor(type), 'size-4 min-w-4'),
+    h('span', t(`general.${type}`)),
+  ])
 }

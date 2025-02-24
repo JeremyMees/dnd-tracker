@@ -11,6 +11,7 @@ interface ColumnOptions {
 
 export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
   const { t } = useI18n()
+
   return [
     columnHelper.display({
       enableGlobalFilter: false,

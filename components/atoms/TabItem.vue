@@ -18,12 +18,11 @@ const isActive = computed<boolean>(() => route.fullPath.includes(props.link))
 <template>
   <div
     class="p-1 rounded-lg lg:rounded-none lg:bg-transparent lg:px-0 lg:py-0 lg:border-b-2 lg:relative lg:top-[2px] transition-colors duration-200 ease-in-out"
-    :class="[
-      disabled && 'pointer-events-none opacity-50',
-      isActive
-        ? 'bg-primary/50 lg:border-primary'
-        : 'bg-secondary/50 lg:border-transparent',
-    ]"
+    :class="{
+      'pointer-events-none opacity-50': disabled,
+      'bg-primary/50 lg:border-primary': isActive,
+      'bg-secondary/50 lg:border-transparent': !isActive,
+    }"
   >
     <NuxtLinkLocale
       :to="link"

@@ -1,12 +1,9 @@
 <script lang="ts" setup>
+import Encounters from '~/components/templates/Encounters.vue'
+
 defineProps<{ current: CampaignFull }>()
 </script>
 
 <template>
-  <div class="space-y-6">
-    <h2>
-      {{ $t('general.encounter', 2) }}
-    </h2>
-    <Encounters :campaign="current" />
-  </div>
+  <Encounters :campaign="current" />
 </template>

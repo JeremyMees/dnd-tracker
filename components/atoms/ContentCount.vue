@@ -1,21 +1,27 @@
 <script setup lang="ts">
 defineProps<{
-  count?: number
+  count: number | undefined
   max: number
   loading?: boolean
 }>()
 </script>
 
 <template>
-  <UiSkeleton
-    v-if="loading || !count"
-    class="w-10 h-4"
-  />
-  <span
-    v-else-if="count"
-    class="text-[12px] text-muted-foreground"
-    :class="{ '!text-destructive': count >= max }"
-  >
-    {{ count }}/{{ max }}
-  </span>
+  <ClientOnly>
+    <UiSkeleton
+      v-if="loading || !count"
+      class="w-10 h-4"
+    />
+    <span
+      v-else-if="count"
+      class="text-[12px] text-muted-foreground"
+      :class="{ '!text-destructive': count >= max }"
+    >
+      {{ count }}/{{ max }}
+    </span>
+
+    <template #fallback>
+      <UiSkeleton class="w-10 h-4" />
+    </template>
+  </ClientOnly>
 </template>
