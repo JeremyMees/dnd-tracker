@@ -60,7 +60,7 @@ async function logoutUser(): Promise<void> {
             width="356"
             height="125"
             sizes="sm:500px md:500px lg:500px"
-            class="h-12"
+            class="w-[150px]"
           />
         </NuxtLinkLocale>
         <div class="flex justify-end items-center gap-4">

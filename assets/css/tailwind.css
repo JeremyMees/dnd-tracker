@@ -181,16 +181,6 @@
 }
 
 @layer base {
-  @font-face {
-    font-family: 'GeistMono';
-    src: url('@/assets/fonts/GeistMono.woff') format('woff');
-  }
-
-  @font-face {
-    font-family: 'Geist';
-    src: url('@/assets/fonts/Geist.woff') format('woff');
-  }
-
   * {
     @apply border-border;
   }

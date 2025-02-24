@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     'nuxt-authorization',
+    '@nuxt/fonts',
   ],
 
   components: [
