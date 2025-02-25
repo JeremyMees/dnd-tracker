@@ -472,6 +472,20 @@
     }
   },
   "components": {
+    "healthCheck": {
+      "online": {
+        "title": "You're back online",
+        "text": "You successfully reconnected to the app"
+      },
+      "offline": {
+        "title": "You are offline",
+        "text": "Reconnect to the internet to use the app"
+      },
+      "open5e": {
+        "title": "Open5e is currently slow or unavailable",
+        "text": "The Open5e API appears to be slow or unavailable, affecting access to D&D content"
+      }
+    },
     "toast": {
       "delete": {
         "error": "Something went wrong while deleting the {type}",

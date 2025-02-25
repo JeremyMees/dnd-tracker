@@ -472,6 +472,20 @@
     }
   },
   "components": {
+    "healthCheck": {
+      "offline": {
+        "title": "Je bent offline",
+        "text": "Reconnecteer naar het internet om de app te gebruiken"
+      },
+      "online": {
+        "title": "Je bent online",
+        "text": "Je hebt succesvol verbonden met het internet"
+      },
+      "open5e": {
+        "title": "Open5e is momenteel traag of niet beschikbaar",
+        "text": "De Open5e API lijkt traag of niet beschikbaar te zijn, wat de toegang tot D&D content beïnvloedt"
+      }
+    },
     "toast": {
       "delete": {
         "error": "Er is iets fout gegaan bij het verwijderen van de {type}",

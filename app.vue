@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 const { dialogs, handlers } = useConfirmDialogs()
 const route = useRoute()
 
+useHealthCheck()
+
 if (import.meta.client) {
   gsap.registerPlugin(ScrollTrigger)
   ScrollTrigger.getAll().forEach((t: any) => t.kill())
@@ -40,7 +42,6 @@ const pageName = computed(() => !route.name || typeof route.name !== 'string'
       }"
       class="flex flex-col min-h-screen"
     >
-      <WarningBanner />
       <NuxtPage />
     </div>
   </div>

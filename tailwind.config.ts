@@ -32,11 +32,11 @@ module.exports = {
         '2xl': '1400px',
       },
     },
-    fontFamily: {
-      title: ['Geist', 'sans-serif'],
-      text: ['GeistMono', 'sans-serif'],
-    },
     extend: {
+      fontFamily: {
+        title: ['Geist', 'sans-serif'],
+        text: ['Geist Mono', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
