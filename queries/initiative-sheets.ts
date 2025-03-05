@@ -1,13 +1,15 @@
-import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import deepmerge from 'deepmerge'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<Database>()
 
   return useQuery({
     queryKey: ['useInitiativeSheetDetail', id],
-    queryFn: async () => await supabase
-      .from('initiative_sheets')
-      .select(`
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('initiative_sheets')
+        .select(`
         *, 
         campaign(
           id,
@@ -20,10 +22,12 @@ export function useInitiativeSheetDetail(id: number) {
           )
         )
       `)
-      .eq('id', id)
-      .single(),
-    select: ({ data }) => data,
-    placeholderData: keepPreviousData,
+        .eq('id', id)
+        .single()
+
+      if (error) throw createError(error)
+      else return data as InitiativeSheet
+    },
   })
 }
 
@@ -32,19 +36,35 @@ export function useInitiativeSheetDetailUpdate() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ data, id }: { data: Omit<InitiativeUpdate, NotUpdatable>, id: number } & QueryDefaults) => {
+    mutationFn: async ({ data, id }: { data: Omit<InitiativeUpdate, NotUpdatable | 'campaign'>, id: number } & QueryDefaults) => {
       if (data.rows?.length) data.rows = indexCorrect(data.rows)
 
       const { error } = await supabase.from('initiative_sheets').update(data).eq('id', id)
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { id, onSuccess }) => {
-      if (onSuccess) onSuccess()
+    onMutate: async ({ data, id }) => {
+      await queryClient.cancelQueries({ queryKey: ['useInitiativeSheetDetail', id] })
 
-      queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', id] })
+      const previous = queryClient.getQueryData<InitiativeSheet>(['useInitiativeSheetDetail', id])
+
+      queryClient.setQueryData(
+        ['useInitiativeSheetDetail', id],
+        (old: InitiativeSheet) => deepmerge(old, data, {
+          arrayMerge: (_destination, source) => source,
+        }),
+      )
+
+      return { previous }
     },
-    onError: (error, { onError }) => {
+    onSuccess: (_data, { onSuccess }) => {
+      if (onSuccess) onSuccess()
+    },
+    onError: (error, { onError, id }, context) => {
+      if (context?.previous) { // roll back the optimistic update
+        queryClient.setQueryData(['useInitiativeSheetDetail', id], context.previous)
+      }
+
       if (onError) onError(error.message)
     },
     onSettled: (_data, error, { onSettled }) => {
