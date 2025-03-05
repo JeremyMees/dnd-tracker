@@ -1,7 +1,9 @@
 <script setup lang="ts">
-defineEmits<{ openInfo: [] }>()
-
-defineProps<{ item: InitiativeSheetRow }>()
+defineProps<{
+  item: InitiativeSheetRow
+  sheet: InitiativeSheet
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
+}>()
 </script>
 
 <template>
@@ -9,7 +11,7 @@ defineProps<{ item: InitiativeSheetRow }>()
     <div class="flex flex-col gap-y-1">
       <button
         class="flex items-center gap-x-1"
-        @click="$emit('openInfo')"
+        @click="console.log('implement ac modal')"
       >
         <Icon
           v-if="item.ac === null"

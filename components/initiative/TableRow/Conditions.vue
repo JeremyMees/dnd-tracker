@@ -1,10 +1,8 @@
 <script setup lang="ts">
-defineEmits<{ openConditions: [] }>()
-
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 function removeEffect(name: string): void {
@@ -26,7 +24,7 @@ function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
 
   rows[index] = {
     ...rows[index],
-    conditions: rows[index].conditions.map(r => r.name === condition.name ? condition : r),
+    conditions: props.item.conditions.map(r => r.name === condition.name ? condition : r),
   }
 
   props.update({ rows })
@@ -52,7 +50,7 @@ function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
     <button
       v-else
       class="flex items-center gap-x-1"
-      @click="$emit('openConditions')"
+      @click="console.log('implement conditions modal')"
     >
       <Icon
         name="tabler:plus"

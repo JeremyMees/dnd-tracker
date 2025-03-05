@@ -2,7 +2,7 @@
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 const modal = useModal()
@@ -11,7 +11,7 @@ const { t } = useI18n()
 function openModal(): void {
   modal.open({
     component: 'InitiativeRowName',
-    header: 'Name',
+    header: t('components.initiativeTableModals.name'),
     submit: t('actions.save'),
     props: {
       encounterId: props.sheet.id,
@@ -41,6 +41,7 @@ function openModal(): void {
       @click="openModal"
     >
       <Icon
+        v-tippy="$t(`general.${item.type}`)"
         :name="homebrewIcon(item.type)"
         :class="homebrewColor(item.type)"
         class="size-5 min-w-5"

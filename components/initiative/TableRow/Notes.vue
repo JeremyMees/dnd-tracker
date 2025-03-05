@@ -2,7 +2,7 @@
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 const note = ref<string>(props.item.note || '')

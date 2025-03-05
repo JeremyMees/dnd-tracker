@@ -142,7 +142,11 @@ export type NotUpdatable = 'id' | 'created_at' | 'updated_at'
 
 export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role' | 'avatar_options'>>
 
-export type MinimalProfile = Pick<ProfileRow, 'avatar' | 'id' | 'username'>
+export type MinimalProfile = {
+  avatar: string
+  id: string
+  username: string
+}
 
 export type Profile = Pick<ProfileRow, 'avatar' | 'id' | 'username' | 'name' | 'email'>
 
@@ -205,7 +209,7 @@ export interface InitiativeSheet extends Omit<InitiativeRow, 'campaign'> {
       id: TeamRow['id']
       role: TeamRow['role']
       user: MinimalProfile
-    }
+    }[]
   }
 }
 

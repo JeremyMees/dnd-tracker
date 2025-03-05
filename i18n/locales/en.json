@@ -472,6 +472,9 @@
     }
   },
   "components": {
+    "initiativeTableModals": {
+      "name": "Change name"
+    },
     "healthCheck": {
       "online": {
         "title": "You're back online",
@@ -521,6 +524,13 @@
       "concentration": {
         "title": "Make a concentration check",
         "text": "The {type}, maintaining concentration took damage"
+      },
+      "emptyState": {
+        "title": "No initiative holders found",
+        "text": "Add some using the sidebar to get started",
+        "bestiary": "Use monsters from the official bestiary",
+        "campaignHomebrew": "Use homebrew from your campaign",
+        "newHomebrew": "Create homebrew initiative holders"
       }
     },
     "sidebar": {

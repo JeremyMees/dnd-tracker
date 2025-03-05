@@ -165,12 +165,16 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
     ])
   }
 
-  return h('div', { class: 'space-y-4' }, [
+  const rows = [
     item.actions?.length ? generateRow(t('general.action', 2), item.actions) : '',
     item.reactions?.length ? generateRow(t('general.reaction', 2), item.reactions) : '',
     item.legendary_actions?.length ? generateRow(t('general.legendaryAction', 2), item.legendary_actions) : '',
     item.special_abilities?.length ? generateRow(t('general.specialAbility', 2), item.special_abilities) : '',
-  ].filter(Boolean))
+  ].filter(Boolean)
+
+  return rows.length
+    ? h('div', { class: 'space-y-4' }, rows)
+    : h('p', { class: 'body-small text-muted-foreground' }, t('components.encounterTable.noActions'))
 }
 
 export function homebrewTag(type: HomebrewType): VNode {

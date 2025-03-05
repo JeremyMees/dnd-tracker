@@ -2,7 +2,7 @@
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 function updateConcentration(): void {
@@ -13,7 +13,7 @@ function updateConcentration(): void {
 
   rows[index] = {
     ...rows[index],
-    concentration: !rows[index].concentration,
+    concentration: !props.item.concentration,
   }
 
   props.update({ rows })
@@ -21,19 +21,17 @@ function updateConcentration(): void {
 </script>
 
 <template>
-  <td>
-    <button
-      v-if="item.type !== 'lair'"
-      v-tippy="$t('general.concentration')"
-      :aria-label="$t('general.concentration')"
-      class="icon-btn-primary mx-auto"
-      @click="updateConcentration"
-    >
-      <Icon
-        :name="`tabler:${item.concentration ? 'circle-filled' : 'circle-dotted'}`"
-        :aria-hidden="true"
-        class="size-5 min-w-5"
-      />
-    </button>
-  </td>
+  <button
+    v-if="item.type !== 'lair'"
+    v-tippy="$t('general.concentration')"
+    :aria-label="$t('general.concentration')"
+    class="icon-btn-primary mx-auto"
+    @click="updateConcentration"
+  >
+    <Icon
+      :name="`tabler:${item.concentration ? 'circle-filled' : 'circle-dotted'}`"
+      :aria-hidden="true"
+      class="size-5 min-w-5"
+    />
+  </button>
 </template>

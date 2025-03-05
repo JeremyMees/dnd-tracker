@@ -472,6 +472,9 @@
     }
   },
   "components": {
+    "initiativeTableModals": {
+      "name": "Naam wijzigen"
+    },
     "healthCheck": {
       "offline": {
         "title": "Je bent offline",
@@ -521,6 +524,13 @@
       "concentration": {
         "title": "Maak een concentratie check",
         "text": "{type} die zich concentreerde, liep schade op"
+      },
+      "emptyState": {
+        "title": "Geen initiatiefhouder gevonden",
+        "text": "Voeg er wat toe met de zijbalk om te beginnen",
+        "bestiary": "Gebruik monsters uit de officiële bestiarium",
+        "campaignHomebrew": "Gebruik homebrew uit je campagne",
+        "newHomebrew": "Maak homebrew initiatiefhouder"
       }
     },
     "sidebar": {

@@ -1,64 +1,41 @@
 <script setup lang="ts">
-defineEmits<{ openInfo: [] }>()
-
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
-const currentRowIndex = computed<number>(() => getCurrentRowIndex(props.sheet, props.item.id))
-
-const canGoUp = computed(() => {
-  return currentRowIndex.value > 0
-    && props.sheet.rows[currentRowIndex.value - 1]?.initiative === props.item.initiative
-})
-
-const canGoDown = computed(() => {
-  return currentRowIndex.value < props.sheet.rows.length - 1
-    && props.sheet.rows[currentRowIndex.value + 1]?.initiative === props.item.initiative
-})
+const currentIndex = computed(() => props.item.index)
+const canGoUp = computed(() => currentIndex.value > 0 && props.sheet.rows[currentIndex.value - 1]?.initiative === props.item.initiative)
+const canGoDown = computed(() => currentIndex.value < props.sheet.rows.length - 1 && props.sheet.rows[currentIndex.value + 1]?.initiative === props.item.initiative)
 
 async function moveRow(up: boolean): Promise<void> {
-  const index = currentRowIndex.value
   const rows = [...props.sheet.rows]
+  const index = props.item.index
+  const targetIndex = up ? index - 1 : index + 1
 
-  // Validate indexes are within bounds
   if (up && index <= 0) return
   if (!up && index >= rows.length - 1) return
 
-  const targetIndex = up ? index - 1 : index + 1
-
-  // Swap indexes between current and target rows
-  const currentIndex = rows[index].index
-
-  rows[index] = {
-    ...rows[index],
-    index: rows[targetIndex].index,
-  }
-
-  rows[targetIndex] = {
-    ...rows[targetIndex],
-    index: currentIndex,
-  }
+  // Just change the index properties without swapping the array positions
+  rows[index] = { ...rows[index], index: targetIndex }
+  rows[targetIndex] = { ...rows[targetIndex], index: index }
 
   // When moving up, update all following indexes to maintain sequence
   if (up) {
     for (let i = index + 1; i < rows.length; i++) {
-      rows[i].index = i
+      rows[i] = { ...rows[i], index: i }
     }
   }
 
-  await props.update({
-    rows: rows.sort((a, b) => a.index - b.index),
-  })
+  await props.update({ rows: [...rows].sort((a, b) => a.index - b.index) })
 }
 </script>
 
 <template>
   <td>
     <div class="flex gap-2 items-center text-left">
-      <button @click="$emit('openInfo')">
+      <button @click="console.log('implement initiative modal')">
         <Icon
           v-if="item.initiative < 0"
           name="tabler:plus"

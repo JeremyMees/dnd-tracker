@@ -1,12 +1,9 @@
 <script setup lang="ts">
-defineEmits<{
-  openHp: []
-  openAc: []
-  openCondition: []
-  openLink: []
+defineProps<{
+  item: InitiativeSheetRow
+  sheet: InitiativeSheet
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
-
-defineProps<{ item: InitiativeSheetRow }>()
 </script>
 
 <template>
@@ -17,7 +14,7 @@ defineProps<{ item: InitiativeSheetRow }>()
         v-tippy="$t('components.actions.hp')"
         :aria-label="$t('components.actions.hp')"
         class="icon-btn-destructive"
-        @click="$emit('openHp')"
+        @click="console.log('implement hp modal')"
       >
         <Icon
           name="tabler:heart"
@@ -25,13 +22,12 @@ defineProps<{ item: InitiativeSheetRow }>()
           class="size-5 min-w-5 text-destructive"
         />
       </button>
-      <div v-else />
       <button
         v-if="item.type !== 'lair'"
         v-tippy="$t('components.actions.ac')"
         :aria-label="$t('components.actions.ac')"
         class="icon-btn-help"
-        @click="$emit('openAc')"
+        @click="console.log('implement ac modal')"
       >
         <Icon
           name="tabler:shield"
@@ -39,13 +35,12 @@ defineProps<{ item: InitiativeSheetRow }>()
           class="size-5 min-w-5 text-help"
         />
       </button>
-      <div v-else />
       <button
         v-if="item.type !== 'lair'"
         v-tippy="$t('components.actions.condition')"
         :aria-label="$t('components.actions.condition')"
         class="icon-btn-success"
-        @click="$emit('openCondition')"
+        @click="console.log('implement condition modal')"
       >
         <Icon
           name="tabler:flask"
@@ -53,19 +48,20 @@ defineProps<{ item: InitiativeSheetRow }>()
           class="size-5 min-w-5 text-success"
         />
       </button>
-      <div v-else />
-      <button
+      <NuxtLink
+        v-if="item.link"
         v-tippy="$t('components.actions.link')"
         :aria-label="$t('components.actions.link')"
         class="icon-btn-info"
-        @click="$emit('openLink')"
+        target="_blank"
+        :to="item.link"
       >
         <Icon
           name="tabler:link"
           :aria-hidden="true"
           class="size-5 min-w-5 text-info"
         />
-      </button>
+      </NuxtLink>
     </div>
   </td>
 </template>
