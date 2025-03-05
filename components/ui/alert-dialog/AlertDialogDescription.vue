@@ -3,7 +3,7 @@ import { cn } from '@/utils/shadcn'
 import {
   AlertDialogDescription,
   type AlertDialogDescriptionProps,
-} from 'radix-vue'
+} from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 
 const props = defineProps<AlertDialogDescriptionProps & { class?: HTMLAttributes['class'] }>()

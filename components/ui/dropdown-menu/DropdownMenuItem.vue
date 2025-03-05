@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/utils/shadcn'
-import { DropdownMenuItem, type DropdownMenuItemProps, useForwardProps } from 'radix-vue'
+import { DropdownMenuItem, type DropdownMenuItemProps, useForwardProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 
 const props = defineProps<DropdownMenuItemProps & { class?: HTMLAttributes['class'], inset?: boolean }>()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PaginationLast, type PaginationLastProps } from 'radix-vue'
+import { PaginationLast, type PaginationLastProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
