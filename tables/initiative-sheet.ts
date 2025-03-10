@@ -1,5 +1,5 @@
 import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
-import { actionsTable, expandButton } from './generate-functions'
+import { actionsTable, expandButton, iconButton } from './generate-functions'
 
 import {
   InitiativeTableRowName,
@@ -17,27 +17,26 @@ import {
 const columnHelper = createColumnHelper<InitiativeSheetRow>()
 
 interface ColumnOptions {
-  sheet: ComputedRef<InitiativeSheet>
+  sheet: ComputedRef<InitiativeSheet | undefined>
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
+  openQuickInitModal: () => void
 }
 
-export function generateColumns({ sheet, update }: ColumnOptions) {
+export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOptions) {
   const { t } = useI18n()
 
   return [
     columnHelper.display({
-      id: 'index',
-      cell: ({ row }) => h('span', { class: 'text-muted-foreground' }, row.index + 1),
-    }),
-    columnHelper.display({
       enableGlobalFilter: false,
-      id: 'expand',
-      header: '',
-      cell: ({ row }) => expandButton(
-        t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
-        row.getIsExpanded(),
-        () => row.toggleExpanded(),
-      ),
+      id: 'index',
+      cell: ({ row }) => h('div', { class: 'flex items-center gap-x-2 max-w-20' }, [
+        h('span', { class: 'text-muted-foreground ml-1' }, row.index + 1),
+        expandButton({
+          content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
+          expanded: row.getIsExpanded(),
+          cb: () => row.toggleExpanded(),
+        }),
+      ]),
     }),
     columnHelper.accessor('name', {
       header: t('components.encounterTable.headers.name'),
@@ -48,7 +47,17 @@ export function generateColumns({ sheet, update }: ColumnOptions) {
       }),
     }),
     columnHelper.accessor('initiative', {
-      header: t('components.encounterTable.headers.init'),
+      header: () => h('button', { class: 'flex items-center gap-x-2' }, [
+        t('components.encounterTable.headers.init'),
+        iconButton({
+          icon: 'tabler:bolt-filled',
+          content: t('components.encounterTable.quick'),
+          color: 'warning',
+          cb: () => openQuickInitModal(),
+          disabled: !sheet.value?.rows.length,
+          iconColor: 'text-warning',
+        }),
+      ]),
       cell: ({ row }) => h(InitiativeTableRowInit, {
         item: row.original,
         sheet: sheet.value,

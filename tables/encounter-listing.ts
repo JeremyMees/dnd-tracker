@@ -17,26 +17,36 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton(
-        table.getIsAllRowsSelected(),
-        table.getToggleAllPageRowsSelectedHandler(),
-      ),
-      cell: ({ row }) => permission(
-        canUpdateEncounter,
-        [row.original],
-        selectButton(row.getIsSelected(), row.getToggleSelectedHandler(), !row.getCanSelect()),
-      ),
+      header: ({ table }) => selectButton({
+        checked: table.getIsAllRowsSelected(),
+        cb: table.getToggleAllPageRowsSelectedHandler(),
+      }),
+      cell: ({ row }) => permission({
+        ability: canUpdateEncounter,
+        args: [row.original],
+        children: selectButton({
+          checked: row.getIsSelected(),
+          cb: row.getToggleSelectedHandler(),
+          disabled: !row.getCanSelect(),
+        }),
+      }),
     }),
     columnHelper.accessor('title', {
       header: t('general.name'),
-      cell: ({ row }) => linkButton(encounterUrl(row.original), row.getValue('title')),
+      cell: ({ row }) => linkButton({
+        to: encounterUrl(row.original),
+        content: row.getValue('title'),
+      }),
     }),
     columnHelper.accessor('campaign', {
       enableGlobalFilter: false,
       enableSorting: false,
       header: t('general.campaign'),
       cell: ({ row }) => row.getValue('campaign')
-        ? linkButton(campaignUrl(row.original.campaign, 'encounters'), row.original.campaign.title)
+        ? linkButton({
+            to: campaignUrl(row.original.campaign, 'encounters'),
+            content: row.original.campaign.title,
+          })
         : '',
     }),
     columnHelper.accessor('created_at', {
@@ -66,15 +76,30 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
       id: 'actions',
       cell: ({ row }) => {
         return h('div', { class: 'flex justify-end' }, [
-          iconButton('tabler:share', t('actions.share'), 'success', () => onShare(row.original)),
-          permission(
-            canUpdateEncounter,
-            [row.original],
-            [
-              iconButton('tabler:copy', t('actions.copy'), 'primary', () => onCopy({ data: row.original })),
-              iconButton('tabler:edit', t('actions.update'), 'info', () => onUpdate(row.original)),
+          iconButton({
+            icon: 'tabler:share',
+            content: t('actions.share'),
+            color: 'success',
+            cb: () => onShare(row.original),
+          }),
+          permission({
+            ability: canUpdateEncounter,
+            args: [row.original],
+            children: [
+              iconButton({
+                icon: 'tabler:copy',
+                content: t('actions.copy'),
+                color: 'primary',
+                cb: () => onCopy({ data: row.original }),
+              }),
+              iconButton({
+                icon: 'tabler:edit',
+                content: t('actions.update'),
+                color: 'info',
+                cb: () => onUpdate(row.original),
+              }),
             ],
-          ),
+          }),
         ])
       },
     }),

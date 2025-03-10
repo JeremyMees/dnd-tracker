@@ -24,23 +24,27 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton(
-        table.getIsAllRowsSelected(),
-        table.getToggleAllPageRowsSelectedHandler(),
-      ),
+      header: ({ table }) => selectButton({
+        checked: table.getIsAllRowsSelected(),
+        cb: table.getToggleAllPageRowsSelectedHandler(),
+      }),
       cell: ({ row }) => hasRights
-        ? selectButton(row.getIsSelected(), row.getToggleSelectedHandler(), !row.getCanSelect())
+        ? selectButton({
+            checked: row.getIsSelected(),
+            cb: row.getToggleSelectedHandler(),
+            disabled: !row.getCanSelect(),
+          })
         : '',
     }),
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'expand',
       header: '',
-      cell: ({ row }) => expandButton(
-        t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
-        row.getIsExpanded(),
-        () => row.toggleExpanded(),
-      ),
+      cell: ({ row }) => expandButton({
+        content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
+        expanded: row.getIsExpanded(),
+        cb: () => row.toggleExpanded(),
+      }),
     }),
     columnHelper.accessor('name', {
       header: t('general.name'),
@@ -67,7 +71,12 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
       cell: ({ row }) => {
         return h('div', { class: 'flex justify-end' }, [
           hasRights
-            ? iconButton('tabler:edit', t('actions.update'), 'info', () => onUpdate(row.original))
+            ? iconButton({
+                icon: 'tabler:edit',
+                content: t('actions.update'),
+                color: 'info',
+                cb: () => onUpdate(row.original),
+              })
             : '',
         ])
       },
@@ -83,26 +92,32 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
   }, [
     h('div', { class: 'flex gap-4' }, [
       h('div', { class: 'flex gap-x-4 gap-y-2' }, [
-        iconLabelElement(
-          'tabler:heart',
-          row.original.health?.toString() || '-',
-          t('general.hp'),
-          'text-destructive',
-        ),
-        iconLabelElement(
-          'tabler:shield',
-          row.original.ac?.toString() || '-',
-          t('general.ac'),
-          'text-help',
-        ),
-        iconLabelElement(
-          'tabler:bolt',
-          row.original.initiative_modifier ? `+${row.original.initiative_modifier}` : '-',
-          t('general.initiativeModifier'),
-          'text-warning',
-        ),
+        iconLabelElement({
+          icon: 'tabler:heart',
+          label: row.original.health?.toString() || '-',
+          tooltip: t('general.hp'),
+          color: 'text-destructive',
+        }),
+        iconLabelElement({
+          icon: 'tabler:shield',
+          label: row.original.ac?.toString() || '-',
+          tooltip: t('general.ac'),
+          color: 'text-help',
+        }),
+        iconLabelElement({
+          icon: 'tabler:bolt',
+          label: row.original.initiative_modifier ? `+${row.original.initiative_modifier}` : '-',
+          tooltip: t('general.initiativeModifier'),
+          color: 'text-warning',
+        }),
         row.original.link
-          ? iconLink('tabler:link', t('actions.link'), 'info', row.original.link, true)
+          ? iconLink({
+              icon: 'tabler:link',
+              content: t('actions.link'),
+              color: 'info',
+              to: row.original.link,
+              external: true,
+            })
           : '',
       ]),
     ]),

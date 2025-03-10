@@ -15,19 +15,26 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton(
-        table.getIsAllRowsSelected(),
-        table.getToggleAllPageRowsSelectedHandler(),
-      ),
-      cell: ({ row }) => permission(
-        isCampaignOwner,
-        [row.original],
-        selectButton(row.getIsSelected(), row.getToggleSelectedHandler(), !row.getCanSelect()),
-      ),
+      header: ({ table }) => selectButton({
+        checked: table.getIsAllRowsSelected(),
+        cb: table.getToggleAllPageRowsSelectedHandler(),
+      }),
+      cell: ({ row }) => permission({
+        ability: isCampaignOwner,
+        args: [row.original],
+        children: selectButton({
+          checked: row.getIsSelected(),
+          cb: row.getToggleSelectedHandler(),
+          disabled: !row.getCanSelect(),
+        }),
+      }),
     }),
     columnHelper.accessor('title', {
       header: t('general.name'),
-      cell: ({ row }) => linkButton(campaignUrl(row.original, 'encounters'), row.getValue('title')),
+      cell: ({ row }) => linkButton({
+        to: campaignUrl(row.original, 'encounters'),
+        content: row.getValue('title'),
+      }),
     }),
     columnHelper.accessor('initiative_sheets', {
       enableGlobalFilter: false,
@@ -71,16 +78,26 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       enableGlobalFilter: false,
       enableSorting: false,
       id: 'actions',
-      cell: ({ row }) => permission(
-        isCampaignAdmin,
-        [row.original],
-        [
-          iconButton('tabler:door-exit', t('actions.leave'), 'warning', () => onLeave(row.original)),
-          iconButton('tabler:edit', t('actions.update'), 'info', () => onUpdate(row.original)),
+      cell: ({ row }) => permission({
+        ability: isCampaignAdmin,
+        args: [row.original],
+        children: [
+          iconButton({
+            icon: 'tabler:door-exit',
+            content: t('actions.leave'),
+            color: 'warning',
+            cb: () => onLeave(row.original),
+          }),
+          iconButton({
+            icon: 'tabler:edit',
+            content: t('actions.update'),
+            color: 'info',
+            cb: () => onUpdate(row.original),
+          }),
         ],
-        'flex justify-end',
-        'div',
-      ),
+        style: 'flex justify-end',
+        as: 'div',
+      }),
     }),
   ]
 }

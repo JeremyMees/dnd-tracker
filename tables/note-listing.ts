@@ -23,23 +23,27 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton(
-        table.getIsAllRowsSelected(),
-        table.getToggleAllPageRowsSelectedHandler(),
-      ),
+      header: ({ table }) => selectButton({
+        checked: table.getIsAllRowsSelected(),
+        cb: table.getToggleAllPageRowsSelectedHandler(),
+      }),
       cell: ({ row }) => hasRights
-        ? selectButton(row.getIsSelected(), row.getToggleSelectedHandler(), !row.getCanSelect())
+        ? selectButton({
+            checked: row.getIsSelected(),
+            cb: row.getToggleSelectedHandler(),
+            disabled: !row.getCanSelect(),
+          })
         : '',
     }),
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'expand',
       header: '',
-      cell: ({ row }) => expandButton(
-        t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
-        row.getIsExpanded(),
-        () => row.toggleExpanded(),
-      ),
+      cell: ({ row }) => expandButton({
+        content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
+        expanded: row.getIsExpanded(),
+        cb: () => row.toggleExpanded(),
+      }),
     }),
     columnHelper.accessor('title', {
       header: t('general.title'),
@@ -60,9 +64,20 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
           }, [
             `${getRemainingTime(row.original.id)}s`,
           ]),
-          iconButton('tabler:send', t('actions.sendMail'), 'info', () => onSendMail(row.original), isInCoolDown(row.original.id)),
+          iconButton({
+            icon: 'tabler:send',
+            content: t('actions.sendMail'),
+            color: 'info',
+            cb: () => onSendMail(row.original),
+            disabled: isInCoolDown(row.original.id),
+          }),
           hasRights
-            ? iconButton('tabler:edit', t('actions.update'), 'info', () => onUpdate(row.original))
+            ? iconButton({
+                icon: 'tabler:edit',
+                content: t('actions.update'),
+                color: 'info',
+                cb: () => onUpdate(row.original),
+              })
             : '',
         ])
       },
