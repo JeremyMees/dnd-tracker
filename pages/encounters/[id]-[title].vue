@@ -5,9 +5,12 @@ import { useToast } from '~/components/ui/toast/use-toast'
 definePageMeta({
   auth: true,
   path: '/encounters/:id(\\d+)-:title',
+  middleware: ['encounter-access'],
 })
 
 const route = useRoute()
+useSeo(route.params.title as string)
+
 const localePath = useLocalePath()
 const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
@@ -22,7 +25,7 @@ const channel = supabase.channel('initiative_sheets')
 const EncounterId = computed(() => +route.params.id)
 const realtimeData = computed(() => hasCorrectSubscription(user.value.subscription_type, 'medior'))
 
-const { data } = useInitiativeSheetDetail(EncounterId.value)
+const { data, status } = useInitiativeSheetDetail(EncounterId.value)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
 onMounted(() => {
@@ -45,11 +48,10 @@ onMounted(() => {
           navigateTo(localePath('/encounters'))
         }
         else if (payload.new && Object.keys(payload.new).length > 0) {
-          await queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', EncounterId.value] })
+          queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', EncounterId.value] })
         }
       },
-    )
-      .subscribe()
+    ).subscribe()
   }
 })
 
@@ -60,21 +62,17 @@ onBeforeUnmount(() => {
   }
 })
 
-async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable>): Promise<void> {
+async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>): Promise<void> {
   if (!data.value) return
 
   await update({
-    data: {
-      ...payload,
-      ...(
-        typeof payload.campaign === 'number'
-          ? { campaign: payload.campaign }
-          : payload.campaign && 'id' in payload.campaign
-            ? { campaign: payload.campaign.id }
-            : { campaign: undefined }
-      ),
-    },
+    data: payload,
     id: EncounterId.value,
+    onSettled: async () => {
+      if (!realtimeData.value) {
+        await queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', EncounterId.value] })
+      }
+    },
   })
 }
 
@@ -111,26 +109,44 @@ function tweakSettings(): void {
           <span class="hidden md:block">
             {{ $t('general.encounter') }}:
           </span>
-          <span
-            v-if="data?.title"
-            class="text-foreground"
-          >
-            {{ data.title }}
-          </span>
-          <UiSkeleton
-            v-else
-            class="w-[150px] h-6 rounded-full"
-          />
+          <ClientOnly>
+            <span
+              v-if="data?.title"
+              class="text-foreground"
+            >
+              {{ data.title }}
+            </span>
+            <UiSkeleton
+              v-else
+              class="w-[150px] h-6 rounded-full"
+            />
+            <template #fallback>
+              <UiSkeleton class="w-[150px] h-6 rounded-full" />
+            </template>
+          </ClientOnly>
         </h2>
       </div>
     </template>
 
     <InitiativeTable
-      v-if="data"
-      :encounter="+route.params.id"
-      :data="(data as unknown as InitiativeSheet)"
+      v-if="status !== 'error'"
+      :data="data"
       :update="handleUpdate"
+      :loading="status === 'pending'"
     />
+    <Card
+      v-else-if="status === 'error'"
+      color="danger"
+      class="h-[40vh] flex flex-col items-center justify-center gap-2"
+    >
+      <Icon
+        name="tabler:alert-triangle"
+        class="size-10"
+      />
+      <p class="head-3">
+        {{ $t('general.error.text') }}
+      </p>
+    </Card>
 
     <template #sidebar-content="{ isExpanded, toggleSidebar }">
       <EncounterSidebar

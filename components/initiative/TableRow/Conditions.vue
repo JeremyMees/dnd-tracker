@@ -1,11 +1,13 @@
 <script setup lang="ts">
 const props = defineProps<{
   item: InitiativeSheetRow
-  sheet: InitiativeSheet
+  sheet: InitiativeSheet | undefined
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 function removeEffect(name: string): void {
+  if (!props.sheet) return
+
   const rows = props.sheet.rows
 
   props.update({
@@ -17,6 +19,8 @@ function removeEffect(name: string): void {
 }
 
 function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
+  if (!props.sheet) return
+
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
@@ -32,31 +36,29 @@ function updateEffect(condition: InitiativeSheetRow['conditions'][0]): void {
 </script>
 
 <template>
-  <td>
-    <div
-      v-if="item.conditions.length"
-      class="flex flex-wrap justify-center md:justify-start gap-1"
-    >
-      <Tag
-        v-for="condition in item.conditions"
-        :key="condition.name"
-        removable
-        color="muted"
-        :condition="condition"
-        @update="updateEffect($event)"
-        @remove="removeEffect($event)"
-      />
-    </div>
-    <button
-      v-else
-      class="flex items-center gap-x-1"
-      @click="console.log('implement conditions modal')"
-    >
-      <Icon
-        name="tabler:plus"
-        class="size-5 min-w-5 text-secondary"
-        aria-hidden="true"
-      />
-    </button>
-  </td>
+  <div
+    v-if="item.conditions.length"
+    class="flex flex-wrap justify-center md:justify-start gap-1"
+  >
+    <Tag
+      v-for="condition in item.conditions"
+      :key="condition.name"
+      removable
+      color="muted"
+      :condition="condition"
+      @update="updateEffect($event)"
+      @remove="removeEffect($event)"
+    />
+  </div>
+  <button
+    v-else
+    class="flex items-center gap-x-1"
+    @click="console.log('implement conditions modal')"
+  >
+    <Icon
+      name="tabler:plus"
+      class="size-5 min-w-5 text-foreground/10"
+      aria-hidden="true"
+    />
+  </button>
 </template>

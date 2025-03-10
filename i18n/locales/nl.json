@@ -664,7 +664,17 @@
         "modify": "Aanpassen"
       },
       "quick": "Voeg alle initiatieven toe",
-      "noActions": "Wanneer je acties toevoegt aan een homebrew, worden ze hier weergegeven."
+      "noActions": "Wanneer je acties toevoegt aan een homebrew, worden ze hier weergegeven.",
+      "reset": {
+        "soft": {
+          "title": "Zachte reset",
+          "description": "Dit zal de ronde naar 1 resetten en de actieve speler naar de eerste speler in de lijst."
+        },
+        "hard": {
+          "title": "Harde reset",
+          "description": "Dit zal alles hierboven doen, maar ook de hp, ac en andere stats resetten."
+        }
+      }
     },
     "actions": {
       "link": "Link",

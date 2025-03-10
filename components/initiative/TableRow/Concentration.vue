@@ -1,11 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
   item: InitiativeSheetRow
-  sheet: InitiativeSheet
+  sheet: InitiativeSheet | undefined
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 function updateConcentration(): void {
+  if (!props.sheet) return
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 

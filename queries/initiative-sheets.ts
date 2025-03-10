@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import deepmerge from 'deepmerge'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<Database>()
@@ -50,9 +49,7 @@ export function useInitiativeSheetDetailUpdate() {
 
       queryClient.setQueryData(
         ['useInitiativeSheetDetail', id],
-        (old: InitiativeSheet) => deepmerge(old, data, {
-          arrayMerge: (_destination, source) => source,
-        }),
+        (old: InitiativeSheet) => ({ ...old, ...data, rows: data.rows || old.rows }),
       )
 
       return { previous }

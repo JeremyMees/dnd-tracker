@@ -104,7 +104,6 @@ async function fetchPermissions() {
           <UiTableRow
             v-for="headerGroup in table.getHeaderGroups()"
             :key="headerGroup.id"
-            class="hover:bg-transparent"
           >
             <UiTableHead
               v-for="header in headerGroup.headers"
@@ -160,10 +159,7 @@ async function fetchPermissions() {
                   />
                 </UiTableCell>
               </UiTableRow>
-              <UiTableRow
-                v-if="expandedMarkup && row.getIsExpanded()"
-                class="hover:bg-transparent"
-              >
+              <UiTableRow v-if="expandedMarkup && row.getIsExpanded()">
                 <UiTableCell :colspan="row.getAllCells().length">
                   <FlexRender :render="expandedMarkup(row)" />
                 </UiTableCell>

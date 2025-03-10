@@ -3,14 +3,15 @@ import { FlexRender, getCoreRowModel, getExpandedRowModel, useVueTable } from '@
 import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
 
 const props = defineProps<{
-  data: InitiativeSheet
+  data: InitiativeSheet | undefined
+  loading: boolean
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
 }>()
 
 onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], (e) => {
   e.preventDefault()
 
-  if (!e.shiftKey && !e.metaKey) return
+  if ((!e.shiftKey && !e.metaKey) || !props.data) return
 
   const current = props.data.rows[props.data.activeIndex].id
 
@@ -22,24 +23,40 @@ onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], (e) => {
   else if (e.key === 'ArrowRight') next()
 })
 
+const tablePadding = computed(() => {
+  const style = props.data?.settings.spacing
+  if (style === 'compact') return 'p-1'
+  if (style === 'cozy') return 'p-4'
+  else return 'p-2'
+})
+
 const columns = generateColumns({
   sheet: computed(() => props.data),
   update: props.update,
+  openQuickInitModal: () => console.log('open quick init modal'),
 })
 
 const expanded = ref<Record<string, boolean>>({})
 const selected = ref<Record<string, boolean>>({})
 
-if (props.data.rows.length) {
-  const active = props.data.activeIndex
+watch( // This is a hack otherwise the table doesn't update when the data changes
+  () => props.data?.rows,
+  () => {
+    expanded.value = {}
 
-  selected.value = props.data.rows[active]
-    ? { [props.data.rows[active].id]: true }
-    : { [props.data.rows[0].id]: true }
-}
+    if (props.data?.rows.length) {
+      const active = props.data.activeIndex
+
+      selected.value = props.data.rows[active]
+        ? { [props.data.rows[active].id]: true }
+        : { [props.data.rows[0].id]: true }
+    }
+  },
+  { immediate: true },
+)
 
 const table = useVueTable({
-  data: computed(() => props.data.rows),
+  data: computed(() => props.data?.rows || []),
   columns,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
@@ -53,6 +70,8 @@ const table = useVueTable({
 })
 
 function previous(): void {
+  if (!props.data) return
+
   const isAtStart = props.data.activeIndex === 0
   const activeIndex = isAtStart ? props.data.rows.length - 1 : props.data.activeIndex - 1
   const round = isAtStart ? props.data.round - 1 : props.data.round
@@ -62,6 +81,8 @@ function previous(): void {
 }
 
 function next(): void {
+  if (!props.data) return
+
   const isAtEnd = props.data.activeIndex + 1 >= props.data.rows.length
   const activeIndex = isAtEnd ? 0 : props.data.activeIndex + 1
   const round = isAtEnd ? props.data.round + 1 : props.data.round
@@ -70,8 +91,36 @@ function next(): void {
   selected.value = { [props.data.rows[activeIndex].id]: true }
 }
 
-function reset(): void {
-  props.update({ activeIndex: 0, round: 1 })
+function reset(hard: boolean): void {
+  if (!props.data) return
+
+  let update: Omit<Partial<InitiativeSheet>, NotUpdatable> = { activeIndex: 0, round: 1 }
+
+  if (hard) {
+    update = {
+      ...update,
+      rows: props.data.rows.map(row => ({
+        ...row,
+        initiative: -1,
+        conditions: [],
+        ...(row.concentration !== undefined && { concentration: false }),
+        ...(row.deathSaves !== undefined && {
+          deathSaves: {
+            fail: [false, false, false],
+            save: [false, false, false],
+          },
+        }),
+        ...(row.ac !== undefined && { ac: row.maxAcOld || row.maxAc }),
+        ...(row.health !== undefined && { health: row.maxHealthOld || row.maxHealth }),
+        tempAc: undefined,
+        maxAcOld: undefined,
+        tempHealth: undefined,
+        maxHealthOld: undefined,
+      })),
+    }
+  }
+
+  props.update(update)
   selected.value = { [props.data.rows[0].id]: true }
 }
 </script>
@@ -95,6 +144,7 @@ function reset(): void {
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
+              :class="tablePadding"
             >
               <FlexRender
                 v-if="!header.isPlaceholder"
@@ -112,12 +162,13 @@ function reset(): void {
               :key="row.id"
             >
               <UiTableRow
-                :data-state="row.getIsSelected() && 'selected'"
-                class="hover:bg-transparent"
+                :data-state="selected[row.id] && 'selected'"
+                class="data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300"
               >
                 <UiTableCell
                   v-for="cell in row.getVisibleCells()"
                   :key="cell.id"
+                  :class="tablePadding"
                 >
                   <FlexRender
                     :render="cell.column.columnDef.cell"
@@ -125,10 +176,7 @@ function reset(): void {
                   />
                 </UiTableCell>
               </UiTableRow>
-              <UiTableRow
-                v-if="row.getIsExpanded()"
-                class="hover:bg-transparent"
-              >
+              <UiTableRow v-if="row.getIsExpanded()">
                 <UiTableCell :colspan="row.getAllCells().length">
                   <FlexRender :render="expandedMarkup(row)" />
                 </UiTableCell>
@@ -136,10 +184,14 @@ function reset(): void {
             </template>
           </template>
 
-          <UiTableRow
-            v-else
-            class="hover:bg-transparent"
-          >
+          <template v-else-if="loading">
+            <SkeletonInitiativeTableRow
+              v-for="i in 10"
+              :key="i"
+            />
+          </template>
+
+          <UiTableRow v-else>
             <UiTableCell
               :colspan="columns.length"
               class="md:p-10"

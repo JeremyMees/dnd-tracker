@@ -3,7 +3,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 const props = defineProps<{
   item: InitiativeSheetRow
-  sheet: InitiativeSheet
+  sheet: InitiativeSheet | undefined
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
@@ -11,6 +11,8 @@ const { toast } = useToast()
 const { t } = useI18n()
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
+  if (!props.sheet) return
+
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
@@ -56,32 +58,30 @@ function checkForDeathSaveNotifications(deathSaves: { save: boolean[], fail: boo
 </script>
 
 <template>
-  <td>
+  <div
+    class="grid gap-1 w-fit mx-auto"
+    :class="{
+      'bg-success/20 p-2 rounded-lg': item.deathSaves?.save.every(Boolean) && !item.deathSaves?.fail.every(Boolean),
+      'bg-destructive/20 p-2 rounded-lg': item.deathSaves?.fail.every(Boolean) && !item.deathSaves?.save.every(Boolean),
+    }"
+  >
     <div
-      class="grid gap-1 w-fit mx-auto"
-      :class="{
-        'bg-success/20 p-2 rounded-lg': item.deathSaves?.save.every(Boolean) && !item.deathSaves?.fail.every(Boolean),
-        'bg-destructive/20 p-2 rounded-lg': item.deathSaves?.fail.every(Boolean) && !item.deathSaves?.save.every(Boolean),
-      }"
+      v-for="(save, i) in [item.deathSaves?.save, item.deathSaves?.fail]"
+      :key="`save-${i}`"
+      class="grid grid-cols-3 gap-1 min-w-14"
     >
-      <div
-        v-for="(save, i) in [item.deathSaves?.save, item.deathSaves?.fail]"
-        :key="`save-${i}`"
-        class="grid grid-cols-3 gap-1 w-14"
-      >
-        <button
-          v-for="(value, j) in save"
-          :key="`${value}-${j}`"
-          class="size-4 rounded border-2"
-          :class="{
-            'border-success bg-success/20': i === 0,
-            'border-destructive bg-destructive/20': i === 1,
-            '!bg-success': value && i === 0,
-            '!bg-destructive': value && i === 1,
-          }"
-          @click="updateDeathSave(j, i === 0)"
-        />
-      </div>
+      <button
+        v-for="(value, j) in save"
+        :key="`${value}-${j}`"
+        class="size-4 rounded border-2"
+        :class="{
+          'border-success bg-success/20': i === 0,
+          'border-destructive bg-destructive/20': i === 1,
+          '!bg-success': value && i === 0,
+          '!bg-destructive': value && i === 1,
+        }"
+        @click="updateDeathSave(j, i === 0)"
+      />
     </div>
-  </td>
+  </div>
 </template>

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 defineEmits<{
-  reset: []
+  reset: [boolean]
   previous: []
   next: []
 }>()
 
-defineProps<{ data: InitiativeSheet }>()
+defineProps<{ data: InitiativeSheet | undefined }>()
+
+const resetOpen = ref<boolean>(false)
 </script>
 
 <template>
@@ -19,30 +21,60 @@ defineProps<{ data: InitiativeSheet }>()
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
         <span class="font-bold text-foreground">
-          {{ data.round }}
+          {{ data?.round || 1 }}
         </span>
       </span>
-      <button
-        v-tippy="{ content: $t('actions.reset') }"
-        :disabled="!data.rows.length"
-        aria-label="Reset rounds"
-        class="disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center"
-        @click="$emit('reset')"
-      >
-        <Icon
-          name="tabler:refresh"
-          class="size-6 text-destructive"
-          aria-hidden="true"
-        />
-      </button>
+      <UiPopover v-model:open="resetOpen">
+        <UiPopoverTrigger as-child>
+          <button
+            v-tippy="$t('actions.reset')"
+            :disabled="!data?.rows.length"
+            aria-label="Reset rounds"
+            class="icon-btn-destructive"
+          >
+            <Icon
+              name="tabler:refresh"
+              class="text-destructive"
+              aria-hidden="true"
+            />
+          </button>
+        </UiPopoverTrigger>
+        <UiPopoverContent class="flex flex-col gap-2">
+          <button
+            :aria-label="$t('components.encounterTable.reset.soft.title')"
+            class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
+            @click="$emit('reset', false), resetOpen = false"
+          >
+            <span class="font-bold">
+              {{ $t('components.encounterTable.reset.soft.title') }}
+            </span>
+            <span class="text-muted-foreground body-small">
+              {{ $t('components.encounterTable.reset.soft.description') }}
+            </span>
+          </button>
+          <UiSeparator />
+          <button
+            :aria-label="$t('components.encounterTable.reset.hard.title')"
+            class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
+            @click="$emit('reset', true), resetOpen = false"
+          >
+            <span class="font-bold">
+              {{ $t('components.encounterTable.reset.hard.title') }}
+            </span>
+            <span class="text-muted-foreground body-small">
+              {{ $t('components.encounterTable.reset.hard.description') }}
+            </span>
+          </button>
+        </UiPopoverContent>
+      </UiPopover>
     </div>
     <div
       id="tour-1"
-      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary text-white"
+      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"
-        :disabled="data.round === 1 && data.activeIndex === 0"
+        :disabled="data?.round === 1 && data?.activeIndex === 0"
         :aria-label="$t('actions.prev')"
         class="group disabled:cursor-not-allowed duration-300 ease-in-out py-1 pl-1 pr-2 border-r-2 border-primary flex flex-col items-center"
         @click="$emit('previous')"
@@ -53,19 +85,19 @@ defineProps<{ data: InitiativeSheet }>()
           aria-hidden="true"
         />
       </button>
-      <p class="uppercase font-bold px-2">
+      <p class="font-medium px-2">
         {{ $t('components.inputs.initiativeLabel') }}
       </p>
       <button
         v-tippy="{ content: $t('actions.next') }"
-        :disabled="!data.rows.length"
+        :disabled="!data?.rows.length"
         :aria-label="$t('actions.next')"
-        class="py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"
+        class="group disabled:cursor-not-allowed py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"
         @click="$emit('next')"
       >
         <Icon
           name="tabler:chevron-right"
-          class="size-6"
+          class="group-disabled:opacity-50 size-6"
           aria-hidden="true"
         />
       </button>

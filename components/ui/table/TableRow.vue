@@ -8,7 +8,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <tr :class="cn('border-b border-secondary transition-colors hover:bg-secondary/70 data-[state=selected]:bg-secondary', props.class)">
+  <tr :class="cn('border-b border-secondary transition-colors data-[state=selected]:bg-secondary', props.class)">
     <slot />
   </tr>
 </template>

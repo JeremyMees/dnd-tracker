@@ -1,15 +1,25 @@
 <script setup lang="ts">
 const props = defineProps<{
   item: InitiativeSheetRow
-  sheet: InitiativeSheet
+  sheet: InitiativeSheet | undefined
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
 const currentIndex = computed(() => props.item.index)
-const canGoUp = computed(() => currentIndex.value > 0 && props.sheet.rows[currentIndex.value - 1]?.initiative === props.item.initiative)
-const canGoDown = computed(() => currentIndex.value < props.sheet.rows.length - 1 && props.sheet.rows[currentIndex.value + 1]?.initiative === props.item.initiative)
+
+const canGoUp = computed(() => {
+  if (!props.sheet) return false
+  return currentIndex.value > 0 && props.sheet.rows[currentIndex.value - 1]?.initiative === props.item.initiative
+})
+
+const canGoDown = computed(() => {
+  if (!props.sheet) return false
+  return currentIndex.value < props.sheet.rows.length - 1 && props.sheet.rows[currentIndex.value + 1]?.initiative === props.item.initiative
+})
 
 async function moveRow(up: boolean): Promise<void> {
+  if (!props.sheet) return
+
   const rows = [...props.sheet.rows]
   const index = props.item.index
   const targetIndex = up ? index - 1 : index + 1
@@ -33,50 +43,48 @@ async function moveRow(up: boolean): Promise<void> {
 </script>
 
 <template>
-  <td>
-    <div class="flex gap-2 items-center text-left">
-      <button @click="console.log('implement initiative modal')">
+  <div class="flex gap-2 items-center text-left">
+    <button @click="console.log('implement initiative modal')">
+      <Icon
+        v-if="item.initiative < 0"
+        name="tabler:plus"
+        class="size-5 min-w-5 text-foreground/10"
+        aria-hidden="true"
+      />
+      <span v-else>{{ item.initiative }}</span>
+    </button>
+    <div
+      v-if="item.initiative !== null && item.initiative >= 0"
+      class="flex flex-col"
+    >
+      <button
+        v-if="canGoUp"
+        v-tippy="$t('actions.moveUp')"
+        :aria-label="$t('actions.moveUp')"
+        :class="{ 'relative top-1': canGoDown }"
+        class="flex items-center"
+        @click="moveRow(true)"
+      >
         <Icon
-          v-if="item.initiative < 0"
-          name="tabler:plus"
-          class="size-5 min-w-5 text-secondary"
+          name="tabler:caret-up"
+          class="size-5 min-w-5 text-tertiary"
           aria-hidden="true"
         />
-        <span v-else>{{ item.initiative }}</span>
       </button>
-      <div
-        v-if="item.initiative !== null && item.initiative >= 0"
-        class="flex flex-col"
+      <button
+        v-if="canGoDown"
+        v-tippy="$t('actions.moveDown')"
+        :aria-label="$t('actions.moveDown')"
+        :class="{ 'relative bottom-1': canGoUp }"
+        class="flex items-center"
+        @click="moveRow(false)"
       >
-        <button
-          v-if="canGoUp"
-          v-tippy="$t('actions.moveUp')"
-          :aria-label="$t('actions.moveUp')"
-          :class="{ 'relative top-1': canGoDown }"
-          class="flex items-center"
-          @click="moveRow(true)"
-        >
-          <Icon
-            name="tabler:caret-up"
-            class="size-5 min-w-5 text-tertiary"
-            aria-hidden="true"
-          />
-        </button>
-        <button
-          v-if="canGoDown"
-          v-tippy="$t('actions.moveDown')"
-          :aria-label="$t('actions.moveDown')"
-          :class="{ 'relative bottom-1': canGoUp }"
-          class="flex items-center"
-          @click="moveRow(false)"
-        >
-          <Icon
-            name="tabler:caret-down"
-            class="size-5 min-w-5 text-tertiary"
-            aria-hidden="true"
-          />
-        </button>
-      </div>
+        <Icon
+          name="tabler:caret-down"
+          class="size-5 min-w-5 text-tertiary"
+          aria-hidden="true"
+        />
+      </button>
     </div>
-  </td>
+  </div>
 </template>

@@ -664,7 +664,17 @@
         "modify": "Modify"
       },
       "quick": "Add all initiatives",
-      "noActions": "When you add actions to an initiative, they will be displayed here."
+      "noActions": "When you add actions to an initiative, they will be displayed here.",
+      "reset": {
+        "soft": {
+          "title": "Soft reset",
+          "description": "This will reset the round to 1 and the active player to the first player in the list."
+        },
+        "hard": {
+          "title": "Hard reset",
+          "description": " This will do all the above but also reset hp, ac, and other stats."
+        }
+      }
     },
     "actions": {
       "link": "Link",
