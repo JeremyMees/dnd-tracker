@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
-
 definePageMeta({
   auth: true,
   path: '/campaigns/:id(\\d+)-:title/:page?',
@@ -9,48 +7,11 @@ definePageMeta({
 
 const route = useRoute()
 const { t } = useI18n()
-const queryClient = useQueryClient()
-const supabase = useSupabaseClient<Database>()
 
-const status = ref<'pending' | 'success' | 'error'>('pending')
-const campaign = ref<CampaignFull>()
-const admin = ref<boolean>(false)
-const owner = ref<boolean>(false)
+const { data, isPending, isError, isSuccess } = useCampaignDetail(+route.params.id)
 
-try {
-  const { data, error } = await queryClient.fetchQuery({
-    queryKey: ['useCampaignDetail', route.params.id],
-    queryFn: async () => await supabase
-      .from('campaigns')
-      .select(`
-          *, 
-          created_by(id, username, avatar, name, email), 
-          team(
-            id,
-            role,
-            user(id, username, avatar, name, email)
-          ), 
-          join_campaign(
-            id,
-            role,
-            user(id, username, avatar, name, email)
-          )
-        `)
-      .eq('id', route.params.id)
-      .single(),
-  })
-
-  if (error) throw createError(error)
-  else if (data) {
-    campaign.value = data
-    admin.value = await allows(isCampaignAdmin, data)
-    owner.value = await allows(isCampaignOwner, data)
-    status.value = 'success'
-  }
-}
-catch {
-  status.value = 'error'
-}
+const isAdmin = computedAsync(async () => data.value ? await allows(isCampaignAdmin, data.value) : false, false)
+const isOwner = computedAsync(async () => data.value ? await allows(isCampaignOwner, data.value) : false, false)
 
 const tabs = computed<Tab[]>(() => {
   const url = route.fullPath.split('/').slice(0, -1).join('/')
@@ -71,14 +32,14 @@ const tabs = computed<Tab[]>(() => {
       label: t('general.note', 2),
       icon: 'tabler:notes',
     },
-    ...(admin.value
+    ...(isAdmin.value
       ? [{
           link: `${url}/settings`,
           label: t('general.setting', 2),
           icon: 'tabler:settings',
         }]
       : []),
-    ...(owner.value
+    ...(isOwner.value
       ? [{
           link: `${url}/danger-zone`,
           label: t('general.dangerZone'),
@@ -96,6 +57,7 @@ const tabs = computed<Tab[]>(() => {
         <NuxtLinkLocale
           v-tippy="$t('actions.back')"
           to="/campaigns"
+          class="icon-btn-ghost"
         >
           <Icon
             name="tabler:arrow-left"
@@ -107,36 +69,50 @@ const tabs = computed<Tab[]>(() => {
           <span class="hidden md:block">
             {{ $t('general.campaign') }}:
           </span>
-          <span
-            v-if="status === 'success' && campaign?.title"
-            class="text-foreground"
-          >
-            {{ campaign.title }}
-          </span>
-          <UiSkeleton
-            v-else
-            class="w-[150px] h-6 rounded-full"
-          />
+          <ClientOnly>
+            <span
+              v-if="isSuccess && data?.title"
+              class="text-foreground"
+            >
+              {{ data.title }}
+            </span>
+            <UiSkeleton
+              v-else
+              class="w-[150px] h-6 rounded-full"
+            />
+            <template #fallback>
+              <UiSkeleton class="w-[150px] h-6 rounded-full" />
+            </template>
+          </ClientOnly>
         </h2>
       </div>
     </template>
     <div class="flex flex-wrap gap-4 lg:border-b-2 lg:border-secondary mb-10">
-      <TabItem
-        v-for="tab in tabs"
-        :key="tab.link"
-        :link="tab.link"
-        :label="tab.label"
-        :icon="tab.icon"
-        :disabled="status !== 'success'"
-      />
+      <ClientOnly>
+        <TabItem
+          v-for="tab in tabs"
+          :key="tab.link"
+          :link="tab.link"
+          :label="tab.label"
+          :icon="tab.icon"
+          :disabled="isError || isPending"
+        />
+        <template #fallback>
+          <UiSkeleton
+            v-for="i in 5"
+            :key="i"
+            class="w-[125px] h-9 lg:h-6 rounded-lg"
+          />
+        </template>
+      </ClientOnly>
     </div>
     <div class="min-h-[40vh]">
       <NuxtPage
-        v-if="status === 'success'"
-        :current="campaign"
+        v-if="!isError"
+        :current="data"
       />
       <Card
-        v-else-if="status === 'error'"
+        v-else
         color="danger"
         class="h-[40vh] flex flex-col items-center justify-center gap-2"
       >
