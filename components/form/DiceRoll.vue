@@ -42,7 +42,7 @@ function roll(form: RollForm, node: FormNode): void {
           index < result.length - 1 ? ', ' : '',
         ]).flat(),
       ),
-      h('span', { class: 'flex flex-row' }, [
+      amount > 1 && h('span', { class: 'flex flex-row' }, [
         h('span', { class: 'font-bold mr-2' }, `${t('general.total')}:`),
         h('span', result.reduce((a, b) => a + b, 0)),
       ]),
