@@ -94,7 +94,7 @@ async function logoutUser(): Promise<void> {
                         :name="item.icon"
                         class="size-4 min-w-4"
                       />
-                      <span class="group-data-[collapsible=icon]:hidden truncate">
+                      <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
                         {{ $t(item.label) }}
                       </span>
                     </NuxtLinkLocale>

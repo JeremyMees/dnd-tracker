@@ -32,7 +32,7 @@ const diceRoll = ref()
               name="tabler:search"
               class="size-4 min-w-4 text-success"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
+            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
               DnD {{ $t('general.content') }}
             </span>
           </button>
@@ -61,7 +61,7 @@ const diceRoll = ref()
               name="tabler:hexagon"
               class="size-4 min-w-4 text-tertiary"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
+            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
               {{ $t('actions.roll') }}
             </span>
           </button>
@@ -79,7 +79,7 @@ const diceRoll = ref()
                   name="tabler:hexagon"
                   class="size-4 min-w-4 text-tertiary"
                 />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
                   {{ $t('actions.roll') }}
                 </span>
               </button>
@@ -112,7 +112,7 @@ const diceRoll = ref()
               name="tabler:bat"
               class="size-4 min-w-4 text-destructive"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
+            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
               {{ $t('general.bestiary') }}
             </span>
           </button>
@@ -133,7 +133,7 @@ const diceRoll = ref()
               name="tabler:meeple"
               class="size-4 min-w-4 text-primary"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
+            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
               {{ $t('general.campaignHomebrew') }}
             </span>
           </button>
@@ -154,7 +154,7 @@ const diceRoll = ref()
               name="tabler:beer"
               class="size-4 min-w-4 text-warning"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
+            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
               {{ $t('general.newHomebrew') }}
             </span>
           </button>
@@ -175,7 +175,7 @@ const diceRoll = ref()
               name="tabler:settings"
               class="size-4 min-w-4"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
+            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
               {{ $t('general.setting', 2) }}
             </span>
           </button>
@@ -201,7 +201,7 @@ const diceRoll = ref()
                 name="tabler:keyboard"
                 class="size-4 min-w-4"
               />
-              <span class="group-data-[collapsible=icon]:hidden truncate">
+              <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
                 {{ $t('general.hotkey', 2) }}
               </span>
             </button>
