@@ -22,7 +22,6 @@ export type ModalComponent =
   | 'Note'
   | 'Mail'
   | 'InitiativeSettings'
-  | 'InitiativeRowName'
   | 'DiceRoll'
 
 export interface Modal {
