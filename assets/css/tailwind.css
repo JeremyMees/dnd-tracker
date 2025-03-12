@@ -341,6 +341,10 @@
     @apply icon-btn hover:bg-destructive/50;
   }
 
+  .icon-btn-ghost {
+    @apply icon-btn hover:bg-accent;
+  }
+
   kbd {
     @apply border border-slate-300 rounded size-6 flex items-center justify-center border-b-2;
   }

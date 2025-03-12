@@ -29,7 +29,9 @@ export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOpt
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'index',
-      cell: ({ row }) => h('div', { class: 'flex items-center gap-x-2 max-w-20' }, [
+      cell: ({ row }) => h('div', {
+        class: 'flex items-center gap-x-2',
+      }, [
         h('span', { class: 'text-muted-foreground ml-1' }, row.index + 1),
         expandButton({
           content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
@@ -47,14 +49,16 @@ export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOpt
       }),
     }),
     columnHelper.accessor('initiative', {
-      header: () => h('button', { class: 'flex items-center gap-x-2' }, [
+      header: () => h('div', {
+        class: 'flex items-center gap-x-2',
+      }, [
         t('components.encounterTable.headers.init'),
         iconButton({
           icon: 'tabler:bolt-filled',
           content: t('components.encounterTable.quick'),
           color: 'warning',
           cb: () => openQuickInitModal(),
-          disabled: !sheet.value?.rows.length,
+          disabled: sheet.value ? !sheet.value.rows.length : false,
           iconColor: 'text-warning',
         }),
       ]),

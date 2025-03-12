@@ -13,6 +13,7 @@ const { toggleSidebar } = useSidebar()
 
 <template>
   <Button
+    v-tippy="$t('actions.toggleSidebar')"
     data-sidebar="trigger"
     variant="ghost"
     size="icon"
@@ -23,6 +24,6 @@ const { toggleSidebar } = useSidebar()
       name="tabler:layout-sidebar"
       class="size-4"
     />
-    <span class="sr-only">Toggle Sidebar</span>
+    <span class="sr-only">{{ $t('actions.toggleSidebar') }}</span>
   </Button>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 definePageMeta({
@@ -13,7 +12,6 @@ useSeo(route.params.title as string)
 
 const localePath = useLocalePath()
 const user = useAuthenticatedUser()
-const queryClient = useQueryClient()
 
 const { toast } = useToast()
 const modal = useModal()
@@ -25,7 +23,7 @@ const channel = supabase.channel('initiative_sheets')
 const EncounterId = computed(() => +route.params.id)
 const realtimeData = computed(() => hasCorrectSubscription(user.value.subscription_type, 'medior'))
 
-const { data, status } = useInitiativeSheetDetail(EncounterId.value)
+const { data, isPending, isError, refetch } = useInitiativeSheetDetail(EncounterId.value)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
 onMounted(() => {
@@ -48,7 +46,7 @@ onMounted(() => {
           navigateTo(localePath('/encounters'))
         }
         else if (payload.new && Object.keys(payload.new).length > 0) {
-          queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', EncounterId.value] })
+          await refetch()
         }
       },
     ).subscribe()
@@ -70,7 +68,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
     id: EncounterId.value,
     onSettled: async () => {
       if (!realtimeData.value) {
-        await queryClient.invalidateQueries({ queryKey: ['useInitiativeSheetDetail', EncounterId.value] })
+        await refetch()
       }
     },
   })
@@ -98,10 +96,11 @@ function tweakSettings(): void {
         <NuxtLinkLocale
           v-tippy="$t('actions.back')"
           to="/encounters"
+          class="icon-btn-ghost"
         >
           <Icon
             name="tabler:arrow-left"
-            class="w-4 h-4"
+            class="size-4 min-w-4"
             :aria-hidden="true"
           />
         </NuxtLinkLocale>
@@ -129,13 +128,13 @@ function tweakSettings(): void {
     </template>
 
     <InitiativeTable
-      v-if="status !== 'error'"
+      v-if="!isError"
       :data="data"
       :update="handleUpdate"
-      :loading="status === 'pending'"
+      :loading="isPending"
     />
     <Card
-      v-else-if="status === 'error'"
+      v-else
       color="danger"
       class="h-[40vh] flex flex-col items-center justify-center gap-2"
     >
