@@ -10,6 +10,8 @@ onMounted(() => {
   if (input.value) focusInput(input.value)
 })
 
+interface MailForm { mail: string[] }
+
 async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reset, type FormKitNode } from '@formkit/core'
+import { reset } from '@formkit/core'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -19,6 +19,13 @@ const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
 const { mutateAsync: updateInitiativeSheet } = useInitiativeSheetDetailUpdate()
 
 const max = 100
+
+interface HomebrewItemForm extends Omit<HomebrewItemInsert, 'campaign' | NotUpdatable> {
+  amount?: number
+  initiative?: number
+  summoner?: string
+  save?: boolean
+}
 
 // const summonersOptions = computed<Option[]>(() => {
 //   if (table.encounter?.rows && props.encounter) {
@@ -217,7 +224,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             validation="required|length:3,30"
             outer-class="grow"
             suffix-icon="random"
-            @suffix-icon-click="(node: FormKitNode) => node.input(randomName())"
+            @suffix-icon-click="(node: FormNode) => node.input(randomName())"
           />
           <FormKit
             v-if="value?.type === 'player' && !encounterId"
@@ -238,7 +245,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             :label="$t('components.inputs.initiativeLabel')"
             validation="between:1,50|number"
             suffix-icon="dice"
-            @suffix-icon-click="(node: FormKitNode) => node.input(randomRoll(20))"
+            @suffix-icon-click="(node: FormNode) => node.input(randomRoll(20))"
           />
           <FormKit
             name="initiative_modifier"

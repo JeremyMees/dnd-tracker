@@ -16,6 +16,12 @@ const { mutateAsync: createTeamMember } = useTeamMemberCreate()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
+interface TransformForm {
+  title: string
+  role: UserRole | 'Remove'
+  user: string
+}
+
 async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

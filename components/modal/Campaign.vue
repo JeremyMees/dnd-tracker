@@ -13,6 +13,8 @@ const input = ref()
 
 onMounted(() => input.value && focusInput(input.value))
 
+interface CampaignForm { title: string }
+
 async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

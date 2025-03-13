@@ -10,6 +10,8 @@ const { mutateAsync: create } = useFeatureCreate()
 
 onMounted(() => input.value && focusInput(input.value))
 
+interface FeatureForm { title: string, text: string }
+
 async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

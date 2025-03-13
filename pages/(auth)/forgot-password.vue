@@ -9,6 +9,8 @@ const { toast } = useToast()
 const localePath = useLocalePath()
 const supabase = useSupabaseClient<Database>()
 
+interface ForgotPassword { email: string }
+
 async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<void> {
   node.clearErrors()
 

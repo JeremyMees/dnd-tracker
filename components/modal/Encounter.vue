@@ -35,6 +35,8 @@ watch(isError, (err) => {
   }
 })
 
+interface EncounterForm { title: string, campaign?: number }
+
 async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

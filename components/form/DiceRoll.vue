@@ -19,6 +19,8 @@ onMounted(() => {
   if (input.value) focusInput(input.value)
 })
 
+interface RollForm { dice: string, amount: number }
+
 function roll(form: RollForm, node: FormNode): void {
   node.clearErrors()
 

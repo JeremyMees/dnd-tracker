@@ -474,7 +474,9 @@
   },
   "components": {
     "initiativeTableModals": {
-      "name": "Naam wijzigen"
+      "name": "Naam wijzigen",
+      "init": "Initiatief wijzigen",
+      "health": "HP wijzigen"
     },
     "healthCheck": {
       "offline": {

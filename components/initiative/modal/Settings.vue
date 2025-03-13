@@ -13,6 +13,13 @@ const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const rowsDefault = ['ac', 'health', 'manage', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 const widgetsDefault = ['note', 'info-pins', 'fantasy-name-generator']
 
+interface InitiativeSettingsForm {
+  spacing: TableSpacing
+  rows: string[]
+  widgets: string[]
+  pet?: InitiativePet
+}
+
 async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

@@ -7,6 +7,12 @@ const { t } = useI18n()
 const { toast } = useToast()
 const localePath = useLocalePath()
 
+interface Contact {
+  name?: string
+  email: string
+  question: string
+}
+
 async function sendContactMail(form: Contact, node: FormNode): Promise<void> {
   node.clearErrors()
 

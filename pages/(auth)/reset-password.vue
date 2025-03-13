@@ -26,6 +26,8 @@ function checkIfError(): void {
   }
 }
 
+interface ResetPassword { password: string }
+
 async function resetPassword({ password }: ResetPassword, node: FormNode): Promise<void> {
   node.clearErrors()
 

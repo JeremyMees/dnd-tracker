@@ -28,6 +28,9 @@ const { mutateAsync: updateTeamMember } = useTeamMemberUpdate()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 const { mutateAsync: removeJoinCampaignToken } = useJoinTokenRemove()
 
+interface CampaignForm { title: string }
+interface UpdateRoleForm { role: UserRole, id: string }
+
 async function update(form: CampaignForm, node: FormNode): Promise<void> {
   node.clearErrors()
 

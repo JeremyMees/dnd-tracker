@@ -474,7 +474,9 @@
   },
   "components": {
     "initiativeTableModals": {
-      "name": "Change name"
+      "name": "Change name",
+      "init": "Change initiative",
+      "health": "Change HP"
     },
     "healthCheck": {
       "online": {

@@ -14,6 +14,9 @@ const localePath = useLocalePath()
 const queryClient = useQueryClient()
 const supabase = useSupabaseClient<Database>()
 
+interface AddMemberForm { role: UserRole, id: string, profile: Profile }
+interface InviteMemberForm { users: AddMemberForm[] }
+
 const noUser = ref<string>()
 const form = ref<{ users: AddMemberForm[] }>({ users: [] })
 

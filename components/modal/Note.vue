@@ -20,6 +20,8 @@ onMounted(() => {
   if (input.value) focusInput(input.value)
 })
 
+interface NoteForm { title: string, text: string }
+
 async function handleSubmit(form: NoteForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
