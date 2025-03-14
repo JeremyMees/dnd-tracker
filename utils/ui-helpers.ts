@@ -32,7 +32,7 @@ export function randomColor(): string {
 }
 
 export function togglePasswordInput(node: FormNode): void {
-  node.props.suffixIcon = node.props.suffixIcon === 'eye' ? 'eyeClosed' : 'eye'
+  node.props.suffixIcon = node.props.suffixIcon === 'tabler:eye' ? 'tabler:eye-closed' : 'tabler:eye'
   node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
 

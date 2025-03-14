@@ -223,7 +223,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             :label="$t('components.inputs.nameLabel')"
             validation="required|length:3,30"
             outer-class="grow"
-            suffix-icon="random"
+            suffix-icon="tabler:arrows-shuffle-2"
             @suffix-icon-click="(node: FormNode) => node.input(randomName())"
           />
           <FormKit
@@ -244,7 +244,7 @@ function castActionFieldsToNumber(actions: Action[]): Action[] {
             max="50"
             :label="$t('components.inputs.initiativeLabel')"
             validation="between:1,50|number"
-            suffix-icon="dice"
+            suffix-icon="tabler:hexagon"
             @suffix-icon-click="(node: FormNode) => node.input(randomRoll(20))"
           />
           <FormKit

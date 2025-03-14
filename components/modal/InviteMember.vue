@@ -152,7 +152,7 @@ async function inviteNewUser(email: string): Promise<void> {
       <FormKit
         name="email"
         type="search"
-        prefix-icon="search"
+        prefix-icon="tabler:search"
         :placeholder="$t('components.inputs.searchByEmail')"
         outer-class="$reset !mb-0 grow"
         validation="required|email"

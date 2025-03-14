@@ -49,7 +49,7 @@ async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
         :index="index"
         :label="$t('components.inputs.emailLabel')"
         validation="required|length:5,50|email"
-        :suffix-icon="index !== 0 ? 'trash' : undefined"
+        :suffix-icon="index !== 0 ? 'tabler:trash' : undefined"
         :sections-schema="{
           suffixIcon: {
             $el: 'button',

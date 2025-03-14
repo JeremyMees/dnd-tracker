@@ -168,7 +168,7 @@ async function handleRemoveUser(): Promise<void> {
             <FormKit
               name="password"
               type="password"
-              suffix-icon="eye"
+              suffix-icon="tabler:eye"
               :label="$t('components.inputs.passwordLabel')"
               validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
               @suffix-icon-click="togglePasswordInput"

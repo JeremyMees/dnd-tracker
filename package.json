@@ -18,7 +18,6 @@
     "@dicebear/core": "^9.2.2",
     "@formkit/addons": "^1.6.9",
     "@formkit/auto-animate": "^0.8.2",
-    "@formkit/icons": "^1.6.9",
     "@formkit/nuxt": "^1.6.9",
     "@formkit/pro": "^0.127.2",
     "@nuxt/content": "^2.13.4",

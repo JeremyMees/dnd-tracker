@@ -88,7 +88,7 @@ async function fetchPermissions() {
         :value="table.getState().globalFilter"
         type="search"
         name="search"
-        prefix-icon="search"
+        prefix-icon="tabler:search"
         outer-class="$remove:mb-4 w-full sm:w-auto"
         inner-class="$remove:border-background $remove:bg-muted border-secondary bg-secondary/50"
         @input="table.setGlobalFilter($event)"
