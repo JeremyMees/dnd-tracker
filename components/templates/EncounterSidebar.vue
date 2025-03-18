@@ -4,11 +4,9 @@ defineEmits<{
   tweakSettings: []
 }>()
 
-const props = defineProps<{ isExpanded: boolean }>()
+defineProps<{ isExpanded: boolean }>()
 
-const modal = useModal()
-
-const diceRoll = ref()
+const diceRollerOpen = ref(false)
 </script>
 
 <template>
@@ -38,42 +36,18 @@ const diceRoll = ref()
           </button>
         </UiSidebarMenuButton>
       </UiSidebarMenuItem>
-      <UiSidebarMenuItem v-if="!isExpanded">
+      <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>
-          <button
-            v-tippy="{
-              content: $t('actions.roll'),
-              placement: 'right',
-            }"
-            :aria-label="$t('actions.roll')"
-            class="flex items-center gap-x-2"
-            @click="() => {
-              if (!props.isExpanded) {
-                modal.open({
-                  component: 'DiceRoll',
-                  header: $t('actions.roll'),
-                  submit: $t('actions.roll'),
-                })
-              }
-            }"
-          >
-            <Icon
-              name="tabler:hexagon"
-              class="size-4 min-w-4 text-tertiary"
-            />
-            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-              {{ $t('actions.roll') }}
-            </span>
-          </button>
-        </UiSidebarMenuButton>
-      </UiSidebarMenuItem>
-      <UiCollapsible v-else>
-        <UiCollapsibleTrigger as-child>
-          <UiSidebarMenuItem>
-            <UiSidebarMenuButton as-child>
+          <UiPopover v-model:open="diceRollerOpen">
+            <UiPopoverTrigger as-child>
               <button
+                v-tippy="{
+                  content: $t('actions.roll'),
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
                 :aria-label="$t('actions.roll')"
-                class="flex items-center gap-x-2"
+                class="flex items-center gap-x-2 p-2 w-full text-sm"
               >
                 <Icon
                   name="tabler:hexagon"
@@ -83,20 +57,16 @@ const diceRoll = ref()
                   {{ $t('actions.roll') }}
                 </span>
               </button>
-            </UiSidebarMenuButton>
-          </UiSidebarMenuItem>
-        </UiCollapsibleTrigger>
-        <UiCollapsibleContent class="pt-2 border border-sidebar-border rounded-lg p-2 mt-2">
-          <FormKit
-            type="form"
-            :actions="false"
-            wrapper-class="border rounded-lg p-2"
-            @submit="diceRoll?.roll"
-          >
-            <FormDiceRoll ref="diceRoll" />
-          </FormKit>
-        </UiCollapsibleContent>
-      </UiCollapsible>
+            </UiPopoverTrigger>
+            <UiPopoverContent>
+              <DiceRoller
+                :styled="false"
+                @rolled="diceRollerOpen = false"
+              />
+            </UiPopoverContent>
+          </UiPopover>
+        </UiSidebarMenuButton>
+      </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>
           <button
