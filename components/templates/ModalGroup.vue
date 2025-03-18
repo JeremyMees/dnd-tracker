@@ -9,7 +9,6 @@ import {
   ModalNote,
   LazyModalMail,
   LazyInitiativeModalSettings,
-  LazyModalDiceRoll,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -24,7 +23,6 @@ const modalComponents: Record<ModalComponent, any> = {
   Note: ModalNote,
   Mail: LazyModalMail,
   InitiativeSettings: LazyInitiativeModalSettings,
-  DiceRoll: LazyModalDiceRoll,
 }
 </script>
 

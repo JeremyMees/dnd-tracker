@@ -28,7 +28,12 @@ defineExpose({ state, toggleSidebar })
     <slot />
   </div>
 
-  <Sheet v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
+  <Sheet
+    v-else-if="isMobile"
+    :open="openMobile"
+    v-bind="$attrs"
+    @update:open="setOpenMobile"
+  >
     <SheetContent
       data-sidebar="sidebar"
       data-mobile="true"
@@ -45,7 +50,8 @@ defineExpose({ state, toggleSidebar })
   </Sheet>
 
   <div
-    v-else class="group peer hidden md:block"
+    v-else
+    class="group peer hidden md:block"
     :data-state="state"
     :data-collapsible="state === 'collapsed' ? collapsible : ''"
     :data-variant="variant"
