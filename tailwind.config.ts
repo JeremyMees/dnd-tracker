@@ -34,14 +34,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        title: [
-          'Geist',
-          'sans-serif',
-        ],
-        text: [
-          'Geist Mono',
-          'sans-serif',
-        ],
+        title: ['Geist'],
+        text: ['Geist Mono'],
       },
       colors: {
         border: 'hsl(var(--border))',
