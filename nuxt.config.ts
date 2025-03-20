@@ -96,6 +96,13 @@ export default defineNuxtConfig({
     ],
   },
 
+  fonts: {
+    families: [
+      { name: 'Geist', provider: 'google' },
+      { name: 'Geist Mono', provider: 'google' },
+    ],
+  },
+
   colorMode: { fallback: 'dark' },
 
   shadcn: { prefix: 'ui' },
