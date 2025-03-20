@@ -74,6 +74,8 @@
     "changeInitiative": "Change initiative"
   },
   "general": {
+    "more": "More",
+    "less": "Less",
     "hp": "HP",
     "ac": "AC",
     "initiativeModifier": "Initiative modifier",
@@ -473,6 +475,9 @@
     }
   },
   "components": {
+    "diceRollInput": {
+      "rolled": "Rolled {amount} {dice}|Rolled multiple dice"
+    },
     "initiativeTableModals": {
       "name": "Change name",
       "init": "Change initiative",
@@ -516,17 +521,21 @@
     },
     "initiativeTable": {
       "died": {
-        "title": "{type} is dead",
-        "textMinHP": "The {type} has too many negative hp and is dead",
-        "textDeathSaves": "The {type} failed his death saves three times and is dead"
+        "title": "{name} is dead",
+        "textMinHP": "{name} has too many negative hp and is dead",
+        "textDeathSaves": "{name} failed his death saves three times and is dead"
       },
       "stable": {
-        "title": "{type} stabilized",
-        "textDeathSaves": "The {type} saved his death saves three times and is stabilized"
+        "title": "{name} stabilized",
+        "textDeathSaves": "{name} saved his death saves three times and is stabilized"
       },
       "concentration": {
         "title": "Make a concentration check",
-        "text": "The {type}, maintaining concentration took damage"
+        "text": "{name}, maintaining concentration took damage"
+      },
+      "downed": {
+        "title": "{name} is down",
+        "text": "{name} has no hp and therefore their conditions are removed and their concentration is lost"
       },
       "emptyState": {
         "title": "No initiative holders found",
@@ -537,8 +546,7 @@
       }
     },
     "sidebar": {
-      "open": "Open sidebar",
-      "rolled": "Rolled {amount} {dice}"
+      "open": "Open sidebar"
     },
     "mailModal": {
       "title": "Send {type} via email"
@@ -685,9 +693,6 @@
       "ac": "AC actions",
       "condition": "Conditions",
       "attacks": "Possible attacks"
-    },
-    "conditionModal": {
-      "fetchErrorTitle": "Error while getting conditions"
     },
     "navbar": {
       "pages": "Pages",

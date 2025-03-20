@@ -27,8 +27,19 @@ export function useInitiativeSheet(
     }
   }, { immediate: true })
 
-  // this is a hack otherwise the table doesn't update when the data changes
-  watch(() => sheet.value?.rows, () => expanded.value = {}, { immediate: true })
+  watch(() => sheet.value?.rows, () => {
+    expanded.value = {} // this is a hack otherwise the table doesn't update when the data changes
+
+    if (!sheet.value) return
+
+    const active = sheet.value.activeIndex
+    const current = sheet.value.rows[active].id
+    const currentSelected = Object.keys(selected.value).includes(current)
+
+    if (!currentSelected) {
+      selected.value = { [sheet.value.rows[sheet.value.rows[active] ? active : 0].id]: true }
+    }
+  }, { immediate: true })
 
   function previous(): void {
     if (!sheet.value) return
@@ -73,10 +84,12 @@ export function useInitiativeSheet(
           }),
           ...(row.ac !== undefined && { ac: row.maxAcOld || row.maxAc }),
           ...(row.health !== undefined && { health: row.maxHealthOld || row.maxHealth }),
-          tempAc: undefined,
+          ...(row.maxAcOld !== undefined && { maxAc: row.maxAcOld }),
+          ...(row.maxHealthOld !== undefined && { maxHealth: row.maxHealthOld }),
           maxAcOld: undefined,
-          tempHealth: undefined,
           maxHealthOld: undefined,
+          tempHealth: undefined,
+          tempAc: undefined,
         })),
       }
     }

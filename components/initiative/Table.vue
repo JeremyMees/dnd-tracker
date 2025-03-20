@@ -16,6 +16,8 @@ const {
   selected,
 } = useInitiativeSheet(computed(() => props.data), props.update)
 
+prefetchConditionsListing()
+
 const tablePadding = computed(() => {
   const style = props.data?.settings.spacing
   if (style === 'compact') return 'p-1'

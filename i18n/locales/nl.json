@@ -74,6 +74,8 @@
     "changeInitiative": "Initiatief wijzigen"
   },
   "general": {
+    "more": "Meer",
+    "less": "Minder",
     "hp": "HP",
     "ac": "AC",
     "initiativeModifier": "Initiatief modifier",
@@ -473,6 +475,9 @@
     }
   },
   "components": {
+    "diceRoll": {
+      "rolled": "Rolde {amount} {dice}|Rolde meerdere dobbelstenen"
+    },
     "initiativeTableModals": {
       "name": "Naam wijzigen",
       "init": "Initiatief wijzigen",
@@ -516,17 +521,21 @@
     },
     "initiativeTable": {
       "died": {
-        "title": "{type} is gestorven",
-        "textMinHP": "De {type} heeft te veel negatieve hp en is dood",
-        "textDeathSaves": "De {type} heeft 3 keer gefaald bij death saves en is dood"
+        "title": "{name} is gestorven",
+        "textMinHP": "{name} heeft te veel negatieve hp en is dood",
+        "textDeathSaves": "{name} heeft 3 keer gefaald bij death saves en is dood"
       },
       "stable": {
-        "title": "{type} is gestabiliseerd",
-        "textDeathSaves": "De {type} heeft 3 keer gesaved bij death saves en is gestabiliseerd"
+        "title": "{name} is gestabiliseerd",
+        "textDeathSaves": "{name} heeft 3 keer gesaved bij death saves en is gestabiliseerd"
       },
       "concentration": {
         "title": "Maak een concentratie check",
-        "text": "{type} die zich concentreerde, liep schade op"
+        "text": "{name} die zich concentreerde, liep schade op"
+      },
+      "downed": {
+        "title": "{name} is neer",
+        "text": "{name} heeft geen hp en daardoor zijn condities verwijderd en de concentratie is verloren"
       },
       "emptyState": {
         "title": "Geen initiatiefhouder gevonden",
@@ -537,8 +546,7 @@
       }
     },
     "sidebar": {
-      "open": "Zijbalk openen",
-      "rolled": "Rolde {amount} {dice}"
+      "open": "Zijbalk openen"
     },
     "mailModal": {
       "title": "Stuur {type} per e-mail"
@@ -685,9 +693,6 @@
       "ac": "AC acties",
       "condition": "Condities",
       "attacks": "mogelijke aanvallen"
-    },
-    "conditionModal": {
-      "fetchErrorTitle": "Fout bij het ophalen van conditions"
     },
     "navbar": {
       "pages": "Pagina's",

@@ -37,10 +37,24 @@ function deleteRow(): void {
 
 <template>
   <div class="flex items-center justify-end">
+    <NuxtLink
+      v-if="item.link"
+      v-tippy="$t('components.actions.link')"
+      :aria-label="$t('components.actions.link')"
+      class="icon-btn-info"
+      target="_blank"
+      :to="item.link"
+    >
+      <Icon
+        name="tabler:link"
+        :aria-hidden="true"
+        class="size-5 min-w-5"
+      />
+    </NuxtLink>
     <button
       v-tippy="$t('actions.copy')"
       :aria-label="$t('actions.copy')"
-      class="icon-btn-info"
+      class="icon-btn-help"
       @click="copyRow"
     >
       <Icon

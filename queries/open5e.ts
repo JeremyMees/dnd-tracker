@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/vue-query'
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
 export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: Open5eFilters }>) {
@@ -39,5 +39,40 @@ export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: 
       }
     },
     placeholderData: keepPreviousData,
+  })
+}
+
+async function fetchConditions() {
+  const { toast } = useToast()
+  const { t } = useI18n()
+
+  try {
+    const { results } = await $fetch<Open5eResponse>('https://api.open5e.com/conditions/?page=1')
+
+    return results.map(c => c.name === 'Exhaustion' ? { ...c, level: 1, hasLevels: true } : c)
+  }
+  catch (error: any) {
+    toast({
+      title: t('general.error.title'),
+      description: error.message,
+      variant: 'destructive',
+    })
+  }
+}
+
+export async function prefetchConditionsListing() {
+  const queryClient = useQueryClient()
+
+  return queryClient.prefetchQuery({
+    queryKey: ['useConditionsListing'],
+    queryFn: fetchConditions,
+    staleTime: 1000 * 60 * 60 * 24,
+  })
+}
+
+export async function useConditionsListing() {
+  return useQuery({
+    queryKey: ['useConditionsListing'],
+    queryFn: fetchConditions,
   })
 }

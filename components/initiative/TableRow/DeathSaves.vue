@@ -10,6 +10,8 @@ const props = defineProps<{
 const { toast } = useToast()
 const { t } = useI18n()
 
+const { checkDeathSaves } = deathSavesFunctions
+
 function updateDeathSave(saveIndex: number, save: boolean): void {
   if (!props.sheet) return
 
@@ -20,8 +22,8 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
   if (!props.item.deathSaves) return
 
   const deathSaves = {
-    save: [...props.item.deathSaves.save],
-    fail: [...props.item.deathSaves.fail],
+    save: [...props.item.deathSaves.save] as [boolean, boolean, boolean],
+    fail: [...props.item.deathSaves.fail] as [boolean, boolean, boolean],
   }
 
   if (save) deathSaves.save[saveIndex] = !deathSaves.save[saveIndex]
@@ -30,30 +32,24 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
   rows[index] = {
     ...rows[index],
     deathSaves: {
-      save: deathSaves.save as [boolean, boolean, boolean],
-      fail: deathSaves.fail as [boolean, boolean, boolean],
+      save: deathSaves.save,
+      fail: deathSaves.fail,
     },
   }
 
-  checkForDeathSaveNotifications(deathSaves)
+  const { failed, saved } = checkDeathSaves(deathSaves)
+
+  if ((saved && !failed && save) || (!saved && failed && !save)) {
+    const toastType = saved ? 'stable' : 'died'
+
+    toast({
+      title: t(`components.initiativeTable.${toastType}.title`, { name: props.item.name }),
+      description: t(`components.initiativeTable.${toastType}.textDeathSaves`, { name: props.item.name }),
+      variant: toastType === 'stable' ? 'success' : 'destructive',
+    })
+  }
 
   props.update({ rows })
-}
-
-function checkForDeathSaveNotifications(deathSaves: { save: boolean[], fail: boolean[] }): void {
-  const savedFully = deathSaves.save.every(Boolean)
-  const failedFully = deathSaves.fail.every(Boolean)
-
-  if ((savedFully && failedFully) || (!savedFully && !failedFully)) return
-
-  const type = t(`general.${props.item.type}`)
-  const toastType = savedFully ? 'stable' : 'died'
-
-  toast({
-    title: t(`components.initiativeTable.${toastType}.title`, { type }),
-    description: t(`components.initiativeTable.${toastType}.textDeathSaves`, { type }),
-    variant: toastType === 'stable' ? 'success' : 'destructive',
-  })
 }
 </script>
 

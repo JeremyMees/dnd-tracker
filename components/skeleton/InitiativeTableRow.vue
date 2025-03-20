@@ -22,14 +22,6 @@
       <UiSkeleton class="size-5 rounded-lg" />
     </UiTableCell>
     <UiTableCell class="p-2">
-      <div class="grid grid-cols-2 lg:grid-cols-4 lg:min-w-[100px] items-center gap-y-1">
-        <UiSkeleton class="size-5 rounded-lg" />
-        <UiSkeleton class="size-5 rounded-lg" />
-        <UiSkeleton class="size-5 rounded-lg" />
-        <UiSkeleton class="size-5 rounded-lg" />
-      </div>
-    </UiTableCell>
-    <UiTableCell class="p-2">
       <UiSkeleton class="h-7 w-20 rounded-full" />
     </UiTableCell>
     <UiTableCell class="p-2">

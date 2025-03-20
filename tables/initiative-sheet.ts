@@ -4,7 +4,6 @@ import { actionsTable, expandButton, iconButton } from './generate-functions'
 import {
   InitiativeTableRowName,
   InitiativeTableRowHealth,
-  InitiativeTableRowActions,
   InitiativeTableRowConditions,
   InitiativeTableRowNotes,
   InitiativeTableRowInit,
@@ -79,15 +78,6 @@ export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOpt
     columnHelper.accessor('ac', {
       header: t('components.encounterTable.headers.ac'),
       cell: ({ row }) => h(InitiativeTableRowAc, {
-        item: row.original,
-        sheet: sheet.value,
-        update,
-      }),
-    }),
-    columnHelper.display({
-      id: 'manage',
-      header: t('components.encounterTable.headers.manage'),
-      cell: ({ row }) => h(InitiativeTableRowActions, {
         item: row.original,
         sheet: sheet.value,
         update,
