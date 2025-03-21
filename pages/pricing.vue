@@ -2,11 +2,51 @@
 useSeo('Pricing')
 
 const { locale, t } = useI18n({ useScope: 'global' })
-const stripe = useStripe()
-const { user } = useAuthentication()
+const user = useAuthenticatedUser()
+const localePath = useLocalePath()
+
+const { data: products, isPending } = usePricingListing()
+
+const labels = [
+  'general.encounter',
+  'general.campaign',
+  'pages.pricing.multiple',
+  'pages.pricing.live',
+  'pages.pricing.update',
+]
+
+const shownProduct = computed<ProductPricing[]>(() => {
+  if (!products.value) return []
+  if (user.value?.subscription_type === 'medior') return products.value.filter(p => p.type !== 'pro')
+  else return products.value.filter(p => p.type !== 'upgrade to pro')
+})
 
 async function subscribe(id: string, type: StripeSubscriptionType): Promise<void> {
-  await stripe.subscribe(id, locale.value, type)
+  if (!user.value) navigateTo(localePath('/login'))
+
+  const { data } = await useFetch('/api/stripe/subscribe', {
+    method: 'POST',
+    body: {
+      user: user.value,
+      lookup: id,
+      locale: locale.value,
+      type,
+      ...(user.value?.stripe_id && { customer: user.value.stripe_id }),
+    },
+  })
+
+  if (data.value) navigateTo(data.value.url, { external: true })
+}
+
+function isCurrent(type: StripeSubscriptionType): boolean {
+  if (!user.value) return false
+  return type === (user.value.subscription_type || 'free')
+}
+
+function isUpgradeable(type: StripeSubscriptionType): boolean {
+  const current = user.value?.subscription_type || 'free'
+  if (current === 'free') return true
+  return type === 'upgrade to pro' && current === 'medior'
 }
 </script>
 
@@ -39,7 +79,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                   <th
                     v-for="(header, index) in [
                       undefined,
-                      ...stripe.shownProduct.map(({ title, price }) => { return { title, price } }),
+                      ...shownProduct.map(({ title, price }) => { return { title, price } }),
                     ]"
                     :key="index"
                     class="py-3 px-2 border-b border-primary"
@@ -52,7 +92,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                         {{ header.title }}
                       </span>
                       <UiSkeleton
-                        v-if="stripe.loading"
+                        v-if="isPending"
                         class="w-[140px] mx-auto h-8 relative top-1"
                       />
                       <div
@@ -68,7 +108,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
               </thead>
               <tbody>
                 <tr
-                  v-for="(item, index) in stripe.labels"
+                  v-for="(item, index) in labels"
                   :key="item"
                   class="border-b last:border-b-0 border-primary"
                 >
@@ -76,7 +116,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                     {{ t(item, 2) }}
                   </td>
                   <td
-                    v-for="product in stripe.shownProduct"
+                    v-for="product in shownProduct"
                     :key="product.type"
                     class="px-2 py-1 text-center font-bold"
                   >
@@ -95,25 +135,25 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
                 <tr>
                   <td class="px-2 py-1" />
                   <td
-                    v-for="product in stripe.shownProduct"
+                    v-for="product in shownProduct"
                     :key="product.type"
                     class="px-2 py-1 text-center font-bold"
                   >
                     <UiSkeleton
-                      v-if="stripe.loading"
+                      v-if="isPending"
                       class="h-12 rounded-lg w-full"
                     />
                     <div
-                      v-else-if="stripe.isCurrent(product.type)"
+                      v-else-if="isCurrent(product.type)"
                       class="btn-success w-full"
                     >
                       {{ t('general.current') }}
                     </div>
                     <button
-                      v-else-if="!user || (product.id && product.price !== 0 && stripe.isUpgradeable(product.type))"
+                      v-else-if="!user || (product.id && product.price !== 0 && isUpgradeable(product.type))"
                       class="btn-tertiary w-full"
                       :aria-label="t('pages.pricing.cta')"
-                      :disabled="stripe.loading"
+                      :disabled="isPending"
                       @click="subscribe(product?.id || '', product.type)"
                     >
                       {{ t('pages.pricing.cta') }}
