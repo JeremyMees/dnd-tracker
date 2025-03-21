@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/seo',
     '@unlok-co/nuxt-stripe',
-    '@nuxt/content',
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     'nuxt-authorization',
@@ -98,7 +97,6 @@ export default defineNuxtConfig({
   },
 
   ogImage: {
-    enabled: true,
     defaults: { alt: seo.name },
   },
 

@@ -1,10 +1,7 @@
 <script setup lang="ts">
-useSeo('Changelogs')
+import { changelogs } from '~/constants/changelogs'
 
-const { data } = await useAsyncData('changelog', async () => {
-  const logs = await queryContent('changelogs').find()
-  return (logs || []).reverse()
-})
+useSeo('Changelogs')
 
 const { locale } = useI18n()
 </script>
@@ -18,7 +15,7 @@ const { locale } = useI18n()
       class="relative flex flex-col max-w-4xl mx-auto gap-16 py-12 pl-6 before:absolute before:top-0 before:left-6 before:h-full before:border-2 before:-translate-x-1/2 before:border-secondary"
     >
       <li
-        v-for="item in data"
+        v-for="item in changelogs"
         :id="item.version"
         :key="item.version"
         role="article"
@@ -68,7 +65,7 @@ const { locale } = useI18n()
                   v-for="(element, k) in feature.items"
                   :key="k"
                 >
-                  <li v-if="!element.adminOnly">
+                  <li>
                     {{ element.text }}
                   </li>
                 </template>
