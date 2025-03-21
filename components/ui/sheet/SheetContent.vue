@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { cn } from '@/utils/shadcn'
 import {
   DialogClose,
   DialogContent,
@@ -11,6 +10,7 @@ import {
 } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { type SheetVariants, sheetVariants } from '.'
+import { cn } from '@/utils/shadcn'
 
 interface SheetContentProps extends DialogContentProps {
   class?: HTMLAttributes['class']

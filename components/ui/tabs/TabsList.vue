@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { cn } from '@/utils/shadcn'
 import { TabsList, type TabsListProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
+import { cn } from '@/utils/shadcn'
 
 const props = defineProps<TabsListProps & { class?: HTMLAttributes['class'] }>()
 

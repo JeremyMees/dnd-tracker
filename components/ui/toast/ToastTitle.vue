@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { cn } from '@/utils/shadcn'
 import { ToastTitle, type ToastTitleProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
+import { cn } from '@/utils/shadcn'
 
 const props = defineProps<ToastTitleProps & { class?: HTMLAttributes['class'] }>()
 
@@ -13,7 +13,10 @@ const delegatedProps = computed(() => {
 </script>
 
 <template>
-  <ToastTitle v-bind="delegatedProps" :class="cn('text-sm font-semibold', props.class)">
+  <ToastTitle
+    v-bind="delegatedProps"
+    :class="cn('text-sm font-semibold', props.class)"
+  >
     <slot />
   </ToastTitle>
 </template>

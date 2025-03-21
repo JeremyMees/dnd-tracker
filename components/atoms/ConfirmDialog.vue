@@ -11,7 +11,7 @@ withDefaults(
     description: string
     confirmText: string
     declineText: string
-    loading: boolean
+    loading?: boolean
     callback: (confirmed: boolean) => any
   }>(), {
     type: 'danger',

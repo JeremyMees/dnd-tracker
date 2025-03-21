@@ -3,7 +3,6 @@ import seo from './constants/seo'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
 
   modules: [
     '@nuxt/eslint',
@@ -34,14 +33,19 @@ export default defineNuxtConfig({
     { path: '~/components/animation', prefix: 'Animation' },
   ],
 
+  imports: { dirs: ['types/*.ts', 'queries/*.ts', 'shared/utils/*.ts'] },
+
+  devtools: { enabled: true },
+
   css: ['@/assets/css/tippy.css'],
 
-  routeRules: {
-    '/no-access': { robots: false },
-    '/reset-password': { robots: false },
-    '/subscribe-success': { robots: false },
-    '/campaigns/join': { robots: false },
+  site: {
+    url: seo.url,
+    name: seo.name,
+    description: seo.description,
   },
+
+  colorMode: { fallback: 'dark' },
 
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
@@ -52,36 +56,28 @@ export default defineNuxtConfig({
     },
   },
 
-  stripe: {
-    server: { key: process.env.STRIPE_SK },
-    client: { key: process.env.STRIPE_PK },
+  routeRules: {
+    '/no-access': { robots: false },
+    '/reset-password': { robots: false },
+    '/subscribe-success': { robots: false },
+    '/campaigns/join': { robots: false },
   },
+  compatibilityDate: '2024-04-03',
 
-  site: {
-    url: seo.url,
-    name: seo.name,
-    description: seo.description,
-  },
-
-  ogImage: {
-    enabled: true,
-    defaults: { alt: seo.name },
-  },
-
-  image: {
-    quality: 90,
-    provider: 'imagekit',
-    imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
-  },
-
-  supabase: {
-    redirectOptions: {
-      login: '/login',
-      callback: '/',
-      include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
-      cookieRedirect: true,
+  nitro: {
+    rollupConfig: {
+      // @ts-expect-error need this to render email templates
+      plugins: [vue()],
     },
   },
+
+  vite: {
+    optimizeDeps: { force: true },
+  },
+
+  eslint: { config: { stylistic: true } },
+
+  formkit: { configFile: './formkit/config.ts' },
 
   i18n: {
     defaultLocale: 'nl',
@@ -96,26 +92,30 @@ export default defineNuxtConfig({
     ],
   },
 
-  colorMode: { fallback: 'dark' },
+  image: {
+    quality: 90,
+    provider: 'imagekit',
+    imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
+  },
+
+  ogImage: {
+    enabled: true,
+    defaults: { alt: seo.name },
+  },
 
   shadcn: { prefix: 'ui' },
 
-  eslint: { config: { stylistic: true } },
-
-  imports: { dirs: ['types/*.ts', 'queries/*.ts', 'shared/utils/*.ts'] },
-
-  formkit: { configFile: './formkit/config.ts' },
-
-  devtools: { enabled: true },
-
-  vite: {
-    optimizeDeps: { force: true },
+  stripe: {
+    server: { key: process.env.STRIPE_SK },
+    client: { key: process.env.STRIPE_PK },
   },
 
-  nitro: {
-    rollupConfig: {
-      // @ts-expect-error need this to render email templates
-      plugins: [vue()],
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/',
+      include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
+      cookieRedirect: true,
     },
   },
 })

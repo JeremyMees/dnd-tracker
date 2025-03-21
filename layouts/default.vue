@@ -15,7 +15,7 @@ withDefaults(
 
 <template>
   <div>
-    <Navbar class="fixed z-10 left-0 right-0 backdrop-blur"/>
+    <Navbar class="fixed z-10 left-0 right-0 backdrop-blur" />
     <main
       class="grow"
       :class="{
