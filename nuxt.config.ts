@@ -115,7 +115,7 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/',
       include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
-      cookieRedirect: true,
+      saveRedirectToCookie: true,
     },
   },
 })
