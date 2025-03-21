@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     'nuxt-authorization',
-    '@nuxt/fonts',
+    // '@nuxt/fonts',
   ],
 
   components: [
@@ -93,13 +93,6 @@ export default defineNuxtConfig({
     locales: [
       { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
       { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
-    ],
-  },
-
-  fonts: {
-    families: [
-      { name: 'Geist', provider: 'google' },
-      { name: 'Geist Mono', provider: 'google' },
     ],
   },
 
