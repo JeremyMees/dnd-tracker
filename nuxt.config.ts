@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/icon',
     '@vueuse/nuxt',
-    '@pinia/nuxt',
     '@nuxtjs/seo',
     '@unlok-co/nuxt-stripe',
     '@nuxt/content',
