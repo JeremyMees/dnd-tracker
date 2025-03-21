@@ -17,8 +17,8 @@ export default defineNuxtConfig({
     '@unlok-co/nuxt-stripe',
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
-    'nuxt-authorization',
     // '@nuxt/fonts',
+    'nuxt-authorization',
   ],
 
   components: [
