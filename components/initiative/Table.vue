@@ -14,6 +14,7 @@ const {
   reset,
   expanded,
   selected,
+  columnVisibility,
 } = useInitiativeSheet(computed(() => props.data), props.update)
 
 prefetchConditionsListing()
@@ -42,6 +43,7 @@ const table = useVueTable({
   state: {
     get expanded() { return expanded.value },
     get rowSelection() { return selected.value },
+    get columnVisibility() { return columnVisibility.value },
   },
 })
 </script>

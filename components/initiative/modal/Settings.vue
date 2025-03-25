@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
-const rowsDefault = ['ac', 'health', 'manage', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+const rowsDefault = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 const widgetsDefault = ['note', 'info-pins', 'fantasy-name-generator']
 
 interface InitiativeSettingsForm {
@@ -67,7 +67,6 @@ async function handleSubmit(form: InitiativeSettingsForm, node: FormNode): Promi
       :options="[
         { label: 'AC', value: 'ac' },
         { label: 'HP', value: 'health' },
-        { label: $t('general.action', 2), value: 'manage' },
         { label: $t('general.condition', 2), value: 'conditions' },
         { label: $t('general.note'), value: 'note' },
         { label: 'Death saves', value: 'deathSaves' },

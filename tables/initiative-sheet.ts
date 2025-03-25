@@ -118,7 +118,7 @@ export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOpt
     columnHelper.display({
       enableGlobalFilter: false,
       enableSorting: false,
-      id: 'actions',
+      id: 'modify',
       cell: ({ row }) => h(InitiativeTableRowModify, {
         item: row.original,
         sheet: sheet.value,

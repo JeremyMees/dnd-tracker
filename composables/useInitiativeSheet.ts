@@ -2,8 +2,23 @@ export function useInitiativeSheet(
   sheet: ComputedRef<InitiativeSheet | undefined>,
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>,
 ) {
+  const defaultColumns = ['index', 'name', 'initiative']
+  const hidableColumns = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+
   const expanded = ref<Record<string, boolean>>({})
   const selected = ref<Record<string, boolean>>({})
+
+  const columnVisibility = computed(() => {
+    const rows = sheet.value?.settings
+      ? sheet.value.settings.modified ? (sheet.value.settings.rows || []) : hidableColumns
+      : hidableColumns
+
+    return [...defaultColumns, ...hidableColumns].reduce((acc, column) => {
+      const defaultColumn = defaultColumns.includes(column)
+      acc[column] = defaultColumn || !sheet.value ? true : rows.includes(column)
+      return acc
+    }, {} as Record<string, boolean>)
+  })
 
   onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], (e) => {
     e.preventDefault()
@@ -30,10 +45,13 @@ export function useInitiativeSheet(
   watch(() => sheet.value?.rows, () => {
     expanded.value = {} // this is a hack otherwise the table doesn't update when the data changes
 
-    if (!sheet.value) return
+    if (!sheet.value?.rows?.length) return
 
     const active = sheet.value.activeIndex
-    const current = sheet.value.rows[active].id
+    const row = sheet.value.rows[active]
+    if (!row) return
+
+    const current = row.id
     const currentSelected = Object.keys(selected.value).includes(current)
 
     if (!currentSelected) {
@@ -101,6 +119,7 @@ export function useInitiativeSheet(
   return {
     expanded,
     selected,
+    columnVisibility,
     previous,
     next,
     reset,
