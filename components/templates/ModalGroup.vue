@@ -27,34 +27,32 @@ const modalComponents: Record<ModalComponent, any> = {
 </script>
 
 <template>
-  <ClientOnly>
-    <Modal
-      v-for="modal in modals"
-      :key="modal.uuid"
-      :header="modal.header"
-      :sub-header="modal.subHeader"
-      :big="modal.big"
+  <Modal
+    v-for="modal in modals"
+    :key="modal.uuid"
+    :header="modal.header"
+    :sub-header="modal.subHeader"
+    :big="modal.big"
+    @close="close(modal.uuid)"
+  >
+    <component
+      :is="modalComponents[modal.component]"
+      v-bind="modal.props"
+      v-on="modal.events"
       @close="close(modal.uuid)"
-    >
-      <component
-        :is="modalComponents[modal.component]"
-        v-bind="modal.props"
-        v-on="modal.events"
-        @close="close(modal.uuid)"
-      />
+    />
 
-      <template
-        v-if="modal.submit"
-        #footer
+    <template
+      v-if="modal.submit"
+      #footer
+    >
+      <button
+        type="submit"
+        :form="modal.component"
+        class="btn-foreground w-full"
       >
-        <button
-          type="submit"
-          :form="modal.component"
-          class="btn-foreground w-full"
-        >
-          {{ modal.submit }}
-        </button>
-      </template>
-    </Modal>
-  </ClientOnly>
+        {{ modal.submit }}
+      </button>
+    </template>
+  </Modal>
 </template>

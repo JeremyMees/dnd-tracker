@@ -26,14 +26,16 @@ const pageName = computed(() => !route.name || typeof route.name !== 'string'
       error-color="#F87272"
     />
 
-    <UiToaster />
-    <ModalGroup />
-    <ConfirmDialog
-      v-for="dialog in dialogs"
-      :key="dialog.uuid"
-      v-bind="dialog"
-      v-on="handlers"
-    />
+    <ClientOnly>
+      <UiToaster />
+      <ModalGroup />
+      <ConfirmDialog
+        v-for="dialog in dialogs"
+        :key="dialog.uuid"
+        v-bind="dialog"
+        v-on="handlers"
+      />
+    </ClientOnly>
 
     <div
       :class="{
