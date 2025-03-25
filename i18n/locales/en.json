@@ -475,6 +475,14 @@
     }
   },
   "components": {
+    "initiativeTableHeader": {
+      "initiative": {
+        "title": "Quick add initiatives",
+        "roll": "Roll selected types",
+        "select": "Select types to roll for",
+        "ignore": "Ignore modifier"
+      }
+    },
     "diceRollInput": {
       "rolled": "Rolled {amount} {dice}|Rolled multiple dice"
     },
@@ -815,12 +823,6 @@
       "toast": {
         "title": "Copied {name} to clipboard"
       }
-    },
-    "quickInitiativeModal": {
-      "title": "Quick add initiatives",
-      "roll": "Roll selected types",
-      "select": "Select types to roll for",
-      "ignore": "Ignore modifier"
     },
     "encounterOptions": {
       "playgroundWarning": "Playground encounters can't be saved"

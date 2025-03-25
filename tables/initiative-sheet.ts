@@ -11,6 +11,7 @@ import {
   InitiativeTableRowDeathSaves,
   InitiativeTableRowConcentration,
   InitiativeTableRowModify,
+  InitiativeTableHeaderInit,
 } from '#components'
 
 const columnHelper = createColumnHelper<InitiativeSheetRow>()
@@ -18,10 +19,9 @@ const columnHelper = createColumnHelper<InitiativeSheetRow>()
 interface ColumnOptions {
   sheet: ComputedRef<InitiativeSheet | undefined>
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
-  openQuickInitModal: () => void
 }
 
-export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOptions) {
+export function generateColumns({ sheet, update }: ColumnOptions) {
   const { t } = useI18n()
 
   return [
@@ -48,19 +48,11 @@ export function generateColumns({ sheet, update, openQuickInitModal }: ColumnOpt
       }),
     }),
     columnHelper.accessor('initiative', {
-      header: () => h('div', {
-        class: 'flex items-center gap-x-2',
-      }, [
-        t('components.encounterTable.headers.init'),
-        iconButton({
-          icon: 'tabler:bolt-filled',
-          content: t('components.encounterTable.quick'),
-          color: 'warning',
-          cb: () => openQuickInitModal(),
-          disabled: sheet.value ? !sheet.value.rows.length : false,
-          iconColor: 'text-warning',
-        }),
-      ]),
+      header: () => h(InitiativeTableHeaderInit, {
+        label: t('components.encounterTable.headers.init'),
+        sheet: sheet.value,
+        update,
+      }),
       cell: ({ row }) => h(InitiativeTableRowInit, {
         item: row.original,
         sheet: sheet.value,

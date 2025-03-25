@@ -475,6 +475,14 @@
     }
   },
   "components": {
+    "initiativeTableHeader": {
+      "initiaive": {
+        "title": "Initiatieven snel toevoegen",
+        "roll": "Geselecteerde soorten rollen",
+        "select": "Selecteer de soorten om voor te rollen",
+        "ignore": "Negeer modifier"
+      }
+    },
     "diceRoll": {
       "rolled": "Rolde {amount} {dice}|Rolde meerdere dobbelstenen"
     },
@@ -815,12 +823,6 @@
       "toast": {
         "title": "{name} gekopieerd naar klembord"
       }
-    },
-    "quickInitiativeModal": {
-      "title": "Initiatieven snel toevoegen",
-      "roll": "Geselecteerde soorten rollen",
-      "select": "Selecteer de soorten om voor te rollen",
-      "ignore": "Negeer modifier"
     },
     "encounterOptions": {
       "playgroundWarning": "Playground encounters kunnen niet worden opgeslagen"
