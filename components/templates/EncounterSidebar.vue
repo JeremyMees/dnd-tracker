@@ -1,12 +1,42 @@
 <script setup lang="ts">
+import { reset } from '@formkit/core'
+
 defineEmits<{
   toggleSidebar: []
   tweakSettings: []
 }>()
 
-defineProps<{ isExpanded: boolean }>()
+const props = defineProps<{
+  data: InitiativeSheet | undefined
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
+  isExpanded: boolean
+}>()
+
+type Modals = 'settings' | undefined
 
 const diceRollerOpen = ref(false)
+const openModal = ref<Modals>(undefined)
+
+interface InitiativeSettingsForm {
+  spacing: TableSpacing
+  rows: string[]
+  widgets: string[]
+  pet?: InitiativePet
+}
+async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
+  if (!props.data) return
+
+  node.clearErrors()
+
+  await props.update({
+    settings: {
+      ...sanitizeForm<InitiativeSettingsForm>(form),
+      modified: true,
+    },
+  })
+
+  openModal.value = undefined
+}
 </script>
 
 <template>
@@ -131,25 +161,60 @@ const diceRollerOpen = ref(false)
         </UiSidebarMenuButton>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <button
-            v-tippy="{
-              content: $t('general.setting', 2),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            :aria-label="$t('general.setting', 2)"
-            @click="$emit('tweakSettings')"
+        <UiDialog
+          :open="openModal === 'settings'"
+          @close="openModal = undefined"
+        >
+          <UiDialogTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                v-tippy="{
+                  content: $t('general.setting', 2),
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
+                :aria-label="$t('general.setting', 2)"
+                @click="openModal = 'settings'"
+              >
+                <Icon
+                  name="tabler:settings"
+                  class="size-4 min-w-4"
+                />
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  {{ $t('general.setting', 2) }}
+                </span>
+              </button>
+            </UiSidebarMenuButton>
+          </UiDialogTrigger>
+          <UiDialogContent
+            class="max-w-xl"
+            @escape-key-down="openModal = undefined"
+            @pointer-down-outside="openModal = undefined"
+            @interact-outside="openModal = undefined"
+            @close="openModal = undefined"
           >
-            <Icon
-              name="tabler:settings"
-              class="size-4 min-w-4"
-            />
-            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-              {{ $t('general.setting', 2) }}
-            </span>
-          </button>
-        </UiSidebarMenuButton>
+            <UiDialogHeader>
+              <UiDialogTitle>
+                {{ $t('general.setting', 2) }}
+              </UiDialogTitle>
+            </UiDialogHeader>
+            <FormKit
+              id="InitiativeSettings"
+              type="form"
+              :actions="false"
+              @submit="handleSettingsSubmit"
+            >
+              <FormInitiativeSettings :settings="data?.settings ?? { spacing: 'normal', modified: false }" />
+            </FormKit>
+            <UiDialogFooter>
+              <FormKit
+                type="submit"
+                form="InitiativeSettings"
+                :label="$t('actions.save')"
+              />
+            </UiDialogFooter>
+          </UiDialogContent>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>

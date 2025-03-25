@@ -8,7 +8,6 @@ import {
   LazyModalHomebrew,
   ModalNote,
   LazyModalMail,
-  LazyInitiativeModalSettings,
 } from '#components'
 
 const { modals, close } = useModal()
@@ -22,7 +21,6 @@ const modalComponents: Record<ModalComponent, any> = {
   Homebrew: LazyModalHomebrew,
   Note: ModalNote,
   Mail: LazyModalMail,
-  InitiativeSettings: LazyInitiativeModalSettings,
 }
 </script>
 

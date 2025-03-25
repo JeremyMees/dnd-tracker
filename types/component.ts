@@ -21,7 +21,6 @@ export type ModalComponent =
   | 'Homebrew'
   | 'Note'
   | 'Mail'
-  | 'InitiativeSettings'
 
 export interface Modal {
   uuid: string

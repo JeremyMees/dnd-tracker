@@ -14,7 +14,6 @@ const localePath = useLocalePath()
 const user = useAuthenticatedUser()
 
 const { toast } = useToast()
-const modal = useModal()
 const { t } = useI18n()
 
 const supabase = useSupabaseClient<Database>()
@@ -70,20 +69,6 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
       if (!realtimeData.value) {
         await refetch()
       }
-    },
-  })
-}
-
-function tweakSettings(): void {
-  if (!data.value) return
-
-  modal.open({
-    component: 'InitiativeSettings',
-    header: t('general.setting', 2),
-    submit: t('actions.save'),
-    props: {
-      encounterId: +route.params.id,
-      settings: data.value.settings,
     },
   })
 }
@@ -149,9 +134,10 @@ function tweakSettings(): void {
 
     <template #sidebar-content="{ isExpanded, toggleSidebar }">
       <EncounterSidebar
+        :data="data"
+        :update="handleUpdate"
         :is-expanded="isExpanded"
         @toggle-sidebar="toggleSidebar"
-        @tweak-settings="tweakSettings"
       />
     </template>
   </NuxtLayout>
