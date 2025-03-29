@@ -14,6 +14,8 @@ const { add, remove, temp, override, overrideReset } = acFunctions
 
 const popoverOpen = ref<boolean>(false)
 
+const hasAc = computed(() => isDefined(props.item.ac) && isDefined(props.item.maxAc))
+
 type AcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'
 interface AcForm { amount: number }
 
@@ -29,6 +31,28 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
 
   await props.update({ rows })
   popoverOpen.value = false
+}
+
+async function updateBase(form: AcForm, node: FormNode): Promise<void> {
+  node.clearErrors()
+
+  try {
+    if (!props.sheet) return
+
+    const { amount } = sanitizeForm<AcForm>(form)
+    const row = {
+      ...props.item,
+      maxAc: amount,
+      maxAcOld: undefined,
+      ac: amount,
+    }
+
+    await updateRow(row)
+  }
+  catch {
+    reset('InitiativeRowAcBase')
+    node.setErrors(t('general.error.text'))
+  }
 }
 
 async function updateOverride(form: AcForm & { reset?: boolean }, node: FormNode): Promise<void> {
@@ -126,7 +150,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
       </UiPopoverTrigger>
       <UiPopoverContent>
         <div
-          v-if="isDefined(item.ac) && isDefined(item.maxAc)"
+          v-if="hasAc"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
@@ -169,6 +193,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </div>
         </div>
         <FormKit
+          v-if="hasAc"
           id="InitiativeRowAcUpdate"
           type="form"
           :submit-label="$t('actions.save')"
@@ -210,8 +235,31 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             </template>
           </FormKit>
         </FormKit>
-        <UiSeparator class="my-6 bg-muted-foreground" />
+        <UiSeparator
+          v-if="hasAc"
+          class="my-6 bg-muted-foreground"
+        />
         <FormKit
+          id="InitiativeRowAcBase"
+          type="form"
+          :submit-label="$t('actions.save')"
+          @submit="updateBase"
+        >
+          <FormKit
+            type="number"
+            name="amount"
+            number
+            :label="$t('components.inputs.baseFieldLabel', { field: 'AC' })"
+            :help="$t('components.inputs.baseFieldHelp', { field: 'AC' })"
+            validation="required|between:1,100|number"
+          />
+        </FormKit>
+        <UiSeparator
+          v-if="hasAc"
+          class="my-6 bg-muted-foreground"
+        />
+        <FormKit
+          v-if="hasAc"
           id="InitiativeRowAcOverride"
           type="form"
           :submit-label="$t('actions.save')"

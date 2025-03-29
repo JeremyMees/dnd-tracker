@@ -614,6 +614,8 @@
       "nothing": "Nog niets geselecteerd",
       "overrideFieldLabel": "Max {field} overschrijven",
       "optionalFieldHelp": "Optioneel om het huidige {field} te overschrijven",
+      "baseFieldLabel": "Basis {field}",
+      "baseFieldHelp": "Stel de basis {field} in voor deze character",
       "searchByUsername": "Zoeken op gebruikersnaam",
       "searchByEmail": "Zoeken op email",
       "newOwnerLabel": "Nieuwe eigenaar",

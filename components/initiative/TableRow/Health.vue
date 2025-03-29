@@ -17,6 +17,8 @@ const { heal, damage, temp, override, overrideReset } = hpFunctions
 
 const popoverOpen = ref<boolean>(false)
 
+const hasHp = computed(() => isDefined(props.item.health) && isDefined(props.item.maxHealth))
+
 type HealthType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
 interface HealthForm { amount: number }
 
@@ -32,6 +34,28 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
 
   await props.update({ rows })
   popoverOpen.value = false
+}
+
+async function updateBase(form: HealthForm, node: FormNode): Promise<void> {
+  node.clearErrors()
+
+  try {
+    if (!props.sheet) return
+
+    const { amount } = sanitizeForm<HealthForm>(form)
+    const row = {
+      ...props.item,
+      maxHealth: amount,
+      maxHealthOld: undefined,
+      health: amount,
+    }
+
+    await updateRow(row)
+  }
+  catch {
+    reset('InitiativeRowHealthBase')
+    node.setErrors(t('general.error.text'))
+  }
 }
 
 async function updateOverride(form: HealthForm & { reset?: boolean }, node: FormNode): Promise<void> {
@@ -180,7 +204,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
       </UiPopoverTrigger>
       <UiPopoverContent>
         <div
-          v-if="isDefined(item.health) && isDefined(item.maxHealth)"
+          v-if="hasHp"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
@@ -206,7 +230,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
                 {{ item.maxHealth || 0 }}
               </p>
               <p
-                v-if="item.maxHealthOld === 0 || item.maxHealthOld"
+                v-if="isDefined(item.maxHealthOld)"
                 class="body-small"
               >
                 ({{ item.maxHealthOld }})
@@ -223,6 +247,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
           </div>
         </div>
         <FormKit
+          v-if="hasHp"
           id="InitiativeRowHealthUpdate"
           type="form"
           :submit-label="$t('actions.save')"
@@ -264,8 +289,31 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
             </template>
           </FormKit>
         </FormKit>
-        <UiSeparator class="my-6 bg-muted-foreground" />
+        <UiSeparator
+          v-if="hasHp"
+          class="my-6 bg-muted-foreground"
+        />
         <FormKit
+          id="InitiativeRowHealthBase"
+          type="form"
+          :submit-label="$t('actions.save')"
+          @submit="updateBase"
+        >
+          <FormKit
+            type="number"
+            name="amount"
+            number
+            :label="$t('components.inputs.baseFieldLabel', { field: 'HP' })"
+            :help="$t('components.inputs.baseFieldHelp', { field: 'HP' })"
+            validation="required|between:1,1000|number"
+          />
+        </FormKit>
+        <UiSeparator
+          v-if="hasHp"
+          class="my-6 bg-muted-foreground"
+        />
+        <FormKit
+          v-if="hasHp"
           id="InitiativeRowHealthOverride"
           type="form"
           :submit-label="$t('actions.save')"

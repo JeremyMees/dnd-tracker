@@ -614,6 +614,8 @@
       "nothing": "Nothing selected",
       "overrideFieldLabel": "Max {field} override",
       "optionalFieldHelp": "Optional to overwrite the current {field}",
+      "baseFieldLabel": "Base {field}",
+      "baseFieldHelp": "Set the base {field} for the character",
       "searchByUsername": "Search by username",
       "searchByEmail": "Search by email",
       "newOwnerLabel": "New owner",
