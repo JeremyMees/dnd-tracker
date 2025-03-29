@@ -33,12 +33,14 @@ const modalComponents: Record<ModalComponent, any> = {
     :big="modal.big"
     @close="close(modal.uuid)"
   >
-    <component
-      :is="modalComponents[modal.component]"
-      v-bind="modal.props"
-      v-on="modal.events"
-      @close="close(modal.uuid)"
-    />
+    <div class="overflow-y-auto">
+      <component
+        :is="modalComponents[modal.component]"
+        v-bind="modal.props"
+        v-on="modal.events"
+        @close="close(modal.uuid)"
+      />
+    </div>
 
     <template
       v-if="modal.submit"
