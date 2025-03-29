@@ -12,9 +12,10 @@ const props = defineProps<{
   isExpanded: boolean
 }>()
 
-type Modals = 'settings' | undefined
+type Modals = 'settings' | 'newHomebrew' | undefined
 
 const diceRollerOpen = ref(false)
+const saveHomebrewToCampaign = ref(false)
 const openModal = ref<Modals>(undefined)
 
 interface InitiativeSettingsForm {
@@ -139,26 +140,82 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           </button>
         </UiSidebarMenuButton>
       </UiSidebarMenuItem>
-      <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <button
-            v-tippy="{
-              content: $t('general.newHomebrew'),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            :aria-label="$t('general.newHomebrew')"
-            @click="$emit('tweakSettings')"
+      <UiSidebarMenuItem v-if="data?.campaign?.id">
+        <UiDialog
+          :open="openModal === 'newHomebrew'"
+          @close="saveHomebrewToCampaign = false, openModal = undefined"
+        >
+          <UiDialogTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                v-tippy="{
+                  content: $t('general.newHomebrew'),
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
+                :aria-label="$t('general.newHomebrew')"
+                @click="openModal = 'newHomebrew'"
+              >
+                <Icon
+                  name="tabler:beer"
+                  class="size-4 min-w-4 text-warning"
+                />
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  {{ $t('general.newHomebrew') }}
+                </span>
+              </button>
+            </UiSidebarMenuButton>
+          </UiDialogTrigger>
+          <UiDialogContent
+            class="max-w-xl"
+            @escape-key-down="openModal = undefined"
+            @pointer-down-outside="openModal = undefined"
+            @interact-outside="openModal = undefined"
+            @close="openModal = undefined"
           >
-            <Icon
-              name="tabler:beer"
-              class="size-4 min-w-4 text-warning"
-            />
-            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-              {{ $t('general.newHomebrew') }}
-            </span>
-          </button>
-        </UiSidebarMenuButton>
+            <UiDialogHeader>
+              <UiDialogTitle>
+                {{ $t('general.setting', 2) }}
+              </UiDialogTitle>
+            </UiDialogHeader>
+            <div class="overflow-y-auto">
+              <FormHomebrew
+                v-if="data?.campaign?.id"
+                :campaign-id="data.campaign.id"
+                :count="data.rows.length"
+                :save-to-campaign="saveHomebrewToCampaign"
+                :sheet="data"
+                is-encounter
+                @close="openModal = undefined"
+              />
+            </div>
+            <UiDialogFooter class="items-center">
+              <div
+                v-if="!$route.fullPath.includes('/playground')"
+                class="flex flex-col gap-x-2 mr-4"
+              >
+                <FormKit
+                  v-model="saveHomebrewToCampaign"
+                  :disabled="data.rows.length >= 100"
+                  :label="$t('components.homebrewModal.save')"
+                  type="toggle"
+                  outer-class="$reset !mb-0"
+                />
+                <span
+                  v-if="data.rows.length >= 100"
+                  class="text-destructive body-small"
+                >
+                  {{ $t('components.homebrewModal.max') }}
+                </span>
+              </div>
+              <FormKit
+                type="submit"
+                form="Homebrew"
+                :label="$t('actions.save')"
+              />
+            </UiDialogFooter>
+          </UiDialogContent>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiDialog
@@ -198,14 +255,16 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
                 {{ $t('general.setting', 2) }}
               </UiDialogTitle>
             </UiDialogHeader>
-            <FormKit
-              id="InitiativeSettings"
-              type="form"
-              :actions="false"
-              @submit="handleSettingsSubmit"
-            >
-              <FormInitiativeSettings :settings="data?.settings ?? { spacing: 'normal', modified: false }" />
-            </FormKit>
+            <div class="overflow-y-auto">
+              <FormKit
+                id="InitiativeSettings"
+                type="form"
+                :actions="false"
+                @submit="handleSettingsSubmit"
+              >
+                <FormInitiativeSettings :settings="data?.settings ?? { spacing: 'normal', modified: false }" />
+              </FormKit>
+            </div>
             <UiDialogFooter>
               <FormKit
                 type="submit"

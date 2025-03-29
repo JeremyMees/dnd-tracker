@@ -129,6 +129,13 @@ export interface InitiativeSheetRow {
   special_abilities?: (Action | ActionOpen5E)[]
 }
 
+export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'campaign' | 'amount' | 'initiative' | 'initiative_modifier' | 'summoner' | NotUpdatable> {
+  actions?: Action[]
+  reactions?: Action[]
+  legendary_actions?: Action[]
+  special_abilities?: Action[]
+}
+
 export interface InitiativeSettings {
   spacing: TableSpacing
   modified: boolean

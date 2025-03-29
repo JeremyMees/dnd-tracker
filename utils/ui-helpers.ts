@@ -108,25 +108,6 @@ export function sanitizeHTML(dirty: string): string {
   }).replaceAll('<hr />', '<hr>')
 }
 
-export function indexCorrect(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
-  const sortedObjects = [...rows] // Make shallow copy
-  const corrected: InitiativeSheetRow[] = []
-
-  // Sort the array based on the initiative value in descending order
-  sortedObjects.sort((a, b) => b.initiative - a.initiative)
-
-  // Add the index to each object
-  sortedObjects.forEach((obj, index) => {
-    corrected.push({ ...obj, index })
-  })
-
-  return corrected
-}
-
-export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
-  return sheet.rows.findIndex(row => row.id === id)
-}
-
 export function formatDate(date: string | Date): string {
   const { locale } = useI18n()
 
@@ -154,4 +135,8 @@ export function generateToken(length = 32): string {
   }
 
   return string
+}
+
+export function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined
 }

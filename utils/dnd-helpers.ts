@@ -140,3 +140,90 @@ export const deathSavesFunctions = {
   checkDeathSaves,
   resetDeathSaves,
 }
+
+export function indexCorrect(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
+  const sortedObjects = [...rows] // Make shallow copy
+
+  // Sort the array based on the initiative value in descending order
+  sortedObjects.sort((a, b) => {
+    if (!a.initiative && !b.initiative) return 0
+    if (!a.initiative) return 1
+    if (!b.initiative) return -1
+    return b.initiative - a.initiative
+  })
+
+  // Add the index to each object based on their sorted position
+  return sortedObjects.map((obj, index) => ({ ...obj, index }))
+}
+
+export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
+  return sheet.rows.findIndex(row => row.id === id)
+}
+
+export const createInitiativeRow = (
+  formData: Partial<InitiativeSheetRow> & { name: string },
+  type: HomebrewType,
+  encounterRows: number,
+): InitiativeSheetRow => {
+  const initiative = Number(formData.initiative ?? -1)
+  const initiative_modifier = formData.initiative_modifier ? Number(formData.initiative_modifier) : undefined
+  const health = formData.health ? Number(formData.health) : formData.hit_points ? Number(formData.hit_points) : undefined
+  const ac = formData.ac ? Number(formData.ac) : formData.armor_class ? Number(formData.armor_class) : undefined
+  const baseArray: [boolean, boolean, boolean] = [false, false, false]
+
+  const baseRow = {
+    ...formData,
+    id: crypto.randomUUID(),
+    index: encounterRows + 1,
+    conditions: [],
+    type,
+    initiative,
+    initiative_modifier,
+    note: '',
+    health,
+    ac,
+    maxHealth: health,
+    maxAc: ac,
+    tempHealth: 0,
+    tempAc: 0,
+    concentration: false,
+    deathSaves: { save: baseArray, fail: baseArray },
+  }
+
+  return sanitizeRow(baseRow)
+}
+
+function sanitizeRow(row: InitiativeSheetRow): InitiativeSheetRow {
+  const allowedKeys = new Set([
+    'ac',
+    'campaign',
+    'concentration',
+    'conditions',
+    'created_at',
+    'deathSaves',
+    'health',
+    'id',
+    'index',
+    'initiative',
+    'initiative_modifier',
+    'link',
+    'maxAc',
+    'maxHealth',
+    'maxAcOld',
+    'maxHealthOld',
+    'name',
+    'note',
+    'tempAc',
+    'tempHealth',
+    'type',
+    'summoner',
+    'actions',
+    'legendary_actions',
+    'reactions',
+    'special_abilities',
+  ])
+
+  return Object.fromEntries(
+    Object.entries(row).filter(([key]) => allowedKeys.has(key)),
+  ) as InitiativeSheetRow
+}
