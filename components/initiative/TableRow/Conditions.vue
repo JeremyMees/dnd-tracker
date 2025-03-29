@@ -63,7 +63,10 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
 </script>
 
 <template>
-  <div class="flex items-center gap-2">
+  <div
+    v-if="item.type !== 'lair'"
+    class="flex items-center gap-2"
+  >
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button

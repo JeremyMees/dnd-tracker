@@ -55,6 +55,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
 
 <template>
   <div
+    v-if="item.type !== 'lair' && item.type !== 'summon'"
     class="grid gap-1 w-fit mx-auto"
     :class="{
       'bg-success/20 p-2 rounded-lg': item.deathSaves?.save.every(Boolean) && !item.deathSaves?.fail.every(Boolean),

@@ -145,13 +145,13 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
       <UiPopoverTrigger as-child>
         <button
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': item.health !== null && item.health === 0,
+            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.health) && item.health === 0,
           }"
           class="flex flex-col gap-y-1"
         >
           <div class="flex items-center gap-x-1">
             <Icon
-              v-if="item.health === null"
+              v-if="!isDefined(item.health) && item.type !== 'lair'"
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
               aria-hidden="true"
@@ -163,7 +163,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
               {{ item.health }}
             </span>
             <span
-              v-if="item.health !== null && item.tempHealth"
+              v-if="isDefined(item.health) && item.tempHealth"
               v-tippy="$t('general.temp')"
               class="text-warning text-xs"
             >
@@ -180,7 +180,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
       </UiPopoverTrigger>
       <UiPopoverContent>
         <div
-          v-if="item?.health !== undefined && item?.maxHealth !== undefined"
+          v-if="isDefined(item.health) && isDefined(item.maxHealth)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
