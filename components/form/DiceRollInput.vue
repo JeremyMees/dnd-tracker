@@ -17,7 +17,7 @@ const isRollingShown = ref<boolean>(false)
   <AnimationExpand>
     <DiceRoller
       v-if="isRollingShown"
-      @rolled="amount = $event"
+      @rolled="amount = $event, isRollingShown = false"
     />
   </AnimationExpand>
 </template>
