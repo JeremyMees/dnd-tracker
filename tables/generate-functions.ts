@@ -88,9 +88,9 @@ export function selectButton(options: {
   disabled?: boolean
 }): VNode {
   return h(Checkbox, {
-    checked: options.checked,
+    modelValue: options.checked,
     disabled: options.disabled || false,
-    onClick: (event: unknown) => options.cb(event),
+    onClick: options.cb,
   })
 }
 
@@ -187,7 +187,7 @@ export function homebrewTag(type: HomebrewType): VNode {
   const { t } = useI18n()
 
   return h('div', {
-    class: 'text-xs bg-muted py-[2px] px-2 rounded-full w-fit flex items-center gap-2',
+    class: 'text-xs bg-muted py-[2px] px-2 rounded-full w-fit h-fit flex items-center gap-2',
   }, [
     iconElement({ icon: homebrewIcon(type), color: homebrewColor(type), size: 'size-4 min-w-4' }),
     h('span', t(`general.${type}`)),

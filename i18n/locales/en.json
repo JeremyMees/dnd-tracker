@@ -644,11 +644,11 @@
         }
       }
     },
-    "addInitiativeCampaignHomebrew": {
+    "campaignHomebrew": {
       "title": "Add campaign homebrew",
       "initiative": {
-        "info": "when selecting a summon, you must also choose a character that will summon it.",
-        "add": "Add summon",
+        "info": "when selecting a summon, you must also choose a character that will summon it. You can only choose a summoner that's already in your initiative sheet.",
+        "add": "Add summon | Add summons",
         "select": "Select summoner",
         "nothing": "Unfortunately, our quest unveils no treasures that align with your search. Perhaps another name can unlock the magical portal, or you can craft your own homebrew legends.",
         "empty": "There's a lack of homebrew incorporated into your campaign. When you introduce homebrew elements to your campaign, you can select them here to include in your encounters."

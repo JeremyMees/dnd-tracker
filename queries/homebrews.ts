@@ -1,15 +1,19 @@
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-export function useHomebrewListing(data: ComputedRef<SbFilter>) {
+export function useHomebrewListing(
+  data: ComputedRef<SbFilter>,
+  { enabled }: { enabled: ComputedRef<boolean> },
+  perPage = 10,
+) {
   return useQuery({
-    queryKey: ['useHomebrewListing', data],
+    queryKey: ['useHomebrewListing', data, perPage],
     queryFn: () => sbQuery<HomebrewItemRow>({
       table: 'homebrew_items',
       fields: ['name', 'player'],
       filters: data.value,
       page: data.value.page,
-      perPage: 10,
+      perPage,
       fuzzy: true,
     }),
     select: ({ data, count, totalPages }) => ({
@@ -18,6 +22,7 @@ export function useHomebrewListing(data: ComputedRef<SbFilter>) {
       homebrews: data,
     }),
     placeholderData: keepPreviousData,
+    enabled,
   })
 }
 

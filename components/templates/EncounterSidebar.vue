@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
 
-defineEmits<{
-  toggleSidebar: []
-  tweakSettings: []
-}>()
+defineEmits<{ toggleSidebar: [] }>()
 
 const props = defineProps<{
   data: InitiativeSheet | undefined
@@ -12,7 +9,7 @@ const props = defineProps<{
   isExpanded: boolean
 }>()
 
-type Modals = 'settings' | 'newHomebrew' | undefined
+type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | undefined
 
 const diceRollerOpen = ref(false)
 const saveHomebrewToCampaign = ref(false)
@@ -24,6 +21,7 @@ interface InitiativeSettingsForm {
   widgets: string[]
   pet?: InitiativePet
 }
+
 async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
   if (!props.data) return
 
@@ -120,25 +118,56 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
         </UiSidebarMenuButton>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <button
-            v-tippy="{
-              content: $t('general.campaignHomebrew'),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            :aria-label="$t('general.campaignHomebrew')"
-            @click="$emit('tweakSettings')"
+        <UiDialog
+          :open="openModal === 'addHomebrew'"
+          @close="openModal = undefined"
+        >
+          <UiDialogTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                v-tippy="{
+                  content: $t('general.campaignHomebrew'),
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
+                :aria-label="$t('general.campaignHomebrew')"
+                @click="openModal = 'addHomebrew'"
+              >
+                <Icon
+                  name="tabler:meeple"
+                  class="size-4 min-w-4 text-primary"
+                />
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  {{ $t('general.campaignHomebrew') }}
+                </span>
+              </button>
+            </UiSidebarMenuButton>
+          </UiDialogTrigger>
+          <UiDialogContent
+            class="max-w-xl gap-0"
+            @escape-key-down="openModal = undefined"
+            @pointer-down-outside="openModal = undefined"
+            @interact-outside="openModal = undefined"
+            @close="openModal = undefined"
           >
-            <Icon
-              name="tabler:meeple"
-              class="size-4 min-w-4 text-primary"
+            <UiDialogHeader>
+              <UiDialogTitle class="pb-4">
+                {{ $t('general.campaignHomebrew') }}
+              </UiDialogTitle>
+            </UiDialogHeader>
+            <FormCampaignHomebrew
+              :sheet="data"
+              @close="openModal = undefined"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-              {{ $t('general.campaignHomebrew') }}
-            </span>
-          </button>
-        </UiSidebarMenuButton>
+            <!-- <UiDialogFooter class="items-center">
+              <FormKit
+                type="submit"
+                form="Homebrew"
+                :label="$t('actions.save')"
+              />
+            </UiDialogFooter> -->
+          </UiDialogContent>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem v-if="data?.campaign?.id">
         <UiDialog
@@ -175,7 +204,7 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           >
             <UiDialogHeader>
               <UiDialogTitle>
-                {{ $t('general.setting', 2) }}
+                {{ $t('general.newHomebrew') }}
               </UiDialogTitle>
             </UiDialogHeader>
             <div class="overflow-y-auto">

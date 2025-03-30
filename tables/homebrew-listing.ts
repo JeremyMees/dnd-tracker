@@ -29,11 +29,7 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
         cb: table.getToggleAllPageRowsSelectedHandler(),
       }),
       cell: ({ row }) => hasRights
-        ? selectButton({
-            checked: row.getIsSelected(),
-            cb: row.getToggleSelectedHandler(),
-            disabled: !row.getCanSelect(),
-          })
+        ? selectButton({ checked: row.getIsSelected(), cb: row.getToggleSelectedHandler(), disabled: !row.getCanSelect() })
         : '',
     }),
     columnHelper.display({
@@ -49,7 +45,7 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
     columnHelper.accessor('name', {
       header: t('general.name'),
       cell: ({ row }) => h('div', {
-        class: 'flex gap-2',
+        class: 'flex gap-2 items-center',
       }, [
         homebrewTag(row.original.type),
         h('span', row.getValue('name')),
@@ -71,12 +67,7 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
       cell: ({ row }) => {
         return h('div', { class: 'flex justify-end' }, [
           hasRights
-            ? iconButton({
-                icon: 'tabler:edit',
-                content: t('actions.update'),
-                color: 'info',
-                cb: () => onUpdate(row.original),
-              })
+            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), color: 'info', cb: () => onUpdate(row.original) })
             : '',
         ])
       },
@@ -111,13 +102,7 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
           color: 'text-warning',
         }),
         row.original.link
-          ? iconLink({
-              icon: 'tabler:link',
-              content: t('actions.link'),
-              color: 'info',
-              to: row.original.link,
-              external: true,
-            })
+          ? iconLink({ icon: 'tabler:link', content: t('actions.link'), color: 'info', to: row.original.link, external: true })
           : '',
       ]),
     ]),

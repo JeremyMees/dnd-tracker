@@ -31,7 +31,9 @@ const { data, status } = useHomebrewListing(computed(() => {
     page: pagination ? pagination.pageIndex : 0,
     eq: { field: 'campaign', value: props.current.id },
   }
-}))
+}), {
+  enabled: computed(() => true),
+})
 
 const columns = generateColumns({
   onUpdate: (item: HomebrewItemRow) => openModal(item),
