@@ -80,11 +80,11 @@ watch(type, () => {
     </MasonryGrid>
 
     <Pagination
-      v-if="data?.pages > 1 && status !== 'pending' && data?.items?.length"
+      v-if="data?.pages && data.pages > 1 && status !== 'pending' && data?.items?.length"
       v-model:page="page"
       :pages="data.pages"
       :per-page="limit"
-      styled
+      styles="bg-secondary/50 border-4 border-secondary px-4 py-2 rounded-lg"
       class="mx-auto"
       @paginate="scrollToId('el')"
     />

@@ -5,11 +5,11 @@ withDefaults(
   defineProps<{
     pages: number
     perPage?: number
-    styled?: boolean
+    styles?: string
     loading?: boolean
   }>(), {
     perPage: 10,
-    styled: false,
+    styles: '',
     loading: false,
   },
 )
@@ -32,9 +32,7 @@ const internalPage = computed({
     @update:page="$emit('paginate', $event - 1)"
   >
     <UiPaginationList
-      :class="{
-        'bg-secondary/50 border-4 border-secondary px-4 py-2 rounded-lg': styled,
-      }"
+      :class="styles"
       class="flex items-center gap-6 w-fit"
     >
       <div class="text-sm text-foreground">

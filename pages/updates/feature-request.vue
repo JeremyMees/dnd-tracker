@@ -107,7 +107,7 @@ const { data, status } = useFeatureListing(computed(() => ({
             v-model:page="page"
             :pages="data.pages"
             :per-page="10"
-            styled
+            styles="bg-secondary/50 border-4 border-secondary px-4 py-2 rounded-lg"
             class="mt-2 mx-auto"
             @paginate="(newPage) => {
               page = newPage
