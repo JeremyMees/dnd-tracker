@@ -22,7 +22,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
       :key="label"
       class="space-y-2"
     >
-      <p class="head-2">
+      <p class="head-3">
         {{ $t(`general.${label}`, 2) }}
       </p>
       <Card
