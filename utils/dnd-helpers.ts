@@ -1,3 +1,4 @@
+import { initiativeKeys } from '~/constants/dnd-rules'
 import { firstName, lastName, middleName } from '~/constants/names.json'
 
 export function randomName(): string {
@@ -160,18 +161,32 @@ export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
   return sheet.rows.findIndex(row => row.id === id)
 }
 
+export function getHP(item: Open5eItem | Partial<InitiativeSheetRow> & { name: string }): number | undefined {
+  const health = 'health' in item ? Number(item.health) : undefined
+  const hitPoints = 'hit_points' in item ? Number(item.hit_points) : undefined
+
+  return isDefined(health) ? health : hitPoints
+}
+
+export function getAC(item: Open5eItem | Partial<InitiativeSheetRow> & { name: string }): number | undefined {
+  const ac = 'ac' in item ? Number(item.ac) : undefined
+  const armorClass = 'armor_class' in item ? Number(item.armor_class) : undefined
+
+  return isDefined(ac) ? ac : armorClass
+}
+
 export const createInitiativeRow = (
-  formData: Partial<InitiativeSheetRow> & { name: string },
+  formData: Open5eItem | Partial<InitiativeSheetRow> & { name: string },
   type: HomebrewType,
   encounterRows: number,
 ): InitiativeSheetRow => {
-  const initiative = Number(formData.initiative ?? -1)
-  const initiative_modifier = formData.initiative_modifier ? Number(formData.initiative_modifier) : undefined
-  const health = formData.health ? Number(formData.health) : formData.hit_points ? Number(formData.hit_points) : undefined
-  const ac = formData.ac ? Number(formData.ac) : formData.armor_class ? Number(formData.armor_class) : undefined
+  const initiative = 'initiative' in formData ? Number(formData.initiative ?? -1) : -1
+  const initiative_modifier = 'initiative_modifier' in formData ? Number(formData.initiative_modifier) : undefined
+  const health = getHP(formData)
+  const ac = getAC(formData)
   const baseArray: [boolean, boolean, boolean] = [false, false, false]
 
-  const baseRow = {
+  const baseRow: Record<string, unknown> = {
     ...formData,
     id: crypto.randomUUID(),
     index: encounterRows + 1,
@@ -190,40 +205,9 @@ export const createInitiativeRow = (
     deathSaves: { save: baseArray, fail: baseArray },
   }
 
-  return sanitizeRow(baseRow)
-}
-
-function sanitizeRow(row: InitiativeSheetRow): InitiativeSheetRow {
-  const allowedKeys = new Set([
-    'ac',
-    'campaign',
-    'concentration',
-    'conditions',
-    'created_at',
-    'deathSaves',
-    'health',
-    'id',
-    'index',
-    'initiative',
-    'initiative_modifier',
-    'link',
-    'maxAc',
-    'maxHealth',
-    'maxAcOld',
-    'maxHealthOld',
-    'name',
-    'note',
-    'tempAc',
-    'tempHealth',
-    'type',
-    'summoner',
-    'actions',
-    'legendary_actions',
-    'reactions',
-    'special_abilities',
-  ])
+  const allowedKeys = new Set(initiativeKeys)
 
   return Object.fromEntries(
-    Object.entries(row).filter(([key]) => allowedKeys.has(key)),
-  ) as InitiativeSheetRow
+    Object.entries(baseRow).filter(([key]) => allowedKeys.has(key)),
+  ) as unknown as InitiativeSheetRow
 }

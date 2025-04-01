@@ -26,7 +26,7 @@ export interface Open5eFilters {
   page: number
   limit?: number
   search?: string
-  cr?: string
+  cr?: number
   ordering?: Open5eSortBy
   document__slug?: string
 }
@@ -79,6 +79,7 @@ export interface Open5eItem {
   document__title: string
   document__license_url: string
   document__url: string
+  xp?: number
 }
 
 export interface Open5eResponse {

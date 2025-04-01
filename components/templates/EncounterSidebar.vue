@@ -9,7 +9,7 @@ const props = defineProps<{
   isExpanded: boolean
 }>()
 
-type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | undefined
+type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
 
 const diceRollerOpen = ref(false)
 const saveHomebrewToCampaign = ref(false)
@@ -97,25 +97,50 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
         </UiSidebarMenuButton>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <button
-            v-tippy="{
-              content: $t('general.bestiary'),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            :aria-label="$t('general.bestiary')"
-            @click="$emit('tweakSettings')"
+        <UiDialog
+          :open="openModal === 'bestiary'"
+          @close="openModal = undefined"
+        >
+          <UiDialogTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                v-tippy="{
+                  content: $t('general.bestiary'),
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
+                :aria-label="$t('general.bestiary')"
+                @click="openModal = 'bestiary'"
+              >
+                <Icon
+                  name="tabler:bat"
+                  class="size-4 min-w-4 text-destructive"
+                />
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  {{ $t('general.bestiary') }}
+                </span>
+              </button>
+            </UiSidebarMenuButton>
+          </UiDialogTrigger>
+          <UiDialogContent
+            class="inset-0 translate-x-0 translate-y-0 max-h-[100dvh] gap-0"
+            @escape-key-down="openModal = undefined"
+            @pointer-down-outside="openModal = undefined"
+            @interact-outside="openModal = undefined"
+            @close="openModal = undefined"
           >
-            <Icon
-              name="tabler:bat"
-              class="size-4 min-w-4 text-destructive"
+            <UiDialogHeader>
+              <UiDialogTitle class="pb-4">
+                {{ $t('general.bestiary') }}
+              </UiDialogTitle>
+            </UiDialogHeader>
+            <FormBestiary
+              :sheet="data"
+              :update="update"
+              @close="openModal = undefined"
             />
-            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-              {{ $t('general.bestiary') }}
-            </span>
-          </button>
-        </UiSidebarMenuButton>
+          </UiDialogContent>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiDialog
@@ -159,13 +184,6 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
               :sheet="data"
               @close="openModal = undefined"
             />
-            <!-- <UiDialogFooter class="items-center">
-              <FormKit
-                type="submit"
-                form="Homebrew"
-                :label="$t('actions.save')"
-              />
-            </UiDialogFooter> -->
           </UiDialogContent>
         </UiDialog>
       </UiSidebarMenuItem>
