@@ -95,6 +95,17 @@ async function addMonster(monster: Open5eItem): Promise<void> {
 
     <div class="overflow-y-auto">
       <MasonryGrid
+        v-if="status === 'pending'"
+        v-slot="{ column }"
+        :data="Array.from({ length: 30 }, () => ({}))"
+      >
+        <SkeletonMonsterCard
+          v-for="(_item, i) in column"
+          :key="i"
+        />
+      </MasonryGrid>
+      <MasonryGrid
+        v-else-if="data?.items?.length"
         v-slot="{ column }"
         :data="data?.items || []"
       >
