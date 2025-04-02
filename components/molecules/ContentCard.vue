@@ -7,9 +7,11 @@ const props = withDefaults(
     type: Open5eType
     pinned?: boolean
     allowPin?: boolean
+    variant?: 'secondary' | 'background'
   }>(), {
     pinned: false,
     allowPin: false,
+    variant: 'secondary',
   },
 )
 
@@ -24,7 +26,11 @@ function hideOpenButton(): boolean {
 
 <template>
   <UiCard
-    class="relative"
+    :class="{
+      'bg-secondary/50 border-secondary': variant === 'secondary',
+      'bg-background border-background': variant === 'background',
+    }"
+    class="relative border-4"
     @dblclick="isOpen = !isOpen"
   >
     <UiCardHeader>
@@ -34,13 +40,14 @@ function hideOpenButton(): boolean {
           content: $t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
           placement: 'left',
         }"
+        :aria-label="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
         class="absolute right-4 top-4"
         @click="pinned ? $emit('unpin') : $emit('pin')"
       >
         <Icon
           :name="pinned ? 'tabler:pinned-off' : 'tabler:pin'"
           class="size-4 min-w-4"
-          :class="[pinned ? 'text-destructive' : 'text-warning']"
+          :class="[pinned ? 'text-destructive' : 'text-primary']"
           aria-hidden="true"
         />
       </button>

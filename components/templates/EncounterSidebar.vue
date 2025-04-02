@@ -45,30 +45,9 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
     </UiSidebarGroupLabel>
     <UiSidebarMenu>
       <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <button
-            v-tippy="{
-              content: `DnD ${$t('general.content')}`,
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            :aria-label="`DnD ${$t('general.content')}`"
-            @click="$emit('tweakSettings')"
-          >
-            <Icon
-              name="tabler:search"
-              class="size-4 min-w-4 text-success"
-            />
-            <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-              DnD {{ $t('general.content') }}
-            </span>
-          </button>
-        </UiSidebarMenuButton>
-      </UiSidebarMenuItem>
-      <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <UiPopover v-model:open="diceRollerOpen">
-            <UiPopoverTrigger as-child>
+        <UiPopover v-model:open="diceRollerOpen">
+          <UiPopoverTrigger as-child>
+            <UiSidebarMenuButton as-child>
               <button
                 v-tippy="{
                   content: $t('actions.roll'),
@@ -86,15 +65,60 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
                   {{ $t('actions.roll') }}
                 </span>
               </button>
-            </UiPopoverTrigger>
-            <UiPopoverContent>
-              <DiceRoller
-                :styled="false"
-                @rolled="diceRollerOpen = false"
-              />
-            </UiPopoverContent>
-          </UiPopover>
-        </UiSidebarMenuButton>
+            </UiSidebarMenuButton>
+          </UiPopoverTrigger>
+          <UiPopoverContent>
+            <DiceRoller
+              :styled="false"
+              @rolled="diceRollerOpen = false"
+            />
+          </UiPopoverContent>
+        </UiPopover>
+      </UiSidebarMenuItem>
+      <UiSidebarMenuItem>
+        <UiDialog
+          :open="openModal === 'content'"
+          @close="openModal = undefined"
+        >
+          <UiDialogTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                v-tippy="{
+                  content: `DnD ${$t('general.content')}`,
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
+                :aria-label="`DnD ${$t('general.content')}`"
+                @click="openModal = 'content'"
+              >
+                <Icon
+                  name="tabler:book"
+                  class="size-4 min-w-4 text-success"
+                />
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  DnD {{ $t('general.content') }}
+                </span>
+              </button>
+            </UiSidebarMenuButton>
+          </UiDialogTrigger>
+          <UiDialogContent
+            class="inset-0 translate-x-0 translate-y-0 max-h-[100dvh] gap-0"
+            @escape-key-down="openModal = undefined"
+            @pointer-down-outside="openModal = undefined"
+            @interact-outside="openModal = undefined"
+            @close="openModal = undefined"
+          >
+            <UiDialogHeader>
+              <UiDialogTitle class="pb-4">
+                DnD {{ $t('general.content') }}
+              </UiDialogTitle>
+            </UiDialogHeader>
+            <FormPinContent
+              :sheet="data"
+              :update="update"
+            />
+          </UiDialogContent>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiDialog
@@ -142,7 +166,7 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           </UiDialogContent>
         </UiDialog>
       </UiSidebarMenuItem>
-      <UiSidebarMenuItem>
+      <UiSidebarMenuItem v-if="data?.campaign?.id">
         <UiDialog
           :open="openModal === 'addHomebrew'"
           @close="openModal = undefined"

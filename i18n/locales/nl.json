@@ -739,7 +739,14 @@
     "dndContentSearch": {
       "tooltip": "Informatie opzoeken",
       "notFound": "Helaas, ons avontuurlijk speurwerk in de diepten van onze DnD-archieven heeft geen enkel spoor opgeleverd. De mystieke boeken vol met eeuwenoude kennis en regels lijken tijdelijk hun geheimen voor ons verborgen te houden. Maar we geven de moed niet op! Blijf gerust rondsnuffelen in onze magische wereld, want wie weet wat voor epische vondsten je nog kunt ontdekken.",
-      "error": "Er is iets fout gegaan bij het laden van de DnD content"
+      "error": "Er is iets fout gegaan bij het laden van de DnD content",
+      "show": "Toon gepinde items",
+      "hide": "Verberg gepinde items",
+      "remove": "Verwijder gepinde items",
+      "toast": {
+        "maxTitle": "Je hebt je vastpin limiet bereikt",
+        "maxText": "Het maximum van gepinde infokaarten is 10"
+      }
     },
     "initiativeSettings": {
       "spacing": "Tabel stijl",
@@ -755,15 +762,6 @@
         "fairy": "Fee",
         "redcap": "Paddenstoel",
         "wolf-rider": "Wolf rijder"
-      }
-    },
-    "infoSearch": {
-      "show": "Toon gepinde items",
-      "hide": "Verberg gepinde items",
-      "remove": "Verwijder gepinde items",
-      "toast": {
-        "maxTitle": "Je hebt je vastpin limiet bereikt",
-        "maxText": "Het maximum van gepinde infokaarten is 10"
       }
     },
     "infoCard": {

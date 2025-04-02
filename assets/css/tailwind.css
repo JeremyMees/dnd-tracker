@@ -269,6 +269,10 @@
     @apply btn bg-destructive/50 hover:bg-destructive/60 border-destructive;
   }
 
+  .btn-ghost {
+    @apply btn hover:bg-background/60 border-transparent;
+  }
+
   .btn-small-foreground {
     @apply btn-small !text-background bg-foreground/50 hover:bg-foreground/60 border-foreground;
   }

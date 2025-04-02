@@ -13,14 +13,17 @@ export type Database = MergeDeep<
           Row: {
             rows: InitiativeSheetRow[]
             settings: InitiativeSettings
+            info_cards: Open5eItem[]
           }
           Insert: {
             rows: InitiativeSheetRow[]
             settings?: InitiativeSettings
+            info_cards?: Open5eItem[]
           }
           Update: {
             rows?: InitiativeSheetRow[]
             settings?: InitiativeSettings
+            info_cards?: Open5eItem[]
           }
         }
         homebrew_items: {

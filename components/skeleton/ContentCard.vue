@@ -1,5 +1,21 @@
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    variant?: 'secondary' | 'background'
+  }>(), {
+    variant: 'secondary',
+  },
+)
+</script>
+
 <template>
-  <UiCard>
+  <UiCard
+    class="border-4"
+    :class="{
+      'bg-secondary/50 border-4 border-secondary': variant === 'secondary',
+      'bg-background border-4 border-background': variant === 'background',
+    }"
+  >
     <UiCardHeader>
       <UiCardTitle>
         <UiSkeleton class="w-[120px] h-7" />
