@@ -79,6 +79,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
     <template #header>
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
         <NuxtLinkLocale
+          v-if="!data?.campaign"
           v-tippy="$t('actions.back')"
           to="/encounters"
           class="icon-btn-ghost"
@@ -89,6 +90,46 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
             :aria-hidden="true"
           />
         </NuxtLinkLocale>
+        <UiDropdownMenu v-else>
+          <UiDropdownMenuTrigger as-child>
+            <button
+              :aria-label="$t('actions.back')"
+              class="icon-btn-ghost"
+            >
+              <Icon
+                name="tabler:arrow-left"
+                class="size-4 min-w-4"
+                :aria-hidden="true"
+              />
+            </button>
+          </UiDropdownMenuTrigger>
+          <UiDropdownMenuContent align="start">
+            <UiDropdownMenuItem>
+              <NuxtLinkLocale
+                to="/campaigns"
+                class="flex items-center gap-2 text-muted-foreground"
+              >
+                <Icon
+                  name="tabler:layout-dashboard"
+                  class="size-4 min-w-4 text-foreground"
+                />
+                {{ $t('pages.encounter.back.campaigns', { campaign: data?.campaign?.title }) }}
+              </NuxtLinkLocale>
+            </UiDropdownMenuItem>
+            <UiDropdownMenuItem>
+              <NuxtLinkLocale
+                to="/encounters"
+                class="flex items-center gap-2 text-muted-foreground"
+              >
+                <Icon
+                  name="tabler:list-details"
+                  class="size-4 min-w-4 text-foreground"
+                />
+                {{ $t('pages.encounter.back.encounters') }}
+              </NuxtLinkLocale>
+            </UiDropdownMenuItem>
+          </UiDropdownMenuContent>
+        </UiDropdownMenu>
         <h2 class="text-muted-foreground flex gap-2">
           <span class="hidden md:block">
             {{ $t('general.encounter') }}:

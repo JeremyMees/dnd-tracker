@@ -319,7 +319,6 @@
       "update": "Encounter bijwerken"
     },
     "encounter": {
-      "back": "Terug naar encounters",
       "campaignBack": "Terug naar campagne",
       "info": "Je kan hier wat info neerschrijven",
       "options": "Encounter opties",
@@ -340,6 +339,10 @@
           "title": "Encounter is verwijderd",
           "text": "Iemand heeft de encounter verwijderd, dus je kan hem niet meer gebruiken"
         }
+      },
+      "back": {
+        "encounters": "Terug naar encounters lijst",
+        "campaigns": "Terug naar campagne: {campaign}"
       }
     },
     "register": {

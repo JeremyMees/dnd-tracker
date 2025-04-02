@@ -319,7 +319,6 @@
       "update": "Update encounter"
     },
     "encounter": {
-      "back": "Back to encounters",
       "campaignBack": "Back to campaign",
       "info": "You can jot something down here",
       "options": "Encounter options",
@@ -340,6 +339,10 @@
           "title": "Encounter is removed",
           "text": "Someone removed the encounter so it can't be used anymore"
         }
+      },
+      "back": {
+        "encounters": "Go to encounters list",
+        "campaigns": "Go to campaign: {campaign}"
       }
     },
     "register": {
