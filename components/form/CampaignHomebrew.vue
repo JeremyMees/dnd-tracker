@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { Row, SortingState } from '@tanstack/vue-table'
 import { FlexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table'
-import { useToast } from '~/components/ui/toast/use-toast'
 import { generateColumns, initialState } from '~/tables/homebrew-select-listing'
 
 const emit = defineEmits<{ close: [] }>()
-const props = defineProps<{ sheet?: InitiativeSheet }>()
 
-const { t } = useI18n()
-const { toast } = useToast()
+const props = defineProps<{
+  sheet?: InitiativeSheet
+  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
+}>()
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
@@ -17,8 +17,6 @@ const summoner = ref<{ name: string, id: string }>()
 
 const selected = computed<HomebrewItemRow[]>(() => data.value?.homebrews.filter(({ id }) => rowSelection.value[id]) || [])
 const summons = computed<HomebrewItemRow[]>(() => selected.value?.filter(s => s.type === 'summon') || [])
-
-const { mutateAsync: updateInitiativeSheet } = useInitiativeSheetDetailUpdate()
 
 const { data, isPending } = useHomebrewListing(
   computed(() => ({
@@ -96,20 +94,9 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 
   const sortedRows = indexCorrect(rows)
 
-  await updateInitiativeSheet({
-    data: {
-      rows: sortedRows,
-    },
-    id: props.sheet.id,
-    onError: () => {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
-    },
-    onSettled: () => emit('close'),
-  })
+  await props.update({ rows: sortedRows })
+
+  emit('close')
 }
 </script>
 

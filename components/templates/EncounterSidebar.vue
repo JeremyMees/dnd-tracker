@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
-
 defineEmits<{ toggleSidebar: [] }>()
 
 const props = defineProps<{
@@ -14,28 +12,6 @@ type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content
 const diceRollerOpen = ref(false)
 const saveHomebrewToCampaign = ref(false)
 const openModal = ref<Modals>(undefined)
-
-interface InitiativeSettingsForm {
-  spacing: TableSpacing
-  rows: string[]
-  widgets: string[]
-  pet?: InitiativePet
-}
-
-async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
-  if (!props.data) return
-
-  node.clearErrors()
-
-  await props.update({
-    settings: {
-      ...sanitizeForm<InitiativeSettingsForm>(form),
-      modified: true,
-    },
-  })
-
-  openModal.value = undefined
-}
 </script>
 
 <template>
@@ -161,7 +137,6 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
             <FormBestiary
               :sheet="data"
               :update="update"
-              @close="openModal = undefined"
             />
           </UiDialogContent>
         </UiDialog>
@@ -206,6 +181,7 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
             </UiDialogHeader>
             <FormCampaignHomebrew
               :sheet="data"
+              :update="update"
               @close="openModal = undefined"
             />
           </UiDialogContent>
@@ -326,16 +302,11 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
                 {{ $t('general.setting', 2) }}
               </UiDialogTitle>
             </UiDialogHeader>
-            <div class="overflow-y-auto">
-              <FormKit
-                id="InitiativeSettings"
-                type="form"
-                :actions="false"
-                @submit="handleSettingsSubmit"
-              >
-                <FormInitiativeSettings :settings="data?.settings ?? { spacing: 'normal', modified: false }" />
-              </FormKit>
-            </div>
+            <FormInitiativeSettings
+              :sheet="data"
+              :update="update"
+              @close="openModal = undefined"
+            />
             <UiDialogFooter>
               <FormKit
                 type="submit"
