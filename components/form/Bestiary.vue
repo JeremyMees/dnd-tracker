@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~/constants/dnd-rules'
-
-const emit = defineEmits<{ close: [] }>()
 
 const props = defineProps<{
   sheet?: InitiativeSheet
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
+
+const { toast } = useToast()
+const { t } = useI18n()
 
 const limit = 20
 const sortBy = ref<Open5eSortBy>('name')
@@ -47,7 +49,11 @@ async function addMonster(monster: Open5eItem): Promise<void> {
 
   await props.update({ rows: sortedRows })
 
-  emit('close')
+  toast({
+    title: t('components.initiativeTable.bestiary.added', { name: monster.name }),
+    description: t('components.initiativeTable.bestiary.addedDescription'),
+    variant: 'success',
+  })
 }
 </script>
 

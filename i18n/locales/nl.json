@@ -546,6 +546,10 @@
         "title": "{name} is neer",
         "text": "{name} heeft geen hp en daardoor zijn condities verwijderd en de concentratie is verloren"
       },
+      "bestiary": {
+        "added": "{name} toegevoegd aan je encounter",
+        "addedDescription": "Het geselecteerde monster is succesvol toegevoegd aan je encounter"
+      },
       "emptyState": {
         "title": "Geen initiatiefhouder gevonden",
         "text": "Voeg er wat toe met de zijbalk om te beginnen",

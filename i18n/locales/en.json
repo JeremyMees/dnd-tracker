@@ -546,6 +546,10 @@
         "title": "{name} is down",
         "text": "{name} has no hp and therefore their conditions are removed and their concentration is lost"
       },
+      "bestiary": {
+        "added": "Added {name} to your encounter",
+        "addedDescription": "The selected monster is successfully added to your encounter"
+      },
       "emptyState": {
         "title": "No initiative holders found",
         "text": "Add some using the sidebar to get started",
