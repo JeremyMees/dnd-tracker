@@ -322,6 +322,7 @@
       "campaignBack": "Terug naar campagne",
       "info": "Je kan hier wat info neerschrijven",
       "options": "Encounter opties",
+      "maxCharacters": "Maximum aantal personages",
       "override": {
         "ac": "AC overschrijven",
         "hp": "HP overschrijven"

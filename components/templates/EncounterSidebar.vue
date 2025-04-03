@@ -12,6 +12,8 @@ type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content
 const diceRollerOpen = ref(false)
 const saveHomebrewToCampaign = ref(false)
 const openModal = ref<Modals>(undefined)
+
+const maxCharacters = computed(() => hasMaxCharacters(props.data))
 </script>
 
 <template>
@@ -96,174 +98,194 @@ const openModal = ref<Modals>(undefined)
           </UiDialogContent>
         </UiDialog>
       </UiSidebarMenuItem>
-      <UiSidebarMenuItem>
-        <UiDialog
-          :open="openModal === 'bestiary'"
-          @close="openModal = undefined"
-        >
-          <UiDialogTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('general.bestiary'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('general.bestiary')"
-                @click="openModal = 'bestiary'"
-              >
-                <Icon
-                  name="tabler:bat"
-                  class="size-4 min-w-4 text-destructive"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-                  {{ $t('general.bestiary') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiDialogTrigger>
-          <UiDialogContent
-            class="inset-0 translate-x-0 translate-y-0 max-h-[100dvh] gap-0"
-            @escape-key-down="openModal = undefined"
-            @pointer-down-outside="openModal = undefined"
-            @interact-outside="openModal = undefined"
-            @close="openModal = undefined"
-          >
-            <UiDialogHeader>
-              <UiDialogTitle class="pb-4">
-                {{ $t('general.bestiary') }}
-              </UiDialogTitle>
-            </UiDialogHeader>
-            <FormBestiary
-              :sheet="data"
-              :update="update"
-            />
-          </UiDialogContent>
-        </UiDialog>
+      <UiSidebarMenuItem v-if="maxCharacters">
+        <UiSidebarMenuButton class="bg-destructive/10 border border-destructive">
+          <Icon
+            v-tippy="{
+              content: $t('pages.encounter.maxCharacters'),
+              placement: 'right',
+              onShow: () => !isExpanded,
+            }"
+            name="tabler:alert-triangle"
+            :aria-hidden="true"
+            :class="{ 'relative right-[1px]': !isExpanded }"
+            class="size-4 min-w-4 text-destructive"
+          />
+          <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+            {{ $t('pages.encounter.maxCharacters') }}
+          </span>
+        </UiSidebarMenuButton>
       </UiSidebarMenuItem>
-      <UiSidebarMenuItem v-if="data?.campaign?.id">
-        <UiDialog
-          :open="openModal === 'addHomebrew'"
-          @close="openModal = undefined"
-        >
-          <UiDialogTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('general.campaignHomebrew'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('general.campaignHomebrew')"
-                @click="openModal = 'addHomebrew'"
-              >
-                <Icon
-                  name="tabler:meeple"
-                  class="size-4 min-w-4 text-primary"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-                  {{ $t('general.campaignHomebrew') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiDialogTrigger>
-          <UiDialogContent
-            class="max-w-xl gap-0"
-            @escape-key-down="openModal = undefined"
-            @pointer-down-outside="openModal = undefined"
-            @interact-outside="openModal = undefined"
+      <template v-else>
+        <UiSidebarMenuItem>
+          <UiDialog
+            :open="openModal === 'bestiary'"
             @close="openModal = undefined"
           >
-            <UiDialogHeader>
-              <UiDialogTitle class="pb-4">
-                {{ $t('general.campaignHomebrew') }}
-              </UiDialogTitle>
-            </UiDialogHeader>
-            <FormCampaignHomebrew
-              :sheet="data"
-              :update="update"
+            <UiDialogTrigger as-child>
+              <UiSidebarMenuButton as-child>
+                <button
+                  v-tippy="{
+                    content: $t('general.bestiary'),
+                    placement: 'right',
+                    onShow: () => !isExpanded,
+                  }"
+                  :aria-label="$t('general.bestiary')"
+                  @click="openModal = 'bestiary'"
+                >
+                  <Icon
+                    name="tabler:bat"
+                    class="size-4 min-w-4 text-destructive"
+                  />
+                  <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                    {{ $t('general.bestiary') }}
+                  </span>
+                </button>
+              </UiSidebarMenuButton>
+            </UiDialogTrigger>
+            <UiDialogContent
+              class="inset-0 translate-x-0 translate-y-0 max-h-[100dvh] gap-0"
+              @escape-key-down="openModal = undefined"
+              @pointer-down-outside="openModal = undefined"
+              @interact-outside="openModal = undefined"
               @close="openModal = undefined"
-            />
-          </UiDialogContent>
-        </UiDialog>
-      </UiSidebarMenuItem>
-      <UiSidebarMenuItem v-if="data?.campaign?.id">
-        <UiDialog
-          :open="openModal === 'newHomebrew'"
-          @close="saveHomebrewToCampaign = false, openModal = undefined"
-        >
-          <UiDialogTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('general.newHomebrew'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('general.newHomebrew')"
-                @click="openModal = 'newHomebrew'"
-              >
-                <Icon
-                  name="tabler:beer"
-                  class="size-4 min-w-4 text-warning"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-                  {{ $t('general.newHomebrew') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiDialogTrigger>
-          <UiDialogContent
-            class="max-w-xl"
-            @escape-key-down="openModal = undefined"
-            @pointer-down-outside="openModal = undefined"
-            @interact-outside="openModal = undefined"
+            >
+              <UiDialogHeader>
+                <UiDialogTitle class="pb-4">
+                  {{ $t('general.bestiary') }}
+                </UiDialogTitle>
+              </UiDialogHeader>
+              <FormBestiary
+                :sheet="data"
+                :update="update"
+              />
+            </UiDialogContent>
+          </UiDialog>
+        </UiSidebarMenuItem>
+        <UiSidebarMenuItem v-if="data?.campaign?.id">
+          <UiDialog
+            :open="openModal === 'addHomebrew'"
             @close="openModal = undefined"
           >
-            <UiDialogHeader>
-              <UiDialogTitle>
-                {{ $t('general.newHomebrew') }}
-              </UiDialogTitle>
-            </UiDialogHeader>
-            <div class="overflow-y-auto">
-              <FormHomebrew
-                v-if="data?.campaign?.id"
-                :campaign-id="data.campaign.id"
-                :count="data.rows.length"
-                :save-to-campaign="saveHomebrewToCampaign"
+            <UiDialogTrigger as-child>
+              <UiSidebarMenuButton as-child>
+                <button
+                  v-tippy="{
+                    content: $t('general.campaignHomebrew'),
+                    placement: 'right',
+                    onShow: () => !isExpanded,
+                  }"
+                  :aria-label="$t('general.campaignHomebrew')"
+                  @click="openModal = 'addHomebrew'"
+                >
+                  <Icon
+                    name="tabler:meeple"
+                    class="size-4 min-w-4 text-primary"
+                  />
+                  <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                    {{ $t('general.campaignHomebrew') }}
+                  </span>
+                </button>
+              </UiSidebarMenuButton>
+            </UiDialogTrigger>
+            <UiDialogContent
+              class="max-w-xl gap-0"
+              @escape-key-down="openModal = undefined"
+              @pointer-down-outside="openModal = undefined"
+              @interact-outside="openModal = undefined"
+              @close="openModal = undefined"
+            >
+              <UiDialogHeader>
+                <UiDialogTitle class="pb-4">
+                  {{ $t('general.campaignHomebrew') }}
+                </UiDialogTitle>
+              </UiDialogHeader>
+              <FormCampaignHomebrew
                 :sheet="data"
-                is-encounter
+                :update="update"
                 @close="openModal = undefined"
               />
-            </div>
-            <UiDialogFooter class="items-center">
-              <div
-                v-if="!$route.fullPath.includes('/playground')"
-                class="flex flex-col gap-x-2 mr-4"
-              >
-                <FormKit
-                  v-model="saveHomebrewToCampaign"
-                  :disabled="data.rows.length >= 100"
-                  :label="$t('components.homebrewModal.save')"
-                  type="toggle"
-                  outer-class="$reset !mb-0"
-                />
-                <span
-                  v-if="data.rows.length >= 100"
-                  class="text-destructive body-small"
+            </UiDialogContent>
+          </UiDialog>
+        </UiSidebarMenuItem>
+        <UiSidebarMenuItem v-if="data?.campaign?.id">
+          <UiDialog
+            :open="openModal === 'newHomebrew'"
+            @close="saveHomebrewToCampaign = false, openModal = undefined"
+          >
+            <UiDialogTrigger as-child>
+              <UiSidebarMenuButton as-child>
+                <button
+                  v-tippy="{
+                    content: $t('general.newHomebrew'),
+                    placement: 'right',
+                    onShow: () => !isExpanded,
+                  }"
+                  :aria-label="$t('general.newHomebrew')"
+                  @click="openModal = 'newHomebrew'"
                 >
-                  {{ $t('components.homebrewModal.max') }}
-                </span>
+                  <Icon
+                    name="tabler:beer"
+                    class="size-4 min-w-4 text-warning"
+                  />
+                  <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                    {{ $t('general.newHomebrew') }}
+                  </span>
+                </button>
+              </UiSidebarMenuButton>
+            </UiDialogTrigger>
+            <UiDialogContent
+              class="max-w-xl"
+              @escape-key-down="openModal = undefined"
+              @pointer-down-outside="openModal = undefined"
+              @interact-outside="openModal = undefined"
+              @close="openModal = undefined"
+            >
+              <UiDialogHeader>
+                <UiDialogTitle>
+                  {{ $t('general.newHomebrew') }}
+                </UiDialogTitle>
+              </UiDialogHeader>
+              <div class="overflow-y-auto">
+                <FormHomebrew
+                  v-if="data?.campaign?.id"
+                  :campaign-id="data.campaign.id"
+                  :count="data.rows.length"
+                  :save-to-campaign="saveHomebrewToCampaign"
+                  :sheet="data"
+                  is-encounter
+                  @close="openModal = undefined"
+                />
               </div>
-              <FormKit
-                type="submit"
-                form="Homebrew"
-                :label="$t('actions.save')"
-              />
-            </UiDialogFooter>
-          </UiDialogContent>
-        </UiDialog>
-      </UiSidebarMenuItem>
+              <UiDialogFooter class="items-center">
+                <div
+                  v-if="!$route.fullPath.includes('/playground')"
+                  class="flex flex-col gap-x-2 mr-4"
+                >
+                  <FormKit
+                    v-model="saveHomebrewToCampaign"
+                    :disabled="data.rows.length >= 100"
+                    :label="$t('components.homebrewModal.save')"
+                    type="toggle"
+                    outer-class="$reset !mb-0"
+                  />
+                  <span
+                    v-if="data.rows.length >= 100"
+                    class="text-destructive body-small"
+                  >
+                    {{ $t('components.homebrewModal.max') }}
+                  </span>
+                </div>
+                <FormKit
+                  type="submit"
+                  form="Homebrew"
+                  :label="$t('actions.save')"
+                />
+              </UiDialogFooter>
+            </UiDialogContent>
+          </UiDialog>
+        </UiSidebarMenuItem>
+      </template>
       <UiSidebarMenuItem>
         <UiDialog
           :open="openModal === 'settings'"

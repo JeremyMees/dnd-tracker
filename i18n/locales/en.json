@@ -322,6 +322,7 @@
       "campaignBack": "Back to campaign",
       "info": "You can jot something down here",
       "options": "Encounter options",
+      "maxCharacters": "Max characters amount",
       "override": {
         "ac": "Override AC",
         "hp": "Override HP"

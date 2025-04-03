@@ -5,6 +5,8 @@ const props = defineProps<{
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }>()
 
+const maxCharacters = computed(() => hasMaxCharacters(props.sheet))
+
 function copyRow(): void {
   if (!props.sheet) return
 
@@ -53,6 +55,7 @@ function deleteRow(): void {
     </NuxtLink>
     <button
       v-tippy="$t('actions.copy')"
+      :disabled="maxCharacters"
       :aria-label="$t('actions.copy')"
       class="icon-btn-help"
       @click="copyRow"

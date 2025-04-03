@@ -211,3 +211,7 @@ export const createInitiativeRow = (
     Object.entries(baseRow).filter(([key]) => allowedKeys.has(key)),
   ) as unknown as InitiativeSheetRow
 }
+
+export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
+  return sheet ? sheet.rows.length >= 10 : false
+}
