@@ -10,6 +10,7 @@ const props = defineProps<{
 type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
 
 const diceRollerOpen = ref(false)
+const fantasyNameGeneratorOpen = ref(false)
 const saveHomebrewToCampaign = ref(false)
 const openModal = ref<Modals>(undefined)
 
@@ -45,7 +46,11 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
               </button>
             </UiSidebarMenuButton>
           </UiPopoverTrigger>
-          <UiPopoverContent>
+          <UiPopoverContent
+            align="center"
+            side="right"
+            prioritize-position
+          >
             <DiceRoller
               :styled="false"
               @rolled="diceRollerOpen = false"
@@ -62,19 +67,19 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             <UiSidebarMenuButton as-child>
               <button
                 v-tippy="{
-                  content: `DnD ${$t('general.content')}`,
+                  content: `${$t('components.navbar.dnd-content')}`,
                   placement: 'right',
                   onShow: () => !isExpanded,
                 }"
-                :aria-label="`DnD ${$t('general.content')}`"
+                :aria-label="`${$t('components.navbar.dnd-content')}`"
                 @click="openModal = 'content'"
               >
                 <Icon
                   name="tabler:book"
-                  class="size-4 min-w-4 text-success"
+                  class="size-4 min-w-4 text-help"
                 />
                 <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-                  DnD {{ $t('general.content') }}
+                  {{ $t('components.navbar.dnd-content') }}
                 </span>
               </button>
             </UiSidebarMenuButton>
@@ -88,7 +93,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
           >
             <UiDialogHeader>
               <UiDialogTitle class="pb-4">
-                DnD {{ $t('general.content') }}
+                {{ $t('components.navbar.dnd-content') }}
               </UiDialogTitle>
             </UiDialogHeader>
             <FormPinContent
@@ -287,6 +292,38 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
         </UiSidebarMenuItem>
       </template>
       <UiSidebarMenuItem>
+        <UiPopover v-model:open="fantasyNameGeneratorOpen">
+          <UiPopoverTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                v-tippy="{
+                  content: $t('components.navbar.fantasy'),
+                  placement: 'right',
+                  onShow: () => !isExpanded,
+                }"
+                :aria-label="$t('components.navbar.fantasy')"
+                class="flex items-center gap-x-2 p-2 w-full text-sm"
+              >
+                <Icon
+                  name="tabler:signature"
+                  class="size-4 min-w-4 text-success"
+                />
+                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  {{ $t('components.navbar.fantasy') }}
+                </span>
+              </button>
+            </UiSidebarMenuButton>
+          </UiPopoverTrigger>
+          <UiPopoverContent
+            align="center"
+            side="right"
+            prioritize-position
+          >
+            <FantasyNameGenerator :amount="10" />
+          </UiPopoverContent>
+        </UiPopover>
+      </UiSidebarMenuItem>
+      <UiSidebarMenuItem>
         <UiDialog
           :open="openModal === 'settings'"
           @close="openModal = undefined"
@@ -415,5 +452,4 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
       </UiSidebarMenuItem>
     </UiSidebarMenu>
   </UiSidebarGroup>
-  <UiSeparator />
 </template>

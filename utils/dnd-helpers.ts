@@ -213,5 +213,5 @@ export const createInitiativeRow = (
 }
 
 export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
-  return sheet ? sheet.rows.length >= 10 : false
+  return sheet ? sheet.rows.length >= 50 : false
 }

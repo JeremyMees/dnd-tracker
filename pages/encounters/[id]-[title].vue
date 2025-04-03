@@ -75,7 +75,10 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 </script>
 
 <template>
-  <NuxtLayout name="sidebar">
+  <NuxtLayout
+    name="sidebar"
+    only-provided-content
+  >
     <template #header>
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
         <NuxtLinkLocale

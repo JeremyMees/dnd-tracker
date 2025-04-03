@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 
 const rowsDefault = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
-const widgetsDefault = ['note', 'info-pins', 'fantasy-name-generator']
+const widgetsDefault = ['note', 'info-pins']
 
 interface InitiativeSettingsForm {
   spacing: TableSpacing
@@ -76,7 +76,6 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
         :options="[
           { label: $t('general.note'), value: 'note' },
           { label: $t('general.infoPins'), value: 'info-pins' },
-          { label: $t('general.fantasyNameGenerator'), value: 'fantasy-name-generator' },
         ]"
       />
       <FormKit

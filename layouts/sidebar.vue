@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 
-defineProps<{ header?: string }>()
+defineProps<{
+  header?: string
+  onlyProvidedContent?: boolean
+}>()
 
 const { user, logout } = useAuthentication()
 const route = useRoute()
@@ -62,45 +65,47 @@ async function logoutUser(): Promise<void> {
             name="sidebar-content"
             :is-expanded="isExpanded"
           />
-          <template
-            v-for="sidebarItem in [
-              { title: 'components.navbar.play', routes: playRoutes },
-              { title: 'components.navbar.pages', routes: routes },
-            ]"
-            :key="sidebarItem.title"
-          >
-            <UiSidebarGroup>
-              <UiSidebarGroupLabel class="font-bold">
-                {{ $t(sidebarItem.title) }}
-              </UiSidebarGroupLabel>
-              <UiSidebarMenu>
-                <UiSidebarMenuItem
-                  v-for="item in sidebarItem.routes"
-                  :key="item.label"
-                >
-                  <UiSidebarMenuButton as-child>
-                    <NuxtLinkLocale
-                      v-tippy="{
-                        content: $t(item.label),
-                        placement: 'right',
-                        onShow: () => !isExpanded,
-                      }"
-                      :to="item.url"
-                      :data-active="route.name?.toString().startsWith(item.url.replace('/', ''))"
-                    >
-                      <Icon
-                        v-if="item.icon"
-                        :name="item.icon"
-                        class="size-4 min-w-4"
-                      />
-                      <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
-                        {{ $t(item.label) }}
-                      </span>
-                    </NuxtLinkLocale>
-                  </UiSidebarMenuButton>
-                </UiSidebarMenuItem>
-              </UiSidebarMenu>
-            </UiSidebarGroup>
+          <template v-if="!onlyProvidedContent">
+            <template
+              v-for="sidebarItem in [
+                { title: 'components.navbar.play', routes: playRoutes },
+                { title: 'components.navbar.pages', routes: routes },
+              ]"
+              :key="sidebarItem.title"
+            >
+              <UiSidebarGroup>
+                <UiSidebarGroupLabel class="font-bold">
+                  {{ $t(sidebarItem.title) }}
+                </UiSidebarGroupLabel>
+                <UiSidebarMenu>
+                  <UiSidebarMenuItem
+                    v-for="item in sidebarItem.routes"
+                    :key="item.label"
+                  >
+                    <UiSidebarMenuButton as-child>
+                      <NuxtLinkLocale
+                        v-tippy="{
+                          content: $t(item.label),
+                          placement: 'right',
+                          onShow: () => !isExpanded,
+                        }"
+                        :to="item.url"
+                        :data-active="route.name?.toString().startsWith(item.url.replace('/', ''))"
+                      >
+                        <Icon
+                          v-if="item.icon"
+                          :name="item.icon"
+                          class="size-4 min-w-4"
+                        />
+                        <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                          {{ $t(item.label) }}
+                        </span>
+                      </NuxtLinkLocale>
+                    </UiSidebarMenuButton>
+                  </UiSidebarMenuItem>
+                </UiSidebarMenu>
+              </UiSidebarGroup>
+            </template>
           </template>
         </UiSidebarContent>
         <UiSidebarFooter>
