@@ -67,6 +67,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => editor.value?.destroy())
 
+watch(() => props.content, (v) => {
+  if (v !== editor.value?.getHTML()) editor.value?.commands.setContent(v)
+})
+
 const sanitizeBeforeUpdate = useDebounceFn(() => {
   if (!editor.value) return
 
