@@ -1,7 +1,6 @@
 <script setup lang="ts">
-const emit = defineEmits<{ update: [Open5eItem[]] }>()
-
-const props = defineProps<{ value: Open5eItem[] }>()
+defineEmits<{ update: [Open5eItem[]] }>()
+defineProps<{ value: Open5eItem[] }>()
 </script>
 
 <template>
@@ -9,11 +8,12 @@ const props = defineProps<{ value: Open5eItem[] }>()
     color="secondary"
   >
     <UiAccordion
+      v-if="value.length"
       type="single"
       collapsible
     >
       <UiAccordionItem
-        v-for="item in props.value"
+        v-for="item in value"
         :key="item.slug"
         :value="item.slug"
         class="last:border-b-0"
@@ -32,7 +32,7 @@ const props = defineProps<{ value: Open5eItem[] }>()
             <button
               :aria-label="$t(`components.infoCard.remove`)"
               class="btn-primary flex items-center gap-2"
-              @click="emit('update', value.filter(i => i.slug !== item.slug))"
+              @click="$emit('update', value.filter(i => i.slug !== item.slug))"
             >
               <Icon
                 name="tabler:pinned-off"
@@ -45,5 +45,11 @@ const props = defineProps<{ value: Open5eItem[] }>()
         </UiAccordionContent>
       </UiAccordionItem>
     </UiAccordion>
+    <p
+      v-else
+      class="text-muted-foreground"
+    >
+      {{ $t('pages.encounter.pinnedContent.empty') }}
+    </p>
   </Card>
 </template>

@@ -323,6 +323,9 @@
       "info": "You can jot something down here",
       "options": "Encounter options",
       "maxCharacters": "Max characters amount",
+      "pinnedContent": {
+        "empty": "You currently have no pinned items"
+      },
       "override": {
         "ac": "Override AC",
         "hp": "Override HP"

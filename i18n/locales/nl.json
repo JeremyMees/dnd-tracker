@@ -323,6 +323,9 @@
       "info": "Je kan hier wat info neerschrijven",
       "options": "Encounter opties",
       "maxCharacters": "Maximum aantal personages",
+      "pinnedContent": {
+        "empty": "Je hebt momenteel geen items gepinned"
+      },
       "override": {
         "ac": "AC overschrijven",
         "hp": "HP overschrijven"
