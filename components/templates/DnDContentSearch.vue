@@ -53,7 +53,7 @@ async function handlePinToggle(content: Open5eItem, remove: boolean): Promise<vo
 
   let cards = [...props.sheet.info_cards]
 
-  if (remove) cards = cards.filter((i: InfoCard) => i.slug !== content.slug)
+  if (remove) cards = cards.filter(i => i.slug !== content.slug)
   else if (cards.length >= 10) {
     toast({
       title: t('components.dndContentSearch.toast.maxTitle'),

@@ -46,7 +46,7 @@ export interface Open5eItem {
   desc: string
   name: string
   size: string
-  type: string
+  type: Open5eType
   subtype: string
   group: string | null
   alignment: string
@@ -80,6 +80,35 @@ export interface Open5eItem {
   document__license_url: string
   document__url: string
   xp?: number
+  category?: string
+  ac_string?: string
+  strength_requirement?: string
+  stealth_disadvantage?: string
+  cost?: string
+  damage_dice?: string
+  damage_type?: string
+  weight?: string
+  properties?: string[]
+  rarity?: string
+  requires_attunement?: string
+  skill_proficiencies?: string
+  tool_proficiencies?: string
+  equipment?: string
+  feature?: string
+  feature_desc?: string
+  level?: string
+  higher_level?: string
+  casting_time?: string
+  range?: string
+  duration?: string
+  concentration?: string
+  ritual?: string
+  components?: string
+  material?: string
+  school?: string
+  dnd_class?: string
+  prerequisite?: string
+  effects_desc?: string[]
 }
 
 export interface Open5eResponse {
