@@ -1,7 +1,22 @@
 export function useUi() {
   const { user } = useAuthentication()
 
-  const routes = [
+  const loggedOutRoutes = [
+    {
+      label: 'components.navbar.login',
+      url: '/login',
+      requireAuth: true,
+      icon: 'tabler:login',
+    },
+    {
+      label: 'components.navbar.register',
+      url: '/register',
+      requireAuth: true,
+      icon: 'tabler:user-plus',
+    },
+  ]
+
+  const routes = computed(() => [
     {
       label: 'components.navbar.contact',
       url: '/contact',
@@ -14,42 +29,26 @@ export function useUi() {
       requireAuth: false,
       icon: 'tabler:credit-card',
     },
-    ...user.value
-      ? []
-      : [
-          {
-            label: 'components.navbar.login',
-            url: '/login',
-            requireAuth: true,
-            icon: 'tabler:login',
-          },
-          {
-            label: 'components.navbar.register',
-            url: '/register',
-            requireAuth: true,
-            icon: 'tabler:user-plus',
-          },
-        ],
+    ...(user.value ? [] : loggedOutRoutes),
+  ])
 
+  const loggedInPlayRoutes = [
+    {
+      label: 'components.navbar.campaigns',
+      url: '/campaigns',
+      requireAuth: true,
+      icon: 'tabler:layout-dashboard',
+    },
+    {
+      label: 'components.navbar.encounters',
+      url: '/encounters',
+      requireAuth: true,
+      icon: 'tabler:list-details',
+    },
   ]
 
-  const playRoutes = [
-    ...user.value
-      ? [
-          {
-            label: 'components.navbar.campaigns',
-            url: '/campaigns',
-            requireAuth: true,
-            icon: 'tabler:layout-dashboard',
-          },
-          {
-            label: 'components.navbar.encounters',
-            url: '/encounters',
-            requireAuth: true,
-            icon: 'tabler:list-details',
-          },
-        ]
-      : [],
+  const playRoutes = computed(() => [
+    ...(user.value ? loggedInPlayRoutes : []),
     {
       label: 'components.navbar.playground',
       url: '/playground',
@@ -68,9 +67,18 @@ export function useUi() {
       requireAuth: false,
       icon: 'tabler:book',
     },
+  ])
+
+  const updateProfileRoutes = [
+    {
+      label: 'components.navbar.upgrade',
+      url: '/pricing',
+      requireAuth: true,
+      icon: 'tabler:sparkles',
+    }
   ]
 
-  const profileRoutes = [
+  const profileRoutes = computed(() => [
     {
       label: 'components.navbar.profile',
       url: '/profile',
@@ -89,17 +97,8 @@ export function useUi() {
       requireAuth: false,
       icon: 'tabler:bulb',
     },
-    ...user.value?.subscription_type !== 'pro'
-      ? []
-      : [
-          {
-            label: 'components.navbar.upgrade',
-            url: '/pricing',
-            requireAuth: true,
-            icon: 'tabler:sparkles',
-          },
-        ],
-  ]
+    ...(user.value?.subscription_type !== 'pro' ? updateProfileRoutes : []),
+  ])
 
   return {
     routes,
