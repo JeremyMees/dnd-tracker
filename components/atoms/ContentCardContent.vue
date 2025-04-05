@@ -140,7 +140,7 @@ const { $md } = useNuxtApp()
     </p>
     <p
       v-if="content.level"
-      class="mt-4"
+      class="mt-4 text-muted-foreground"
     >
       <span class="font-bold text-foreground">Level:</span> {{ content.level }}
     </p>

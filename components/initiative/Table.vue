@@ -29,7 +29,6 @@ const tablePadding = computed(() => {
 const columns = generateColumns({
   sheet: computed(() => props.data),
   update: props.update,
-  openQuickInitModal: () => console.log('open quick init modal'),
 })
 
 const table = useVueTable({
@@ -56,6 +55,7 @@ const table = useVueTable({
       @previous="previous"
       @next="next"
     />
+
     <div class="rounded-lg border-4 border-secondary bg-secondary/50">
       <UiTable>
         <UiTableHeader>
@@ -126,5 +126,11 @@ const table = useVueTable({
         </UiTableBody>
       </UiTable>
     </div>
+
+    <LazyInitiativeWidgets
+      hydrate-on-visible
+      :sheet="data"
+      :update="update"
+    />
   </div>
 </template>

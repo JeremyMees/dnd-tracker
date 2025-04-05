@@ -74,6 +74,7 @@
     "changeInitiative": "Change initiative"
   },
   "general": {
+    "widget": "Widget | Widgets",
     "all": "All",
     "more": "More",
     "less": "Less",
