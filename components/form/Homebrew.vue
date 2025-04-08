@@ -5,11 +5,12 @@ const emit = defineEmits<{ close: [] }>()
 
 const props = withDefaults(
   defineProps<{
-    campaignId: number
+    campaignId?: number
     count: number
     item?: HomebrewItemRow
     saveToCampaign?: boolean
     sheet?: InitiativeSheet
+    update?: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
   }>(), {
     saveToCampaign: false,
   },
@@ -17,7 +18,6 @@ const props = withDefaults(
 
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
-const { mutateAsync: updateInitiativeSheet } = useInitiativeSheetDetailUpdate()
 
 const type = ref(props.item?.type || 'player')
 
@@ -65,7 +65,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       initiative,
       initiative_modifier: initiative_modifier || undefined,
       summoner,
-    }, onError)
+    })
 
     // Also save homebrew to campaign
     if (props.saveToCampaign && props.campaignId) {
@@ -95,7 +95,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
         onError,
       })
     }
-    else {
+    else if (props.campaignId) {
       await create({
         data: {
           ...formData,
@@ -123,10 +123,8 @@ async function addInitiative(options: {
   initiative?: number
   initiative_modifier?: number | string
   summoner?: string
-},
-onError: (error: string) => void,
-): Promise<void> {
-  if (!props.sheet) return
+}): Promise<void> {
+  if (!props.sheet || !props.update) return
 
   const sum = options.summoner
     ? props.sheet.rows.filter(r => r.id === options.summoner)[0]
@@ -147,13 +145,7 @@ onError: (error: string) => void,
 
   const sortedRows = indexCorrect(rows)
 
-  await updateInitiativeSheet({
-    data: {
-      rows: sortedRows,
-    },
-    id: props.sheet.id,
-    onError,
-  })
+  await props.update({ rows: sortedRows })
 }
 
 function castActionFieldsToNumber(actions: Action[] | undefined): Action[] {

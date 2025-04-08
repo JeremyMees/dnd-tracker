@@ -213,7 +213,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>
-        <UiSidebarMenuItem v-if="data?.campaign?.id">
+        <UiSidebarMenuItem>
           <UiDialog
             :open="openModal === 'newHomebrew'"
             @close="saveHomebrewToCampaign = false, openModal = undefined"
@@ -253,11 +253,11 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
               </UiDialogHeader>
               <div class="overflow-y-auto">
                 <FormHomebrew
-                  v-if="data?.campaign?.id"
-                  :campaign-id="data.campaign.id"
-                  :count="data.rows.length"
+                  :campaign-id="data?.campaign?.id"
+                  :count="data?.rows.length || 0"
                   :save-to-campaign="saveHomebrewToCampaign"
                   :sheet="data"
+                  :update="update"
                   is-encounter
                   @close="openModal = undefined"
                 />
@@ -269,13 +269,13 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 >
                   <FormKit
                     v-model="saveHomebrewToCampaign"
-                    :disabled="data.rows.length >= 100"
+                    :disabled="data && data.rows.length >= 100"
                     :label="$t('components.homebrewModal.save')"
                     type="toggle"
                     outer-class="$reset !mb-0"
                   />
                   <span
-                    v-if="data.rows.length >= 100"
+                    v-if="data && data.rows.length >= 100"
                     class="text-destructive body-small"
                   >
                     {{ $t('components.homebrewModal.max') }}

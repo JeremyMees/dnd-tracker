@@ -49,8 +49,8 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
       )
     `)
     .eq('id', id)
-    .returns<InitiativeSheet>()
     .single()
+    .overrideTypes<InitiativeSheet, { merge: false }>()
 
   if (error) throw createError(error)
 

@@ -52,7 +52,6 @@ function calculateDiceRoll() {
         h('span', Object.values(rolled).flat().reduce((a, b) => a + b, 0)),
       ]),
     ]),
-    variant: 'help',
   })
 
   toRoll.value = { d4: 0, d6: 0, d8: 0, d10: 0, d12: 0, d20: 0, d100: 0 }

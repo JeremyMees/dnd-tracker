@@ -1,5 +1,9 @@
+<script setup lang="ts">
+defineProps<{ campaign?: boolean }>()
+</script>
+
 <template>
-  <UiCard>
+  <UiCard class="border-background bg-background/50">
     <UiCardHeader>
       <UiCardTitle>
         {{ $t('components.initiativeTable.emptyState.title') }}
@@ -22,7 +26,7 @@
           {{ $t('components.initiativeTable.emptyState.bestiary') }}
         </p>
       </div>
-      <div>
+      <div v-if="campaign">
         <div class="flex items-center gap-2">
           <Icon
             name="tabler:meeple"

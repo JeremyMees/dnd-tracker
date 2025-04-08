@@ -120,7 +120,7 @@ const table = useVueTable({
               :colspan="columns.length"
               class="md:p-10"
             >
-              <InitiativeTableEmptyState />
+              <InitiativeTableEmptyState :campaign="!!data?.campaign" />
             </UiTableCell>
           </UiTableRow>
         </UiTableBody>

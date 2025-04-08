@@ -1,0 +1,25 @@
+export const playgroundSheet: InitiativeSheet = {
+  id: 1,
+  created_at: '2022-12-07T07:34:18+00:00',
+  created_by: 'me :)',
+  title: 'Playground',
+  round: 1,
+  activeIndex: 0,
+  rows: [],
+  info: null,
+  info_cards: [],
+  settings: {
+    spacing: 'normal',
+    pet: 'cat',
+    rows: [
+      'ac',
+      'health',
+      'conditions',
+      'note',
+      'deathSaves',
+      'concentration',
+      'modify',
+    ],
+    modified: false,
+  },
+}
