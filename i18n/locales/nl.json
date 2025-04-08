@@ -490,9 +490,9 @@
       "system": "Systeem"
     },
     "initiativeTableHeader": {
-      "initiaive": {
+      "initiative": {
         "title": "Initiatieven snel toevoegen",
-        "roll": "Geselecteerde soorten rollen",
+        "roll": "Geselecteerde rollen",
         "select": "Selecteer de soorten om voor te rollen",
         "ignore": "Negeer modifier"
       }
