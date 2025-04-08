@@ -161,18 +161,32 @@ export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
   return sheet.rows.findIndex(row => row.id === id)
 }
 
-export function getHP(item: Open5eItem | Partial<InitiativeSheetRow> & { name: string }): number | undefined {
-  const health = 'health' in item ? Number(item.health) : undefined
-  const hitPoints = 'hit_points' in item ? Number(item.hit_points) : undefined
+function castToNumber(value: string | number): number | undefined {
+  return isNaN(+value) ? undefined : +value
+}
 
-  return isDefined(health) ? health : hitPoints
+export function getHP(item: Open5eItem | Partial<InitiativeSheetRow> & { name: string }): number | undefined {
+  if ('health' in item) {
+    return isDefined(item.health) ? castToNumber(item.health) : undefined
+  }
+
+  if ('hit_points' in item) {
+    return isDefined(item.hit_points) ? castToNumber(item.hit_points) : undefined
+  }
+
+  return undefined
 }
 
 export function getAC(item: Open5eItem | Partial<InitiativeSheetRow> & { name: string }): number | undefined {
-  const ac = 'ac' in item ? Number(item.ac) : undefined
-  const armorClass = 'armor_class' in item ? Number(item.armor_class) : undefined
+  if ('ac' in item) {
+    return isDefined(item.ac) ? castToNumber(item.ac) : undefined
+  }
 
-  return isDefined(ac) ? ac : armorClass
+  if ('armor_class' in item) {
+    return isDefined(item.armor_class) ? castToNumber(item.armor_class) : undefined
+  }
+
+  return undefined
 }
 
 export const createInitiativeRow = (
