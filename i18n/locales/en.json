@@ -484,6 +484,11 @@
     }
   },
   "components": {
+    "colorModeSwitcher": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
     "initiativeTableHeader": {
       "initiative": {
         "title": "Quick add initiatives",

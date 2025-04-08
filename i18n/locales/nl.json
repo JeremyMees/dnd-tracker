@@ -484,6 +484,11 @@
     }
   },
   "components": {
+    "colorModeSwitcher": {
+      "light": "Licht",
+      "dark": "Donker",
+      "system": "Systeem"
+    },
     "initiativeTableHeader": {
       "initiaive": {
         "title": "Initiatieven snel toevoegen",
@@ -721,7 +726,7 @@
       "pages": "Pagina's",
       "upgrade": "Upgrade naar Pro",
       "changelog": "Changelog",
-      "featureRequest": "Feature request",
+      "featureRequest": "Feature verzoek",
       "logout": "Uitloggen",
       "login": "Login",
       "register": "Registreer",

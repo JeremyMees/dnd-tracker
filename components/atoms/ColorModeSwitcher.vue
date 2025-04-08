@@ -11,13 +11,13 @@
       <UiSelectContent>
         <UiSelectGroup>
           <UiSelectItem value="light">
-            Light
+            {{ $t('components.colorModeSwitcher.light') }}
           </UiSelectItem>
           <UiSelectItem value="dark">
-            Dark
+            {{ $t('components.colorModeSwitcher.dark') }}
           </UiSelectItem>
           <UiSelectItem value="system">
-            System
+            {{ $t('components.colorModeSwitcher.system') }}
           </UiSelectItem>
         </UiSelectGroup>
       </UiSelectContent>
