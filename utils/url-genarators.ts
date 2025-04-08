@@ -23,9 +23,8 @@ function localeParam(locale: string): string {
   return locale === 'nl' ? '' : `${locale}/`
 }
 
-export function shareEncounterUrl(encounter: InitiativeRow | EncounterItem, locale: string): string {
+export function shareEncounterUrl(token: string, locale: string): string {
   const { appDomain } = useRuntimeConfig().public
-  const content = window.btoa(encodeURIComponent(encounter.id))
 
-  return `${appDomain}/${localeParam(locale)}playground?content=${content}`
+  return `${appDomain}/${localeParam(locale)}playground?token=${token}`
 }

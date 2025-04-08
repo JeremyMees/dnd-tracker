@@ -47,6 +47,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
     plunkApiKey: process.env.PLUNK_API_KEY,
+    jwtSecret: process.env.JWT_SECRET,
     public: {
       formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,

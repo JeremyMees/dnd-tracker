@@ -38,18 +38,37 @@ const { data, status } = useEncounterListing(computed(() => {
 const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
 
 const columns = generateColumns({
-  onShare: (item: EncounterItem) => {
-    clipboard.copy(shareEncounterUrl(item, locale.value))
+  onShare: async (item: EncounterItem) => await shareEncounter(item),
+  onUpdate: (item: EncounterItem) => openModal(item),
+  onCopy: async ({ data }: { data: EncounterItem }) => await copyEncounter({ data }),
+})
+
+async function shareEncounter(item: EncounterItem): Promise<void> {
+  try {
+    const jwt = await $fetch<string>('/api/encounter/share', {
+      method: 'POST',
+      body: { encounter: item.id },
+    })
+
+    if (!jwt) throw createError('Failed to share encounter')
+
+    const url = shareEncounterUrl(jwt, locale.value)
+
+    clipboard.copy(url)
 
     toast({
       description: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
       variant: 'info',
     })
-  },
-  onUpdate: (item: EncounterItem) => openModal(item),
-  onCopy: async ({ data }: { data: EncounterItem }) => await copyEncounter({ data }),
-})
-
+  }
+  catch {
+    toast({
+      title: t('general.error.title'),
+      description: t('general.error.text'),
+      variant: 'destructive',
+    })
+  }
+}
 function openModal(item?: EncounterItem): void {
   modal.open({
     component: 'Encounter',
