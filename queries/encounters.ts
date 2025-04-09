@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-export function useEncounterListing(data: ComputedRef<SbFilter>) {
+export function useEncounterListing(
+  data: ComputedRef<SbFilter>,
+  enabled: ComputedRef<boolean>,
+  perPage = 10,
+) {
   return useQuery({
-    queryKey: ['useEncounterListing', data],
+    queryKey: ['useEncounterListing', data, perPage],
     queryFn: () => sbQuery<EncounterItem>({
       table: 'initiative_sheets',
       select: `
@@ -22,7 +26,7 @@ export function useEncounterListing(data: ComputedRef<SbFilter>) {
       `,
       filters: data.value,
       page: data.value.page,
-      perPage: 10,
+      perPage,
       fuzzy: true,
     }),
     select: ({ data, count, totalPages }) => ({
@@ -35,16 +39,18 @@ export function useEncounterListing(data: ComputedRef<SbFilter>) {
       })),
     }),
     placeholderData: keepPreviousData,
+    enabled,
   })
 }
 
-export function useEncounterCount() {
+export function useEncounterCount(enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<Database>()
 
   return useQuery({
     queryKey: ['useEncounterCount'],
     queryFn: async () => await supabase.from('initiative_sheets').select('id', { count: 'exact' }),
     select: ({ count }) => count || 0,
+    enabled,
   })
 }
 

@@ -2,7 +2,10 @@
 import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-const props = defineProps<{ current: CampaignFull }>()
+const props = defineProps<{
+  current?: CampaignFull
+  campaignId: number
+}>()
 
 const user = useAuthenticatedUser()
 const { toast } = useToast()
@@ -12,14 +15,16 @@ const { ask } = useConfirm()
 const localePath = useLocalePath()
 
 const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
+  if (!props.current) return []
+
   return [
     {
       user: props.current.created_by,
       role: 'Owner' as UserRole,
       id: 0,
     },
-    ...(props.current.team || []),
-    ...(props.current.join_campaign?.map(join => ({ ...join, invite: true })) || []),
+    ...props.current.team,
+    ...props.current.join_campaign.map(join => ({ ...join, invite: true })),
   ]
 })
 
@@ -36,7 +41,7 @@ async function update(form: CampaignForm, node: FormNode): Promise<void> {
 
   await updateCampaign({
     data: sanitizeForm<CampaignForm>(form),
-    id: props.current.id,
+    id: props.campaignId,
     onError: (error) => {
       reset('form')
       node.setErrors(error)
@@ -52,7 +57,7 @@ async function changeRole(form: UpdateRoleForm, node: FormNode): Promise<void> {
   await updateTeamMember({
     data: { role },
     id: +id,
-    campaign: props.current.id,
+    campaign: props.campaignId,
     onError: (error) => {
       node.setErrors(error)
     },
@@ -60,6 +65,8 @@ async function changeRole(form: UpdateRoleForm, node: FormNode): Promise<void> {
 }
 
 function invite(): void {
+  if (!props.current) return
+
   modal.open({
     component: 'InviteMember',
     header: t(`components.inviteMember.title`, { campaign: props.current.title }),
@@ -70,7 +77,7 @@ function invite(): void {
 async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<void> {
   const id = member.id
   const self = member.user.id === user.value.id
-  const campaign = props.current.id
+  const campaign = props.campaignId
 
   ask({
     title: self
@@ -224,7 +231,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
         <button
           class="btn-foreground w-full mt-4"
           :aria-label="$t('pages.campaign.settings.add')"
-          :disabled="[...current.team, ...current.join_campaign].length >= 9"
+          :disabled="[...(current?.team || []), ...(current?.join_campaign || [])].length >= 9"
           @click="invite"
         >
           {{ $t('pages.campaign.settings.add') }}
@@ -246,7 +253,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
           @submit="update"
         >
           <FormKit
-            :value="current.title"
+            :value="current?.title"
             name="title"
             :label="$t('components.inputs.titleLabel')"
             validation="required|length:3,30"

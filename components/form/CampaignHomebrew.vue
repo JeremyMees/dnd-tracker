@@ -23,7 +23,7 @@ const { data, isPending } = useHomebrewListing(
     search: '',
     eq: { field: 'campaign', value: props.sheet!.campaign!.id },
   })),
-  { enabled: computed(() => !!props.sheet) },
+  computed(() => !!props.sheet),
   100,
 )
 

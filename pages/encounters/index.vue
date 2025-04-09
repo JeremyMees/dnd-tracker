@@ -8,6 +8,6 @@ useSeo('Encounters')
     name="sidebar"
     :header="$t('general.encounter', 2)"
   >
-    <Encounters />
+    <Encounters fetch-ready />
   </NuxtLayout>
 </template>

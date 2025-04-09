@@ -3,21 +3,28 @@ import { useQueryClient } from '@tanstack/vue-query'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, expandedMarkup, initialState } from '~/tables/homebrew-listing'
 
-const props = defineProps<{ current: CampaignFull }>()
+const props = defineProps<{
+  current?: CampaignFull
+  campaignId: number
+  isAdmin: boolean
+  isOwner: boolean
+  fetchReady: boolean
+}>()
 
 const modal = useModal()
 const { ask } = useConfirm()
 const { t } = useI18n()
 const queryClient = useQueryClient()
-const user = useAuthenticatedUser()
 
 const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
-const hasRights = isOwner(props.current, user.value.id) || isAdmin(props.current.team, user.value.id)
 const max = 100
 
-const { data: count } = useHomebrewCount(props.current.id)
+const hasRights = computed(() => props.isOwner || props.isAdmin)
+const enableDateFetching = computed(() => props.fetchReady)
+
 const { mutateAsync: removeHomebrew } = useHomebrewRemove()
+const { data: count } = useHomebrewCount(props.campaignId, enableDateFetching)
 
 const { data, status } = useHomebrewListing(computed(() => {
   const pagination = table.value?.vueTable.getState().pagination
@@ -29,15 +36,13 @@ const { data, status } = useHomebrewListing(computed(() => {
     sortBy: sorting?.length ? sorting[0].id : initialState.sorting?.[0]?.id,
     sortDesc: sorting?.length ? sorting[0].desc : initialState.sorting?.[0]?.desc,
     page: pagination ? pagination.pageIndex : 0,
-    eq: { field: 'campaign', value: props.current.id },
+    eq: { field: 'campaign', value: props.campaignId },
   }
-}), {
-  enabled: computed(() => true),
-})
+}), enableDateFetching)
 
 const columns = generateColumns({
   onUpdate: (item: HomebrewItemRow) => openModal(item),
-  hasRights,
+  hasRights: hasRights.value,
 })
 
 function openModal(item?: HomebrewItemRow): void {
@@ -46,7 +51,7 @@ function openModal(item?: HomebrewItemRow): void {
     header: t(`components.homebrewModal.${item ? 'update' : 'new'}`),
     submit: t(`components.homebrewModal.${item ? 'update' : 'add'}`),
     props: {
-      campaignId: props.current.id,
+      campaignId: props.campaignId,
       count: count.value,
       ...(item && { item }),
     },

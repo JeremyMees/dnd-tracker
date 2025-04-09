@@ -1,14 +1,18 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-export function useNoteListing(data: ComputedRef<SbFilter>) {
+export function useNoteListing(
+  data: ComputedRef<SbFilter>,
+  enabled: ComputedRef<boolean>,
+  perPage = 10,
+) {
   return useQuery({
-    queryKey: ['useNoteListing', data],
+    queryKey: ['useNoteListing', data, perPage],
     queryFn: () => sbQuery<NoteRow>({
       table: 'notes',
       filters: data.value,
       page: data.value.page,
-      perPage: 10,
+      perPage,
       fuzzy: true,
     }),
     select: ({ data, count, totalPages }) => ({
@@ -17,16 +21,18 @@ export function useNoteListing(data: ComputedRef<SbFilter>) {
       notes: data,
     }),
     placeholderData: keepPreviousData,
+    enabled,
   })
 }
 
-export function useNoteCount(id: number) {
+export function useNoteCount(id: number, enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<Database>()
 
   return useQuery({
     queryKey: ['useNoteCount', id],
     queryFn: async () => await supabase.from('notes').select('id', { count: 'exact' }).eq('campaign', id),
     select: ({ count }) => count || 0,
+    enabled,
   })
 }
 

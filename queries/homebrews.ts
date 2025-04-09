@@ -3,7 +3,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useHomebrewListing(
   data: ComputedRef<SbFilter>,
-  { enabled }: { enabled: ComputedRef<boolean> },
+  enabled: ComputedRef<boolean>,
   perPage = 10,
 ) {
   return useQuery({
@@ -26,13 +26,14 @@ export function useHomebrewListing(
   })
 }
 
-export function useHomebrewCount(id: number) {
+export function useHomebrewCount(id: number, enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<Database>()
 
   return useQuery({
     queryKey: ['useHomebrewCount', id],
     queryFn: async () => await supabase.from('homebrew_items').select('id', { count: 'exact' }).eq('campaign', id),
     select: ({ count }) => count || 0,
+    enabled,
   })
 }
 

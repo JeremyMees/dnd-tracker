@@ -4,7 +4,13 @@ import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable } from '#components'
 import { generateColumns, expandedMarkup, initialState } from '~/tables/note-listing'
 
-const props = defineProps<{ current: CampaignFull }>()
+const props = defineProps<{
+  current?: CampaignFull
+  campaignId: number
+  isAdmin: boolean
+  isOwner: boolean
+  fetchReady: boolean
+}>()
 
 const { toast } = useToast()
 const modal = useModal()
@@ -15,10 +21,12 @@ const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
 const queryClient = useQueryClient()
 
 const table = ref<InstanceType<typeof DataTable>>()
-const hasRights = isOwner(props.current, user.value.id) || isAdmin(props.current.team, user.value.id)
 const max = 100
 
-const { data: count } = useNoteCount(props.current.id)
+const hasRights = computed(() => props.isOwner || props.isAdmin)
+const enableDateFetching = computed(() => props.fetchReady)
+
+const { data: count } = useNoteCount(props.campaignId, enableDateFetching)
 const { mutateAsync: removeNote } = useNoteRemove()
 
 const { data, status } = useNoteListing(computed(() => {
@@ -31,14 +39,14 @@ const { data, status } = useNoteListing(computed(() => {
     sortBy: sorting?.length ? sorting[0].id : initialState.sorting?.[0]?.id,
     sortDesc: sorting?.length ? sorting[0].desc : initialState.sorting?.[0]?.desc,
     page: pagination ? pagination.pageIndex : 0,
-    eq: { field: 'campaign', value: props.current.id },
+    eq: { field: 'campaign', value: props.campaignId },
   }
-}))
+}), enableDateFetching)
 
 const columns = generateColumns({
   onUpdate: (item: NoteRow) => openModal(item),
   onSendMail: (item: NoteRow) => openMailModal(item),
-  hasRights,
+  hasRights: hasRights.value,
   isInCoolDown,
   getRemainingTime,
 })
@@ -49,7 +57,7 @@ function openModal(item?: NoteRow): void {
     header: t(`components.noteModal.${item ? 'update' : 'new'}`),
     submit: t(`components.noteModal.${item ? 'update' : 'add'}`),
     props: {
-      campaignId: props.current.id,
+      campaignId: props.campaignId,
       ...(item && { note: item }),
     },
   })
@@ -81,6 +89,8 @@ function invalidateQueries(): void {
 async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void> {
   try {
     await Promise.all(addresses.map(async (email) => {
+      if (!props.current) return
+
       await $fetch('/api/emails/share-note', {
         method: 'POST',
         body: {

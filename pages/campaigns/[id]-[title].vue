@@ -10,6 +10,9 @@ const { t } = useI18n()
 
 const { data, isPending, isError, isSuccess } = useCampaignDetail(+route.params.id)
 
+const fetchReady = ref(false)
+onNuxtReady(() => fetchReady.value = true)
+
 const isAdmin = computedAsync(async () => data.value ? await allows(isCampaignAdmin, data.value) : false, false)
 const isOwner = computedAsync(async () => data.value ? await allows(isCampaignOwner, data.value) : false, false)
 
@@ -110,6 +113,10 @@ const tabs = computed<Tab[]>(() => {
       <NuxtPage
         v-if="!isError"
         :current="data"
+        :is-admin="isAdmin"
+        :is-owner="isOwner"
+        :fetch-ready="fetchReady"
+        :campaign-id="+route.params.id"
       />
       <Card
         v-else

@@ -4,7 +4,10 @@ import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, initialState } from '~/tables/encounter-listing'
 
-const props = defineProps<{ campaign?: CampaignFull }>()
+const props = defineProps<{
+  campaignId?: number
+  fetchReady: boolean
+}>()
 
 const { toast } = useToast()
 const modal = useModal()
@@ -17,7 +20,9 @@ const queryClient = useQueryClient()
 const table = ref<InstanceType<typeof DataTable>>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
-const { data: count } = useEncounterCount()
+const enableDateFetching = computed(() => props.fetchReady)
+
+const { data: count } = useEncounterCount(enableDateFetching)
 const { mutateAsync: removeEncounter } = useEncounterRemove()
 const { mutateAsync: copyEncounter } = useEncounterCopy()
 
@@ -31,9 +36,9 @@ const { data, status } = useEncounterListing(computed(() => {
     sortBy: sorting?.length ? sorting[0].id : initialState.sorting?.[0]?.id,
     sortDesc: sorting?.length ? sorting[0].desc : initialState.sorting?.[0]?.desc,
     page: pagination ? pagination.pageIndex : 0,
-    eq: props.campaign?.id ? { field: 'campaign', value: props.campaign.id } : undefined,
+    eq: props.campaignId ? { field: 'campaign', value: props.campaignId } : undefined,
   }
-}))
+}), enableDateFetching)
 
 const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
 
@@ -76,7 +81,7 @@ function openModal(item?: EncounterItem): void {
     submit: t(`pages.encounters.${item ? 'update' : 'add'}`),
     props: {
       ...(item && { encounter: item }),
-      campaignId: props.campaign?.id,
+      campaignId: props.campaignId,
     },
   })
 }
