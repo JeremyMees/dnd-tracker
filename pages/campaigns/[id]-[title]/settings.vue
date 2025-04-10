@@ -123,119 +123,142 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
           color="secondary"
           class="overflow-x-auto overflow-y-hidden w-full"
         >
-          <div
-            v-for="member in members"
-            :key="member.user.id"
-            class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between body-small border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
-          >
-            <div class="flex items-center gap-2">
-              <UiAvatar
-                v-tippy="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
-                class="border-2 border-background"
+          <ClientOnly>
+            <template v-if="members.length > 0">
+              <div
+                v-for="member in members"
+                :key="member.user.id"
+                class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between body-small border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
               >
-                <UiAvatarImage
-                  :src="member.user.avatar"
-                  :alt="member.user.username"
-                />
-                <UiAvatarFallback>
-                  <Icon
-                    name="tabler:user"
-                    class="size-6 min-w-6 text-muted-foreground"
-                  />
-                </UiAvatarFallback>
-              </UiAvatar>
-              <div class="flex flex-col">
-                <span class="font-bold">
-                  {{ member.user.username }}
-                </span>
-                <span class="text-muted-foreground">
-                  {{ member.user.name }}
-                </span>
-              </div>
-            </div>
-            <div
-              v-if="member?.invite"
-              class="flex items-center gap-2"
-            >
-              <Icon
-                name="tabler:send"
-                :aria-hidden="true"
-                class="size-4 text-muted-foreground"
-              />
-              <span>
-                {{ $t('general.invited') }}
-              </span>
-            </div>
-            <div v-else-if="member.role === 'Owner'">
-              {{ $t(`general.roles.Owner.title`) }}
-            </div>
-            <FormKit
-              v-else
-              type="form"
-              :submit-label="$t('pages.campaigns.update')"
-              form-class="flex items-center gap-2"
-              @submit="changeRole"
-            >
-              <FormKit
-                :value="member.role"
-                name="role"
-                type="select"
-                :options="[
-                  { value: 'Viewer', label: $t('general.roles.Viewer.title') },
-                  { value: 'Admin', label: $t('general.roles.Admin.title') },
-                ]"
-                outer-class="$remove:mb-4 w-full"
-                inner-class="$remove:mb-1"
-              />
-              <FormKit
-                name="id"
-                type="hidden"
-                :value="member.id.toString()"
-              />
-              <template #actions="{ value }">
-                <ClientOnly>
-                  <AnimationReveal>
-                    <button
-                      v-if="value?.role && value.role !== member.role"
-                      v-tippy="$t('actions.save')"
-                      :aria-label="$t('actions.save')"
-                      class="icon-btn-success"
-                    >
+                <div class="flex items-center gap-2">
+                  <UiAvatar
+                    v-tippy="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
+                    class="border-2 border-background"
+                  >
+                    <UiAvatarImage
+                      :src="member.user.avatar"
+                      :alt="member.user.username"
+                    />
+                    <UiAvatarFallback>
                       <Icon
-                        name="tabler:device-floppy"
-                        class="size-6"
-                        aria-hidden="true"
+                        name="tabler:user"
+                        class="size-6 min-w-6 text-muted-foreground"
                       />
-                    </button>
-                  </AnimationReveal>
-                </ClientOnly>
-              </template>
-            </FormKit>
-            <div class="flex sm:justify-end items-center">
-              <button
-                v-tippy="$t('actions.delete')"
-                :disabled="member.role === 'Owner'"
-                :aria-label="$t('actions.delete')"
-                class="icon-btn-destructive"
-                @click="remove(member)"
-              >
-                <Icon
-                  name="tabler:trash"
-                  class="size-6"
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          </div>
+                    </UiAvatarFallback>
+                  </UiAvatar>
+                  <div class="flex flex-col">
+                    <span class="font-bold">
+                      {{ member.user.username }}
+                    </span>
+                    <span class="text-muted-foreground">
+                      {{ member.user.name }}
+                    </span>
+                  </div>
+                </div>
+                <div
+                  v-if="member?.invite"
+                  class="flex items-center gap-2"
+                >
+                  <Icon
+                    name="tabler:send"
+                    :aria-hidden="true"
+                    class="size-4 text-muted-foreground"
+                  />
+                  <span>
+                    {{ $t('general.invited') }}
+                  </span>
+                </div>
+                <div v-else-if="member.role === 'Owner'">
+                  {{ $t(`general.roles.Owner.title`) }}
+                </div>
+                <FormKit
+                  v-else
+                  type="form"
+                  :submit-label="$t('pages.campaigns.update')"
+                  form-class="flex items-center gap-2"
+                  @submit="changeRole"
+                >
+                  <FormKit
+                    :value="member.role"
+                    name="role"
+                    type="select"
+                    :options="[
+                      { value: 'Viewer', label: $t('general.roles.Viewer.title') },
+                      { value: 'Admin', label: $t('general.roles.Admin.title') },
+                    ]"
+                    outer-class="$remove:mb-4 w-full"
+                    inner-class="$remove:mb-1"
+                  />
+                  <FormKit
+                    name="id"
+                    type="hidden"
+                    :value="member.id.toString()"
+                  />
+                  <template #actions="{ value }">
+                    <ClientOnly>
+                      <AnimationReveal>
+                        <button
+                          v-if="value?.role && value.role !== member.role"
+                          v-tippy="$t('actions.save')"
+                          :aria-label="$t('actions.save')"
+                          class="icon-btn-success mr-1"
+                        >
+                          <Icon
+                            name="tabler:device-floppy"
+                            class="size-6"
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </AnimationReveal>
+                    </ClientOnly>
+                  </template>
+                </FormKit>
+                <div class="flex sm:justify-end items-center">
+                  <button
+                    v-tippy="$t('actions.delete')"
+                    :disabled="member.role === 'Owner'"
+                    :aria-label="$t('actions.delete')"
+                    class="icon-btn-destructive"
+                    @click="remove(member)"
+                  >
+                    <Icon
+                      name="tabler:trash"
+                      class="size-6"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <SkeletonMemberRow
+                v-for="i in 3"
+                :key="i"
+              />
+            </template>
+
+            <template #fallback>
+              <SkeletonMemberRow
+                v-for="i in 3"
+                :key="i"
+              />
+            </template>
+          </ClientOnly>
         </Card>
-        <button
-          class="btn-foreground w-full mt-4"
-          :aria-label="$t('pages.campaign.settings.add')"
-          :disabled="[...(current?.team || []), ...(current?.join_campaign || [])].length >= 9"
-          @click="invite"
-        >
-          {{ $t('pages.campaign.settings.add') }}
-        </button>
+        <ClientOnly>
+          <button
+            class="btn-foreground w-full mt-4"
+            :aria-label="$t('pages.campaign.settings.add')"
+            :disabled="[...(current?.team || []), ...(current?.join_campaign || [])].length >= 9"
+            @click="invite"
+          >
+            {{ $t('pages.campaign.settings.add') }}
+          </button>
+
+          <template #fallback>
+            <UiSkeleton class="w-full h-12 rounded-lg mt-4" />
+          </template>
+        </ClientOnly>
       </div>
     </div>
 
@@ -246,19 +269,37 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
         </h2>
       </div>
       <div class="grow max-w-4xl">
-        <FormKit
-          id="form"
-          type="form"
-          :submit-label="$t('pages.campaigns.update')"
-          @submit="update"
-        >
-          <FormKit
-            :value="current?.title"
-            name="title"
-            :label="$t('components.inputs.titleLabel')"
-            validation="required|length:3,30"
-          />
-        </FormKit>
+        <ClientOnly>
+          <template v-if="current">
+            <FormKit
+              id="form"
+              type="form"
+              :submit-label="$t('pages.campaigns.update')"
+              @submit="update"
+            >
+              <FormKit
+                :value="current.title"
+                name="title"
+                :label="$t('components.inputs.titleLabel')"
+                validation="required|length:3,30"
+              />
+            </FormKit>
+          </template>
+          <div
+            v-else
+            class="flex flex-col gap-y-4"
+          >
+            <SkeletonInput />
+            <UiSkeleton class="w-full h-12 rounded-lg" />
+          </div>
+
+          <template #fallback>
+            <div class="flex flex-col gap-y-4">
+              <SkeletonInput />
+              <UiSkeleton class="w-full h-12 rounded-lg" />
+            </div>
+          </template>
+        </ClientOnly>
       </div>
     </div>
   </section>
