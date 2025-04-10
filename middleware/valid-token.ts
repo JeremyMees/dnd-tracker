@@ -1,24 +1,36 @@
+import { useQueryClient } from '@tanstack/vue-query'
+
 export default defineNuxtRouteMiddleware(async ({ query }) => {
   const supabase = useSupabaseClient<Database>()
-  const user = useSupabaseUser()
   const localePath = useLocalePath()
+  const queryClient = useQueryClient()
 
-  const { campaign, token } = query
+  const { token } = query
 
-  if (!campaign || isNaN(+campaign) || !token || !user.value) {
+  if (!token || typeof token !== 'string') {
     return navigateTo(localePath('/'))
   }
 
-  const { error } = await supabase
+  const { campaign, user, role } = await $fetch('/api/campaign/validate-join', {
+    method: 'POST',
+    body: { token },
+  })
+
+  const { data, error } = await supabase
     .from('join_campaign')
-    .select('id')
-    .match({
-      user: user.value.id,
-      token: token,
-      campaign: +campaign,
-    })
+    .select(`
+      id,
+      role,
+      user,
+      campaign(
+        id,
+        title
+      )
+    `)
+    .match({ token, user, campaign, role })
     .single()
 
   if (error) navigateTo(localePath('/no-access'))
-  else return
+
+  queryClient.setQueryData(['useJoinCampaign', token], data)
 })

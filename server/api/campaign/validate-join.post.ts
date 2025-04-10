@@ -1,30 +1,29 @@
-import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
-import type { Database } from '~/types/database'
-import type { JoinCampaignItem } from '~/types/supabase'
+import { validateJWT } from 'oslo/jwt'
+import type { UserRole } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
-  const supabase = serverSupabaseServiceRole<Database>(event)
-  const user = await serverSupabaseUser(event)
   const { token } = await readBody(event)
+  const secret = useRuntimeConfig().jwtSecret
 
-  if (!token || !user) throw createError('Invalid request')
+  if (!token || typeof token !== 'string') throw createError('Token not provided')
 
-  // Validate that the join_campaign token exists
-  const { data, error } = await supabase
-    .from('join_campaign')
-    .select(`
-      id,
-      role,
-      user,
-      campaign(
-        id,
-        title
-      )
-    `)
-    .match({ token, user: user.id })
-    .single()
+  const jwt = await validateJWT('HS256', new TextEncoder().encode(secret), token)
 
-  if (error || !data) throw createError('Join campaign token not found')
+  if (
+    !jwt.payload
+    || typeof jwt.payload !== 'object'
+    || !('data' in jwt.payload)
+    || jwt.payload.data === null
+    || typeof jwt.payload.data !== 'object'
+    || !('campaign' in jwt.payload.data)
+    || typeof jwt.payload.data.campaign !== 'number'
+    || !('role' in jwt.payload.data)
+    || typeof jwt.payload.data.role !== 'string'
+    || !('user' in jwt.payload.data)
+    || typeof jwt.payload.data.user !== 'string'
+  ) throw createError('Invalid JWT')
 
-  return data as unknown as JoinCampaignItem
+  const { data } = jwt.payload as { data: { campaign: number, user: string, role: UserRole } }
+
+  return data
 })

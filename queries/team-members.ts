@@ -3,20 +3,26 @@ import { useToast } from '~/components/ui/toast'
 
 export function useJoinTokenCreate() {
   const supabase = useSupabaseClient<Database>()
-  const token = generateToken()
 
   return useMutation({
     mutationFn: async ({ data }: { data: TeamInsert } & QueryDefaults) => {
+      const jwt = await $fetch<string>('/api/campaign/join', {
+        method: 'POST',
+        body: data,
+      })
+
+      if (!jwt) throw createError('Failed to create join token')
+
       const { error } = await supabase
         .from('join_campaign')
-        .insert([{ ...data, token }])
+        .insert([{ ...data, token: jwt }])
         .select(`
           *,
           user(id, username, avatar)
         `)
 
       if (error) throw createError(error)
-      else return token
+      else return jwt
     },
     onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()

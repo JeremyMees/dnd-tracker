@@ -204,8 +204,8 @@
         "description": "Admins can create content for a campaign, play encounters and access the campaign settings page but cannot delete the campaign"
       },
       "Viewer": {
-        "title": "Player",
-        "description": "Players only have the option to play encounters and not edit content"
+        "title": "Member",
+        "description": "Members only have the option to play encounters and not edit content"
       }
     },
     "noContent": {

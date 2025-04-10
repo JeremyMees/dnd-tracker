@@ -71,33 +71,40 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
         if (admin) return t('general.admin')
         if (member) return t('general.member')
         if (owner) return t('general.owner')
-        return t('general.viewer')
+        return ''
       },
     }),
     columnHelper.display({
       enableGlobalFilter: false,
       enableSorting: false,
       id: 'actions',
-      cell: ({ row }) => permission({
-        ability: isCampaignAdmin,
-        args: [row.original],
-        children: [
-          iconButton({
-            icon: 'tabler:door-exit',
-            content: t('actions.leave'),
-            color: 'warning',
-            cb: () => onLeave(row.original),
-          }),
-          iconButton({
-            icon: 'tabler:edit',
-            content: t('actions.update'),
-            color: 'info',
-            cb: () => onUpdate(row.original),
-          }),
-        ],
-        style: 'flex justify-end',
-        as: 'div',
-      }),
+      cell: ({ row }) => h('div', { class: 'flex justify-end' }, [
+        permission({
+          ability: isCampaignMember,
+          args: [row.original],
+          children: [
+            iconButton({
+              icon: 'tabler:door-exit',
+              content: t('actions.leave'),
+              color: 'warning',
+              cb: () => onLeave(row.original),
+              disabled: isOwner(row.original, user.value.id),
+            }),
+          ],
+        }),
+        permission({
+          ability: isCampaignAdmin,
+          args: [row.original],
+          children: [
+            iconButton({
+              icon: 'tabler:edit',
+              content: t('actions.update'),
+              color: 'info',
+              cb: () => onUpdate(row.original),
+            }),
+          ],
+        }),
+      ]),
     }),
   ]
 }

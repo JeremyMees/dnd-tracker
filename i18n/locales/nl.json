@@ -204,8 +204,8 @@
         "description": "Beheerders kunnen content maken voor een campagne, encounters spelen en hebben toegang tot de pagina met campagne-instellingen maar kan de campagne niet verwijderen"
       },
       "Viewer": {
-        "title": "Speler",
-        "description": "Spelers hebben alleen de mogelijkheid om encounters te spelen en geen inhoud aan te passen"
+        "title": "Lid",
+        "description": "Leden hebben alleen de mogelijkheid om encounters te spelen en geen inhoud aan te passen"
       }
     },
     "noContent": {

@@ -109,14 +109,14 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
           <UiDropdownMenuContent align="start">
             <UiDropdownMenuItem>
               <NuxtLinkLocale
-                to="/campaigns"
+                :to="campaignUrl(data.campaign, 'encounters')"
                 class="flex items-center gap-2 text-muted-foreground"
               >
                 <Icon
                   name="tabler:layout-dashboard"
                   class="size-4 min-w-4 text-foreground"
                 />
-                {{ $t('pages.encounter.back.campaigns', { campaign: data?.campaign?.title }) }}
+                {{ $t('pages.encounter.back.campaigns', { campaign: data.campaign?.title }) }}
               </NuxtLinkLocale>
             </UiDropdownMenuItem>
             <UiDropdownMenuItem>

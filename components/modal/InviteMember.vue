@@ -87,6 +87,7 @@ async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<voi
     await Promise.all(users.map(async user => addTeamMember(user)))
 
     queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', props.current.id] })
+    queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
 
     toast({
       title: t('components.inviteMember.toast.invited.title'),
@@ -121,7 +122,7 @@ async function addTeamMember(member: AddMemberForm): Promise<void> {
       username: member.profile.username,
       campaign: props.current.title,
       invitedBy: user.value.username || 'Owner',
-      inviteLink: `https://dnd-tracker.com${localePath('/campaigns/join')}?token=${token}&campaign=${props.current.id}`,
+      inviteLink: `https://dnd-tracker.com${localePath('/campaigns/join')}?token=${token}`,
     },
   })
 }
@@ -233,7 +234,7 @@ async function inviteNewUser(email: string): Promise<void> {
                   {{ item.profile.username }}
                 </p>
                 <p class="body-small text-muted-foreground">
-                  {{ item.role }}
+                  {{ $t(`general.roles.${item.role}.title`) }}
                 </p>
               </div>
             </div>
