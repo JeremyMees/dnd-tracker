@@ -1,7 +1,8 @@
-export interface AuthUser extends ProfileRow {}
+export interface AuthUser extends ProfileRow { }
 
 export function useAuthentication() {
   const user = useState<AuthUser | null>('auth-user', () => null)
+  const gc = useState<number | null>('auth-gc', () => null)
   const ready = useState<boolean>('auth-ready', () => false)
 
   const supabase = useSupabaseClient<Database>()
@@ -9,12 +10,8 @@ export function useAuthentication() {
   const localePath = useLocalePath()
 
   supabase.auth.onAuthStateChange((event) => {
-    if (['USER_UPDATED', 'SIGNED_IN'].includes(event)) {
-      fetch()
-    }
-    else if (event === 'INITIAL_SESSION' && !user.value) {
-      fetch()
-    }
+    if (['USER_UPDATED', 'SIGNED_IN'].includes(event)) fetch()
+    else if (event === 'INITIAL_SESSION' && !user.value) fetch()
   })
 
   async function register(form: Register): Promise<void> {
@@ -58,11 +55,19 @@ export function useAuthentication() {
       setTimeout(() => navigateTo(localePath('/login')), 100)
 
       user.value = null
+      gc.value = null
     }
   }
 
-  async function fetch(): Promise<void> {
+  async function fetch(forceRefresh = false): Promise<void> {
     if (supabaseUser.value) {
+      if (
+        user.value
+        && gc.value
+        && new Date().getTime() - gc.value < 1000 * 60 * 5
+        && !forceRefresh
+      ) return
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -73,9 +78,15 @@ export function useAuthentication() {
         await logout()
       }
 
-      if (error) throw createError(error)
+      if (error) {
+        gc.value = null
+        throw createError(error)
+      }
 
-      if (data) user.value = data
+      if (data) {
+        user.value = data
+        gc.value = new Date().getTime()
+      }
     }
 
     if (!ready.value) ready.value = true
