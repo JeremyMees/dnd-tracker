@@ -43,7 +43,7 @@ function next(): void {
 </script>
 
 <template>
-  <div class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary-foreground border-secondary min-w-[160px] overflow-hidden">
+  <div class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden">
     <Icon
       v-tippy="$t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
       :name="icon"
