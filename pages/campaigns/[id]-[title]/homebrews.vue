@@ -3,6 +3,8 @@ import { useQueryClient } from '@tanstack/vue-query'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, expandedMarkup, initialState } from '~/tables/homebrew-listing'
 
+useSeo('Campaign homebrews')
+
 const props = defineProps<{
   current?: CampaignFull
   campaignId: number

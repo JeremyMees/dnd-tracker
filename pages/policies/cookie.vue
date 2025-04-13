@@ -1,3 +1,7 @@
+<script setup lang="ts">
+useSeo('Cookie policy')
+</script>
+
 <template>
   <NuxtLayout container>
     <div class="space-y-4">

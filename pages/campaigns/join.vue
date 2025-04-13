@@ -2,6 +2,8 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
+useSeo('Join campaign')
+
 definePageMeta({
   auth: true,
   middleware: ['valid-token'],

@@ -4,6 +4,8 @@ import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable } from '#components'
 import { generateColumns, expandedMarkup, initialState } from '~/tables/note-listing'
 
+useSeo('Campaign notes')
+
 const props = defineProps<{
   current?: CampaignFull
   campaignId: number

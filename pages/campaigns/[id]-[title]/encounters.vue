@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import Encounters from '~/components/templates/Encounters.vue'
 
+useSeo('Campaign encounters')
+
 defineProps<{
   current?: CampaignFull
   campaignId: number

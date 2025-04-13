@@ -1,3 +1,7 @@
+<script setup lang="ts">
+useSeo('Legal information')
+</script>
+
 <template>
   <NuxtLayout container>
     <div class="space-y-4">

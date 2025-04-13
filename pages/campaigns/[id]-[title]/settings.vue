@@ -2,6 +2,8 @@
 import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 
+useSeo('Campaign settings')
+
 const props = defineProps<{
   current?: CampaignFull
   campaignId: number

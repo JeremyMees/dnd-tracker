@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useToast } from '~/components/ui/toast/use-toast'
 
+useSeo('Campaign danger zone')
+
 const props = defineProps<{
   current?: CampaignFull
   campaignId: number

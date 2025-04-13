@@ -1,3 +1,7 @@
+<script setup lang="ts">
+useSeo('Privacy policy')
+</script>
+
 <template>
   <NuxtLayout container>
     <div class="space-y-4">
