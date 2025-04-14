@@ -240,14 +240,21 @@
         "item5": "Integratie van official content met de mogelijkheid om je eigen homebrew toe te voegen",
         "item6": "Fantasie naam generator"
       },
-      "textBlock2": {
+      "containerScroll": {
+        "title": "Ontdek de kracht van",
+        "subtitle": "Encounter bouwen"
+      },
+      "ctaBanner": {
         "title": "Klaar om je D&D ervaring te verbeteren?",
         "text": "Laat je creativiteit de vrije loop met hulpmiddelen voor elk avontuur.",
         "button": "Begin met Creëren"
       },
-      "textBlock3": {
+      "textBlock2": {
         "title": "Vreemde gebeurtenissen",
         "text": "Doordat deze DnD Tracker nog in zijn kinderschoenen staat, kunnen er soms mysterieuze fouten tevoorschijn komen. Aarzel niet om ons iets te laten weten, zodat we deze snel kunnen oplossen."
+      },
+      "globe": {
+        "title": "Gemaakt in België"
       }
     },
     "error": {
@@ -590,7 +597,12 @@
       "button": "Oke"
     },
     "hero": {
-      "start": "Laat het spelen beginnen"
+      "start": "Laat het {keyword} beginnen",
+      "keywords": {
+        "session": "spelen",
+        "adventure": "avontuur",
+        "fun": "plezier"
+      }
     },
     "linkModal": {
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."

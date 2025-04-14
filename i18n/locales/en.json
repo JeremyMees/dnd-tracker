@@ -240,14 +240,21 @@
         "item5": "Plenty of information you can get your hands on",
         "item6": "Fantasy name generator"
       },
-      "textBlock2": {
+      "containerScroll": {
+        "title": "Unleash the power of",
+        "subtitle": "Encounter building"
+      },
+      "ctaBanner": {
         "title": "Ready to upgrade your D&D experience?",
         "text": "Unleash Your Creativity with Tools and Resources for Every Adventure.",
         "button": "Start Creating"
       },
-      "textBlock3": {
+      "textBlock2": {
         "title": "Weird stuff",
         "text": "Because we are still in the start-up phase of this dnd tracker, sometimes mysterious errors may appear. Please don't hesitate and be sure to let us know so we can fix them quickly."
+      },
+      "globe": {
+        "title": "Made in Belgium"
       }
     },
     "error": {
@@ -590,7 +597,12 @@
       "button": "OK"
     },
     "hero": {
-      "start": "Let the session start"
+      "start": "Let the {keyword} start",
+      "keywords": {
+        "session": "session",
+        "adventure": "adventure",
+        "fun": "fun"
+      }
     },
     "linkModal": {
       "placeholder": "Amidst the realm of dragons and dungeons, a hero's legend remains untold, as the user has not yet linked their character's saga."

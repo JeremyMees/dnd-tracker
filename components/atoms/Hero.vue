@@ -69,13 +69,24 @@ onMounted(() => {
       class="flex justify-center items-center relative mx-auto md:max-w-[78vw]"
       data-hero
     >
-      <h1
+      <I18nT
         data-hero-title
-        class="z-[3] mx-auto text-foreground text-[60px] leading-[60px] md:text-[100px] md:leading-[100px] lg:text-[120px] lg:leading-[120px] text-center max-w-md md:max-w-[1032px] opacity-0"
+        keypath="components.hero.start"
+        tag="h1"
+        class="z-[3] mx-auto text-foreground text-[60px] leading-[60px] md:text-[100px] md:leading-[100px] lg:text-[120px] lg:leading-[120px] min-h-[120px] md:min-h-[200px] lg:min-h-[240px] text-center max-w-md md:max-w-[1032px] opacity-0"
       >
-        {{ $t('components.hero.start') }}
-        <div class="fancy-shadow" />
-      </h1>
+        <template #keyword>
+          <UiFlipWords
+            :words="[
+              $t('components.hero.keywords.session'),
+              $t('components.hero.keywords.adventure'),
+              $t('components.hero.keywords.fun'),
+            ]"
+            :duration="3000"
+          />
+        </template>
+      </I18nT>
+      <div class="fancy-shadow" />
       <div class="absolute left-0 right-0 bottom-0 top-1/4 md:top-1/2 max-w-2xl mx-auto">
         <NuxtImg
           data-hero-d12

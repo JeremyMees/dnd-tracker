@@ -1,26 +1,10 @@
 <script setup lang="ts">
 import { gsap } from 'gsap'
-import { useToast } from '~/components/ui/toast/use-toast'
 import type { Dragon } from '#components'
 
 useSeo()
 
-// const store = useTableStore()
-const { toast } = useToast()
-const { t } = useI18n()
-
 const dragon = ref<InstanceType<typeof Dragon>>()
-
-try {
-  // await store.getSandboxEncounter()
-}
-catch (err) {
-  toast({
-    description: t('general.error.text'),
-    title: t('general.error.title'),
-    variant: 'destructive',
-  })
-}
 
 if (import.meta.client) {
   gsap.to(
@@ -43,7 +27,7 @@ if (import.meta.client) {
   <NuxtLayout no-padding>
     <AnimationBlob />
     <Hero />
-    <div class="flex flex-col gap-y-[100px] sm:gap-y-[150px] pb-20 pt-28 relative overflow-hidden">
+    <div class="flex flex-col pb-20 pt-40 relative overflow-hidden">
       <div
         data-skills
         class="space-y-20 dnd-container"
@@ -74,21 +58,49 @@ if (import.meta.client) {
         </LazyTitleText>
       </div>
       <LazyDragon ref="dragon" />
+      <LazyUiContainerScroll>
+        <template #title>
+          <h2 class="text-4xl font-semibold">
+            {{ $t('pages.home.containerScroll.title') }} <br>
+            <span class="mt-1 text-4xl font-bold leading-none md:text-[6rem]">
+              {{ $t('pages.home.containerScroll.subtitle') }}
+            </span>
+          </h2>
+        </template>
+        <template #card>
+          <NuxtImg
+            src="/encounter.png"
+            alt="Encounter"
+            sizes="sm:1000px md:1000px lg:1000px"
+            width="1852"
+            height="1168"
+            class="mx-auto h-full rounded-2xl object-cover object-left-top"
+          />
+        </template>
+      </LazyUiContainerScroll>
       <LazyCtaBanner
-        :title="$t('pages.home.textBlock2.title')"
-        :subtitle="$t('pages.home.textBlock2.text')"
-        :button="$t('pages.home.textBlock2.button')"
+        :title="$t('pages.home.ctaBanner.title')"
+        :subtitle="$t('pages.home.ctaBanner.text')"
+        :button="$t('pages.home.ctaBanner.button')"
       />
       <LazyTitleText
         center
         sprite="bedbug"
-        class="dnd-container"
+        class="dnd-container pt-40"
       >
-        {{ $t('pages.home.textBlock3.title') }}
+        {{ $t('pages.home.textBlock2.title') }}
         <template #text>
-          {{ $t('pages.home.textBlock3.text') }}
+          {{ $t('pages.home.textBlock2.text') }}
         </template>
       </LazyTitleText>
+    </div>
+    <div
+      class="relative flex size-full flex-col items-center justify-center px-40 pb-40 pt-8 md:pb-60"
+    >
+      <span class="text-center head-1 leading-none relative z-[1]">
+        {{ $t('pages.home.globe.title') }} 🇧🇪
+      </span>
+      <LazyUiGlobe class="top-10" />
     </div>
   </NuxtLayout>
 </template>
