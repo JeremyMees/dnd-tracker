@@ -162,7 +162,7 @@
           target="_blank"
           class="text-muted-foreground body-small"
         >
-          {{ $t('components.footer.illustrations') }} Mount Lazarus
+          {{ $t('components.navbar.illustrations') }} Mount Lazarus
         </NuxtLink>
         <p class="text-tertiary body-small">
           ©{{ new Date().getFullYear() }} dnd-tracker
