@@ -73,6 +73,7 @@ onMounted(() => {
         data-hero-title
         keypath="components.hero.start"
         tag="h1"
+        scope="global"
         class="z-[3] mx-auto text-foreground text-[60px] leading-[60px] md:text-[100px] md:leading-[100px] lg:text-[120px] lg:leading-[120px] min-h-[120px] md:min-h-[200px] lg:min-h-[240px] text-center max-w-md md:max-w-[1032px] opacity-0"
       >
         <template #keyword>

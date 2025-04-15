@@ -92,6 +92,7 @@ async function answerInvite(accept: boolean): Promise<void> {
     <I18nT
       keypath="pages.campaign.join.text"
       tag="p"
+      scope="global"
       class="text-muted-foreground"
     >
       <template #campaign>

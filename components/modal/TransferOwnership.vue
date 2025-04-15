@@ -101,6 +101,7 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
     <I18nT
       keypath="components.transferOwnershipModal.text"
       tag="p"
+      scope="global"
       class="py-4 body-small"
     >
       <template #campaign>
