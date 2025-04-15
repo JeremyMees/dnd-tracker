@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { inject } from 'vue'
-
 defineProps<{ type: 'menu' | 'footer' }>()
-
-const ybug = inject<{ open: (type: string) => void }>('ybug')
 </script>
 
 <template>
@@ -12,7 +8,7 @@ const ybug = inject<{ open: (type: string) => void }>('ybug')
     :class="{
       'gap-2 w-full cursor-pointer': type === 'menu',
     }"
-    @click="ybug?.open('feedback')"
+    @click="($ybug as any)?.open('feedback')"
   >
     <Icon
       name="tabler:bug"
