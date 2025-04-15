@@ -27,6 +27,7 @@ const pageName = computed(() => !route.name || typeof route.name !== 'string'
     />
 
     <ClientOnly>
+      <CookieBanner />
       <UiToaster />
       <ModalGroup />
       <ConfirmDialog
