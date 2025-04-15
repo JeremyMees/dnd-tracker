@@ -737,7 +737,7 @@
     "navbar": {
       "pages": "Pagina's",
       "upgrade": "Upgrade naar Pro",
-      "changelog": "Changelog",
+      "changelog": "Changelogs",
       "featureRequest": "Feature verzoek",
       "logout": "Uitloggen",
       "login": "Login",
@@ -754,7 +754,15 @@
       "fantasy": "Fantasienaam generator",
       "dnd-content": "DnD inhoud",
       "map": "Map maker",
-      "playground": "Encounter playground"
+      "playground": "Encounter playground",
+      "bug": "Bug rapport",
+      "socials": "Socials",
+      "updates": "Updates",
+      "policies": "Policies",
+      "cookie": "Cookie",
+      "privacy": "Privacy",
+      "legal": "Legal",
+      "illustrations": "Illustraties door"
     },
     "confirmationModal": {
       "title": "Weet je het absoluut zeker?",

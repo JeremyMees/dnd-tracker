@@ -737,7 +737,7 @@
     "navbar": {
       "pages": "Pages",
       "upgrade": "Upgrade to Pro",
-      "changelog": "Changelog",
+      "changelog": "Changelogs",
       "featureRequest": "Feature request",
       "logout": "Log out",
       "login": "Log in",
@@ -754,7 +754,15 @@
       "fantasy": "Fantasy name generator",
       "dnd-content": "DnD content",
       "map": "Map creator",
-      "playground": "Encounter playground"
+      "playground": "Encounter playground",
+      "bug": "Bug report",
+      "socials": "Socials",
+      "updates": "Updates",
+      "policies": "Policies",
+      "cookie": "Cookie",
+      "privacy": "Privacy",
+      "legal": "Legal",
+      "illustrations": "Illustrations by"
     },
     "confirmationModal": {
       "title": "Are you absolutely sure?",

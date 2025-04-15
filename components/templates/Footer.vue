@@ -15,7 +15,7 @@
         </NuxtLinkLocale>
         <div class="mt-4 lg:mt-0">
           <p class="mb-4 head-3">
-            Contact
+            {{ $t('components.navbar.contact') }}
           </p>
           <div class="flex flex-col gap-4">
             <NuxtLink
@@ -44,7 +44,7 @@
         </div>
         <div>
           <p class="mb-4 head-3">
-            Socials
+            {{ $t('components.navbar.socials') }}
           </p>
           <div class="flex flex-col gap-4">
             <NuxtLink
@@ -87,7 +87,7 @@
         </div>
         <div>
           <p class="mb-4 head-3">
-            Updates
+            {{ $t('components.navbar.updates') }}
           </p>
           <div class="flex flex-col gap-4">
             <NuxtLinkLocale
@@ -99,7 +99,7 @@
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              Feature requests
+              {{ $t('components.navbar.featureRequest') }}
             </NuxtLinkLocale>
             <NuxtLinkLocale
               to="/updates/changelog"
@@ -110,13 +110,14 @@
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              Changelogs
+              {{ $t('components.navbar.changelog') }}
             </NuxtLinkLocale>
+            <YbugButton type="footer" />
           </div>
         </div>
         <div>
           <p class="mb-4 head-3">
-            Policies
+            {{ $t('components.navbar.policies') }}
           </p>
           <div class="flex flex-col gap-4">
             <NuxtLinkLocale
@@ -128,7 +129,7 @@
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              Cookie
+              {{ $t('components.navbar.cookie') }}
             </NuxtLinkLocale>
             <NuxtLinkLocale
               to="/policies/privacy"
@@ -139,7 +140,7 @@
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              Privacy
+              {{ $t('components.navbar.privacy') }}
             </NuxtLinkLocale>
             <NuxtLinkLocale
               to="/policies/legal"
@@ -150,7 +151,7 @@
                 class="min-w-6 min-h-6 mr-2"
                 aria-hidden="true"
               />
-              Legal
+              {{ $t('components.navbar.legal') }}
             </NuxtLinkLocale>
           </div>
         </div>
@@ -161,7 +162,7 @@
           target="_blank"
           class="text-muted-foreground body-small"
         >
-          Illustrations by Mount Lazarus
+          {{ $t('components.footer.illustrations') }} Mount Lazarus
         </NuxtLink>
         <p class="text-tertiary body-small">
           ©{{ new Date().getFullYear() }} dnd-tracker
