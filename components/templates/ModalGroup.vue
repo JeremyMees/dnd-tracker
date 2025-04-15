@@ -6,7 +6,7 @@ import {
   LazyModalTransferOwnership,
   LazyModalInviteMember,
   LazyModalHomebrew,
-  ModalNote,
+  LazyModalNote,
   LazyModalMail,
 } from '#components'
 
@@ -19,7 +19,7 @@ const modalComponents: Record<ModalComponent, any> = {
   TransferOwnership: LazyModalTransferOwnership,
   InviteMember: LazyModalInviteMember,
   Homebrew: LazyModalHomebrew,
-  Note: ModalNote,
+  Note: LazyModalNote,
   Mail: LazyModalMail,
 }
 </script>

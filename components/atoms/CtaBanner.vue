@@ -26,12 +26,12 @@ const { user } = useAuthentication()
           {{ button }}
         </NuxtLinkLocale>
       </div>
-      <div class="relative -bottom-10 left-12 md:-bottom-20 flex justify-end">
+      <div class="relative -bottom-10 left-12 md:-bottom-[100px] flex justify-end">
         <NuxtImg
           src="/cta.png"
           alt="Cta Banner"
           sizes="sm:1000px md:1000px lg:1000px"
-          width="854"
+          width="880"
           height="564"
           class="rounded-lg"
           loading="lazy"
