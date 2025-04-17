@@ -35,8 +35,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        title: ['Geist'],
-        text: ['Geist Mono'],
+        title: ['Inter'],
+        text: ['Geist'],
       },
       colors: {
         border: 'hsl(var(--border))',

@@ -593,12 +593,7 @@
       "button": "Oke"
     },
     "hero": {
-      "start": "Laat het {keyword} beginnen",
-      "keywords": {
-        "session": "spelen",
-        "adventure": "avontuur",
-        "fun": "plezier"
-      }
+      "start": "Laat het spelen beginnen"
     },
     "linkModal": {
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
