@@ -64,86 +64,87 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="w-full py-16 md:py-48 mt-[12rem] no-scrollbar overflow-x-clip">
-    <div
-      class="flex justify-center items-center relative mx-auto md:max-w-[78vw]"
-      data-hero
-    >
-      <I18nT
-        data-hero-title
-        keypath="components.hero.start"
-        tag="h1"
-        scope="global"
-        class="z-[3] mx-auto text-foreground text-[60px] leading-[60px] md:text-[100px] md:leading-[100px] lg:text-[120px] lg:leading-[120px] min-h-[120px] md:min-h-[200px] lg:min-h-[240px] text-center max-w-md md:max-w-[1032px] opacity-0"
+  <UiAuroraBackground>
+    <section class="w-full py-16 md:py-48 no-scrollbar overflow-x-clip">
+      <div
+        class="flex justify-center items-center relative mx-auto md:max-w-[78vw]"
+        data-hero
       >
-        <template #keyword>
-          <UiFlipWords
-            :words="[
-              $t('components.hero.keywords.session'),
-              $t('components.hero.keywords.adventure'),
-              $t('components.hero.keywords.fun'),
-            ]"
-            :duration="3000"
+        <I18nT
+          data-hero-title
+          keypath="components.hero.start"
+          tag="h1"
+          scope="global"
+          class="z-[3] mx-auto text-foreground text-[60px] leading-[60px] md:text-[100px] md:leading-[100px] lg:text-[120px] lg:leading-[120px] min-h-[120px] md:min-h-[200px] lg:min-h-[240px] text-center max-w-md md:max-w-[1032px] opacity-0"
+        >
+          <template #keyword>
+            <UiFlipWords
+              :words="[
+                $t('components.hero.keywords.session'),
+                $t('components.hero.keywords.adventure'),
+                $t('components.hero.keywords.fun'),
+              ]"
+              :duration="3000"
+            />
+          </template>
+        </I18nT>
+        <div class="absolute left-0 right-0 bottom-0 top-1/4 md:top-1/2 max-w-2xl mx-auto">
+          <NuxtImg
+            data-hero-d12
+            src="/pixel-d12.png"
+            alt="D12"
+            height="180"
+            width="180"
+            class="absolute w-[70px] md:w-[100px] -top-[8%] lg:-top-[15%] left-[0%] md:-left-[30%] min-[1260px]:-left-[40%] z-[4] opacity-0"
+            sizes="70px md:100px"
           />
-        </template>
-      </I18nT>
-      <div class="fancy-shadow" />
-      <div class="absolute left-0 right-0 bottom-0 top-1/4 md:top-1/2 max-w-2xl mx-auto">
-        <NuxtImg
-          data-hero-d12
-          src="/pixel-d12.png"
-          alt="D12"
-          height="180"
-          width="180"
-          class="absolute w-[70px] md:w-[100px] -top-[8%] lg:-top-[15%] left-[0%] md:-left-[30%] min-[1260px]:-left-[40%] z-[4] opacity-0"
-          sizes="70px md:100px"
-        />
-        <NuxtImg
-          data-hero-d10
-          src="/pixel-d10.png"
-          alt="D10"
-          height="180"
-          width="180"
-          class="absolute w-[50px] md:w-[100px] top-[160%] md:top-[250%] lg:top-[130%] left-[15%] md:left-[4%] lg:-left-[10%] z-[1] opacity-0"
-          sizes="50px md:100px"
-        />
-        <NuxtImg
-          data-hero-d4
-          src="/pixel-d4.png"
-          alt="D4"
-          height="180"
-          width="180"
-          class="absolute w-[54px] md:w-[8Opx] top-[200%] md:top-[280%] lg:top-[200%] left-[72%] md:left-[83%] lg:left-[86%] z-[2] opacity-0"
-          sizes="54px md:80px"
-        />
-        <NuxtImg
-          data-hero-d20
-          src="/pixel-d20.png"
-          alt="D20"
-          height="183"
-          width="204"
-          sizes="sm:100px md:130px"
-          class="absolute w-[100px] md:w-[130px] top-[65%] md:top-[50%] left-[85%] md:left-[110%] min-[1260px]:left-[130%] z-[4] opacity-0"
-        />
-        <NuxtImg
-          data-hero-d8
-          src="/pixel-d8.png"
-          alt="D8"
-          height="190"
-          width="175"
-          sizes="50px md:80px"
-          class="absolute w-[50px] md:w-[80px] -top-[60%] md:-top-[130%] left-[62%]  md:left-[70%] z-[4] opacity-0"
-        />
-        <NuxtImg
-          data-hero-d6
-          src="/pixel-d6.png"
-          alt="D6"
-          height="170"
-          width="170"
-          sizes="60px md:90px"
-          class="absolute w-[60px] md:w-[90px] -top-[120%] md:-top-[280%] lg:-top-[230%] left-[30%] md:left-[20%] z-[4] opacity-0"
-        />
+          <NuxtImg
+            data-hero-d10
+            src="/pixel-d10.png"
+            alt="D10"
+            height="180"
+            width="180"
+            class="absolute w-[50px] md:w-[100px] top-[160%] md:top-[250%] lg:top-[130%] left-[15%] md:left-[4%] lg:-left-[10%] z-[1] opacity-0"
+            sizes="50px md:100px"
+          />
+          <NuxtImg
+            data-hero-d4
+            src="/pixel-d4.png"
+            alt="D4"
+            height="180"
+            width="180"
+            class="absolute w-[54px] md:w-[8Opx] top-[200%] md:top-[280%] lg:top-[200%] left-[72%] md:left-[83%] lg:left-[86%] z-[2] opacity-0"
+            sizes="54px md:80px"
+          />
+          <NuxtImg
+            data-hero-d20
+            src="/pixel-d20.png"
+            alt="D20"
+            height="183"
+            width="204"
+            sizes="sm:100px md:130px"
+            class="absolute w-[100px] md:w-[130px] top-[65%] md:top-[50%] left-[85%] md:left-[110%] min-[1260px]:left-[130%] z-[4] opacity-0"
+          />
+          <NuxtImg
+            data-hero-d8
+            src="/pixel-d8.png"
+            alt="D8"
+            height="190"
+            width="175"
+            sizes="50px md:80px"
+            class="absolute w-[50px] md:w-[80px] -top-[60%] md:-top-[130%] left-[62%]  md:left-[70%] z-[4] opacity-0"
+          />
+          <NuxtImg
+            data-hero-d6
+            src="/pixel-d6.png"
+            alt="D6"
+            height="170"
+            width="170"
+            sizes="60px md:90px"
+            class="absolute w-[60px] md:w-[90px] -top-[120%] md:-top-[280%] lg:-top-[230%] left-[30%] md:left-[20%] z-[4] opacity-0"
+          />
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </UiAuroraBackground>
 </template>
