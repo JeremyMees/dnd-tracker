@@ -60,6 +60,7 @@ export default defineNuxtConfig({
     '/subscribe-success': { robots: false },
     '/campaigns/join': { robots: false },
   },
+
   compatibilityDate: '2024-04-03',
 
   nitro: {
@@ -96,9 +97,7 @@ export default defineNuxtConfig({
     imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
   },
 
-  ogImage: {
-    defaults: { alt: seo.name },
-  },
+  ogImage: { enabled: false },
 
   shadcn: { prefix: 'ui' },
 

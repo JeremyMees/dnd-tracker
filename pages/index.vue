@@ -1,26 +1,9 @@
 <script setup lang="ts">
-import { gsap } from 'gsap'
 import type { Dragon } from '#components'
 
 useSeo()
 
 const dragon = ref<InstanceType<typeof Dragon>>()
-
-if (import.meta.client) {
-  gsap.to(
-    '.encounter-table',
-    {
-      rotationX: 0,
-      autoAlpha: 1,
-      scrollTrigger: {
-        trigger: '.encounter-table',
-        scrub: 2,
-        start: 'top center',
-        end: 'bottom bottom',
-      },
-    },
-  )
-}
 </script>
 
 <template>
