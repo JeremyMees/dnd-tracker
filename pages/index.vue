@@ -43,12 +43,18 @@ const dragon = ref<InstanceType<typeof Dragon>>()
       <LazyDragon ref="dragon" />
       <LazyUiContainerScroll>
         <template #title>
-          <h2 class="text-4xl font-semibold">
-            {{ $t('pages.home.containerScroll.title') }} <br>
-            <span class="mt-1 text-4xl font-bold leading-none md:text-[6rem]">
-              {{ $t('pages.home.containerScroll.subtitle') }}
-            </span>
+          <h2 class="text-4xl font-semibold text-muted-foreground">
+            {{ $t('pages.home.containerScroll.title') }}
           </h2>
+          <span class="mt-1 font-black text-4xl leading-none md:text-[6rem]">
+            <span
+              v-for="(word, index) in $t('pages.home.containerScroll.subtitle').split(' ')"
+              :key="index"
+              class="gradient-text ml-4 first:ml-0"
+            >
+              {{ word }}
+            </span>
+          </span>
         </template>
         <template #card>
           <NuxtImg
@@ -66,22 +72,15 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         :subtitle="$t('pages.home.ctaBanner.text')"
         :button="$t('pages.home.ctaBanner.button')"
       />
-      <LazyTitleText
-        center
-        sprite="bedbug"
-        class="dnd-container pt-40"
-      >
-        {{ $t('pages.home.textBlock2.title') }}
-        <template #text>
-          {{ $t('pages.home.textBlock2.text') }}
-        </template>
-      </LazyTitleText>
     </div>
     <div
       class="relative flex size-full flex-col items-center justify-center px-40 pb-40 pt-8 md:pb-60"
     >
       <span class="text-center head-1 leading-none relative z-[1]">
-        {{ $t('pages.home.globe.title') }} 🇧🇪
+        <span class="gradient-text">
+          {{ $t('pages.home.globe.title') }}
+        </span>
+        🇧🇪
       </span>
       <LazyUiGlobe class="top-10" />
     </div>

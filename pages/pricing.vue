@@ -56,10 +56,16 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
     container
   >
     <section class="mb-8 lg:mb-12">
-      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center text-foreground">
-        {{ t('pages.pricing.title') }}
+      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center">
+        <span
+          v-for="(word, index) in $t('pages.pricing.title').split(' ')"
+          :key="index"
+          class="gradient-text inline-block"
+        >
+          {{ word }}&nbsp;
+        </span>
       </h1>
-      <p class="mb-16 max-w-3xl mx-auto text-center text-muted-foreground">
+      <p class="mb-16 max-w-xl mx-auto text-center text-muted-foreground">
         {{ t('pages.pricing.description') }}
       </p>
       <div class="relative max-w-4xl mx-auto py-20">

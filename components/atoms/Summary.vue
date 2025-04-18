@@ -17,7 +17,7 @@ withDefaults(
   <div class="group">
     <h2
       v-if="title"
-      class="pb-4 relative max-w-max text-foreground"
+      class="pb-4 relative max-w-max gradient-text"
     >
       {{ title }}
       <img

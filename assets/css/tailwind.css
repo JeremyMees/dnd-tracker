@@ -28,6 +28,10 @@
 }
 
 @layer utilities {
+  .gradient-text {
+    @apply bg-gradient-to-b from-foreground to-background/20 bg-clip-text text-transparent;
+  }
+
   .fancy-shadow {
     background:conic-gradient(
       from 230.29deg at 51.63% 52.16%, 
