@@ -50,7 +50,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
             <span
               v-for="(word, index) in $t('pages.home.containerScroll.subtitle').split(' ')"
               :key="index"
-              class="gradient-text ml-4 first:ml-0"
+              class="gradient-text inline-block ml-4 first:ml-0"
             >
               {{ word }}
             </span>
