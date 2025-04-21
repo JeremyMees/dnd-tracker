@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { motion } from 'motion-v'
-
 useSeo('Pricing')
 
 const { locale, t } = useI18n({ useScope: 'global' })
@@ -75,14 +73,14 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
           class="size-8 absolute top-0 left-20"
         >
         <Motion
-          v-for="(product, index) in shownProduct"
+          v-for="(product, i) in shownProduct"
           :key="product.title"
           as-child
           :animate="{
             opacity: 1,
             y: 0,
             transition: {
-              delay: index * 0.2,
+              delay: i * 0.2,
             },
           }"
           :initial="{
@@ -125,8 +123,8 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             <UiCardContent class="flex">
               <div class="space-y-4">
                 <span
-                  v-for="(benefit, index) in product.items"
-                  :key="index"
+                  v-for="(benefit, j) in product.items"
+                  :key="j"
                   class="flex items-center gap-2 text-sm dark:text-muted-foreground"
                 >
                   <Icon
