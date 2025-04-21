@@ -112,6 +112,7 @@ async function logoutUser(): Promise<void> {
                   <UiAvatarImage
                     :src="user?.avatar ?? ''"
                     alt="Avatar image"
+                    class="scale-x-[-1]"
                   />
                   <UiAvatarFallback class="h-6">
                     <Icon

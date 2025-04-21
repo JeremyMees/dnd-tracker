@@ -9,11 +9,11 @@ defineProps<{
 <template>
   <ClientOnly>
     <UiSkeleton
-      v-if="loading || !count"
+      v-if="loading || !isDefined(count)"
       class="w-10 h-4"
     />
     <span
-      v-else-if="count"
+      v-else-if="isDefined(count)"
       class="text-[12px] text-muted-foreground"
       :class="{ '!text-destructive': count >= max }"
     >

@@ -70,7 +70,7 @@ const isOpen = ref<boolean>(false)
           class="flex gap-1"
         >
           <Icon
-            name="mdi:cards-heart-outline"
+            name="tabler:heart"
             class="w-6 h-6 text-destructive"
             aria-hidden="true"
           />
