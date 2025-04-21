@@ -880,89 +880,52 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      citext:
-        | {
-          Args: {
-            '': boolean
-          }
-          Returns: string
-        }
-        | {
-          Args: {
-            '': string
-          }
-          Returns: string
-        }
-        | {
-          Args: {
-            '': unknown
-          }
-          Returns: string
-        }
+      citext: {
+        Args: { '': boolean } | { '': string } | { '': unknown }
+        Returns: string
+      }
       citext_hash: {
-        Args: {
-          '': string
-        }
+        Args: { '': string }
         Returns: number
       }
       citextin: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: string
       }
       citextout: {
-        Args: {
-          '': string
-        }
+        Args: { '': string }
         Returns: unknown
       }
       citextrecv: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: string
       }
       citextsend: {
-        Args: {
-          '': string
-        }
+        Args: { '': string }
         Returns: string
       }
       gtrgm_compress: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: unknown
       }
       gtrgm_decompress: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: unknown
       }
       gtrgm_in: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: unknown
       }
       gtrgm_options: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: undefined
       }
       gtrgm_out: {
-        Args: {
-          '': unknown
-        }
+        Args: { '': unknown }
         Returns: unknown
       }
       set_limit: {
-        Args: {
-          '': number
-        }
+        Args: { '': number }
         Returns: number
       }
       show_limit: {
@@ -970,9 +933,7 @@ export type Database = {
         Returns: number
       }
       show_trgm: {
-        Args: {
-          '': string
-        }
+        Args: { '': string }
         Returns: string[]
       }
     }
@@ -1084,7 +1045,7 @@ export type Database = {
       rules: '5e'
       subscription_type: 'free' | 'medior' | 'pro'
       table_spacing: 'compact' | 'normal' | 'cozy'
-      user_role: 'Viewer' | 'Admin' | 'Owner'
+      user_role: 'Viewer' | 'Admin' | 'Owner' | 'Player'
       weapon_category:
         | 'Martial Melee Weapons'
         | 'Martial Ranged Weapons'
@@ -1097,27 +1058,29 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, 'public'>]
+type DefaultSchema = Database[Extract<keyof Database, 'public'>]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-  | keyof (PublicSchema['Tables'] & PublicSchema['Views'])
+  DefaultSchemaTableNameOrOptions extends
+  | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
   | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
-      Database[PublicTableNameOrOptions['schema']]['Views'])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+      Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions['schema']]['Tables'] &
-    Database[PublicTableNameOrOptions['schema']]['Views'])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+    Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
       Row: infer R
     }
       ? R
       : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema['Tables'] &
-    PublicSchema['Views'])
-    ? (PublicSchema['Tables'] &
-      PublicSchema['Views'])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
+    DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] &
+      DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
         ? R
@@ -1125,20 +1088,22 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-  | keyof PublicSchema['Tables']
+  DefaultSchemaTableNameOrOptions extends
+  | keyof DefaultSchema['Tables']
   | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Insert: infer I
   }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
-    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
       Insert: infer I
     }
       ? I
@@ -1146,20 +1111,22 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-  | keyof PublicSchema['Tables']
+  DefaultSchemaTableNameOrOptions extends
+  | keyof DefaultSchema['Tables']
   | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Update: infer U
   }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
-    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
       Update: infer U
     }
       ? U
@@ -1167,21 +1134,23 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-  | keyof PublicSchema['Enums']
+  DefaultSchemaEnumNameOrOptions extends
+  | keyof DefaultSchema['Enums']
   | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
-    ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-  | keyof PublicSchema['CompositeTypes']
+  | keyof DefaultSchema['CompositeTypes']
   | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
@@ -1190,6 +1159,130 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
-    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
+    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      action_type: [
+        'actions',
+        'legendary_actions',
+        'reactions',
+        'special_abilities',
+      ],
+      alignment: [
+        'Lawful good',
+        'Lawful neutral',
+        'Lawful evil',
+        'Neutral good',
+        'Neutral',
+        'Neutral evil',
+        'Chaotic good',
+        'Chaotic neutral',
+        'Chaotic evil',
+        'Any alignment',
+        'Any non-good alignment',
+        'Any non-lawful alignment',
+        'Any chaotic alignment',
+        'Any evil alignment',
+        'Unaligned',
+      ],
+      armor_category: [
+        'Heavy Armor',
+        'Medium Armor',
+        'Light Armor',
+        'No Armor',
+        'Class Feature',
+        'Spell',
+        'Shield',
+      ],
+      damage_type: [
+        'Acid',
+        'Bludgeoning',
+        'cold',
+        'Fire',
+        'Force',
+        'Lightning',
+        'Necrotic',
+        'Piercing',
+        'Poison',
+        'Psychic',
+        'Radiant',
+        'Slashing',
+        'Thunder',
+        'Other',
+      ],
+      feature_request_status: ['review', 'accepted', 'progress'],
+      homebrew_type: ['player', 'summon', 'npc', 'monster', 'lair'],
+      initiative_pet: [
+        'cat',
+        'chicken',
+        'barmaid',
+        'crawler',
+        'dragon',
+        'fairy',
+        'redcap',
+        'wolf-rider',
+      ],
+      magic_item_type: [
+        'Wondrous item',
+        'Armor',
+        'Weapon',
+        'Staff',
+        'Wand',
+        'Rod',
+        'Ring',
+        'Scroll',
+        'Potion',
+      ],
+      magic_school: [
+        'Evocation',
+        'Conjuration',
+        'Abjuration',
+        'Transmutation',
+        'Enchantment',
+        'Necromancy',
+        'Divination',
+        'Illusion',
+      ],
+      monster_size: ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'],
+      monster_type: [
+        'Aberration',
+        'Humanoid',
+        'Dragon',
+        'Elemental',
+        'Monstrosity',
+        'Construct',
+        'Beast',
+        'Plant',
+        'Fiend',
+        'Ooze',
+        'Fey',
+        'Giant',
+        'Celestial',
+        'Undead',
+      ],
+      rarity: [
+        'Common',
+        'Uncommon',
+        'Rare',
+        'Very rare',
+        'Legendary',
+        'Artifact',
+        'Varies',
+      ],
+      rules: ['5e'],
+      subscription_type: ['free', 'medior', 'pro'],
+      table_spacing: ['compact', 'normal', 'cozy'],
+      user_role: ['Viewer', 'Admin', 'Owner', 'Player'],
+      weapon_category: [
+        'Martial Melee Weapons',
+        'Martial Ranged Weapons',
+        'Simple Melee Weapons',
+        'Simple Ranged Weapons',
+      ],
+    },
+  },
+} as const
