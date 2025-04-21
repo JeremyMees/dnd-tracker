@@ -75,7 +75,7 @@ export function useUi() {
       url: '/pricing',
       requireAuth: true,
       icon: 'tabler:sparkles',
-    }
+    },
   ]
 
   const profileRoutes = computed(() => [

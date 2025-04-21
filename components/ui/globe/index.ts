@@ -1,1 +1,1 @@
-export { default as Globe } from './Globe.vue';
+export { default as Globe } from './Globe.vue'
