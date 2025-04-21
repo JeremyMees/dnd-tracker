@@ -8,12 +8,18 @@ useSeo('Playground')
 
 const route = useRoute()
 const queryClient = useQueryClient()
+const { startTour, tourData, isTourActive } = useTour()
 
 const data = ref<InitiativeSheet>()
 const isPending = ref(true)
 const isError = ref(false)
 
-onMounted(async () => {
+onMounted(() => {
+  getQueryData()
+  startTour(false)
+})
+
+function getQueryData(): void {
   const token = route.query.token as string
 
   if (token) {
@@ -25,7 +31,7 @@ onMounted(async () => {
   else data.value = playgroundSheet
 
   isPending.value = false
-})
+}
 
 async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>): Promise<void> {
   if (!data.value) return
@@ -45,7 +51,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
   >
     <InitiativeTable
       v-if="!isError"
-      :data="data"
+      :data="isTourActive ? tourData : data"
       :update="handleUpdate"
       :loading="isPending"
     />

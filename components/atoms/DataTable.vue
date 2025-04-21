@@ -175,7 +175,7 @@ async function fetchPermissions() {
           <UiTableRow v-else>
             <UiTableCell
               :colspan="columns.length"
-              class="h-24 text-center"
+              class="h-24 text-center text-muted-foreground"
             >
               {{ emptyMessage || '' }}
             </UiTableCell>

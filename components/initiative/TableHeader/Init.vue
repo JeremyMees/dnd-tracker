@@ -66,7 +66,10 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
   <div>
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
-        <button class="flex items-center gap-x-1 w-fit rounded-lg hover:bg-warning/50 hover:text-foreground hover:-mx-2 hover:-my-1 hover:px-2 hover:py-1 transition-all duration-300">
+        <button
+          id="tour-10"
+          class="flex items-center gap-x-1 w-fit rounded-lg hover:bg-warning/50 hover:text-foreground hover:-mx-2 hover:-my-1 hover:px-2 hover:py-1 transition-all duration-300"
+        >
           {{ label }}
           <Icon
             name="tabler:bolt-filled"

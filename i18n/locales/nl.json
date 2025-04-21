@@ -860,62 +860,54 @@
     "sure": "Ben je zeker dat je alle kennis al hebt van de DnD Tracker? 🧙‍♂️",
     "0": {
       "title": "Welkom bij je eerste encounter! 🐲",
-      "description": "Welkom, dappere avonturier! We zijn enthousiast om je door onze applicatie te begeleiden. Laten we samen aan deze reis beginnen, zullen we?"
+      "description": "Welkom, avonturier! Fijn dat je er bent. We nemen je stap voor stap mee door onze tool. Klaar om samen op pad te gaan?"
     },
     "1": {
-      "title": "Het meest basale van allemaal 🎯",
-      "description": "Aanschouw! De bescheiden pijlknoppen, je trouwe metgezellen bij het beheren van het huidige initiatief."
+      "title": "Een goed begin 🎯",
+      "description": "Ziehier de pijlknoppen, je helpers om vlot het initiatief van je encounter te beheren."
     },
     "2": {
-      "title": "Hier broeit iets 🍺",
-      "description": "Waag je in het rijk van homebrews! Maak je eigen homebrew om je encounter op te fleuren."
+      "title": "Werp zonder zorgen 🎲",
+      "description": "Geen rekenwerk meer nodig. Gooi digitale dobbelstenen en zie meteen het resultaat verschijnen. Handig, toch?"
     },
     "3": {
-      "title": "Laten we lui zijn 🛋️",
-      "description": "Waarom moeite doen met het steeds opnieuw maken van dezelfde homebrews? Voeg met slechts een paar klikken moeiteloos je campagne's homebrews toe."
+      "title": "Meer details binnen handbereik 📚",
+      "description": "Heb je extra info nodig? Alles staat netjes gebundeld. Pin wat je nodig hebt aan je encounter en je bent vertrokken."
     },
     "4": {
-      "title": "Laten we weer lui zijn 🛌",
-      "description": "Geen noodzaak om monsters eindeloos op te jagen. Vind officiële monsters binnen handbereik, klaar om zich met één klik bij je encounter aan te sluiten."
+      "title": "Monsters op aanvraag 🐲",
+      "description": "Geen gedoe met opzoekwerk. Voeg officiële monsters eenvoudig toe met één klik. Klaar om te strijden!"
     },
     "5": {
-      "title": "Wil je rollen zonder hoofdrekenen? 🎲",
-      "description": "Laat de berekeningen aan ons over! Gooi digitale dobbelstenen en geniet van de glorie van directe resultaten voor elke wending van het lot."
+      "title": "Herbruik je creaties 🛋️",
+      "description": "Heb je al homebrews gemaakt? Voeg ze in een paar klikken opnieuw toe zo hoef je het wiel niet telkens opnieuw uit te vinden."
     },
     "6": {
-      "title": "Meer informatie nodig? 📚",
-      "description": "Zoek kennis in onze geheiligde boeken. Alles wat je nodig hebt, netjes georganiseerd voor jouw gemak. Pin het aan je encounter en laat de wijsheid stromen!"
+      "title": "Eigen homebrews maken 🍺",
+      "description": "Wil je iets unieks? Maak je eigen homebrew en breng een persoonlijk tintje in je encounters."
     },
     "7": {
-      "title": "Hotkeys tot je dienst 🔥",
-      "description": "Bevrijd jezelf van de tirannie van de muis! Beheer met hotkeys en verover met gemak."
+      "title": "Even ademruimte nodig? 🧠",
+      "description": "Maak het jezelf gemakkelijk. Verberg functies die je niet gebruikt voor een rustigere interface."
     },
     "8": {
-      "title": "Ontketen de kracht van initiatief items 💪",
-      "description": "Geen lange introductie nodig! Pas namen, initiatieven, AC en HP aan wanneer je erop klikt. Notities, death saves en concentratie met een fluitje van een cent."
+      "title": "Sneller met sneltoetsen 🔥",
+      "description": "Gebruik sneltoetsen om je encounter vlotter te beheren. Minder klikken, meer actie!"
     },
     "9": {
-      "title": "Beheer je initiatief items met finesse 🎩",
-      "description": "Het hart van je initiatief items! Pas AC en HP aan terwijl je bezig bent, voeg moeiteloos condities toe. Wij betoveren je ervaring door links voor te laden, waardoor je wordt gespaard van het gedoe van het openen van extra browsertabbladen."
+      "title": "Alles in één klik 💪",
+      "description": "Klik op een item om namen, initiatieven, HP en meer te bewerken. Ook notities en concentratie zijn eenvoudig te beheren."
     },
     "10": {
-      "title": "Condities voor de onderscheidende avonturier 👨‍🦯",
-      "description": "Aanschouw de condities die aan je kameraden zijn verleend! Zweef eroverheen en duik dieper in hun effecten."
+      "title": "Initiatief invoeren? Zo gepiept! 🚀",
+      "description": "Voer alle initiatieven tegelijk in, of laat ons ze voor jou rollen. Jij kiest hoe je speelt."
     },
     "11": {
-      "title": "Verwijder of kopieer initiatief items in een flits ⚡",
-      "description": "Met snelheid en precisie, verwijder of dupliceer met een enkele knopklik."
+      "title": "Klaar voor een nieuwe ronde? 🔄",
+      "description": "Eén klik op de resetknop en je encounter is terug fris. Perfect om opnieuw te beginnen."
     },
     "12": {
-      "title": "Nog nooit zo snel iedereens initiatief toevoegen 🚀",
-      "description": "Bereid je voor op razendsnelle initiatief invoer! Voeg alle initiatieven in één keer toe, of laat het aan de dobbelstenen over voor een vleugje willekeur. De keuze is aan jou, avonturier!"
-    },
-    "13": {
-      "title": "Als je brein een pauze nodig heeft 🧠",
-      "description": "Verminder de last en vereenvoudig je interface. Schakel onnodige functies uit, de keuze is aan jou."
-    },
-    "14": {
-      "title": "Gefeliciteerd, je bent nu een expert! 🎉"
+      "title": "Proficiat, je bent er helemaal klaar voor! 🎉"
     }
   }
 }

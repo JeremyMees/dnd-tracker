@@ -12,9 +12,9 @@ useSeo(route.params.title as string)
 
 const localePath = useLocalePath()
 const user = useAuthenticatedUser()
-
 const { toast } = useToast()
 const { t } = useI18n()
+const { startTour } = useTour()
 
 const supabase = useSupabaseClient<Database>()
 const channel = supabase.channel('initiative_sheets')
@@ -50,6 +50,8 @@ onMounted(() => {
       },
     ).subscribe()
   }
+
+  startTour(!!data.value?.campaign)
 })
 
 onBeforeUnmount(() => {

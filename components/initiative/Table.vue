@@ -81,10 +81,11 @@ const table = useVueTable({
         <UiTableBody>
           <template v-if="table.getRowModel().rows?.length">
             <template
-              v-for="row in table.getRowModel().rows"
+              v-for="(row, index) in table.getRowModel().rows"
               :key="row.id"
             >
               <UiTableRow
+                :id="index === 0 ? 'tour-9' : ''"
                 :data-state="selected[row.id] && 'selected'"
                 class="data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300"
               >

@@ -28,6 +28,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
           <UiPopoverTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
+                id="tour-2"
                 v-tippy="{
                   content: $t('actions.roll'),
                   placement: 'right',
@@ -66,6 +67,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
           <UiDialogTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
+                id="tour-3"
                 v-tippy="{
                   content: `${$t('components.navbar.dnd-content')}`,
                   placement: 'right',
@@ -130,6 +132,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
                 <button
+                  id="tour-4"
                   v-tippy="{
                     content: $t('general.bestiary'),
                     placement: 'right',
@@ -175,6 +178,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
                 <button
+                  id="tour-5"
                   v-tippy="{
                     content: $t('general.campaignHomebrew'),
                     placement: 'right',
@@ -221,6 +225,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
                 <button
+                  id="tour-6"
                   v-tippy="{
                     content: $t('general.newHomebrew'),
                     placement: 'right',
@@ -331,6 +336,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
           <UiDialogTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
+                id="tour-7"
                 v-tippy="{
                   content: $t('general.setting', 2),
                   placement: 'right',
@@ -384,6 +390,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             :delay="0"
           >
             <button
+              id="tour-8"
               v-tippy="{
                 content: $t('general.hotkey', 2),
                 placement: 'right',

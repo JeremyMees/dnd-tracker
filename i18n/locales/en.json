@@ -860,62 +860,54 @@
     "sure": "Are you sure that you have all the knowledge about the DnD Tracker? 🧙‍♂️",
     "0": {
       "title": "Welcome to your first encounter! 🐲",
-      "description": "Welcome, brave adventurer! We're thrilled to guide you through our application. Let's embark on this journey together, shall we?"
+      "description": "Welcome, adventurer! Glad to have you here. We’ll guide you through the tool step by step. Ready to begin the journey?"
     },
     "1": {
-      "title": "The most basic of all basics 🎯",
-      "description": "Behold! The humble arrow buttons, your trusty companions in managing the current initiative."
+      "title": "A simple start 🎯",
+      "description": "These little arrow buttons help you move through the initiative order. Small but mighty!"
     },
     "2": {
-      "title": "There's something brewing here 🍺",
-      "description": "Venture forth into the realm of homebrew! Craft your own concoctions to spice up your encounters."
+      "title": "Roll without the math 🎲",
+      "description": "No more mental gymnastics. Roll digital dice and see the results instantly. Easy and quick!"
     },
     "3": {
-      "title": "Let's be lazy 🛋️",
-      "description": "Why struggle over creating the same homebrews repeatedly? With just a few clicks, add your campaign's homebrew effortlessly."
+      "title": "More details at your fingertips 📚",
+      "description": "Need extra info? It’s all neatly organised. Pin anything you need to your encounter for quick access."
     },
     "4": {
-      "title": "Let's be lazy again 🛌",
-      "description": "No need to hunt down monsters tirelessly. Find official monsters at your fingertips, ready to join your encounter with a single click."
+      "title": "Monsters on demand 🐲",
+      "description": "No need to go searching. Add official monsters to your encounter with just one click. Ready for action!"
     },
     "5": {
-      "title": "Need to roll without the math headache? 🎲",
-      "description": "Leave the calculations to us! Roll digital dice and bask in the glory of instant results for every twist of fate."
+      "title": "Reuse your creations 🛋️",
+      "description": "Already made homebrews? Add them again in just a few clicks. No need to redo everything from scratch."
     },
     "6": {
-      "title": "Want some more information? 📚",
-      "description": "Seek knowledge within our hallowed tomes. Everything you need, neatly organized for your convenience. Pin it to your encounter and let the wisdom flow!"
+      "title": "Create your own homebrews 🍺",
+      "description": "Feeling creative? Build your own homebrew content and add a personal touch to your encounters."
     },
     "7": {
-      "title": "Hotkeys at your service 🔥",
-      "description": "Free yourself from the tyranny of the mouse! Command with keystrokes and conquer with ease."
+      "title": "Need a bit of peace? 🧠",
+      "description": "Simplify your view by hiding features you don’t use. Stay focused on what matters to you."
     },
     "8": {
-      "title": "Unleash the power of initiative items 💪",
-      "description": "No need for a lengthy introduction! Modify names, initiatives, AC, and HP when you click on them. Notes, death saves, and concentration—easy as pie."
+      "title": "Speed things up with hotkeys 🔥",
+      "description": "Use keyboard shortcuts to manage your encounter more smoothly. Less clicking, more playing!"
     },
     "9": {
-      "title": "Manage your initiative items with finesse 🎩",
-      "description": "The heartbeat of your initiative items! Adjust AC and HP on the fly, add conditions effortlessly. We enchant your experience by preloading links, sparing you from the hassle of opening additional browser tabs."
+      "title": "Edit everything in one click 💪",
+      "description": "Click an item to change names, initiative, HP, AC, and more. Notes, death saves, concentration it’s all easy to manage."
     },
     "10": {
-      "title": "Conditions for the discerning adventurer 👨‍🦯",
-      "description": "Behold the conditions bestowed upon your comrades! Hover over them and delve deeper into their effects."
+      "title": "Add initiatives in a flash 🚀",
+      "description": "Input everyone’s initiative at once, or roll them all with a single click. The choice is yours!"
     },
     "11": {
-      "title": "Remove or copy initiative items in a flash ⚡",
-      "description": "With swiftness and precision, remove or duplicate with a single button click."
+      "title": "Time for a fresh start? 🔄",
+      "description": "Finished your encounter? One click resets it so you can dive into the next one right away."
     },
     "12": {
-      "title": "Never been faster to add everyone's initiative 🚀",
-      "description": "Prepare for warp speed initiative entry! Add all initiatives at once, or delegate to the dice for a touch of randomness. The choice is yours, adventurer!"
-    },
-    "13": {
-      "title": "When your brain needs a break 🧠",
-      "description": "Ease the burden and simplify your interface. Disable unnecessary functions, the choice is yours."
-    },
-    "14": {
-      "title": "Congratulations, you're now an expert! 🎉"
+      "title": "Congrats, you're ready to go! 🎉"
     }
   }
 }

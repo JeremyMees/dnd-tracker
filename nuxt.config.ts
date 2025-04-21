@@ -35,7 +35,10 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  css: ['@/assets/css/tippy.css'],
+  css: [
+    '@/assets/css/tippy.css',
+    '@/assets/css/driver.css',
+  ],
 
   site: {
     url: seo.url,

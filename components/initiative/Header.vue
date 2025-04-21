@@ -27,6 +27,7 @@ const resetOpen = ref<boolean>(false)
       <UiPopover v-model:open="resetOpen">
         <UiPopoverTrigger as-child>
           <button
+            id="tour-11"
             v-tippy="$t('actions.reset')"
             :disabled="!data?.rows.length"
             aria-label="Reset rounds"
