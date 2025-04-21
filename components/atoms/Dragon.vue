@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { gsap } from 'gsap'
+import { Motion } from 'motion-v'
 
 defineExpose({ calculateEyes })
 
 const anchor = ref<HTMLElement>()
 const eyeLeft = ref<HTMLElement>()
 const eyeRight = ref<HTMLElement>()
+const dragon = ref<HTMLElement>()
 
 function calculateEyes(e: MouseEvent) {
   if (!anchor.value || !eyeLeft.value || !eyeRight.value) {
@@ -26,28 +27,28 @@ function calculateEyes(e: MouseEvent) {
 function angle(cx: number, cy: number, ex: number, ey: number): number {
   return (Math.atan2(ey - cy, ex - cx) * 180) / Math.PI
 }
-
-onMounted(() => {
-  nextTick()
-
-  gsap.fromTo(
-    '[data-dragon]',
-    { y: '50%', x: '25%' },
-    {
-      scrollTrigger: {
-        trigger: '[data-skills]',
-        toggleActions: 'restart none none none',
-        scrub: 2,
-      },
-      y: '0%',
-      x: '0%',
-    },
-  )
-})
 </script>
 
 <template>
-  <div
+  <Motion
+    ref="dragon"
+    :initial="{ y: '50%', x: '25%', rotate: '-45deg' }"
+    :in-view="{
+      y: '0%',
+      x: '0%',
+      transition: {
+        duration: 0.8,
+        ease: 'easeOut',
+      },
+    }"
+    :exit="{
+      y: '50%',
+      x: '25%',
+      transition: {
+        duration: 0.8,
+        ease: 'easeIn',
+      },
+    }"
     data-dragon
     class="dragon"
     @mousemove="calculateEyes"
@@ -75,13 +76,13 @@ onMounted(() => {
         class="w-full h-full object-cover"
       />
     </div>
-  </div>
+  </Motion>
 </template>
 
 <style scoped>
 .dragon {
   left: calc(100vw - 450px);
 
-  @apply hidden lg:block absolute -rotate-45 w-[600px];
+  @apply hidden lg:block absolute w-[600px];
 }
 </style>

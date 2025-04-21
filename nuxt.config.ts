@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
     'nuxt-authorization',
+    'motion-v/nuxt',
   ],
 
   components: [

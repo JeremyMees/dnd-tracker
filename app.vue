@@ -1,16 +1,8 @@
 <script setup lang="ts">
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
 const { dialogs, handlers } = useConfirmDialogs()
 const route = useRoute()
 
 useHealthCheck()
-
-if (import.meta.client) {
-  gsap.registerPlugin(ScrollTrigger)
-  ScrollTrigger.getAll().forEach((t: any) => t.kill())
-}
 
 const pageName = computed(() => !route.name || typeof route.name !== 'string'
   ? ''
