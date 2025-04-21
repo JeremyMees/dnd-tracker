@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Open5eItem } from '~/types/open5e'
+
 const props = defineProps<{
   item: InitiativeSheetRow
   sheet: InitiativeSheet | undefined
@@ -45,11 +47,20 @@ function updateCondition(conditions: Condition[]): void {
   popoverOpen.value = false
 }
 
-function toggleSelected(item: Condition): void {
+function toggleSelected(item: Open5eItem | Condition): void {
   const arr = [...selected.value]
   const index: number = arr.findIndex(s => s.name === item.name)
 
-  if (index === -1) arr.push(item)
+  const condition: Condition = {
+    name: item.name,
+    desc: typeof item.desc === 'string' ? item.desc : (item.desc as any)?.en || '',
+    ...(item.level !== undefined && {
+      level: typeof item.level === 'number' ? item.level : Number(item.level) || undefined,
+    }),
+    ...(('hasLevels' in item) && { hasLevels: item.hasLevels }),
+  }
+
+  if (index === -1) arr.push(condition)
   else arr.splice(index, 1)
 
   selected.value = arr

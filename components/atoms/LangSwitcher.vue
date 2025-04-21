@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import type { AcceptableValue } from 'reka-ui'
+
 const { locale, locales } = useI18n({ useScope: 'global' })
 const switchLocalePath = useSwitchLocalePath()
 const config: { locale: string } | undefined = inject(Symbol.for('FormKitConfig'))
 
 onMounted(() => setLang(locale.value))
 
-function setLang(lang: string): void {
-  if (!['nl', 'en'].includes(lang)) return
+function setLang(lang: AcceptableValue): void {
+  if (
+    typeof lang !== 'string'
+    || !['nl', 'en'].includes(lang)
+  ) return
 
   if (config) config.locale = lang
 
