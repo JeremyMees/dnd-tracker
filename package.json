@@ -11,7 +11,14 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
-    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database-generated.ts"
+    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database-generated.ts",
+    "prepare": "husky"
+  },
+  "engines": {
+    "pnpm": "please-use-npm",
+    "yarn": "please-use-npm",
+    "npm": ">=10.0.0",
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.2",
@@ -75,6 +82,8 @@
     "@types/sanitize-html": "^2.13.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "tailwind-merge": "^3.2.0",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.2",
@@ -82,5 +91,8 @@
   },
   "overrides": {
     "vue": "latest"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": "eslint --fix"
   }
 }
