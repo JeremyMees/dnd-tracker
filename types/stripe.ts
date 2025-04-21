@@ -25,8 +25,10 @@ export interface ProductPricing {
   description: string
   price?: number
   id?: string
+  isPopular: boolean
   items: {
     icon: string
+    label?: string
     number?: number
   }[]
 }

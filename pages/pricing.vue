@@ -2,18 +2,10 @@
 useSeo('Pricing')
 
 const { locale, t } = useI18n({ useScope: 'global' })
-const user = useAuthenticatedUser()
+const { user } = useAuthentication()
 const localePath = useLocalePath()
 
 const { data: products, isPending } = usePricingListing()
-
-const labels = [
-  'general.encounter',
-  'general.campaign',
-  'pages.pricing.multiple',
-  'pages.pricing.live',
-  'pages.pricing.update',
-]
 
 const shownProduct = computed<ProductPricing[]>(() => {
   if (!products.value) return []
@@ -68,108 +60,89 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
       <p class="mb-16 max-w-xl mx-auto text-center text-muted-foreground">
         {{ t('pages.pricing.description') }}
       </p>
-      <div class="relative max-w-4xl mx-auto py-20">
+
+      <div class="relative grid grid-cols-1 md:grid-cols-3 gap-4 py-8 my-16">
         <img
           src="/gifs/dragon.gif"
           loading="lazy"
-          class="w-8 h-8 absolute top-12 left-20"
+          class="size-8 absolute top-0 left-20"
         >
-        <div class="inline-block overflow-x-auto w-full">
-          <Card
-            color="primary"
-            class="bg-primary/20 backdrop-blur-lg !rounded-[32px] tracker-shadow-inset overflow-y-hidden"
-          >
-            <table class="min-w-full">
-              <thead>
-                <tr>
-                  <th
-                    v-for="(header, index) in [
-                      undefined,
-                      ...shownProduct.map(({ title, price }) => { return { title, price } }),
-                    ]"
-                    :key="index"
-                    class="py-3 px-2 border-b border-primary"
-                  >
-                    <div
-                      v-if="header"
-                      class="flex flex-col text-xl"
-                    >
-                      <span>
-                        {{ header.title }}
-                      </span>
-                      <UiSkeleton
-                        v-if="isPending"
-                        class="w-[140px] mx-auto h-8 relative top-1"
-                      />
-                      <div
-                        v-else-if="header.price !== undefined"
-                        class="font-extrabold flex flex-col items-center"
-                      >
-                        <span>{{ header.price }}€</span>
-                        <span class="body-small">{{ t('general.oneTime') }} </span>
-                      </div>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(item, index) in labels"
-                  :key="item"
-                  class="border-b last:border-b-0 border-primary"
+        <UiCard
+          v-for="product in shownProduct"
+          :key="product.title"
+          :class="cn(product.isPopular ? 'drop-shadow-xl border-primary md:scale-[1.1]' : '-mx-2')"
+        >
+          <UiCardHeader>
+            <UiCardTitle class="pb-2 flex items-center justify-between">
+              <span class="gradient-text">
+                {{ product.title }}
+              </span>
+              <UiBadge
+                v-if="product.isPopular"
+                variant="muted"
+              >
+                {{ $t('pages.pricing.popular') }}
+              </UiBadge>
+            </UiCardTitle>
+
+            <UiCardDescription class="pb-4">
+              {{ product.description }}
+            </UiCardDescription>
+
+            <div class="flex items-end gap-1">
+              <span class="text-3xl font-bold">
+                <span
+                  v-if="!isDefined(product.price)"
+                  class="flex items-center"
                 >
-                  <td class="px-2 py-3 font-bold">
-                    {{ t(item, 2) }}
-                  </td>
-                  <td
-                    v-for="product in shownProduct"
-                    :key="product.type"
-                    class="px-2 py-1 text-center font-bold"
-                  >
-                    <span v-if="product.items[index].number">
-                      {{ product.items[index].number }}
-                    </span>
-                    <Icon
-                      v-else
-                      :name="product.items[index].icon === 'check' ? 'tabler:check' : 'tabler:x'"
-                      class="w-8 h-8"
-                      :class="[product.items[index].icon === 'check' ? 'text-success' : 'text-destructive']"
-                      aria-hidden="true"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-2 py-1" />
-                  <td
-                    v-for="product in shownProduct"
-                    :key="product.type"
-                    class="px-2 py-1 text-center font-bold"
-                  >
-                    <UiSkeleton
-                      v-if="isPending"
-                      class="h-12 rounded-lg w-full"
-                    />
-                    <div
-                      v-else-if="isCurrent(product.type)"
-                      class="btn-success w-full"
-                    >
-                      {{ t('general.current') }}
-                    </div>
-                    <button
-                      v-else-if="!user || (product.id && product.price !== 0 && isUpgradeable(product.type))"
-                      class="btn-tertiary w-full"
-                      :aria-label="t('pages.pricing.cta')"
-                      :disabled="isPending"
-                      @click="subscribe(product?.id || '', product.type)"
-                    >
-                      {{ t('pages.pricing.cta') }}
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Card>
-        </div>
+                  €<UiSkeleton class="w-[30px] h-[34px]" />
+                </span>
+                <span v-else>€{{ product.price }}</span>
+              </span>
+              <span class="text-muted-foreground"> /{{ $t('general.oneTime') }}</span>
+            </div>
+          </UiCardHeader>
+
+          <UiCardContent class="flex">
+            <div class="space-y-4">
+              <span
+                v-for="(benefit, index) in product.items"
+                :key="index"
+                class="flex items-center gap-2 text-sm dark:text-muted-foreground"
+              >
+                <Icon
+                  v-if="benefit.icon"
+                  :name="`tabler:${benefit.icon}`"
+                  :class="benefit.icon === 'check' ? 'text-success' : 'text-destructive'"
+                />
+                {{ benefit.number }}
+                {{ $t(benefit.label || '', 2) }}
+              </span>
+            </div>
+          </UiCardContent>
+
+          <UiCardFooter>
+            <UiSkeleton
+              v-if="isPending"
+              class="h-[52px] rounded-lg w-full"
+            />
+            <div
+              v-else-if="isCurrent(product.type)"
+              class="btn-success w-full text-center"
+            >
+              {{ t('general.current') }}
+            </div>
+            <button
+              v-else-if="!user || (product.id && product.price !== 0 && isUpgradeable(product.type))"
+              class="btn-tertiary w-full"
+              :aria-label="t('pages.pricing.cta')"
+              :disabled="isPending"
+              @click="subscribe(product?.id || '', product.type)"
+            >
+              {{ t('pages.pricing.cta') }}
+            </button>
+          </UiCardFooter>
+        </UiCard>
       </div>
       <p class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground">
         {{ t('pages.pricing.text') }}

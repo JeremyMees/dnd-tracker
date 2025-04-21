@@ -18,13 +18,15 @@ export default defineEventHandler(async (event) => {
     update = { stripe_id: customer.id }
   }
 
+  const lang = body.locale === 'nl' ? '' : `/${body.locale}`
+
   const session = await stripe.checkout.sessions.create({
     allow_promotion_codes: true,
     billing_address_collection: 'auto',
     line_items: [{ price: price.id, quantity: 1 }],
     mode: 'payment',
-    success_url: `${config.public.appDomain}${body.locale === 'en' ? '/en' : ''}/subscribe-success`,
-    cancel_url: `${config.public.appDomain}${body.locale === 'en' ? '/en' : ''}/pricing`,
+    success_url: `${config.public.appDomain}${lang}/subscribe-success`,
+    cancel_url: `${config.public.appDomain}${lang}/pricing`,
     customer: body.customer || customer?.id,
   })
 
