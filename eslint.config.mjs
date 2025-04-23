@@ -6,6 +6,7 @@ export default withNuxt(
   {
     files: ['**/*.js', '**/*.ts', '**/*.vue'],
     rules: {
+      '@stylistic/space-before-function-paren': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-dynamic-delete': 'off',

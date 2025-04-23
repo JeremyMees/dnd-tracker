@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database-generated.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "npx playwright test"
   },
   "engines": {
     "pnpm": "please-use-npm",
@@ -77,8 +78,10 @@
   "devDependencies": {
     "@iconify-json/tabler": "^1.2.8",
     "@inspira-ui/plugins": "^0.0.1",
+    "@playwright/test": "^1.52.0",
     "@tanstack/eslint-plugin-query": "^5.66.0",
     "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.14.1",
     "@types/sanitize-html": "^2.13.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

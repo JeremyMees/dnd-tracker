@@ -25,3 +25,10 @@ logs
 
 # Local Netlify folder
 .netlify
+
+# Playwright
+/test/e2e/results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test/e2e/.auth
