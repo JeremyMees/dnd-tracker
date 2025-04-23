@@ -37,8 +37,6 @@ export default defineConfig({
     command: 'npm run build && node .output/server/index.mjs',
     url: process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
     timeout: 60 * 1000 * 10, // 10 minutes
   },
 })
