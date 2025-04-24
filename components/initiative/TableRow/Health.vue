@@ -196,7 +196,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
           </div>
           <span
             v-if="item.maxHealth !== item.health"
-            class="body-extra-small text-muted-foreground whitespace-nowrap"
+            class="text-2xs text-muted-foreground whitespace-nowrap"
           >
             {{ $t('general.max') }}: {{ item.maxHealth }}
           </span>
@@ -231,7 +231,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
               </p>
               <p
                 v-if="isDefined(item.maxHealthOld)"
-                class="body-small"
+                class="text-sm"
               >
                 ({{ item.maxHealthOld }})
               </p>

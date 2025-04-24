@@ -98,7 +98,7 @@ async function handleRegister(form: Register, node: FormNode): Promise<void> {
             :label="$t('components.inputs.marketingLabel')"
           />
         </FormKit>
-        <p class="body-small text-center text-muted-foreground my-4">
+        <p class="text-sm text-center text-muted-foreground my-4">
           {{ $t('pages.register.consent') }}
         </p>
       </div>

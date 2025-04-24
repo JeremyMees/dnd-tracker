@@ -58,7 +58,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
           </span>
           <span
             v-if="item.summoner?.name"
-            class="body-extra-small text-muted-foreground"
+            class="text-2xs text-muted-foreground"
           >
             {{ $t('general.summoner') }}: {{ item.summoner.name }}
           </span>

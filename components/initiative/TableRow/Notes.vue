@@ -28,7 +28,7 @@ watchDebounced(note, () => {
   <div class="min-w-[150px] h-full relative">
     <textarea
       v-model="note"
-      class="border-background border rounded-lg p-1 outline-none body-small bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]"
+      class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]"
       maxlength="250"
     />
   </div>

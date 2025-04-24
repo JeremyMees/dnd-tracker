@@ -144,7 +144,7 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
           }, [
             h('li', { class: 'flex flex-wrap gap-x-4 items-center' }, [
               h('span', {}, action.name + ':'),
-              h('span', { class: 'body-small text-muted-foreground' }, action.desc),
+              h('span', { class: 'text-sm text-muted-foreground' }, action.desc),
             ]),
             (action.attack_bonus || action.damage_dice) && h('div', {
               class: 'flex flex-wrap gap-x-4 items-center mt-2',
@@ -153,13 +153,13 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
                 class: 'flex flex-wrap gap-x-2 items-center',
               }, [
                 h('span', {}, 'To hit:'),
-                h('span', { class: 'body-small text-muted-foreground' }, `+${action.attack_bonus}`),
+                h('span', { class: 'text-sm text-muted-foreground' }, `+${action.attack_bonus}`),
               ]),
               action.damage_dice && h('div', {
                 class: 'flex flex-wrap gap-x-2 items-center',
               }, [
                 h('span', {}, 'Dice:'),
-                h('span', { class: 'body-small text-muted-foreground' }, [
+                h('span', { class: 'text-sm text-muted-foreground' }, [
                   action.damage_dice,
                   action.damage_bonus && ` +${action.damage_bonus}`,
                 ].filter(Boolean).join('')),
@@ -180,7 +180,7 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
 
   return rows.length
     ? h('div', { class: 'space-y-4' }, rows)
-    : h('p', { class: 'body-small text-muted-foreground' }, t('components.encounterTable.noActions'))
+    : h('p', { class: 'text-sm text-muted-foreground' }, t('components.encounterTable.noActions'))
 }
 
 export function homebrewTag(type: HomebrewType): VNode {

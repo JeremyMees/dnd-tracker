@@ -38,7 +38,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
             <p class="font-bold">
               {{ action.name }}:
             </p>
-            <p class="body-small text-muted-foreground">
+            <p class="text-sm text-muted-foreground">
               {{ action.desc }}
             </p>
           </li>
@@ -53,7 +53,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
               <p class="font-bold">
                 To hit:
               </p>
-              <p class="body-small text-muted-foreground">
+              <p class="text-sm text-muted-foreground">
                 +{{ action.attack_bonus }}
               </p>
             </div>
@@ -64,7 +64,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
               <p class="font-bold">
                 Dice:
               </p>
-              <p class="body-small text-muted-foreground">
+              <p class="text-sm text-muted-foreground">
                 {{ action.damage_dice }}
                 <span v-if="action.damage_bonus">
                   +{{ action.damage_bonus }}

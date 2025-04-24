@@ -9,12 +9,12 @@
   }
 
   .btn-small {
-    @apply body-small py-[2px] px-3 rounded outline-none border-2 text-foreground duration-200 ease-in-out font-medium transition-all;
+    @apply text-sm py-[2px] px-3 rounded outline-none border-2 text-foreground duration-200 ease-in-out font-medium transition-all;
     @apply focus-within:border-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .icon-btn {
-    @apply body-small text-muted-foreground rounded-lg outline-none font-medium relative size-7 flex items-center justify-center duration-300 transition-all;
+    @apply text-sm text-muted-foreground rounded-lg outline-none font-medium relative size-7 flex items-center justify-center duration-300 transition-all;
     @apply hover:text-foreground active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
@@ -47,10 +47,6 @@
 
   .rotates {
     animation: rotate 20s infinite
-  }
-
-  .float {
-    animation: float 6s ease-in-out infinite
   }
 
   .tracker-shadow-pulse {
@@ -212,7 +208,7 @@
   }
 
   html {
-    @apply font-text scroll-smooth;
+    @apply font-text text-base scroll-smooth;
   }
 
   body {
@@ -220,27 +216,27 @@
   }
 
   h1, .head-1 {
-    @apply font-bold font-title text-[1.5rem] leading-[1.75rem] md:text-[1.75rem] md:leading-[2rem] lg:text-[2rem] lg:leading-[2.25rem];
+    @apply font-bold font-title text-4xl;
   }
 
   h2, .head-2 {
-    @apply font-bold font-title text-[1.25rem] leading-[1.5rem] md:text-[1.5rem] md:leading-[1.5rem];
+    @apply font-bold font-title text-3xl;
   }
 
   h3, .head-3 {
-    @apply font-bold font-title text-[1rem] leading-[1.25rem] sm:text-[1.125rem] sm:leading-[1.25rem] md:text-[1.25rem] md:leading-[1.5rem];
+    @apply font-bold font-title text-2xl;
   }
 
-  .body-normal {
-    @apply font-text text-[1rem] leading-[1.5rem] sm:text-[1.125rem] sm:leading-[1.5rem] md:text-[1.25rem] md:leading-[1.75rem];
+  h4, .head-4 {
+    @apply font-bold font-title text-xl;
   }
 
-  .body-small {
-    @apply font-text text-[0.75rem] leading-[1.25rem] sm:text-[0.875rem] sm:leading-[1.25rem];
+  h5, .head-5 {
+    @apply font-bold font-title text-lg;
   }
 
-  .body-extra-small {
-    @apply font-text text-[0.5rem] leading-[0.75rem];
+  h6, .head-6 {
+    @apply font-bold font-title text-base;
   }
 
   .btn-foreground {
@@ -466,23 +462,6 @@
     0% { opacity: 0.7 }
     50% { opacity: 1 }
     100% { opacity: 0.7 }
-  }
-
-  @keyframes float {
-    0% { transform: translatey(0px) }
-    50% { transform: translatey(20px) }
-    100% { transform: translatey(0px) }
-  }
-
-  @keyframes wave {
-    0% { transform: rotate( 0.0deg) }
-    10% { transform: rotate(14.0deg) }
-    20% { transform: rotate(-8.0deg) }
-    30% { transform: rotate(14.0deg) }
-    40% { transform: rotate(-4.0deg) }
-    50% { transform: rotate(10.0deg) }
-    60% { transform: rotate( 0.0deg) }
-   100% { transform: rotate( 0.0deg) }
   }
 
   @keyframes rotate {

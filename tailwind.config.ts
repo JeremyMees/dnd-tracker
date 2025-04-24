@@ -38,6 +38,9 @@ module.exports = {
         title: ['Inter'],
         text: ['Geist'],
       },
+      fontSize: {
+        '2xs': ['0.5rem', '0.75rem'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

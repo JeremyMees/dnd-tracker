@@ -49,7 +49,7 @@ const resetOpen = ref<boolean>(false)
             <span class="font-bold">
               {{ $t('components.encounterTable.reset.soft.title') }}
             </span>
-            <span class="text-muted-foreground body-small">
+            <span class="text-muted-foreground text-sm">
               {{ $t('components.encounterTable.reset.soft.description') }}
             </span>
           </button>
@@ -62,7 +62,7 @@ const resetOpen = ref<boolean>(false)
             <span class="font-bold">
               {{ $t('components.encounterTable.reset.hard.title') }}
             </span>
-            <span class="text-muted-foreground body-small">
+            <span class="text-muted-foreground text-sm">
               {{ $t('components.encounterTable.reset.hard.description') }}
             </span>
           </button>

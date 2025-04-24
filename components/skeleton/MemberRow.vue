@@ -1,5 +1,5 @@
 <template>
-  <div class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between body-small border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0">
+  <div class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0">
     <div class="flex items-center gap-2">
       <UiSkeleton class="size-9 min-w-9 rounded-full" />
       <div class="flex flex-col gap-y-1">

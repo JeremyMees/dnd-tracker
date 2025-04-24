@@ -130,7 +130,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
               <div
                 v-for="member in members"
                 :key="member.user.id"
-                class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between body-small border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
+                class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
               >
                 <div class="flex items-center gap-2">
                   <UiAvatar

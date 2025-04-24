@@ -60,7 +60,7 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
       cell: ({ row }) => {
         return h('div', { class: 'flex justify-end' }, [
           isInCoolDown(row.original.id) && h('div', {
-            class: 'mt-auto text-muted-foreground body-small w-7',
+            class: 'mt-auto text-muted-foreground text-sm w-7',
           }, [
             `${getRemainingTime(row.original.id)}s`,
           ]),

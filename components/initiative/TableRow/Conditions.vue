@@ -142,7 +142,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
               <li
                 v-for="bullet in listFromText(condition.desc, condition.name === 'Exhaustion')"
                 :key="bullet"
-                class="body-small pb-1"
+                class="text-sm pb-1"
                 :class="[condition.name === 'Exhaustion' ? 'list-decimal' : 'list-disc']"
               >
                 {{ bullet }}

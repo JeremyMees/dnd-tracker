@@ -63,7 +63,7 @@ function toggleVote(vote: FeatureVote): void {
           </UiAvatar>
           <h2>
             {{ feature.title }}
-            <span class="body-extra-small ml-2 text-muted-foreground">
+            <span class="text-2xs ml-2 text-muted-foreground">
               {{ date }}
             </span>
           </h2>
@@ -108,7 +108,7 @@ function toggleVote(vote: FeatureVote): void {
         <div class="flex flex-col flex-1 items-start justify-start gap-y-4">
           <div
             v-if="feature.status !== 'accepted'"
-            class="body-small px-2 py-1 rounded-lg w-fit border-2"
+            class="text-sm px-2 py-1 rounded-lg w-fit border-2"
             :class="{
               'bg-info/50 border-info': feature.status === 'review',
               'bg-success/50 border-success': feature.status === 'progress',
@@ -116,7 +116,7 @@ function toggleVote(vote: FeatureVote): void {
           >
             {{ t(`pages.featureRequest.status.${feature.status}`) }}
           </div>
-          <p class="body-small">
+          <p class="text-sm">
             {{ feature.text }}
           </p>
         </div>

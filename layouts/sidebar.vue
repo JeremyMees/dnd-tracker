@@ -118,7 +118,7 @@ async function logoutUser(): Promise<void> {
                 onShow: () => !isExpanded,
               }"
               to="/pricing"
-              class="bg-gradient-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 body-small"
+              class="bg-gradient-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 text-sm"
             >
               <Icon
                 name="tabler:sparkles"

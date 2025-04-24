@@ -56,7 +56,7 @@ function checkShow(): void {
             aria-hidden="true"
           />
         </button>
-        <p class="body-small">
+        <p class="text-sm">
           {{ $t('components.limitCta.text') }}
         </p>
         <div class="flex justify-end">

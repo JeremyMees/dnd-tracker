@@ -129,7 +129,7 @@ function setLink() {
             type="button"
             @mouseenter="isOpen = true"
           >
-            <span class="duration-200 font-bold body-small min-w-10">
+            <span class="duration-200 font-bold text-sm min-w-10">
               {{
                 editor.isActive('heading')
                   ? `H${editor.getAttributes('heading').level}`
@@ -165,7 +165,7 @@ function setLink() {
                     class="size-4"
                     aria-hidden="true"
                   />
-                  <span class="body-small">
+                  <span class="text-sm">
                     {{ $t('general.paragraph') }}
                   </span>
                 </button>
@@ -188,7 +188,7 @@ function setLink() {
                     class="size-4"
                     aria-hidden="true"
                   />
-                  <span class="body-small">
+                  <span class="text-sm">
                     {{ $t('general.heading') }} {{ level }}
                   </span>
                 </button>

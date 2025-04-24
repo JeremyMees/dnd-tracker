@@ -142,7 +142,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </div>
           <span
             v-if="item.maxAc !== item.ac"
-            class="body-extra-small text-muted-foreground whitespace-nowrap"
+            class="text-2xs text-muted-foreground whitespace-nowrap"
           >
             {{ $t('general.max') }}: {{ item.maxAc }}
           </span>
@@ -177,7 +177,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
               </p>
               <p
                 v-if="item.maxHealthOld === 0 || item.maxHealthOld"
-                class="body-small"
+                class="text-sm"
               >
                 ({{ item.maxAcOld }})
               </p>

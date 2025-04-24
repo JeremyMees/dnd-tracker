@@ -160,11 +160,11 @@
         <NuxtLink
           to="https://www.instagram.com/mount_lazarus/"
           target="_blank"
-          class="text-muted-foreground body-small"
+          class="text-muted-foreground text-sm"
         >
           {{ $t('components.navbar.illustrations') }} Mount Lazarus
         </NuxtLink>
-        <p class="text-tertiary body-small">
+        <p class="text-tertiary text-sm">
           ©{{ new Date().getFullYear() }} dnd-tracker
         </p>
       </div>

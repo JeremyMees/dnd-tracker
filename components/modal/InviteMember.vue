@@ -174,7 +174,7 @@ async function inviteNewUser(email: string): Promise<void> {
       color="warning"
       class="flex flex-col md:flex-row md:items-center gap-4 backdrop-blur-xl my-4"
     >
-      <p class="body-small">
+      <p class="text-sm">
         {{ $t('components.inviteMember.errors.noUser', { email: noUser }) }}
       </p>
       <div class="flex justify-end">
@@ -230,10 +230,10 @@ async function inviteNewUser(email: string): Promise<void> {
                 </UiAvatarFallback>
               </UiAvatar>
               <div class="flex flex-col">
-                <p class="body-small font-bold">
+                <p class="text-sm font-bold">
                   {{ item.profile.username }}
                 </p>
-                <p class="body-small text-muted-foreground">
+                <p class="text-sm text-muted-foreground">
                   {{ $t(`general.roles.${item.role}.title`) }}
                 </p>
               </div>

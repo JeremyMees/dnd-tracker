@@ -60,7 +60,7 @@ const { locale } = useI18n()
                 {{ feature.title }}
               </h4>
 
-              <ul class="pl-6 space-y-1.5 list-disc body-small marker:text-foreground md:text-base">
+              <ul class="pl-6 space-y-1.5 list-disc text-sm marker:text-foreground md:text-base">
                 <template
                   v-for="(element, k) in feature.items"
                   :key="k"

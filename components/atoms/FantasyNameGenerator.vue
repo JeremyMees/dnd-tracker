@@ -54,7 +54,7 @@ function handleCopy(name: string): void {
   />
 
   <div class="flex w-full justify-end gap-2 items-center mt-4">
-    <p class="text-muted-foreground body-extra-small">
+    <p class="text-muted-foreground text-2xs">
       {{ $t('pages.fantasyNameGenerator.tip') }}
     </p>
     <button

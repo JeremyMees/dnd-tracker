@@ -182,7 +182,7 @@ const { $md } = useNuxtApp()
     >
       <span class="font-bold text-foreground">Ritual:</span>
       {{ content.ritual }}
-      <span class="ml-2 body-extra-small">can be cast as ritual</span>
+      <span class="ml-2 text-2xs">can be cast as ritual</span>
     </p>
     <p
       v-if="content.components"

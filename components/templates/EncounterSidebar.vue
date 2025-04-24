@@ -281,7 +281,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   />
                   <span
                     v-if="data && data.rows.length >= 100"
-                    class="text-destructive body-small"
+                    class="text-destructive text-sm"
                   >
                     {{ $t('components.homebrewModal.max') }}
                   </span>
@@ -430,7 +430,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                       {{ $t('actions.changeInitiative') }}
                     </p>
                     <div class="flex items-center">
-                      <span class="mr-1 body-small text-muted-foreground">
+                      <span class="mr-1 text-sm text-muted-foreground">
                         MOD +
                       </span>
                       <span class="flex flex-row">
