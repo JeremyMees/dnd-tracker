@@ -41,7 +41,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   name="tabler:hexagon"
                   class="size-4 min-w-4 text-tertiary"
                 />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('actions.roll') }}
                 </span>
               </button>
@@ -80,7 +80,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   name="tabler:book"
                   class="size-4 min-w-4 text-help"
                 />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('components.navbar.dnd-content') }}
                 </span>
               </button>
@@ -118,7 +118,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
             :class="{ 'relative right-[1px]': !isExpanded }"
             class="size-4 min-w-4 text-destructive"
           />
-          <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+          <span class="group-data-[collapsible=icon]:hidden truncate">
             {{ $t('pages.encounter.maxCharacters') }}
           </span>
         </UiSidebarMenuButton>
@@ -145,7 +145,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                     name="tabler:bat"
                     class="size-4 min-w-4 text-destructive"
                   />
-                  <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  <span class="group-data-[collapsible=icon]:hidden truncate">
                     {{ $t('general.bestiary') }}
                   </span>
                 </button>
@@ -191,7 +191,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                     name="tabler:meeple"
                     class="size-4 min-w-4 text-primary"
                   />
-                  <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  <span class="group-data-[collapsible=icon]:hidden truncate">
                     {{ $t('general.campaignHomebrew') }}
                   </span>
                 </button>
@@ -238,7 +238,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                     name="tabler:beer"
                     class="size-4 min-w-4 text-warning"
                   />
-                  <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                  <span class="group-data-[collapsible=icon]:hidden truncate">
                     {{ $t('general.newHomebrew') }}
                   </span>
                 </button>
@@ -313,7 +313,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   name="tabler:signature"
                   class="size-4 min-w-4 text-success"
                 />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('components.navbar.fantasy') }}
                 </span>
               </button>
@@ -349,7 +349,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   name="tabler:settings"
                   class="size-4 min-w-4"
                 />
-                <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+                <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('general.setting', 2) }}
                 </span>
               </button>
@@ -403,7 +403,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 name="tabler:keyboard"
                 class="size-4 min-w-4"
               />
-              <span class="group-data-[collapsible=icon]:hidden truncate text-muted-foreground">
+              <span class="group-data-[collapsible=icon]:hidden truncate">
                 {{ $t('general.hotkey', 2) }}
               </span>
             </button>
