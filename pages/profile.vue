@@ -110,15 +110,15 @@ async function handleRemoveUser(): Promise<void> {
       </div>
       <UiSeparator />
       <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
-        <div class="md:min-w-[300px]">
+        <div class="md:min-w-[300px] flex-1">
           <h2>
             {{ $t('pages.profile.data.title') }}
           </h2>
-          <p class="pt-2">
+          <p class="pt-2 text-muted-foreground">
             {{ $t('pages.profile.data.subtitle') }}
           </p>
         </div>
-        <div class="grow md:max-w-xl">
+        <div class="md:max-w-xl flex-1">
           <FormKit
             v-model="formInfo"
             type="form"
@@ -150,15 +150,15 @@ async function handleRemoveUser(): Promise<void> {
       </div>
       <UiSeparator />
       <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
-        <div class="md:min-w-[300px]">
+        <div class="md:min-w-[300px] flex-1">
           <h2>
             {{ $t('pages.profile.password.title') }}
           </h2>
-          <p class="pt-2">
+          <p class="pt-2 text-muted-foreground">
             {{ $t('pages.profile.password.subtitle') }}
           </p>
         </div>
-        <div class="grow md:max-w-xl">
+        <div class="md:max-w-xl flex-1">
           <FormKit
             id="password"
             type="form"
