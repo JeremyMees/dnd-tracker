@@ -15,7 +15,7 @@
 }
 
 .driver-popover-progress-text {
-  @apply !text-muted-foreground font-medium font-text text-sm;
+  @apply !text-muted-foreground font-medium font-geist text-sm;
 }
 
 .driver-popover .driver-popover-prev-btn {

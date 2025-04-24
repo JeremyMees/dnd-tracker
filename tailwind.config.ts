@@ -35,8 +35,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        title: ['Inter'],
-        text: ['Geist'],
+        geist: ['Geist'],
       },
       fontSize: {
         '2xs': ['0.5rem', '0.75rem'],

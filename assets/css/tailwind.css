@@ -8,11 +8,6 @@
     @apply focus-within:border-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  .btn-small {
-    @apply text-sm py-[2px] px-3 rounded outline-none border-2 text-foreground duration-200 ease-in-out font-medium transition-all;
-    @apply focus-within:border-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
   .icon-btn {
     @apply text-sm text-muted-foreground rounded-lg outline-none font-medium relative size-7 flex items-center justify-center duration-300 transition-all;
     @apply hover:text-foreground active:scale-95 disabled:cursor-not-allowed disabled:opacity-50;
@@ -198,17 +193,12 @@
     src: url('@/assets/fonts/Geist.woff') format('woff');
   }
 
-  @font-face {
-    font-family: 'Inter';
-    src: url('@/assets/fonts/Inter.woff') format('woff');
-  }
-
   * {
     @apply border-border;
   }
 
   html {
-    @apply font-text text-base scroll-smooth;
+    @apply font-geist text-base scroll-smooth;
   }
 
   body {
@@ -216,27 +206,27 @@
   }
 
   h1, .head-1 {
-    @apply font-bold font-title text-4xl;
+    @apply font-black text-4xl;
   }
 
   h2, .head-2 {
-    @apply font-bold font-title text-3xl;
+    @apply font-bold text-3xl;
   }
 
   h3, .head-3 {
-    @apply font-bold font-title text-2xl;
+    @apply font-bold text-2xl;
   }
 
   h4, .head-4 {
-    @apply font-bold font-title text-xl;
+    @apply font-bold text-xl;
   }
 
   h5, .head-5 {
-    @apply font-bold font-title text-lg;
+    @apply font-bold text-lg;
   }
 
   h6, .head-6 {
-    @apply font-bold font-title text-base;
+    @apply font-bold text-base;
   }
 
   .btn-foreground {
@@ -283,42 +273,6 @@
     @apply btn hover:bg-background/60 border-transparent;
   }
 
-  .btn-small-foreground {
-    @apply btn-small !text-background bg-foreground/50 hover:bg-foreground/60 border-foreground;
-  }
-
-  .btn-small-background {
-    @apply btn-small bg-background/50 hover:bg-background/60 border-background;
-  }
-
-  .btn-small-primary {
-    @apply btn-small bg-primary/50 hover:bg-primary/60 border-primary;
-  }
-
-  .btn-small-tertiary {
-    @apply btn-small bg-tertiary/50 hover:bg-tertiary/60 border-tertiary;
-  }
-
-  .btn-small-success {
-    @apply btn-small bg-success/50 hover:bg-success/60 border-success;
-  }
-
-  .btn-small-info {
-    @apply btn-small bg-info/50 hover:bg-info/60 border-info;
-  }
-
-  .btn-small-warning {
-    @apply btn-small bg-warning/50 hover:bg-warning/60 border-warning;
-  }
-
-  .btn-small-help {
-    @apply btn-small bg-help/50 hover:bg-help/60 border-help;
-  }
-
-  .btn-small-destructive {
-    @apply btn-small bg-destructive/50 hover:bg-destructive/60 border-destructive;
-  }
-
   .icon-btn-foreground {
     @apply icon-btn hover:bg-foreground/50;
   }
@@ -329,6 +283,10 @@
 
   .icon-btn-primary {
     @apply icon-btn hover:bg-primary/50;
+  }
+
+  .icon-btn-secondary {
+    @apply icon-btn hover:bg-secondary/50;
   }
 
   .icon-btn-tertiary {

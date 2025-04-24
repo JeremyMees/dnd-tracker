@@ -12,7 +12,7 @@ defineProps({
       <div class="text-[100px] font-black">
         {{ error!.statusCode }}
       </div>
-      <h1 class="text-primary text-5xl">
+      <h1 class="text-primary">
         {{ $t('pages.error.404') }}
       </h1>
       <p>

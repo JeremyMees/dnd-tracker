@@ -63,6 +63,7 @@ export default defineNuxtConfig({
     '/reset-password': { robots: false },
     '/subscribe-success': { robots: false },
     '/campaigns/join': { robots: false },
+    '/style-guide': { robots: false },
   },
 
   compatibilityDate: '2024-04-03',
