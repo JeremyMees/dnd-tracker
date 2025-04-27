@@ -258,6 +258,10 @@
       "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan.",
       "goHome": "Naar de startpagina"
     },
+    "maintenance": {
+      "title": "Website is in onderhoud",
+      "text": "We zijn momenteel bezig met het verbeteren van de website. We zullen deze zo snel mogelijk terugzetten."
+    },
     "campaigns": {
       "campaigns": "Campagnes",
       "add": "Campagne creëren",

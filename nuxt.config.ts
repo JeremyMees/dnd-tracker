@@ -55,6 +55,7 @@ export default defineNuxtConfig({
     public: {
       formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
+      maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
     },
   },
 
@@ -64,6 +65,7 @@ export default defineNuxtConfig({
     '/subscribe-success': { robots: false },
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
+    '/maintenance': { robots: false },
   },
 
   compatibilityDate: '2024-04-03',

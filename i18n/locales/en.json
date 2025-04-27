@@ -258,6 +258,10 @@
       "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go.",
       "goHome": "Back to home"
     },
+    "maintenance": {
+      "title": "Website is under maintenance",
+      "text": "We are currently working on the website. We will restore it as soon as possible."
+    },
     "campaigns": {
       "campaigns": "Campaigns",
       "add": "Create campaign",
