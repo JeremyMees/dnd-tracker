@@ -231,6 +231,10 @@
         "text": "At dnd-tracker, we are not of many words. We let the product speak for itself. What was an encounter tracker as a main idea quickly turned into a much bigger thing. With more and more ideas coming forward, we are currently expanding the dnd-tracker. This will make playing even more exciting, mysterious, easier AND more enjoyable.",
         "button": "Try without an account"
       },
+      "textBlock2": {
+        "title": "Game Mastering is already challenging enough",
+        "text": "Managing initiative, effects, notes and homebrew can get chaotic. We make it easy, organized and fun so you can focus on telling great stories."
+      },
       "summary": {
         "title": "A tracker with unique skills",
         "item1": "Live updating between different devices",
@@ -248,6 +252,21 @@
         "title": "Ready to upgrade your D&D experience?",
         "text": "Unleash Your Creativity with Tools and Resources for Every Adventure.",
         "button": "Start Creating"
+      },
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "item1": {
+          "title": "Do I need an account?",
+          "content": "No, you can use the tracker without an account. However, you can't save your data. Use the Encounter Playground to play without an account."
+        },
+        "item2": {
+          "title": "Is it suitable for homebrew?",
+          "content": "Yes, you can add your own homebrew to the tracker. You can also add homebrew to a campaign so that every encounter has access to it."
+        },
+        "item3": {
+          "title": "Are payments really one-time?",
+          "content": "Yes, you pay a one-time amount for a subscription that you can use forever."
+        }
       },
       "globe": {
         "title": "Made in Belgium"

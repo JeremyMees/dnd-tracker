@@ -10,15 +10,37 @@ const dragon = ref<InstanceType<typeof Dragon>>()
   <NuxtLayout no-padding>
     <AnimationBlob />
     <Hero />
-    <div class="flex flex-col pb-20 pt-40 relative overflow-hidden">
+    <div class="flex flex-col pb-20 relative overflow-hidden">
       <div
         data-skills
         class="space-y-20 dnd-container"
         @mousemove="dragon && dragon.calculateEyes"
       >
+        <LazyTitleText
+          :button-label="$t('pages.home.textBlock1.button')"
+          button-link="/playground"
+        >
+          {{ $t('pages.home.textBlock1.title') }}
+          <template #text>
+            {{ $t('pages.home.textBlock1.text') }}
+          </template>
+        </LazyTitleText>
+        <LazyTitleText>
+          {{ $t('pages.home.textBlock2.title') }}
+          <template #text>
+            {{ $t('pages.home.textBlock2.text') }}
+          </template>
+        </LazyTitleText>
+      </div>
+      <LazyDragon ref="dragon" />
+      <div class="dnd-container pt-[200px] flex items-center gap-4">
+        <img
+          src="/art/flame.svg"
+          alt="Hearth"
+          class="size-40 hidden md:block"
+        >
         <LazySummary
           :title="$t('pages.home.summary.title')"
-          sprite="flame"
           :items="[
             $t('pages.home.summary.item1'),
             $t('pages.home.summary.item2'),
@@ -29,18 +51,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
           ]"
           class="max-w-prose"
         />
-        <LazyTitleText
-          sprite="hearth"
-          :button-label="$t('pages.home.textBlock1.button')"
-          button-link="/playground"
-        >
-          {{ $t('pages.home.textBlock1.title') }}
-          <template #text>
-            {{ $t('pages.home.textBlock1.text') }}
-          </template>
-        </LazyTitleText>
       </div>
-      <LazyDragon ref="dragon" />
       <LazyUiContainerScroll>
         <template #title>
           <h2 class="text-4xl font-semibold text-muted-foreground">
@@ -71,6 +82,24 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         :title="$t('pages.home.ctaBanner.title')"
         :subtitle="$t('pages.home.ctaBanner.text')"
         :button="$t('pages.home.ctaBanner.button')"
+      />
+      <LazyFaq
+        :title="$t('pages.home.faq.title')"
+        :items="[
+          {
+            title: $t('pages.home.faq.item1.title'),
+            content: $t('pages.home.faq.item1.content'),
+          },
+          {
+            title: $t('pages.home.faq.item2.title'),
+            content: $t('pages.home.faq.item2.content'),
+          },
+          {
+            title: $t('pages.home.faq.item3.title'),
+            content: $t('pages.home.faq.item3.content'),
+          },
+        ]"
+        class="pb-20 pt-[200px] mx-auto dnd-container"
       />
     </div>
     <div

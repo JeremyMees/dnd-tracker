@@ -231,6 +231,10 @@
         "text": "Wat begon als een encounter tracker die we voor wat vrienden ineen hebben geknutseld, werd al gauw een project om GM's echt te ondersteunen in hun campagnes. We blijven de DND Tracker uitbreiden met meer en meer ideeën en input. Zo wordt D&D spelen nog spannender, mysterieuzer en vooral vlotter.",
         "button": "Probeer zonder account"
       },
+      "textBlock2": {
+        "title": " Game Master zijn is al uitdagend genoeg",
+        "text": "Het beheren van initiatieven, effecten, notities en homebrew kan chaotisch worden. Wij maken het eenvoudig, overzichtelijk en plezierig zodat jij je kunt focussen op het vertellen van geweldige verhalen."
+      },
       "summary": {
         "title": "Een tracker met unieke skills",
         "item1": "Live synchronisatie tussen verschillende toestellen",
@@ -243,6 +247,21 @@
       "containerScroll": {
         "title": "Ontdek de kracht van",
         "subtitle": "Encounter bouwen"
+      },
+      "faq": {
+        "title": "Veelgestelde vragen",
+        "item1": {
+          "title": "Moet ik een account aanmaken?",
+          "content": "Nee, je kan de tracker gebruiken zonder een account te hebben. Je kan je data echter niet bewaren. Gebruik de Encounter Playground om zonder account te spelen."
+        },
+        "item2": {
+          "title": "Is het geschikt voor homebrew?",
+          "content": "Ja, je kan je eigen homebrew toevoegen aan de tracker. Je kan ook homebrew aan een campagne toevoegen zodat iedere encounter hier toegang tot heeft."
+        },
+        "item3": {
+          "title": "Zijn betalingen echt eenmalig?",
+          "content": "Ja, je betaalt eenmalig een bedrag voor een abonnement dat je voor altijd gebruikt."
+        } 
       },
       "ctaBanner": {
         "title": "Klaar om je D&D ervaring te verbeteren?",

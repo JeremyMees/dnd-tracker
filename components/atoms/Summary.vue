@@ -3,37 +3,30 @@ withDefaults(
   defineProps<{
     title?: string
     items?: string[]
-    sprite?: string
   }>(),
   {
     title: '',
     items: () => [],
-    sprite: undefined,
   },
 )
 </script>
 
 <template>
-  <div class="group">
+  <div class="group relative">
     <h2
       v-if="title"
       class="pb-4 relative max-w-max gradient-text"
     >
       {{ title }}
-      <img
-        v-if="sprite"
-        :src="`/art/${sprite}.svg`"
-        loading="lazy"
-        class="w-10 h-10 absolute -right-12 -top-3 z-[-1] group-hover:rotate-12 transition-transform group-hover:scale-[1.2]"
-      >
     </h2>
-    <ul
-      v-if="items.length"
-      class="flex flex-col gap-4 text-muted-foreground"
-    >
-      <div
-        v-for="item in items"
+    <ul>
+      <Motion
+        v-for="(item, index) in items"
         :key="item"
+        as="li"
+        :initial="{ transform: 'translateX(-50px)', opacity: 0 }"
+        :in-view="{ transform: 'translateX(0px)', opacity: 1 }"
+        :transition="{ delay: index * 0.1 }"
         class="flex items-center gap-4"
       >
         <img
@@ -41,8 +34,8 @@ withDefaults(
           loading="lazy"
           class="w-6 h-6"
         >
-        <p>{{ item }}</p>
-      </div>
+        <span class="text-muted-foreground">{{ item }}</span>
+      </Motion>
     </ul>
   </div>
 </template>
