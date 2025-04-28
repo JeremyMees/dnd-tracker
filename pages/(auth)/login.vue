@@ -27,20 +27,11 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
 </script>
 
 <template>
-  <NuxtLayout name="centered">
-    <template #header>
-      <h1 class="text-center">
-        {{ $t('pages.login.title') }}
-      </h1>
-    </template>
+  <NuxtLayout name="auth">
+    <h1 class="text-center head-3 mb-4">
+      {{ $t('pages.login.title') }}
+    </h1>
 
-    <NuxtImg
-      src="/classes.png"
-      alt="DnD Classes"
-      width="2480"
-      height="3508"
-      class="mx-auto visibility-pulse w-[250px]"
-    />
     <FormKit
       type="form"
       :submit-label="$t('pages.login.signIn')"
@@ -59,21 +50,51 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
       />
     </FormKit>
 
-    <template #footer>
-      <div class="flex flex-wrap gap-2 justify-center">
-        <NuxtLinkLocale
-          to="/register"
-          class="btn-text"
-        >
-          {{ $t('pages.login.new') }}
-        </NuxtLinkLocale>
-        <NuxtLinkLocale
-          to="/forgot-password"
-          class="btn-text"
-        >
-          {{ $t('pages.login.forgot') }}
-        </NuxtLinkLocale>
-      </div>
+    <UiSeparator
+      class="mt-6 mb-4"
+      :label="$t('general.or')"
+    />
+
+    <div class="flex flex-wrap gap-2 justify-center">
+      <NuxtLinkLocale
+        to="/register"
+        class="btn-text"
+      >
+        {{ $t('pages.login.new') }}
+      </NuxtLinkLocale>
+      <NuxtLinkLocale
+        to="/forgot-password"
+        class="btn-text"
+      >
+        {{ $t('pages.login.forgot') }}
+      </NuxtLinkLocale>
+    </div>
+
+    <template #right>
+      <ClientOnly>
+        <UiIconCloud
+          :images="[
+            'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d8.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d10.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d12.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d20.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d8.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d10.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d12.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d20.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d8.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d10.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d12.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d20.png',
+          ]"
+        />
+      </ClientOnly>
     </template>
   </NuxtLayout>
 </template>

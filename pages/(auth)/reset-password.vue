@@ -58,7 +58,7 @@ async function resetPassword({ password }: ResetPassword, node: FormNode): Promi
 <template>
   <NuxtLayout name="centered">
     <template #header>
-      <h1 class="text-center pb-10">
+      <h1 class="text-center pb-10 head-3">
         {{ $t('pages.resetPassword.title') }}
       </h1>
     </template>

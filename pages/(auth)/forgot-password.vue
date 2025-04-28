@@ -44,7 +44,7 @@ async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<voi
 <template>
   <NuxtLayout name="centered">
     <template #header>
-      <h1 class="text-center">
+      <h1 class="text-center head-3">
         {{ $t('pages.forgotPassword.title') }}
       </h1>
     </template>
