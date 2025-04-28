@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import type { AvatarVariants } from '../ui/avatar'
 
-const emit = defineEmits<{
-  change: [Avatar]
-  save: [Avatar]
-}>()
+const emit = defineEmits<{ save: [Avatar] }>()
 
 const props = withDefaults(
   defineProps<{
@@ -12,42 +9,68 @@ const props = withDefaults(
     deprecatedAvatar?: boolean
     hideCreatorToggle?: boolean
     size?: AvatarVariants['size']
-    selectedOptions?: SelectedStyleOptions
   }>(), {
     size: 'lg',
   },
 )
 
-const avatarCreator = useAvatarCreator()
+const avatar = defineModel<Avatar>()
 
+const avatarCreator = useAvatarCreator()
+const initialAvatar = ref<Avatar | null>(null)
 const creatorOpen = ref<boolean>(props.hideCreatorToggle)
 
 const isChanged = computed<boolean>(() => {
-  if (!props.selectedOptions) return true
+  if (!initialAvatar.value) return false
 
-  const values = filterUnwantedKeys(props.selectedOptions)
+  if (avatarCreator.avatar.value && initialAvatar.value) {
+    const initialOptions = initialAvatar.value.extra
+    const currentOptions = avatarCreator.avatar.value.extra
 
-  return Object.entries(values)
-    .some(([key, value]) => {
-      if (key.includes('Color')) {
-        const hasHash = avatarCreator.options.value[key].toString().includes('#')
+    if (initialOptions && currentOptions) {
+      const initial = filterUnwantedKeys(initialOptions as SelectedStyleOptions)
+      const current = filterUnwantedKeys(currentOptions as SelectedStyleOptions)
 
-        return hasHash
-          ? avatarCreator.options.value[key].toString().replace('#', '') !== value
-          : avatarCreator.options.value[key] !== value
-      }
-      else {
-        return avatarCreator.options.value[key] !== value
-      }
-    })
+      return Object.entries(current).some(([key, value]) => {
+        if (!initial[key]) return true
+
+        if (key.includes('Color')) {
+          const initialValue = initial[key].toString().replace('#', '')
+          const currentValue = value.toString().replace('#', '')
+          return initialValue !== currentValue
+        }
+        return initial[key] !== value
+      })
+    }
+  }
+
+  return JSON.stringify(initialAvatar.value) !== JSON.stringify(avatarCreator.avatar.value)
 })
 
-onMounted(() => {
-  if (props.selectedOptions) avatarCreator.update(props.selectedOptions)
-  else avatarCreator.random()
+watch(avatar, (v) => {
+  if (v && JSON.stringify(v) !== JSON.stringify(avatarCreator.avatar.value)) {
+    avatarCreator.avatar.value = v
+  }
+}, { deep: true })
 
-  if (avatarCreator.avatar.value) {
-    emit('change', avatarCreator.avatar.value)
+watch(() => avatarCreator.avatar.value, (v) => {
+  if (v && JSON.stringify(v) !== JSON.stringify(avatar.value)) {
+    avatar.value = v
+  }
+}, { deep: true })
+
+onMounted(() => {
+  if (avatar.value) {
+    avatarCreator.avatar.value = avatar.value
+    initialAvatar.value = JSON.parse(JSON.stringify(avatar.value))
+  }
+  else {
+    avatarCreator.random()
+  }
+
+  if (avatarCreator.avatar.value && !avatar.value) {
+    avatar.value = avatarCreator.avatar.value
+    initialAvatar.value = JSON.parse(JSON.stringify(avatarCreator.avatar.value))
   }
 })
 
@@ -76,13 +99,24 @@ function updateAvatar(key: string, value: string): void {
   avatarCreator.update({ [key]: value })
 
   if (avatarCreator.avatar.value) {
-    emit('change', avatarCreator.avatar.value)
+    avatar.value = avatarCreator.avatar.value
   }
 }
 
 function save(): void {
   if (avatarCreator.avatar.value) {
+    avatar.value = avatarCreator.avatar.value
+    initialAvatar.value = JSON.parse(JSON.stringify(avatarCreator.avatar.value))
+    creatorOpen.value = false
     emit('save', avatarCreator.avatar.value)
+  }
+}
+
+function reset(): void {
+  if (initialAvatar.value && initialAvatar.value.extra) {
+    const initialOptions = initialAvatar.value.extra as SelectedStyleOptions
+    avatarCreator.update(initialOptions)
+    avatar.value = avatarCreator.avatar.value
     creatorOpen.value = false
   }
 }
@@ -145,14 +179,11 @@ function save(): void {
       </button>
       <template v-if="profile && isChanged && avatarCreator.avatar.value">
         <button
-          v-if="props.selectedOptions"
+          v-if="avatar?.extra"
           v-tippy="$t('actions.reset')"
           class="size-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary text-white"
           :aria-label="$t('actions.reset')"
-          @click="() => {
-            if (props.selectedOptions) avatarCreator.update(props.selectedOptions)
-            creatorOpen = false
-          }"
+          @click="reset"
         >
           <Icon
             name="tabler:refresh"
