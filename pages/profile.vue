@@ -19,6 +19,11 @@ const formInfo = ref<ProfileUpdate>({
   marketing: user.value.marketing ?? true,
 })
 
+const avatar = ref<Avatar>({
+  url: user.value.avatar || '',
+  extra: user.value.avatar_options || {},
+})
+
 const { mutateAsync: updateProfile } = useProfileUpdate()
 const { mutateAsync: removeProfile } = useProfileRemove()
 
@@ -92,10 +97,9 @@ async function handleRemoveUser(): Promise<void> {
     <section class="space-y-2 relative">
       <div class="flex flex-wrap justify-center gap-y-2 gap-x-4 pb-6">
         <AvatarPicker
+          v-model="avatar"
           profile
-          avatar-big
           :deprecated-avatar="!user.avatar_options"
-          :selected-options="user.avatar_options as SelectedStyleOptions || undefined"
           @save="updateAvatar"
         />
       </div>
