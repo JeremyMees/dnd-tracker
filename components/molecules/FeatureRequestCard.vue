@@ -6,13 +6,8 @@ const emit = defineEmits<{
 
 const props = defineProps<{ feature: FeatureRequest }>()
 
-const { locale, t } = useI18n()
+const { t } = useI18n()
 const { user } = useAuthentication()
-
-const date = computed<string>(() => {
-  const dateString = new Date(props.feature.created_at)
-  return dateString.toLocaleDateString(locale.value === 'nl' ? 'nl-NL' : 'en-US')
-})
 
 const hasVoted = computed<FeatureVote | undefined>(() => {
   if (!user.value) return undefined
@@ -61,12 +56,16 @@ function toggleVote(vote: FeatureVote): void {
               />
             </UiAvatarFallback>
           </UiAvatar>
-          <h2>
+          <h3>
             {{ feature.title }}
-            <span class="text-2xs ml-2 text-muted-foreground">
-              {{ date }}
-            </span>
-          </h2>
+            <NuxtTime
+              class="text-xs ml-2 text-muted-foreground font-normal"
+              :datetime="feature.created_at"
+              month="numeric"
+              day="numeric"
+              year="numeric"
+            />
+          </h3>
         </div>
       </UiCardTitle>
     </UiCardHeader>

@@ -9,6 +9,7 @@ import {
   iconLink,
   selectButton,
 } from './generate-functions'
+import { NuxtTime } from '#components'
 
 const columnHelper = createColumnHelper<HomebrewItemRow>()
 
@@ -58,7 +59,12 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
     columnHelper.accessor('created_at', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
-      cell: ({ row }) => formatDate(row.getValue('created_at')),
+      cell: ({ row }) => h(NuxtTime, {
+        datetime: row.getValue<Date>('created_at'),
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   label: Record<string, string>
   icon: string
   background: string
@@ -8,12 +8,6 @@ const props = defineProps<{
 }>()
 
 const { locale } = useI18n()
-
-const date = computed<string>(() => {
-  const dateString = new Date(props.earned)
-
-  return dateString.toLocaleDateString(locale.value === 'nl' ? 'nl-NL' : 'en-US')
-})
 </script>
 
 <template>
@@ -37,9 +31,13 @@ const date = computed<string>(() => {
         <p class="head-3">
           {{ label[locale] }}
         </p>
-        <div class="text-xs text-muted-foreground">
-          {{ date }}
-        </div>
+        <NuxtTime
+          class="text-xs text-muted-foreground"
+          :datetime="earned"
+          month="numeric"
+          day="numeric"
+          year="numeric"
+        />
         <p>
           {{ description[locale] }}
         </p>

@@ -38,9 +38,13 @@ const { locale } = useI18n()
             <p class="font-bold head-2">
               {{ item.version }}
             </p>
-            <div class="text-xs bg-secondary w-fit px-2 py-1 rounded-lg">
-              {{ new Date(item.date).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US') }}
-            </div>
+            <NuxtTime
+              class="text-xs bg-secondary w-fit px-2 py-1 rounded-lg text-muted-foreground"
+              :datetime="item.date"
+              month="numeric"
+              day="numeric"
+              year="numeric"
+            />
           </div>
 
           <div class="flex flex-col gap-6">

@@ -1,5 +1,6 @@
 import { createColumnHelper, type InitialTableState } from '@tanstack/vue-table'
 import { iconButton, linkButton, selectButton, permission } from './generate-functions'
+import { NuxtTime } from '#components'
 
 const columnHelper = createColumnHelper<EncounterItem>()
 
@@ -43,16 +44,18 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
       enableSorting: false,
       header: t('general.campaign'),
       cell: ({ row }) => row.getValue('campaign')
-        ? linkButton({
-            to: campaignUrl(row.original.campaign, 'encounters'),
-            content: row.original.campaign.title,
-          })
+        ? linkButton({ to: campaignUrl(row.original.campaign, 'encounters'), content: row.original.campaign.title })
         : '',
     }),
     columnHelper.accessor('created_at', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
-      cell: ({ row }) => formatDate(row.getValue('created_at')),
+      cell: ({ row }) => h(NuxtTime, {
+        datetime: row.getValue<Date>('created_at'),
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,

@@ -5,6 +5,7 @@ import {
   iconButton,
   selectButton,
 } from './generate-functions'
+import { NuxtTime } from '#components'
 
 const columnHelper = createColumnHelper<NoteRow>()
 
@@ -28,11 +29,7 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
         cb: table.getToggleAllPageRowsSelectedHandler(),
       }),
       cell: ({ row }) => hasRights
-        ? selectButton({
-            checked: row.getIsSelected(),
-            cb: row.getToggleSelectedHandler(),
-            disabled: !row.getCanSelect(),
-          })
+        ? selectButton({ checked: row.getIsSelected(), cb: row.getToggleSelectedHandler(), disabled: !row.getCanSelect() })
         : '',
     }),
     columnHelper.display({
@@ -51,7 +48,12 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
     }),
     columnHelper.accessor('created_at', {
       header: t('general.createdAt'),
-      cell: ({ row }) => formatDate(row.getValue('created_at')),
+      cell: ({ row }) => h(NuxtTime, {
+        datetime: row.getValue<Date>('created_at'),
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,
@@ -72,12 +74,7 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
             disabled: isInCoolDown(row.original.id),
           }),
           hasRights
-            ? iconButton({
-                icon: 'tabler:edit',
-                content: t('actions.update'),
-                color: 'info',
-                cb: () => onUpdate(row.original),
-              })
+            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), color: 'info', cb: () => onUpdate(row.original) })
             : '',
         ])
       },
