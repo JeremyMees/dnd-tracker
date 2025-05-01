@@ -5,17 +5,20 @@ withDefaults(
     round?: boolean
     noPadding?: boolean
     noStyling?: boolean
+    as?: string
   }>(), {
     color: 'black',
     round: false,
     noPadding: false,
     noStyling: false,
+    as: 'div',
   },
 )
 </script>
 
 <template>
-  <div
+  <component
+    :is="as"
     class="transition-colors duration-300"
     :class="{
       'border-4': !noStyling,
@@ -35,5 +38,5 @@ withDefaults(
     }"
   >
     <slot />
-  </div>
+  </component>
 </template>

@@ -22,26 +22,27 @@ const allActions = computed<Option<Action[]>[]>(() => [
       :key="label"
       class="space-y-2"
     >
-      <p class="head-3">
+      <p class="head-4">
         {{ $t(`general.${label}`, 2) }}
       </p>
       <Card
         color="secondary"
         class="p-2"
+        as="ul"
       >
-        <ul
+        <li
           v-for="action in value"
           :key="action.name"
           class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc"
         >
-          <li class="flex flex-wrap gap-x-4 items-center">
+          <div class="flex flex-wrap gap-x-4 items-center">
             <p class="font-bold">
               {{ action.name }}:
             </p>
             <p class="text-sm text-muted-foreground">
               {{ action.desc }}
             </p>
-          </li>
+          </div>
           <div
             v-if="action.attack_bonus || action.damage_dice"
             class="flex flex-wrap gap-x-4 items-center mt-2"
@@ -72,7 +73,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
               </p>
             </div>
           </div>
-        </ul>
+        </li>
       </Card>
     </div>
   </div>
