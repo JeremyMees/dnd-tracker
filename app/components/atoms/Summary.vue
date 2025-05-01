@@ -32,6 +32,7 @@ withDefaults(
         <img
           src="/art/coin.svg"
           loading="lazy"
+          alt="Coin"
           class="w-6 h-6"
         >
         <span class="text-muted-foreground">{{ item }}</span>

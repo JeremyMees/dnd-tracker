@@ -103,7 +103,10 @@ async function logoutUser(): Promise<void> {
               </UiDropdownMenuContent>
             </UiDropdownMenu>
             <UiDropdownMenu>
-              <UiDropdownMenuTrigger class="mt-1">
+              <UiDropdownMenuTrigger
+                class="mt-1"
+                aria-label="Profile menu"
+              >
                 <UiAvatar
                   :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
                   class="border-4"
