@@ -10,7 +10,8 @@ definePageMeta({
 const route = useRoute()
 const { t } = useI18n()
 
-const { data, isPending, isError, isSuccess } = useCampaignDetail(+route.params.id)
+const id = validateParamId(route.params.id)
+const { data, isPending, isError, isSuccess } = useCampaignDetail(id)
 
 const fetchReady = ref(false)
 onNuxtReady(() => fetchReady.value = true)
@@ -81,12 +82,12 @@ const tabs = computed<Tab[]>(() => {
             >
               {{ data.title }}
             </span>
-            <UiSkeletonBase
+            <UiSkeleton
               v-else
               class="w-[150px] h-9 rounded-full"
             />
             <template #fallback>
-              <UiSkeletonBase class="w-[150px] h-9 rounded-full" />
+              <UiSkeleton class="w-[150px] h-9 rounded-full" />
             </template>
           </ClientOnly>
         </h2>
@@ -103,7 +104,7 @@ const tabs = computed<Tab[]>(() => {
           :disabled="isError || isPending"
         />
         <template #fallback>
-          <UiSkeletonBase
+          <UiSkeleton
             v-for="i in 5"
             :key="i"
             class="w-[125px] h-9 lg:h-6 rounded-lg"
@@ -118,7 +119,7 @@ const tabs = computed<Tab[]>(() => {
         :is-admin="isAdmin"
         :is-owner="isOwner"
         :fetch-ready="fetchReady"
-        :campaign-id="+route.params.id"
+        :campaign-id="id"
       />
       <Card
         v-else

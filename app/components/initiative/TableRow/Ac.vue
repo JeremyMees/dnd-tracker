@@ -25,7 +25,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
-  if (index === -1) return
+  if (index === -1 || !rows[index]) return
 
   rows[index] = { ...rows[index], ...row }
 
@@ -111,7 +111,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
 
 <template>
   <div>
-    <UiPopoverBase v-model:open="popoverOpen">
+    <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
           :class="{
@@ -235,7 +235,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             </template>
           </FormKit>
         </FormKit>
-        <UiSeparatorBase
+        <UiSeparator
           v-if="hasAc"
           class="my-6 bg-muted-foreground"
         />
@@ -254,7 +254,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             validation="required|between:1,100|number"
           />
         </FormKit>
-        <UiSeparatorBase
+        <UiSeparator
           v-if="hasAc"
           class="my-6 bg-muted-foreground"
         />
@@ -277,6 +277,6 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           />
         </FormKit>
       </UiPopoverContent>
-    </UiPopoverBase>
+    </UiPopover>
   </div>
 </template>

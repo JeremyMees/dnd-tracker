@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <ClientOnly>
-    <UiSkeletonBase
+    <UiSkeleton
       v-if="loading || !isDefined(count)"
       class="w-10 h-4"
     />
@@ -21,7 +21,7 @@ defineProps<{
     </span>
 
     <template #fallback>
-      <UiSkeletonBase class="w-10 h-4" />
+      <UiSkeleton class="w-10 h-4" />
     </template>
   </ClientOnly>
 </template>

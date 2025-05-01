@@ -28,8 +28,12 @@ async function moveRow(up: boolean): Promise<void> {
   const index = props.item.index
   const targetIndex = up ? index - 1 : index + 1
 
-  if (up && index <= 0) return
-  if (!up && index >= rows.length - 1) return
+  if (
+    (up && index <= 0)
+    || (!up && index >= rows.length - 1)
+    || !rows[index]
+    || !rows[targetIndex]
+  ) return
 
   // Just change the index properties without swapping the array positions
   rows[index] = { ...rows[index], index: targetIndex }
@@ -38,7 +42,7 @@ async function moveRow(up: boolean): Promise<void> {
   // When moving up, update all following indexes to maintain sequence
   if (up) {
     for (let i = index + 1; i < rows.length; i++) {
-      rows[i] = { ...rows[i], index: i }
+      if (rows[i]) rows[i] = { ...rows[i], index: i } as InitiativeSheetRow
     }
   }
 
@@ -58,7 +62,7 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
     const index = getCurrentRowIndex(props.sheet, props.item.id)
     const rows = [...props.sheet.rows]
 
-    if (index === -1) return
+    if (index === -1 || !rows[index]) return
 
     rows[index] = {
       ...rows[index],
@@ -77,7 +81,7 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
 
 <template>
   <div class="flex gap-2 items-center text-left">
-    <UiPopoverBase v-model:open="popoverOpen">
+    <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button class="flex flex-col justify-center">
           <Icon
@@ -123,7 +127,7 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
           />
         </FormKit>
       </UiPopoverContent>
-    </UiPopoverBase>
+    </UiPopover>
     <div
       v-if="item.initiative !== null && item.initiative >= 0"
       class="flex flex-col"

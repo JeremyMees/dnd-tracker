@@ -15,7 +15,7 @@ withDefaults(
 </script>
 
 <template>
-  <UiDialogBase open>
+  <UiDialog open>
     <UiDialogContent
       :class="[big ? 'max-w-[1000px]' : 'max-w-xl']"
       @escape-key-down="emit('close')"
@@ -40,5 +40,5 @@ withDefaults(
         <slot name="footer" />
       </UiDialogFooter>
     </UiDialogContent>
-  </UiDialogBase>
+  </UiDialog>
 </template>

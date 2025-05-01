@@ -126,3 +126,13 @@ export function formatDate(date: string | Date): string {
 export function isDefined<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
+
+export function validateParamId(id: string | string[] | undefined): number {
+  if (
+    !id
+    || typeof id !== 'string'
+    || isNaN(+id)
+  ) throw createError({ statusCode: 404, statusMessage: 'Id is not valid' })
+
+  return +id
+}

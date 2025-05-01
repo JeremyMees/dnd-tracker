@@ -13,7 +13,7 @@ watchDebounced(note, () => {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
-  if (index === -1) return
+  if (index === -1 || !rows[index]) return
 
   rows[index] = {
     ...rows[index],

@@ -23,7 +23,6 @@ export default defineNuxtConfig({
 
   components: [
     { path: '~/components', pathPrefix: false },
-    { path: '~/components/ui', prefix: 'Ui' },
     { path: '~/components/modal', prefix: 'Modal' },
     { path: '~/components/form', prefix: 'Form' },
     { path: '~/components/initiative', prefix: 'Initiative' },

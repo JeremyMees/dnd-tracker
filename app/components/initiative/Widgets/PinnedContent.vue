@@ -7,7 +7,7 @@ defineProps<{ value: Open5eItem[] }>()
   <Card
     color="secondary"
   >
-    <UiAccordionBase
+    <UiAccordion
       v-if="value.length"
       type="single"
       collapsible
@@ -44,7 +44,7 @@ defineProps<{ value: Open5eItem[] }>()
           </div>
         </UiAccordionContent>
       </UiAccordionItem>
-    </UiAccordionBase>
+    </UiAccordion>
     <p
       v-else
       class="text-muted-foreground"

@@ -1,5 +1,5 @@
 export function randomArrayItem<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)]
+  return arr[Math.floor(Math.random() * arr.length)] as T
 }
 
 export function randomArrayItems<T>(arr: T[], number = 1): T[] {
@@ -12,7 +12,7 @@ export function randomArrayItems<T>(arr: T[], number = 1): T[] {
 
   for (let i = 0; i < number; i++) {
     const index = Math.floor(Math.random() * copy.length)
-    result.push(copy.splice(index, 1)[0])
+    result.push(copy.splice(index, 1)[0] as T)
   }
 
   return result
@@ -30,8 +30,8 @@ export function shuffleArray<T>(arr: T[]): T[] {
   for (let i = 0; i < arr.length; i++) {
     const j = Math.floor(Math.random() * (i + 1))
     const temp = arr[i]
-    arr[i] = arr[j]
-    arr[j] = temp
+    if (arr[i] && arr[j]) arr[i] = arr[j]
+    if (arr[j] && temp) arr[j] = temp
   }
 
   return arr

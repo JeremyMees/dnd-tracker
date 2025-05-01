@@ -1,5 +1,4 @@
 import { validateJWT } from 'oslo/jwt'
-import type { UserRole } from '~/types/supabase'
 
 export default defineEventHandler(async (event) => {
   const { token } = await readBody(event)

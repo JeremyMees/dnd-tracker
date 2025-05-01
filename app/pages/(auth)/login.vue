@@ -50,7 +50,7 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
       />
     </FormKit>
 
-    <UiSeparatorBase
+    <UiSeparator
       class="mt-6 mb-4"
       :label="$t('general.or')"
     />
@@ -72,7 +72,7 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
 
     <template #right>
       <ClientOnly>
-        <UiIconCloudBase
+        <UiIconCloud
           :images="[
             'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
             'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',

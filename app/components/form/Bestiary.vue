@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd-rules'
+import { useOpen5eListing } from '~~/queries/open5e'
 
 const props = defineProps<{
   sheet?: InitiativeSheet

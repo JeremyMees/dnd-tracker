@@ -21,7 +21,7 @@ withDefaults(
 </script>
 
 <template>
-  <UiAlertDialogBase open>
+  <UiAlertDialog open>
     <UiAlertDialogContent>
       <UiAlertDialogHeader>
         <UiAlertDialogTitle>
@@ -40,5 +40,5 @@ withDefaults(
         </UiAlertDialogAction>
       </UiAlertDialogFooter>
     </UiAlertDialogContent>
-  </UiAlertDialogBase>
+  </UiAlertDialog>
 </template>

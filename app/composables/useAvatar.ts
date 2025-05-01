@@ -41,10 +41,9 @@ export function useAvatarCreator() {
 
   function update(selectedOptions: SelectedStyleOptions): void {
     for (const key in selectedOptions) {
-      if (blackListedKeys.includes(key)) continue
-      else if (key === 'primaryBackgroundColor') {
-        options.value.backgroundColor = selectedOptions[key]
-      }
+      if (blackListedKeys.includes(key) || !selectedOptions[key]) continue
+
+      if (key === 'primaryBackgroundColor') options.value.backgroundColor = selectedOptions[key]
       else options.value[key] = selectedOptions[key]
     }
 
@@ -91,13 +90,12 @@ export function useAvatarCreator() {
     }
 
     for (const key in options.value) {
-      if (
-        !options.value[key]
-        || blackListedKeys.includes(key)
-      ) continue
+      if (!options.value[key] || blackListedKeys.includes(key)) continue
 
       const avatarOption = options.value[key]
       const styleOption = configStyleOptions[key]
+
+      if (!styleOption) continue
 
       if (styleOption.isArray) {
         result[key] = avatarOption

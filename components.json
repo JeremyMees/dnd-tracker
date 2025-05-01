@@ -10,10 +10,10 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "~/app/components",
-    "composables": "~/app/composables",
-    "utils": "~/app/utils/shadcn",
-    "ui": "~/app/components/ui",
-    "lib": "~/app/utils/shadcn"
+    "components": "~/components",
+    "composables": "~/composables",
+    "utils": "~/utils/shadcn",
+    "ui": "~/components/ui",
+    "lib": "~/utils/shadcn"
   }
 }

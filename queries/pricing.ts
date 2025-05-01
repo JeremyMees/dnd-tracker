@@ -72,7 +72,7 @@ export function usePricingListing() {
           const { name, price, id } = product
           const index = products.findIndex(p => p.type === name.toLowerCase())
 
-          if (index >= 0) products[index] = { ...products[index], price, id }
+          if (index >= 0 && products[index]) products[index] = { ...products[index], price, id }
         })
 
         return products

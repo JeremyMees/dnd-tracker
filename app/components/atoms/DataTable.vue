@@ -99,7 +99,7 @@ async function fetchPermissions() {
     </div>
 
     <div class="rounded-lg border-4 border-secondary bg-secondary/50">
-      <UiTableBase>
+      <UiTable>
         <UiTableHeader>
           <UiTableRow
             v-for="headerGroup in table.getHeaderGroups()"
@@ -181,7 +181,7 @@ async function fetchPermissions() {
             </UiTableCell>
           </UiTableRow>
         </UiTableBody>
-      </UiTableBase>
+      </UiTable>
 
       <div
         :class="[selectedRowLength ? 'flex-col md:flex-row justify-between' : 'justify-end']"

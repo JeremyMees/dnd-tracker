@@ -26,19 +26,17 @@ const icon = computed<string>(() => {
 })
 
 function prev(): void {
-  const index = current.value === 0
-    ? props.options.length - 1
-    : current.value - 1
+  const index = current.value === 0 ? props.options.length - 1 : current.value - 1
+  const option = props.options[index]
 
-  emit('update', props.options[index])
+  if (option) emit('update', option)
 }
 
 function next(): void {
-  const index = current.value === props.options.length - 1
-    ? 0
-    : current.value + 1
+  const index = current.value === props.options.length - 1 ? 0 : current.value + 1
+  const option = props.options[index]
 
-  emit('update', props.options[index])
+  if (option) emit('update', option)
 }
 </script>
 

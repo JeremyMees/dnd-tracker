@@ -4,9 +4,9 @@ const route = useRoute()
 
 useHealthCheck()
 
-const pageName = computed(() => !route.name || typeof route.name !== 'string'
+const pageName = computed<string>(() => !route.name || typeof route.name !== 'string'
   ? ''
-  : route.name.split('___')[0],
+  : route.name.split('___')[0] ?? '',
 )
 </script>
 

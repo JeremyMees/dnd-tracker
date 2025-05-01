@@ -39,11 +39,11 @@ function toggleVote(vote: FeatureVote): void {
 </script>
 
 <template>
-  <UiCardBase>
+  <UiCard>
     <UiCardHeader>
       <UiCardTitle>
         <div class="flex items-center gap-x-2">
-          <UiAvatarBase class="border-2 border-background">
+          <UiAvatar class="border-2 border-background">
             <UiAvatarImage
               v-tippy="feature.created_by.username"
               :src="feature.created_by.avatar"
@@ -55,7 +55,7 @@ function toggleVote(vote: FeatureVote): void {
                 class="size-6 min-w-6 text-muted-foreground"
               />
             </UiAvatarFallback>
-          </UiAvatarBase>
+          </UiAvatar>
           <h3>
             {{ feature.title }}
             <NuxtTime
@@ -121,5 +121,5 @@ function toggleVote(vote: FeatureVote): void {
         </div>
       </div>
     </UiCardContent>
-  </UiCardBase>
+  </UiCard>
 </template>

@@ -218,7 +218,7 @@ async function inviteNewUser(email: string): Promise<void> {
               v-if="item.profile"
               class="flex items-end gap-2"
             >
-              <UiAvatarBase class="border-2 border-primary">
+              <UiAvatar class="border-2 border-primary">
                 <UiAvatarImage
                   :src="item.profile.avatar"
                   :alt="item.profile.username"
@@ -229,7 +229,7 @@ async function inviteNewUser(email: string): Promise<void> {
                     class="size-6 min-w-6 text-muted-foreground"
                   />
                 </UiAvatarFallback>
-              </UiAvatarBase>
+              </UiAvatar>
               <div class="flex flex-col">
                 <p class="text-sm font-bold">
                   {{ item.profile.username }}

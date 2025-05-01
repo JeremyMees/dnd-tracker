@@ -32,7 +32,7 @@ async function logoutUser(): Promise<void> {
 <template>
   <div class="min-h-full">
     <UiSidebarProvider>
-      <UiSidebarBase
+      <UiSidebar
         ref="sidebar"
         collapsible="icon"
       >
@@ -58,7 +58,7 @@ async function logoutUser(): Promise<void> {
               class="h-10 hidden group-data-[collapsible=icon]:block"
             />
           </NuxtLinkLocale>
-          <UiSeparatorBase />
+          <UiSeparator />
         </UiSidebarHeader>
         <UiSidebarContent>
           <slot
@@ -133,14 +133,14 @@ async function logoutUser(): Promise<void> {
               />
             </NuxtLinkLocale>
           </ClientOnly>
-          <UiSeparatorBase />
-          <UiAlertDialogBase>
+          <UiSeparator />
+          <UiAlertDialog>
             <UiSidebarMenu>
               <UiSidebarMenuItem>
-                <UiDropdownMenuBase>
+                <UiDropdownMenu>
                   <UiDropdownMenuTrigger as-child>
                     <UiSidebarMenuButton size="lg">
-                      <UiAvatarBase
+                      <UiAvatar
                         class="border-tertiary border-2"
                         size="xs"
                       >
@@ -154,7 +154,7 @@ async function logoutUser(): Promise<void> {
                             class="size-6 min-w-6 text-muted-foreground"
                           />
                         </UiAvatarFallback>
-                      </UiAvatarBase>
+                      </UiAvatar>
                       <div
                         v-if="user"
                         class="grid flex-1 text-left text-sm leading-tight"
@@ -176,18 +176,18 @@ async function logoutUser(): Promise<void> {
                     :routes="profileRoutes"
                     @logout="logoutUser"
                   />
-                </UiDropdownMenuBase>
+                </UiDropdownMenu>
               </UiSidebarMenuItem>
             </UiSidebarMenu>
-          </UiAlertDialogBase>
+          </UiAlertDialog>
         </UiSidebarFooter>
         <UiSidebarRail />
-      </UiSidebarBase>
+      </UiSidebar>
       <UiSidebarInset class="max-w-full max-h-dvh overflow-hidden">
         <header class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div class="flex items-center gap-2 px-4">
             <UiSidebarTrigger class="-ml-1" />
-            <UiSeparatorBase
+            <UiSeparator
               orientation="vertical"
               class="mr-2 h-4"
             />

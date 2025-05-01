@@ -24,7 +24,7 @@ const resetOpen = ref<boolean>(false)
           {{ data?.round || 1 }}
         </span>
       </span>
-      <UiPopoverBase v-model:open="resetOpen">
+      <UiPopover v-model:open="resetOpen">
         <UiPopoverTrigger as-child>
           <button
             id="tour-11"
@@ -53,7 +53,7 @@ const resetOpen = ref<boolean>(false)
               {{ $t('components.encounterTable.reset.soft.description') }}
             </span>
           </button>
-          <UiSeparatorBase />
+          <UiSeparator />
           <button
             :aria-label="$t('components.encounterTable.reset.hard.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
@@ -67,7 +67,7 @@ const resetOpen = ref<boolean>(false)
             </span>
           </button>
         </UiPopoverContent>
-      </UiPopoverBase>
+      </UiPopover>
     </div>
     <div
       id="tour-1"

@@ -1,4 +1,4 @@
-export { default as Select } from './SelectBase.vue'
+export { default as Select } from './Select.vue'
 export { default as SelectContent } from './SelectContent.vue'
 export { default as SelectGroup } from './SelectGroup.vue'
 export { default as SelectItem } from './SelectItem.vue'

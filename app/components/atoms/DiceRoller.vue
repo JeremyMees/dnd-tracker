@@ -3,7 +3,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 const emit = defineEmits<{ rolled: [amount: number] }>()
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   styled?: boolean
 }>(), {
   styled: true,
@@ -29,7 +29,7 @@ function calculateDiceRoll() {
   const amount = values.reduce((sum, arr) => sum + (arr?.reduce((a, b) => a + b, 0) || 0), 0)
 
   toast({
-    title: t('components.diceRoll.rolled', { amount: values[0].length, dice: keys.join(', ') }, keys.length),
+    title: t('components.diceRoll.rolled', { amount: values[0]?.length ?? 0, dice: keys.join(', ') }, keys.length),
     description: h('div', { class: 'flex flex-col gap-y-1' }, [
       ...Object.entries(rolled).map(([dice, numbers]) =>
         h('span', [

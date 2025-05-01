@@ -34,9 +34,9 @@ const { data, status } = useEncounterListing(computed(() => {
 
   return {
     search,
-    sortBy: sorting?.length ? sorting[0].id : initialState.sorting?.[0]?.id,
-    sortDesc: sorting?.length ? sorting[0].desc : initialState.sorting?.[0]?.desc,
-    page: pagination ? pagination.pageIndex : 0,
+    sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
+    sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
+    page: pagination?.pageIndex ?? 0,
     eq: props.campaignId ? { field: 'campaign', value: props.campaignId } : undefined,
   }
 }), enableDateFetching)

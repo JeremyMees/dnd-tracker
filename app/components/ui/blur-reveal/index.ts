@@ -1,1 +1,1 @@
-export { default as BlurReveal } from './BlurRevealBase.vue'
+export { default as BlurReveal } from './BlurReveal.vue'

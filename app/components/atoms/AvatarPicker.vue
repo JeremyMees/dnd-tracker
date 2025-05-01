@@ -82,6 +82,8 @@ function filterUnwantedKeys(selected: SelectedStyleOptions): SelectedStyleOption
 
     let value = selected[key]
 
+    if (value === undefined) continue
+
     if (typeof value === 'string' && value.includes('#')) {
       value = value.replace('#', '')
     }
@@ -129,7 +131,7 @@ function reset(): void {
       'max-w-prose': profile,
     }"
   >
-    <UiAvatarBase
+    <UiAvatar
       :size="size"
       class="border-4 border-primary"
     >
@@ -148,7 +150,7 @@ function reset(): void {
           class="text-muted-foreground"
         />
       </UiAvatarFallback>
-    </UiAvatarBase>
+    </UiAvatar>
     <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur">
       <button
         v-tippy="$t('actions.random')"

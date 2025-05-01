@@ -24,7 +24,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
     const index = getCurrentRowIndex(props.sheet, props.item.id)
     const rows = [...props.sheet.rows]
 
-    if (index === -1) return
+    if (index === -1 || !rows[index]) return
 
     rows[index] = {
       ...rows[index],
@@ -42,7 +42,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
 </script>
 
 <template>
-  <UiPopoverBase v-model:open="popoverOpen">
+  <UiPopover v-model:open="popoverOpen">
     <UiPopoverTrigger as-child>
       <button class="flex items-center gap-x-2">
         <Icon
@@ -84,5 +84,5 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
         />
       </FormKit>
     </UiPopoverContent>
-  </UiPopoverBase>
+  </UiPopover>
 </template>

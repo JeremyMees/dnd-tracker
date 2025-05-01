@@ -23,7 +23,7 @@ withDefaults(
       v-for="j in column"
       :key="j"
     >
-      <UiSkeletonBase class="h-6 border-4 rounded-full" />
+      <UiSkeleton class="h-6 border-4 rounded-full" />
     </li>
   </MasonryGrid>
 </template>

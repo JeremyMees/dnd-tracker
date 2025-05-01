@@ -58,7 +58,7 @@ const table = useVueTable({
     />
 
     <div class="rounded-lg border-4 border-secondary bg-secondary/50">
-      <UiTableBase>
+      <UiTable>
         <UiTableHeader>
           <UiTableRow
             v-for="headerGroup in table.getHeaderGroups()"
@@ -126,7 +126,7 @@ const table = useVueTable({
             </UiTableCell>
           </UiTableRow>
         </UiTableBody>
-      </UiTableBase>
+      </UiTable>
     </div>
 
     <LazyInitiativeWidgets

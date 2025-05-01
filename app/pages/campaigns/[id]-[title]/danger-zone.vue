@@ -114,13 +114,13 @@ async function transferOwnership(): Promise<void> {
           </template>
         </Bouncer>
       </div>
-      <UiSkeletonBase
+      <UiSkeleton
         v-else
         class="w-full h-[220px]"
       />
 
       <template #fallback>
-        <UiSkeletonBase class="w-full h-[220px]" />
+        <UiSkeleton class="w-full h-[220px]" />
       </template>
     </ClientOnly>
   </section>

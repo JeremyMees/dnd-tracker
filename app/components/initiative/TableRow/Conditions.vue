@@ -35,12 +35,9 @@ function updateCondition(conditions: Condition[]): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
-  if (index === -1) return
+  if (index === -1 || !rows[index]) return
 
-  rows[index] = {
-    ...rows[index],
-    conditions,
-  }
+  rows[index] = { ...rows[index], conditions }
 
   props.update({ rows })
 
@@ -68,7 +65,12 @@ function toggleSelected(item: Open5eItem | Condition): void {
 
 function listFromText(text: string, exhaustion: boolean = false): string[] {
   return exhaustion
-    ? text.replace('*', '').split(/\|\s\d+\s+\|/g).slice(1).map(bullet => bullet.split('|')[0])
+    ? text
+        .replace('*', '')
+        .split(/\|\s\d+\s+\|/g)
+        .slice(1)
+        .map(bullet => bullet.split('|')[0])
+        .filter((s): s is string => s !== undefined)
     : text.replace('*', '').split(/\s\*\s/g)
 }
 </script>
@@ -78,7 +80,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
     v-if="item.type !== 'lair'"
     class="flex items-center gap-2"
   >
-    <UiPopoverBase v-model:open="popoverOpen">
+    <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
           :disabled="isPending"
@@ -99,7 +101,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
           </UiPopoverTitle>
         </UiPopoverHeader>
         <div class="flex flex-wrap gap-2">
-          <UiBadgeBase
+          <UiBadge
             v-for="condition in conditions"
             :key="condition.name"
             :variant="selected.map(s => s.name).includes(condition.name) ? 'default' : 'outline'"
@@ -107,7 +109,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
             @click="toggleSelected(condition)"
           >
             {{ condition.name }}
-          </UiBadgeBase>
+          </UiBadge>
         </div>
         <div class="flex justify-end mt-4">
           <button
@@ -119,19 +121,19 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
           </button>
         </div>
       </UiPopoverContent>
-    </UiPopoverBase>
+    </UiPopover>
     <div
       v-if="item.conditions.length"
       class="flex flex-wrap justify-center md:justify-start gap-1"
     >
-      <UiPopoverBase
+      <UiPopover
         v-for="condition in item.conditions"
         :key="condition.name"
       >
         <UiPopoverTrigger>
-          <UiBadgeBase class="whitespace-nowrap">
+          <UiBadge class="whitespace-nowrap">
             {{ condition.name }} {{ condition.level ? `(${condition.level})` : '' }}
-          </UiBadgeBase>
+          </UiBadge>
         </UiPopoverTrigger>
         <UiPopoverContent>
           <UiPopoverHeader>
@@ -149,7 +151,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
               </li>
             </ul>
           </template>
-          <UiNumberFieldBase
+          <UiNumberField
             v-if="condition.hasLevels"
             id="level"
             :default-value="condition.level || 1"
@@ -161,15 +163,15 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
               updateCondition(updatedConditions)
             }"
           >
-            <UiLabelBase for="level">
+            <UiLabel for="level">
               {{ $t('general.level') }}
-            </UiLabelBase>
+            </UiLabel>
             <UiNumberFieldContent>
               <UiNumberFieldDecrement />
               <UiNumberFieldInput />
               <UiNumberFieldIncrement />
             </UiNumberFieldContent>
-          </UiNumberFieldBase>
+          </UiNumberField>
           <div class="flex justify-end mt-4">
             <button
               :aria-label="$t('actions.remove')"
@@ -180,7 +182,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
             </button>
           </div>
         </UiPopoverContent>
-      </UiPopoverBase>
+      </UiPopover>
     </div>
   </div>
 </template>

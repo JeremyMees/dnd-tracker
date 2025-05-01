@@ -24,7 +24,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
     </UiSidebarGroupLabel>
     <UiSidebarMenu>
       <UiSidebarMenuItem>
-        <UiPopoverBase v-model:open="diceRollerOpen">
+        <UiPopover v-model:open="diceRollerOpen">
           <UiPopoverTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
@@ -57,10 +57,10 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
               @rolled="diceRollerOpen = false"
             />
           </UiPopoverContent>
-        </UiPopoverBase>
+        </UiPopover>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiDialogBase
+        <UiDialog
           :open="openModal === 'content'"
           @close="openModal = undefined"
         >
@@ -103,7 +103,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
               :update="update"
             />
           </UiDialogContent>
-        </UiDialogBase>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem v-if="maxCharacters">
         <UiSidebarMenuButton class="bg-destructive/10 border border-destructive">
@@ -125,7 +125,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
       </UiSidebarMenuItem>
       <template v-else>
         <UiSidebarMenuItem>
-          <UiDialogBase
+          <UiDialog
             :open="openModal === 'bestiary'"
             @close="openModal = undefined"
           >
@@ -168,10 +168,10 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 :update="update"
               />
             </UiDialogContent>
-          </UiDialogBase>
+          </UiDialog>
         </UiSidebarMenuItem>
         <UiSidebarMenuItem v-if="data?.campaign?.id">
-          <UiDialogBase
+          <UiDialog
             :open="openModal === 'addHomebrew'"
             @close="openModal = undefined"
           >
@@ -215,10 +215,10 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 @close="openModal = undefined"
               />
             </UiDialogContent>
-          </UiDialogBase>
+          </UiDialog>
         </UiSidebarMenuItem>
         <UiSidebarMenuItem>
-          <UiDialogBase
+          <UiDialog
             :open="openModal === 'newHomebrew'"
             @close="saveHomebrewToCampaign = false, openModal = undefined"
           >
@@ -293,11 +293,11 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 />
               </UiDialogFooter>
             </UiDialogContent>
-          </UiDialogBase>
+          </UiDialog>
         </UiSidebarMenuItem>
       </template>
       <UiSidebarMenuItem>
-        <UiPopoverBase v-model:open="fantasyNameGeneratorOpen">
+        <UiPopover v-model:open="fantasyNameGeneratorOpen">
           <UiPopoverTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
@@ -326,10 +326,10 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
           >
             <FantasyNameGenerator :amount="10" />
           </UiPopoverContent>
-        </UiPopoverBase>
+        </UiPopover>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiDialogBase
+        <UiDialog
           :open="openModal === 'settings'"
           @close="openModal = undefined"
         >
@@ -380,7 +380,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
               />
             </UiDialogFooter>
           </UiDialogContent>
-        </UiDialogBase>
+        </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>

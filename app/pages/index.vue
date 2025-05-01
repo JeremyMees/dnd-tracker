@@ -52,7 +52,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
           class="max-w-prose"
         />
       </div>
-      <LazyUiContainerScrollBase>
+      <LazyUiContainerScroll>
         <template #title>
           <h2 class="text-4xl font-semibold text-muted-foreground">
             {{ $t('pages.home.containerScroll.title') }}
@@ -77,7 +77,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
             class="mx-auto h-full rounded-2xl object-cover object-left-top"
           />
         </template>
-      </LazyUiContainerScrollBase>
+      </LazyUiContainerScroll>
       <LazyCtaBanner
         :title="$t('pages.home.ctaBanner.title')"
         :subtitle="$t('pages.home.ctaBanner.text')"
@@ -111,7 +111,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         </span>
         🇧🇪
       </span>
-      <LazyUiGlobeBase class="top-10" />
+      <LazyUiGlobe class="top-10" />
     </div>
   </NuxtLayout>
 </template>

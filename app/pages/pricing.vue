@@ -90,18 +90,18 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             y: 50,
           }"
         >
-          <UiCardBase>
+          <UiCard>
             <UiCardHeader>
               <UiCardTitle class="pb-2 flex items-center justify-between">
                 <span class="gradient-text">
                   {{ product.title }}
                 </span>
-                <UiBadgeBase
+                <UiBadge
                   v-if="product.isPopular"
                   variant="muted"
                 >
                   {{ $t('pages.pricing.popular') }}
-                </UiBadgeBase>
+                </UiBadge>
               </UiCardTitle>
 
               <UiCardDescription class="pb-4">
@@ -114,7 +114,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                     v-if="!isDefined(product.price)"
                     class="flex items-center"
                   >
-                    €<UiSkeletonBase class="w-[30px] h-[34px]" />
+                    €<UiSkeleton class="w-[30px] h-[34px]" />
                   </span>
                   <span v-else>€{{ product.price }}</span>
                 </span>
@@ -141,7 +141,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             </UiCardContent>
 
             <UiCardFooter>
-              <UiSkeletonBase
+              <UiSkeleton
                 v-if="isPending"
                 class="h-[52px] rounded-lg w-full"
               />
@@ -161,7 +161,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 {{ t('pages.pricing.cta') }}
               </button>
             </UiCardFooter>
-          </UiCardBase>
+          </UiCard>
         </Motion>
       </Motion>
       <p class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground">

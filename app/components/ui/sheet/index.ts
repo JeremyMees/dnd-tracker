@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-export { default as Sheet } from './SheetBase.vue'
+export { default as Sheet } from './Sheet.vue'
 export { default as SheetClose } from './SheetClose.vue'
 export { default as SheetContent } from './SheetContent.vue'
 export { default as SheetDescription } from './SheetDescription.vue'

@@ -25,7 +25,9 @@ export function useInitiativeSheet(
 
     if ((!e.shiftKey && !e.metaKey) || !sheet.value) return
 
-    const current = sheet.value.rows[sheet.value.activeIndex].id
+    const current = sheet.value.rows[sheet.value.activeIndex]?.id
+
+    if (!current) return
 
     if (e.key === 'Enter') {
       if (current in expanded.value) delete expanded.value[current]
@@ -38,7 +40,11 @@ export function useInitiativeSheet(
   watch(() => sheet.value?.activeIndex, () => {
     if (sheet.value?.rows.length) {
       const active = sheet.value.activeIndex
-      selected.value = { [sheet.value.rows[sheet.value.rows[active] ? active : 0].id]: true }
+      const row = sheet.value.rows[active] ? active : 0
+
+      if (!sheet.value.rows[row]) return
+
+      selected.value = { [sheet.value.rows[row].id]: true }
     }
   }, { immediate: true })
 
@@ -49,13 +55,17 @@ export function useInitiativeSheet(
 
     const active = sheet.value.activeIndex
     const row = sheet.value.rows[active]
+
     if (!row) return
 
     const current = row.id
     const currentSelected = Object.keys(selected.value).includes(current)
+    const index = sheet.value.rows[active] ? active : 0
+
+    if (!sheet.value.rows[index]) return
 
     if (!currentSelected) {
-      selected.value = { [sheet.value.rows[sheet.value.rows[active] ? active : 0].id]: true }
+      selected.value = { [sheet.value.rows[index].id]: true }
     }
   }, { immediate: true })
 
@@ -67,7 +77,12 @@ export function useInitiativeSheet(
     const round = isAtStart ? sheet.value.round - 1 : sheet.value.round
 
     update({ activeIndex, round })
-    selected.value = { [sheet.value.rows[activeIndex].id]: true }
+
+    const index = sheet.value.rows[activeIndex] ? activeIndex : 0
+
+    if (!sheet.value.rows[index]) return
+
+    selected.value = { [sheet.value.rows[index].id]: true }
   }
 
   function next(): void {
@@ -78,7 +93,12 @@ export function useInitiativeSheet(
     const round = isAtEnd ? sheet.value.round + 1 : sheet.value.round
 
     update({ activeIndex, round })
-    selected.value = { [sheet.value.rows[activeIndex].id]: true }
+
+    const index = sheet.value.rows[activeIndex] ? activeIndex : 0
+
+    if (!sheet.value.rows[index]) return
+
+    selected.value = { [sheet.value.rows[index].id]: true }
   }
 
   function reset(hard: boolean): void {
@@ -113,6 +133,9 @@ export function useInitiativeSheet(
     }
 
     update(updatePayload)
+
+    if (!sheet.value.rows[0]) return
+
     selected.value = { [sheet.value.rows[0].id]: true }
   }
 

@@ -47,7 +47,7 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
 
           if (!ignore && !isNaN(characters[key].initiative)) init += characters[key].initiative
 
-          rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
+          if (rows[index]) rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
         }
       }
     }
@@ -64,7 +64,7 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
 
 <template>
   <div>
-    <UiPopoverBase v-model:open="popoverOpen">
+    <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
           id="tour-10"
@@ -162,6 +162,6 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
           </div>
         </FormKit>
       </UiPopoverContent>
-    </UiPopoverBase>
+    </UiPopover>
   </div>
 </template>

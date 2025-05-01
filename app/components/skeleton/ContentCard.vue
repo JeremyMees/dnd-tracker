@@ -9,7 +9,7 @@ withDefaults(
 </script>
 
 <template>
-  <UiCardBase
+  <UiCard
     class="border-4"
     :class="{
       'bg-secondary/50 border-4 border-secondary': variant === 'secondary',
@@ -18,16 +18,16 @@ withDefaults(
   >
     <UiCardHeader>
       <UiCardTitle>
-        <UiSkeletonBase class="w-[120px] h-7" />
+        <UiSkeleton class="w-[120px] h-7" />
       </UiCardTitle>
     </UiCardHeader>
     <UiCardContent>
-      <UiSkeletonBase class="w-full h-16" />
+      <UiSkeleton class="w-full h-16" />
     </UiCardContent>
     <UiCardFooter>
       <div class="flex justify-end w-full">
-        <UiSkeletonBase class="w-[120px] h-7" />
+        <UiSkeleton class="w-[120px] h-7" />
       </div>
     </UiCardFooter>
-  </UiCardBase>
+  </UiCard>
 </template>

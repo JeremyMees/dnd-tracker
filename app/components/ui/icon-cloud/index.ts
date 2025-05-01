@@ -14,4 +14,4 @@ export interface IconCloudProps {
   images?: string[]
 }
 
-export { default as IconCloud } from './IconCloudBase.vue'
+export { default as IconCloud } from './IconCloud.vue'

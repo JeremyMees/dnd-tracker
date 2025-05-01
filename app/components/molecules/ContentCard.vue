@@ -23,7 +23,7 @@ function hideOpenButton(): boolean {
 </script>
 
 <template>
-  <UiCardBase
+  <UiCard
     :class="{
       'bg-secondary/50 border-secondary': variant === 'secondary',
       'bg-background border-background': variant === 'background',
@@ -81,5 +81,5 @@ function hideOpenButton(): boolean {
         </button>
       </div>
     </UiCardFooter>
-  </UiCardBase>
+  </UiCard>
 </template>

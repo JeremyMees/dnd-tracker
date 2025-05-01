@@ -25,7 +25,7 @@ function setLang(lang: AcceptableValue): void {
       name="tabler:world"
       class="size-4 min-w-4"
     />
-    <UiSelectBase
+    <UiSelect
       :model-value="locale"
       @update:model-value="setLang($event)"
     >
@@ -43,6 +43,6 @@ function setLang(lang: AcceptableValue): void {
           </UiSelectItem>
         </UiSelectGroup>
       </UiSelectContent>
-    </UiSelectBase>
+    </UiSelect>
   </div>
 </template>

@@ -2,6 +2,7 @@
 import type { Row, SortingState } from '@tanstack/vue-table'
 import { FlexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table'
 import { generateColumns, initialState } from '~~/tables/homebrew-select-listing'
+import { useHomebrewListing } from '~~/queries/homebrews'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -111,7 +112,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       @input="table.setGlobalFilter($event)"
     />
 
-    <UiTableBase>
+    <UiTable>
       <UiTableHeader>
         <UiTableRow
           v-for="headerGroup in table.getHeaderGroups()"
@@ -188,7 +189,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
           </UiTableCell>
         </UiTableRow>
       </UiTableBody>
-    </UiTableBase>
+    </UiTable>
 
     <FormKit
       v-if="!!summons.length"

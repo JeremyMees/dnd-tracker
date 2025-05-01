@@ -28,7 +28,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
-  if (index === -1) return
+  if (index === -1 || !rows[index]) return
 
   rows[index] = { ...rows[index], ...row }
 
@@ -165,7 +165,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
 
 <template>
   <div>
-    <UiPopoverBase v-model:open="popoverOpen">
+    <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
           :class="{
@@ -289,7 +289,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
             </template>
           </FormKit>
         </FormKit>
-        <UiSeparatorBase
+        <UiSeparator
           v-if="hasHp"
           class="my-6 bg-muted-foreground"
         />
@@ -308,7 +308,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
             validation="required|between:1,1000|number"
           />
         </FormKit>
-        <UiSeparatorBase
+        <UiSeparator
           v-if="hasHp"
           class="my-6 bg-muted-foreground"
         />
@@ -331,6 +331,6 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
           />
         </FormKit>
       </UiPopoverContent>
-    </UiPopoverBase>
+    </UiPopover>
   </div>
 </template>

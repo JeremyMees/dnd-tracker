@@ -20,10 +20,10 @@ const { startTour } = useTour()
 const supabase = useSupabaseClient<DB>()
 const channel = supabase.channel('initiative_sheets')
 
-const EncounterId = computed(() => +route.params.id)
+const id = validateParamId(route.params.id)
 const realtimeData = computed(() => hasCorrectSubscription(user.value.subscription_type, 'medior'))
 
-const { data, isPending, isError, refetch } = useInitiativeSheetDetail(EncounterId.value)
+const { data, isPending, isError, refetch } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
 onMounted(() => {
@@ -33,7 +33,7 @@ onMounted(() => {
         event: '*',
         schema: 'public',
         table: 'initiative_sheets',
-        filter: `id=eq.${EncounterId.value}`,
+        filter: `id=eq.${id}`,
       },
       async (payload) => {
         if (payload.eventType === 'DELETE') {
@@ -67,7 +67,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 
   await update({
     data: payload,
-    id: EncounterId.value,
+    id,
     onSettled: async () => {
       if (!realtimeData.value) {
         await refetch()
@@ -96,7 +96,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
             :aria-hidden="true"
           />
         </NuxtLinkLocale>
-        <UiDropdownMenuBase v-else>
+        <UiDropdownMenu v-else>
           <UiDropdownMenuTrigger as-child>
             <button
               :aria-label="$t('actions.back')"
@@ -135,7 +135,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
               </NuxtLinkLocale>
             </UiDropdownMenuItem>
           </UiDropdownMenuContent>
-        </UiDropdownMenuBase>
+        </UiDropdownMenu>
         <h2 class="text-muted-foreground flex gap-2">
           <span class="hidden md:block">
             {{ $t('general.encounter') }}:
@@ -147,12 +147,12 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
             >
               {{ data.title }}
             </span>
-            <UiSkeletonBase
+            <UiSkeleton
               v-else
               class="w-[150px] h-9 rounded-full"
             />
             <template #fallback>
-              <UiSkeletonBase class="w-[150px] h-9 rounded-full" />
+              <UiSkeleton class="w-[150px] h-9 rounded-full" />
             </template>
           </ClientOnly>
         </h2>

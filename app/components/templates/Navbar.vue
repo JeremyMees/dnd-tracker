@@ -72,7 +72,7 @@ async function logoutUser(): Promise<void> {
             >
               {{ $t(link.label) }}
             </NuxtLinkLocale>
-            <UiDropdownMenuBase>
+            <UiDropdownMenu>
               <UiDropdownMenuTrigger class="btn-primary flex items-center gap-2">
                 {{ $t('components.navbar.play') }}
                 <Icon
@@ -101,10 +101,10 @@ async function logoutUser(): Promise<void> {
                   </NuxtLinkLocale>
                 </UiDropdownMenuItem>
               </UiDropdownMenuContent>
-            </UiDropdownMenuBase>
-            <UiDropdownMenuBase>
+            </UiDropdownMenu>
+            <UiDropdownMenu>
               <UiDropdownMenuTrigger class="mt-1">
-                <UiAvatarBase
+                <UiAvatar
                   :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
                   class="border-4"
                   size="base"
@@ -120,7 +120,7 @@ async function logoutUser(): Promise<void> {
                       class="size-6 min-w-6 text-muted-foreground"
                     />
                   </UiAvatarFallback>
-                </UiAvatarBase>
+                </UiAvatar>
               </UiDropdownMenuTrigger>
               <ProfileMenu
                 class="w-60"
@@ -128,10 +128,10 @@ async function logoutUser(): Promise<void> {
                 :routes="profileRoutes"
                 @logout="logoutUser"
               />
-            </UiDropdownMenuBase>
+            </UiDropdownMenu>
           </div>
           <ClientOnly>
-            <UiDropdownMenuBase>
+            <UiDropdownMenu>
               <UiDropdownMenuTrigger class="lg:hidden">
                 <button
                   class="text-foreground flex flex-col items-center justify-center"
@@ -223,7 +223,7 @@ async function logoutUser(): Promise<void> {
                   </UiDropdownMenuItem>
                 </template>
               </UiDropdownMenuContent>
-            </UiDropdownMenuBase>
+            </UiDropdownMenu>
           </ClientOnly>
         </div>
       </div>

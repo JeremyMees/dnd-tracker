@@ -8,7 +8,7 @@
     <div class="size-full overflow-hidden">
       <slot />
     </div>
-    <UiBorderBeamBase
+    <UiBorderBeam
       :size="350"
       :duration="12"
       :border-width="4"

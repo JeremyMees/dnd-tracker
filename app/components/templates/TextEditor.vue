@@ -424,7 +424,7 @@ function setLink() {
     </Card>
     <slot name="error" />
     <template #fallback>
-      <UiSkeletonBase class="w-full h-[190px]" />
+      <UiSkeleton class="w-full h-[190px]" />
     </template>
   </ClientOnly>
 </template>

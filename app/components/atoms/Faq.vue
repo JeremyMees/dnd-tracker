@@ -13,7 +13,7 @@ defineProps<{
     <h2 class="gradient-text mx-auto">
       {{ title }}
     </h2>
-    <UiAccordionBase
+    <UiAccordion
       type="single"
       collapsible
       class="border-4 border-secondary bg-secondary/50 rounded-lg p-4"
@@ -30,6 +30,6 @@ defineProps<{
           {{ item.content }}
         </UiAccordionContent>
       </UiAccordionItem>
-    </UiAccordionBase>
+    </UiAccordion>
   </div>
 </template>

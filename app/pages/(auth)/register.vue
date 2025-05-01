@@ -96,7 +96,7 @@ async function handleRegister(form: Register, node: FormNode): Promise<void> {
       {{ $t('pages.register.consent') }}
     </p>
 
-    <UiSeparatorBase
+    <UiSeparator
       class="mt-6 mb-4"
       :label="$t('general.or')"
     />

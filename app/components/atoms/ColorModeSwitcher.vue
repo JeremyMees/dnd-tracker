@@ -4,7 +4,7 @@
       name="tabler:palette"
       class="size-4 min-w-4"
     />
-    <UiSelectBase v-model="$colorMode.preference">
+    <UiSelect v-model="$colorMode.preference">
       <UiSelectTrigger>
         <UiSelectValue />
       </UiSelectTrigger>
@@ -21,6 +21,6 @@
           </UiSelectItem>
         </UiSelectGroup>
       </UiSelectContent>
-    </UiSelectBase>
+    </UiSelect>
   </div>
 </template>

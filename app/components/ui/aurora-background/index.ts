@@ -1,1 +1,1 @@
-export { default as AuroraBackground } from './AuroraBackgroundBase.vue'
+export { default as AuroraBackground } from './AuroraBackground.vue'

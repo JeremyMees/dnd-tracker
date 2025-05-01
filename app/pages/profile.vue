@@ -103,7 +103,7 @@ async function handleRemoveUser(): Promise<void> {
           @save="updateAvatar"
         />
       </div>
-      <UiSeparatorBase />
+      <UiSeparator />
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
         <div class="flex gap-4">
           {{ $t('pages.profile.subscription.current') }}:
@@ -112,7 +112,7 @@ async function handleRemoveUser(): Promise<void> {
           </span>
         </div>
       </div>
-      <UiSeparatorBase />
+      <UiSeparator />
       <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
         <div class="md:min-w-[300px] flex-1">
           <h2>
@@ -152,7 +152,7 @@ async function handleRemoveUser(): Promise<void> {
           </FormKit>
         </div>
       </div>
-      <UiSeparatorBase />
+      <UiSeparator />
       <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
         <div class="md:min-w-[300px] flex-1">
           <h2>
@@ -180,7 +180,7 @@ async function handleRemoveUser(): Promise<void> {
           </FormKit>
         </div>
       </div>
-      <UiSeparatorBase />
+      <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <button
           class="btn-destructive"

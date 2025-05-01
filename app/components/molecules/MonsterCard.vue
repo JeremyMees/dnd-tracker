@@ -16,7 +16,7 @@ const isOpen = ref<boolean>(false)
 </script>
 
 <template>
-  <UiCardBase
+  <UiCard
     class="relative bg-background/50 border-4 border-background"
     @dblclick="isOpen = !isOpen"
   >
@@ -91,7 +91,7 @@ const isOpen = ref<boolean>(false)
             {{ ability }}:
           </span>
           <span>
-            {{ monster[abilitiesNames[index]] || '_' }}
+            {{ abilitiesNames[index] ? monster[abilitiesNames[index]] : '_' }}
           </span>
         </div>
       </div>
@@ -141,5 +141,5 @@ const isOpen = ref<boolean>(false)
         </button>
       </div>
     </UiCardFooter>
-  </UiCardBase>
+  </UiCard>
 </template>

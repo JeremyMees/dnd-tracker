@@ -17,7 +17,7 @@ export function useConfirmDialogs() {
   const handlers = {
     confirm: async (uuid: string) => {
       const foundIndex = dialogs.value.findIndex(dialog => dialog.uuid === uuid)
-      if (foundIndex !== -1) {
+      if (foundIndex !== -1 && dialogs.value[foundIndex]) {
         try {
           dialogs.value[foundIndex].loading = true
           await dialogs.value[foundIndex].callback(true)
@@ -31,7 +31,7 @@ export function useConfirmDialogs() {
     },
     decline: async (uuid: string) => {
       const foundIndex = dialogs.value.findIndex(dialog => dialog.uuid === uuid)
-      if (foundIndex !== -1) {
+      if (foundIndex !== -1 && dialogs.value[foundIndex]) {
         await dialogs.value[foundIndex].callback(false)
 
         dialogs.value.splice(foundIndex, 1)

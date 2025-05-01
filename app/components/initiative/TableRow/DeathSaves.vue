@@ -18,8 +18,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
   const index = getCurrentRowIndex(props.sheet, props.item.id)
   const rows = [...props.sheet.rows]
 
-  if (index === -1) return
-  if (!props.item.deathSaves) return
+  if (index === -1 || !rows[index] || !props.item.deathSaves) return
 
   const deathSaves = {
     save: [...props.item.deathSaves.save] as [boolean, boolean, boolean],

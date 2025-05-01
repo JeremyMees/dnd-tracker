@@ -1,1 +1,1 @@
-export { default as Separator } from './SeparatorBase.vue'
+export { default as Separator } from './Separator.vue'

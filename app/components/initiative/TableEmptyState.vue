@@ -3,7 +3,7 @@ defineProps<{ campaign?: boolean }>()
 </script>
 
 <template>
-  <UiCardBase class="border-background bg-background/50">
+  <UiCard class="border-background bg-background/50">
     <UiCardHeader>
       <UiCardTitle>
         {{ $t('components.initiativeTable.emptyState.title') }}
@@ -53,5 +53,5 @@ defineProps<{ campaign?: boolean }>()
         </p>
       </div>
     </UiCardContent>
-  </UiCardBase>
+  </UiCard>
 </template>

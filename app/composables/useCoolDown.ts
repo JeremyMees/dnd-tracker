@@ -8,7 +8,7 @@ export function useCoolDown() {
       coolDowns[id] = seconds
 
       const interval = setInterval(() => {
-        if (coolDowns[id] > 0) {
+        if (coolDowns[id] && coolDowns[id] > 0) {
           coolDowns[id] -= 1
         }
         else {

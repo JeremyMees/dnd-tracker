@@ -135,7 +135,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
                 class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
               >
                 <div class="flex items-center gap-2">
-                  <UiAvatarBase
+                  <UiAvatar
                     v-tippy="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
                     class="border-2 border-background"
                   >
@@ -149,7 +149,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
                         class="size-6 min-w-6 text-muted-foreground"
                       />
                     </UiAvatarFallback>
-                  </UiAvatarBase>
+                  </UiAvatar>
                   <div class="flex flex-col">
                     <span class="font-bold">
                       {{ member.user.username }}
@@ -260,7 +260,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
           </button>
 
           <template #fallback>
-            <UiSkeletonBase class="w-full h-12 rounded-lg mt-4" />
+            <UiSkeleton class="w-full h-12 rounded-lg mt-4" />
           </template>
         </ClientOnly>
       </div>
@@ -294,13 +294,13 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
             class="flex flex-col gap-y-4"
           >
             <SkeletonInput />
-            <UiSkeletonBase class="w-full h-12 rounded-lg" />
+            <UiSkeleton class="w-full h-12 rounded-lg" />
           </div>
 
           <template #fallback>
             <div class="flex flex-col gap-y-4">
               <SkeletonInput />
-              <UiSkeletonBase class="w-full h-12 rounded-lg" />
+              <UiSkeleton class="w-full h-12 rounded-lg" />
             </div>
           </template>
         </ClientOnly>
