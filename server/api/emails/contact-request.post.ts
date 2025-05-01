@@ -1,6 +1,6 @@
 import Plunk from '@plunk/node'
 import { render } from '@vue-email/render'
-import ContactRequest from '~/emails/ContactRequest.vue'
+import ContactRequest from '~~/emails/ContactRequest.vue'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

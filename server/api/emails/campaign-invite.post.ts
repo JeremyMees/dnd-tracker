@@ -1,6 +1,6 @@
 import Plunk from '@plunk/node'
 import { render } from '@vue-email/render'
-import CampaignInvite from '~/emails/CampaignInvite.vue'
+import CampaignInvite from '~~/emails/CampaignInvite.vue'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

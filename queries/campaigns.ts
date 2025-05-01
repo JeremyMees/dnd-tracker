@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tansta
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useCampaignDetail(id: number) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useCampaignDetail', id],
@@ -66,7 +66,7 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
 }
 
 export function useCampaignMinimalListing(id: string) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useCampaignMinimal'],
@@ -95,7 +95,7 @@ export function useCampaignMinimalListing(id: string) {
 }
 
 export function useCampaignMinimalDetail(id?: number) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   if (!id) return
 
@@ -123,7 +123,7 @@ export function useCampaignMinimalDetail(id?: number) {
 }
 
 export function useCampaignCount() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useCampaignCount'],
@@ -133,7 +133,7 @@ export function useCampaignCount() {
 }
 
 export function useCampaignCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -173,7 +173,7 @@ export function useCampaignCreate() {
 }
 
 export function useCampaignUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -214,7 +214,7 @@ export function useCampaignUpdate() {
 }
 
 export function useCampaignRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()

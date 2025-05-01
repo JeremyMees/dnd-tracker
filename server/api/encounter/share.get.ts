@@ -1,9 +1,8 @@
 import { validateJWT } from 'oslo/jwt'
-import type { Database } from '~/types/database'
 import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  const supabase = serverSupabaseServiceRole<Database>(event)
+  const supabase = serverSupabaseServiceRole<DB>(event)
   const { token } = getQuery(event)
   const secret = useRuntimeConfig().jwtSecret
 

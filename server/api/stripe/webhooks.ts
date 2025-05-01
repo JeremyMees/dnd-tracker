@@ -1,11 +1,10 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { useServerStripe } from '#stripe/server'
-import type { Database } from '~/types/database'
 
 export default defineEventHandler(async (event) => {
   const raw = (await readRawBody(event)) as string
   const stripe = await useServerStripe(event)
-  const client = await serverSupabaseClient<Database>(event)
+  const client = await serverSupabaseClient<DB>(event)
   const signature = event.headers.get('stripe-signature') || ''
   const config = useRuntimeConfig()
 

@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     { path: '~/components/animation', prefix: 'Animation' },
   ],
 
-  imports: { dirs: ['types/*.ts', 'queries/*.ts', 'shared/utils/*.ts'] },
+  imports: { dirs: ['@@/types/*.ts', 'types/*.ts'] },
 
   devtools: { enabled: true },
 
@@ -66,6 +66,10 @@ export default defineNuxtConfig({
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
     '/maintenance': { robots: false },
+  },
+
+  future: {
+    compatibilityVersion: 4,
   },
 
   compatibilityDate: '2024-04-03',
@@ -106,7 +110,10 @@ export default defineNuxtConfig({
 
   ogImage: { enabled: false },
 
-  shadcn: { prefix: 'ui' },
+  shadcn: {
+    prefix: 'ui',
+    componentDir: './app/components/ui',
+  },
 
   stripe: {
     server: { key: process.env.STRIPE_SK },

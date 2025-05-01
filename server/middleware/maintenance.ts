@@ -1,5 +1,3 @@
-import { isUnderMaintenance, isMaintenanceEnabled } from '~/shared/utils/maintenance'
-
 export default defineEventHandler((event) => {
   if (!isMaintenanceEnabled()) return
 

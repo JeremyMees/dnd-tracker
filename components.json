@@ -4,16 +4,16 @@
   "typescript": true,
   "tailwind": {
     "config": "tailwind.config.ts",
-    "css": "assets/css/tailwind.css",
+    "css": "~/assets/css/tailwind.css",
     "baseColor": "zinc",
     "cssVariables": true,
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
-    "composables": "@/composables",
-    "utils": "@/utils/shadcn",
-    "ui": "@/components/ui",
-    "lib": "@/utils/shadcn"
+    "components": "~/app/components",
+    "composables": "~/app/composables",
+    "utils": "~/app/utils/shadcn",
+    "ui": "~/app/components/ui",
+    "lib": "~/app/utils/shadcn"
   }
 }

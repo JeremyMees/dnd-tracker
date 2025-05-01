@@ -22,7 +22,7 @@ export function useFeatureListing(data: ComputedRef<SbFilter>) {
 }
 
 export function useFeatureCount() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useFeatureCount'],
@@ -32,7 +32,7 @@ export function useFeatureCount() {
 }
 
 export function useFeatureCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -72,7 +72,7 @@ export function useFeatureCreate() {
 }
 
 export function useFeatureVote() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()

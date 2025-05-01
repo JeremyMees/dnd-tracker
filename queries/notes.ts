@@ -26,7 +26,7 @@ export function useNoteListing(
 }
 
 export function useNoteCount(id: number, enabled: ComputedRef<boolean>) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useNoteCount', id],
@@ -37,7 +37,7 @@ export function useNoteCount(id: number, enabled: ComputedRef<boolean>) {
 }
 
 export function useNoteCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -77,7 +77,7 @@ export function useNoteCreate() {
 }
 
 export function useNoteUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -117,7 +117,7 @@ export function useNoteUpdate() {
 }
 
 export function useNoteRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()

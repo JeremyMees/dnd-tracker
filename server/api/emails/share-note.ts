@@ -1,6 +1,6 @@
 import Plunk from '@plunk/node'
 import { render } from '@vue-email/render'
-import ShareNote from '~/emails/ShareNote.vue'
+import ShareNote from '~~/emails/ShareNote.vue'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

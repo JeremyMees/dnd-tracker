@@ -27,7 +27,7 @@ export function useHomebrewListing(
 }
 
 export function useHomebrewCount(id: number, enabled: ComputedRef<boolean>) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useHomebrewCount', id],
@@ -38,7 +38,7 @@ export function useHomebrewCount(id: number, enabled: ComputedRef<boolean>) {
 }
 
 export function useHomebrewCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -78,7 +78,7 @@ export function useHomebrewCreate() {
 }
 
 export function useHomebrewUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -118,7 +118,7 @@ export function useHomebrewUpdate() {
 }
 
 export function useHomebrewRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()

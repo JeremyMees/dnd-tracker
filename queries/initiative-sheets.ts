@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 export function useInitiativeSheetDetail(id: number) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useInitiativeSheetDetail', id],
@@ -31,7 +31,7 @@ export function useInitiativeSheetDetail(id: number) {
 }
 
 export function useInitiativeSheetDetailUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
   return useMutation({

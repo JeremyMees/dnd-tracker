@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import type { UserAttributes } from '@supabase/supabase-js'
 
 export function useProfileDetail(id: string) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const { logout } = useAuthentication()
 
   return useQuery({
@@ -24,7 +24,7 @@ export function useProfileDetail(id: string) {
 }
 
 export function useProfileUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const user = useState<ProfileRow | null>('auth-user', () => null)
 
@@ -68,7 +68,7 @@ export function useProfileUpdate() {
 }
 
 export function useProfileRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { logout } = useAuthentication()
 

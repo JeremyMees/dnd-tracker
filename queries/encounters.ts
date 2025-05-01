@@ -44,7 +44,7 @@ export function useEncounterListing(
 }
 
 export function useEncounterCount(enabled: ComputedRef<boolean>) {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useQuery({
     queryKey: ['useEncounterCount'],
@@ -55,7 +55,7 @@ export function useEncounterCount(enabled: ComputedRef<boolean>) {
 }
 
 export function useEncounterCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -95,7 +95,7 @@ export function useEncounterCreate() {
 }
 
 export function useEncounterUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -135,7 +135,7 @@ export function useEncounterUpdate() {
 }
 
 export function useEncounterRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -181,7 +181,7 @@ export function useEncounterRemove() {
 }
 
 export function useEncounterCopy() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
 export function useJoinTokenCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
 
   return useMutation({
     mutationFn: async ({ data }: { data: TeamInsert } & QueryDefaults) => {
@@ -37,7 +37,7 @@ export function useJoinTokenCreate() {
 }
 
 export function useJoinTokenRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -61,7 +61,7 @@ export function useJoinTokenRemove() {
 }
 
 export function useTeamMemberCreate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -88,7 +88,7 @@ export function useTeamMemberCreate() {
 }
 
 export function useTeamMemberUpdate() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -113,7 +113,7 @@ export function useTeamMemberUpdate() {
 }
 
 export function useTeamMemberRemove() {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()

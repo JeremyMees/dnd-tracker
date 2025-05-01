@@ -1,6 +1,6 @@
 import Plunk from '@plunk/node'
 import { render } from '@vue-email/render'
-import FeatureRequest from '~/emails/FeatureRequest.vue'
+import FeatureRequest from '~~/emails/FeatureRequest.vue'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
