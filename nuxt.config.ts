@@ -59,6 +59,9 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    '/': { prerender: true },
+    '/contact': { prerender: true },
+    '/policies/**': { prerender: true },
     '/no-access': { robots: false },
     '/reset-password': { robots: false },
     '/subscribe-success': { robots: false },
@@ -127,4 +130,6 @@ export default defineNuxtConfig({
       saveRedirectToCookie: true,
     },
   },
+
+  tailwindcss: { viewer: false },
 })

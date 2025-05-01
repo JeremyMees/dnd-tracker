@@ -10,7 +10,7 @@ useSeo('No access')
       </h2>
     </template>
 
-    <p>
+    <p class="text-muted-foreground">
       {{ $t('pages.noAccess.text') }}
     </p>
   </NuxtLayout>
