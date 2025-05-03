@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-authorization',
     'motion-v/nuxt',
+    '@nuxt/test-utils/module',
   ],
 
   components: [

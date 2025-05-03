@@ -13,7 +13,8 @@
     "typecheck": "nuxt typecheck",
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database-generated.ts",
     "prepare": "husky",
-    "test": "npx playwright test"
+    "e2e": "npx playwright test",
+    "test": "vitest"
   },
   "engines": {
     "pnpm": "please-use-npm",
@@ -78,18 +79,22 @@
   "devDependencies": {
     "@iconify-json/tabler": "^1.2.8",
     "@inspira-ui/plugins": "^0.0.1",
+    "@nuxt/test-utils": "^3.17.2",
     "@playwright/test": "^1.52.0",
     "@tanstack/eslint-plugin-query": "^5.66.0",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.14.1",
     "@types/sanitize-html": "^2.13.0",
+    "@vue/test-utils": "^2.4.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "happy-dom": "^17.4.6",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "tailwind-merge": "^3.2.0",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.2",
+    "vitest": "^3.1.2",
     "vue-tsc": "^2.1.10"
   },
   "overrides": {
