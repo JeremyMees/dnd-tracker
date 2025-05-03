@@ -132,6 +132,7 @@ function reset(): void {
     }"
   >
     <UiAvatar
+      data-test-avatar
       :size="size"
       class="border-4 border-primary"
     >
@@ -209,6 +210,7 @@ function reset(): void {
     </div>
     <div
       v-if="deprecatedAvatar"
+      data-test-deprecated
       class="text-foreground text-xs mt-1 bg-destructive/50 rounded-lg py-1 px-2"
     >
       {{ $t('components.avatarPicker.deprecated') }}
@@ -216,6 +218,7 @@ function reset(): void {
     <AnimationExpand>
       <div
         v-if="creatorOpen"
+        data-test-creator
         class="flex flex-wrap items-center justify-center gap-1 pt-2"
       >
         <AvatarSelector
