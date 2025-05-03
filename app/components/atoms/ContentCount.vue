@@ -10,10 +10,12 @@ defineProps<{
   <ClientOnly>
     <UiSkeleton
       v-if="loading || !isDefined(count)"
+      data-test-skeleton
       class="w-10 h-4"
     />
     <span
       v-else-if="isDefined(count)"
+      data-test-count
       class="text-[12px] text-muted-foreground"
       :class="{ '!text-destructive': count >= max }"
     >
