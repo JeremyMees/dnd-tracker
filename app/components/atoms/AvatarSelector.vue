@@ -44,15 +44,20 @@ function next(): void {
   <div class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden">
     <Icon
       v-tippy="$t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
+      data-test-icon
       :name="icon"
       class="min-w-6 min-h-6"
       aria-hidden="true"
     />
-    <span class="w-8 text-xs text-muted-foreground">
+    <span
+      data-test-current
+      class="w-8 text-xs text-muted-foreground"
+    >
       {{ current + 1 }}/{{ options.length }}
     </span>
     <div class="flex items-center">
       <button
+        data-test-prev
         :aria-label="$t('actions.prev')"
         class="w-5 flex items-center justify-center focus:outline-primary"
         @click="prev"
@@ -64,6 +69,7 @@ function next(): void {
         />
       </button>
       <button
+        data-test-next
         :aria-label="$t('actions.next')"
         class="w-5 flex items-center justify-center focus:outline-primary"
         @click="next"

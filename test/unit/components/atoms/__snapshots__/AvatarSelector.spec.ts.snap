@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AvatarSelector > Should match snapshot 1`] = `
+"<div class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden"><span class="iconify i-tabler:background min-w-6 min-h-6" aria-hidden="true" data-test-icon=""></span><span data-test-current="" class="w-8 text-xs text-muted-foreground">1/2</span>
+  <div class="flex items-center"><button data-test-prev="" aria-label="actions.prev" class="w-5 flex items-center justify-center focus:outline-primary"><span class="iconify i-tabler:caret-left min-w-6 min-h-6" aria-hidden="true"></span></button><button data-test-next="" aria-label="actions.next" class="w-5 flex items-center justify-center focus:outline-primary"><span class="iconify i-tabler:caret-right min-w-6 min-h-6" aria-hidden="true"></span></button></div>
+</div>"
+`;
