@@ -1,4 +1,5 @@
 import { config } from '@vue/test-utils'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 config.global.mocks = {
   $t: tKey => tKey,
@@ -13,3 +14,12 @@ config.global.stubs = {
     template: '<div id="formkit-stub" />',
   },
 }
+
+mockNuxtImport('useI18n', () => () => ({
+  t: key => key,
+  locale: 'en',
+  locales: [
+    { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },
+    { code: 'en', iso: 'en-US', name: 'English' },
+  ],
+}))

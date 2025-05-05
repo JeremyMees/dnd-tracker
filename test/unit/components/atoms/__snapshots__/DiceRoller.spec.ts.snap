@@ -1,0 +1,29 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DiceRoller > Should match snapshot 1`] = `
+"<div class="bg-background rounded-lg p-2 mb-4">
+  <div class="flex items-center gap-x-2">
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D4" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d4.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d4.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d4.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D6" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d6.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d6.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d6.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D8" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d8.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d8.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d8.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D10" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d10.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d10.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d10.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D12" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d12.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d12.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d12.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D20" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d20.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d20.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d20.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+    <div class="flex flex-col items-center flex-1"><button type="button" aria-label="general.more" class="icon-btn-ghost"><span class="iconify i-tabler:caret-up size-5" aria-hidden="true"></span></button>
+      <div class="size-5"><img alt="D100" data-nuxt-img="" sizes="(max-width: 768px) 20px, (max-width: 1024px) 20px, 20px" srcset="https://ik.imagekit.io/c2es1qasw/d100.webp?tr=w-20,f-webp,q-90 20w, https://ik.imagekit.io/c2es1qasw/d100.webp?tr=w-40,f-webp,q-90 40w" class="w-full h-full object-contain" src="https://ik.imagekit.io/c2es1qasw/d100.webp?tr=w-40,f-webp,q-90"></div><button type="button" aria-label="general.less" disabled="" class="icon-btn-ghost"><span class="iconify i-tabler:caret-down size-5" aria-hidden="true"></span></button><span class="text-xs">0</span>
+    </div>
+  </div><button type="button" disabled="" class="btn-primary mt-4 w-full">actions.roll</button>
+</div>"
+`;
