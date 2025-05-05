@@ -7,3 +7,9 @@ config.global.mocks = {
 config.global.directives = {
   tippy: {},
 }
+
+config.global.stubs = {
+  FormKit: {
+    template: '<div id="formkit-stub" />',
+  },
+}

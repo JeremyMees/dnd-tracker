@@ -6,6 +6,6 @@ exports[`AvatarPicker > Should match snapshot 1`] = `
     <!--v-if-->
   </div>
   <!--v-if-->
-  <transition-stub data-v-baa4636e="" name="expand" appear="false" persisted="false" css="true"></transition-stub>
+  <!---->
 </div>"
 `;

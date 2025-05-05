@@ -174,6 +174,7 @@ async function fetchPermissions() {
 
           <UiTableRow v-else>
             <UiTableCell
+              data-test-empty
               :colspan="columns.length"
               class="h-24 text-center text-muted-foreground"
             >
@@ -201,6 +202,7 @@ async function fetchPermissions() {
 
         <UiPagination
           v-model:page="internalPage"
+          :data-test-pagination="internalPage"
           :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
           :items-per-page="pagination.pageSize"
           :disabled="loading"
@@ -220,10 +222,12 @@ async function fetchPermissions() {
               class="border-0 border-r rounded-r-none border-r-foreground"
             />
             <UiPaginationPrev
+              data-test-pagination-prev
               :disabled="!table.getCanPreviousPage()"
               class="border-0 border-r rounded-r-none border-r-foreground"
             />
             <UiPaginationNext
+              data-test-pagination-next
               :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
               class="border-0 border-r rounded-r-none border-r-foreground"
             />
@@ -239,6 +243,7 @@ async function fetchPermissions() {
     <AnimationReveal>
       <button
         v-if="selectedRowLength"
+        data-test-remove
         class="btn-destructive mt-2"
         :aria-label="$t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength)"
         @click="$emit('remove', table.getSelectedRowModel().rows.map(row => row.original.id))"

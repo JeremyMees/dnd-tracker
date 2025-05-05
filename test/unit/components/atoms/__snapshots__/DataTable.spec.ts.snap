@@ -1,0 +1,90 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DataTable > Should match snapshot 1`] = `
+"<div class="flex flex-col gap-2">
+  <div class="flex flex-col-reverse sm:flex-row gap-2 justify-between items-center">
+    <div id="formkit-stub" type="search" name="search" prefix-icon="tabler:search" outer-class="$remove:mb-4 w-full sm:w-auto" inner-class="$remove:border-background $remove:bg-muted border-secondary bg-secondary/50" value=""></div>
+    <div class="flex justify-end w-full sm:w-auto"></div>
+  </div>
+  <div class="rounded-lg border-4 border-secondary bg-secondary/50">
+    <div class="relative w-full overflow-auto">
+      <table class="w-full caption-bottom text-sm">
+        <thead class="[&amp;_tr]:border-b">
+          <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary">
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">
+              <div class="flex items-center gap-2 w-fit">
+                <!--v-if-->
+              </div>
+            </th>
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">
+              <div class="flex items-center gap-2 w-fit">
+                <!--v-if-->
+              </div>
+            </th>
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0 cursor-pointer select-none" data-pinned="false">
+              <div class="flex items-center gap-2 w-fit">ID
+                <!--v-if-->
+              </div>
+            </th>
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0 cursor-pointer select-none" data-pinned="false">
+              <div class="flex items-center gap-2 w-fit">Name
+                <!--v-if-->
+              </div>
+            </th>
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0 cursor-pointer select-none" data-pinned="false">
+              <div class="flex items-center gap-2 w-fit">Age
+                <!--v-if-->
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="[&amp;_tr:last-child]:border-0">
+          <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="peer size-5 shrink-0 rounded-lg border-2 border-foreground bg-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary/50 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                <!---->
+                <!---->
+              </button></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">1</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">John Doe</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">30</td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="peer size-5 shrink-0 rounded-lg border-2 border-foreground bg-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary/50 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                <!---->
+                <!---->
+              </button></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">2</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">Jane Smith</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">25</td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="peer size-5 shrink-0 rounded-lg border-2 border-foreground bg-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary/50 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                <!---->
+                <!---->
+              </button></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">3</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">Bob Johnson</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">40</td>
+          </tr>
+          <!--v-if-->
+        </tbody>
+      </table>
+    </div>
+    <div class="justify-end p-4 border-t border-secondary flex items-center gap-2">
+      <!--v-if-->
+      <nav data-test-pagination="1" class="flex items-center gap-6 w-fit">
+        <div class="text-sm text-muted-foreground">components.pagination.page</div>
+        <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background"><button class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0 border-r rounded-r-none border-r-foreground" aria-label="First Page" type="button" disabled=""><span class="iconify i-tabler:chevrons-left size-4 min-w-4" aria-hidden="true"></span></button><button class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0 border-r rounded-r-none border-r-foreground" aria-label="Previous Page" type="button" disabled="" data-test-pagination-prev=""><span class="iconify i-tabler:chevron-left size-4 min-w-4" aria-hidden="true"></span></button><button class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0 border-r rounded-r-none border-r-foreground" aria-label="Next Page" type="button" disabled="" data-test-pagination-next=""><span class="iconify i-tabler:chevron-right size-4 min-w-4" aria-hidden="true"></span></button><button class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0" aria-label="Last Page" type="button" disabled=""><span class="iconify i-tabler:chevrons-right size-4 min-w-4" aria-hidden="true"></span></button></div>
+      </nav>
+    </div>
+  </div>
+  <div class="overflow-hidden">
+    <!---->
+  </div>
+</div>"
+`;
