@@ -2,7 +2,7 @@ import { config } from '@vue/test-utils'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 config.global.mocks = {
-  $t: tKey => tKey,
+  $t: (tKey: string) => tKey,
 }
 
 config.global.directives = {
@@ -16,7 +16,7 @@ config.global.stubs = {
 }
 
 mockNuxtImport('useI18n', () => () => ({
-  t: key => key,
+  t: (key: string) => key,
   locale: 'en',
   locales: [
     { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },

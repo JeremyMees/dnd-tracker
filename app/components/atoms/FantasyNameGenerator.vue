@@ -58,6 +58,7 @@ function handleCopy(name: string): void {
       {{ $t('pages.fantasyNameGenerator.tip') }}
     </p>
     <button
+      data-test-generate
       :disabled="!names.length"
       class="btn-primary"
       @click="generate"
