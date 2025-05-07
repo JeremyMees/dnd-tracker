@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TabItem > Should match snapshot 1`] = `"<div class="p-1 rounded-lg lg:rounded-none lg:bg-transparent lg:px-0 lg:py-0 lg:border-b-2 lg:relative lg:top-[2px] transition-colors duration-200 ease-in-out bg-primary/50 lg:border-primary"><a class="text-sm flex gap-2 items-center py-1 px-2 rounded-lg text-foreground hover:bg-tracker hover:foreground"><span class="iconify i-home size-4" aria-hidden="true"></span><span>Home</span></a></div>"`;
