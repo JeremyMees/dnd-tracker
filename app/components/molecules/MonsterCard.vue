@@ -32,7 +32,7 @@ const isOpen = ref<boolean>(false)
         @click="$emit('add', monster)"
       >
         <Icon
-          name="material-symbols:add"
+          name="tabler:plus"
           class="size-4 min-w-4"
           aria-hidden="true"
         />
