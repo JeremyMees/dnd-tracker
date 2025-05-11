@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContentCard > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4">
+  <div class="flex flex-col gap-y-1.5 p-6">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Aboleth</h3>
+  </div>
+  <div class="p-6 pt-0">
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pt-0">
+    <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+        <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;

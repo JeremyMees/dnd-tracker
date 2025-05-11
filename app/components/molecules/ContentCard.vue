@@ -38,6 +38,7 @@ function hideOpenButton(): boolean {
           content: $t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
           placement: 'left',
         }"
+        data-test-pin
         :aria-label="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
         class="absolute right-4 top-4"
         @click="pinned ? $emit('unpin') : $emit('pin')"
@@ -49,7 +50,9 @@ function hideOpenButton(): boolean {
           aria-hidden="true"
         />
       </button>
-      <UiCardTitle>{{ hit.name }}</UiCardTitle>
+      <UiCardTitle data-test-title>
+        {{ hit.name }}
+      </UiCardTitle>
     </UiCardHeader>
     <UiCardContent>
       <ContentCardContent
