@@ -127,7 +127,7 @@
     "summon": "Summon | Summons",
     "lair": "Lair",
     "npc": "Npc | Npc's",
-    "monster": "Monster | Monsters",
+    "monster": "Creature | Creatures",
     "character": "Karakter | Karakters",
     "item": "Voorwerp | Voorwerpen",
     "homebrew": "Homebrew | Homebrews",
@@ -478,7 +478,7 @@
         "title": "Oproep aan Moedige Avonturiers: Deel Jouw Heroïsche Ideeën!",
         "text": "Dappere avonturier, uw raad wordt gezocht! We verlangen naar uw ideeën en suggesties. Of het nu een heldhaftig concept is voor een nieuwe functie, een verfijnende aanraking voor een bestaande, of enige andere fantastische gedachte, deel het zeker met ons."
       },
-      "nothing": "Wij hebben geen feature gevonden die bij deze filters past, maar dat wil niet zeggen dat je het niet zelf kan aanvragen! We staan open voor gebruikersfeedback en streven naar verbetering van onze services op basis van jouw suggesties.",
+      "nothing": "Wij hebben geen feature gevonden die bij deze filters passen, maar dat wil niet zeggen dat je ze niet zelf kan aanvragen! We staan open voor gebruikersfeedback en streven naar verbetering van onze services op basis van jouw suggesties.",
       "request": "Feature voorstellen",
       "sort": {
         "title": "Sorteer",
@@ -704,11 +704,11 @@
       "infoPage": "Info pagina"
     },
     "homebrewTable": {
-      "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken.",
+      "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht passen, maar dat betekent niet dat je ze niet zelf kunt maken.",
       "noActions": "Wanneer je acties toevoegt aan een homebrew, worden ze hier weergegeven."
     },
     "table": {
-      "nothing": "We hebben geen { item } gevonden die bij deze zoekopdracht past, maar dat betekent niet dat je het niet zelf kunt maken."
+      "nothing": "We hebben geen { item } gevonden die bij deze zoekopdracht passen, maar dat betekent niet dat je ze niet zelf kunt maken."
     },
     "encounterTable": {
       "empty": "Voeg een rij toe aan je encounter om te starten!",
@@ -721,7 +721,7 @@
         "conditions": "Condities",
         "note": "Notitie",
         "deathSaves": "Saves",
-        "concentration": "CON",
+        "concentration": "Conc",
         "modify": "Aanpassen"
       },
       "quick": "Voeg alle initiatieven toe",

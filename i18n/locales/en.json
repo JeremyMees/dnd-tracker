@@ -127,7 +127,7 @@
     "summon": "Summon | Summons",
     "lair": "Lair",
     "npc": "Npc | Npc's",
-    "monster": "Monster | Monsters",
+    "monster": "Creature | Creatures",
     "character": "Character | Characters",
     "item": "Item | Items",
     "homebrew": "Homebrew | Homebrews",
@@ -721,7 +721,7 @@
         "conditions": "Conditions",
         "note": "Notes",
         "deathSaves": "Saves",
-        "concentration": "CON",
+        "concentration": "Conc",
         "modify": "Modify"
       },
       "quick": "Add all initiatives",
