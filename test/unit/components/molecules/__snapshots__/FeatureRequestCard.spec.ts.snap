@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FeatureRequestCard > Should match snapshot 1`] = `
+"<div class="rounded-lg border-4 border-secondary bg-secondary/50 text-card-foreground shadow-sm">
+  <div class="flex flex-col gap-y-1.5 p-6">
+    <h3 class="text-2xl font-semibold leading-none tracking-tight">
+      <div class="flex items-center gap-x-2"><span class="inline-flex items-center justify-center font-normal text-foreground select-none shrink-0 bg-secondary overflow-hidden h-10 w-10 text-xs rounded-full border-2 border-background"><img role="img" src="avatar" class="h-full w-full object-cover" alt="username" style="display: none;"><span><span class="iconify i-tabler:user size-6 min-w-6 text-muted-foreground" aria-hidden="true"></span></span></span>
+        <h3 data-test-title="">title <time datetime="2021-01-01T00:00:00.000Z" class="text-xs ml-2 text-muted-foreground font-normal">1/1/2021</time></h3>
+      </div>
+    </h3>
+  </div>
+  <div class="p-6 pt-0">
+    <div class="flex gap-x-4 flex-1">
+      <div class="flex flex-col gap-y-1"><button data-test-like-button="" class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center"><span class="iconify i-tabler:thumb-up" aria-hidden="true"></span><span data-test-like-count="" class="font-bold text-xs">2</span></button><button data-test-dislike-button="" class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center"><span data-test-dislike-count="" class="font-bold text-xs">2</span><span class="iconify i-tabler:thumb-down" aria-hidden="true"></span></button></div>
+      <div class="flex flex-col flex-1 items-start justify-start gap-y-4">
+        <div data-test-status="" class="text-sm px-2 py-1 rounded-lg w-fit border-2 bg-info/50 border-info">pages.featureRequest.status.review</div>
+        <p data-test-text="" class="text-sm">text</p>
+      </div>
+    </div>
+  </div>
+</div>"
+`;

@@ -56,7 +56,7 @@ function toggleVote(vote: FeatureVote): void {
               />
             </UiAvatarFallback>
           </UiAvatar>
-          <h3>
+          <h3 data-test-title>
             {{ feature.title }}
             <NuxtTime
               class="text-xs ml-2 text-muted-foreground font-normal"
@@ -73,6 +73,7 @@ function toggleVote(vote: FeatureVote): void {
       <div class="flex gap-x-4 flex-1">
         <div class="flex flex-col gap-y-1">
           <button
+            data-test-like-button
             class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center"
             :class="{
               '!bg-primary/50 !border-primary': hasVoted === 'like',
@@ -83,18 +84,25 @@ function toggleVote(vote: FeatureVote): void {
               name="tabler:thumb-up"
               aria-hidden="true"
             />
-            <span class="font-bold text-xs">
+            <span
+              data-test-like-count
+              class="font-bold text-xs"
+            >
               {{ feature.voted.like.length }}
             </span>
           </button>
           <button
+            data-test-dislike-button
             class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center"
             :class="{
               '!bg-primary/50 !border-primary': hasVoted === 'dislike',
             }"
             @click="user ? toggleVote('dislike') : emit('login')"
           >
-            <span class="font-bold text-xs">
+            <span
+              data-test-dislike-count
+              class="font-bold text-xs"
+            >
               {{ feature.voted.dislike.length }}
             </span>
             <Icon
@@ -107,6 +115,7 @@ function toggleVote(vote: FeatureVote): void {
         <div class="flex flex-col flex-1 items-start justify-start gap-y-4">
           <div
             v-if="feature.status !== 'accepted'"
+            data-test-status
             class="text-sm px-2 py-1 rounded-lg w-fit border-2"
             :class="{
               'bg-info/50 border-info': feature.status === 'review',
@@ -115,7 +124,10 @@ function toggleVote(vote: FeatureVote): void {
           >
             {{ t(`pages.featureRequest.status.${feature.status}`) }}
           </div>
-          <p class="text-sm">
+          <p
+            data-test-text
+            class="text-sm"
+          >
             {{ feature.text }}
           </p>
         </div>
