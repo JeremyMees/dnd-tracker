@@ -11,6 +11,7 @@ defineEmits<{ refresh: [] }>()
       {{ $t('general.error.text') }}
     </h2>
     <button
+      data-test-refresh-button
       class="btn-foreground"
       :aria-label="$t('actions.tryAgain')"
       @click="$emit('refresh')"

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RefreshCard > Should match snapshot 1`] = `
+"<div class="transition-colors duration-300 border-4 rounded-lg p-4 border-destructive bg-destructive/50 w-full max-w-prose mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <h2 class="text-center">general.error.text</h2><button data-test-refresh-button="" class="btn-foreground" aria-label="actions.tryAgain">actions.tryAgain</button>
+</div>"
+`;
