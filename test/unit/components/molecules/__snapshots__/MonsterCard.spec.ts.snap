@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MonsterCard > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm relative bg-background/50 border-4 border-background">
+  <div class="flex flex-col gap-y-1.5 p-6">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Aboleth</h3>
+    <div class="flex gap-4">
+      <div class="flex gap-1"><span class="iconify i-tabler:skull w-6 h-6 text-warning" aria-hidden="true"></span>
+        <p class="font-bold">10</p>
+      </div>
+      <div class="flex gap-1"><span class="iconify i-tabler:shield w-6 h-6 text-help" aria-hidden="true"></span>
+        <p class="font-bold">17</p>
+      </div>
+      <div class="flex gap-1"><span class="iconify i-tabler:heart w-6 h-6 text-destructive" aria-hidden="true"></span>
+        <p class="font-bold">135</p>
+      </div>
+    </div>
+  </div>
+  <div class="p-6 pt-0">
+    <div class="flex gap-x-4 gap-y-1 flex-wrap">
+      <div class="flex gap-1"><span class="text-muted-foreground">STR: </span><span>21</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">DEX: </span><span>9</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">CON: </span><span>15</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">INT: </span><span>18</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">WIS: </span><span>15</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">CHA: </span><span>18</span></div>
+    </div>
+    <div class="flex gap-x-4 gap-y-1 flex-wrap">
+      <div class="flex gap-1"><span class="text-muted-foreground">type: </span><span class="lowercase">Aberration</span></div>
+      <!--v-if-->
+      <div class="flex gap-1"><span class="text-muted-foreground">size: </span><span class="lowercase">Large</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">alignment: </span><span class="lowercase">lawful evil</span></div>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pt-0">
+    <div class="flex justify-end w-full"><button data-test-expand-button="" class="flex gap-2 text-foreground" aria-label="actions.readMore">
+        <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;

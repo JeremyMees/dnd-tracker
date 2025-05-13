@@ -27,6 +27,7 @@ const isOpen = ref<boolean>(false)
           content: $t('actions.add'),
           placement: 'left',
         }"
+        data-test-add-button
         :aria-label="$t('actions.add')"
         class="absolute right-4 top-4 icon-btn-success"
         @click="$emit('add', monster)"
@@ -37,7 +38,9 @@ const isOpen = ref<boolean>(false)
           aria-hidden="true"
         />
       </button>
-      <UiCardTitle>{{ monster.name }}</UiCardTitle>
+      <UiCardTitle data-test-title>
+        {{ monster.name }}
+      </UiCardTitle>
       <div class="flex gap-4">
         <div
           v-tippy="{ content: 'CR' }"
@@ -115,6 +118,7 @@ const isOpen = ref<boolean>(false)
       </div>
       <ActionsTable
         v-if="monster.actions && isOpen"
+        data-test-actions-table
         :actions="monster.actions"
         :legendary-actions="monster.legendary_actions"
         :special-abilities="monster.special_abilities"
@@ -125,6 +129,7 @@ const isOpen = ref<boolean>(false)
     <UiCardFooter>
       <div class="flex justify-end w-full">
         <button
+          data-test-expand-button
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"
           @click="isOpen = !isOpen"
