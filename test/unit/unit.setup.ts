@@ -13,6 +13,10 @@ config.global.stubs = {
   FormKit: {
     template: '<div id="formkit-stub" />',
   },
+  NuxtLink: {
+    props: ['to'],
+    template: '<a :href="to"><slot></slot></a>',
+  },
 }
 
 mockNuxtImport('useI18n', () => () => ({

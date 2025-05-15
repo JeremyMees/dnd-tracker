@@ -1,0 +1,9 @@
+{
+  "component": "test",
+  "header": "Header",
+  "submit": "Submit",
+  "subHeader": "Subheader",
+  "big": false,
+  "props": {},
+  "events": {}
+}
