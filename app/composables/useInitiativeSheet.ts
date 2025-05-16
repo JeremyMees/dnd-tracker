@@ -73,6 +73,9 @@ export function useInitiativeSheet(
     if (!sheet.value) return
 
     const isAtStart = sheet.value.activeIndex === 0
+
+    if (isAtStart && sheet.value.round <= 1) return
+
     const activeIndex = isAtStart ? sheet.value.rows.length - 1 : sheet.value.activeIndex - 1
     const round = isAtStart ? sheet.value.round - 1 : sheet.value.round
 
