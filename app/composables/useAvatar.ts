@@ -41,7 +41,7 @@ export function useAvatarCreator() {
 
   function update(selectedOptions: SelectedStyleOptions): void {
     for (const key in selectedOptions) {
-      if (blackListedKeys.includes(key) || !selectedOptions[key]) continue
+      if (blackListedKeys.includes(key) || selectedOptions[key] === undefined) continue
 
       if (key === 'primaryBackgroundColor') options.value.backgroundColor = selectedOptions[key]
       else options.value[key] = selectedOptions[key]
@@ -95,7 +95,10 @@ export function useAvatarCreator() {
       const avatarOption = options.value[key]
       const styleOption = configStyleOptions[key]
 
-      if (!styleOption) continue
+      if (!styleOption) {
+        result[key] = avatarOption
+        continue
+      }
 
       if (styleOption.isArray) {
         result[key] = avatarOption
@@ -105,7 +108,7 @@ export function useAvatarCreator() {
       else result[key] = avatarOption
 
       if (styleOption.hasProbability) {
-        result[`${key}Probability`] = avatarOption ? 100 : random ? 50 : 0
+        result[`${key}Probability`] = avatarOption !== undefined ? 100 : random ? 50 : 0
       }
     }
 

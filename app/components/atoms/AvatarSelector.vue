@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 const current = computed<number>(() => {
-  return props.selected
+  return props.selected !== undefined
     ? props.options.findIndex((option: string) => option === props.selected)
     : 0
 })
@@ -29,14 +29,14 @@ function prev(): void {
   const index = current.value === 0 ? props.options.length - 1 : current.value - 1
   const option = props.options[index]
 
-  if (option) emit('update', option)
+  if (option !== undefined) emit('update', option)
 }
 
 function next(): void {
   const index = current.value === props.options.length - 1 ? 0 : current.value + 1
   const option = props.options[index]
 
-  if (option) emit('update', option)
+  if (option !== undefined) emit('update', option)
 }
 </script>
 
