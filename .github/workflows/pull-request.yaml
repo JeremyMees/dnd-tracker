@@ -1,7 +1,7 @@
 name: 💜 Pull request
 on:
   pull_request:
-    branches: ['main', 'develop/*']
+    branches: ['main', 'develop', 'develop/*']
 
 jobs:
   linting:
