@@ -4,19 +4,26 @@ export function generateParams<T extends object>(data: T): string {
     .join('&')
 }
 
+export function slugify(str: string): string {
+  return str
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .toLowerCase()
+    .replace(/-+$/g, '')
+}
+
 export function campaignUrl(
   campaign: Record<string, any> & { id: number, title: string },
   type: 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone',
 ): string {
-  const title: string = campaign.title.replace(/[^a-zA-Z0-9]+/g, '-')
+  const title: string = slugify(campaign.title)
 
-  return `/campaigns/${campaign.id}${title === '-' ? '-campaign' : `-${title}`}/${type}`
+  return `/campaigns/${campaign.id}${title === '' ? '-campaign' : `-${title}`}/${type}`
 }
 
 export function encounterUrl(encounter: InitiativeRow | EncounterItem): string {
-  const title: string = encounter.title.replace(/[^a-zA-Z0-9]+/g, '-')
+  const title: string = slugify(encounter.title)
 
-  return `/encounters/${encounter.id}${title === '-' ? '-encounter' : `-${title}`}`
+  return `/encounters/${encounter.id}${title === '' ? '-encounter' : `-${title}`}`
 }
 
 function localeParam(locale: string): string {
