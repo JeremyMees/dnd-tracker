@@ -40,7 +40,7 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   }
 }
 
-function sbOrQuery(keys: string[], search: string): string {
+export function sbOrQuery(keys: string[], search: string): string {
   let queryString = ''
 
   keys.forEach((key: string, i: number) => {
