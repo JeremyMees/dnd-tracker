@@ -21,7 +21,7 @@ config.global.stubs = {
 
 mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
-  locale: 'en',
+  locale: { value: 'en' },
   locales: [
     { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },
     { code: 'en', iso: 'en-US', name: 'English' },
