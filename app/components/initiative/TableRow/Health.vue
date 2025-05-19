@@ -112,12 +112,21 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
   else if (type === 'override') override(row, amount)
   else if (type === 'override-reset') overrideReset(row, amount)
   else if (type === 'damage') {
-    // if the health is 0 or less, add 2 death save failures
-    if (hasDeathSaves(row.type) && noHp) row.deathSaves = addDeathSave(row.deathSaves!, 'fail', 2)
-
     damage(row, amount)
 
     const downed = typeof row.health === 'number' && row.health <= 0
+
+    // if the health is 0 or less, add 2 death save failures
+    if (hasDeathSaves(row.type) && downed) {
+      if (!row.deathSaves) {
+        row.deathSaves = {
+          fail: [false, false, false],
+          save: [false, false, false],
+        }
+      }
+
+      row.deathSaves = addDeathSave(row.deathSaves, 'fail', 2)
+    }
 
     if (row.concentration && !downed) {
       toast({
@@ -171,6 +180,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          data-test-trigger
           :class="{
             'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.health) && item.health === 0,
           }"
@@ -179,12 +189,14 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
           <div class="flex items-center gap-x-1">
             <Icon
               v-if="!isDefined(item.health) && item.type !== 'lair'"
+              data-test-empty
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
               aria-hidden="true"
             />
             <span
               v-else
+              data-test-health
               :class="{ 'text-destructive': item.health === 0 }"
             >
               {{ item.health }}
@@ -192,6 +204,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
             <span
               v-if="isDefined(item.health) && item.tempHealth"
               v-tippy="$t('general.temp')"
+              data-test-temp
               class="text-warning text-xs"
             >
               +{{ item.tempHealth }}
@@ -199,6 +212,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
           </div>
           <span
             v-if="item.maxHealth !== item.health"
+            data-test-max
             class="text-2xs text-muted-foreground whitespace-nowrap"
           >
             {{ $t('general.max') }}: {{ item.maxHealth }}
