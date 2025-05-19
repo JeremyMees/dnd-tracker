@@ -1,5 +1,6 @@
 import { config } from '@vue/test-utils'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { vi } from 'vitest'
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,

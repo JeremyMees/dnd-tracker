@@ -117,6 +117,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          data-test-trigger
           :class="{
             'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac === 0,
           }"
@@ -125,12 +126,14 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           <div class="flex items-center gap-x-1">
             <Icon
               v-if="!isDefined(item.ac) && item.type !== 'lair'"
+              data-test-empty
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
               aria-hidden="true"
             />
             <span
               v-else
+              data-test-ac
               :class="{ 'text-destructive': item.ac === 0 }"
             >
               {{ item.ac }}
@@ -138,6 +141,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             <span
               v-if="isDefined(item.ac) && item.tempAc"
               v-tippy="$t('general.temp')"
+              data-test-temp
               class="text-warning text-xs"
             >
               +{{ item.tempAc }}
@@ -145,6 +149,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </div>
           <span
             v-if="item.maxAc !== item.ac"
+            data-test-max
             class="text-2xs text-muted-foreground whitespace-nowrap"
           >
             {{ $t('general.max') }}: {{ item.maxAc }}
