@@ -12,7 +12,8 @@ const { t } = useI18n()
 
 const { add, remove, temp, override, overrideReset } = acFunctions
 
-const popoverOpen = ref<boolean>(false)
+const popoverOpen = shallowRef<boolean>(false)
+const selectedType = shallowRef<AcType>('remove')
 
 const hasAc = computed(() => isDefined(props.item.ac) && isDefined(props.item.maxAc))
 
@@ -75,13 +76,15 @@ async function updateOverride(form: AcForm & { reset?: boolean }, node: FormNode
   }
 }
 
-async function updateAc(form: AcForm & { type?: AcType }, node: FormNode): Promise<void> {
+async function updateAc(form: AcForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    if (!props.sheet || !form.type) return
+    const selected = selectedType.value
 
-    const { amount, type } = sanitizeForm<AcForm & { type?: AcType }>(form)
+    if (!props.sheet || !selected) return
+
+    const { amount, type } = sanitizeForm<AcForm & { type?: AcType }>({ ...form, type: selected })
 
     const row = handleAcChanges(amount, type || 'remove')
 
@@ -196,44 +199,48 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           v-if="hasAc"
           id="InitiativeRowAcUpdate"
           type="form"
-          :submit-label="$t('actions.save')"
+          :actions="false"
           @submit="updateAc"
         >
           <FormDiceRollInput />
-          <FormKit
-            type="togglebuttons"
-            name="type"
-            value="remove"
-            enforced
-            :options="[
-              { label: $t('actions.heal'), value: 'add', icon: 'tabler:heart' },
-              { label: $t('actions.temp'), value: 'temp', icon: 'tabler:plus' },
-              { label: $t('actions.damage'), value: 'remove', icon: 'tabler:sword' },
-            ]"
-            validation="required"
-            input-class="$remove:p-2 $remove:border-4 $remove:aria-pressed:border-primary $remove:focus-within:border-primary group"
-            option-class="$remove:w-10 $remove:h-10"
-          >
-            <template #default="{ option }">
-              <div
-                class="flex items-center gap-x-1 rounded-lg p-2 border-2 border-transparent"
-                :class="{
-                  'bg-destructive/20 group-aria-pressed:bg-destructive/40 group-aria-pressed:border-destructive': option.value === 'remove',
-                  'bg-success/20 group-aria-pressed:bg-success/40 group-aria-pressed:border-success': option.value === 'add',
-                  'bg-warning/20 group-aria-pressed:bg-warning/40 group-aria-pressed:border-warning': option.value === 'temp',
-                }"
-              >
-                <Icon
-                  :name="option.icon"
-                  class="size-4 min-w-4 text-foreground"
-                  aria-hidden="true"
-                />
-                <span class="text-xs text-muted-foreground group-aria-pressed:!text-foreground">
-                  {{ option.label }}
-                </span>
-              </div>
-            </template>
-          </FormKit>
+          <div class="flex items-center gap-x-2">
+            <FormKit
+              type="submit"
+              input-class="$remove:btn-foreground btn-success flex items-center gap-x-2 px-2 border-2 text-sm"
+              @click="selectedType = 'add'"
+            >
+              <Icon
+                name="tabler:plus"
+                class="size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.heal') }}
+            </FormKit>
+            <FormKit
+              type="submit"
+              input-class="$remove:btn-foreground btn-warning flex items-center gap-x-2 px-2 border-2 text-sm"
+              @click="selectedType = 'temp'"
+            >
+              <Icon
+                name="tabler:plus"
+                class="size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.temp') }}
+            </FormKit>
+            <FormKit
+              type="submit"
+              input-class="$remove:btn-foreground btn-destructive flex items-center gap-x-2 px-2 border-2 text-sm"
+              @click="selectedType = 'remove'"
+            >
+              <Icon
+                name="tabler:sword"
+                class="size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.damage') }}
+            </FormKit>
+          </div>
         </FormKit>
         <UiSeparator
           v-if="hasAc"

@@ -15,7 +15,8 @@ const { toast } = useToast()
 const { hasDeathSaves, checkDeathSaves, addDeathSave, resetDeathSaves } = deathSavesFunctions
 const { heal, damage, temp, override, overrideReset } = hpFunctions
 
-const popoverOpen = ref<boolean>(false)
+const popoverOpen = shallowRef<boolean>(false)
+const selectedType = shallowRef<HealthType>('heal')
 
 const hasHp = computed(() => isDefined(props.item.health) && isDefined(props.item.maxHealth))
 
@@ -78,13 +79,15 @@ async function updateOverride(form: HealthForm & { reset?: boolean }, node: Form
   }
 }
 
-async function updateHealth(form: HealthForm & { type?: HealthType }, node: FormNode): Promise<void> {
+async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    if (!props.sheet || !form.type) return
+    const selected = selectedType.value
 
-    const { amount, type } = sanitizeForm<HealthForm & { type?: HealthType }>(form)
+    if (!props.sheet || !selected) return
+
+    const { amount, type } = sanitizeForm<HealthForm & { type?: HealthType }>({ ...form, type: selected })
 
     const row = handleHpChanges(amount, type || 'heal')
 
@@ -250,44 +253,48 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
           v-if="hasHp"
           id="InitiativeRowHealthUpdate"
           type="form"
-          :submit-label="$t('actions.save')"
+          :actions="false"
           @submit="updateHealth"
         >
           <FormDiceRollInput />
-          <FormKit
-            type="togglebuttons"
-            name="type"
-            value="damage"
-            enforced
-            :options="[
-              { label: $t('actions.heal'), value: 'heal', icon: 'tabler:heart' },
-              { label: $t('actions.temp'), value: 'temp', icon: 'tabler:plus' },
-              { label: $t('actions.damage'), value: 'damage', icon: 'tabler:sword' },
-            ]"
-            validation="required"
-            input-class="$remove:p-2 $remove:border-4 $remove:aria-pressed:border-primary $remove:focus-within:border-primary group"
-            option-class="$remove:w-10 $remove:h-10"
-          >
-            <template #default="{ option }">
-              <div
-                class="flex items-center gap-x-1 rounded-lg p-2 border-2 border-transparent"
-                :class="{
-                  'bg-destructive/20 group-aria-pressed:bg-destructive/40 group-aria-pressed:border-destructive': option.value === 'damage',
-                  'bg-success/20 group-aria-pressed:bg-success/40 group-aria-pressed:border-success': option.value === 'heal',
-                  'bg-warning/20 group-aria-pressed:bg-warning/40 group-aria-pressed:border-warning': option.value === 'temp',
-                }"
-              >
-                <Icon
-                  :name="option.icon"
-                  class="size-4 min-w-4 text-foreground"
-                  aria-hidden="true"
-                />
-                <span class="text-xs text-muted-foreground group-aria-pressed:!text-foreground">
-                  {{ option.label }}
-                </span>
-              </div>
-            </template>
-          </FormKit>
+          <div class="flex items-center gap-x-2">
+            <FormKit
+              type="submit"
+              input-class="$remove:btn-foreground btn-success flex items-center gap-x-2 px-2 border-2 text-sm"
+              @click="selectedType = 'heal'"
+            >
+              <Icon
+                name="tabler:heart"
+                class="size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.heal') }}
+            </FormKit>
+            <FormKit
+              type="submit"
+              input-class="$remove:btn-foreground btn-warning flex items-center gap-x-2 px-2 border-2 text-sm"
+              @click="selectedType = 'temp'"
+            >
+              <Icon
+                name="tabler:plus"
+                class="size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.temp') }}
+            </FormKit>
+            <FormKit
+              type="submit"
+              input-class="$remove:btn-foreground btn-destructive flex items-center gap-x-2 px-2 border-2 text-sm"
+              @click="selectedType = 'damage'"
+            >
+              <Icon
+                name="tabler:sword"
+                class="size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.damage') }}
+            </FormKit>
+          </div>
         </FormKit>
         <UiSeparator
           v-if="hasHp"
