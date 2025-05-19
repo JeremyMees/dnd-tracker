@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Initiative table row concentration > Should match snapshot 1`] = `"<button data-test-concentration="true" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-filled size-5 min-w-5" aria-hidden="true"></span></button>"`;

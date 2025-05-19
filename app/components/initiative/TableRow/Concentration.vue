@@ -22,6 +22,7 @@ function updateConcentration(): void {
   <button
     v-if="item.type !== 'lair'"
     v-tippy="$t('general.concentration')"
+    :data-test-concentration="item.concentration"
     :aria-label="$t('general.concentration')"
     class="icon-btn-primary mx-auto"
     @click="updateConcentration"
