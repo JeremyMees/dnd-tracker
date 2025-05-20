@@ -83,6 +83,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          data-test-trigger
           :disabled="isPending"
           :class="{ 'cursor-progress': isPending }"
           class="h-[27px] flex flex-col justify-center"
@@ -124,6 +125,7 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
     </UiPopover>
     <div
       v-if="item.conditions.length"
+      data-test-conditions
       class="flex flex-wrap justify-center md:justify-start gap-1"
     >
       <UiPopover
@@ -131,7 +133,10 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
         :key="condition.name"
       >
         <UiPopoverTrigger>
-          <UiBadge class="whitespace-nowrap">
+          <UiBadge
+            data-test-badge
+            class="whitespace-nowrap"
+          >
             {{ condition.name }} {{ condition.level ? `(${condition.level})` : '' }}
           </UiBadge>
         </UiPopoverTrigger>
