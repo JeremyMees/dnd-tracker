@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Initiative table row notes > Should match snapshot 1`] = `"<div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>"`;
