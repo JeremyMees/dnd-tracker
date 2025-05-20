@@ -4,11 +4,10 @@ defineProps<{ value: Open5eItem[] }>()
 </script>
 
 <template>
-  <Card
-    color="secondary"
-  >
+  <Card color="secondary">
     <UiAccordion
       v-if="value.length"
+      data-test-accordion
       type="single"
       collapsible
     >
