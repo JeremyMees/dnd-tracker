@@ -42,6 +42,7 @@ function deleteRow(): void {
     <NuxtLink
       v-if="item.link"
       v-tippy="$t('components.actions.link')"
+      data-test-link
       :aria-label="$t('components.actions.link')"
       class="icon-btn-info"
       target="_blank"
@@ -55,6 +56,7 @@ function deleteRow(): void {
     </NuxtLink>
     <button
       v-tippy="$t('actions.copy')"
+      data-test-copy
       :disabled="maxCharacters"
       :aria-label="$t('actions.copy')"
       class="icon-btn-help"
@@ -68,6 +70,7 @@ function deleteRow(): void {
     </button>
     <button
       v-tippy="$t('actions.delete')"
+      data-test-delete
       :aria-label="$t('actions.delete')"
       class="icon-btn-destructive"
       @click="deleteRow"
