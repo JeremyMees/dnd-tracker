@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Initiative table row death saves > Should match snapshot 1`] = `
+"<div data-test-container="" class="grid gap-1 w-fit mx-auto">
+  <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20 !bg-success"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+  <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20 !bg-destructive"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+</div>"
+`;

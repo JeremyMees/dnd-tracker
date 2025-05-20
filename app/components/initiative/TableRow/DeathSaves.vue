@@ -55,6 +55,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
 <template>
   <div
     v-if="item.type !== 'lair' && item.type !== 'summon'"
+    data-test-container
     class="grid gap-1 w-fit mx-auto"
     :class="{
       'bg-success/20 p-2 rounded-lg': item.deathSaves?.save.every(Boolean) && !item.deathSaves?.fail.every(Boolean),
@@ -69,6 +70,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
       <button
         v-for="(value, j) in save"
         :key="`${value}-${j}`"
+        :data-test-button="i === 0 ? 'save' : 'fail'"
         class="size-4 rounded border-2"
         :class="{
           'border-success bg-success/20': i === 0,
