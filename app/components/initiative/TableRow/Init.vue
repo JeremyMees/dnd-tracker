@@ -83,14 +83,23 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
   <div class="flex gap-2 items-center text-left">
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
-        <button class="flex flex-col justify-center">
+        <button
+          data-test-trigger
+          class="flex flex-col justify-center"
+        >
           <Icon
             v-if="item.initiative < 0"
+            data-test-empty
             name="tabler:plus"
             class="size-5 min-w-5 text-foreground/10"
             aria-hidden="true"
           />
-          <span v-else>{{ item.initiative }}</span>
+          <span
+            v-else
+            data-test-initiative
+          >
+            {{ item.initiative }}
+          </span>
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent>
@@ -130,11 +139,13 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
     </UiPopover>
     <div
       v-if="item.initiative !== null && item.initiative >= 0"
+      data-test-controls
       class="flex flex-col"
     >
       <button
         v-if="canGoUp"
         v-tippy="$t('actions.moveUp')"
+        data-test-up
         :aria-label="$t('actions.moveUp')"
         :class="{ 'relative top-1': canGoDown }"
         class="flex items-center"
@@ -149,6 +160,7 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
       <button
         v-if="canGoDown"
         v-tippy="$t('actions.moveDown')"
+        data-test-down
         :aria-label="$t('actions.moveDown')"
         :class="{ 'relative bottom-1': canGoUp }"
         class="flex items-center"
