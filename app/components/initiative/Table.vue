@@ -68,6 +68,7 @@ const table = useVueTable({
             <UiTableHead
               v-for="header in headerGroup.headers"
               :key="header.id"
+              data-test-header
               :class="tablePadding"
             >
               <FlexRender
@@ -87,6 +88,7 @@ const table = useVueTable({
             >
               <UiTableRow
                 :id="index === 0 ? 'tour-9' : ''"
+                data-test-row
                 :data-state="selected[row.id] && 'selected'"
                 class="data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300"
               >
@@ -101,7 +103,10 @@ const table = useVueTable({
                   />
                 </UiTableCell>
               </UiTableRow>
-              <UiTableRow v-if="row.getIsExpanded()">
+              <UiTableRow
+                v-if="row.getIsExpanded()"
+                data-test-expanded
+              >
                 <UiTableCell :colspan="row.getAllCells().length">
                   <FlexRender :render="expandedMarkup(row)" />
                 </UiTableCell>
@@ -113,11 +118,15 @@ const table = useVueTable({
             <SkeletonInitiativeTableRow
               v-for="i in 10"
               :key="i"
+              data-test-loading
               :class="tablePadding"
             />
           </template>
 
-          <UiTableRow v-else>
+          <UiTableRow
+            v-else
+            data-test-empty-state
+          >
             <UiTableCell
               :colspan="columns.length"
               class="md:p-10"
@@ -130,6 +139,7 @@ const table = useVueTable({
     </div>
 
     <LazyInitiativeWidgets
+      data-test-widgets
       hydrate-on-visible
       :sheet="data"
       :update="update"

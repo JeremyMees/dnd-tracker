@@ -1,0 +1,766 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Initiative table > Should match snapshot 1`] = `
+"<div class="flex flex-col gap-2">
+  <div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"><img src="/gifs/cat.gif" loading="lazy" class="size-6 max-[350px]:hidden absolute top-14 sm:top-6 left-4" data-test-pet="">
+    <div class="flex gap-2 items-center"><span class="text-muted-foreground">general.round: <span data-test-round="" class="font-bold text-foreground">1</span></span><button id="tour-11" data-test-reset="" aria-label="Reset rounds" class="icon-btn-destructive" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:refresh text-destructive" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+    <div id="tour-1" class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"><button data-test-previous="" disabled="" aria-label="actions.prev" class="group disabled:cursor-not-allowed duration-300 ease-in-out py-1 pl-1 pr-2 border-r-2 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-left group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
+      <p class="font-medium px-2">components.inputs.initiativeLabel</p><button data-test-next="" aria-label="actions.next" class="group disabled:cursor-not-allowed py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-right group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
+    </div>
+  </div>
+  <div class="rounded-lg border-4 border-secondary bg-secondary/50">
+    <div class="relative w-full overflow-auto">
+      <table class="w-full caption-bottom text-sm">
+        <thead class="[&amp;_tr]:border-b">
+          <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary hover:bg-transparent">
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">
+              <!---->
+            </th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.name</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">
+              <div><button id="tour-10" class="flex items-center gap-x-1 w-fit rounded-lg hover:bg-warning/50 hover:text-foreground hover:-mx-2 hover:-my-1 hover:px-2 hover:py-1 transition-all duration-300" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">components.encounterTable.headers.init <span class="iconify i-tabler:bolt-filled text-warning" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.health</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.ac</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.conditions</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.note</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.deathSaves</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">components.encounterTable.headers.concentration</th>
+            <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 p-2" data-test-header="">
+              <!---->
+            </th>
+          </tr>
+        </thead>
+        <tbody class="[&amp;_tr:last-child]:border-0">
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="tour-9" data-test-row="" data-state="selected">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">1</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-2" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">Sister Iarnă</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-3" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">20</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-4" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">1</span><span data-test-temp="" class="text-warning text-xs"> +5</span></div><span data-test-max="" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 104</span>
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-5" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">1</span><span data-test-temp="" class="text-warning text-xs"> +5</span></div><span data-test-max="" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 19</span>
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button id="reka-popover-trigger-v-0-0-0-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Paralyzed </div>
+                  </button>
+                  <!--teleport start-->
+                  <!--teleport end-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20 !bg-success"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20 !bg-destructive"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="true" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-filled size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end"><a href="https://www.dndbeyond.com/characters/114215312" data-test-link="" aria-label="components.actions.link" class="icon-btn-info" target="_blank"><span class="iconify i-tabler:link size-5 min-w-5" aria-hidden="true"></span></a><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button></div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">2</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-6" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">emong</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-7" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">18</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if--><button data-test-down="" aria-label="actions.moveDown" class="flex items-center"><span class="iconify i-tabler:caret-down size-5 min-w-5 text-tertiary" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-8" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-9" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-1-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button id="reka-popover-trigger-v-0-0-1-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Paralyzed </div>
+                  </button>
+                  <!--teleport start-->
+                  <!--teleport end-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">3</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-10" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">Alixia</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-11" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">18</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col"><button data-test-up="" aria-label="actions.moveUp" class="flex items-center"><span class="iconify i-tabler:caret-up size-5 min-w-5 text-tertiary" aria-hidden="true"></span></button>
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-12" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-13" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-2-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button id="reka-popover-trigger-v-0-0-2-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Paralyzed </div>
+                  </button>
+                  <!--teleport start-->
+                  <!--teleport end--><button id="reka-popover-trigger-v-0-0-2-2" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Prone </div>
+                  </button>
+                  <!--teleport start-->
+                  <!--teleport end-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">4</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-14" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">Zylkan Zarkos</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-15" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">15</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if--><button data-test-down="" aria-label="actions.moveDown" class="flex items-center"><span class="iconify i-tabler:caret-down size-5 min-w-5 text-tertiary" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-16" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">72</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-17" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-3-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <!--v-if-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end"><a href="https://www.dndbeyond.com/characters/114196083" data-test-link="" aria-label="components.actions.link" class="icon-btn-info" target="_blank"><span class="iconify i-tabler:link size-5 min-w-5" aria-hidden="true"></span></a><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button></div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">5</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-18" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">nightlight</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-19" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">15</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col"><button data-test-up="" aria-label="actions.moveUp" class="flex items-center"><span class="iconify i-tabler:caret-up size-5 min-w-5 text-tertiary" aria-hidden="true"></span></button>
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-20" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">103</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-21" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">14</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-4-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <!--v-if-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end"><a href="https://www.dndbeyond.com/characters/114212054" data-test-link="" aria-label="components.actions.link" class="icon-btn-info" target="_blank"><span class="iconify i-tabler:link size-5 min-w-5" aria-hidden="true"></span></a><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button></div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">6</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-22" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">trenfire</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-23" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">12</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-24" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-25" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-5-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <!--v-if-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">7</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-26" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">rikkie</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-27" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">10</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-28" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-29" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-6-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <!--v-if-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">8</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-30" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">Pantons</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-31" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">9</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if--><button data-test-down="" aria-label="actions.moveDown" class="flex items-center"><span class="iconify i-tabler:caret-down size-5 min-w-5 text-tertiary" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-32" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-33" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-7-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button id="reka-popover-trigger-v-0-0-7-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Paralyzed </div>
+                  </button>
+                  <!--teleport start-->
+                  <!--teleport end-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">9</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-34" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">yensi</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-35" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">9</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col"><button data-test-up="" aria-label="actions.moveUp" class="flex items-center"><span class="iconify i-tabler:caret-up size-5 min-w-5 text-tertiary" aria-hidden="true"></span></button>
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-36" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-37" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-8-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <!--v-if-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+          <tr class="border-b border-secondary data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300" id="" data-test-row="">
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-x-2"><span class="text-muted-foreground ml-1">10</span><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="flex items-center gap-x-2" id="reka-popover-trigger-v-0-0-38" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true"></span>
+                <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">Lopeas</span>
+                  <!--v-if-->
+                </div>
+              </button>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex gap-2 items-center text-left"><button data-test-trigger="" class="flex flex-col justify-center" id="reka-popover-trigger-v-0-0-39" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span data-test-initiative="">4</span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-controls="" class="flex flex-col">
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-40" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div><button data-test-trigger="" class="flex flex-col gap-y-1" id="reka-popover-trigger-v-0-0-41" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                  <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                </button>
+                <!--teleport start-->
+                <!--teleport end-->
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center gap-2"><button data-test-trigger="" class="h-[27px] flex flex-col justify-center" id="reka-popover-trigger-v-0-0-9-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+                <!--teleport start-->
+                <!--teleport end-->
+                <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button id="reka-popover-trigger-v-0-0-9-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Paralyzed </div>
+                  </button>
+                  <!--teleport start-->
+                  <!--teleport end-->
+                </div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="min-w-[150px] h-full relative"><textarea class="border-background border rounded-lg p-1 outline-none text-sm bg-muted resize-vertical w-full h-full min-h-10 max-h-[200px]" maxlength="250"></textarea></div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div data-test-container="" class="grid gap-1 w-fit mx-auto">
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button><button data-test-button="save" class="size-4 rounded border-2 border-success bg-success/20"></button></div>
+                <div class="grid grid-cols-3 gap-1 min-w-14"><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button><button data-test-button="fail" class="size-4 rounded border-2 border-destructive bg-destructive/20"></button></div>
+              </div>
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-test-concentration="false" aria-label="general.concentration" class="icon-btn-primary mx-auto"><span class="iconify i-tabler:circle-dotted size-5 min-w-5" aria-hidden="true"></span></button></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+              <div class="flex items-center justify-end">
+                <!--v-if--><button data-test-copy="" aria-label="actions.copy" class="icon-btn-help"><span class="iconify i-tabler:copy size-5 min-w-5" aria-hidden="true"></span></button><button data-test-delete="" aria-label="actions.delete" class="icon-btn-destructive"><span class="iconify i-tabler:trash size-5 min-w-5" aria-hidden="true"></span></button>
+              </div>
+            </td>
+          </tr>
+          <!--v-if-->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pt-4 space-y-2" data-test-widgets="">
+    <h3>general.widget</h3>
+    <div class="grid xl:grid-cols-2 gap-2 items-start">
+      <div class="transition-colors duration-300 border-4 rounded-lg border-secondary bg-secondary/50 py-2 px-0">
+        <div class="border-b pb-1 px-2 mb-2 flex items-center gap-x-2 flex-wrap border-secondary">
+          <div class="relative group w-fit"><button class="group-hover:bg-secondary px-1 pt-1 rounded-lg rounded-b-none flex flex-row items-center cursor-pointer duration-200 ease-in-out transition-all" aria-label="Text style dropdown" type="button"><span class="duration-200 font-bold text-sm min-w-10">general.text</span><span class="iconify i-tabler:chevron-down size-4" aria-hidden="true"></span></button>
+            <!---->
+          </div>
+          <div class="flex items-center border-r pr-2 border-secondary"><button type="button" aria-label="general.link" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:link size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.unlink" class="icon-btn-primary size-6 text-foreground" disabled=""><span class="iconify i-tabler:unlink size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.unOrderedList" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:list size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.orderedList" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:list-numbers size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.quote" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:blockquote size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.horizontalRule" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:separator size-4" aria-hidden="true"></span></button></div>
+          <div class="flex items-center border-r pr-2 border-secondary"><button type="button" aria-label="general.bold" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:bold size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.italic" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:italic size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.strikeThrough" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:strikethrough size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.highlight" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:highlight size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.clearFormatting" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:clear-formatting size-4" aria-hidden="true"></span></button></div>
+          <div class="flex items-center"><button type="button" aria-label="actions.undo" disabled="" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:arrow-back size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.redo" disabled="" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:arrow-forward size-4" aria-hidden="true"></span></button></div>
+        </div>
+        <div class="html-richtext">
+          <div contenteditable="true" spellcheck="false" translate="no" class="tiptap ProseMirror" tabindex="0">
+            <p data-placeholder="components.tipTapEditor.placeholder" class="is-empty is-editor-empty"><br class="ProseMirror-trailingBreak"></p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 px-2 pt-4"><svg class="size-7 -rotate-90" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="16" fill="none" stroke-width="4" class="stroke-current text-secondary"></circle>
+            <circle data-test-dial="" cx="18" cy="18" r="16" fill="none" stroke-width="4" stroke-dasharray="100" stroke-dashoffset="-100" stroke-linecap="round" class="text-primary stroke-current duration-300 transition-all"></circle>
+          </svg>
+          <div class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors"><span class="">0 / 5000 general.character</span><span>0 general.word</span></div>
+        </div>
+      </div>
+      <div class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50">
+        <p class="text-muted-foreground">pages.encounter.pinnedContent.empty</p>
+      </div>
+    </div>
+  </div>
+</div>"
+`;
