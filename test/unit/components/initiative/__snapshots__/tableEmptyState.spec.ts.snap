@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Initiative table empty state > Should match snapshot with campaign prop 1`] = `
+"<div class="rounded-lg border-4 text-card-foreground shadow-sm border-background bg-background/50">
+  <div class="flex flex-col gap-y-1.5 p-6">
+    <h3 class="text-2xl font-semibold leading-none tracking-tight">components.initiativeTable.emptyState.title</h3>
+    <p class="text-sm text-muted-foreground">components.initiativeTable.emptyState.text</p>
+  </div>
+  <div class="p-6 pt-0 flex flex-col gap-4">
+    <div>
+      <div class="flex items-center gap-2"><span class="iconify i-tabler:bat size-4 min-w-4 text-destructive" aria-hidden="true"></span><span>general.bestiary</span></div>
+      <p class="text-muted-foreground">components.initiativeTable.emptyState.bestiary</p>
+    </div>
+    <div data-test-campaign="">
+      <div class="flex items-center gap-2"><span class="iconify i-tabler:meeple size-4 min-w-4 text-primary" aria-hidden="true"></span><span>general.campaignHomebrew</span></div>
+      <p class="text-muted-foreground">components.initiativeTable.emptyState.campaignHomebrew</p>
+    </div>
+    <div>
+      <div class="flex items-center gap-2"><span class="iconify i-tabler:beer size-4 min-w-4 text-warning" aria-hidden="true"></span><span>general.newHomebrew</span></div>
+      <p class="text-muted-foreground">components.initiativeTable.emptyState.newHomebrew</p>
+    </div>
+  </div>
+</div>"
+`;
+
+exports[`Initiative table empty state > Should match snapshot without campaign prop 1`] = `
+"<div class="rounded-lg border-4 text-card-foreground shadow-sm border-background bg-background/50">
+  <div class="flex flex-col gap-y-1.5 p-6">
+    <h3 class="text-2xl font-semibold leading-none tracking-tight">components.initiativeTable.emptyState.title</h3>
+    <p class="text-sm text-muted-foreground">components.initiativeTable.emptyState.text</p>
+  </div>
+  <div class="p-6 pt-0 flex flex-col gap-4">
+    <div>
+      <div class="flex items-center gap-2"><span class="iconify i-tabler:bat size-4 min-w-4 text-destructive" aria-hidden="true"></span><span>general.bestiary</span></div>
+      <p class="text-muted-foreground">components.initiativeTable.emptyState.bestiary</p>
+    </div>
+    <!--v-if-->
+    <div>
+      <div class="flex items-center gap-2"><span class="iconify i-tabler:beer size-4 min-w-4 text-warning" aria-hidden="true"></span><span>general.newHomebrew</span></div>
+      <p class="text-muted-foreground">components.initiativeTable.emptyState.newHomebrew</p>
+    </div>
+  </div>
+</div>"
+`;
