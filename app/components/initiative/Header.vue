@@ -14,13 +14,17 @@ const resetOpen = ref<boolean>(false)
   <div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full">
     <InitiativePet
       v-if="data?.settings?.pet"
+      data-test-pet
       :pet="data.settings.pet"
       class="max-[350px]:hidden absolute top-14 sm:top-6 left-4"
     />
     <div class="flex gap-2 items-center">
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
-        <span class="font-bold text-foreground">
+        <span
+          data-test-round
+          class="font-bold text-foreground"
+        >
           {{ data?.round || 1 }}
         </span>
       </span>
@@ -29,6 +33,7 @@ const resetOpen = ref<boolean>(false)
           <button
             id="tour-11"
             v-tippy="$t('actions.reset')"
+            data-test-reset
             :disabled="!data?.rows.length"
             aria-label="Reset rounds"
             class="icon-btn-destructive"
@@ -75,7 +80,8 @@ const resetOpen = ref<boolean>(false)
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"
-        :disabled="data?.round === 1 && data?.activeIndex === 0"
+        data-test-previous
+        :disabled="!data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)"
         :aria-label="$t('actions.prev')"
         class="group disabled:cursor-not-allowed duration-300 ease-in-out py-1 pl-1 pr-2 border-r-2 border-primary flex flex-col items-center"
         @click="$emit('previous')"
@@ -91,6 +97,7 @@ const resetOpen = ref<boolean>(false)
       </p>
       <button
         v-tippy="{ content: $t('actions.next') }"
+        data-test-next
         :disabled="!data?.rows.length"
         :aria-label="$t('actions.next')"
         class="group disabled:cursor-not-allowed py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"
