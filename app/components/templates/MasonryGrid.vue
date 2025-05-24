@@ -18,9 +18,9 @@ const isSmall = useMediaQuery('(max-width: 768px)')
 const isLarge = useMediaQuery('(min-width: 1440px)')
 
 const columnCount = computed<number>(() => {
-  if (props.maxColumns === 1) return 3
-  if (props.maxColumns === 2) return isSmall.value ? 1 : 2
-  else return isSmall.value ? 1 : isLarge.value ? 3 : 2
+  if (isSmall.value) return 1
+  if (isLarge.value) return Math.min(3, props.maxColumns)
+  return Math.min(2, props.maxColumns)
 })
 
 const columns = computed<any[][]>(() => splitArray(props.data, columnCount.value))
@@ -31,7 +31,7 @@ const columns = computed<any[][]>(() => splitArray(props.data, columnCount.value
     :is="element"
     :class="wrapperStyle"
     :style="{
-      gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))`,
+      gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
     }"
   >
     <div
