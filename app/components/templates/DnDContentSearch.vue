@@ -82,6 +82,7 @@ async function removePins(): Promise<void> {
       <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
         <FormKit
           v-model="search"
+          data-test-search
           :disabled="showPinned"
           type="search"
           :label="$t('components.inputs.nameLabel')"
@@ -89,6 +90,7 @@ async function removePins(): Promise<void> {
         />
         <FormKit
           v-model="type"
+          data-test-type
           :disabled="showPinned"
           type="select"
           :label="$t('components.inputs.typeLabel')"
@@ -110,6 +112,7 @@ async function removePins(): Promise<void> {
           class="flex gap-2"
         >
           <button
+            data-test-pin-toggle
             :aria-label="$t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)"
             :class="[showPinned ? 'btn-background' : 'btn-ghost text-muted-foreground']"
             class="flex items-center gap-x-2"
@@ -122,6 +125,7 @@ async function removePins(): Promise<void> {
             {{ $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`) }}
           </button>
           <button
+            data-test-remove-pins
             :aria-label="$t('components.dndContentSearch.remove')"
             class="btn-ghost flex items-center gap-x-2 text-muted-foreground"
             @click="removePins"
@@ -140,6 +144,7 @@ async function removePins(): Promise<void> {
       <MasonryGrid
         v-if="status === 'pending'"
         v-slot="{ column }"
+        data-test-loading
         :data="Array.from({ length: 30 }, () => ({}))"
       >
         <SkeletonContentCard
@@ -149,9 +154,10 @@ async function removePins(): Promise<void> {
         />
       </MasonryGrid>
       <MasonryGrid
-        v-else-if="data?.items?.length"
+        v-else-if="data?.items?.length || (showPinned && sheet?.info_cards?.length)"
         v-slot="{ column }"
-        :data="showPinned && sheet ? sheet?.info_cards : data.items"
+        data-test-content-grid
+        :data="showPinned && sheet ? sheet?.info_cards ?? [] : data?.items ?? []"
       >
         <ContentCard
           v-for="(hit, j) in column"
@@ -171,6 +177,7 @@ async function removePins(): Promise<void> {
     <Pagination
       v-if="data?.pages && data.pages > 1 && status !== 'pending' && data?.items?.length && !showPinned"
       v-model:page="queryFilters.page"
+      data-test-pagination
       :pages="data.pages"
       :per-page="limit"
       :styles="variant === 'secondary'
@@ -182,12 +189,14 @@ async function removePins(): Promise<void> {
     />
     <p
       v-if="status === 'error'"
+      data-test-error
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
       v-if="status !== 'pending' && !data?.items?.length && search !== ''"
+      data-test-not-found
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.notFound') }}
