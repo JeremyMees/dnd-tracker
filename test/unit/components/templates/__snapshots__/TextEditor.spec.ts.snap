@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TextEditor > Should match snapshot 1`] = `
+"<div class="transition-colors duration-300 border-4 rounded-lg border-secondary bg-secondary/50 py-2 px-0">
+  <div class="border-b pb-1 px-2 mb-2 flex items-center gap-x-2 flex-wrap border-secondary">
+    <div class="relative group w-fit"><button class="group-hover:bg-secondary px-1 pt-1 rounded-lg rounded-b-none flex flex-row items-center cursor-pointer duration-200 ease-in-out transition-all" aria-label="Text style dropdown" type="button"><span class="duration-200 font-bold text-sm min-w-10">general.text</span><span class="iconify i-tabler:chevron-down size-4" aria-hidden="true"></span></button>
+      <!---->
+    </div>
+    <div class="flex items-center border-r pr-2 border-secondary"><button type="button" aria-label="general.link" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:link size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.unlink" class="icon-btn-primary size-6 text-foreground" disabled=""><span class="iconify i-tabler:unlink size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.unOrderedList" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:list size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.orderedList" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:list-numbers size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.quote" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:blockquote size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.horizontalRule" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:separator size-4" aria-hidden="true"></span></button></div>
+    <div class="flex items-center border-r pr-2 border-secondary"><button type="button" aria-label="general.bold" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:bold size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.italic" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:italic size-4" aria-hidden="true"></span></button><button type="button" aria-label="general.strikeThrough" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:strikethrough size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.highlight" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:highlight size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.clearFormatting" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:clear-formatting size-4" aria-hidden="true"></span></button></div>
+    <div class="flex items-center"><button type="button" aria-label="actions.undo" disabled="" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:arrow-back size-4" aria-hidden="true"></span></button><button type="button" aria-label="actions.redo" disabled="" class="icon-btn-primary size-6 text-foreground"><span class="iconify i-tabler:arrow-forward size-4" aria-hidden="true"></span></button></div>
+  </div>
+  <div class="html-richtext">
+    <div contenteditable="true" spellcheck="false" translate="no" class="tiptap ProseMirror" tabindex="0">
+      <p data-placeholder="components.tipTapEditor.placeholder" class="is-empty is-editor-empty"><br class="ProseMirror-trailingBreak"></p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 px-2 pt-4"><svg class="size-7 -rotate-90" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16" fill="none" stroke-width="4" class="stroke-current text-secondary"></circle>
+      <circle data-test-dial="" cx="18" cy="18" r="16" fill="none" stroke-width="4" stroke-dasharray="100" stroke-dashoffset="-100" stroke-linecap="round" class="text-primary stroke-current duration-300 transition-all"></circle>
+    </svg>
+    <div class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors"><span class="">0 / 5000 general.character</span><span>0 general.word</span></div>
+  </div>
+</div>"
+`;
