@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
-    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > types/database-generated.ts",
+    "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > shared/types/database-generated.ts",
     "prepare": "husky",
     "e2e": "npx playwright test",
     "test": "vitest"

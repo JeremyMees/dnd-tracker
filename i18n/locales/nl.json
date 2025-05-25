@@ -809,7 +809,8 @@
         "fairy": "Fee",
         "redcap": "Paddenstoel",
         "wolf-rider": "Wolf rijder"
-      }
+      },
+      "negative": "Sta HP en AC toe negatief te zijn"
     },
     "infoCard": {
       "add": "Pin toevoegen",
