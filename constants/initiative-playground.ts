@@ -21,5 +21,6 @@ export const playgroundSheet: InitiativeSheet = {
       'modify',
     ],
     modified: false,
+    negative: false,
   },
 }

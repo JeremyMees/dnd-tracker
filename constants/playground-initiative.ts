@@ -14,5 +14,6 @@ export default {
     modified: false,
     widgets: [],
     pet: 'cat',
+    negative: false,
   } as InitiativeSettings,
 }
