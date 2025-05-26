@@ -1,0 +1,34 @@
+{
+  "redirects": [
+    {
+      "source": "/cookie-policy",
+      "destination": "/policies/cookie",
+      "permanent": true
+    },
+    {
+      "source": "/:lang/cookie-policy",
+      "destination": "/:lang/policies/cookie",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/policies/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/:lang/privacy-policy",
+      "destination": "/:lang/policies/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/info",
+      "destination": "/dnd-content",
+      "permanent": true
+    },
+    {
+      "source": "/:lang/info",
+      "destination": "/:lang/dnd-content",
+      "permanent": true
+    }
+  ]
+}
