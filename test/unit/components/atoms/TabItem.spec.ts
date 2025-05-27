@@ -40,7 +40,7 @@ describe('TabItem', async () => {
   })
 
   it('Should show disabled state', async () => {
-    const component = await mountSuspended(TabItem, { props: { ...props, disabled: true }, global })
+    const component = await mountSuspended(TabItem, { props: { ...props, disabled: true } })
 
     expect(component.attributes('class')).toContain('pointer-events-none opacity-50')
   })
