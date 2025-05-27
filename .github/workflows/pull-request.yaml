@@ -5,7 +5,7 @@ on:
 
 jobs:
   linting:
-    name: 🕵 Linting
+    name: ✨ Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -18,6 +18,20 @@ jobs:
         run: npm install
       - name: Run eslint
         run: npm run lint
+  typechecking:
+    name: 🕵 Typechecking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install dependencies
+        run: npm install
+      - name: Run typechecking
+        run: npm run typecheck
   testing:
     name: 🧪 Testing
     needs: linting
