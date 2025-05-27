@@ -20,6 +20,7 @@ jobs:
         run: npm run lint
   typechecking:
     name: 🕵 Typechecking
+    needs: linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
