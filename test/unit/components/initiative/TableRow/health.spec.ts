@@ -132,6 +132,7 @@ describe('Initiative table row health', async () => {
     expect(payload).toBeDefined()
     const resultRow = payload.rows[0]
     expect(resultRow).toBeDefined()
+    expect(resultRow!.health).toBe(0)
     expect(resultRow!.concentration).toBe(false)
     expect(resultRow!.conditions).toHaveLength(0)
   })
@@ -226,10 +227,53 @@ describe('Initiative table row health', async () => {
     const updatedRow = vm.handleHpChanges(10, 'temp')
     await vm.updateRow(updatedRow)
 
-    expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching('components.initiativeTable.stable.title'),
-      description: expect.stringMatching('components.initiativeTable.stable.textDeathSaves'),
-      variant: 'info',
+    expect(component.get('[data-test-health]').text()).toBe('0')
+  })
+
+  it('Should set health to 0 when negative values are not allowed', async () => {
+    const component = await mountSuspended(Health, {
+      props: {
+        ...props,
+        item: {
+          ...props.item,
+          health: 10,
+          maxHealth: 20,
+          tempHealth: 0,
+        },
+      },
     })
+
+    const vm = component.vm as unknown as HealthTestMethods
+    const updatedRow = vm.handleHpChanges(15, 'damage')
+    await vm.updateRow(updatedRow)
+
+    expect(updatedRow.health).toBe(0)
+  })
+
+  it('Should allow negative health when negative values are allowed', async () => {
+    const component = await mountSuspended(Health, {
+      props: {
+        ...props,
+        item: {
+          ...props.item,
+          health: 10,
+          maxHealth: 20,
+          tempHealth: 0,
+        },
+        sheet: {
+          ...sheet,
+          settings: {
+            ...sheet.settings,
+            negative: true,
+          },
+        },
+      },
+    })
+
+    const vm = component.vm as unknown as HealthTestMethods
+    const updatedRow = vm.handleHpChanges(15, 'damage')
+    await vm.updateRow(updatedRow)
+
+    expect(updatedRow.health).toBe(-5)
   })
 })

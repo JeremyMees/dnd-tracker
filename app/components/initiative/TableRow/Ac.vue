@@ -106,7 +106,8 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
   else if (type === 'override-reset') overrideReset(row, amount)
 
   // when ac is an negative number change it to 0
-  if (row.ac && row.ac < 0) row.ac = 0
+  const resetNegative = props.sheet?.settings?.negative === false
+  if (resetNegative && row.ac && row.ac < 0) row.ac = 0
 
   return row
 }
@@ -119,7 +120,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
         <button
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac === 0,
+            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac <= 0,
           }"
           class="flex flex-col gap-y-1"
         >
@@ -134,7 +135,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             <span
               v-else
               data-test-ac
-              :class="{ 'text-destructive': item.ac === 0 }"
+              :class="{ 'text-destructive': isDefined(item.ac) && item.ac <= 0 }"
             >
               {{ item.ac }}
             </span>
@@ -184,7 +185,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
                 {{ item.maxAc || 0 }}
               </p>
               <p
-                v-if="item.maxHealthOld === 0 || item.maxHealthOld"
+                v-if="item.maxAcOld === 0 || item.maxAcOld"
                 class="text-sm"
               >
                 ({{ item.maxAcOld }})

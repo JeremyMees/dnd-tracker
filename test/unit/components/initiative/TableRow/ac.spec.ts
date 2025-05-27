@@ -3,6 +3,11 @@ import { describe, expect, it, vi } from 'vitest'
 import Ac from '~/components/initiative/TableRow/Ac.vue'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
+interface AcTestMethods {
+  handleAcChanges: (amount: number, type: 'add' | 'remove' | 'temp' | 'override' | 'override-reset') => InitiativeSheetRow
+  updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+}
+
 interface Props {
   item: InitiativeSheetRow
   sheet: InitiativeSheet | undefined
@@ -63,5 +68,52 @@ describe('Initiative table row ac', async () => {
     })
 
     expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
+  })
+
+  it('Should set AC to 0 when negative values are not allowed', async () => {
+    const component = await mountSuspended(Ac, {
+      props: {
+        ...props,
+        item: {
+          ...props.item,
+          ac: 10,
+          maxAc: 20,
+          tempAc: 0,
+        },
+      },
+    })
+
+    const vm = component.vm as unknown as AcTestMethods
+    const updatedRow = vm.handleAcChanges(15, 'remove')
+    await vm.updateRow(updatedRow)
+
+    expect(updatedRow.ac).toBe(0)
+  })
+
+  it('Should allow negative AC when negative values are allowed', async () => {
+    const component = await mountSuspended(Ac, {
+      props: {
+        ...props,
+        item: {
+          ...props.item,
+          ac: 10,
+          maxAc: 20,
+          tempAc: 0,
+        },
+        sheet: {
+          ...sheet,
+          settings: {
+            ...sheet.settings,
+            negative: true,
+          },
+        },
+      },
+    })
+
+    const vm = component.vm as unknown as AcTestMethods
+    const updatedRow = vm.handleAcChanges(15, 'remove')
+    await vm.updateRow(updatedRow)
+
+    expect(updatedRow.ac).toBe(-5)
   })
 })

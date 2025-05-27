@@ -809,7 +809,8 @@
         "fairy": "Fairy",
         "redcap": "Redcap",
         "wolf-rider": "Wolf rider"
-      }
+      },
+      "negative": "Allow HP and AC to be negative"
     },
     "infoCard": {
       "add": "Add pin",

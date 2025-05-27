@@ -143,6 +143,7 @@ export interface InitiativeSettings {
   rows?: string[]
   widgets?: string[]
   pet?: InitiativePet
+  negative?: boolean
 }
 
 // Extended Types
