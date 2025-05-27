@@ -63,7 +63,7 @@
     "markdown-it": "^14.1.0",
     "motion-v": "^1.0.0-beta.2",
     "nuxt": "^3.17.1",
-    "nuxt-authorization": "^0.3.3",
+    "nuxt-authorization": "^0.3.4",
     "oslo": "^1.2.1",
     "reka-ui": "^2.2.0",
     "sanitize-html": "^2.14.0",
