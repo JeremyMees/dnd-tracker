@@ -169,7 +169,8 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
   }
 
   // when health is an negative number change it to 0
-  if (row.health && row.health < 0) row.health = 0
+  const resetNegative = props.sheet?.settings?.negative === false
+  if (resetNegative && row.health && row.health < 0) row.health = 0
 
   return row
 }
@@ -182,7 +183,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
         <button
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.health) && item.health === 0,
+            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.health) && item.health <= 0,
           }"
           class="flex flex-col gap-y-1"
         >
@@ -197,7 +198,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
             <span
               v-else
               data-test-health
-              :class="{ 'text-destructive': item.health === 0 }"
+              :class="{ 'text-destructive': isDefined(item.health) && item.health <= 0 }"
             >
               {{ item.health }}
             </span>

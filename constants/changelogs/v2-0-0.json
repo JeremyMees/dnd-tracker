@@ -1,0 +1,39 @@
+{
+  "version": "v2.0.0",
+  "date": "2025-07-04",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Complete rewrite of the app ✨"
+        },
+        {
+          "text": "Performance updates"
+        },
+        {
+          "text": "Send your campaign notes to your players via email"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Rich text editor for notes"
+        },
+        {
+          "text": "Campaign content page is split up in encounter, homebrew and note pages"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Added button for users invited as players to leave campaigns they don't want to participate in"
+        }
+      ]
+    }
+  ]
+}

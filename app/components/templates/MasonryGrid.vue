@@ -14,8 +14,8 @@ const props = withDefaults(
   },
 )
 
-const isSmall = useMediaQuery('(max-width: 768px)')
-const isLarge = useMediaQuery('(min-width: 1440px)')
+const isSmall = useMediaQuery('(max-width: 768px)', { ssrWidth: 1024 })
+const isLarge = useMediaQuery('(min-width: 1440px)', { ssrWidth: 1024 })
 
 const columnCount = computed<number>(() => {
   if (isSmall.value) return 1

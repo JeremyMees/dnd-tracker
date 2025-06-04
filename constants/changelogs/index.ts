@@ -11,8 +11,10 @@ import v1_0_17 from './v1-0-17.json'
 import v1_0_18 from './v1-0-18.json'
 import v1_0_19 from './v1-0-19.json'
 import v1_0_20 from './v1-0-20.json'
+import v2_0_0 from './v2-0-0.json'
 
 export const changelogs = [
+  v2_0_0,
   v1_0_20,
   v1_0_19,
   v1_0_18,

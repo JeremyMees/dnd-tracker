@@ -14,6 +14,7 @@ interface InitiativeSettingsForm {
   rows: string[]
   widgets: string[]
   pet?: InitiativePet
+  negative: boolean
 }
 
 async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
@@ -94,6 +95,12 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           { label: $t('components.initiativeSettings.pets.redcap'), value: 'redcap' },
           { label: $t('components.initiativeSettings.pets.wolf-rider'), value: 'wolf-rider' },
         ]"
+      />
+      <FormKit
+        name="negative"
+        type="toggle"
+        :label="$t('components.initiativeSettings.negative')"
+        :value="sheet?.settings?.negative || false"
         outer-class="$remove:mb-4"
       />
     </FormKit>

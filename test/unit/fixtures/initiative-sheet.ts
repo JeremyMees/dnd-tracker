@@ -310,5 +310,6 @@ export const sheet: InitiativeSheet = {
       'modify',
     ],
     modified: false,
+    negative: false,
   },
 }
