@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Ac from '~/components/initiative/TableRow/Ac.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 interface AcTestMethods {
@@ -10,21 +11,29 @@ interface AcTestMethods {
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
+
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
 
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 describe('Initiative table row ac', async () => {
+  beforeEach(() => {
+    mockSheet.value = sheet
+  })
+
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Ac, { props })
+    const component = await mountSuspended(Ac, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -37,9 +46,9 @@ describe('Initiative table row ac', async () => {
 
     const component = await mountSuspended(Ac, {
       props: {
-        ...props,
         item: { ...props.item, ac, maxAc, maxAcOld, tempAc },
       },
+      provide,
     })
 
     expect(component.get('[data-test-ac]').text()).toBe(ac.toString())
@@ -50,9 +59,9 @@ describe('Initiative table row ac', async () => {
   it('Should show destructive styling when AC is 0', async () => {
     const component = await mountSuspended(Ac, {
       props: {
-        ...props,
         item: { ...props.item, ac: 0 },
       },
+      provide,
     })
 
     expect(component.get('[data-test-trigger]').classes()).toContain('bg-destructive/20')
@@ -65,6 +74,7 @@ describe('Initiative table row ac', async () => {
         ...props,
         item: { ...props.item, ac: undefined },
       },
+      provide,
     })
 
     expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
@@ -73,7 +83,6 @@ describe('Initiative table row ac', async () => {
   it('Should set AC to 0 when negative values are not allowed', async () => {
     const component = await mountSuspended(Ac, {
       props: {
-        ...props,
         item: {
           ...props.item,
           ac: 10,
@@ -81,6 +90,7 @@ describe('Initiative table row ac', async () => {
           tempAc: 0,
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as AcTestMethods
@@ -91,23 +101,24 @@ describe('Initiative table row ac', async () => {
   })
 
   it('Should allow negative AC when negative values are allowed', async () => {
+    mockSheet.value = {
+      ...sheet,
+      settings: {
+        ...sheet.settings,
+        negative: true,
+      } as InitiativeSheet['settings'],
+    }
+
     const component = await mountSuspended(Ac, {
       props: {
-        ...props,
         item: {
           ...props.item,
           ac: 10,
           maxAc: 20,
           tempAc: 0,
         },
-        sheet: {
-          ...sheet,
-          settings: {
-            ...sheet.settings,
-            negative: true,
-          },
-        },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as AcTestMethods

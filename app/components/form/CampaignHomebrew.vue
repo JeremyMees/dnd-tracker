@@ -3,13 +3,11 @@ import type { Row, SortingState } from '@tanstack/vue-table'
 import { FlexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table'
 import { generateColumns, initialState } from '~~/tables/homebrew-select-listing'
 import { useHomebrewListing } from '~~/queries/homebrews'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const emit = defineEmits<{ close: [] }>()
 
-const props = defineProps<{
-  sheet?: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
@@ -22,15 +20,15 @@ const summons = computed<HomebrewItemRow[]>(() => selected.value?.filter(s => s.
 const { data, isPending } = useHomebrewListing(
   computed(() => ({
     search: '',
-    eq: { field: 'campaign', value: props.sheet!.campaign!.id },
+    eq: { field: 'campaign', value: sheet.value!.campaign!.id },
   })),
-  computed(() => !!props.sheet),
+  computed(() => !!sheet.value),
   100,
 )
 
 const summonersOptions = computed<Option<string>[]>(() => {
-  if (props.sheet?.rows) {
-    return props.sheet.rows
+  if (sheet.value?.rows) {
+    return sheet.value.rows
       .filter(r => r.type !== 'summon')
       .map(o => ({ label: o.name, value: o.id }))
   }
@@ -69,9 +67,9 @@ const table = useVueTable({
 })
 
 async function addHomebrews(addAll: boolean): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const rows = [...props.sheet.rows]
+  const rows = [...sheet.value.rows]
   const selection = addAll
     ? data.value?.homebrews.filter(hb => hb.type !== 'summon') || []
     : selected.value
@@ -95,7 +93,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 
   const sortedRows = indexCorrect(rows)
 
-  await props.update({ rows: sortedRows })
+  await update({ rows: sortedRows })
 
   emit('close')
 }

@@ -1,23 +1,22 @@
 <script setup lang="ts">
 import { useFormKitNodeById } from '@formkit/vue'
 import { reset } from '@formkit/core'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const props = defineProps<{
-  label: string
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+defineProps<{ label: string }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 
 const popoverOpen = ref<boolean>(false)
 
-const usedTypes = computed(() => [...new Set(props.sheet?.rows.map(({ type }) => type))])
+const usedTypes = computed(() => [...new Set(sheet.value?.rows.map(({ type }) => type))])
 
 function rollAllInitiatives() {
   const selected = useFormKitNodeById<string[]>('selected').value?.value ?? []
 
-  props.sheet?.rows
+  sheet.value?.rows
     .filter(({ type }) => selected.includes(type))
     .forEach(({ id }) => useFormKitNodeById(id, (node: FormNode) => node.input(randomRoll(20))))
 }
@@ -32,11 +31,11 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { ignore, selected, ...characters } = sanitizeForm<QuickInitiativeForm>(form)
 
-    const rows = [...props.sheet.rows]
+    const rows = [...sheet.value.rows]
 
     for (const key in characters) {
       if (characters[key].amount !== undefined) {
@@ -52,7 +51,7 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
       }
     }
 
-    await props.update({ rows })
+    await update({ rows })
     popoverOpen.value = false
   }
   catch (err: any) {

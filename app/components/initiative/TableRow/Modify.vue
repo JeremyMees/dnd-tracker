@@ -1,21 +1,21 @@
 <script setup lang="ts">
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const maxCharacters = computed(() => hasMaxCharacters(props.sheet))
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
+
+const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 
 function copyRow(): void {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
 
   if (index === -1) return
 
-  props.update({
+  update({
     rows: [
       ...rows,
       { ...props.item, id: crypto.randomUUID() },
@@ -24,16 +24,16 @@ function copyRow(): void {
 }
 
 function deleteRow(): void {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  let rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  let rows = [...sheet.value.rows]
 
   if (index === -1) return
 
   rows = rows.filter(r => r.id !== props.item.id)
 
-  props.update({ rows })
+  update({ rows })
 }
 </script>
 

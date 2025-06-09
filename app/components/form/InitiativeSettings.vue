@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+
 const emit = defineEmits<{ close: [] }>()
 
-const props = defineProps<{
-  sheet?: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const rowsDefault = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 const widgetsDefault = ['note', 'info-pins']
@@ -18,11 +17,11 @@ interface InitiativeSettingsForm {
 }
 
 async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
   node.clearErrors()
 
-  await props.update({
+  await update({
     settings: {
       ...sanitizeForm<InitiativeSettingsForm>(form),
       modified: true,

@@ -1,32 +1,38 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import Notes from '~/components/initiative/TableRow/Notes.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
+
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
 
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 describe('Initiative table row notes', async () => {
   beforeEach(() => {
     mockUpdate.mockClear()
+    mockSheet.value = sheet
     vi.useFakeTimers()
   })
 
   afterEach(() => vi.useRealTimers())
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Notes, { props })
+    const component = await mountSuspended(Notes, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -34,9 +40,9 @@ describe('Initiative table row notes', async () => {
   it('Should initialize with empty note when no note is provided', async () => {
     const component = await mountSuspended(Notes, {
       props: {
-        ...props,
         item: { ...props.item, note: undefined },
       },
+      provide,
     })
 
     expect(component.find('textarea').element.value).toBe('')
@@ -45,16 +51,16 @@ describe('Initiative table row notes', async () => {
   it('Should initialize with existing note', async () => {
     const component = await mountSuspended(Notes, {
       props: {
-        ...props,
         item: { ...props.item, note: 'Test note' },
       },
+      provide,
     })
 
     expect(component.find('textarea').element.value).toBe('Test note')
   })
 
   it('Should debounce note updates', async () => {
-    const component = await mountSuspended(Notes, { props })
+    const component = await mountSuspended(Notes, { props, provide })
     const textarea = component.find('textarea')
 
     await textarea.setValue('New note')
@@ -75,11 +81,11 @@ describe('Initiative table row notes', async () => {
   })
 
   it('Should not update when sheet is undefined', async () => {
+    mockSheet.value = undefined as any
+
     const component = await mountSuspended(Notes, {
-      props: {
-        ...props,
-        sheet: undefined,
-      },
+      props,
+      provide,
     })
 
     await component.find('textarea').setValue('New note')

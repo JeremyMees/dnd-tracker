@@ -1,17 +1,17 @@
 <script setup lang="ts">
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const note = ref<string>(props.item.note || '')
 
 watchDebounced(note, () => {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
 
   if (index === -1 || !rows[index]) return
 
@@ -20,7 +20,7 @@ watchDebounced(note, () => {
     note: note.value,
   }
 
-  props.update({ rows })
+  update({ rows })
 }, { debounce: 500, maxWait: 1000 })
 </script>
 

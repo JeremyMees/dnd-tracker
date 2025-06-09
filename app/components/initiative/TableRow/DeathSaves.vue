@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { toast } = useToast()
 const { t } = useI18n()
@@ -13,10 +12,10 @@ const { t } = useI18n()
 const { checkDeathSaves } = deathSavesFunctions
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
 
   if (index === -1 || !rows[index] || !props.item.deathSaves) return
 
@@ -48,7 +47,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
     })
   }
 
-  props.update({ rows })
+  update({ rows })
 }
 </script>
 

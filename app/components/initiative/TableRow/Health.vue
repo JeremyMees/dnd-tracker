@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { hpFunctions, deathSavesFunctions } from '~/utils/dnd-helpers'
 
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 const { toast } = useToast()
@@ -24,16 +23,16 @@ type HealthType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
 interface HealthForm { amount: number }
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
 
   if (index === -1 || !rows[index]) return
 
   rows[index] = { ...rows[index], ...row }
 
-  await props.update({ rows })
+  await update({ rows })
   popoverOpen.value = false
 }
 
@@ -41,7 +40,7 @@ async function updateBase(form: HealthForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { amount } = sanitizeForm<HealthForm>(form)
     const row = {
@@ -63,7 +62,7 @@ async function updateOverride(form: HealthForm & { reset?: boolean }, node: Form
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { amount, reset } = sanitizeForm<HealthForm & { reset?: boolean }>(form)
 
@@ -85,7 +84,7 @@ async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
   try {
     const selected = selectedType.value
 
-    if (!props.sheet || !selected) return
+    if (!sheet.value || !selected) return
 
     const { amount, type } = sanitizeForm<HealthForm & { type?: HealthType }>({ ...form, type: selected })
 
@@ -169,7 +168,7 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
   }
 
   // when health is an negative number change it to 0
-  const resetNegative = props.sheet?.settings?.negative === false
+  const resetNegative = sheet.value?.settings?.negative === false
   if (resetNegative && row.health && row.health < 0) row.health = 0
 
   return row

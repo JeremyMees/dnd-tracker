@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Health from '~/components/initiative/TableRow/Health.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 interface HealthTestMethods {
@@ -10,12 +11,11 @@ interface HealthTestMethods {
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
 const mockToast = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({
@@ -23,20 +23,26 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   }),
 }))
 
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
+
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 describe('Initiative table row health', async () => {
   beforeEach(() => {
     mockUpdate.mockClear()
     mockToast.mockClear()
+    mockSheet.value = sheet
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Health, { props })
+    const component = await mountSuspended(Health, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -49,9 +55,9 @@ describe('Initiative table row health', async () => {
 
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: { ...props.item, health, maxHealth, maxHealthOld, tempHealth },
       },
+      provide,
     })
 
     expect(component.get('[data-test-health]').text()).toBe(health.toString())
@@ -62,9 +68,9 @@ describe('Initiative table row health', async () => {
   it('Should show destructive styling when health is 0', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: { ...props.item, health: 0 },
       },
+      provide,
     })
 
     expect(component.get('[data-test-trigger]').classes()).toContain('bg-destructive/20')
@@ -74,9 +80,9 @@ describe('Initiative table row health', async () => {
   it('Should show plus icon when health is not defined', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: { ...props.item, health: undefined },
       },
+      provide,
     })
 
     expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
@@ -85,7 +91,6 @@ describe('Initiative table row health', async () => {
   it('Should handle death saves when health reaches 0', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 5,
@@ -96,6 +101,7 @@ describe('Initiative table row health', async () => {
           },
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -113,7 +119,6 @@ describe('Initiative table row health', async () => {
   it('Should remove concentration and conditions when health reaches 0', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 5,
@@ -121,6 +126,7 @@ describe('Initiative table row health', async () => {
           conditions: [{ name: 'blinded', desc: 'Cannot see' }],
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -140,13 +146,13 @@ describe('Initiative table row health', async () => {
   it('Should show concentration toast when taking damage with concentration', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 20,
           concentration: true,
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -163,12 +169,12 @@ describe('Initiative table row health', async () => {
   it('Should show downed toast when health reaches 0', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 5,
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -185,7 +191,6 @@ describe('Initiative table row health', async () => {
   it('Should show death toast when health goes below negative max health', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 10,
@@ -193,6 +198,7 @@ describe('Initiative table row health', async () => {
           type: 'player',
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -209,7 +215,6 @@ describe('Initiative table row health', async () => {
   it('Should show stable toast when death saves are successful', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 0,
@@ -221,6 +226,7 @@ describe('Initiative table row health', async () => {
           },
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -233,7 +239,6 @@ describe('Initiative table row health', async () => {
   it('Should set health to 0 when negative values are not allowed', async () => {
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 10,
@@ -241,6 +246,7 @@ describe('Initiative table row health', async () => {
           tempHealth: 0,
         },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods
@@ -251,23 +257,24 @@ describe('Initiative table row health', async () => {
   })
 
   it('Should allow negative health when negative values are allowed', async () => {
+    mockSheet.value = {
+      ...sheet,
+      settings: {
+        ...sheet.settings,
+        negative: true,
+      } as InitiativeSheet['settings'],
+    }
+
     const component = await mountSuspended(Health, {
       props: {
-        ...props,
         item: {
           ...props.item,
           health: 10,
           maxHealth: 20,
           tempHealth: 0,
         },
-        sheet: {
-          ...sheet,
-          settings: {
-            ...sheet.settings,
-            negative: true,
-          },
-        },
       },
+      provide,
     })
 
     const vm = component.vm as unknown as HealthTestMethods

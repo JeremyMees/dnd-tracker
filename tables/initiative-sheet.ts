@@ -1,5 +1,5 @@
 import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
-import { actionsTable, expandButton, iconButton } from './generate-functions'
+import { actionsTable, expandButton } from './generate-functions'
 
 import {
   InitiativeTableRowName,
@@ -16,12 +16,7 @@ import {
 
 const columnHelper = createColumnHelper<InitiativeSheetRow>()
 
-interface ColumnOptions {
-  sheet: ComputedRef<InitiativeSheet | undefined>
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
-}
-
-export function generateColumns({ sheet, update }: ColumnOptions) {
+export function generateColumns() {
   const { t } = useI18n()
 
   return [
@@ -43,68 +38,50 @@ export function generateColumns({ sheet, update }: ColumnOptions) {
       header: t('components.encounterTable.headers.name'),
       cell: ({ row }) => h(InitiativeTableRowName, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('initiative', {
       header: () => h(InitiativeTableHeaderInit, {
         label: t('components.encounterTable.headers.init'),
-        sheet: sheet.value,
-        update,
       }),
       cell: ({ row }) => h(InitiativeTableRowInit, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('health', {
       header: t('components.encounterTable.headers.health'),
       cell: ({ row }) => h(InitiativeTableRowHealth, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('ac', {
       header: t('components.encounterTable.headers.ac'),
       cell: ({ row }) => h(InitiativeTableRowAc, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('conditions', {
       header: t('components.encounterTable.headers.conditions'),
       cell: ({ row }) => h(InitiativeTableRowConditions, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('note', {
       header: t('components.encounterTable.headers.note'),
       cell: ({ row }) => h(InitiativeTableRowNotes, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('deathSaves', {
       header: t('components.encounterTable.headers.deathSaves'),
       cell: ({ row }) => h(InitiativeTableRowDeathSaves, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.accessor('concentration', {
       header: t('components.encounterTable.headers.concentration'),
       cell: ({ row }) => h(InitiativeTableRowConcentration, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
     columnHelper.display({
@@ -113,8 +90,6 @@ export function generateColumns({ sheet, update }: ColumnOptions) {
       id: 'modify',
       cell: ({ row }) => h(InitiativeTableRowModify, {
         item: row.original,
-        sheet: sheet.value,
-        update,
       }),
     }),
   ]
