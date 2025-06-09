@@ -76,7 +76,7 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
           />
         </button>
       </UiPopoverTrigger>
-      <UiPopoverContent>
+      <UiPopoverContent class="max-w-[800px] max-h-[600px]">
         <UiPopoverHeader>
           <UiPopoverTitle>
             {{ $t('components.initiativeTableHeader.initiative.title') }}
@@ -88,14 +88,14 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
           :actions="false"
           @submit="handleSubmit"
         >
-          <div class="flex flex-col">
+          <div class="grid md:grid-cols-2 gap-x-4 max-h-[320px] overflow-y-auto">
             <FormKit
               v-for="row in sheet?.rows || []"
               :key="row.id"
               :name="row.id.toString()"
               type="group"
             >
-              <div class="flex gap-x-2 items-end">
+              <div class="flex gap-x-2">
                 <FormKit
                   :id="row.id"
                   name="amount"
@@ -115,7 +115,7 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
                   number
                   min="-20"
                   max="20"
-                  outer-class="w-[100px]"
+                  outer-class="w-[80px]"
                 />
               </div>
             </FormKit>
@@ -145,14 +145,15 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
             <FormKit
               :aria-label="$t('components.initiativeTableHeader.initiative.roll')"
               type="button"
-              input-class="$reset !mb-0 btn-primary"
-              outer-class="!mb-0"
+              input-class="$reset !mb-0 btn-primary grow"
+              outer-class="!mb-0 grow"
               @click="rollAllInitiatives"
             >
               {{ $t('components.initiativeTableHeader.initiative.roll') }}
             </FormKit>
             <FormKit
               :aria-label="$t('actions.update')"
+              input-class="grow"
               outer-class="!mb-0 grow"
               type="submit"
             >

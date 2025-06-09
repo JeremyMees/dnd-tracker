@@ -156,7 +156,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </span>
         </button>
       </UiPopoverTrigger>
-      <UiPopoverContent>
+      <UiPopoverContent class="max-h-[600px]">
         <div
           v-if="isDefined(item.ac) && isDefined(item.maxAc)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
