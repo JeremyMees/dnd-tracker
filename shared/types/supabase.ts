@@ -1,3 +1,4 @@
+import type { RequireAtLeastOne } from 'type-fest'
 import type { DB } from './database'
 import type { StripeFields } from './stripe'
 
@@ -249,10 +250,10 @@ export interface SbRange {
   to: number
 }
 
-export interface SbFilter {
-  search: string
+export type SbFilter = RequireAtLeastOne<{
+  search?: string
   sortBy?: string
   sortDesc?: boolean
   page?: number
   eq?: SbEq
-}
+}>
