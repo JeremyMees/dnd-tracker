@@ -7,7 +7,14 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const note = ref<string>(props.item.note || '')
 
-watchDebounced(note, () => {
+watch(
+  () => props.item.note,
+  (newNote) => {
+    if (newNote !== note.value) note.value = newNote || ''
+  },
+)
+
+watchDebounced(note, (newValue) => {
   if (!sheet.value) return
 
   const index = getCurrentRowIndex(sheet.value, props.item.id)
@@ -17,7 +24,7 @@ watchDebounced(note, () => {
 
   rows[index] = {
     ...rows[index],
-    note: note.value,
+    note: newValue,
   }
 
   update({ rows })
