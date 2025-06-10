@@ -56,6 +56,7 @@ export default defineNuxtConfig({
     public: {
       formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
     },
   },

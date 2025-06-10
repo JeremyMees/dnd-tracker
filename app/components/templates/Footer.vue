@@ -164,6 +164,12 @@
         >
           {{ $t('components.navbar.illustrations') }} Mount Lazarus
         </NuxtLink>
+        <NuxtLinkLocale
+          to="/updates/changelog"
+          class="text-muted-foreground text-sm"
+        >
+          V{{ $config.public.appVersion }}
+        </NuxtLinkLocale>
         <p class="text-tertiary text-sm">
           ©{{ new Date().getFullYear() }} dnd-tracker
         </p>
