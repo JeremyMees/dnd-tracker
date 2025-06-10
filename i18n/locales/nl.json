@@ -372,8 +372,8 @@
         }
       },
       "back": {
-        "encounters": "Terug naar encounters lijst",
-        "campaigns": "Terug naar campagne: {campaign}"
+        "encounters": "Encounters lijst",
+        "campaigns": "Campagne: {campaign}"
       }
     },
     "register": {
