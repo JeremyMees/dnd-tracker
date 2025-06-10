@@ -1,5 +1,6 @@
 import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
+import packageJSON from './package.json'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -56,7 +57,7 @@ export default defineNuxtConfig({
     public: {
       formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
-      appVersion: process.env.NUXT_PUBLIC_APP_VERSION,
+      appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
     },
   },
