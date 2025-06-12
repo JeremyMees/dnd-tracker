@@ -1,8 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-  sheet?: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 </script>
 
 <template>

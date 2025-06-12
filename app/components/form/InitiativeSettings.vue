@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+
 const emit = defineEmits<{ close: [] }>()
 
-const props = defineProps<{
-  sheet?: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const rowsDefault = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 const widgetsDefault = ['note', 'info-pins']
@@ -14,14 +13,15 @@ interface InitiativeSettingsForm {
   rows: string[]
   widgets: string[]
   pet?: InitiativePet
+  negative: boolean
 }
 
 async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
   node.clearErrors()
 
-  await props.update({
+  await update({
     settings: {
       ...sanitizeForm<InitiativeSettingsForm>(form),
       modified: true,
@@ -94,6 +94,12 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           { label: $t('components.initiativeSettings.pets.redcap'), value: 'redcap' },
           { label: $t('components.initiativeSettings.pets.wolf-rider'), value: 'wolf-rider' },
         ]"
+      />
+      <FormKit
+        name="negative"
+        type="toggle"
+        :label="$t('components.initiativeSettings.negative')"
+        :value="sheet?.settings?.negative || false"
         outer-class="$remove:mb-4"
       />
     </FormKit>

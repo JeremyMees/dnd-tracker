@@ -1,12 +1,10 @@
 <script setup lang="ts">
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd-rules'
 import { useOpen5eListing } from '~~/queries/open5e'
 
-const props = defineProps<{
-  sheet?: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { toast } = useToast()
 const { t } = useI18n()
@@ -39,16 +37,16 @@ const { data, status } = useOpen5eListing(computed(() => ({
 })))
 
 async function addMonster(monster: Open5eItem): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
   const rows = [
-    ...props.sheet.rows,
-    createInitiativeRow(monster, 'monster', props.sheet.rows.length),
+    ...sheet.value.rows,
+    createInitiativeRow(monster, 'monster', sheet.value.rows.length),
   ]
 
   const sortedRows = indexCorrect(rows)
 
-  await props.update({ rows: sortedRows })
+  await update({ rows: sortedRows })
 
   toast({
     title: t('components.initiativeTable.bestiary.added', { name: monster.name }),

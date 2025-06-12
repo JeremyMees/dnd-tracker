@@ -1,11 +1,10 @@
 <script setup lang="ts">
-defineEmits<{ toggleSidebar: [] }>()
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const props = defineProps<{
-  data: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-  isExpanded: boolean
-}>()
+defineEmits<{ toggleSidebar: [] }>()
+defineProps<{ isExpanded: boolean }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
 
@@ -14,7 +13,7 @@ const fantasyNameGeneratorOpen = ref(false)
 const saveHomebrewToCampaign = ref(false)
 const openModal = ref<Modals>(undefined)
 
-const maxCharacters = computed(() => hasMaxCharacters(props.data))
+const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 </script>
 
 <template>
@@ -98,10 +97,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 {{ $t('components.navbar.dnd-content') }}
               </UiDialogTitle>
             </UiDialogHeader>
-            <FormPinContent
-              :sheet="data"
-              :update="update"
-            />
+            <FormPinContent />
           </UiDialogContent>
         </UiDialog>
       </UiSidebarMenuItem>
@@ -163,14 +159,11 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   {{ $t('general.bestiary') }}
                 </UiDialogTitle>
               </UiDialogHeader>
-              <FormBestiary
-                :sheet="data"
-                :update="update"
-              />
+              <FormBestiary />
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>
-        <UiSidebarMenuItem v-if="data?.campaign?.id">
+        <UiSidebarMenuItem v-if="sheet?.campaign?.id">
           <UiDialog
             :open="openModal === 'addHomebrew'"
             @close="openModal = undefined"
@@ -209,11 +202,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                   {{ $t('general.campaignHomebrew') }}
                 </UiDialogTitle>
               </UiDialogHeader>
-              <FormCampaignHomebrew
-                :sheet="data"
-                :update="update"
-                @close="openModal = undefined"
-              />
+              <FormCampaignHomebrew @close="openModal = undefined" />
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>
@@ -258,10 +247,10 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
               </UiDialogHeader>
               <div class="overflow-y-auto">
                 <FormHomebrew
-                  :campaign-id="data?.campaign?.id"
-                  :count="data?.rows.length || 0"
+                  :campaign-id="sheet?.campaign?.id"
+                  :count="sheet?.rows.length || 0"
                   :save-to-campaign="saveHomebrewToCampaign"
-                  :sheet="data"
+                  :sheet="sheet"
                   :update="update"
                   is-encounter
                   @close="openModal = undefined"
@@ -274,13 +263,13 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 >
                   <FormKit
                     v-model="saveHomebrewToCampaign"
-                    :disabled="data && data.rows.length >= 100"
+                    :disabled="sheet && sheet.rows.length >= 100"
                     :label="$t('components.homebrewModal.save')"
                     type="toggle"
                     outer-class="$reset !mb-0"
                   />
                   <span
-                    v-if="data && data.rows.length >= 100"
+                    v-if="sheet && sheet.rows.length >= 100"
                     class="text-destructive text-sm"
                   >
                     {{ $t('components.homebrewModal.max') }}
@@ -367,11 +356,7 @@ const maxCharacters = computed(() => hasMaxCharacters(props.data))
                 {{ $t('general.setting', 2) }}
               </UiDialogTitle>
             </UiDialogHeader>
-            <FormInitiativeSettings
-              :sheet="data"
-              :update="update"
-              @close="openModal = undefined"
-            />
+            <FormInitiativeSettings @close="openModal = undefined" />
             <UiDialogFooter>
               <FormKit
                 type="submit"

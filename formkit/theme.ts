@@ -59,9 +59,9 @@ export default {
   },
   'select': {
     inner: 'flex relative items-center rounded-lg mb-1 border-4 border-background focus-within:border-primary',
-    input: 'w-full px-3 py-2 h-10 rounded border-none bg-muted text-foreground placeholder:text-muted-foreground formkit-multiple:p-0 data-[placeholder="true"]:text-muted-foreground formkit-multiple:data-[placeholder="true"]:text-inherit',
+    input: 'w-full px-3 py-2 h-10 rounded border-none placeholder:text-muted-foreground formkit-multiple:p-0 data-[placeholder="true"]:text-muted-foreground formkit-multiple:data-[placeholder="true"]:text-inherit',
     selectIcon: 'flex p-[3px] shrink-0 w-5 mr-2 -ml-[1.5em] h-full pointer-events-none [&>svg]:w-[1em]',
-    option: 'formkit-multiple:p-3 formkit-multiple:text-sm',
+    option: 'bg-muted text-foreground formkit-multiple:p-3 formkit-multiple:text-sm',
     icon: 'hidden',
   },
   'textarea': {

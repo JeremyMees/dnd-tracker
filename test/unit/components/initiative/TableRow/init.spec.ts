@@ -1,27 +1,35 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Init from '~/components/initiative/TableRow/Init.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
+
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
 
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 describe('Initiative table row init', async () => {
-  beforeEach(() => mockUpdate.mockClear())
+  beforeEach(() => {
+    mockUpdate.mockClear()
+    mockSheet.value = sheet
+  })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Init, { props })
+    const component = await mountSuspended(Init, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -30,9 +38,9 @@ describe('Initiative table row init', async () => {
     const initiative = 15
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative },
       },
+      provide,
     })
 
     expect(component.get('[data-test-initiative]').text()).toBe(initiative.toString())
@@ -41,9 +49,9 @@ describe('Initiative table row init', async () => {
   it('Should show plus icon when initiative is not defined', async () => {
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative: -1 },
       },
+      provide,
     })
 
     expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
@@ -52,9 +60,9 @@ describe('Initiative table row init', async () => {
   it('Should show up/down controls when initiative is defined', async () => {
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative: 15 },
       },
+      provide,
     })
 
     expect(component.get('[data-test-controls]').isVisible()).toBeTruthy()
@@ -63,45 +71,47 @@ describe('Initiative table row init', async () => {
   it('Should not show controls when initiative is not defined', async () => {
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative: -1 },
       },
+      provide,
     })
 
     expect(component.find('[data-test-controls]').exists()).toBeFalsy()
   })
 
   it('Should enable up button when can move up', async () => {
+    mockSheet.value = {
+      ...sheet,
+      rows: [
+        { ...sheet.rows[0]!, initiative: 15, index: 0 },
+        { ...props.item, initiative: 15, index: 1 },
+      ],
+    }
+
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative: 15, index: 1 },
-        sheet: {
-          ...sheet,
-          rows: [
-            { ...sheet.rows[0]!, initiative: 15, index: 0 },
-            { ...props.item, initiative: 15, index: 1 },
-          ],
-        },
       },
+      provide,
     })
 
     expect(component.get('[data-test-up]').isVisible()).toBeTruthy()
   })
 
   it('Should enable down button when can move down', async () => {
+    mockSheet.value = {
+      ...sheet,
+      rows: [
+        { ...props.item, initiative: 15, index: 0 },
+        { ...sheet.rows[0]!, initiative: 15, index: 1 },
+      ],
+    }
+
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative: 15, index: 0 },
-        sheet: {
-          ...sheet,
-          rows: [
-            { ...props.item, initiative: 15, index: 0 },
-            { ...sheet.rows[0]!, initiative: 15, index: 1 },
-          ],
-        },
       },
+      provide,
     })
 
     expect(component.get('[data-test-down]').isVisible()).toBeTruthy()
@@ -111,15 +121,16 @@ describe('Initiative table row init', async () => {
     const firstRow = { ...sheet.rows[0]!, initiative: 15, index: 0, id: 'row1' }
     const secondRow = { ...props.item, initiative: 15, index: 1, id: 'row2' }
 
+    mockSheet.value = {
+      ...sheet,
+      rows: [firstRow, secondRow],
+    }
+
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: secondRow,
-        sheet: {
-          ...sheet,
-          rows: [firstRow, secondRow],
-        },
       },
+      provide,
     })
 
     await component.get('[data-test-up]').trigger('click')
@@ -138,15 +149,16 @@ describe('Initiative table row init', async () => {
     const firstRow = { ...props.item, initiative: 15, index: 0, id: 'row1' }
     const secondRow = { ...sheet.rows[0]!, initiative: 15, index: 1, id: 'row2' }
 
+    mockSheet.value = {
+      ...sheet,
+      rows: [firstRow, secondRow],
+    }
+
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: firstRow,
-        sheet: {
-          ...sheet,
-          rows: [firstRow, secondRow],
-        },
       },
+      provide,
     })
 
     await component.get('[data-test-down]').trigger('click')
@@ -162,18 +174,19 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should not show up/down buttons when initiative values are different', async () => {
+    mockSheet.value = {
+      ...sheet,
+      rows: [
+        { ...sheet.rows[0]!, initiative: 20, index: 0 },
+        { ...props.item, initiative: 15, index: 1 },
+      ],
+    }
+
     const component = await mountSuspended(Init, {
       props: {
-        ...props,
         item: { ...props.item, initiative: 15, index: 1 },
-        sheet: {
-          ...sheet,
-          rows: [
-            { ...sheet.rows[0]!, initiative: 20, index: 0 },
-            { ...props.item, initiative: 15, index: 1 },
-          ],
-        },
       },
+      provide,
     })
 
     expect(component.find('[data-test-up]').exists()).toBeFalsy()

@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 
@@ -17,12 +16,12 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { name } = sanitizeForm<NameForm>(form)
 
-    const index = getCurrentRowIndex(props.sheet, props.item.id)
-    const rows = [...props.sheet.rows]
+    const index = getCurrentRowIndex(sheet.value, props.item.id)
+    const rows = [...sheet.value.rows]
 
     if (index === -1 || !rows[index]) return
 
@@ -31,7 +30,7 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
       name,
     }
 
-    await props.update({ rows })
+    await update({ rows })
     popoverOpen.value = false
   }
   catch (err: any) {

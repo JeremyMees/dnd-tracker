@@ -1,12 +1,11 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Name from '~/components/initiative/TableRow/Name.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 type MockFunctions = {
@@ -17,23 +16,32 @@ type MockFunctions = {
 }
 
 const mockUpdate = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
 
 const mockNode = {
   clearErrors: vi.fn(),
   setErrors: vi.fn(),
 }
 
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
+
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 describe('Initiative table row name', async () => {
-  beforeEach(() => mockUpdate.mockClear())
+  beforeEach(() => {
+    mockUpdate.mockClear()
+    mockSheet.value = sheet
+  })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Name, { props })
+    const component = await mountSuspended(Name, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -41,12 +49,12 @@ describe('Initiative table row name', async () => {
   it('Should display name and summoner if available', async () => {
     const component = await mountSuspended(Name, {
       props: {
-        ...props,
         item: {
           ...props.item,
           summoner: { name: 'Summoner', id: '123' },
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-name]').text()).toBe(props.item.name)
@@ -54,13 +62,13 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should not display summoner', async () => {
-    const component = await mountSuspended(Name, { props })
+    const component = await mountSuspended(Name, { props, provide })
 
     expect(component.find('[data-test-summoner]').exists()).toBeFalsy()
   })
 
   it('Should handle name update', async () => {
-    const component = await mountSuspended(Name, { props })
+    const component = await mountSuspended(Name, { props, provide })
     const newName = 'New Character Name'
 
     const vm = component.vm as unknown as MockFunctions
@@ -78,11 +86,18 @@ describe('Initiative table row name', async () => {
 
   it('Should handle update errors', async () => {
     const errorUpdate = vi.fn().mockRejectedValue(new Error('Update failed'))
-    const component = await mountSuspended(Name, {
-      props: {
-        ...props,
+
+    // Update the provide's update function for this test
+    const errorProvide = {
+      [INITIATIVE_SHEET]: {
+        sheet: mockSheet,
         update: errorUpdate,
       },
+    }
+
+    const component = await mountSuspended(Name, {
+      props,
+      provide: errorProvide,
     })
 
     const vm = component.vm as unknown as MockFunctions
@@ -93,11 +108,11 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should not update if sheet is undefined', async () => {
+    mockSheet.value = undefined as any
+
     const component = await mountSuspended(Name, {
-      props: {
-        ...props,
-        sheet: undefined,
-      },
+      props,
+      provide,
     })
 
     const vm = component.vm as unknown as MockFunctions
