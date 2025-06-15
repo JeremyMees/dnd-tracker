@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   randomName,
   randomRoll,
@@ -17,7 +17,11 @@ import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 describe('DnD Helpers', () => {
   describe('randomName', () => {
+    afterEach(() => vi.restoreAllMocks())
+
     it('Should randomName generate a name with first and last name', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
       const name = randomName()
 
       expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+$/)
@@ -29,8 +33,6 @@ describe('DnD Helpers', () => {
       const name = randomName()
 
       expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+$/)
-
-      vi.restoreAllMocks()
     })
   })
 

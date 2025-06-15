@@ -1,14 +1,13 @@
 <script setup lang="ts">
-const props = defineProps<{
-  sheet?: InitiativeSheet
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const isModified = computed(() => props.sheet?.settings?.modified ?? false)
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
+
+const isModified = computed(() => sheet.value?.settings?.modified ?? false)
 
 const widgets = computed(() => {
   const allowed = ['note', 'info-pins']
-  const data = props.sheet?.settings?.widgets ?? []
+  const data = sheet.value?.settings?.widgets ?? []
   return allowed.filter(widget => data.includes(widget))
 })
 </script>

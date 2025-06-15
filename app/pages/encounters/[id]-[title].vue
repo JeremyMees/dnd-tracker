@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useInitiativeSheetDetail, useInitiativeSheetDetailUpdate } from '~~/queries/initiative-sheets'
 
 definePageMeta({
@@ -75,6 +76,11 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
     },
   })
 }
+
+provide(INITIATIVE_SHEET, {
+  sheet: data,
+  update: handleUpdate,
+})
 </script>
 
 <template>
@@ -113,11 +119,11 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
             <UiDropdownMenuItem>
               <NuxtLinkLocale
                 :to="campaignUrl(data.campaign, 'encounters')"
-                class="flex items-center gap-2 text-muted-foreground"
+                class="flex items-center gap-2"
               >
                 <Icon
                   name="tabler:layout-dashboard"
-                  class="size-4 min-w-4 text-foreground"
+                  class="size-4 min-w-4"
                 />
                 {{ $t('pages.encounter.back.campaigns', { campaign: data.campaign?.title }) }}
               </NuxtLinkLocale>
@@ -125,11 +131,11 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
             <UiDropdownMenuItem>
               <NuxtLinkLocale
                 to="/encounters"
-                class="flex items-center gap-2 text-muted-foreground"
+                class="flex items-center gap-2"
               >
                 <Icon
                   name="tabler:list-details"
-                  class="size-4 min-w-4 text-foreground"
+                  class="size-4 min-w-4"
                 />
                 {{ $t('pages.encounter.back.encounters') }}
               </NuxtLinkLocale>
@@ -161,8 +167,6 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 
     <InitiativeTable
       v-if="!isError"
-      :data="data"
-      :update="handleUpdate"
       :loading="isPending"
     />
     <Card
@@ -181,8 +185,6 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 
     <template #sidebar-content="{ isExpanded, toggleSidebar }">
       <EncounterSidebar
-        :data="data"
-        :update="handleUpdate"
         :is-expanded="isExpanded"
         @toggle-sidebar="toggleSidebar"
       />

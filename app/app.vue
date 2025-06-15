@@ -32,8 +32,7 @@ const pageName = computed<string>(() => !route.name || typeof route.name !== 'st
 
     <div
       :class="{
-        'bg-primary/10': ['profile', 'pricing'].includes(pageName),
-        'bg-tertiary/10': ['updates-changelog', 'updates-feature-request'].includes(pageName),
+        'bg-primary/10': ['profile', 'pricing', 'updates-feature-request'].includes(pageName),
       }"
       class="flex flex-col min-h-screen"
     >

@@ -3,19 +3,24 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 import conditions from '~~/test/unit/fixtures/conditions.json'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 interface Props {
-  data: InitiativeSheet | undefined
   loading: boolean
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
+
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
 
 const props: Props = {
-  data: sheet,
   loading: false,
-  update: mockUpdate,
 }
 
 vi.mock('~~/queries/open5e', () => ({
@@ -62,74 +67,85 @@ vi.mock('~~/composables/initiative-sheet', () => ({
 }))
 
 describe('Initiative table', () => {
-  beforeEach(() => mockUpdate.mockClear())
+  beforeEach(() => {
+    mockSheet.value = sheet
+    mockUpdate.mockClear()
+  })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Table, { props })
+    const component = await mountSuspended(Table, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display table rows when data is available', async () => {
-    const component = await mountSuspended(Table, { props })
+    const component = await mountSuspended(Table, { props, provide })
 
     expect(component.findAll('[data-test-row]').length).toBe(sheet.rows.length)
   })
 
   it('Should display loading state when loading is true', async () => {
+    mockSheet.value = {
+      ...sheet,
+      rows: [],
+    }
+
     const component = await mountSuspended(Table, {
-      props: {
-        ...props,
-        loading: true,
-        data: { ...sheet, rows: [] },
-      },
+      props: { loading: true },
+      provide,
     })
 
     expect(component.findAll('[data-test-loading]').length).toBe(10)
   })
 
   it('Should display empty state when no data is available', async () => {
+    mockSheet.value = undefined
+
     const component = await mountSuspended(Table, {
-      props: { ...props, data: undefined },
+      props: { ...props },
+      provide,
     })
 
     expect(component.find('[data-test-empty-state]').exists()).toBeTruthy()
   })
 
   it('Should display widgets section', async () => {
-    const component = await mountSuspended(Table, { props })
+    const component = await mountSuspended(Table, { props, provide })
 
     expect(component.find('[data-test-widgets]').exists()).toBeTruthy()
   })
 
   describe('Table padding', () => {
     it('Should handle compact spacing', async () => {
-      const component = await mountSuspended(Table, {
-        props: {
-          ...props,
-          data: {
-            ...sheet,
-            settings: { ...sheet.settings, spacing: 'compact' },
-          },
-        },
-      })
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          spacing: 'compact',
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('.p-1').length).toBeGreaterThan(0)
     })
 
     it('Should handle cozy spacing', async () => {
-      const component = await mountSuspended(Table, {
-        props: {
-          ...props,
-          data: { ...sheet, settings: { ...sheet.settings, spacing: 'cozy' } },
-        },
-      })
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          spacing: 'cozy',
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('.p-4').length).toBeGreaterThan(0)
     })
 
     it('Should handle normal spacing', async () => {
-      const component = await mountSuspended(Table, { props })
+      const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('.p-2').length).toBeGreaterThan(0)
     })
@@ -137,65 +153,56 @@ describe('Initiative table', () => {
 
   describe('Column visibility', () => {
     it('Should show all columns by default', async () => {
-      const component = await mountSuspended(Table, { props })
+      const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('[data-test-header]').length).toBe(10)
     })
 
     it('Should hide columns based on settings', async () => {
-      const component = await mountSuspended(Table, {
-        props: {
-          ...props,
-          data: {
-            ...sheet,
-            settings: {
-              ...sheet.settings,
-              modified: true,
-              rows: ['index', 'name', 'initiative', 'ac', 'health'],
-            },
-          },
-        },
-      })
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: ['index', 'name', 'initiative', 'ac', 'health'],
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('[data-test-header]').length).toBe(5)
     })
 
     it('Should update visible columns when settings change', async () => {
-      const component = await mountSuspended(Table, { props })
+      const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('[data-test-header]').length).toBe(10)
 
-      const updatedComponent = await mountSuspended(Table, {
-        props: {
-          ...props,
-          data: {
-            ...sheet,
-            settings: {
-              ...sheet.settings,
-              modified: true,
-              rows: ['index', 'name', 'initiative'],
-            },
-          },
-        },
-      })
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: ['index', 'name', 'initiative'],
+        } as InitiativeSheet['settings'],
+      }
+
+      const updatedComponent = await mountSuspended(Table, { props, provide })
 
       expect(updatedComponent.findAll('[data-test-header]').length).toBe(3)
     })
 
     it('Should maintain column visibility state after row expansion', async () => {
-      const component = await mountSuspended(Table, {
-        props: {
-          ...props,
-          data: {
-            ...sheet,
-            settings: {
-              ...sheet.settings,
-              modified: true,
-              rows: ['index', 'name', 'initiative'],
-            },
-          },
-        },
-      })
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: ['index', 'name', 'initiative'],
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountSuspended(Table, { props, provide })
 
       const firstRow = component.find('[data-test-row]')
       const expandButton = firstRow.find('button[arialabel="actions.show"]')
@@ -207,7 +214,7 @@ describe('Initiative table', () => {
   })
 
   it('Should handle row selection', async () => {
-    const component = await mountSuspended(Table, { props })
+    const component = await mountSuspended(Table, { props, provide })
 
     const firstRow = component.find('[data-test-row]')
     await firstRow.trigger('click')
@@ -216,7 +223,7 @@ describe('Initiative table', () => {
   })
 
   it('Should handle row expansion', async () => {
-    const component = await mountSuspended(Table, { props })
+    const component = await mountSuspended(Table, { props, provide })
 
     const firstRow = component.find('[data-test-row]')
     const expandButton = firstRow.find('button[arialabel="actions.show"]')

@@ -372,8 +372,8 @@
         }
       },
       "back": {
-        "encounters": "Terug naar encounters lijst",
-        "campaigns": "Terug naar campagne: {campaign}"
+        "encounters": "Encounters lijst",
+        "campaigns": "Campagne: {campaign}"
       }
     },
     "register": {
@@ -809,7 +809,8 @@
         "fairy": "Fee",
         "redcap": "Paddenstoel",
         "wolf-rider": "Wolf rijder"
-      }
+      },
+      "negative": "Sta HP en AC toe negatief te zijn"
     },
     "infoCard": {
       "add": "Pin toevoegen",

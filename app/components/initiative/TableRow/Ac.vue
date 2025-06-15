@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { acFunctions } from '~/utils/dnd-helpers'
 
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 
@@ -21,16 +20,16 @@ type AcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'
 interface AcForm { amount: number }
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
 
   if (index === -1 || !rows[index]) return
 
   rows[index] = { ...rows[index], ...row }
 
-  await props.update({ rows })
+  await update({ rows })
   popoverOpen.value = false
 }
 
@@ -38,7 +37,7 @@ async function updateBase(form: AcForm, node: FormNode): Promise<void> {
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { amount } = sanitizeForm<AcForm>(form)
     const row = {
@@ -60,7 +59,7 @@ async function updateOverride(form: AcForm & { reset?: boolean }, node: FormNode
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { amount, reset } = sanitizeForm<AcForm & { reset?: boolean }>(form)
 
@@ -82,7 +81,7 @@ async function updateAc(form: AcForm, node: FormNode): Promise<void> {
   try {
     const selected = selectedType.value
 
-    if (!props.sheet || !selected) return
+    if (!sheet.value || !selected) return
 
     const { amount, type } = sanitizeForm<AcForm & { type?: AcType }>({ ...form, type: selected })
 
@@ -106,7 +105,8 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
   else if (type === 'override-reset') overrideReset(row, amount)
 
   // when ac is an negative number change it to 0
-  if (row.ac && row.ac < 0) row.ac = 0
+  const resetNegative = sheet.value?.settings?.negative === false
+  if (resetNegative && row.ac && row.ac < 0) row.ac = 0
 
   return row
 }
@@ -119,7 +119,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
         <button
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac === 0,
+            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac <= 0,
           }"
           class="flex flex-col gap-y-1"
         >
@@ -134,7 +134,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             <span
               v-else
               data-test-ac
-              :class="{ 'text-destructive': item.ac === 0 }"
+              :class="{ 'text-destructive': isDefined(item.ac) && item.ac <= 0 }"
             >
               {{ item.ac }}
             </span>
@@ -156,7 +156,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </span>
         </button>
       </UiPopoverTrigger>
-      <UiPopoverContent>
+      <UiPopoverContent class="max-h-[600px]">
         <div
           v-if="isDefined(item.ac) && isDefined(item.maxAc)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
@@ -184,7 +184,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
                 {{ item.maxAc || 0 }}
               </p>
               <p
-                v-if="item.maxHealthOld === 0 || item.maxHealthOld"
+                v-if="item.maxAcOld === 0 || item.maxAcOld"
                 class="text-sm"
               >
                 ({{ item.maxAcOld }})

@@ -372,8 +372,8 @@
         }
       },
       "back": {
-        "encounters": "Go to encounters list",
-        "campaigns": "Go to campaign: {campaign}"
+        "encounters": "Encounters list",
+        "campaigns": "Campaign: {campaign}"
       }
     },
     "register": {
@@ -809,7 +809,8 @@
         "fairy": "Fairy",
         "redcap": "Redcap",
         "wolf-rider": "Wolf rider"
-      }
+      },
+      "negative": "Allow HP and AC to be negative"
     },
     "infoCard": {
       "add": "Add pin",

@@ -2,7 +2,7 @@
 
 exports[`Initiative header > Should render correctly with required props 1`] = `
 "<div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"><img src="/gifs/cat.gif" loading="lazy" class="size-6 max-[350px]:hidden absolute top-14 sm:top-6 left-4" data-test-pet="">
-  <div class="flex gap-2 items-center"><span class="text-muted-foreground">general.round: <span data-test-round="" class="font-bold text-foreground">1</span></span><button id="tour-11" data-test-reset="" aria-label="Reset rounds" class="icon-btn-destructive" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed"><span class="iconify i-tabler:refresh text-destructive" aria-hidden="true"></span></button>
+  <div class="flex gap-2 items-center"><span class="text-muted-foreground">general.round: <span data-test-round="" class="font-bold text-foreground">1</span></span><button id="tour-11" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-reset="" aria-label="Reset rounds" class="icon-btn-destructive"><span class="iconify i-tabler:refresh text-destructive" aria-hidden="true"></span></button>
     <!--teleport start-->
     <!--teleport end-->
   </div>

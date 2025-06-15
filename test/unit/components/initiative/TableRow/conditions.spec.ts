@@ -1,23 +1,28 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Conditions from '~/components/initiative/TableRow/Conditions.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 import conditions from '~~/test/unit/fixtures/conditions.json'
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 type Condition = InitiativeSheetRow['conditions'][0]
 
 const mockUpdate = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
+
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
 
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 // Mock the useConditionsListing composable
@@ -29,26 +34,29 @@ vi.mock('~~/queries/open5e', () => ({
 }))
 
 describe('Initiative table row conditions', async () => {
-  beforeEach(() => mockUpdate.mockClear())
+  beforeEach(() => {
+    mockUpdate.mockClear()
+    mockSheet.value = sheet
+  })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Conditions, { props })
+    const component = await mountSuspended(Conditions, { props, provide })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should not render for lair type items', async () => {
     const component = await mountSuspended(Conditions, {
       props: {
-        ...props,
         item: { ...props.item, type: 'lair' },
       },
+      provide,
     })
 
     expect(component.find('div').exists()).toBeFalsy()
   })
 
   it('Should always show add condition button', async () => {
-    const component = await mountSuspended(Conditions, { props })
+    const component = await mountSuspended(Conditions, { props, provide })
 
     expect(component.find('[data-test-trigger]').exists()).toBeTruthy()
   })
@@ -56,7 +64,6 @@ describe('Initiative table row conditions', async () => {
   it('Should show selected conditions', async () => {
     const component = await mountSuspended(Conditions, {
       props: {
-        ...props,
         item: {
           ...props.item,
           conditions: [
@@ -65,6 +72,7 @@ describe('Initiative table row conditions', async () => {
           ],
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-conditions]').exists()).toBeTruthy()
@@ -79,12 +87,12 @@ describe('Initiative table row conditions', async () => {
   it('Should not show conditions when no conditions are selected', async () => {
     const component = await mountSuspended(Conditions, {
       props: {
-        ...props,
         item: {
           ...props.item,
           conditions: [],
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-conditions]').exists()).toBeFalsy()
@@ -93,7 +101,6 @@ describe('Initiative table row conditions', async () => {
   it('Should display the level of the condition if available', async () => {
     const component = await mountSuspended(Conditions, {
       props: {
-        ...props,
         item: {
           ...props.item,
           conditions: [{
@@ -102,6 +109,7 @@ describe('Initiative table row conditions', async () => {
           }],
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-badge]').text()).toBe(`${conditions[0]!.name} (2)`)

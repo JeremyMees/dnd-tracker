@@ -136,3 +136,11 @@ export function validateParamId(id: string | string[] | undefined): number {
 
   return +id
 }
+
+export function validateInject<T>(key: InjectionKey<T>): T {
+  const injection = inject(key)
+
+  if (!injection) throw createError({ statusCode: 500, statusMessage: 'Injection not found' })
+
+  return injection
+}

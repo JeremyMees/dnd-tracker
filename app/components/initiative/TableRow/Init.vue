@@ -1,30 +1,39 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 
 const popoverOpen = ref<boolean>(false)
 
 const currentIndex = computed(() => props.item.index)
+
 const canGoUp = computed(() => {
-  if (!props.sheet) return false
-  return currentIndex.value > 0 && props.sheet.rows[currentIndex.value - 1]?.initiative === props.item.initiative
+  if (!sheet.value) return false
+
+  const isNotFirst = currentIndex.value > 0
+  const isSameInitiative = sheet.value.rows[currentIndex.value - 1]?.initiative === props.item.initiative
+
+  return isNotFirst && isSameInitiative
 })
+
 const canGoDown = computed(() => {
-  if (!props.sheet) return false
-  return currentIndex.value < props.sheet.rows.length - 1 && props.sheet.rows[currentIndex.value + 1]?.initiative === props.item.initiative
+  if (!sheet.value) return false
+
+  const isNotLast = currentIndex.value < sheet.value.rows.length - 1
+  const isSameInitiative = sheet.value.rows[currentIndex.value + 1]?.initiative === props.item.initiative
+
+  return isNotLast && isSameInitiative
 })
 
 async function moveRow(up: boolean): Promise<void> {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const rows = [...props.sheet.rows]
+  const rows = [...sheet.value.rows]
   const index = props.item.index
   const targetIndex = up ? index - 1 : index + 1
 
@@ -46,7 +55,7 @@ async function moveRow(up: boolean): Promise<void> {
     }
   }
 
-  await props.update({ rows: [...rows].sort((a, b) => a.index - b.index) })
+  await update({ rows: [...rows].sort((a, b) => a.index - b.index) })
 }
 
 interface InitiativeForm { initiative: number, modifier?: number }
@@ -55,12 +64,12 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
   node.clearErrors()
 
   try {
-    if (!props.sheet) return
+    if (!sheet.value) return
 
     const { initiative, modifier } = sanitizeForm<InitiativeForm>(form)
 
-    const index = getCurrentRowIndex(props.sheet, props.item.id)
-    const rows = [...props.sheet.rows]
+    const index = getCurrentRowIndex(sheet.value, props.item.id)
+    const rows = [...sheet.value.rows]
 
     if (index === -1 || !rows[index]) return
 
@@ -69,7 +78,7 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
       initiative: Math.max(0, initiative + (modifier ?? 0)),
     }
 
-    await props.update({ rows })
+    await update({ rows })
     popoverOpen.value = false
   }
   catch (err: any) {
