@@ -195,7 +195,7 @@ async function logoutUser(): Promise<void> {
           <UiDropdownMenu>
             <UiDropdownMenuTrigger class="lg:hidden">
               <button
-                class="text-foreground flex flex-col items-center justify-center"
+                class="text-foreground flex flex-col items-center justify-center p-1 bg-primary/50 border-primary border-4 rounded-lg"
                 aria-label="Open menu"
               >
                 <Icon
