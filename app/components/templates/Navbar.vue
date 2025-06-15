@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
+import { navigationMenuContentStyle, navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
 
 const { user, logout } = useAuthentication()
 const { playRoutes, routes, profileRoutes } = useUi()
@@ -18,6 +19,10 @@ onMounted(() => {
   window.onscroll = function () {
     isScrolled.value = window.scrollY > 10
   }
+})
+
+onBeforeUnmount(() => {
+  window.onscroll = null
 })
 
 async function logoutUser(): Promise<void> {
@@ -55,73 +60,136 @@ async function logoutUser(): Promise<void> {
       </NuxtLinkLocale>
       <div class="flex justify-end items-center gap-4">
         <div class="hidden lg:flex items-center gap-4">
-          <NuxtLinkLocale
-            v-for="link in routes"
-            :key="link.url"
-            :to="link.url"
-          >
-            {{ $t(link.label) }}
-          </NuxtLinkLocale>
-          <UiDropdownMenu>
-            <UiDropdownMenuTrigger class="btn-primary flex items-center gap-2">
-              {{ $t('components.navbar.play') }}
-              <Icon
-                name="tabler:chevron-down"
-                class="size-6 min-w-6"
-              />
-            </UiDropdownMenuTrigger>
-            <UiDropdownMenuContent
-              class="w-60"
-              align="end"
-            >
-              <UiDropdownMenuItem
-                v-for="route in playRoutes"
+          <UiNavigationMenu disable-pointer-leave-close>
+            <UiNavigationMenuList>
+              <UiNavigationMenuItem
+                v-for="route in routes"
                 :key="route.label"
               >
                 <NuxtLinkLocale
+                  v-slot="{ isActive, href, navigate }"
                   :to="route.url"
-                  class="flex items-center gap-2"
                 >
-                  <Icon
-                    v-if="route.icon"
-                    :name="route.icon"
-                    class="size-4 min-w-4"
-                  />
-                  {{ $t(route.label) }}
+                  <UiNavigationMenuLink
+                    :active="isActive"
+                    :href="href"
+                    :class="navigationMenuTriggerStyle()"
+                    @click="navigate"
+                  >
+                    {{ $t(route.label) }}
+                  </UiNavigationMenuLink>
                 </NuxtLinkLocale>
-              </UiDropdownMenuItem>
-            </UiDropdownMenuContent>
-          </UiDropdownMenu>
-          <UiDropdownMenu>
-            <UiDropdownMenuTrigger
-              class="mt-1"
-              aria-label="Profile menu"
-            >
-              <UiAvatar
-                :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
-                class="border-4"
-                size="base"
-              >
-                <UiAvatarImage
-                  :src="user?.avatar ?? ''"
-                  alt="Avatar image"
-                  class="scale-x-[-1]"
-                />
-                <UiAvatarFallback class="h-6">
-                  <Icon
-                    :name="user ? 'tabler:user' : 'tabler:settings'"
-                    class="size-6 min-w-6 text-muted-foreground"
-                  />
-                </UiAvatarFallback>
-              </UiAvatar>
-            </UiDropdownMenuTrigger>
-            <ProfileMenu
-              class="w-60"
-              align="end"
-              :routes="profileRoutes"
-              @logout="logoutUser"
-            />
-          </UiDropdownMenu>
+              </UiNavigationMenuItem>
+              <UiNavigationMenuItem>
+                <UiNavigationMenuTrigger
+                  class="mx-1 border-primary border-4 py-1 bg-primary/50 focus:bg-primary hover:bg-primary/60 data-[active]:bg-primary/50 data-[state=open]:bg-primary/50"
+                >
+                  {{ $t('components.navbar.play') }}
+                </UiNavigationMenuTrigger>
+                <UiNavigationMenuContent class="flex flex-col p-2 !w-[300px]">
+                  <NuxtLinkLocale
+                    v-for="route in playRoutes"
+                    v-slot="{ isActive, href, navigate }"
+                    :key="route.label"
+                    :to="route.url"
+                    :class="navigationMenuContentStyle()"
+                  >
+                    <UiNavigationMenuLink
+                      :active="isActive"
+                      :href="href"
+                      class="flex gap-2 items-center"
+                      @click="navigate"
+                    >
+                      <Icon
+                        v-if="route.icon"
+                        :name="route.icon"
+                        class="size-4 min-w-4"
+                      />
+                      {{ $t(route.label) }}
+                    </UiNavigationMenuLink>
+                  </NuxtLinkLocale>
+                </UiNavigationMenuContent>
+              </UiNavigationMenuItem>
+              <UiNavigationMenuItem>
+                <UiNavigationMenuTrigger
+                  :icon="false"
+                  :styled="false"
+                  class="size-12"
+                >
+                  <UiAvatar
+                    :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
+                    class="border-4"
+                    size="base"
+                  >
+                    <UiAvatarImage
+                      :src="user?.avatar ?? ''"
+                      alt="Avatar image"
+                      class="scale-x-[-1]"
+                    />
+                    <UiAvatarFallback class="h-6">
+                      <Icon
+                        :name="user ? 'tabler:user' : 'tabler:settings'"
+                        class="size-6 min-w-6 text-muted-foreground"
+                      />
+                    </UiAvatarFallback>
+                  </UiAvatar>
+                </UiNavigationMenuTrigger>
+                <UiNavigationMenuContent class="flex flex-col py-2 !w-[250px]">
+                  <template
+                    v-for="route in profileRoutes"
+                    :key="route.label"
+                  >
+                    <NuxtLinkLocale
+                      v-if="route.requireAuth ? !!user : true"
+                      v-slot="{ isActive, href, navigate }"
+                      :to="route.url"
+                      :class="navigationMenuContentStyle()"
+                    >
+                      <UiNavigationMenuLink
+                        :active="isActive"
+                        :href="href"
+                        class="flex items-center gap-2"
+                        @click="navigate"
+                      >
+                        <Icon
+                          v-if="route.icon"
+                          :name="route.icon"
+                          class="size-4 min-w-4"
+                        />
+                        {{ $t(route.label) }}
+                      </UiNavigationMenuLink>
+                    </NuxtLinkLocale>
+                  </template>
+                  <UiSeparator class="my-1" />
+                  <div class="">
+                    <YbugButton
+                      type="menu"
+                      :class="navigationMenuContentStyle()"
+                    />
+                  </div>
+                  <UiDropdownMenuSeparator />
+                  <div class="px-3 py-[6px] space-y-2">
+                    <LangSwitcher />
+                    <ColorModeSwitcher />
+                  </div>
+                  <template v-if="user">
+                    <UiSeparator class="mb-1" />
+                    <button
+                      class="text-destructive flex items-center gap-2"
+                      :class="navigationMenuContentStyle()"
+                      @click="logoutUser"
+                    >
+                      <Icon
+                        name="tabler:logout"
+                        class="size-4 min-w-4"
+                      />
+                      {{ $t('components.navbar.logout') }}
+                    </button>
+                  </template>
+                </UiNavigationMenuContent>
+              </UiNavigationMenuItem>
+            </UiNavigationMenuList>
+          </UiNavigationMenu>
         </div>
         <ClientOnly>
           <UiDropdownMenu>
