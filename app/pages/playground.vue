@@ -53,7 +53,6 @@ provide(INITIATIVE_SHEET, {
   <NuxtLayout
     name="sidebar"
     :header="$t('components.navbar.playground')"
-    only-provided-content
   >
     <InitiativeTable
       v-if="!isError"

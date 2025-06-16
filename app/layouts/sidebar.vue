@@ -8,7 +8,7 @@ defineProps<{
 
 const { user, logout } = useAuthentication()
 const route = useRoute()
-const { playRoutes, routes, profileRoutes } = useUi()
+const { playRoutes, routes, profileRoutes, homeRoute } = useUi()
 const { toast } = useToast()
 const { t } = useI18n()
 const sidebar = ref()
@@ -58,18 +58,28 @@ async function logoutUser(): Promise<void> {
               class="h-10 hidden group-data-[collapsible=icon]:block"
             />
           </NuxtLinkLocale>
-          <UiSeparator />
         </UiSidebarHeader>
+        <UiSidebarSeparator class="mx-0" />
         <UiSidebarContent>
           <slot
             name="sidebar-content"
             :is-expanded="isExpanded"
           />
+          <UiSidebarSeparator
+            v-if="$slots['sidebar-content']"
+            class="mx-0"
+          />
           <template v-if="!onlyProvidedContent">
             <template
               v-for="sidebarItem in [
-                { title: 'components.navbar.play', routes: playRoutes },
-                { title: 'components.navbar.pages', routes: routes },
+                {
+                  title: 'components.navbar.pages',
+                  routes: [
+                    homeRoute,
+                    ...playRoutes,
+                    ...routes,
+                  ],
+                },
               ]"
               :key="sidebarItem.title"
             >
@@ -90,7 +100,9 @@ async function logoutUser(): Promise<void> {
                           onShow: () => !isExpanded,
                         }"
                         :to="item.url"
-                        :data-active="route.name?.toString().startsWith(item.url.replace('/', ''))"
+                        :data-active="item.url === '/'
+                          ? route.path === '/'
+                          : route.name?.toString().startsWith(item.url.replace('/', ''))"
                       >
                         <Icon
                           v-if="item.icon"
@@ -133,7 +145,7 @@ async function logoutUser(): Promise<void> {
               />
             </NuxtLinkLocale>
           </ClientOnly>
-          <UiSeparator />
+          <UiSidebarSeparator class="-mx-2" />
           <UiAlertDialog>
             <UiSidebarMenu>
               <UiSidebarMenuItem>

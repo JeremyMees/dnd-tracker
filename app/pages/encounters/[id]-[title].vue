@@ -84,10 +84,7 @@ provide(INITIATIVE_SHEET, {
 </script>
 
 <template>
-  <NuxtLayout
-    name="sidebar"
-    only-provided-content
-  >
+  <NuxtLayout name="sidebar">
     <template #header>
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
         <NuxtLinkLocale
