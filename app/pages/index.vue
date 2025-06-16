@@ -16,10 +16,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         class="space-y-20 dnd-container"
         @mousemove="dragon && dragon.calculateEyes"
       >
-        <LazyTitleText
-          :button-label="$t('pages.home.textBlock1.button')"
-          button-link="/playground"
-        >
+        <LazyTitleText>
           {{ $t('pages.home.textBlock1.title') }}
           <template #text>
             {{ $t('pages.home.textBlock1.text') }}
@@ -58,13 +55,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
             {{ $t('pages.home.containerScroll.title') }}
           </h2>
           <span class="mt-1 font-black text-4xl leading-none md:text-[6rem]">
-            <span
-              v-for="(word, index) in $t('pages.home.containerScroll.subtitle').split(' ')"
-              :key="index"
-              class="gradient-text inline-block ml-4 first:ml-0"
-            >
-              {{ word }}
-            </span>
+            {{ $t('pages.home.containerScroll.subtitle') }}
           </span>
         </template>
         <template #card>
@@ -106,7 +97,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
       class="relative flex size-full flex-col items-center justify-center px-40 pb-40 pt-8 md:pb-60"
     >
       <span class="text-center head-1 leading-none relative z-[1]">
-        <span class="gradient-text">
+        <span>
           {{ $t('pages.home.globe.title') }}
         </span>
         🇧🇪
