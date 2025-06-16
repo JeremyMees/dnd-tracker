@@ -612,7 +612,10 @@
       "button": "OK"
     },
     "hero": {
-      "start": "Let the session start"
+      "title": "Run immersive D&D campaigns your way",
+      "description": "An open-source platform to manage your campaigns, track your parties, and play out encounters all in one place. Built for DMs who want freedom, focus, and flexibility.",
+      "start": "Get started",
+      "try": "Try without account"
     },
     "linkModal": {
       "placeholder": "Amidst the realm of dragons and dungeons, a hero's legend remains untold, as the user has not yet linked their character's saga."

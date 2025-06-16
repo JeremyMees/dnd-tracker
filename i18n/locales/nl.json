@@ -261,7 +261,7 @@
         "item3": {
           "title": "Zijn betalingen echt eenmalig?",
           "content": "Ja, je betaalt eenmalig een bedrag voor een abonnement dat je voor altijd gebruikt."
-        } 
+        }
       },
       "ctaBanner": {
         "title": "Klaar om je D&D ervaring te verbeteren?",
@@ -612,7 +612,10 @@
       "button": "Oke"
     },
     "hero": {
-      "start": "Laat het spelen beginnen"
+      "title": "Voer meeslepende D&D campagnes op jouw manier",
+      "description": "Een open-source platform om je campagnes te beheren, je party bij te houden en encounters uit te spelen. Gemaakt voor DM's die vrijheid, focus en flexibiliteit willen.",
+      "start": "Beginnen",
+      "try": "Probeer zonder account"
     },
     "linkModal": {
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
