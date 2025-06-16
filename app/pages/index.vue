@@ -94,15 +94,15 @@ const dragon = ref<InstanceType<typeof Dragon>>()
       />
     </div>
     <div
-      class="relative flex size-full flex-col items-center justify-center px-40 pb-40 pt-8 md:pb-60"
+      class="relative flex size-full flex-col items-center justify-center px-40 pb-40 md:pb-50"
     >
-      <span class="text-center head-1 leading-none relative z-[1]">
-        <span>
+      <span class="text-center head-1 leading-none absolute top-28 min-w-[350px]:top-[100%] z-[1] flex flex-col">
+        🇧🇪
+        <span class="max-w-[200px]">
           {{ $t('pages.home.globe.title') }}
         </span>
-        🇧🇪
       </span>
-      <LazyUiGlobe class="top-10" />
+      <LazyUiGlobe />
     </div>
   </NuxtLayout>
 </template>
