@@ -19,7 +19,7 @@ withDefaults(
   >
     <h2
       v-if="$slots.default"
-      class="pb-4 relative max-w-max gradient-text"
+      class="pb-4 relative max-w-max"
       :class="{ 'mx-auto': center }"
     >
       <slot />

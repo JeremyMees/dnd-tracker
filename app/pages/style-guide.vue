@@ -10,7 +10,7 @@ definePageMeta({
   <NuxtLayout container>
     <div class="flex flex-wrap gap-x-20 gap-y-10">
       <div class="flex flex-col gap-2">
-        <p class="gradient-text text-6xl pb-4">
+        <p class="text-6xl pb-4">
           Typography
         </p>
         <h1>
@@ -42,7 +42,7 @@ definePageMeta({
         </p>
       </div>
       <div class="flex flex-col gap-2">
-        <p class="gradient-text text-6xl pb-4">
+        <p class="text-6xl pb-4">
           Colors
         </p>
         <div class="flex gap-2 items-center">
@@ -99,7 +99,7 @@ definePageMeta({
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <p class="gradient-text text-6xl pb-4">
+        <p class="text-6xl pb-4">
           Buttons
         </p>
         <div class="flex gap-4 items-center">
