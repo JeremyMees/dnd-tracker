@@ -69,6 +69,13 @@ const table = useVueTable({
     get sorting() { return sorting.value },
     get rowSelection() { return rowSelection.value },
   },
+  globalFilterFn: (row, _columnId, filterValue) => {
+    const searchValue = filterValue.toLowerCase()
+    const name = row.getValue<string>('name')?.toLowerCase() || ''
+    const player = row.getValue<string | null>('player')?.toLowerCase() || ''
+
+    return name.includes(searchValue) || player.includes(searchValue)
+  },
 })
 
 async function addHomebrews(addAll: boolean): Promise<void> {
