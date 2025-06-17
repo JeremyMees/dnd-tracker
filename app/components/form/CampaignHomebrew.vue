@@ -18,10 +18,16 @@ const selected = computed<HomebrewItemRow[]>(() => data.value?.homebrews.filter(
 const summons = computed<HomebrewItemRow[]>(() => selected.value?.filter(s => s.type === 'summon') || [])
 
 const { data, isPending } = useHomebrewListing(
-  computed(() => ({
-    eq: { field: 'campaign', value: sheet.value!.campaign!.id },
-  })),
-  computed(() => !!sheet.value),
+  computed(() => {
+    const campaign = sheet.value?.campaign?.id
+
+    return {
+      eq: campaign
+        ? { field: 'campaign', value: campaign }
+        : { field: 'id', value: -1 },
+    }
+  }),
+  computed(() => !!sheet.value?.campaign?.id),
   100,
 )
 
