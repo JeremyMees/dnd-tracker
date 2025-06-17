@@ -15,7 +15,7 @@ withDefaults(
   <div class="group relative">
     <h2
       v-if="title"
-      class="pb-4 relative max-w-max gradient-text"
+      class="pb-4 relative max-w-max"
     >
       {{ title }}
     </h2>

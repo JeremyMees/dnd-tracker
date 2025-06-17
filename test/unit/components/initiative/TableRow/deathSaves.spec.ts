@@ -1,16 +1,16 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import DeathSaves from '~/components/initiative/TableRow/DeathSaves.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
 const mockToast = vi.fn()
+const mockSheet = ref<InitiativeSheet>(sheet)
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({
@@ -18,20 +18,26 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   }),
 }))
 
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet: mockSheet,
+    update: mockUpdate,
+  },
+}
+
 const props: Props = {
   item: sheet.rows[0]!,
-  sheet,
-  update: mockUpdate,
 }
 
 describe('Initiative table row death saves', async () => {
   beforeEach(() => {
     mockUpdate.mockClear()
     mockToast.mockClear()
+    mockSheet.value = sheet
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(DeathSaves, { props })
+    const component = await mountSuspended(DeathSaves, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -39,9 +45,9 @@ describe('Initiative table row death saves', async () => {
   it('Should not render for lair type', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: { ...props.item, type: 'lair' },
       },
+      provide,
     })
 
     expect(component.find('[data-test-container]').exists()).toBeFalsy()
@@ -50,9 +56,9 @@ describe('Initiative table row death saves', async () => {
   it('Should not render for summon type', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: { ...props.item, type: 'summon' },
       },
+      provide,
     })
 
     expect(component.find('[data-test-container]').exists()).toBeFalsy()
@@ -61,7 +67,6 @@ describe('Initiative table row death saves', async () => {
   it('Should render for player type', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -71,13 +76,14 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-container]').exists()).toBeTruthy()
   })
 
   it('Should render 3 save and 3 fail buttons', async () => {
-    const component = await mountSuspended(DeathSaves, { props })
+    const component = await mountSuspended(DeathSaves, { props, provide })
 
     expect(component.findAll('[data-test-button="save"]').length).toBe(3)
     expect(component.findAll('[data-test-button="fail"]').length).toBe(3)
@@ -86,7 +92,6 @@ describe('Initiative table row death saves', async () => {
   it('Should show success styling when all saves are successful', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -96,6 +101,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-container]').classes()).toContain('bg-success/20')
@@ -104,7 +110,6 @@ describe('Initiative table row death saves', async () => {
   it('Should show destructive styling when all saves are failed', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -114,6 +119,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     expect(component.find('[data-test-container]').classes()).toContain('bg-destructive/20')
@@ -122,7 +128,6 @@ describe('Initiative table row death saves', async () => {
   it('Should toggle save state when clicking a save button', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -132,6 +137,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     const buttons = component.findAll('[data-test-button="save"]')
@@ -152,7 +158,6 @@ describe('Initiative table row death saves', async () => {
   it('Should toggle fail state when clicking a fail button', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -162,6 +167,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     const buttons = component.findAll('[data-test-button="fail"]')
@@ -180,10 +186,10 @@ describe('Initiative table row death saves', async () => {
   })
 
   it('Should not call update when sheet is undefined', async () => {
+    mockSheet.value = undefined as any
+
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
-        sheet: undefined,
         item: {
           ...props.item,
           type: 'player',
@@ -193,6 +199,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     const buttons = component.findAll('[data-test-button]')
@@ -204,7 +211,6 @@ describe('Initiative table row death saves', async () => {
   it('Should show stable toast when all saves are successful', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -214,6 +220,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     const buttons = component.findAll('[data-test-button="save"]')
@@ -229,7 +236,6 @@ describe('Initiative table row death saves', async () => {
   it('Should show died toast when all fails are triggered', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -239,6 +245,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     const buttons = component.findAll('[data-test-button="fail"]')
@@ -254,7 +261,6 @@ describe('Initiative table row death saves', async () => {
   it('Should not show toast when saves/fails are not complete', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
-        ...props,
         item: {
           ...props.item,
           type: 'player',
@@ -264,6 +270,7 @@ describe('Initiative table row death saves', async () => {
           },
         },
       },
+      provide,
     })
 
     const buttons = component.findAll('[data-test-button="save"]')

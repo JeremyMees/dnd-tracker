@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useConditionsListing } from '~~/queries/open5e'
 
-const props = defineProps<{
-  item: InitiativeSheetRow
-  sheet: InitiativeSheet | undefined
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-}>()
+const props = defineProps<{ item: InitiativeSheetRow }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 type Condition = InitiativeSheetRow['conditions'][0]
 
@@ -17,11 +16,11 @@ const { data: conditions, isPending } = await useConditionsListing()
 watch(popoverOpen, open => selected.value = open ? props.item.conditions : [])
 
 function removeCondition(name: string): void {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const rows = props.sheet.rows
+  const rows = sheet.value.rows
 
-  props.update({
+  update({
     rows: rows.map(row => row.id === props.item.id
       ? { ...row, conditions: row.conditions.filter(r => r.name !== name) }
       : row,
@@ -30,16 +29,16 @@ function removeCondition(name: string): void {
 }
 
 function updateCondition(conditions: Condition[]): void {
-  if (!props.sheet) return
+  if (!sheet.value) return
 
-  const index = getCurrentRowIndex(props.sheet, props.item.id)
-  const rows = [...props.sheet.rows]
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
 
   if (index === -1 || !rows[index]) return
 
   rows[index] = { ...rows[index], conditions }
 
-  props.update({ rows })
+  update({ rows })
 
   popoverOpen.value = false
 }

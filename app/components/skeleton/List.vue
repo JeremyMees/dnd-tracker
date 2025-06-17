@@ -13,7 +13,7 @@ withDefaults(
 <template>
   <MasonryGrid
     v-slot="{ column }"
-    :data="Array.from({ length: rows * amount }, () => ({}))"
+    :data="Array.from({ length: amount }, () => ({}))"
     :max-columns="rows"
     wrapper-style="grid list-inside gap-x-6"
     column-style="flex flex-col gap-1"

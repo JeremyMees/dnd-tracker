@@ -1,18 +1,39 @@
 <template>
   <UiAuroraBackground>
-    <UiBlurReveal>
-      <h1 class="mx-auto text-[60px] leading-[60px] md:text-[100px] md:leading-[100px] lg:text-[120px] lg:leading-[120px] text-center max-w-md md:max-w-[1200px] px-4 md:px-6 lg:px-10">
-        <span
-          v-for="(word, index) in $t('components.hero.start').split(' ')"
-          :key="index"
-          class="gradient-text inline-block ml-4 first:ml-0"
-        >
-          {{ word }}
-        </span>
-      </h1>
-    </UiBlurReveal>
+    <div class="grid max-w-4xl dnd-container">
+      <UiBlurReveal :delay="0.3">
+        <h1 class="text-pretty text-center text-4xl font-bold sm:text-6xl sm:font-extrabold md:text-7xl text-foreground">
+          {{ $t('components.hero.title') }}
+        </h1>
+        <p class="mx-auto py-8 max-w-[720px] text-pretty text-center text-lg md:text-xl md:leading-8 lg:leading-9 lg:text-2xl text-muted-foreground">
+          {{ $t('components.hero.description') }}
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <NuxtLinkLocale
+            to="/campaigns"
+            class="btn-primary text-center"
+          >
+            {{ $t('components.hero.start') }}
+          </NuxtLinkLocale>
+          <NuxtLinkLocale
+            to="/playground"
+            class="btn-background flex items-center justify-center gap-2"
+          >
+            {{ $t('components.hero.try') }}
+            <Icon
+              name="tabler:arrow-up-right"
+              class="size-6 min-w-6"
+              :aria-hidden="true"
+            />
+          </NuxtLinkLocale>
+        </div>
+      </UiBlurReveal>
+    </div>
     <span class="sr-only">
-      {{ $t('components.hero.start') }}
+      {{ $t('components.hero.title') }}
+    </span>
+    <span class="sr-only">
+      {{ $t('components.hero.description') }}
     </span>
   </UiAuroraBackground>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
+import { navigationMenuContentStyle, navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
 
 const { user, logout } = useAuthentication()
 const { playRoutes, routes, profileRoutes } = useUi()
@@ -8,20 +9,20 @@ const { t } = useI18n()
 const isSmall = useMediaQuery('(max-width: 1024px)')
 
 const isOpen = ref<boolean>(false)
-const navigationVisible = ref<boolean>(true)
+const isScrolled = ref<boolean>(false)
 
 watch(isSmall, (v: boolean) => {
   if (!v && isOpen.value) isOpen.value = false
 })
 
 onMounted(() => {
-  let prevScrollpos = window.scrollY
-
   window.onscroll = function () {
-    const currentScrollPos = window.scrollY
-    navigationVisible.value = (prevScrollpos > currentScrollPos && currentScrollPos !== 0) || currentScrollPos === 0
-    prevScrollpos = currentScrollPos
+    isScrolled.value = window.scrollY > 10
   }
+})
+
+onBeforeUnmount(() => {
+  window.onscroll = null
 })
 
 async function logoutUser(): Promise<void> {
@@ -40,158 +41,64 @@ async function logoutUser(): Promise<void> {
 </script>
 
 <template>
-  <Transition
-    enter-active-class="duration-300 delay-100 ease-out"
-    enter-from-class="!-translate-y-[200%]"
-    enter-to-class="!translate-y-0"
-    leave-active-class="duration-300 delay-100 ease-in"
-    leave-from-class="!translate-y-0"
-    leave-to-class="!-translate-y-[200%]"
+  <nav
+    :class="[
+      isScrolled ? 'bg-background/80 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
+      'transition-all duration-500',
+    ]"
   >
-    <nav
-      v-show="navigationVisible"
-      class="bg-muted/50 backdrop-blur-lg border-4 border-muted m-4 rounded-lg"
-    >
-      <div class="container-max p-4 flex justify-between items-center gap-4">
-        <NuxtLinkLocale to="/">
-          <NuxtImg
-            src="/logo.svg"
-            alt="DnD Tracker logo"
-            width="356"
-            height="125"
-            sizes="sm:500px md:500px lg:500px"
-            class="w-[150px]"
-          />
-        </NuxtLinkLocale>
-        <div class="flex justify-end items-center gap-4">
-          <div class="hidden lg:flex items-center gap-4">
-            <NuxtLinkLocale
-              v-for="link in routes"
-              :key="link.url"
-              :to="link.url"
-            >
-              {{ $t(link.label) }}
-            </NuxtLinkLocale>
-            <UiDropdownMenu>
-              <UiDropdownMenuTrigger class="btn-primary flex items-center gap-2">
-                {{ $t('components.navbar.play') }}
-                <Icon
-                  name="tabler:chevron-down"
-                  class="size-6 min-w-6"
-                />
-              </UiDropdownMenuTrigger>
-              <UiDropdownMenuContent
-                class="w-60"
-                align="start"
+    <div class="container-max p-4 flex justify-between items-center gap-4">
+      <NuxtLinkLocale to="/">
+        <NuxtImg
+          src="/logo.svg"
+          alt="DnD Tracker logo"
+          width="356"
+          height="125"
+          sizes="sm:500px md:500px lg:500px"
+          class="w-[150px]"
+        />
+      </NuxtLinkLocale>
+      <div class="flex justify-end items-center gap-4">
+        <div class="hidden lg:flex items-center gap-4">
+          <UiNavigationMenu disable-pointer-leave-close>
+            <UiNavigationMenuList>
+              <UiNavigationMenuItem
+                v-for="route in routes"
+                :key="route.label"
               >
-                <UiDropdownMenuItem
-                  v-for="route in playRoutes"
-                  :key="route.label"
+                <NuxtLinkLocale
+                  v-slot="{ isActive, href, navigate }"
+                  :to="route.url"
                 >
-                  <NuxtLinkLocale
-                    :to="route.url"
-                    class="flex items-center gap-2"
+                  <UiNavigationMenuLink
+                    :active="isActive"
+                    :href="href"
+                    :class="navigationMenuTriggerStyle()"
+                    @click="navigate"
                   >
-                    <Icon
-                      v-if="route.icon"
-                      :name="route.icon"
-                      class="size-4 min-w-4"
-                    />
                     {{ $t(route.label) }}
-                  </NuxtLinkLocale>
-                </UiDropdownMenuItem>
-              </UiDropdownMenuContent>
-            </UiDropdownMenu>
-            <UiDropdownMenu>
-              <UiDropdownMenuTrigger
-                class="mt-1"
-                aria-label="Profile menu"
-              >
-                <UiAvatar
-                  :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
-                  class="border-4"
-                  size="base"
+                  </UiNavigationMenuLink>
+                </NuxtLinkLocale>
+              </UiNavigationMenuItem>
+              <UiNavigationMenuItem>
+                <UiNavigationMenuTrigger
+                  class="mx-1 border-primary border-4 py-1 bg-primary/50 focus:bg-primary hover:bg-primary/60 data-[active]:bg-primary/50 data-[state=open]:bg-primary/50"
                 >
-                  <UiAvatarImage
-                    :src="user?.avatar ?? ''"
-                    alt="Avatar image"
-                    class="scale-x-[-1]"
-                  />
-                  <UiAvatarFallback class="h-6">
-                    <Icon
-                      :name="user ? 'tabler:user' : 'tabler:settings'"
-                      class="size-6 min-w-6 text-muted-foreground"
-                    />
-                  </UiAvatarFallback>
-                </UiAvatar>
-              </UiDropdownMenuTrigger>
-              <ProfileMenu
-                class="w-60"
-                align="start"
-                :routes="profileRoutes"
-                @logout="logoutUser"
-              />
-            </UiDropdownMenu>
-          </div>
-          <ClientOnly>
-            <UiDropdownMenu>
-              <UiDropdownMenuTrigger class="lg:hidden">
-                <button
-                  class="text-foreground flex flex-col items-center justify-center"
-                  aria-label="Open menu"
-                >
-                  <Icon
-                    name="tabler:menu-2"
-                    class="size-8 min-w-8"
-                  />
-                </button>
-              </UiDropdownMenuTrigger>
-              <UiDropdownMenuContent
-                class="w-60"
-                align="start"
-              >
-                <UiDropdownMenuItem
-                  v-for="route in routes"
-                  :key="route.label"
-                >
+                  {{ $t('components.navbar.play') }}
+                </UiNavigationMenuTrigger>
+                <UiNavigationMenuContent class="flex flex-col p-2 !w-[300px]">
                   <NuxtLinkLocale
+                    v-for="route in playRoutes"
+                    v-slot="{ isActive, href, navigate }"
+                    :key="route.label"
                     :to="route.url"
-                    class="flex items-center gap-2"
+                    :class="navigationMenuContentStyle()"
                   >
-                    <Icon
-                      v-if="route.icon"
-                      :name="route.icon"
-                      class="size-4 min-w-4"
-                    />
-                    {{ $t(route.label) }}
-                  </NuxtLinkLocale>
-                </UiDropdownMenuItem>
-                <UiDropdownMenuSeparator />
-                <UiDropdownMenuItem
-                  v-for="route in playRoutes"
-                  :key="route.label"
-                >
-                  <NuxtLinkLocale
-                    :to="route.url"
-                    class="flex items-center gap-2"
-                  >
-                    <Icon
-                      v-if="route.icon"
-                      :name="route.icon"
-                      class="size-4 min-w-4"
-                    />
-                    {{ $t(route.label) }}
-                  </NuxtLinkLocale>
-                </UiDropdownMenuItem>
-                <UiDropdownMenuSeparator />
-                <template
-                  v-for="route in profileRoutes"
-                  :key="route.label"
-                >
-                  <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
-                    <NuxtLinkLocale
-                      :to="route.url"
-                      class="flex items-center gap-2"
+                    <UiNavigationMenuLink
+                      :active="isActive"
+                      :href="href"
+                      class="flex gap-2 items-center"
+                      @click="navigate"
                     >
                       <Icon
                         v-if="route.icon"
@@ -199,22 +106,77 @@ async function logoutUser(): Promise<void> {
                         class="size-4 min-w-4"
                       />
                       {{ $t(route.label) }}
+                    </UiNavigationMenuLink>
+                  </NuxtLinkLocale>
+                </UiNavigationMenuContent>
+              </UiNavigationMenuItem>
+              <UiNavigationMenuItem>
+                <UiNavigationMenuTrigger
+                  :icon="false"
+                  :styled="false"
+                  class="size-12"
+                >
+                  <UiAvatar
+                    :class="[user ? 'border-tertiary' : 'border-muted-foreground']"
+                    class="border-4"
+                    size="base"
+                  >
+                    <UiAvatarImage
+                      :src="user?.avatar ?? ''"
+                      alt="Avatar image"
+                      class="scale-x-[-1]"
+                    />
+                    <UiAvatarFallback class="h-6">
+                      <Icon
+                        :name="user ? 'tabler:user' : 'tabler:settings'"
+                        class="size-6 min-w-6 text-muted-foreground"
+                      />
+                    </UiAvatarFallback>
+                  </UiAvatar>
+                </UiNavigationMenuTrigger>
+                <UiNavigationMenuContent class="flex flex-col py-2 !w-[250px]">
+                  <template
+                    v-for="route in profileRoutes"
+                    :key="route.label"
+                  >
+                    <NuxtLinkLocale
+                      v-if="route.requireAuth ? !!user : true"
+                      v-slot="{ isActive, href, navigate }"
+                      :to="route.url"
+                      :class="navigationMenuContentStyle()"
+                    >
+                      <UiNavigationMenuLink
+                        :active="isActive"
+                        :href="href"
+                        class="flex items-center gap-2"
+                        @click="navigate"
+                      >
+                        <Icon
+                          v-if="route.icon"
+                          :name="route.icon"
+                          class="size-4 min-w-4"
+                        />
+                        {{ $t(route.label) }}
+                      </UiNavigationMenuLink>
                     </NuxtLinkLocale>
-                  </UiDropdownMenuItem>
-                </template>
-                <UiDropdownMenuItem as-child>
-                  <YbugButton type="menu" />
-                </UiDropdownMenuItem>
-                <UiDropdownMenuSeparator />
-                <div class="px-2 py-[6px] space-y-2">
-                  <LangSwitcher />
-                  <ColorModeSwitcher />
-                </div>
-                <template v-if="user">
+                  </template>
+                  <UiSeparator class="my-1" />
+                  <div class="">
+                    <YbugButton
+                      type="menu"
+                      :class="navigationMenuContentStyle()"
+                    />
+                  </div>
                   <UiDropdownMenuSeparator />
-                  <UiDropdownMenuItem>
+                  <div class="px-3 py-[6px] space-y-2">
+                    <LangSwitcher />
+                    <ColorModeSwitcher />
+                  </div>
+                  <template v-if="user">
+                    <UiSeparator class="mb-1" />
                     <button
                       class="text-destructive flex items-center gap-2"
+                      :class="navigationMenuContentStyle()"
                       @click="logoutUser"
                     >
                       <Icon
@@ -223,13 +185,108 @@ async function logoutUser(): Promise<void> {
                       />
                       {{ $t('components.navbar.logout') }}
                     </button>
-                  </UiDropdownMenuItem>
-                </template>
-              </UiDropdownMenuContent>
-            </UiDropdownMenu>
-          </ClientOnly>
+                  </template>
+                </UiNavigationMenuContent>
+              </UiNavigationMenuItem>
+            </UiNavigationMenuList>
+          </UiNavigationMenu>
         </div>
+        <ClientOnly>
+          <UiDropdownMenu>
+            <UiDropdownMenuTrigger class="lg:hidden">
+              <button
+                class="text-foreground flex flex-col items-center justify-center p-1 bg-primary/50 border-primary border-4 rounded-lg"
+                aria-label="Open menu"
+              >
+                <Icon
+                  name="tabler:menu-2"
+                  class="size-8 min-w-8"
+                />
+              </button>
+            </UiDropdownMenuTrigger>
+            <UiDropdownMenuContent
+              class="w-60"
+              align="end"
+            >
+              <UiDropdownMenuItem
+                v-for="route in routes"
+                :key="route.label"
+              >
+                <NuxtLinkLocale
+                  :to="route.url"
+                  class="flex items-center gap-2"
+                >
+                  <Icon
+                    v-if="route.icon"
+                    :name="route.icon"
+                    class="size-4 min-w-4"
+                  />
+                  {{ $t(route.label) }}
+                </NuxtLinkLocale>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuSeparator />
+              <UiDropdownMenuItem
+                v-for="route in playRoutes"
+                :key="route.label"
+              >
+                <NuxtLinkLocale
+                  :to="route.url"
+                  class="flex items-center gap-2"
+                >
+                  <Icon
+                    v-if="route.icon"
+                    :name="route.icon"
+                    class="size-4 min-w-4"
+                  />
+                  {{ $t(route.label) }}
+                </NuxtLinkLocale>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuSeparator />
+              <template
+                v-for="route in profileRoutes"
+                :key="route.label"
+              >
+                <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
+                  <NuxtLinkLocale
+                    :to="route.url"
+                    class="flex items-center gap-2"
+                  >
+                    <Icon
+                      v-if="route.icon"
+                      :name="route.icon"
+                      class="size-4 min-w-4"
+                    />
+                    {{ $t(route.label) }}
+                  </NuxtLinkLocale>
+                </UiDropdownMenuItem>
+              </template>
+              <UiDropdownMenuItem as-child>
+                <YbugButton type="menu" />
+              </UiDropdownMenuItem>
+              <UiDropdownMenuSeparator />
+              <div class="px-2 py-[6px] space-y-2">
+                <LangSwitcher />
+                <ColorModeSwitcher />
+              </div>
+              <template v-if="user">
+                <UiDropdownMenuSeparator />
+                <UiDropdownMenuItem>
+                  <button
+                    class="text-destructive flex items-center gap-2"
+                    @click="logoutUser"
+                  >
+                    <Icon
+                      name="tabler:logout"
+                      class="size-4 min-w-4"
+                    />
+                    {{ $t('components.navbar.logout') }}
+                  </button>
+                </UiDropdownMenuItem>
+              </template>
+            </UiDropdownMenuContent>
+          </UiDropdownMenu>
+        </ClientOnly>
       </div>
-    </nav>
-  </Transition>
+    </div>
+  </nav>
 </template>

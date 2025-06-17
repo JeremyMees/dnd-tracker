@@ -2,12 +2,11 @@
 import { FlexRender, getCoreRowModel, getExpandedRowModel, useVueTable } from '@tanstack/vue-table'
 import { generateColumns, expandedMarkup } from '~~/tables/initiative-sheet'
 import { prefetchConditionsListing } from '~~/queries/open5e'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const props = defineProps<{
-  data: InitiativeSheet | undefined
-  loading: boolean
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>
-}>()
+defineProps<{ loading: boolean }>()
+
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const {
   previous,
@@ -16,24 +15,21 @@ const {
   expanded,
   selected,
   columnVisibility,
-} = useInitiativeSheet(computed(() => props.data), props.update)
+} = useInitiativeSheet(computed(() => sheet.value), update)
 
 prefetchConditionsListing()
 
 const tablePadding = computed(() => {
-  const style = props.data?.settings?.spacing ?? 'normal'
+  const style = sheet.value?.settings?.spacing ?? 'normal'
   if (style === 'compact') return 'p-1'
   if (style === 'cozy') return 'p-4'
   else return 'p-2'
 })
 
-const columns = generateColumns({
-  sheet: computed(() => props.data),
-  update: props.update,
-})
+const columns = generateColumns()
 
 const table = useVueTable({
-  data: computed(() => props.data?.rows || []),
+  data: computed(() => sheet.value?.rows || []),
   columns,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
@@ -51,7 +47,7 @@ const table = useVueTable({
 <template>
   <div class="flex flex-col gap-2">
     <InitiativeHeader
-      :data="data"
+      :data="sheet"
       @reset="reset($event)"
       @previous="previous"
       @next="next"
@@ -131,7 +127,7 @@ const table = useVueTable({
               :colspan="columns.length"
               class="md:p-10"
             >
-              <InitiativeTableEmptyState :campaign="!!data?.campaign" />
+              <InitiativeTableEmptyState :campaign="!!sheet?.campaign" />
             </UiTableCell>
           </UiTableRow>
         </UiTableBody>
@@ -141,8 +137,6 @@ const table = useVueTable({
     <LazyInitiativeWidgets
       data-test-widgets
       hydrate-on-visible
-      :sheet="data"
-      :update="update"
     />
   </div>
 </template>

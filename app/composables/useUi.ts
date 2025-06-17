@@ -100,9 +100,17 @@ export function useUi() {
     ...(user.value?.subscription_type !== 'pro' ? updateProfileRoutes : []),
   ])
 
+  const homeRoute = {
+    label: 'components.navbar.home',
+    url: '/',
+    requireAuth: false,
+    icon: 'tabler:home',
+  }
+
   return {
     routes,
     playRoutes,
     profileRoutes,
+    homeRoute,
   }
 }

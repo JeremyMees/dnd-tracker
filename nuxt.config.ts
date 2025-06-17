@@ -1,5 +1,6 @@
 import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
+import packageJSON from './package.json'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -52,9 +53,11 @@ export default defineNuxtConfig({
     stripeWebhook: process.env.STRIPE_WEBHOOK,
     plunkApiKey: process.env.PLUNK_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
+    trmnl: process.env.TRMNL,
     public: {
       formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
+      appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
     },
   },
@@ -79,7 +82,6 @@ export default defineNuxtConfig({
 
   nitro: {
     rollupConfig: {
-      // @ts-expect-error need this to render email templates
       plugins: [vue()],
     },
   },

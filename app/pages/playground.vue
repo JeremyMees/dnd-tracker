@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import { playgroundSheet } from '~~/constants/initiative-playground'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 definePageMeta({ middleware: ['encounter-share-access'] })
 
@@ -41,18 +42,20 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
     ...payload,
   }
 }
+
+provide(INITIATIVE_SHEET, {
+  sheet: isTourActive.value ? tourData : data,
+  update: handleUpdate,
+})
 </script>
 
 <template>
   <NuxtLayout
     name="sidebar"
     :header="$t('components.navbar.playground')"
-    only-provided-content
   >
     <InitiativeTable
       v-if="!isError"
-      :data="isTourActive ? tourData : data"
-      :update="handleUpdate"
       :loading="isPending"
     />
     <Card
@@ -71,8 +74,6 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 
     <template #sidebar-content="{ isExpanded, toggleSidebar }">
       <EncounterSidebar
-        :data="data"
-        :update="handleUpdate"
         :is-expanded="isExpanded"
         @toggle-sidebar="toggleSidebar"
       />

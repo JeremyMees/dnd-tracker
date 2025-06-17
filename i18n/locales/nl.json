@@ -228,8 +228,7 @@
     "home": {
       "textBlock1": {
         "title": "Met liefde gemaakt",
-        "text": "Wat begon als een encounter tracker die we voor wat vrienden ineen hebben geknutseld, werd al gauw een project om GM's echt te ondersteunen in hun campagnes. We blijven de DND Tracker uitbreiden met meer en meer ideeën en input. Zo wordt D&D spelen nog spannender, mysterieuzer en vooral vlotter.",
-        "button": "Probeer zonder account"
+        "text": "Wat begon als een encounter tracker die we voor wat vrienden ineen hebben geknutseld, werd al gauw een project om GM's echt te ondersteunen in hun campagnes. We blijven de DND Tracker uitbreiden met meer en meer ideeën en input. Zo wordt D&D spelen nog spannender, mysterieuzer en vooral vlotter."
       },
       "textBlock2": {
         "title": " Game Master zijn is al uitdagend genoeg",
@@ -261,12 +260,12 @@
         "item3": {
           "title": "Zijn betalingen echt eenmalig?",
           "content": "Ja, je betaalt eenmalig een bedrag voor een abonnement dat je voor altijd gebruikt."
-        } 
+        }
       },
       "ctaBanner": {
         "title": "Klaar om je D&D ervaring te verbeteren?",
         "text": "Laat je creativiteit de vrije loop met hulpmiddelen voor elk avontuur.",
-        "button": "Begin met Creëren"
+        "button": "Begin met creëren"
       },
       "globe": {
         "title": "Gemaakt in België"
@@ -372,8 +371,8 @@
         }
       },
       "back": {
-        "encounters": "Terug naar encounters lijst",
-        "campaigns": "Terug naar campagne: {campaign}"
+        "encounters": "Encounters lijst",
+        "campaigns": "Campagne: {campaign}"
       }
     },
     "register": {
@@ -612,7 +611,10 @@
       "button": "Oke"
     },
     "hero": {
-      "start": "Laat het spelen beginnen"
+      "title": "Voer meeslepende D&D campagnes op jouw manier",
+      "description": "Een open-source platform om je campagnes te beheren, je party bij te houden en encounters uit te spelen. Gemaakt voor DM's die vrijheid, focus en flexibiliteit willen.",
+      "start": "Beginnen",
+      "try": "Probeer zonder account"
     },
     "linkModal": {
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
@@ -763,7 +765,6 @@
       "play": "Spelen",
       "fantasy": "Fantasienaam generator",
       "dnd-content": "DnD inhoud",
-      "map": "Map maker",
       "playground": "Encounter playground",
       "bug": "Bug rapport",
       "socials": "Socials",
@@ -809,7 +810,8 @@
         "fairy": "Fee",
         "redcap": "Paddenstoel",
         "wolf-rider": "Wolf rijder"
-      }
+      },
+      "negative": "Sta HP en AC toe negatief te zijn"
     },
     "infoCard": {
       "add": "Pin toevoegen",

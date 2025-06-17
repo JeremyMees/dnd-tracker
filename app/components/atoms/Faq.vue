@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <div class="flex flex-col gap-4 max-w-4xl w-full">
-    <h2 class="gradient-text mx-auto">
+    <h2 class="mx-auto">
       {{ title }}
     </h2>
     <UiAccordion
