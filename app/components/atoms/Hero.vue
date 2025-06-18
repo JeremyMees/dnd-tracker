@@ -17,12 +17,12 @@
           </NuxtLinkLocale>
           <NuxtLinkLocale
             to="/playground"
-            class="btn-background flex items-center justify-center gap-2"
+            class="btn-background flex items-center justify-center gap-2 group"
           >
             {{ $t('components.hero.try') }}
             <Icon
               name="tabler:arrow-up-right"
-              class="size-6 min-w-6"
+              class="size-6 min-w-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
               :aria-hidden="true"
             />
           </NuxtLinkLocale>
