@@ -5,9 +5,10 @@ const blob = ref<HTMLDivElement>()
 let mouseMoveHandler: ((event: MouseEvent) => void) | null = null
 
 onMounted(() => {
-  const isFirefox = typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent)
+  const isFirefox = /firefox/i.test(navigator.userAgent)
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
 
-  if (!isFirefox) {
+  if (!isFirefox && !isSafari) {
     showBlob.value = true
 
     mouseMoveHandler = (event) => {
