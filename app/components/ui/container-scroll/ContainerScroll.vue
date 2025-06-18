@@ -1,25 +1,3 @@
-<template>
-  <div
-    ref="containerRef"
-    class="relative flex h-[60rem] items-center justify-center md:h-[80rem] dnd-container"
-  >
-    <div
-      class="relative w-full pt-10 md:pt-40"
-      style="perspective: 1000px"
-    >
-      <UiContainerScrollTitle :translate="translateY">
-        <slot name="title" />
-      </UiContainerScrollTitle>
-      <UiContainerScrollCard
-        :rotate="rotate"
-        :scale="scale"
-      >
-        <slot name="card" />
-      </UiContainerScrollCard>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useWindowSize, useScroll, useElementBounding } from '@vueuse/core'
 import { ref, onMounted, onUnmounted, computed } from 'vue'
@@ -58,3 +36,25 @@ const scale = computed(() => {
 })
 const translateY = computed(() => -100 * scrollYProgress.value)
 </script>
+
+<template>
+  <div
+    ref="containerRef"
+    class="relative flex h-[50rem] items-center justify-center md:h-[80rem] dnd-container"
+  >
+    <div
+      class="relative w-full pt-10 md:pt-40"
+      style="perspective: 1000px"
+    >
+      <UiContainerScrollTitle :translate="translateY">
+        <slot name="title" />
+      </UiContainerScrollTitle>
+      <UiContainerScrollCard
+        :rotate="rotate"
+        :scale="scale"
+      >
+        <slot name="card" />
+      </UiContainerScrollCard>
+    </div>
+  </div>
+</template>

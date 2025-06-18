@@ -1,3 +1,21 @@
+<script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    radialGradient?: boolean
+    class?: string
+  }>(), {
+    radialGradient: true,
+  },
+)
+
+const animation = ref(false)
+
+onMounted(() => {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  animation.value = !isSafari
+})
+</script>
+
 <template>
   <main>
     <div
@@ -19,7 +37,7 @@
               '[--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)]',
               '[background-image:var(--white-gradient),var(--aurora)] dark:[background-image:var(--dark-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%]',
               'aurora-background-gradient-after',
-              'aurora-gradient-animation',
+              animation ? 'aurora-gradient-animation' : '',
               props.radialGradient
                 && `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`,
             )
@@ -30,19 +48,6 @@
     </div>
   </main>
 </template>
-
-<script setup lang="ts">
-import { cn } from '@/utils/shadcn'
-
-interface AuroraBackgroundProps {
-  radialGradient?: boolean
-  class?: string
-}
-
-const props = withDefaults(defineProps<AuroraBackgroundProps>(), {
-  radialGradient: true,
-})
-</script>
 
 <style scoped>
 .aurora-background-gradient-after {

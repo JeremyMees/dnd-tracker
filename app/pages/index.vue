@@ -30,7 +30,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         </LazyTitleText>
       </div>
       <LazyDragon ref="dragon" />
-      <div class="dnd-container pt-[200px] flex items-center gap-4">
+      <div class="dnd-container pt-20 md:pt-[200px] flex items-center gap-4">
         <img
           src="/art/flame.svg"
           alt="Hearth"
@@ -60,7 +60,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         </template>
         <template #card>
           <NuxtImg
-            src="/encounter.png"
+            src="/initiative-sheet.png"
             alt="Encounter"
             sizes="sm:1000px md:1000px lg:1000px"
             width="1852"

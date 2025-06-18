@@ -1,6 +1,6 @@
 {
   "version": "v2.0.0",
-  "date": "2025-06-10",
+  "date": "2025-06-18",
   "features": [
     {
       "title": "New",
@@ -9,10 +9,19 @@
           "text": "Complete rewrite of the app ✨"
         },
         {
-          "text": "Performance updates"
+          "text": "The rows in the initiative sheet can now be expanded to show attack information"
+        },
+        {
+          "text": "The maximum HP or AC is visible on the initiative sheet when the HP or AC value is not at its maximum"
         },
         {
           "text": "Send your campaign notes to your players via email"
+        },
+        {
+          "text": "Extra initiative sheet option that allows Hp or Ac to go negative"
+        },
+        {
+          "text": "Rich text editor for notes"
         }
       ]
     },
@@ -20,10 +29,16 @@
       "title": "Improvements",
       "items": [
         {
-          "text": "Rich text editor for notes"
+          "text": "Sidebar layout to give more space to the content"
         },
         {
           "text": "Campaign content page is split up in encounter, homebrew and note pages"
+        },
+        {
+          "text": "A lot of accessibility improvements"
+        },
+        {
+          "text": "Performance updates"
         }
       ]
     },

@@ -1,3 +1,9 @@
+<script setup lang="ts">
+defineProps<{
+  translate: number
+}>()
+</script>
+
 <template>
   <div
     :style="{ transform: `translateY(${translate}px)` }"
@@ -6,9 +12,3 @@
     <slot />
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps({
-  translate: Number,
-})
-</script>

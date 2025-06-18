@@ -111,6 +111,7 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
                   name="initiative"
                   label="MOD"
                   validation="between:-20,20|number"
+                  :value="row.initiative_modifier"
                   type="number"
                   number
                   min="-20"
