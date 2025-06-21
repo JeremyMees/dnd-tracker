@@ -2,6 +2,8 @@
 import { Motion } from 'motion-v'
 import type { NuxtError } from '#app'
 
+useSeo('Error')
+
 defineProps({
   error: Object as () => NuxtError,
 })
