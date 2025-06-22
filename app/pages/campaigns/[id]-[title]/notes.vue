@@ -155,14 +155,12 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
             :count="count"
             :max="max"
           />
-          <button
-            class="btn-primary"
-            :aria-label="$t('actions.create')"
-            :disabled="status === 'pending' || (count || 0) >= max"
-            @click="openModal()"
-          >
-            {{ $t('actions.create') }}
-          </button>
+          <CreateButton
+            :allow-create="isDefined(count) ? count < max : false"
+            :disabled="status === 'pending'"
+            :loading="data?.notes === null"
+            @create="openModal()"
+          />
         </div>
       </template>
 
