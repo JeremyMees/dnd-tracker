@@ -200,43 +200,52 @@ async function fetchPermissions() {
           }}
         </div>
 
-        <UiPagination
-          v-model:page="internalPage"
-          :data-test-pagination="internalPage"
-          :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
-          :items-per-page="pagination.pageSize"
-          :disabled="loading"
-          class="flex items-center gap-6 w-fit"
-        >
-          <div class="text-sm text-muted-foreground">
-            {{
-              $t('components.pagination.page', {
-                page: internalPage,
-                pages: Math.max(1, options?.pageCount || 0),
-              })
-            }}
-          </div>
-          <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background">
-            <UiPaginationFirst
-              :disabled="!table.getCanPreviousPage()"
-              class="border-0 border-r rounded-r-none border-r-foreground"
-            />
-            <UiPaginationPrev
-              data-test-pagination-prev
-              :disabled="!table.getCanPreviousPage()"
-              class="border-0 border-r rounded-r-none border-r-foreground"
-            />
-            <UiPaginationNext
-              data-test-pagination-next
-              :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
-              class="border-0 border-r rounded-r-none border-r-foreground"
-            />
-            <UiPaginationLast
-              :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
-              class="border-0"
-            />
-          </div>
-        </UiPagination>
+        <ClientOnly>
+          <UiPagination
+            v-model:page="internalPage"
+            :data-test-pagination="internalPage"
+            :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
+            :items-per-page="pagination.pageSize"
+            :disabled="loading"
+            class="flex items-center gap-6 w-fit"
+          >
+            <div class="text-sm text-muted-foreground">
+              {{
+                $t('components.pagination.page', {
+                  page: internalPage,
+                  pages: Math.max(1, options?.pageCount || 0),
+                })
+              }}
+            </div>
+            <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background">
+              <UiPaginationFirst
+                :disabled="!table.getCanPreviousPage()"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationPrev
+                data-test-pagination-prev
+                :disabled="!table.getCanPreviousPage()"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationNext
+                data-test-pagination-next
+                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationLast
+                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                class="border-0"
+              />
+            </div>
+          </UiPagination>
+
+          <template #fallback>
+            <div class="flex items-center gap-6 w-fit">
+              <UiSkeleton class="w-16 h-5 rounded-full" />
+              <UiSkeleton class="w-[136px] h-10" />
+            </div>
+          </template>
+        </ClientOnly>
       </div>
     </div>
 
