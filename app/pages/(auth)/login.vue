@@ -51,20 +51,24 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
     </FormKit>
 
     <UiSeparator
-      class="mt-6 mb-4"
+      class="mt-6 mb-2"
       :label="$t('general.or')"
     />
 
     <div class="flex flex-wrap gap-2 justify-center">
       <NuxtLinkLocale
         to="/register"
-        class="btn-text"
+        class="btn-text flex-1 grow"
       >
         {{ $t('pages.login.new') }}
       </NuxtLinkLocale>
+      <UiSeparator
+        orientation="vertical"
+        class="h-8"
+      />
       <NuxtLinkLocale
         to="/forgot-password"
-        class="btn-text"
+        class="btn-text flex-1 grow"
       >
         {{ $t('pages.login.forgot') }}
       </NuxtLinkLocale>
