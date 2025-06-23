@@ -137,51 +137,59 @@ async function fetchPermissions() {
           </UiTableRow>
         </UiTableHeader>
 
-        <UiTableBody>
-          <template v-if="table.getRowModel().rows?.length">
-            <template
-              v-for="row in table.getRowModel().rows"
-              :key="row.id"
-            >
-              <UiTableRow :data-state="row.getIsSelected() && 'selected'">
-                <UiTableCell
-                  v-for="cell in row.getVisibleCells()"
-                  :key="cell.id"
-                  :data-pinned="cell.column.getIsPinned()"
-                  :class="cn(
-                    { 'sticky bg-background/95': cell.column.getIsPinned() },
-                    cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
-                  )"
-                >
-                  <FlexRender
-                    :render="cell.column.columnDef.cell"
-                    :props="cell.getContext()"
-                  />
-                </UiTableCell>
-              </UiTableRow>
-              <UiTableRow v-if="expandedMarkup && row.getIsExpanded()">
-                <UiTableCell :colspan="row.getAllCells().length">
-                  <FlexRender :render="expandedMarkup(row)" />
-                </UiTableCell>
-              </UiTableRow>
+        <ClientOnly>
+          <UiTableBody>
+            <template v-if="table.getRowModel().rows?.length">
+              <template
+                v-for="row in table.getRowModel().rows"
+                :key="row.id"
+              >
+                <UiTableRow :data-state="row.getIsSelected() && 'selected'">
+                  <UiTableCell
+                    v-for="cell in row.getVisibleCells()"
+                    :key="cell.id"
+                    :data-pinned="cell.column.getIsPinned()"
+                    :class="cn(
+                      { 'sticky bg-background/95': cell.column.getIsPinned() },
+                      cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
+                    )"
+                  >
+                    <FlexRender
+                      :render="cell.column.columnDef.cell"
+                      :props="cell.getContext()"
+                    />
+                  </UiTableCell>
+                </UiTableRow>
+                <UiTableRow v-if="expandedMarkup && row.getIsExpanded()">
+                  <UiTableCell :colspan="row.getAllCells().length">
+                    <FlexRender :render="expandedMarkup(row)" />
+                  </UiTableCell>
+                </UiTableRow>
+              </template>
             </template>
+
+            <slot
+              v-else-if="loading"
+              name="loading"
+            />
+
+            <UiTableRow v-else>
+              <UiTableCell
+                data-test-empty
+                :colspan="columns.length"
+                class="h-24 text-center text-muted-foreground"
+              >
+                {{ emptyMessage || '' }}
+              </UiTableCell>
+            </UiTableRow>
+          </UiTableBody>
+
+          <template #fallback>
+            <UiTableBody>
+              <slot name="loading" />
+            </UiTableBody>
           </template>
-
-          <slot
-            v-else-if="loading"
-            name="loading"
-          />
-
-          <UiTableRow v-else>
-            <UiTableCell
-              data-test-empty
-              :colspan="columns.length"
-              class="h-24 text-center text-muted-foreground"
-            >
-              {{ emptyMessage || '' }}
-            </UiTableCell>
-          </UiTableRow>
-        </UiTableBody>
+        </ClientOnly>
       </UiTable>
 
       <div
