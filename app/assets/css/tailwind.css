@@ -18,7 +18,7 @@
   }
 
   .btn-text {
-    @apply text-[0.75rem] leading-[1.25rem] underline text-center mt-1 cursor-pointer;
+    @apply text-xs text-muted-foreground underline underline-offset-2 text-center mt-1 cursor-pointer;
   }
 }
 
