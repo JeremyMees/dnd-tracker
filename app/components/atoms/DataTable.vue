@@ -116,23 +116,33 @@ async function fetchPermissions() {
               )"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >
-              <div
-                class="flex items-center gap-2 w-fit"
-                :class="{
-                  'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
-                }"
-              >
-                <FlexRender
-                  v-if="!header.isPlaceholder"
-                  :render="header.column.columnDef.header"
-                  :props="header.getContext()"
-                />
-                <Icon
-                  v-if="header.column.getIsSorted()"
-                  :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
-                  class="size-4"
-                />
-              </div>
+              <ClientOnly>
+                <div
+                  class="flex items-center gap-2 w-fit"
+                  :class="{
+                    'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
+                  }"
+                >
+                  <FlexRender
+                    v-if="!header.isPlaceholder"
+                    :render="header.column.columnDef.header"
+                    :props="header.getContext()"
+                  />
+                  <Icon
+                    v-if="header.column.getIsSorted()"
+                    :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
+                    class="size-4"
+                  />
+                </div>
+
+                <template #fallback>
+                  <FlexRender
+                    v-if="!header.isPlaceholder"
+                    :render="header.column.columnDef.header"
+                    :props="header.getContext()"
+                  />
+                </template>
+              </ClientOnly>
             </UiTableHead>
           </UiTableRow>
         </UiTableHeader>
