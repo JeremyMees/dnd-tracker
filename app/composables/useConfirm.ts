@@ -47,10 +47,9 @@ export function useConfirmDialogs() {
 
 export function useConfirm() {
   const { dialogs } = useConfirmDialogs()
+  const { t } = useI18n()
 
   function ask(config: ConfirmConfig, callback: (confirmed: boolean) => any) {
-    const { t } = useI18n()
-
     dialogs.value.push(
       Object.assign(
         {
