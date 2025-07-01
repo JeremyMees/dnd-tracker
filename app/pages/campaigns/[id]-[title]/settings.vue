@@ -23,7 +23,10 @@ const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
 
   return [
     {
-      user: props.current.created_by,
+      user: {
+        ...props.current.created_by,
+        subscription_type: 'pro' as SubscriptionType,
+      },
       role: 'Owner' as UserRole,
       id: 0,
     },
@@ -114,7 +117,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
 <template>
   <section class="space-y-2">
     <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-secondary">
-      <div class="md:min-w-[300px]">
+      <div class="lg:min-w-[300px] lg:max-w-[300px]">
         <h2>
           {{ $t('pages.campaign.settings.access') }}
           <span class="text-[12px]">
@@ -266,8 +269,8 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 pt-6">
-      <div class="md:min-w-[300px]">
+    <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 pt-6">
+      <div class="lg:min-w-[300px] lg:max-w-[300px]">
         <h2>
           {{ $t('pages.campaign.settings.campaign') }}
         </h2>
