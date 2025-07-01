@@ -856,6 +856,7 @@
       "title": "Overdracht van eigendom {campaign}",
       "text": "Ben je er zeker van dat je de eigendom van de {campaign} campagne wilt overdragen? Let op dat deze actie onomkeerbaar is, tenzij de nieuwe eigenaar besluit dit terug te draaien. Als je absoluut zeker bent, voer {campaign} in het invoerveld in en ga vervolgens verder met overdragen.",
       "removed": "Geen team lid meer (verdwijderd)",
+      "free": "De geselecteerde nieuwe eigenaar heeft geen pro abonnement. Iedereen zal toegang verliezen tot de campagne, inclusief jij. De enige persoon met toegang is de nieuwe eigenaar.",
       "toast": {
         "success": {
           "title": "De eigendom is succesvol overgedragen aan {username}"

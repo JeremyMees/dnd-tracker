@@ -170,7 +170,7 @@ export interface TeamMember extends Omit<TeamRow, 'user' | 'campaign' | 'created
 }
 
 export interface TeamMemberFull extends Omit<TeamRow, 'user' | 'campaign' | 'created_at'> {
-  user: Profile
+  user: Profile & { subscription_type: SubscriptionType }
 }
 
 export interface CampaignItem extends Omit<CampaignRow, 'team' | 'created_by'> {
