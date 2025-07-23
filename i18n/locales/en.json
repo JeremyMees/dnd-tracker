@@ -1,5 +1,7 @@
 {
   "actions": {
+    "increase": "Increase",
+    "decrease": "Decrease",
     "back": "Back",
     "expand": "Expand",
     "collapse": "Collapse",

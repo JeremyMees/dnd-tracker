@@ -1,5 +1,7 @@
 {
   "actions": {
+    "increase": "Verhogen",
+    "decrease": "Verlagen",
     "back": "Terug",
     "expand": "Uitklappen",
     "collapse": "Inklappen",

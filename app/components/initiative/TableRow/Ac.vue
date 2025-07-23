@@ -215,11 +215,11 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
               @click="selectedType = 'add'"
             >
               <Icon
-                name="tabler:plus"
+                name="tabler:arrow-big-up"
                 class="size-4 min-w-4"
                 aria-hidden="true"
               />
-              {{ $t('actions.heal') }}
+              {{ $t('actions.increase') }}
             </FormKit>
             <FormKit
               type="submit"
@@ -239,11 +239,11 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
               @click="selectedType = 'remove'"
             >
               <Icon
-                name="tabler:sword"
+                name="tabler:arrow-big-down"
                 class="size-4 min-w-4"
                 aria-hidden="true"
               />
-              {{ $t('actions.damage') }}
+              {{ $t('actions.decrease') }}
             </FormKit>
           </div>
         </FormKit>
