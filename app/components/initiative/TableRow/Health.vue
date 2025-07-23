@@ -115,8 +115,8 @@ function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
 
     const downed = typeof row.health === 'number' && row.health <= 0
 
-    // if the health is 0 or less, add 2 death save failures
-    if (hasDeathSaves(row.type) && downed) {
+    // When the creature has 0hp and get damage, add 2 death save failures
+    if (hasDeathSaves(row.type) && noHp) {
       if (!row.deathSaves) {
         row.deathSaves = {
           fail: [false, false, false],

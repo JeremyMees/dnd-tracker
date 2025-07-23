@@ -88,7 +88,7 @@ describe('Initiative table row health', async () => {
     expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
   })
 
-  it('Should handle death saves when health reaches 0', async () => {
+  it('Should not add death saves when health reaches 0', async () => {
     const component = await mountSuspended(Health, {
       props: {
         item: {
@@ -113,6 +113,36 @@ describe('Initiative table row health', async () => {
     expect(payload).toBeDefined()
     const resultRow = payload.rows[0]
     expect(resultRow).toBeDefined()
+    // When health goes from 5 to 0, death saves should not be added
+    expect(resultRow?.deathSaves?.fail).toEqual([false, false, false])
+  })
+
+  it('Should add death saves when health is 0 and gets damage', async () => {
+    const component = await mountSuspended(Health, {
+      props: {
+        item: {
+          ...props.item,
+          health: 0,
+          type: 'player',
+          deathSaves: {
+            fail: [false, false, false],
+            save: [false, false, false],
+          },
+        },
+      },
+      provide,
+    })
+
+    const vm = component.vm as unknown as HealthTestMethods
+    const updatedRow = vm.handleHpChanges(10, 'damage')
+    await vm.updateRow(updatedRow)
+
+    expect(mockUpdate).toHaveBeenCalled()
+    const payload = mockUpdate.mock.calls[0]?.[0] as { rows: InitiativeSheetRow[] }
+    expect(payload).toBeDefined()
+    const resultRow = payload.rows[0]
+    expect(resultRow).toBeDefined()
+    // When health is 0 and gets damage, death saves should be added
     expect(resultRow?.deathSaves?.fail).toEqual([true, true, false])
   })
 
@@ -188,7 +218,7 @@ describe('Initiative table row health', async () => {
     })
   })
 
-  it('Should show death toast when health goes below negative max health', async () => {
+  it('Should show downed toast when health reaches 0', async () => {
     const component = await mountSuspended(Health, {
       props: {
         item: {
@@ -206,8 +236,8 @@ describe('Initiative table row health', async () => {
     await vm.updateRow(updatedRow)
 
     expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching('components.initiativeTable.died.title'),
-      description: expect.stringMatching('components.initiativeTable.died.textMinHP'),
+      title: expect.stringMatching('components.initiativeTable.downed.title'),
+      description: expect.stringMatching('components.initiativeTable.downed.text'),
       variant: 'info',
     })
   })
