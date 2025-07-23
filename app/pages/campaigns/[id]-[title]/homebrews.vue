@@ -115,14 +115,13 @@ function invalidateQueries(): void {
             :count="count || 0"
             :max="max"
           />
-          <button
-            class="btn-primary"
-            :aria-label="$t('actions.create')"
+          <CreateButton
+            :allow-create="isDefined(count) ? count < max : false"
             :disabled="status === 'pending'"
-            @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
-          >
-            {{ $t('actions.create') }}
-          </button>
+            :loading="data?.homebrews === null"
+            @create="openModal()"
+            @hit-limit="limitCta?.show()"
+          />
         </div>
       </template>
 

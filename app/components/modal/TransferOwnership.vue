@@ -18,6 +18,13 @@ const { mutateAsync: createTeamMember } = useTeamMemberCreate()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
+const currentTeamMember = ref<string>()
+
+const currentTeamMemberSubscription = computed<SubscriptionType | undefined>(() => {
+  const member = props.current.team?.find(t => t.user.id === currentTeamMember.value)
+  return member?.user.subscription_type
+})
+
 interface TransformForm {
   title: string
   role: UserRole | 'Remove'
@@ -39,7 +46,10 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
 
   if (!newOwner) return
 
-  if (formData.role !== 'Remove') {
+  if (
+    currentTeamMemberSubscription.value === 'pro'
+    && formData.role !== 'Remove'
+  ) {
     await createTeamMember({
       data: {
         role: formData.role,
@@ -99,7 +109,16 @@ async function handleSubmit(form: TransformForm, node: FormNode): Promise<void> 
         label: `${user.name} (${user.username})`,
         value: user.id,
       }))"
+      @input="currentTeamMember = $event"
     />
+    <AnimationExpand>
+      <div
+        v-if="currentTeamMemberSubscription && currentTeamMemberSubscription !== 'pro'"
+        class="text-sm text-destructive-foreground bg-destructive/50 border-2 border-destructive rounded-md p-2"
+      >
+        {{ $t('components.transferOwnershipModal.free') }}
+      </div>
+    </AnimationExpand>
     <I18nT
       keypath="components.transferOwnershipModal.text"
       tag="p"

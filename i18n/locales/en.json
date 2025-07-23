@@ -143,7 +143,7 @@
     "forever": "Forever",
     "link": "Link | links",
     "noSelected": "Nothing selected",
-    "or": "of",
+    "or": "or",
     "of": "of",
     "page": "Page | Pages",
     "option": "Option | Options",
@@ -856,6 +856,7 @@
       "title": "Transfer ownership from {campaign}",
       "text": "Are you certain about transferring ownership from the {campaign} campaign? Please note that this action is irreversible unless the new owner decides to revert it. If you are absolutely sure, Enter {campaign} in the input field and then proceed to transfer.",
       "removed": "No more team member (removed)",
+      "free": "The currently selected new owner doesn't have a pro subscription. Everyone will lose access to the campaign including you. The only person with access is the new owner.",
       "toast": {
         "success": {
           "title": "Ownership has been successfully transferred to {username}"

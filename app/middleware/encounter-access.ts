@@ -13,7 +13,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const { data } = await getEncounter(encounterId)
 
     // Owner can always access the page
-    if (data.created_by === user.value?.id) return
+    if (
+      data.campaign
+        ? data.campaign.created_by.id === user.value?.id
+        : data.created_by === user.value?.id
+    ) return
 
     // If no campaign is associated or user is not a team member, deny access
     if (!data.campaign || !data.campaign.team.some(member => member.user.id === user.value?.id)) {

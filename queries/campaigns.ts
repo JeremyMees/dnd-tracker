@@ -14,12 +14,12 @@ export function useCampaignDetail(id: number) {
         team(
           id,
           role,
-          user(id, username, avatar, name, email)
+          user(id, username, avatar, name, email, subscription_type)
         ), 
         join_campaign(
           id,
           role,
-          user(id, username, avatar, name, email)
+          user(id, username, avatar, name, email, subscription_type)
         )
       `)
       .eq('id', id)

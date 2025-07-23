@@ -47,8 +47,10 @@ export const isEncounterMember = defineAbility((user: AuthUser, encounter: Encou
   return strict ? member && !owner && !admin : member || admin || owner
 })
 
-export const canUpdateEncounter = defineAbility((user: AuthUser, encounter: Encounter) => {
-  const owner = isOwner(encounter, user.id)
+export const canUpdateEncounter = defineAbility((user: AuthUser, encounter: Encounter, isCampaign = false) => {
+  const owner = isCampaign
+    ? encounter.campaign?.created_by.id === user.id
+    : isOwner(encounter, user.id)
   const admin = isAdmin(encounter.campaign?.team || [], user.id)
   const member = isMember(encounter.campaign?.team || [], user.id)
 

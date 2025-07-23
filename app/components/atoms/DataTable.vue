@@ -116,72 +116,90 @@ async function fetchPermissions() {
               )"
               @click="header.column.getToggleSortingHandler()?.($event)"
             >
-              <div
-                class="flex items-center gap-2 w-fit"
-                :class="{
-                  'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
-                }"
-              >
-                <FlexRender
-                  v-if="!header.isPlaceholder"
-                  :render="header.column.columnDef.header"
-                  :props="header.getContext()"
-                />
-                <Icon
-                  v-if="header.column.getIsSorted()"
-                  :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
-                  class="size-4"
-                />
-              </div>
+              <ClientOnly>
+                <div
+                  class="flex items-center gap-2 w-fit"
+                  :class="{
+                    'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
+                  }"
+                >
+                  <FlexRender
+                    v-if="!header.isPlaceholder"
+                    :render="header.column.columnDef.header"
+                    :props="header.getContext()"
+                  />
+                  <Icon
+                    v-if="header.column.getIsSorted()"
+                    :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
+                    class="size-4"
+                  />
+                </div>
+
+                <template #fallback>
+                  <FlexRender
+                    v-if="!header.isPlaceholder"
+                    :render="header.column.columnDef.header"
+                    :props="header.getContext()"
+                  />
+                </template>
+              </ClientOnly>
             </UiTableHead>
           </UiTableRow>
         </UiTableHeader>
 
-        <UiTableBody>
-          <template v-if="table.getRowModel().rows?.length">
-            <template
-              v-for="row in table.getRowModel().rows"
-              :key="row.id"
-            >
-              <UiTableRow :data-state="row.getIsSelected() && 'selected'">
-                <UiTableCell
-                  v-for="cell in row.getVisibleCells()"
-                  :key="cell.id"
-                  :data-pinned="cell.column.getIsPinned()"
-                  :class="cn(
-                    { 'sticky bg-background/95': cell.column.getIsPinned() },
-                    cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
-                  )"
-                >
-                  <FlexRender
-                    :render="cell.column.columnDef.cell"
-                    :props="cell.getContext()"
-                  />
-                </UiTableCell>
-              </UiTableRow>
-              <UiTableRow v-if="expandedMarkup && row.getIsExpanded()">
-                <UiTableCell :colspan="row.getAllCells().length">
-                  <FlexRender :render="expandedMarkup(row)" />
-                </UiTableCell>
-              </UiTableRow>
+        <ClientOnly>
+          <UiTableBody>
+            <template v-if="table.getRowModel().rows?.length">
+              <template
+                v-for="row in table.getRowModel().rows"
+                :key="row.id"
+              >
+                <UiTableRow :data-state="row.getIsSelected() && 'selected'">
+                  <UiTableCell
+                    v-for="cell in row.getVisibleCells()"
+                    :key="cell.id"
+                    :data-pinned="cell.column.getIsPinned()"
+                    :class="cn(
+                      { 'sticky bg-background/95': cell.column.getIsPinned() },
+                      cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
+                    )"
+                  >
+                    <FlexRender
+                      :render="cell.column.columnDef.cell"
+                      :props="cell.getContext()"
+                    />
+                  </UiTableCell>
+                </UiTableRow>
+                <UiTableRow v-if="expandedMarkup && row.getIsExpanded()">
+                  <UiTableCell :colspan="row.getAllCells().length">
+                    <FlexRender :render="expandedMarkup(row)" />
+                  </UiTableCell>
+                </UiTableRow>
+              </template>
             </template>
+
+            <slot
+              v-else-if="loading"
+              name="loading"
+            />
+
+            <UiTableRow v-else>
+              <UiTableCell
+                data-test-empty
+                :colspan="columns.length"
+                class="h-24 text-center text-muted-foreground"
+              >
+                {{ emptyMessage || '' }}
+              </UiTableCell>
+            </UiTableRow>
+          </UiTableBody>
+
+          <template #fallback>
+            <UiTableBody>
+              <slot name="loading" />
+            </UiTableBody>
           </template>
-
-          <slot
-            v-else-if="loading"
-            name="loading"
-          />
-
-          <UiTableRow v-else>
-            <UiTableCell
-              data-test-empty
-              :colspan="columns.length"
-              class="h-24 text-center text-muted-foreground"
-            >
-              {{ emptyMessage || '' }}
-            </UiTableCell>
-          </UiTableRow>
-        </UiTableBody>
+        </ClientOnly>
       </UiTable>
 
       <div
@@ -200,43 +218,52 @@ async function fetchPermissions() {
           }}
         </div>
 
-        <UiPagination
-          v-model:page="internalPage"
-          :data-test-pagination="internalPage"
-          :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
-          :items-per-page="pagination.pageSize"
-          :disabled="loading"
-          class="flex items-center gap-6 w-fit"
-        >
-          <div class="text-sm text-muted-foreground">
-            {{
-              $t('components.pagination.page', {
-                page: internalPage,
-                pages: Math.max(1, options?.pageCount || 0),
-              })
-            }}
-          </div>
-          <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background">
-            <UiPaginationFirst
-              :disabled="!table.getCanPreviousPage()"
-              class="border-0 border-r rounded-r-none border-r-foreground"
-            />
-            <UiPaginationPrev
-              data-test-pagination-prev
-              :disabled="!table.getCanPreviousPage()"
-              class="border-0 border-r rounded-r-none border-r-foreground"
-            />
-            <UiPaginationNext
-              data-test-pagination-next
-              :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
-              class="border-0 border-r rounded-r-none border-r-foreground"
-            />
-            <UiPaginationLast
-              :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
-              class="border-0"
-            />
-          </div>
-        </UiPagination>
+        <ClientOnly>
+          <UiPagination
+            v-model:page="internalPage"
+            :data-test-pagination="internalPage"
+            :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
+            :items-per-page="pagination.pageSize"
+            :disabled="loading"
+            class="flex items-center gap-6 w-fit"
+          >
+            <div class="text-sm text-muted-foreground">
+              {{
+                $t('components.pagination.page', {
+                  page: internalPage,
+                  pages: Math.max(1, options?.pageCount || 0),
+                })
+              }}
+            </div>
+            <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background">
+              <UiPaginationFirst
+                :disabled="!table.getCanPreviousPage()"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationPrev
+                data-test-pagination-prev
+                :disabled="!table.getCanPreviousPage()"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationNext
+                data-test-pagination-next
+                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                class="border-0 border-r rounded-r-none border-r-foreground"
+              />
+              <UiPaginationLast
+                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                class="border-0"
+              />
+            </div>
+          </UiPagination>
+
+          <template #fallback>
+            <div class="flex items-center gap-6 w-fit">
+              <UiSkeleton class="w-16 h-5 rounded-full" />
+              <UiSkeleton class="w-[136px] h-10" />
+            </div>
+          </template>
+        </ClientOnly>
       </div>
     </div>
 

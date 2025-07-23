@@ -44,6 +44,7 @@ const { data, status } = useEncounterListing(computed(() => {
 const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
 
 const columns = generateColumns({
+  isCampaign: !!props.campaignId,
   onShare: async (item: EncounterItem) => await shareEncounter(item),
   onUpdate: (item: EncounterItem) => openModal(item),
   onCopy: async ({ data }: { data: EncounterItem }) => await copyEncounter({ data }),
@@ -75,6 +76,7 @@ async function shareEncounter(item: EncounterItem): Promise<void> {
     })
   }
 }
+
 function openModal(item?: EncounterItem): void {
   modal.open({
     component: 'Encounter',
@@ -128,7 +130,7 @@ function invalidateQueries(): void {
         pageCount: data?.pages ?? -1,
         initialState,
       }"
-      :permission="(item: EncounterItem) => allows(canUpdateEncounter, item)"
+      :permission="(item: EncounterItem) => allows(canUpdateEncounter, item, !!campaignId)"
       :empty-message="$t('components.table.nothing', { item: $t('general.encounter', 2).toLowerCase() })"
       @remove="removeItems"
       @invalidate="invalidateQueries"
@@ -140,14 +142,13 @@ function invalidateQueries(): void {
             :count="count"
             :max="max"
           />
-          <button
-            class="btn-primary"
-            :aria-label="$t('actions.create')"
+          <CreateButton
+            :allow-create="isDefined(count) ? count < max : false"
             :disabled="status === 'pending'"
-            @click="() => (count || 0) >= max ? limitCta?.show() : openModal()"
-          >
-            {{ $t('actions.create') }}
-          </button>
+            :loading="data?.encounters === null"
+            @create="openModal()"
+            @hit-limit="limitCta?.show()"
+          />
         </div>
       </template>
 

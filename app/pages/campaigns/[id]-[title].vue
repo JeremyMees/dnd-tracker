@@ -59,7 +59,7 @@ const tabs = computed<Tab[]>(() => {
 <template>
   <NuxtLayout name="sidebar">
     <template #header>
-      <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
+      <div class="flex gap-x-4 gap-y-2 items-center">
         <NuxtLinkLocale
           v-tippy="$t('actions.back')"
           to="/campaigns"

@@ -5,12 +5,17 @@ import { NuxtTime } from '#components'
 const columnHelper = createColumnHelper<EncounterItem>()
 
 interface ColumnOptions {
+  isCampaign: boolean
   onShare: (item: EncounterItem) => void
   onCopy: (data: { data: EncounterItem }) => void
   onUpdate: (item: EncounterItem) => void
 }
 
-export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
+function isCampaignOwner(user: AuthUser, encounter: EncounterItem) {
+  return user.id === encounter.campaign?.created_by.id
+}
+
+export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: ColumnOptions) {
   const { t } = useI18n()
   const user = useAuthenticatedUser()
 
@@ -24,7 +29,7 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
       }),
       cell: ({ row }) => permission({
         ability: canUpdateEncounter,
-        args: [row.original],
+        args: [row.original, isCampaign],
         children: selectButton({
           checked: row.getIsSelected(),
           cb: row.getToggleSelectedHandler(),
@@ -62,10 +67,19 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
       enableSorting: false,
       header: t('general.role'),
       cell: ({ row }) => {
-        const hasTeam = row.original.campaign?.team
-        const owner = isOwner(row.original, user.value.id)
-        const admin = hasTeam ? isAdmin(row.original.campaign.team, user.value.id) : false
-        const member = hasTeam ? isMember(row.original.campaign.team, user.value.id) : false
+        const hasTeam = !!row.original.campaign?.team?.length
+
+        const owner = isCampaign
+          ? isCampaignOwner(user.value, row.original)
+          : isOwner(row.original, user.value.id)
+
+        const admin = hasTeam
+          ? isAdmin(row.original.campaign.team, user.value.id)
+          : false
+
+        const member = hasTeam
+          ? isMember(row.original.campaign.team, user.value.id)
+          : false
 
         if (admin) return t('general.admin')
         if (member) return t('general.member')
@@ -87,7 +101,7 @@ export function generateColumns({ onUpdate, onShare, onCopy }: ColumnOptions) {
           }),
           permission({
             ability: canUpdateEncounter,
-            args: [row.original],
+            args: [row.original, isCampaign],
             children: [
               iconButton({
                 icon: 'tabler:copy',
