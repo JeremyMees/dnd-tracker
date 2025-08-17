@@ -38,7 +38,7 @@ async function handleSearch({ email }: { email: string }, node: FormNode): Promi
         const { data, error } = await supabase
           .from('profiles')
           .select('id, username, name, avatar, email')
-          .match({ email })
+          .ilike('email', `%${email}%`)
           .maybeSingle()
 
         if (error) throw createError(error)
