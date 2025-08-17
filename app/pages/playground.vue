@@ -40,6 +40,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
   data.value = {
     ...data.value,
     ...payload,
+    ...(payload.rows && { rows: indexCorrect(payload.rows) }),
   }
 }
 
