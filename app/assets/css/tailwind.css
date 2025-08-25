@@ -386,7 +386,7 @@
     }
 
     hr {
-      @apply border-secondary my-4;
+      @apply border-foreground/30 my-4;
     }
 
     a {

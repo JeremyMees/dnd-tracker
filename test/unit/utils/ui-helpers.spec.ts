@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import {
   sanitizeForm,
   sortByNumber,
@@ -15,9 +15,9 @@ import {
   sanitizeHTML,
 } from '~/utils/ui-helpers'
 
-vi.mock('sanitize-html', () => ({
-  default: vi.fn(html => html.replace(/<script>.*<\/script>/g, '')),
-}))
+// vi.mock('sanitize-html', () => ({
+//   default: vi.fn(html => html.replace(/<script>.*<\/script>/g, '')),
+// }))
 
 beforeEach(() => {
   global.document = {
@@ -195,10 +195,22 @@ describe('ui-helpers', () => {
 
   describe('sanitizeHTML', () => {
     it('should sanitize HTML by removing disallowed tags', () => {
-      const dirtyHtml = '<script>alert("xss")</script><h1>Title</h1>'
+      const dirtyHtml = `
+        <script>alert("xss")</script>
+        <img src="https://example.com/image.jpg" alt="Image">
+        <iframe src="https://example.com/iframe"></iframe>
+        <video src="https://example.com/video.mp4"></video>
+        <audio src="https://example.com/audio.mp3"></audio>
+        <object data="https://example.com/object.pdf"></object>
+      `
       const result = sanitizeHTML(dirtyHtml)
 
       expect(result).not.toContain('<script>')
+      expect(result).not.toContain('<img>')
+      expect(result).not.toContain('<iframe>')
+      expect(result).not.toContain('<video>')
+      expect(result).not.toContain('<audio>')
+      expect(result).not.toContain('<object>')
     })
 
     it('Should allow all allowed tags and attributes', () => {
@@ -208,7 +220,6 @@ describe('ui-helpers', () => {
         <h3>Subsubtitle</h3>
         <p>Paragraph</p>
         <a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">Link</a>
-        <img src="https://example.com/image.jpg" alt="Image">
         <ul><li>Item 1</li></ul>
         <ol><li>Item 1</li></ol>
         <blockquote>Quote</blockquote>
@@ -224,7 +235,6 @@ describe('ui-helpers', () => {
       expect(result).toContain('<h3>')
       expect(result).toContain('<p>')
       expect(result).toContain('<a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">')
-      expect(result).toContain('<img src="https://example.com/image.jpg" alt="Image">')
       expect(result).toContain('<ul>')
       expect(result).toContain('<ol>')
       expect(result).toContain('<li>')

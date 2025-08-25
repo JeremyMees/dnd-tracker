@@ -1,4 +1,4 @@
-import sanitizeHtml from 'sanitize-html'
+import DOMPurify from 'isomorphic-dompurify'
 
 export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[]): T {
   const garbage: string[] = blacklist || ['__init', 'isTrusted', '_vts']
@@ -100,11 +100,9 @@ export function homebrewColor(type: HomebrewType): string {
 }
 
 export function sanitizeHTML(dirty: string): string {
-  return sanitizeHtml(dirty, {
-    allowedTags: ['h1', 'h2', 'h3', 'p', 'a', 'ol', 'ul', 'li', 'blockquote', 'hr', 'mark', 'strong', 'em', 's'],
-    allowedAttributes: {
-      a: ['href', 'name', 'target', 'rel'],
-    },
+  return DOMPurify.sanitize(dirty, {
+    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'a', 'ol', 'ul', 'li', 'blockquote', 'hr', 'mark', 'strong', 'em', 's'],
+    ALLOWED_ATTR: ['href', 'name', 'target', 'rel'],
   }).replaceAll('<hr />', '<hr>')
 }
 
