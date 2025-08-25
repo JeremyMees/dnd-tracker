@@ -21,9 +21,9 @@ export function useInitiativeSheet(
   })
 
   onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], (e) => {
-    e.preventDefault()
-
     if ((!e.shiftKey && !e.metaKey) || !sheet.value) return
+
+    e.preventDefault()
 
     const current = sheet.value.rows[sheet.value.activeIndex]?.id
 
