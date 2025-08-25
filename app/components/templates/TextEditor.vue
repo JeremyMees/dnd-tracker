@@ -175,7 +175,7 @@ function setLink() {
                   type="button"
                   :aria-label="`${$t('general.heading')} ${level}`"
                   :class="{
-                    '!bg-foreground': editor.isActive('heading', { level }),
+                    '!bg-muted': editor.isActive('heading', { level }),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
                   @click="() => {

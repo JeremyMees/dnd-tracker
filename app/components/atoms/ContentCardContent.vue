@@ -5,19 +5,17 @@ defineProps<{
   hideOpenButton: () => boolean
   type: Open5eType
 }>()
-
-const { $md } = useNuxtApp()
 </script>
 
 <template>
   <div
     v-if="content.desc"
+    v-dompurify-html="$md.render(content.desc)"
     class="md-richtext text-muted-foreground"
     :class="{
       'line-clamp-3': !isOpen && hideOpenButton,
       'border-b-4 pb-1 border-background': isOpen && ['spells', 'magicitems'].includes(type),
     }"
-    v-html="$md.render(content.desc)"
   />
   <template v-if="isOpen || hideOpenButton()">
     <p
