@@ -1,0 +1,37 @@
+{
+  "version": "v2.0.1",
+  "date": "2025-08-25",
+  "features": [
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Updated the AC buttons to be clearer (heal -> increase, damage -> decrease)"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Remove button in danger zone didn't work"
+        },
+        {
+          "text": "When creature goes to 0 HP he would automatically get 2 deathsaves"
+        },
+        {
+          "text": "Owner of campaign could not open the campaign"
+        },
+        {
+          "text": "When changing initiative inline, the order would not be updated"
+        },
+        {
+          "text": "Mail addresses for inviting players were case sensitive"
+        },
+        {
+          "text": "Arrow left and right could not be used in the text editor"
+        }
+      ]
+    }
+  ]
+}
