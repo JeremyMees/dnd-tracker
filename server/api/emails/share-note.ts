@@ -1,5 +1,6 @@
 import Plunk from '@plunk/node'
 import { render } from '@vue-email/render'
+import { sanitizeHTML } from '~/utils/ui-helpers'
 import ShareNote from '~~/emails/ShareNote.vue'
 
 export default defineEventHandler(async (event) => {
@@ -10,9 +11,14 @@ export default defineEventHandler(async (event) => {
     // @ts-expect-error Plunk is not a constructor error
     const plunk = new Plunk.default(plunkApiKey)
 
+    const sanitizedBody = {
+      ...body,
+      noteContent: sanitizeHTML(body.noteContent),
+    }
+
     const html = await render(
       ShareNote,
-      body,
+      sanitizedBody,
       {
         pretty: true,
       },
@@ -20,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
     const text = await render(
       ShareNote,
-      body,
+      sanitizedBody,
       {
         plainText: true,
       },

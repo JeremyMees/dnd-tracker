@@ -15,10 +15,6 @@ import {
   sanitizeHTML,
 } from '~/utils/ui-helpers'
 
-// vi.mock('sanitize-html', () => ({
-//   default: vi.fn(html => html.replace(/<script>.*<\/script>/g, '')),
-// }))
-
 beforeEach(() => {
   global.document = {
     getElementById: vi.fn(),

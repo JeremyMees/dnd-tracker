@@ -30,8 +30,8 @@ defineProps<{
     </Text>
     <Hr class="border-t-secondary" />
     <div
-      v-dompurify-html="noteContent"
       class="pt-[26px]"
+      v-html="noteContent"
     />
   </DefaultEmail>
 </template>
