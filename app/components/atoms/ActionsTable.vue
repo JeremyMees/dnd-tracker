@@ -48,7 +48,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
             class="flex flex-wrap gap-x-4 items-center mt-2"
           >
             <div
-              v-if="action.attack_bonus"
+              v-if="action.attack_bonus && action.attack_bonus > 0"
               class="flex flex-wrap gap-x-2 items-center"
             >
               <p class="font-bold">

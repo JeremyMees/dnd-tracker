@@ -27,6 +27,8 @@ const realtimeData = computed(() => hasCorrectSubscription(user.value.subscripti
 const { data, isPending, isError, refetch } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 
+const activeRow = ref<InitiativeSheetRow>()
+
 onMounted(() => {
   if (realtimeData.value) {
     channel.on('postgres_changes',
@@ -80,6 +82,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 provide(INITIATIVE_SHEET, {
   sheet: data,
   update: handleUpdate,
+  activeRow,
 })
 </script>
 

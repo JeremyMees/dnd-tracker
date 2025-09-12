@@ -1,16 +1,15 @@
-export type ToastType = 'error' | 'warn' | 'info' | 'success'
+import type { ToastProps } from '~/components/ui/toast'
 
 export interface Toast {
-  uuid: string
-  timeout: number
   title: string
-  text: string
-  actions: any[]
-  timed: boolean
-  type: ToastType
+  description: string
+  variant: ToastProps['variant']
 }
 
-export type CreateToast = Partial<Omit<Toast, 'uuid' | 'type'>>
+export interface ToastItem extends ToastProps {
+  title: [string, Record<string, unknown>?]
+  description: [string, Record<string, unknown>?]
+}
 
 export type ModalComponent =
   | 'FeatureRequest'

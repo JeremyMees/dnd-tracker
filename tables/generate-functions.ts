@@ -1,6 +1,6 @@
 import { Tippy } from 'vue-tippy'
 import type { BouncerAbility } from 'nuxt-authorization/utils'
-import { Icon, NuxtLinkLocale, Can, Card } from '#components'
+import { Icon, NuxtLinkLocale, Can, Card, InitiativeActionRoll } from '#components'
 import { Checkbox } from '~/components/ui/checkbox'
 
 export function iconElement(options: {
@@ -128,54 +128,85 @@ export function permission(options: {
   }, () => options.children)
 }
 
+const actionRoll = (action: Action | ActionOpen5E, id: string) => {
+  const attackBonus = action.attack_bonus
+  const damageDice = action.damage_dice
+  const damageBonus = action.damage_bonus ?? 0
+
+  if (!attackBonus && !damageDice) return null
+
+  return h(InitiativeActionRoll, {
+    attackBonus,
+    damageDice,
+    damageBonus,
+    id,
+  })
+}
+
+const actionToHit = (action: Action | ActionOpen5E) => {
+  if (action.attack_bonus && action.attack_bonus > 0) {
+    return h('div', { class: 'flex flex-wrap gap-x-2 items-center' }, [
+      h('span', {}, 'To hit:'),
+      h('span', { class: 'text-sm text-muted-foreground' }, `+${action.attack_bonus}`),
+    ])
+  }
+  return null
+}
+
+const actionDamage = (action: Action | ActionOpen5E) => {
+  return action.damage_dice && h('div', {
+    class: 'flex flex-wrap gap-x-2 items-center',
+  }, [
+    h('span', {}, 'Dice:'),
+    h('span', { class: 'text-sm text-muted-foreground' }, [
+      action.damage_dice,
+      action.damage_bonus && ` +${action.damage_bonus}`,
+    ].filter(Boolean).join('')),
+  ])
+}
+
+const generateActionsTableRow = (label: string, actionArray: (Action | ActionOpen5E)[], id: string) => {
+  return h('div', { class: 'flex flex-col gap-2' }, [
+    h('p', { class: 'head-3' }, label),
+    h(Card, {
+      class: 'p-2',
+      color: 'secondary',
+    }, () =>
+      h('div', {}, actionArray.map(action =>
+        h('ul', {
+          class: 'flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc',
+        }, [
+          h('li', { class: 'flex flex-wrap gap-x-4 items-center' }, [
+            h('span', {}, action.name + ':'),
+            h('span', { class: 'text-sm text-muted-foreground' }, action.desc),
+          ]),
+          (action.attack_bonus || action.damage_dice) && h('div', {
+            class: 'flex flex-wrap gap-x-4 items-center mt-2',
+          }, [
+            actionRoll(action, id),
+            actionToHit(action),
+            actionDamage(action),
+          ]),
+        ]),
+      )),
+    ),
+  ])
+}
+
 export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
   const { t } = useI18n()
 
-  const generateRow = (label: string, actionArray: (Action | ActionOpen5E)[]) => {
-    return h('div', { class: 'flex flex-col gap-2' }, [
-      h('p', { class: 'head-3' }, label),
-      h(Card, {
-        class: 'p-2',
-        color: 'secondary',
-      }, () =>
-        h('div', {}, actionArray.map(action =>
-          h('ul', {
-            class: 'flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc',
-          }, [
-            h('li', { class: 'flex flex-wrap gap-x-4 items-center' }, [
-              h('span', {}, action.name + ':'),
-              h('span', { class: 'text-sm text-muted-foreground' }, action.desc),
-            ]),
-            (action.attack_bonus || action.damage_dice) && h('div', {
-              class: 'flex flex-wrap gap-x-4 items-center mt-2',
-            }, [
-              action.attack_bonus && h('div', {
-                class: 'flex flex-wrap gap-x-2 items-center',
-              }, [
-                h('span', {}, 'To hit:'),
-                h('span', { class: 'text-sm text-muted-foreground' }, `+${action.attack_bonus}`),
-              ]),
-              action.damage_dice && h('div', {
-                class: 'flex flex-wrap gap-x-2 items-center',
-              }, [
-                h('span', {}, 'Dice:'),
-                h('span', { class: 'text-sm text-muted-foreground' }, [
-                  action.damage_dice,
-                  action.damage_bonus && ` +${action.damage_bonus}`,
-                ].filter(Boolean).join('')),
-              ]),
-            ]),
-          ]),
-        )),
-      ),
-    ])
-  }
+  const id = item.id as string
+  const actions = item.actions
+  const reactions = item.reactions
+  const legendary = item.legendary_actions
+  const special = item.special_abilities
 
   const rows = [
-    item.actions?.length ? generateRow(t('general.action', 2), item.actions) : '',
-    item.reactions?.length ? generateRow(t('general.reaction', 2), item.reactions) : '',
-    item.legendary_actions?.length ? generateRow(t('general.legendaryAction', 2), item.legendary_actions) : '',
-    item.special_abilities?.length ? generateRow(t('general.specialAbility', 2), item.special_abilities) : '',
+    actions?.length ? generateActionsTableRow(t('general.action', 2), actions, id) : '',
+    reactions?.length ? generateActionsTableRow(t('general.reaction', 2), reactions, id) : '',
+    legendary?.length ? generateActionsTableRow(t('general.legendaryAction', 2), legendary, id) : '',
+    special?.length ? generateActionsTableRow(t('general.specialAbility', 2), special, id) : '',
   ].filter(Boolean)
 
   return rows.length

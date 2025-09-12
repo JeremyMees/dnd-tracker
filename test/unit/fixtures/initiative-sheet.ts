@@ -16,11 +16,11 @@ export const sheet: InitiativeSheet = {
       index: 0,
       maxAc: 19,
       maxAcOld: 10,
-      health: 1,
+      health: 10,
       tempAc: 5,
       actions: [],
       campaign: 122,
-      maxHealth: 104,
+      maxHealth: 100,
       maxHealthOld: 10,
       reactions: [],
       conditions: [

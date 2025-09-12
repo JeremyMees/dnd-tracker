@@ -73,9 +73,16 @@
     "sendMail": "Send mail",
     "moveUp": "Move up",
     "moveDown": "Move down",
-    "changeInitiative": "Change initiative"
+    "changeInitiative": "Change initiative",
+    "applyDamage": "Apply damage"
   },
   "general": {
+    "advantage": "Advantage",
+    "advantageAbb": "Adv.",
+    "disadvantage": "Disadvantage",
+    "disadvantageAbb": "Dis.",
+    "straight": "Straight",
+    "toHit": "To hit",
     "widget": "Widget | Widgets",
     "all": "All",
     "more": "More",
@@ -622,6 +629,7 @@
       "placeholder": "Amidst the realm of dragons and dungeons, a hero's legend remains untold, as the user has not yet linked their character's saga."
     },
     "inputs": {
+      "targetLabel": "Target",
       "emailLabel": "Email address",
       "passwordLabel": "Password",
       "usernameLabel": "Username",

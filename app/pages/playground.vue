@@ -12,6 +12,7 @@ const queryClient = useQueryClient()
 const { startTour, tourData, isTourActive } = useTour()
 
 const data = ref<InitiativeSheet>()
+const activeRow = ref<InitiativeSheetRow>()
 const isPending = ref(true)
 const isError = ref(false)
 
@@ -47,6 +48,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 provide(INITIATIVE_SHEET, {
   sheet: isTourActive.value ? tourData : data,
   update: handleUpdate,
+  activeRow,
 })
 </script>
 

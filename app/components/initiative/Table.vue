@@ -6,16 +6,19 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 defineProps<{ loading: boolean }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { activeRow, sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const {
   previous,
   next,
   reset,
+  active,
   expanded,
   selected,
   columnVisibility,
 } = useInitiativeSheet(computed(() => sheet.value), update)
+
+syncRef(activeRow, active, { direction: 'rtl' })
 
 prefetchConditionsListing()
 
