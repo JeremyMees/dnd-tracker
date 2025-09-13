@@ -64,7 +64,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       data: formData as InitiativeSheetRowInsert,
       amount: amount ?? 1,
       initiative,
-      initiative_modifier: initiative_modifier || undefined,
+      initiative_modifier: isDefined(initiative_modifier) ? initiative_modifier : undefined,
       summoner,
     })
 
@@ -73,7 +73,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       await create({
         data: {
           ...formData,
-          ...(initiative_modifier ? { initiative_modifier } : {}),
+          ...(isDefined(initiative_modifier) ? { initiative_modifier } : {}),
           campaign: props.campaignId,
         },
         onSuccess,
@@ -89,7 +89,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       await updateHomebrew({
         data: {
           ...formData,
-          ...(initiative_modifier ? { initiative_modifier } : {}),
+          ...(isDefined(initiative_modifier) ? { initiative_modifier } : {}),
         },
         id: props.item.id,
         onSuccess,
@@ -100,7 +100,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       await create({
         data: {
           ...formData,
-          ...(initiative_modifier ? { initiative_modifier } : {}),
+          ...(isDefined(initiative_modifier) ? { initiative_modifier } : {}),
           campaign: props.campaignId,
         },
         onSuccess,
