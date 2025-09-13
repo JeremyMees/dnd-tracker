@@ -121,7 +121,7 @@ async function handleSubmit(form: { target: string }, node: FormNode): Promise<v
 <template>
   <UiPopover
     v-model:open="popoverOpen"
-    @update:open="(open) => {
+    @update:open="(open: boolean) => {
       if (!open) result = undefined
     }"
   >

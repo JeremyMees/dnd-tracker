@@ -2,13 +2,19 @@
 const isShown = ref<boolean>(false)
 const cookie = useCookie<number>('limit_cta')
 const removeTimer = ref()
+const showTimer = ref()
 const day = 24 * 60 * 60 * 1000
 
 defineExpose({ show })
 
 onMounted(() => {
-  setTimeout(() => checkShow(), 50)
+  showTimer.value = setTimeout(() => checkShow(), 50)
   setAutoCloseTimer()
+})
+
+onBeforeUnmount(() => {
+  if (removeTimer.value) clearTimeout(removeTimer.value)
+  if (showTimer.value) clearTimeout(showTimer.value)
 })
 
 function setAutoCloseTimer(): void {

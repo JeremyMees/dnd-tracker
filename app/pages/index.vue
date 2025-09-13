@@ -16,20 +16,23 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         class="space-y-20 dnd-container"
         @mousemove="dragon && dragon.calculateEyes"
       >
-        <LazyTitleText>
+        <LazyTitleText hydrate-on-visible>
           {{ $t('pages.home.textBlock1.title') }}
           <template #text>
             {{ $t('pages.home.textBlock1.text') }}
           </template>
         </LazyTitleText>
-        <LazyTitleText>
+        <LazyTitleText hydrate-on-visible>
           {{ $t('pages.home.textBlock2.title') }}
           <template #text>
             {{ $t('pages.home.textBlock2.text') }}
           </template>
         </LazyTitleText>
       </div>
-      <LazyDragon ref="dragon" />
+      <LazyDragon
+        ref="dragon"
+        hydrate-on-visible
+      />
       <div class="dnd-container pt-20 md:pt-[200px] flex items-center gap-4">
         <img
           src="/art/flame.svg"
@@ -37,6 +40,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
           class="size-40 hidden md:block"
         >
         <LazySummary
+          hydrate-on-visible
           :title="$t('pages.home.summary.title')"
           :items="[
             $t('pages.home.summary.item1'),
@@ -49,7 +53,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
           class="max-w-prose"
         />
       </div>
-      <LazyUiContainerScroll>
+      <LazyUiContainerScroll hydrate-on-visible>
         <template #title>
           <h2 class="text-4xl font-semibold text-muted-foreground">
             {{ $t('pages.home.containerScroll.title') }}
@@ -70,11 +74,13 @@ const dragon = ref<InstanceType<typeof Dragon>>()
         </template>
       </LazyUiContainerScroll>
       <LazyCtaBanner
+        hydrate-on-visible
         :title="$t('pages.home.ctaBanner.title')"
         :subtitle="$t('pages.home.ctaBanner.text')"
         :button="$t('pages.home.ctaBanner.button')"
       />
       <LazyFaq
+        hydrate-on-visible
         :title="$t('pages.home.faq.title')"
         :items="[
           {
@@ -102,7 +108,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
           {{ $t('pages.home.globe.title') }}
         </span>
       </span>
-      <LazyUiGlobe />
+      <LazyUiGlobe hydrate-on-visible />
     </div>
   </NuxtLayout>
 </template>
