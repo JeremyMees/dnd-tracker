@@ -37,7 +37,7 @@ vi.mock('~~/queries/open5e', () => ({
 vi.mock('~~/composables/initiative-sheet', () => ({
   useInitiativeSheet: (data: any, update: any) => {
     const expanded = ref({})
-    const selected = ref({})
+    const selected = ref<Record<string, boolean>>({})
     const active = computed(() => {
       const selectedRowId = Object.keys(selected.value).find(key => selected.value[key] === true)
       return data.value?.rows.find((row: any) => row.id === selectedRowId)
