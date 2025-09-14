@@ -32,3 +32,9 @@ logs
 /blob-report/
 /playwright/.cache/
 /test/e2e/.auth
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Cursor
+.cursor
