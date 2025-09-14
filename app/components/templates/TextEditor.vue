@@ -2,9 +2,7 @@
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
-import Link from '@tiptap/extension-link'
-import Placeholder from '@tiptap/extension-placeholder'
-import CharacterCount from '@tiptap/extension-character-count'
+import { CharacterCount, Placeholder } from '@tiptap/extensions'
 
 const emit = defineEmits<{ updated: [string] }>()
 
@@ -30,8 +28,8 @@ const dropdown = ref<HTMLDivElement>()
 const invalidHTML = ref<boolean>(false)
 const isFocused = ref<boolean>(false)
 
-onClickOutside(dropdown, () => close())
-onKeyStroke('Escape', () => close())
+onClickOutside(dropdown, () => isOpen.value = false)
+onKeyStroke('Escape', () => isOpen.value = false)
 
 type HeadingLevel = 1 | 2 | 3
 
@@ -40,13 +38,14 @@ onMounted(() => {
     content: props.content,
     extensions: [
       Highlight,
-      Link,
       Placeholder.configure({ placeholder: t(props.placeholder) }),
       CharacterCount.configure({ limit: props.charLimit }),
       StarterKit.configure({
         codeBlock: false,
         hardBreak: false,
         code: false,
+        listKeymap: false,
+        underline: false,
         heading: { levels: [1, 2, 3] },
       }),
     ],
@@ -67,9 +66,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => editor.value?.destroy())
 
-watch(() => props.content, (v) => {
+watchDebounced(() => props.content, (v) => {
   if (v !== editor.value?.getHTML()) editor.value?.commands.setContent(v)
-})
+}, { debounce: 500, maxWait: 1000 })
 
 const sanitizeBeforeUpdate = useDebounceFn(() => {
   if (!editor.value) return
@@ -82,6 +81,31 @@ const sanitizeBeforeUpdate = useDebounceFn(() => {
   if (dirty === clean) emit('updated', clean)
   else invalidHTML.value = true
 }, 500, { maxWait: 2500 })
+
+const buttonStates = computed(() => ({
+  isBold: editor.value?.isActive('bold') ?? false,
+  isItalic: editor.value?.isActive('italic') ?? false,
+  isStrike: editor.value?.isActive('strike') ?? false,
+  isHighlight: editor.value?.isActive('highlight') ?? false,
+  isLink: editor.value?.isActive('link') ?? false,
+  isBulletList: editor.value?.isActive('bulletList') ?? false,
+  isOrderedList: editor.value?.isActive('orderedList') ?? false,
+  isBlockquote: editor.value?.isActive('blockquote') ?? false,
+  canUndo: editor.value?.can().chain().focus().undo().run() ?? false,
+  canRedo: editor.value?.can().chain().focus().redo().run() ?? false,
+  canBold: editor.value?.can().chain().focus().toggleBold().run() ?? false,
+  canItalic: editor.value?.can().chain().focus().toggleItalic().run() ?? false,
+  canStrike: editor.value?.can().chain().focus().toggleStrike().run() ?? false,
+}))
+
+const characterStats = computed(() => {
+  if (!editor.value) return { characters: 0, words: 0 }
+
+  return {
+    characters: editor.value.storage.characterCount.characters(),
+    words: editor.value.storage.characterCount.words(),
+  }
+})
 
 function setLink() {
   if (!editor.value) return
@@ -128,6 +152,7 @@ function setLink() {
             aria-label="Text style dropdown"
             type="button"
             @mouseenter="isOpen = true"
+            @click="isOpen = true"
           >
             <span class="duration-200 font-bold text-sm min-w-10">
               {{
@@ -207,7 +232,7 @@ function setLink() {
             v-tippy="$t('general.link')"
             type="button"
             :aria-label="$t('general.link')"
-            :class="{ '!bg-primary/100': editor.isActive('link') }"
+            :class="{ '!bg-primary/100': buttonStates.isLink }"
             class="icon-btn-primary size-6 text-foreground"
             @click="setLink"
           >
@@ -222,7 +247,7 @@ function setLink() {
             type="button"
             :aria-label="$t('actions.unlink')"
             class="icon-btn-primary size-6 text-foreground"
-            :disabled="!editor.isActive('link')"
+            :disabled="!buttonStates.isLink"
             @click="editor.chain().focus().unsetLink().run()"
           >
             <Icon
@@ -235,7 +260,7 @@ function setLink() {
             v-tippy="$t('general.unOrderedList')"
             type="button"
             :aria-label="$t('general.unOrderedList')"
-            :class="{ '!bg-primary/100': editor.isActive('bulletList') }"
+            :class="{ '!bg-primary/100': buttonStates.isBulletList }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleBulletList().run()"
           >
@@ -249,7 +274,7 @@ function setLink() {
             v-tippy="$t('general.orderedList')"
             type="button"
             :aria-label="$t('general.orderedList')"
-            :class="{ '!bg-primary/100': editor.isActive('orderedList') }"
+            :class="{ '!bg-primary/100': buttonStates.isOrderedList }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleOrderedList().run()"
           >
@@ -263,7 +288,7 @@ function setLink() {
             v-tippy="$t('general.quote')"
             type="button"
             :aria-label="$t('general.quote')"
-            :class="{ '!bg-primary/100': editor.isActive('blockquote') }"
+            :class="{ '!bg-primary/100': buttonStates.isBlockquote }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleBlockquote().run()"
           >
@@ -298,8 +323,8 @@ function setLink() {
             v-tippy="$t('general.bold')"
             type="button"
             :aria-label="$t('general.bold')"
-            :disabled="!editor.can().chain().focus().toggleBold().run()"
-            :class="{ '!bg-primary/100': editor.isActive('bold') }"
+            :disabled="!buttonStates.canBold"
+            :class="{ '!bg-primary/100': buttonStates.isBold }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleBold().run()"
           >
@@ -313,8 +338,8 @@ function setLink() {
             v-tippy="$t('general.italic')"
             type="button"
             :aria-label="$t('general.italic')"
-            :disabled="!editor.can().chain().focus().toggleItalic().run()"
-            :class="{ '!bg-primary/100': editor.isActive('italic') }"
+            :disabled="!buttonStates.canItalic"
+            :class="{ '!bg-primary/100': buttonStates.isItalic }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleItalic().run()"
           >
@@ -328,8 +353,8 @@ function setLink() {
             v-tippy="$t('general.strikeThrough')"
             type="button"
             :aria-label="$t('general.strikeThrough')"
-            :disabled="!editor.can().chain().focus().toggleStrike().run()"
-            :class="{ '!bg-primary/100': editor.isActive('strike') }"
+            :disabled="!buttonStates.canStrike"
+            :class="{ '!bg-primary/100': buttonStates.isStrike }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleStrike().run()"
           >
@@ -343,7 +368,7 @@ function setLink() {
             v-tippy="$t('actions.highlight')"
             type="button"
             :aria-label="$t('actions.highlight')"
-            :class="{ '!bg-primary/100': editor.isActive('highlight') }"
+            :class="{ '!bg-primary/100': buttonStates.isHighlight }"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleHighlight().run()"
           >
@@ -372,7 +397,7 @@ function setLink() {
             v-tippy="$t('actions.undo')"
             type="button"
             :aria-label="$t('actions.undo')"
-            :disabled="!editor.can().chain().focus().undo().run()"
+            :disabled="!buttonStates.canUndo"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().undo().run()"
           >
@@ -386,7 +411,7 @@ function setLink() {
             v-tippy="$t('actions.redo')"
             type="button"
             :aria-label="$t('actions.redo')"
-            :disabled="!editor.can().chain().focus().redo().run()"
+            :disabled="!buttonStates.canRedo"
             class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().redo().run()"
           >
@@ -406,18 +431,18 @@ function setLink() {
       <div class="flex items-center gap-2 px-2 pt-4">
         <PercentageDial
           :limit="charLimit"
-          :value="editor.storage.characterCount.characters()"
+          :value="characterStats.characters"
         />
         <div class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors">
           <span
             :class="{
-              'text-destructive': editor.storage.characterCount.characters() === charLimit,
+              'text-destructive': characterStats.characters === charLimit,
             }"
           >
-            {{ editor.storage.characterCount.characters() }} / {{ charLimit }} {{ $t('general.character', 2).toLowerCase() }}
+            {{ characterStats.characters }} / {{ charLimit }} {{ $t('general.character', 2).toLowerCase() }}
           </span>
           <span>
-            {{ editor.storage.characterCount.words() }} {{ $t('general.word', 2).toLowerCase() }}
+            {{ characterStats.words }} {{ $t('general.word', 2).toLowerCase() }}
           </span>
         </div>
       </div>
