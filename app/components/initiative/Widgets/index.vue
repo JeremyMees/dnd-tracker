@@ -23,11 +23,13 @@ const widgets = computed(() => {
     <div class="grid xl:grid-cols-2 gap-2 items-start">
       <InitiativeWidgetsNote
         v-if="widgets.includes('note') || !isModified"
+        hydrate-on-idle
         :value="sheet?.info ?? ''"
         @update="update({ info: $event })"
       />
       <InitiativeWidgetsPinnedContent
         v-if="widgets.includes('info-pins') || !isModified"
+        hydrate-on-idle
         :value="sheet?.info_cards ?? []"
         @update="update({ info_cards: $event })"
       />

@@ -30,9 +30,14 @@ const tablePadding = computed(() => {
 })
 
 const columns = generateColumns()
+const tableData = shallowRef<InitiativeSheetRow[]>([])
+
+watch(() => sheet.value?.rows, (newRows) => {
+  tableData.value = newRows || []
+}, { immediate: true })
 
 const table = useVueTable({
-  data: computed(() => sheet.value?.rows || []),
+  data: tableData,
   columns,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
@@ -137,9 +142,6 @@ const table = useVueTable({
       </UiTable>
     </div>
 
-    <LazyInitiativeWidgets
-      data-test-widgets
-      hydrate-on-visible
-    />
+    <LazyInitiativeWidgets data-test-widgets />
   </div>
 </template>
