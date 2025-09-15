@@ -629,6 +629,8 @@
       "placeholder": "Amidst the realm of dragons and dungeons, a hero's legend remains untold, as the user has not yet linked their character's saga."
     },
     "inputs": {
+      "spellSaveLabel": "Spell save",
+      "saveTypeLabel": "Save type",
       "targetLabel": "Target",
       "emailLabel": "Email address",
       "passwordLabel": "Password",

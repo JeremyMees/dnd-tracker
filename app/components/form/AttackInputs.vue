@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { abilities, abilitiesNames } from '~~/constants/dnd-rules'
+
 defineProps<{ type: ActionType }>()
 </script>
 
@@ -19,7 +21,8 @@ defineProps<{ type: ActionType }>()
     :label="$t('components.inputs.descriptionLabel')"
     validation="required|length:10,1000"
   />
-  <div class="flex gap-x-3">
+  <UiSeparator class="mb-4" />
+  <div class="grid sm:grid-cols-3 gap-x-3">
     <FormKit
       name="damage_dice"
       placeholder="2d6"
@@ -43,6 +46,31 @@ defineProps<{ type: ActionType }>()
       max="100"
       :label="$t('components.inputs.attackBonusLabel')"
       validation="between:1,100|number"
+      outer-class="grow"
+    />
+  </div>
+  <div class="grid sm:grid-cols-2 gap-x-3">
+    <FormKit
+      name="spell_save"
+      type="number"
+      number
+      min="1"
+      max="100"
+      :label="$t('components.inputs.spellSaveLabel')"
+      validation="between:1,100|number"
+      outer-class="grow"
+    />
+    <FormKit
+      name="spell_save_type"
+      type="select"
+      :label="$t('components.inputs.saveTypeLabel')"
+      :options="[
+        { label: $t('components.inputs.nothing'), value: undefined },
+        ...abilities.map((ability, index) => ({
+          label: abilitiesNames[index] || ability,
+          value: ability,
+        })),
+      ]"
       outer-class="grow"
     />
   </div>

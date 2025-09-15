@@ -96,7 +96,7 @@ export function generateColumns() {
 }
 
 export function expandedMarkup(row: Row<InitiativeSheetRow>) {
-  return actionsTable(row.original)
+  return actionsTable(row.original, 'initiative')
 }
 
 export const initialState: InitialTableState = {}

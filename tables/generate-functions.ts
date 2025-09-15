@@ -165,7 +165,27 @@ const actionDamage = (action: Action | ActionOpen5E) => {
   ])
 }
 
-const generateActionsTableRow = (label: string, actionArray: (Action | ActionOpen5E)[], id: string) => {
+const actionSave = (action: Action | ActionOpen5E) => {
+  if ('spell_save' in action && action.spell_save) {
+    return h('div', {
+      class: 'flex flex-wrap gap-x-2 items-center',
+    }, [
+      h('span', {}, 'Spell save:'),
+      h('span', { class: 'text-sm text-muted-foreground' }, [
+        action.spell_save,
+        action.spell_save_type,
+      ].filter(Boolean).join(' ')),
+    ])
+  }
+  else return null
+}
+
+const generateActionsTableRow = (
+  label: string,
+  actionArray: (Action | ActionOpen5E)[],
+  id: string,
+  type: 'initiative' | 'campaign',
+) => {
   return h('div', { class: 'flex flex-col gap-2' }, [
     h('p', { class: 'head-3' }, label),
     h(Card, {
@@ -180,12 +200,17 @@ const generateActionsTableRow = (label: string, actionArray: (Action | ActionOpe
             h('span', {}, action.name + ':'),
             h('span', { class: 'text-sm text-muted-foreground' }, action.desc),
           ]),
-          (action.attack_bonus || action.damage_dice) && h('div', {
+          (
+            action.attack_bonus
+            || action.damage_dice
+            || ('spell_save' in action && action.spell_save)
+          ) && h('div', {
             class: 'flex flex-wrap gap-x-4 items-center mt-2',
           }, [
-            actionRoll(action, id),
+            type === 'initiative' ? actionRoll(action, id) : null,
             actionToHit(action),
             actionDamage(action),
+            actionSave(action),
           ]),
         ]),
       )),
@@ -193,7 +218,10 @@ const generateActionsTableRow = (label: string, actionArray: (Action | ActionOpe
   ])
 }
 
-export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
+export function actionsTable(
+  item: HomebrewItemRow | InitiativeSheetRow,
+  type: 'initiative' | 'campaign',
+) {
   const { t } = useI18n()
 
   const id = item.id as string
@@ -203,10 +231,10 @@ export function actionsTable(item: HomebrewItemRow | InitiativeSheetRow) {
   const special = item.special_abilities
 
   const rows = [
-    actions?.length ? generateActionsTableRow(t('general.action', 2), actions, id) : '',
-    reactions?.length ? generateActionsTableRow(t('general.reaction', 2), reactions, id) : '',
-    legendary?.length ? generateActionsTableRow(t('general.legendaryAction', 2), legendary, id) : '',
-    special?.length ? generateActionsTableRow(t('general.specialAbility', 2), special, id) : '',
+    actions?.length ? generateActionsTableRow(t('general.action', 2), actions, id, type) : '',
+    reactions?.length ? generateActionsTableRow(t('general.reaction', 2), reactions, id, type) : '',
+    legendary?.length ? generateActionsTableRow(t('general.legendaryAction', 2), legendary, id, type) : '',
+    special?.length ? generateActionsTableRow(t('general.specialAbility', 2), special, id, type) : '',
   ].filter(Boolean)
 
   return rows.length

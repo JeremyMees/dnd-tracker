@@ -76,6 +76,8 @@ export interface Action {
   attack_bonus?: number
   damage_bonus?: number
   damage_dice?: string
+  spell_save?: number
+  spell_save_type?: string
 }
 
 export interface ActionOpen5E {

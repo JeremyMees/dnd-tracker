@@ -629,6 +629,8 @@
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
     },
     "inputs": {
+      "spellSaveLabel": "Spell save",
+      "saveTypeLabel": "Save type",
       "targetLabel": "Doelwit",
       "emailLabel": "E-mail adres",
       "passwordLabel": "Wachtwoord",
