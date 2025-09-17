@@ -6,13 +6,13 @@ exports[`Initiative pinned content widget > Should match snapshot 1`] = `
     <div data-state="closed" data-orientation="vertical" class="border-b last:border-b-0">
       <h3 data-orientation="vertical" data-state="closed" class="flex"><button type="button" aria-controls="" aria-expanded="false" data-state="closed" id="reka-accordion-trigger-v-0-0-0" data-reka-collection-item="" data-orientation="vertical" class="flex flex-1 items-center justify-between py-4 font-medium transition-all [&amp;[data-state=open]>svg]:rotate-180 hover:no-underline">Aboleth<span class="iconify i-tabler:chevron-down size-4 shrink-0 transition-transform duration-200" aria-hidden="true"></span></button></h3>
       <div role="region" aria-labelledby="reka-accordion-trigger-v-0-0-0" data-state="closed" data-orientation="vertical" style="--reka-accordion-content-width: var(--reka-collapsible-content-width); --reka-accordion-content-height: var(--reka-collapsible-content-height); --reka-collapsible-content-height: 0px; --reka-collapsible-content-width: 0px;" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" id="reka-collapsible-content-v-0-0-1" hidden="">
-        <!---->
+        <!--v-if-->
       </div>
     </div>
     <div data-state="closed" data-orientation="vertical" class="border-b last:border-b-0">
       <h3 data-orientation="vertical" data-state="closed" class="flex"><button type="button" aria-controls="" aria-expanded="false" data-state="closed" id="reka-accordion-trigger-v-0-0-2" data-reka-collection-item="" data-orientation="vertical" class="flex flex-1 items-center justify-between py-4 font-medium transition-all [&amp;[data-state=open]>svg]:rotate-180 hover:no-underline">Aboleth<span class="iconify i-tabler:chevron-down size-4 shrink-0 transition-transform duration-200" aria-hidden="true"></span></button></h3>
       <div role="region" aria-labelledby="reka-accordion-trigger-v-0-0-2" data-state="closed" data-orientation="vertical" style="--reka-accordion-content-width: var(--reka-collapsible-content-width); --reka-accordion-content-height: var(--reka-collapsible-content-height); --reka-collapsible-content-height: 0px; --reka-collapsible-content-width: 0px;" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" id="reka-collapsible-content-v-0-0-3" hidden="">
-        <!---->
+        <!--v-if-->
       </div>
     </div>
   </div>
