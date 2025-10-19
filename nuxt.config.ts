@@ -4,7 +4,6 @@ import packageJSON from './package.json'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-
   modules: [
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
@@ -21,6 +20,7 @@ export default defineNuxtConfig({
     'nuxt-authorization',
     'motion-v/nuxt',
     '@nuxt/test-utils/module',
+    '@sentry/nuxt/module',
   ],
 
   components: [
@@ -59,6 +59,9 @@ export default defineNuxtConfig({
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
+      sentry: {
+        dsn: process.env.SENTRY_DSN,
+      },
     },
   },
 
@@ -72,6 +75,10 @@ export default defineNuxtConfig({
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
     '/maintenance': { robots: false },
+  },
+
+  sourcemap: {
+    client: 'hidden',
   },
 
   future: {
@@ -91,7 +98,6 @@ export default defineNuxtConfig({
   },
 
   eslint: { config: { stylistic: true } },
-
   formkit: { configFile: './formkit/config.ts' },
 
   i18n: {
@@ -114,6 +120,15 @@ export default defineNuxtConfig({
   },
 
   ogImage: { enabled: false },
+
+  sentry: {
+    sourceMapsUploadOptions: {
+      org: 'kees',
+      project: 'dnd-tracker',
+    },
+
+    autoInjectServerSentry: 'top-level-import',
+  },
 
   shadcn: {
     prefix: 'ui',

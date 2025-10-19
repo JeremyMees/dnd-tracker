@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { abilities } from '~~/constants/dnd-rules'
+import { abilities, abilitiesNames } from '~~/constants/dnd-rules'
 
 defineEmits<{ add: [monster: Open5eItem] }>()
 
@@ -10,7 +10,7 @@ withDefaults(defineProps<{
   addable: false,
 })
 
-const abilitiesNames = ref<(keyof Open5eItem)[]>(['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'])
+const names = ref(abilitiesNames)
 const stats = ref<(keyof Open5eItem)[]>(['type', 'subtype', 'size', 'alignment', 'xp'])
 const isOpen = ref<boolean>(false)
 </script>
@@ -94,7 +94,7 @@ const isOpen = ref<boolean>(false)
             {{ ability }}:
           </span>
           <span>
-            {{ abilitiesNames[index] ? monster[abilitiesNames[index]] : '_' }}
+            {{ names[index] ? monster[names[index] as keyof Open5eItem] : '_' }}
           </span>
         </div>
       </div>

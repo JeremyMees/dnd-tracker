@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
+import { getNode, reset } from '@formkit/core'
 import { useHomebrewCreate, useHomebrewUpdate } from '~~/queries/homebrews'
 
 const emit = defineEmits<{ close: [] }>()
@@ -16,6 +16,11 @@ const props = withDefaults(
     saveToCampaign: false,
   },
 )
+
+defineExpose({
+  next: () => getNode('multi-step')?.next(),
+  previous: () => getNode('multi-step')?.previous(),
+})
 
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
@@ -64,7 +69,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       data: formData as InitiativeSheetRowInsert,
       amount: amount ?? 1,
       initiative,
-      initiative_modifier: initiative_modifier || undefined,
+      initiative_modifier: isDefined(initiative_modifier) ? initiative_modifier : undefined,
       summoner,
     })
 
@@ -73,7 +78,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       await create({
         data: {
           ...formData,
-          ...(initiative_modifier ? { initiative_modifier } : {}),
+          ...(isDefined(initiative_modifier) ? { initiative_modifier } : {}),
           campaign: props.campaignId,
         },
         onSuccess,
@@ -89,7 +94,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       await updateHomebrew({
         data: {
           ...formData,
-          ...(initiative_modifier ? { initiative_modifier } : {}),
+          ...(isDefined(initiative_modifier) ? { initiative_modifier } : {}),
         },
         id: props.item.id,
         onSuccess,
@@ -100,7 +105,7 @@ async function handleSubmit(form: HomebrewItemForm, node: FormNode): Promise<voi
       await create({
         data: {
           ...formData,
-          ...(initiative_modifier ? { initiative_modifier } : {}),
+          ...(isDefined(initiative_modifier) ? { initiative_modifier } : {}),
           campaign: props.campaignId,
         },
         onSuccess,
@@ -174,7 +179,7 @@ function castActionFieldsToNumber(actions: Action[] | undefined): Action[] {
       type="multi-step"
       name="steps"
       wrapper-class="w-full !max-w-none"
-      steps-class="!border-none !p-0"
+      steps-class="!border-none !p-0 border border-green-500"
       outer-class="$remove:mb-4"
       tabs-class="!mt-0 mb-4 gap-2"
       tab-class="rounded-lg"
@@ -183,8 +188,6 @@ function castActionFieldsToNumber(actions: Action[] | undefined): Action[] {
       <FormKit
         type="step"
         name="info"
-        :next-label="$t('actions.next')"
-        :previous-label="$t('actions.prev')"
       >
         <div
           :class="{
@@ -306,12 +309,11 @@ function castActionFieldsToNumber(actions: Action[] | undefined): Action[] {
           :label="$t('components.inputs.linkLabel')"
           validation="url"
         />
+        <template #stepNext />
       </FormKit>
       <FormKit
         type="step"
         name="actions"
-        :next-label="$t('actions.next')"
-        :previous-label="$t('actions.prev')"
       >
         <FormKit
           type="repeater"
@@ -393,6 +395,8 @@ function castActionFieldsToNumber(actions: Action[] | undefined): Action[] {
             <Icon name="tabler:arrow-narrow-down" />
           </template>
         </FormKit>
+
+        <template #stepPrevious />
       </FormKit>
     </FormKit>
   </FormKit>
@@ -430,6 +434,7 @@ function castActionFieldsToNumber(actions: Action[] | undefined): Action[] {
   .formkit-tab {
     background: hsl(var(--background) / 0.5);
     border: 4px solid hsl(var(--background));
+    padding: 0.5rem;
 }
 
 .formkit-outer[data-type='multi-step']

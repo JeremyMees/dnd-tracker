@@ -419,6 +419,10 @@
     scrollbar-width: none;
   }
 
+  abbr[title], acronym[title] {
+    @apply no-underline;
+  }
+
   @keyframes pulsate-shadow {
     0% {
       box-shadow: 0 0 38px #4f19aa;

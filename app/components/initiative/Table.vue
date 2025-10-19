@@ -6,16 +6,19 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 defineProps<{ loading: boolean }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { activeRow, sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const {
   previous,
   next,
   reset,
+  active,
   expanded,
   selected,
   columnVisibility,
 } = useInitiativeSheet(computed(() => sheet.value), update)
+
+syncRef(activeRow, active, { direction: 'rtl' })
 
 prefetchConditionsListing()
 
@@ -27,9 +30,14 @@ const tablePadding = computed(() => {
 })
 
 const columns = generateColumns()
+const tableData = shallowRef<InitiativeSheetRow[]>([])
+
+watch(() => sheet.value?.rows, (newRows) => {
+  tableData.value = newRows || []
+}, { immediate: true })
 
 const table = useVueTable({
-  data: computed(() => sheet.value?.rows || []),
+  data: tableData,
   columns,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
@@ -134,9 +142,6 @@ const table = useVueTable({
       </UiTable>
     </div>
 
-    <LazyInitiativeWidgets
-      data-test-widgets
-      hydrate-on-visible
-    />
+    <LazyInitiativeWidgets data-test-widgets />
   </div>
 </template>

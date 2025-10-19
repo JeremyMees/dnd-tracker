@@ -31,11 +31,11 @@ const internalPage = computed({
 const selectedRowLength = computed(() => table.getSelectedRowModel().rows.length)
 
 watch(
-  () => props.data,
-  async (value) => {
-    if (value?.length) await fetchPermissions()
+  () => props.data?.length,
+  async (length) => {
+    if (length) await fetchPermissions()
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 )
 
 const table = useVueTable({

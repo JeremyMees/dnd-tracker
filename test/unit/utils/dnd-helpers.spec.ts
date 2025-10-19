@@ -12,6 +12,9 @@ import {
   getAC,
   createInitiativeRow,
   hasMaxCharacters,
+  validateDiceExpression,
+  parseDamageDice,
+  handleHpChanges,
 } from '~/utils/dnd-helpers'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
@@ -58,6 +61,319 @@ describe('DnD Helpers', () => {
         expect(roll).toBeGreaterThanOrEqual(1)
         expect(roll).toBeLessThanOrEqual(dice)
       })
+    })
+  })
+
+  describe('validateDiceExpression', () => {
+    it('Should return true for valid dice expressions', () => {
+      expect(validateDiceExpression('1d4')).toBe(true)
+      expect(validateDiceExpression('2d6')).toBe(true)
+      expect(validateDiceExpression('3d8')).toBe(true)
+      expect(validateDiceExpression('1d10')).toBe(true)
+      expect(validateDiceExpression('2d12')).toBe(true)
+      expect(validateDiceExpression('1d20')).toBe(true)
+      expect(validateDiceExpression('1d100')).toBe(true)
+      expect(validateDiceExpression('100d20')).toBe(true)
+    })
+
+    it('Should return false for invalid dice expressions', () => {
+      expect(validateDiceExpression('1d3')).toBe(false) // Invalid dice sides
+      expect(validateDiceExpression('1d5')).toBe(false) // Invalid dice sides
+      expect(validateDiceExpression('1d7')).toBe(false) // Invalid dice sides
+      expect(validateDiceExpression('1d15')).toBe(false) // Invalid dice sides
+      expect(validateDiceExpression('0d20')).toBe(false) // Zero dice count
+      expect(validateDiceExpression('101d20')).toBe(false) // Too many dice
+      expect(validateDiceExpression('1d')).toBe(false) // Missing sides
+      expect(validateDiceExpression('d20')).toBe(false) // Missing count
+      expect(validateDiceExpression('1d20+5')).toBe(false) // Invalid format
+      expect(validateDiceExpression('abc')).toBe(false) // Non-numeric
+      expect(validateDiceExpression('')).toBe(false) // Empty string
+    })
+  })
+
+  describe('parseDamageDice', () => {
+    it('Should parse single dice expressions correctly', () => {
+      expect(parseDamageDice('1d4')).toEqual([{ count: 1, sides: 4 }])
+      expect(parseDamageDice('2d6')).toEqual([{ count: 2, sides: 6 }])
+      expect(parseDamageDice('3d8')).toEqual([{ count: 3, sides: 8 }])
+      expect(parseDamageDice('1d20')).toEqual([{ count: 1, sides: 20 }])
+    })
+
+    it('Should parse multiple dice expressions with plus signs', () => {
+      expect(parseDamageDice('1d4+1d6')).toEqual([
+        { count: 1, sides: 4 },
+        { count: 1, sides: 6 },
+      ])
+      expect(parseDamageDice('2d6+1d8+1d4')).toEqual([
+        { count: 2, sides: 6 },
+        { count: 1, sides: 8 },
+        { count: 1, sides: 4 },
+      ])
+    })
+
+    it('Should parse dice expressions with spaces', () => {
+      expect(parseDamageDice('1d4 + 1d6')).toEqual([
+        { count: 1, sides: 4 },
+        { count: 1, sides: 6 },
+      ])
+      expect(parseDamageDice('2d6 + 1d8 + 1d4')).toEqual([
+        { count: 2, sides: 6 },
+        { count: 1, sides: 8 },
+        { count: 1, sides: 4 },
+      ])
+    })
+
+    it('Should filter out invalid dice expressions', () => {
+      expect(parseDamageDice('1d4+1d3+1d6')).toEqual([
+        { count: 1, sides: 4 },
+        { count: 1, sides: 6 },
+      ])
+      expect(parseDamageDice('1d4+abc+1d6')).toEqual([
+        { count: 1, sides: 4 },
+        { count: 1, sides: 6 },
+      ])
+      expect(parseDamageDice('1d4+1d5+1d6')).toEqual([
+        { count: 1, sides: 4 },
+        { count: 1, sides: 6 },
+      ])
+    })
+
+    it('Should return empty array for undefined or empty input', () => {
+      expect(parseDamageDice()).toEqual([])
+      expect(parseDamageDice('')).toEqual([])
+      expect(parseDamageDice('   ')).toEqual([])
+    })
+
+    it('Should return empty array when all expressions are invalid', () => {
+      expect(parseDamageDice('1d3+1d5+abc')).toEqual([])
+      expect(parseDamageDice('invalid+expressions')).toEqual([])
+    })
+
+    it('Should handle complex mixed expressions', () => {
+      expect(parseDamageDice('2d6+1d8+1d4+1d3')).toEqual([
+        { count: 2, sides: 6 },
+        { count: 1, sides: 8 },
+        { count: 1, sides: 4 },
+      ])
+      expect(parseDamageDice('1d20 + 2d6 + 1d8 + invalid + 1d4')).toEqual([
+        { count: 1, sides: 20 },
+        { count: 2, sides: 6 },
+        { count: 1, sides: 8 },
+        { count: 1, sides: 4 },
+      ])
+    })
+  })
+
+  describe('handleHpChanges', () => {
+    const mockRow: InitiativeSheetRow = sheet.rows[0]!
+
+    beforeEach(() => {
+      // Reset to original fixture values
+      mockRow.health = 10
+      mockRow.maxHealth = 100
+      mockRow.tempHealth = 5
+      mockRow.maxHealthOld = 10
+      mockRow.concentration = true
+      mockRow.conditions = [
+        {
+          desc: '* A paralyzed creature is incapacitated (see the condition) and can\'t move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.',
+          name: 'Paralyzed',
+        },
+      ]
+      mockRow.deathSaves = {
+        fail: [true, false, false],
+        save: [true, false, false],
+      }
+    })
+
+    it('Should heal health correctly', () => {
+      const result = handleHpChanges(10, 'heal', mockRow, false)
+
+      expect(result.row.health).toBe(20) // 10 + 10 = 20
+      expect(result.toasts).toHaveLength(0)
+    })
+
+    it('Should damage health correctly', () => {
+      const row = { ...mockRow, concentration: false }
+      const result = handleHpChanges(5, 'damage', row, false)
+
+      expect(result.row.health).toBe(10) // Temp health (5) absorbs the damage, regular health unchanged
+      expect(result.row.tempHealth).toBe(0) // 5 - 5 = 0
+      expect(result.toasts.length).toBe(0)
+    })
+
+    it('Should set temp health correctly', () => {
+      const result = handleHpChanges(8, 'temp', mockRow, false)
+
+      expect(result.row.tempHealth).toBe(8)
+      expect(result.toasts).toHaveLength(0)
+    })
+
+    it('Should override health correctly', () => {
+      const result = handleHpChanges(15, 'override', mockRow, false)
+
+      expect(result.row.health).toBe(15)
+      expect(result.row.maxHealth).toBe(15)
+      expect(result.row.maxHealthOld).toBe(100) // Original maxHealth from fixture
+      expect(result.toasts).toHaveLength(0)
+    })
+
+    it('Should not add death saves when health goes from positive to 0', () => {
+      const row = { ...mockRow, health: 5 }
+      const result = handleHpChanges(10, 'damage', row, false)
+
+      expect(result.row.health).toBe(0)
+      expect(result.row.deathSaves?.fail).toEqual([true, false, false]) // Should keep original death saves
+    })
+
+    it('Should add death saves when health is 0 and gets damage', () => {
+      const row = { ...mockRow, health: 0 }
+      const result = handleHpChanges(10, 'damage', row, false)
+
+      expect(result.row.health).toBe(0) // Clamped to 0 when allowNegative is false
+      expect(result.row.deathSaves?.fail).toEqual([true, true, true]) // Should add 2 more failures
+    })
+
+    it('Should remove concentration and conditions when health reaches 0', () => {
+      const row = {
+        ...mockRow,
+        health: 5,
+        concentration: true,
+        conditions: [{ name: 'blinded', desc: 'Cannot see' }],
+      }
+      const result = handleHpChanges(10, 'damage', row, false)
+
+      expect(result.row.health).toBe(0)
+      expect(result.row.concentration).toBe(false)
+      expect(result.row.conditions).toHaveLength(0)
+      expect(result.toasts).toHaveLength(1)
+      expect(result.toasts[0]?.title).toEqual(['components.initiativeTable.downed.title', { name: 'Sister Iarnă' }])
+    })
+
+    it('Should show concentration toast when taking damage with concentration', () => {
+      const row = { ...mockRow, health: 20, concentration: true, tempHealth: 0 }
+      const result = handleHpChanges(5, 'damage', row, false)
+
+      expect(result.row.health).toBe(15) // 20 - 5 = 15 (no temp health to absorb)
+      expect(result.toasts).toHaveLength(1)
+      expect(result.toasts[0]?.title).toEqual(['components.initiativeTable.concentration.title'])
+      expect(result.toasts[0]?.variant).toBe('info')
+    })
+
+    it('Should show downed toast when health reaches 0', () => {
+      const row = { ...mockRow, health: 5, tempHealth: 0 }
+      const result = handleHpChanges(10, 'damage', row, false)
+
+      expect(result.row.health).toBe(0)
+      expect(result.toasts).toHaveLength(1)
+      expect(result.toasts[0]?.title).toEqual(['components.initiativeTable.downed.title', { name: 'Sister Iarnă' }])
+      expect(result.toasts[0]?.variant).toBe('info')
+    })
+
+    it('Should show died toast when health goes too negative', () => {
+      const row = { ...mockRow, health: 10, maxHealth: 20, tempHealth: 0 }
+      const result = handleHpChanges(50, 'damage', row, false)
+
+      expect(result.row.health).toBe(0) // Should be clamped to 0 when allowNegative is false
+      expect(result.toasts).toHaveLength(2) // Both downed and died toasts
+      expect(result.toasts[0]?.title).toEqual(['components.initiativeTable.downed.title', { name: 'Sister Iarnă' }])
+      expect(result.toasts[1]?.title).toEqual(['components.initiativeTable.died.title', { name: 'Sister Iarnă' }])
+    })
+
+    it('Should show stable toast when death saves are successful', () => {
+      const row = {
+        ...mockRow,
+        health: 0,
+        deathSaves: {
+          save: [true, true, true],
+          fail: [false, false, false],
+        },
+      } as InitiativeSheetRow
+      const result = handleHpChanges(10, 'temp', row, false)
+
+      expect(result.toasts).toHaveLength(1)
+      expect(result.toasts[0]?.title).toEqual(['components.initiativeTable.stable.title', { name: 'Sister Iarnă' }])
+    })
+
+    it('Should set health to 0 when negative values are not allowed', () => {
+      const row = { ...mockRow, health: 10, tempHealth: 0 }
+      const result = handleHpChanges(15, 'damage', row, false)
+
+      expect(result.row.health).toBe(0)
+    })
+
+    it('Should allow negative health when negative values are allowed', () => {
+      const row = { ...mockRow, health: 10, tempHealth: 0 }
+      const result = handleHpChanges(15, 'damage', row, true)
+
+      expect(result.row.health).toBe(-5)
+    })
+
+    it('Should reset death saves when healing from 0 health', () => {
+      const row = {
+        ...mockRow,
+        health: 0,
+        deathSaves: {
+          save: [true, true, false],
+          fail: [true, false, false],
+        },
+      } as InitiativeSheetRow
+      const result = handleHpChanges(10, 'heal', row, false)
+
+      expect(result.row.health).toBe(10)
+      expect(result.row.deathSaves).toEqual({
+        fail: [false, false, false],
+        save: [false, false, false],
+      })
+    })
+
+    it('Should not reset death saves for summon and lair types', () => {
+      const row = {
+        ...mockRow,
+        health: 0,
+        type: 'summon',
+        deathSaves: {
+          save: [true, true, false],
+          fail: [true, false, false],
+        },
+      } as InitiativeSheetRow
+      const result = handleHpChanges(10, 'heal', row, false)
+
+      expect(result.row.health).toBe(10)
+      expect(result.row.deathSaves).toEqual({
+        save: [true, true, false],
+        fail: [true, false, false],
+      })
+    })
+
+    it('Should handle override-reset type correctly', () => {
+      const row = {
+        ...mockRow,
+        health: 15,
+        maxHealth: 20,
+        maxHealthOld: 25,
+      }
+      const result = handleHpChanges(30, 'override-reset', row, false)
+
+      expect(result.row.health).toBe(20)
+      expect(result.row.maxHealth).toBe(30)
+      expect(result.row.maxHealthOld).toBeUndefined()
+    })
+
+    it('Should handle temp health damage correctly', () => {
+      const row = { ...mockRow, health: 10, tempHealth: 5 }
+      const result = handleHpChanges(3, 'damage', row, false)
+
+      expect(result.row.tempHealth).toBe(2) // 5 - 3 = 2
+      expect(result.row.health).toBe(10) // Should not be affected
+    })
+
+    it('Should handle damage that exceeds temp health', () => {
+      const row = { ...mockRow, health: 10, tempHealth: 3 }
+      const result = handleHpChanges(8, 'damage', row, false)
+
+      expect(result.row.tempHealth).toBe(0) // Should be reduced to 0
+      expect(result.row.health).toBe(5) // 10 - (8 - 3) = 5
     })
   })
 

@@ -11,11 +11,13 @@ interface Props {
 
 const mockUpdate = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
+const mockActiveRow = ref<InitiativeSheetRow | undefined>()
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
     update: mockUpdate,
+    activeRow: mockActiveRow,
   },
 }
 
@@ -35,7 +37,11 @@ vi.mock('~~/queries/open5e', () => ({
 vi.mock('~~/composables/initiative-sheet', () => ({
   useInitiativeSheet: (data: any, update: any) => {
     const expanded = ref({})
-    const selected = ref({})
+    const selected = ref<Record<string, boolean>>({})
+    const active = computed(() => {
+      const selectedRowId = Object.keys(selected.value).find(key => selected.value[key] === true)
+      return data.value?.rows.find((row: any) => row.id === selectedRowId)
+    })
     const columnVisibility = computed(() => {
       const rows = data.value?.settings?.modified
         ? (data.value.settings.rows || [])
@@ -59,6 +65,7 @@ vi.mock('~~/composables/initiative-sheet', () => ({
       previous: vi.fn(),
       next: vi.fn(),
       reset: vi.fn(),
+      active,
       expanded,
       selected,
       columnVisibility,

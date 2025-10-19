@@ -112,7 +112,7 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
           : '',
       ]),
     ]),
-    actionsTable(row.original),
+    actionsTable(row.original, 'campaign'),
   ])
 }
 

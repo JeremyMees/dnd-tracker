@@ -78,7 +78,7 @@ export default {
     content: 'grow p-3 flex flex-col align-center',
     controlLabel: 'absolute opacity-0 pointer-events-none',
     controls: 'flex flex-col items-center justify-center bg-transparent p-2',
-    fieldset: 'p-4',
+    fieldset: 'border-none $remove:px-2 $remove:pb-1 bg-transparent',
     help: 'mb-2 mt-1.5',
     item: 'flex w-full mb-2 rounded-lg border-4 border-background',
     items: 'w-full',

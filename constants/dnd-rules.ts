@@ -32,6 +32,8 @@ export const crOptions = [
 
 export const abilities = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
 
+export const abilitiesNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']
+
 export const initiativeKeys = [
   'ac',
   'campaign',

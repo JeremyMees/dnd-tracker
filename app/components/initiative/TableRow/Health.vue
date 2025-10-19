@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { reset } from '@formkit/core'
-import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { hpFunctions, deathSavesFunctions } from '~/utils/dnd-helpers'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
@@ -11,16 +10,22 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const { t } = useI18n()
 const { toast } = useToast()
 
-const { hasDeathSaves, checkDeathSaves, addDeathSave, resetDeathSaves } = deathSavesFunctions
-const { heal, damage, temp, override, overrideReset } = hpFunctions
-
 const popoverOpen = shallowRef<boolean>(false)
 const selectedType = shallowRef<HealthType>('heal')
 
 const hasHp = computed(() => isDefined(props.item.health) && isDefined(props.item.maxHealth))
 
-type HealthType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
 interface HealthForm { amount: number }
+
+function handleToasts(toasts: ToastItem[]): void {
+  toasts.forEach(({ title, description, variant }) => {
+    toast({
+      title: t(title[0], title[1] ?? {}),
+      description: t(description[0], description[1] ?? {}),
+      variant,
+    })
+  })
+}
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   if (!sheet.value) return
@@ -66,9 +71,11 @@ async function updateOverride(form: HealthForm & { reset?: boolean }, node: Form
 
     const { amount, reset } = sanitizeForm<HealthForm & { reset?: boolean }>(form)
 
-    const row = reset || amount === props.item.maxHealthOld
-      ? handleHpChanges(props.item.maxHealthOld ?? 0, 'override-reset')
-      : handleHpChanges(amount, 'override')
+    const { row, toasts } = reset || amount === props.item.maxHealthOld
+      ? handleHpChanges(props.item.maxHealthOld ?? 0, 'override-reset', props.item, sheet.value?.settings?.negative ?? false)
+      : handleHpChanges(amount, 'override', props.item, sheet.value?.settings?.negative ?? false)
+
+    handleToasts(toasts)
 
     await updateRow(row)
   }
@@ -88,90 +95,21 @@ async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
 
     const { amount, type } = sanitizeForm<HealthForm & { type?: HealthType }>({ ...form, type: selected })
 
-    const row = handleHpChanges(amount, type || 'heal')
+    try {
+      const { row, toasts } = handleHpChanges(amount, type || 'heal', props.item, sheet.value?.settings?.negative ?? false)
 
-    await updateRow(row)
+      handleToasts(toasts)
+
+      await updateRow(row)
+    }
+    catch (error) {
+      console.error('Error updating health', error)
+    }
   }
   catch {
     reset('InitiativeRowHealthUpdate')
     node.setErrors(t('general.error.text'))
   }
-}
-
-function handleHpChanges(amount: number, type: HealthType): InitiativeSheetRow {
-  const row = { ...props.item }
-  const noHp = typeof row.health === 'number' && row.health <= 0
-
-  if (type === 'heal') {
-    if (hasDeathSaves(row.type) && noHp) row.deathSaves = resetDeathSaves()
-
-    heal(row, amount)
-  }
-  else if (type === 'temp') temp(row, amount)
-  else if (type === 'override') override(row, amount)
-  else if (type === 'override-reset') overrideReset(row, amount)
-  else if (type === 'damage') {
-    damage(row, amount)
-
-    const downed = typeof row.health === 'number' && row.health <= 0
-
-    // When the creature has 0hp and get damage, add 2 death save failures
-    if (hasDeathSaves(row.type) && noHp) {
-      if (!row.deathSaves) {
-        row.deathSaves = {
-          fail: [false, false, false],
-          save: [false, false, false],
-        }
-      }
-
-      row.deathSaves = addDeathSave(row.deathSaves, 'fail', 2)
-    }
-
-    if (row.concentration && !downed) {
-      toast({
-        title: t('components.initiativeTable.concentration.title'),
-        description: t('components.initiativeTable.concentration.text', { name: row.name }),
-        variant: 'info',
-      })
-    }
-
-    if (downed && (row.concentration || row.conditions.length)) {
-      row.concentration = false
-      row.conditions = []
-
-      toast({
-        title: t('components.initiativeTable.downed.title', { name: row.name }),
-        description: t('components.initiativeTable.downed.text', { name: row.name }),
-        variant: 'info',
-      })
-    }
-  }
-
-  // when user is dies because of going to much in the negative hp
-  const dead = (row.health && row.maxHealth && row.health < 0 && Math.abs(row.health) >= row.maxHealth)
-  const { failed, saved } = row.deathSaves ? checkDeathSaves(row.deathSaves) : { failed: false, saved: false }
-
-  if (dead || (failed && !saved)) {
-    toast({
-      title: t('components.initiativeTable.died.title', { name: row.name }),
-      description: t('components.initiativeTable.died.textMinHP', { name: row.name }),
-      variant: 'info',
-    })
-  }
-
-  if (!failed && saved) {
-    toast({
-      title: t('components.initiativeTable.stable.title', { name: row.name }),
-      description: t('components.initiativeTable.stable.textDeathSaves', { name: row.name }),
-      variant: 'info',
-    })
-  }
-
-  // when health is an negative number change it to 0
-  const resetNegative = sheet.value?.settings?.negative === false
-  if (resetNegative && row.health && row.health < 0) row.health = 0
-
-  return row
 }
 </script>
 

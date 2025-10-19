@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: '10.2.0 (e07807d)'
+  }
   public: {
     Tables: {
       armor: {
@@ -938,119 +943,23 @@ export type Database = {
       }
     }
     Enums: {
-      action_type:
-        | 'actions'
-        | 'legendary_actions'
-        | 'reactions'
-        | 'special_abilities'
-      alignment:
-        | 'Lawful good'
-        | 'Lawful neutral'
-        | 'Lawful evil'
-        | 'Neutral good'
-        | 'Neutral'
-        | 'Neutral evil'
-        | 'Chaotic good'
-        | 'Chaotic neutral'
-        | 'Chaotic evil'
-        | 'Any alignment'
-        | 'Any non-good alignment'
-        | 'Any non-lawful alignment'
-        | 'Any chaotic alignment'
-        | 'Any evil alignment'
-        | 'Unaligned'
-      armor_category:
-        | 'Heavy Armor'
-        | 'Medium Armor'
-        | 'Light Armor'
-        | 'No Armor'
-        | 'Class Feature'
-        | 'Spell'
-        | 'Shield'
-      damage_type:
-        | 'Acid'
-        | 'Bludgeoning'
-        | 'cold'
-        | 'Fire'
-        | 'Force'
-        | 'Lightning'
-        | 'Necrotic'
-        | 'Piercing'
-        | 'Poison'
-        | 'Psychic'
-        | 'Radiant'
-        | 'Slashing'
-        | 'Thunder'
-        | 'Other'
+      action_type: 'actions' | 'legendary_actions' | 'reactions' | 'special_abilities'
+      alignment: 'Lawful good' | 'Lawful neutral' | 'Lawful evil' | 'Neutral good' | 'Neutral' | 'Neutral evil' | 'Chaotic good' | 'Chaotic neutral' | 'Chaotic evil' | 'Any alignment' | 'Any non-good alignment' | 'Any non-lawful alignment' | 'Any chaotic alignment' | 'Any evil alignment' | 'Unaligned'
+      armor_category: 'Heavy Armor' | 'Medium Armor' | 'Light Armor' | 'No Armor' | 'Class Feature' | 'Spell' | 'Shield'
+      damage_type: 'Acid' | 'Bludgeoning' | 'cold' | 'Fire' | 'Force' | 'Lightning' | 'Necrotic' | 'Piercing' | 'Poison' | 'Psychic' | 'Radiant' | 'Slashing' | 'Thunder' | 'Other'
       feature_request_status: 'review' | 'accepted' | 'progress'
       homebrew_type: 'player' | 'summon' | 'npc' | 'monster' | 'lair'
-      initiative_pet:
-        | 'cat'
-        | 'chicken'
-        | 'barmaid'
-        | 'crawler'
-        | 'dragon'
-        | 'fairy'
-        | 'redcap'
-        | 'wolf-rider'
-      magic_item_type:
-        | 'Wondrous item'
-        | 'Armor'
-        | 'Weapon'
-        | 'Staff'
-        | 'Wand'
-        | 'Rod'
-        | 'Ring'
-        | 'Scroll'
-        | 'Potion'
-      magic_school:
-        | 'Evocation'
-        | 'Conjuration'
-        | 'Abjuration'
-        | 'Transmutation'
-        | 'Enchantment'
-        | 'Necromancy'
-        | 'Divination'
-        | 'Illusion'
-      monster_size:
-        | 'Tiny'
-        | 'Small'
-        | 'Medium'
-        | 'Large'
-        | 'Huge'
-        | 'Gargantuan'
-      monster_type:
-        | 'Aberration'
-        | 'Humanoid'
-        | 'Dragon'
-        | 'Elemental'
-        | 'Monstrosity'
-        | 'Construct'
-        | 'Beast'
-        | 'Plant'
-        | 'Fiend'
-        | 'Ooze'
-        | 'Fey'
-        | 'Giant'
-        | 'Celestial'
-        | 'Undead'
-      rarity:
-        | 'Common'
-        | 'Uncommon'
-        | 'Rare'
-        | 'Very rare'
-        | 'Legendary'
-        | 'Artifact'
-        | 'Varies'
+      initiative_pet: 'cat' | 'chicken' | 'barmaid' | 'crawler' | 'dragon' | 'fairy' | 'redcap' | 'wolf-rider'
+      magic_item_type: 'Wondrous item' | 'Armor' | 'Weapon' | 'Staff' | 'Wand' | 'Rod' | 'Ring' | 'Scroll' | 'Potion'
+      magic_school: 'Evocation' | 'Conjuration' | 'Abjuration' | 'Transmutation' | 'Enchantment' | 'Necromancy' | 'Divination' | 'Illusion' | 'Divine' | 'Arcane'
+      monster_size: 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Gargantuan'
+      monster_type: 'Aberration' | 'Humanoid' | 'Dragon' | 'Elemental' | 'Monstrosity' | 'Construct' | 'Beast' | 'Plant' | 'Fiend' | 'Ooze' | 'Fey' | 'Giant' | 'Celestial' | 'Undead'
+      rarity: 'Common' | 'Uncommon' | 'Rare' | 'Very rare' | 'Legendary' | 'Artifact' | 'Varies'
       rules: '5e'
       subscription_type: 'free' | 'medior' | 'pro'
       table_spacing: 'compact' | 'normal' | 'cozy'
       user_role: 'Viewer' | 'Admin' | 'Owner' | 'Player'
-      weapon_category:
-        | 'Martial Melee Weapons'
-        | 'Martial Ranged Weapons'
-        | 'Simple Melee Weapons'
-        | 'Simple Ranged Weapons'
+      weapon_category: 'Martial Melee Weapons' | 'Martial Ranged Weapons' | 'Simple Melee Weapons' | 'Simple Ranged Weapons'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1058,21 +967,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, 'public'>]
+type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
   | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
-  | { schema: keyof Database },
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-    Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
       Row: infer R
     }
       ? R
@@ -1090,14 +1003,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
   | keyof DefaultSchema['Tables']
-  | { schema: keyof Database },
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Insert: infer I
   }
     ? I
@@ -1113,14 +1028,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
   | keyof DefaultSchema['Tables']
-  | { schema: keyof Database },
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
     Update: infer U
   }
     ? U
@@ -1136,14 +1053,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
   | keyof DefaultSchema['Enums']
-  | { schema: keyof Database },
+  | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
     ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
     : never
@@ -1151,14 +1070,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
   | keyof DefaultSchema['CompositeTypes']
-  | { schema: keyof Database },
+  | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
     ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never

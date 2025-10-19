@@ -8,6 +8,11 @@ export function useInitiativeSheet(
   const expanded = ref<Record<string, boolean>>({})
   const selected = ref<Record<string, boolean>>({})
 
+  const active = computed(() => {
+    const selectedRowId = Object.keys(selected.value).find(key => selected.value[key] === true)
+    return sheet.value?.rows.find(row => row.id === selectedRowId)
+  })
+
   const columnVisibility = computed(() => {
     const rows = sheet.value?.settings
       ? sheet.value.settings.modified ? (sheet.value.settings.rows || []) : hidableColumns
@@ -143,6 +148,7 @@ export function useInitiativeSheet(
   }
 
   return {
+    active,
     expanded,
     selected,
     columnVisibility,

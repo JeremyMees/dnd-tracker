@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useInitiativeSheetDetail, useInitiativeSheetDetailUpdate } from '~~/queries/initiative-sheets'
@@ -20,23 +21,34 @@ const { startTour } = useTour()
 
 const supabase = useSupabaseClient<DB>()
 const channel = supabase.channel('initiative_sheets')
+const subscription = ref()
+const queryClient = useQueryClient()
 
 const id = validateParamId(route.params.id)
-const realtimeData = computed(() => hasCorrectSubscription(user.value.subscription_type, 'medior'))
+const realtimeData = computed(() => {
+  if (!data.value) return false
 
-const { data, isPending, isError, refetch } = useInitiativeSheetDetail(id)
+  const campaignEncounter = data.value?.campaign
+  const correctSubscription = hasCorrectSubscription(user.value.subscription_type, 'medior')
+
+  return correctSubscription && !!campaignEncounter
+})
+
+const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
+
+const activeRow = ref<InitiativeSheetRow>()
 
 onMounted(() => {
   if (realtimeData.value) {
-    channel.on('postgres_changes',
+    subscription.value = channel.on('postgres_changes',
       {
         event: '*',
         schema: 'public',
         table: 'initiative_sheets',
         filter: `id=eq.${id}`,
       },
-      async (payload) => {
+      (payload) => {
         if (payload.eventType === 'DELETE') {
           toast({
             title: t('pages.encounter.toasts.removed.title'),
@@ -47,7 +59,7 @@ onMounted(() => {
           navigateTo(localePath('/encounters'))
         }
         else if (payload.new && Object.keys(payload.new).length > 0) {
-          await refetch()
+          updateQueryData(payload.new)
         }
       },
     ).subscribe()
@@ -63,16 +75,28 @@ onBeforeUnmount(() => {
   }
 })
 
-async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>): Promise<void> {
+type UpdateQueryData = Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>
+
+function updateQueryData(payload: UpdateQueryData): void {
+  queryClient.setQueryData(['useInitiativeSheetDetail', id], (old: InitiativeSheet) => {
+    if (!old) return old
+
+    return {
+      ...old,
+      ...payload,
+      ...(old?.campaign ? { campaign: old.campaign } : {}),
+    }
+  })
+}
+
+async function handleUpdate(payload: UpdateQueryData): Promise<void> {
   if (!data.value) return
 
   await update({
     data: payload,
     id,
-    onSettled: async () => {
-      if (!realtimeData.value) {
-        await refetch()
-      }
+    onSettled: async (error) => {
+      if (!realtimeData.value && !error) updateQueryData(payload)
     },
   })
 }
@@ -80,6 +104,7 @@ async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable
 provide(INITIATIVE_SHEET, {
   sheet: data,
   update: handleUpdate,
+  activeRow,
 })
 </script>
 

@@ -25,7 +25,7 @@ exports[`Initiative widgets wrapper > Should match snapshot 1`] = `
         <div class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors"><span class="">0 / 5000 general.character</span><span>0 general.word</span></div>
       </div>
     </div>
-    <div class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50">
+    <div class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50" hydrate-on-idle="">
       <p class="text-muted-foreground">pages.encounter.pinnedContent.empty</p>
     </div>
   </div>

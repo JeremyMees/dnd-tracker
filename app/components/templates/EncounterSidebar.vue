@@ -234,7 +234,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               </UiSidebarMenuButton>
             </UiDialogTrigger>
             <UiDialogContent
-              class="max-w-xl"
+              class="max-w-[1000px]"
               @escape-key-down="openModal = undefined"
               @pointer-down-outside="openModal = undefined"
               @interact-outside="openModal = undefined"

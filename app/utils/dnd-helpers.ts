@@ -26,6 +26,38 @@ export function rollDice(dice: number, amount = 1): number[] {
   return rolls
 }
 
+const VALID_DICE_SIDES: DiceSide[] = [4, 6, 8, 10, 12, 20, 100]
+const MAX_DICE_COUNT = 100
+
+export function validateDiceExpression(diceExpr: string): boolean {
+  const dicePattern = /^(\d+)d(\d+)$/
+  const match = diceExpr.match(dicePattern)
+
+  if (!match) return false
+
+  const diceCount = parseInt(match[1]!)
+  const diceSides = parseInt(match[2]!)
+
+  if (diceCount <= 0 || diceCount > MAX_DICE_COUNT) return false
+  if (!VALID_DICE_SIDES.includes(diceSides as DiceSide)) return false
+
+  return true
+}
+
+export function parseDamageDice(damageDice?: string): { count: number, sides: number }[] {
+  if (!damageDice) return []
+
+  return damageDice
+    .split(/[+\s]+/)
+    .map(dice => dice.trim())
+    .filter(dice => dice.length > 0)
+    .filter(validateDiceExpression)
+    .map((dice) => {
+      const [count, sides] = dice.split('d')
+      return { count: parseInt(count!), sides: parseInt(sides!) }
+    })
+}
+
 type ModifierType = 'health' | 'ac'
 
 function heal(type: ModifierType, row: InitiativeSheetRow, amount: number): void {
@@ -99,6 +131,87 @@ export const acFunctions = {
   temp: (row: InitiativeSheetRow, amount: number) => temp('ac', row, amount),
   override: (row: InitiativeSheetRow, amount: number) => override('ac', row, amount),
   overrideReset: (row: InitiativeSheetRow, amount: number) => overrideReset('ac', row, amount),
+}
+
+export function handleHpChanges(
+  amount: number,
+  type: HealthType,
+  item: InitiativeSheetRow,
+  allowNegative: boolean,
+): { row: InitiativeSheetRow, toasts: ToastItem[] } {
+  const toasts: ToastItem[] = []
+  const row = { ...item }
+  const noHp = typeof row.health === 'number' && row.health <= 0
+
+  if (type === 'heal') {
+    if (hasDeathSaves(row.type) && noHp) row.deathSaves = resetDeathSaves()
+
+    heal('health', row, amount)
+  }
+  else if (type === 'temp') temp('health', row, amount)
+  else if (type === 'override') override('health', row, amount)
+  else if (type === 'override-reset') overrideReset('health', row, amount)
+  else if (type === 'damage') {
+    damage('health', row, amount)
+
+    const downed = typeof row.health === 'number' && row.health <= 0
+
+    // When the creature has 0hp and get damage, add 2 death save failures
+    if (hasDeathSaves(row.type) && noHp) {
+      if (!row.deathSaves) {
+        row.deathSaves = {
+          fail: [false, false, false],
+          save: [false, false, false],
+        }
+      }
+
+      row.deathSaves = addDeathSave(row.deathSaves, 'fail', 2)
+    }
+
+    if (row.concentration && !downed) {
+      toasts.push({
+        title: ['components.initiativeTable.concentration.title'],
+        description: ['components.initiativeTable.concentration.text', { name: row.name }],
+        variant: 'info',
+      })
+    }
+
+    if (downed && (row.concentration || row.conditions.length)) {
+      row.concentration = false
+      row.conditions = []
+
+      toasts.push({
+        title: ['components.initiativeTable.downed.title', { name: row.name }],
+        description: ['components.initiativeTable.downed.text', { name: row.name }],
+        variant: 'info',
+      })
+    }
+  }
+
+  // when user is dies because of going to much in the negative hp
+  const dead = (row.health && row.maxHealth && row.health < 0 && Math.abs(row.health) >= row.maxHealth)
+  const { failed, saved } = row.deathSaves ? checkDeathSaves(row.deathSaves) : { failed: false, saved: false }
+
+  if (dead || (failed && !saved)) {
+    toasts.push({
+      title: ['components.initiativeTable.died.title', { name: row.name }],
+      description: ['components.initiativeTable.died.textMinHP', { name: row.name }],
+      variant: 'info',
+    })
+  }
+
+  if (!failed && saved) {
+    toasts.push({
+      title: ['components.initiativeTable.stable.title', { name: row.name }],
+      description: ['components.initiativeTable.stable.textDeathSaves', { name: row.name }],
+      variant: 'info',
+    })
+  }
+
+  // when health is an negative number change it to 0
+  if (!allowNegative && row.health && row.health < 0) row.health = 0
+
+  return { row, toasts }
 }
 
 function hasDeathSaves(type: HomebrewType): boolean {

@@ -1,0 +1,36 @@
+{
+  "version": "v2.0.2",
+  "date": "2025-10-19",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Spell save DC for homebrew creatures (feature request)"
+        },
+        {
+          "text": "Dice roller for homebrew actions (feature request)"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Security updates"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Performance issue's after playing for a long time"
+        },
+        {
+          "text": "Homebrew initiative modifier couldn't be set or updated to be zero"
+        }
+      ]
+    }
+  ]
+}
