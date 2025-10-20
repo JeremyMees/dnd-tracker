@@ -55,6 +55,15 @@ describe('FeatureRequestCard', async () => {
     expect(component.find('[data-test-status]').exists()).toBeFalsy()
   })
 
+  it('Should disable vote buttons when status is added', async () => {
+    const component = await mountSuspended(FeatureRequestCard, { props: { ...props, feature: { ...props.feature, status: 'added' } } })
+    const likeButton = component.find('[data-test-like-button]')
+    const dislikeButton = component.find('[data-test-dislike-button]')
+
+    expect(likeButton.attributes().disabled).toBeDefined()
+    expect(dislikeButton.attributes().disabled).toBeDefined()
+  })
+
   it('Should be able to toggle vote', async () => {
     const component = await mountSuspended(FeatureRequestCard, { props })
     const likeButton = component.find('[data-test-like-button]')

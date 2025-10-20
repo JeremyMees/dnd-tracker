@@ -480,7 +480,8 @@
     "featureRequest": {
       "status": {
         "review": "Onder beoordeling",
-        "progress": "In uitvoering"
+        "progress": "In uitvoering",
+        "added": "Toegevoegd"
       },
       "cta": {
         "title": "Oproep aan Moedige Avonturiers: Deel Jouw Heroïsche Ideeën!",
