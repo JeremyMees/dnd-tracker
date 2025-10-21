@@ -480,7 +480,8 @@
     "featureRequest": {
       "status": {
         "review": "Under review",
-        "progress": "In progress"
+        "progress": "In progress",
+        "added": "Added"
       },
       "cta": {
         "title": "Calling All Brave Adventurers: Share Your Heroic Ideas!",

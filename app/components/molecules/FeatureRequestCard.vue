@@ -74,7 +74,8 @@ function toggleVote(vote: FeatureVote): void {
         <div class="flex flex-col gap-y-1">
           <button
             data-test-like-button
-            class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center"
+            :disabled="feature.status === 'added'"
+            class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center disabled:opacity-60 disabled:cursor-not-allowed"
             :class="{
               '!bg-primary/50 !border-primary': hasVoted === 'like',
             }"
@@ -93,7 +94,8 @@ function toggleVote(vote: FeatureVote): void {
           </button>
           <button
             data-test-dislike-button
-            class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center"
+            :disabled="feature.status === 'added'"
+            class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center disabled:opacity-60 disabled:cursor-not-allowed"
             :class="{
               '!bg-primary/50 !border-primary': hasVoted === 'dislike',
             }"
@@ -119,7 +121,8 @@ function toggleVote(vote: FeatureVote): void {
             class="text-sm px-2 py-1 rounded-lg w-fit border-2"
             :class="{
               'bg-info/50 border-info': feature.status === 'review',
-              'bg-success/50 border-success': feature.status === 'progress',
+              'bg-secondary/50 border-secondary': feature.status === 'progress',
+              'bg-success/50 border-success': feature.status === 'added',
             }"
           >
             {{ t(`pages.featureRequest.status.${feature.status}`) }}
