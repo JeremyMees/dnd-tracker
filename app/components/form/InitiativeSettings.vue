@@ -6,7 +6,6 @@ const emit = defineEmits<{ close: [] }>()
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const rowsDefault = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
-const widgetsDefault = ['note', 'info-pins']
 
 interface InitiativeSettingsForm {
   spacing: TableSpacing
@@ -67,16 +66,9 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           { label: $t('general.modify'), value: 'modify' },
         ]"
       />
-      <FormKit
-        name="widgets"
-        type="checkbox"
+      <FormActiveWidgets
+        :settings="sheet?.settings"
         options-class="flex flex-wrap gap-y-2 gap-x-6"
-        :label="$t('components.initiativeSettings.widgets')"
-        :value="sheet?.settings?.modified ? (sheet?.settings?.widgets || []) : widgetsDefault"
-        :options="[
-          { label: $t('general.note'), value: 'note' },
-          { label: $t('general.infoPins'), value: 'info-pins' },
-        ]"
       />
       <FormKit
         name="pet"

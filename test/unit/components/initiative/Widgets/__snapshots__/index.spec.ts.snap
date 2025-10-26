@@ -1,8 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initiative widgets wrapper > Should match snapshot 1`] = `
-"<div class="pt-4 space-y-2">
-  <h3>general.widget</h3>
+"<div class="pt-4 mt-4 space-y-2 border-t">
+  <div class="flex items-center gap-1">
+    <h3>general.widget</h3><button id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" class="icon-btn-foreground"><span class="iconify i-tabler:settings size-4 min-w-4" aria-hidden="true"></span></button>
+    <!--teleport start-->
+    <!--teleport end-->
+  </div>
   <div class="grid xl:grid-cols-2 gap-2 items-start">
     <div class="transition-colors duration-300 border-4 rounded-lg border-secondary bg-secondary/50 py-2 px-0">
       <div class="border-b pb-1 px-2 mb-2 flex items-center gap-x-2 flex-wrap border-secondary">

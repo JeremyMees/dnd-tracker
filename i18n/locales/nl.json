@@ -824,7 +824,8 @@
         "redcap": "Paddenstoel",
         "wolf-rider": "Wolf rijder"
       },
-      "negative": "Sta HP en AC toe negatief te zijn"
+      "negative": "Sta HP en AC toe negatief te zijn",
+      "noActiveWidgets": "Geen actieve widgets. Gebruik het settings icoon om widgets in te schakelen."
     },
     "infoCard": {
       "add": "Pin toevoegen",
