@@ -61,7 +61,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-4" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="ylqr4a611g-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">10</span><span data-test-temp="" class="text-warning text-xs"> +5</span></div><span data-test-max="" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 100</span>
                 </button>
                 <!--teleport start-->
@@ -69,7 +69,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-5" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="ylqr4a611g-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">1</span><span data-test-temp="" class="text-warning text-xs"> +5</span></div><span data-test-max="" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 19</span>
                 </button>
                 <!--teleport start-->
@@ -125,7 +125,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-8" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="zywxbg0xy9-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -136,7 +136,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-9" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="zywxbg0xy9-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -197,7 +197,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-12" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="p4sx6p6crvr-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -208,7 +208,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-13" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="p4sx6p6crvr-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -273,7 +273,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-16" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="os6k2s1nw9-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">72</span>
                     <!--v-if-->
                   </div>
@@ -284,7 +284,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-17" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="os6k2s1nw9-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -338,7 +338,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-20" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="mox3z1fszcr-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">103</span>
                     <!--v-if-->
                   </div>
@@ -349,7 +349,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-21" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="mox3z1fszcr-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">14</span>
                     <!--v-if-->
                   </div>
@@ -404,7 +404,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-24" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="h4d9jzr9v7v-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -415,7 +415,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-25" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="h4d9jzr9v7v-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -472,7 +472,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-28" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="ukz8pqovcj-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -483,7 +483,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-29" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="ukz8pqovcj-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -539,7 +539,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-32" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="i8ofc3qm6p9-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -550,7 +550,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-33" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="i8ofc3qm6p9-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -611,7 +611,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-36" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="ytsae7pp8gd-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -622,7 +622,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-37" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="ytsae7pp8gd-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>
@@ -679,7 +679,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-40" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="xkse1qls52-hp" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-health="" class="">100</span>
                     <!--v-if-->
                   </div>
@@ -690,7 +690,7 @@ exports[`Initiative table > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
-              <div><button id="reka-popover-trigger-v-0-0-41" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+              <div><button id="xkse1qls52-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
                   <div class="flex items-center gap-x-1"><span data-test-ac="" class="">19</span>
                     <!--v-if-->
                   </div>

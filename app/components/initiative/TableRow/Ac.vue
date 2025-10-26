@@ -88,6 +88,9 @@ async function updateAc(form: AcForm, node: FormNode): Promise<void> {
     const row = handleAcChanges(amount, type || 'remove')
 
     await updateRow(row)
+
+    if (type === 'add') animateTableUpdate(`${props.item.id}-ac`, 'green')
+    if (type === 'remove') animateTableUpdate(`${props.item.id}-ac`, 'red')
   }
   catch {
     reset('InitiativeRowAcUpdate')
@@ -117,11 +120,12 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          :id="`${item.id}-ac`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac <= 0,
+            'bg-destructive/20 p-2 w-fit': isDefined(item.ac) && item.ac <= 0,
           }"
-          class="flex flex-col gap-y-1"
+          class="flex flex-col gap-y-1 rounded-lg"
         >
           <div class="flex items-center gap-x-1">
             <Icon

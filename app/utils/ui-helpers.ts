@@ -142,3 +142,17 @@ export function validateInject<T>(key: InjectionKey<T>): T {
 
   return injection
 }
+
+export function animateTableUpdate(id: string, color: 'green' | 'red'): void {
+  const el = document.getElementById(id)
+
+  if (!el) return
+
+  el.style.animation = 'none'
+  void el.offsetHeight
+  el.style.animation = `pulse-${color} 1s ease-in-out`
+
+  setTimeout(() => {
+    if (el) el.style.animation = ''
+  }, 1000)
+}

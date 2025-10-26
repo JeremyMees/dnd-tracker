@@ -110,6 +110,8 @@ async function handleSubmit(form: { target: string }, node: FormNode): Promise<v
 
     await update({ rows })
     popoverOpen.value = false
+
+    animateTableUpdate(`${target}-hp`, 'red')
   }
   catch (err: any) {
     reset('ActionRoll')

@@ -101,6 +101,9 @@ async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
       handleToasts(toasts)
 
       await updateRow(row)
+
+      if (type === 'heal') animateTableUpdate(`${props.item.id}-hp`, 'green')
+      if (type === 'damage') animateTableUpdate(`${props.item.id}-hp`, 'red')
     }
     catch (error) {
       console.error('Error updating health', error)
@@ -118,11 +121,12 @@ async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          :id="`${item.id}-hp`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.health) && item.health <= 0,
+            'bg-destructive/20 p-2 w-fit': isDefined(item.health) && item.health <= 0,
           }"
-          class="flex flex-col gap-y-1"
+          class="flex flex-col gap-y-1 rounded-lg"
         >
           <div class="flex items-center gap-x-1">
             <Icon

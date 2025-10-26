@@ -13,6 +13,7 @@ import {
   isDefined,
   validateParamId,
   sanitizeHTML,
+  animateTableUpdate,
 } from '~/utils/ui-helpers'
 
 beforeEach(() => {
@@ -247,6 +248,36 @@ describe('ui-helpers', () => {
 
       expect(result).toContain('<hr>')
       expect(result).not.toContain('<hr />')
+    })
+  })
+
+  describe('animateTableUpdate', () => {
+    it('applies and clears table update animation', () => {
+      vi.useFakeTimers()
+
+      const el: any = { style: {}, offsetHeight: 0 }
+      document.getElementById = vi.fn().mockReturnValue(el)
+
+      animateTableUpdate('row-1', 'green')
+
+      expect(document.getElementById).toHaveBeenCalledWith('row-1')
+      expect(el.style.animation).toBe('pulse-green 1s ease-in-out')
+
+      vi.advanceTimersByTime(1000)
+      expect(el.style.animation).toBe('')
+
+      vi.useRealTimers()
+    })
+
+    it('returns early when element is not found', () => {
+      vi.useFakeTimers()
+      document.getElementById = vi.fn().mockReturnValue(null)
+
+      expect(() => animateTableUpdate('missing', 'green')).not.toThrow()
+      expect(document.getElementById).toHaveBeenCalledWith('missing')
+
+      vi.runAllTimers()
+      vi.useRealTimers()
     })
   })
 })
