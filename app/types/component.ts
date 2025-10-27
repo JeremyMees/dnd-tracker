@@ -11,15 +11,15 @@ export interface ToastItem extends ToastProps {
   description: [string, Record<string, unknown>?]
 }
 
-export type ModalComponent =
-  | 'FeatureRequest'
-  | 'Campaign'
-  | 'Encounter'
-  | 'TransferOwnership'
-  | 'InviteMember'
-  | 'Homebrew'
-  | 'Note'
-  | 'Mail'
+export type ModalComponent
+  = | 'FeatureRequest'
+    | 'Campaign'
+    | 'Encounter'
+    | 'TransferOwnership'
+    | 'InviteMember'
+    | 'Homebrew'
+    | 'Note'
+    | 'Mail'
 
 export interface Modal {
   uuid: string

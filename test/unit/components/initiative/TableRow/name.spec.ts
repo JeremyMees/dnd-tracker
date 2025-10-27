@@ -11,7 +11,7 @@ interface Props {
 type MockFunctions = {
   handleSubmit: (
     form: { name: string },
-    node: { clearErrors: () => void, setErrors: (error: string) => void }
+    node: { clearErrors: () => void, setErrors: (error: string) => void },
   ) => Promise<void>
 }
 

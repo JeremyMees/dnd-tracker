@@ -1,26 +1,26 @@
-export type Open5eType =
-  | 'spells'
-  | 'monsters'
-  | 'backgrounds'
-  | 'planes'
-  | 'feats'
-  | 'conditions'
-  | 'races'
-  | 'classes'
-  | 'magicitems'
-  | 'weapons'
-  | 'armor'
-  | 'documents'
-  | 'sections'
+export type Open5eType
+  = | 'spells'
+    | 'monsters'
+    | 'backgrounds'
+    | 'planes'
+    | 'feats'
+    | 'conditions'
+    | 'races'
+    | 'classes'
+    | 'magicitems'
+    | 'weapons'
+    | 'armor'
+    | 'documents'
+    | 'sections'
 
-export type Open5eSortBy =
-  | 'name'
-  | 'hit_points'
-  | '-hit_points'
-  | 'armor_class'
-  | '-armor_class'
-  | 'cr'
-  | '-cr'
+export type Open5eSortBy
+  = | 'name'
+    | 'hit_points'
+    | '-hit_points'
+    | 'armor_class'
+    | '-armor_class'
+    | 'cr'
+    | '-cr'
 
 export interface Open5eFilters {
   page: number
