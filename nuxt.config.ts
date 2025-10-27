@@ -1,12 +1,12 @@
 import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 import packageJSON from './package.json'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/supabase',
     '@nuxt/image',
     '@formkit/nuxt',
@@ -37,6 +37,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: [
+    '@/assets/css/global.css',
     '@/assets/css/tippy.css',
     '@/assets/css/driver.css',
   ],
@@ -87,6 +88,12 @@ export default defineNuxtConfig({
     rollupConfig: {
       plugins: [vue()],
     },
+  },
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
   },
 
   eslint: { config: { stylistic: true } },
@@ -141,6 +148,4 @@ export default defineNuxtConfig({
       saveRedirectToCookie: true,
     },
   },
-
-  tailwindcss: { viewer: false },
 })
