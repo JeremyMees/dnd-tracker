@@ -71,13 +71,13 @@ async function handleSubmit(form: WidgetSettingsForm, node: FormNode): Promise<v
       v-if="widgets.length || !isModified"
       class="grid xl:grid-cols-2 gap-2 items-start"
     >
-      <InitiativeWidgetsNote
+      <LazyInitiativeWidgetsNote
         v-if="widgets.includes('note') || !isModified"
         hydrate-on-idle
         :value="sheet?.info ?? ''"
         @update="update({ info: $event })"
       />
-      <InitiativeWidgetsPinnedContent
+      <LazyInitiativeWidgetsPinnedContent
         v-if="widgets.includes('info-pins') || !isModified"
         hydrate-on-idle
         :value="sheet?.info_cards ?? []"
