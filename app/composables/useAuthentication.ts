@@ -6,7 +6,6 @@ export function useAuthentication() {
   const ready = useState<boolean>('auth-ready', () => false)
 
   const supabase = useSupabaseClient<DB>()
-  const supabaseUser = useSupabaseUser()
   const localePath = useLocalePath()
 
   supabase.auth.onAuthStateChange((event) => {
@@ -60,7 +59,10 @@ export function useAuthentication() {
   }
 
   async function fetch(forceRefresh = false): Promise<void> {
-    if (supabaseUser.value) {
+    const res = await supabase.auth.getUser()
+    const userId = res.data.user?.id
+
+    if (userId) {
       if (
         user.value
         && gc.value
@@ -71,7 +73,7 @@ export function useAuthentication() {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', supabaseUser.value.id)
+        .eq('id', userId)
         .single()
 
       if (error?.details.includes('Results contain 0 rows')) {

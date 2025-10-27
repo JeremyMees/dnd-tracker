@@ -81,20 +81,12 @@ export default defineNuxtConfig({
     client: 'hidden',
   },
 
-  future: {
-    compatibilityVersion: 4,
-  },
-
   compatibilityDate: '2024-04-03',
 
   nitro: {
     rollupConfig: {
       plugins: [vue()],
     },
-  },
-
-  vite: {
-    optimizeDeps: { force: true },
   },
 
   eslint: { config: { stylistic: true } },
@@ -141,6 +133,7 @@ export default defineNuxtConfig({
   },
 
   supabase: {
+    types: '~~/shared/types/database-generated.ts',
     redirectOptions: {
       login: '/login',
       callback: '/',

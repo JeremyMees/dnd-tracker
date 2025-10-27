@@ -32,8 +32,6 @@ mockNuxtImport('useSupabaseClient', () => () => ({
 
 mockNuxtImport('useState', () => <T>(key: string, init: () => T) => ref(init()))
 
-mockNuxtImport('useSupabaseUser', () => () => ref({ id: 'test-user-id' }))
-
 mockNuxtImport('createError', () => (error: any) => {
   throw new Error(
     typeof error === 'string'
