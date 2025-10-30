@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/supabase',
     '@nuxt/image',
-    '@formkit/nuxt',
     '@nuxtjs/i18n',
     '@nuxt/icon',
     '@vueuse/nuxt',
@@ -56,7 +55,6 @@ export default defineNuxtConfig({
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,
     public: {
-      formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
@@ -97,7 +95,6 @@ export default defineNuxtConfig({
   },
 
   eslint: { config: { stylistic: true } },
-  formkit: { configFile: './formkit/config.ts' },
 
   i18n: {
     defaultLocale: 'nl',
