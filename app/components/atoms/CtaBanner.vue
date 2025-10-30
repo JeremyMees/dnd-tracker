@@ -11,20 +11,24 @@ const { user } = useAuthentication()
 <template>
   <div class="dnd-container max-w-[1600px] relative">
     <div class="grid lg:grid-cols-2 gap-8 p-6 md:p-12 bg-primary/20 backdrop-blur-lg rounded-[32px] overflow-hidden transition-colors duration-300">
-      <div class="max-w-prose relative z-[1]">
+      <div class="max-w-prose relative z-1">
         <p class="head-1 mb-4 text-foreground">
           {{ title }}
         </p>
         <p class="pb-8 text-muted-foreground">
           {{ subtitle }}
         </p>
-        <NuxtLinkLocale
-          :to="user ? '/pricing' : '/login'"
-          :style="false"
-          class="btn-tertiary"
+        <UiButton
+          variant="tertiary"
+          as-child
         >
-          {{ button }}
-        </NuxtLinkLocale>
+          <NuxtLinkLocale
+            :to="user ? '/pricing' : '/login'"
+            :style="false"
+          >
+            {{ button }}
+          </NuxtLinkLocale>
+        </UiButton>
       </div>
       <div class="relative -bottom-10 left-12 md:-bottom-16 flex justify-end">
         <NuxtImg

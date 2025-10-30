@@ -69,7 +69,7 @@ const dragon = ref<InstanceType<typeof Dragon>>()
             sizes="sm:1000px md:1000px lg:1000px"
             width="1852"
             height="1168"
-            class="mx-auto h-full rounded-2xl object-cover object-left-top"
+            class="mx-auto h-full rounded-2xl object-cover object-top-left"
           />
         </template>
       </LazyUiContainerScroll>
