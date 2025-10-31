@@ -77,6 +77,7 @@
     "applyDamage": "Apply damage"
   },
   "general": {
+    "version": "Version",
     "advantage": "Advantage",
     "advantageAbb": "Adv.",
     "disadvantage": "Disadvantage",
@@ -505,6 +506,10 @@
           "my": "Me"
         }
       }
+    },
+    "changelog": {
+      "title": "Changelogs",
+      "description": "Discover the evolution of our DnD Tracker through our detailed changelog. Stay updated on the latest features, improvements, and bug fixes that enhance your experience."
     },
     "noAccess": {
       "title": "You're not a team member",
