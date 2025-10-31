@@ -35,7 +35,7 @@ const { data, status } = useFeatureListing(computed(() => ({
         color="secondary"
         class="flex flex-wrap items-center gap-x-4 gap-y-2"
       >
-        <FormKit
+        <!-- <FormKit
           v-model="search"
           type="search"
           name="search"
@@ -54,11 +54,11 @@ const { data, status } = useFeatureListing(computed(() => ({
             { label: $t('pages.featureRequest.filter.options.all'), value: 'all' },
           ]"
           outer-class="$reset !pb-0"
-        />
-        <button
-          class="btn-primary mt-5"
+        /> -->
+        <UiButton
           :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
+          class="mt-5"
           @click="
             user
               ? modal.open({
@@ -70,7 +70,7 @@ const { data, status } = useFeatureListing(computed(() => ({
           "
         >
           {{ $t('pages.featureRequest.request') }}
-        </button>
+        </UiButton>
       </Card>
 
       <!-- Loading feature request -->
