@@ -38,3 +38,6 @@ logs
 
 # Cursor
 .cursor
+
+# VSCode
+.vscode/mcp.json

@@ -36,9 +36,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: [
-    '@/assets/css/global.css',
-    '@/assets/css/tippy.css',
-    '@/assets/css/driver.css',
+    '~/assets/css/global.css',
+    '~/assets/css/tippy.css',
+    '~/assets/css/driver.css',
   ],
 
   site: {
