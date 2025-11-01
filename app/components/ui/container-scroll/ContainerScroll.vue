@@ -1,30 +1,4 @@
-<template>
-  <div
-    ref="containerRef"
-    class="relative flex h-[60rem] items-center justify-center p-2 md:h-[80rem] md:p-20"
-  >
-    <div
-      class="relative w-full py-10 md:py-40"
-      style="perspective: 1000px"
-    >
-      <UiContainerScrollTitle :translate="translateY">
-        <slot name="title" />
-      </UiContainerScrollTitle>
-      <UiContainerScrollCard
-        :rotate="rotate"
-        :scale="scale"
-      >
-        <slot name="card" />
-      </UiContainerScrollCard>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { useWindowSize, useScroll, useElementBounding } from '@vueuse/core'
-import { ref, onMounted, onUnmounted, computed } from 'vue'
-
-const containerRef = ref(null)
 const isMobile = ref(false)
 
 function updateIsMobile() {
@@ -39,22 +13,20 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', updateIsMobile)
 })
-
-const { height } = useWindowSize()
-const { y: scrollY } = useScroll(window)
-const { bottom } = useElementBounding(containerRef)
-
-const scrollYProgress = computed(() => {
-  if (!bottom.value) return 0
-  return 1 - Math.max(0, bottom.value - scrollY.value) / height.value
-})
-
-const scaleDimensions = computed(() => (isMobile.value ? [0.7, 0.9] : [1.05, 1]))
-
-const rotate = computed(() => 20 * (1 - scrollYProgress.value))
-const scale = computed(() => {
-  const [start = 0, end = 0] = scaleDimensions.value
-  return start + (end - start) * scrollYProgress.value
-})
-const translateY = computed(() => -100 * scrollYProgress.value)
 </script>
+
+<template>
+  <div class="relative flex h-[60rem] items-center justify-center p-2 md:h-[80rem] md:p-20">
+    <div
+      class="relative w-full py-10 md:py-40"
+      style="perspective: 1000px"
+    >
+      <UiContainerScrollTitle>
+        <slot name="title" />
+      </UiContainerScrollTitle>
+      <UiContainerScrollCard>
+        <slot name="card" />
+      </UiContainerScrollCard>
+    </div>
+  </div>
+</template>
