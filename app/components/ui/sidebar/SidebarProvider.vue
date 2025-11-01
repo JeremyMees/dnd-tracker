@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useEventListener, useMediaQuery, useVModel } from '@vueuse/core'
+import type { HTMLAttributes, Ref } from 'vue'
+import { defaultDocument, useEventListener, useMediaQuery, useVModel } from '@vueuse/core'
 import { TooltipProvider } from 'reka-ui'
-import { computed, type HTMLAttributes, type Ref, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './utils'
-import { cn } from '@/utils/shadcn'
 
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean
   open?: boolean
   class?: HTMLAttributes['class']
 }>(), {
-  defaultOpen: true,
+  defaultOpen: !defaultDocument?.cookie.includes(`${SIDEBAR_COOKIE_NAME}=false`),
   open: undefined,
 })
 
@@ -67,11 +67,12 @@ provideSidebarContext({
 <template>
   <TooltipProvider :delay-duration="0">
     <div
+      data-slot="sidebar-wrapper"
       :style="{
         '--sidebar-width': SIDEBAR_WIDTH,
         '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
       }"
-      :class="cn('group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar', props.class)"
+      :class="cn('group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full', props.class)"
       v-bind="$attrs"
     >
       <slot />

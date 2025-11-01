@@ -2,7 +2,6 @@
 import type { PrimitiveProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { Primitive } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
 
 const props = withDefaults(defineProps<PrimitiveProps & {
   size?: 'sm' | 'md'
@@ -16,6 +15,7 @@ const props = withDefaults(defineProps<PrimitiveProps & {
 
 <template>
   <Primitive
+    data-slot="sidebar-menu-sub-button"
     data-sidebar="menu-sub-button"
     :as="as"
     :as-child="asChild"

@@ -100,7 +100,7 @@ async function logoutUser(): Promise<void> {
                       <UiNavigationMenuLink
                         :active="isActive"
                         :href="href"
-                        class="flex flex-row gap-2 items-center"
+                        class="flex flex-row gap-2 items-center w-full"
                         @click="navigate"
                       >
                         <Icon

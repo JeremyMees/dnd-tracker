@@ -2,7 +2,6 @@
 import type { HTMLAttributes } from 'vue'
 import { useSidebar } from './utils'
 import { Button } from '@/components//ui/button'
-import { cn } from '@/utils/shadcn'
 
 const props = defineProps<{
   class?: HTMLAttributes['class']
@@ -15,7 +14,8 @@ const { toggleSidebar } = useSidebar()
   <Button
     v-tippy="$t('actions.toggleSidebar')"
     data-sidebar="trigger"
-    variant="ghost"
+    data-slot="sidebar-trigger"
+    variant="default-ghost"
     size="icon"
     :class="cn('h-7 w-7', props.class)"
     @click="toggleSidebar"

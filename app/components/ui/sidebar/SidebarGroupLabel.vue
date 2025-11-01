@@ -2,7 +2,6 @@
 import type { PrimitiveProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { Primitive } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
 
 const props = defineProps<PrimitiveProps & {
   class?: HTMLAttributes['class']
@@ -11,6 +10,7 @@ const props = defineProps<PrimitiveProps & {
 
 <template>
   <Primitive
+    data-slot="sidebar-group-label"
     data-sidebar="group-label"
     :as="as"
     :as-child="asChild"
