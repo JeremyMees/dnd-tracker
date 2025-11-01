@@ -1,5 +1,18 @@
 export interface AuthUser extends ProfileRow { }
 
+interface Credentials {
+  email: string
+  password: string
+}
+
+interface Register extends Credentials {
+  username: string
+  name: string
+  marketing: boolean
+  avatar: Avatar['url']
+  avatar_options: Avatar['extra']
+}
+
 export function useAuthentication() {
   const user = useState<AuthUser | null>('auth-user', () => null)
   const gc = useState<number | null>('auth-gc', () => null)
@@ -40,7 +53,7 @@ export function useAuthentication() {
     }
   }
 
-  async function login(credentials: Login): Promise<void> {
+  async function login(credentials: Credentials): Promise<void> {
     const { error } = await supabase.auth.signInWithPassword(credentials)
 
     if (error) throw createError(error)

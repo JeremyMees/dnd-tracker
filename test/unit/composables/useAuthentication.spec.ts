@@ -1,7 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useAuthentication } from '~/composables/useAuthentication'
-import type { Login, Register } from '~/types/forms'
 
 const mockSignUp = vi.fn()
 const mockSignInWithPassword = vi.fn()
@@ -82,7 +81,7 @@ describe('useAuthentication', () => {
 
       mockSupabaseFrom().insert.mockResolvedValue({ error: null })
 
-      const userData: Register = { email, password, ...user }
+      const userData = { email, password, ...user }
 
       await auth.register(userData)
 
@@ -102,7 +101,7 @@ describe('useAuthentication', () => {
         error: { message: 'Registration failed' },
       })
 
-      const userData: Register = { email, password, ...user }
+      const userData = { email, password, ...user }
 
       await expect(auth.register(userData)).rejects.toThrow()
       expect(mockSignUp).toHaveBeenCalled()
@@ -113,7 +112,7 @@ describe('useAuthentication', () => {
     it('should successfully log in a user', async () => {
       mockSignInWithPassword.mockResolvedValue({ error: null })
 
-      const credentials: Login = { email, password }
+      const credentials = { email, password }
       await auth.login(credentials)
 
       expect(mockSignInWithPassword).toHaveBeenCalledWith(credentials)
@@ -124,7 +123,7 @@ describe('useAuthentication', () => {
         error: { message: 'Invalid credentials' },
       })
 
-      const credentials: Login = { email: 'wrong@example.com', password: 'wrong' }
+      const credentials = { email: 'wrong@example.com', password: 'wrong' }
       await expect(auth.login(credentials)).rejects.toThrow()
 
       expect(mockSignInWithPassword).toHaveBeenCalledWith(credentials)
