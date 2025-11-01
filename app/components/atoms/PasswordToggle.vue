@@ -7,7 +7,7 @@ const isShowing = shallowRef(false)
     v-slot="{ componentField }"
     name="password"
   >
-    <UiFormItem v-auto-animate>
+    <UiFormItem>
       <UiFormLabel required>
         {{ $t('components.inputs.passwordLabel') }}
       </UiFormLabel>
