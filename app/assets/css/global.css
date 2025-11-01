@@ -5,6 +5,7 @@
 
 @theme inline {
   --font-geist: "Geist", sans-serif;
+  --text-2xs: 0.625rem;
   --breakpoint-2xl: 1400px;
 
   --color-background: var(--background);

@@ -53,17 +53,23 @@ function handleCopy(name: string): void {
     :amount="amount"
   />
 
-  <div class="flex w-full justify-end gap-2 items-center mt-4">
-    <p class="text-muted-foreground text-2xs">
-      {{ $t('pages.fantasyNameGenerator.tip') }}
-    </p>
-    <button
+  <div class="flex flex-col w-full gap-2 mt-4">
+    <div class="text-muted-foreground flex gap-2 items-center">
+      <Icon
+        name="tabler:info-circle"
+        class="text-info"
+      />
+      <p class="text-xs">
+        {{ $t('pages.fantasyNameGenerator.tip') }}
+      </p>
+    </div>
+    <UiButton
       data-test-generate
       :disabled="!names.length"
-      class="btn-primary"
+      class="self-end"
       @click="generate"
     >
       {{ $t('actions.generate') }}
-    </button>
+    </UiButton>
   </div>
 </template>
