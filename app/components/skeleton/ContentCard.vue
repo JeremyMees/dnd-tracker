@@ -26,7 +26,7 @@ withDefaults(
     </UiCardContent>
     <UiCardFooter>
       <div class="flex justify-end w-full">
-        <UiSkeleton class="w-[120px] h-7" />
+        <UiSkeleton class="w-[123px] h-10" />
       </div>
     </UiCardFooter>
   </UiCard>

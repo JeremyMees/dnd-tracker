@@ -14,8 +14,11 @@ defineProps<{
     class="md-richtext text-muted-foreground"
     :class="{
       'line-clamp-3': !isOpen && hideOpenButton,
-      'border-b-4 pb-1 border-background': isOpen && ['spells', 'magicitems'].includes(type),
     }"
+  />
+  <UiSeparator
+    v-if="isOpen && ['spells', 'magicitems'].includes(type)"
+    class="mt-1"
   />
   <template v-if="isOpen || hideOpenButton()">
     <p

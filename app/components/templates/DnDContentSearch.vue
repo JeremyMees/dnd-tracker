@@ -80,7 +80,7 @@ async function removePins(): Promise<void> {
   <div class="max-h-full flex flex-col gap-4">
     <div class="flex flex-col gap-2">
       <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
-        <FormKit
+        <!-- <FormKit
           v-model="search"
           data-test-search
           :disabled="showPinned"
@@ -104,7 +104,7 @@ async function removePins(): Promise<void> {
           ]"
           outer-class="$reset !pb-0 w-full sm:w-auto sm:flex-1"
           @input="search = ''"
-        />
+        /> -->
       </div>
       <AnimationReveal>
         <div
