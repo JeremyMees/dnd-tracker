@@ -455,8 +455,10 @@ function setLink() {
 </template>
 
 <style>
+@reference '~/assets/css/global.css';
+
 .html-invalid .tiptap {
-  @apply !outline-destructive;
+  @apply outline-destructive!;
 }
 
 .tiptap {
