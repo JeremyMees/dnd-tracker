@@ -369,10 +369,6 @@
     @apply font-bold text-base;
   }
 
-  kbd {
-    @apply border border-slate-300 rounded size-6 flex items-center justify-center border-b-2;
-  }
-
   select,
   option {
     @apply text-white bg-foreground;
