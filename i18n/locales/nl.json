@@ -679,7 +679,9 @@
       "searchByUsername": "Zoeken op gebruikersnaam",
       "searchByEmail": "Zoeken op email",
       "newOwnerLabel": "Nieuwe eigenaar",
-      "textRequired": "Tekst is verplicht"
+      "textRequired": "Tekst is verplicht",
+      "showPassword": "Wachtwoord tonen",
+      "hidePassword": "Wachtwoord verbergen"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",

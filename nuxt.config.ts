@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/supabase',
     '@nuxt/image',
+    'nuxt-zod-i18n',
     '@nuxtjs/i18n',
     '@nuxt/icon',
     '@vueuse/nuxt',
@@ -20,6 +21,7 @@ export default defineNuxtConfig({
     'motion-v/nuxt',
     '@nuxt/test-utils/module',
     '@sentry/nuxt/module',
+    '@formkit/auto-animate/nuxt',
   ],
 
   components: [
@@ -143,6 +145,13 @@ export default defineNuxtConfig({
       callback: '/',
       include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
       saveRedirectToCookie: true,
+    },
+  },
+
+  zodI18n: {
+    localeCodesMapping: {
+      'en-GB': 'en',
+      'nl-NL': 'nl',
     },
   },
 })

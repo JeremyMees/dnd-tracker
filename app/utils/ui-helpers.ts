@@ -31,11 +31,6 @@ export function randomColor(): string {
   return Math.floor(Math.random() * 16777215).toString(16)
 }
 
-export function togglePasswordInput(node: FormNode): void {
-  node.props.suffixIcon = node.props.suffixIcon === 'tabler:eye' ? 'tabler:eye-closed' : 'tabler:eye'
-  node.props.type = node.props.type === 'password' ? 'text' : 'password'
-}
-
 export function sortByNumber(a: number | any[], b: number | any[], acs: boolean): number {
   a = Array.isArray(a) ? a.length : a
   b = Array.isArray(b) ? b.length : b

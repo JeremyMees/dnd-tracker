@@ -679,7 +679,9 @@
       "searchByUsername": "Search by username",
       "searchByEmail": "Search by email",
       "newOwnerLabel": "New owner",
-      "textRequired": "Text is required"
+      "textRequired": "Text is required",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
     },
     "campaignModal": {
       "add": "Create a new campaign",
