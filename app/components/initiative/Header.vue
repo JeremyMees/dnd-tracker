@@ -16,7 +16,7 @@ const resetOpen = ref<boolean>(false)
       v-if="data?.settings?.pet"
       data-test-pet
       :pet="data.settings.pet"
-      class="max-[350px]:hidden absolute top-14 sm:top-6 left-4"
+      class="max-[350px]:hidden absolute top-13 sm:top-5 left-4"
     />
     <div class="flex gap-2 items-center">
       <span class="text-muted-foreground">
@@ -30,20 +30,22 @@ const resetOpen = ref<boolean>(false)
       </span>
       <UiPopover v-model:open="resetOpen">
         <UiPopoverTrigger as-child>
-          <button
+          <UiButton
             id="tour-11"
             v-tippy="$t('actions.reset')"
             data-test-reset
-            :disabled="!data?.rows.length"
             aria-label="Reset rounds"
-            class="icon-btn-destructive"
+            :disabled="!data?.rows.length"
+            variant="destructive-ghost"
+            size="icon-sm"
+            class="group"
           >
             <Icon
               name="tabler:refresh"
-              class="text-destructive"
+              class="text-destructive group-hover:text-foreground"
               aria-hidden="true"
             />
-          </button>
+          </UiButton>
         </UiPopoverTrigger>
         <UiPopoverContent class="flex flex-col gap-2">
           <button
@@ -83,7 +85,7 @@ const resetOpen = ref<boolean>(false)
         data-test-previous
         :disabled="!data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)"
         :aria-label="$t('actions.prev')"
-        class="group disabled:cursor-not-allowed duration-300 ease-in-out py-1 pl-1 pr-2 border-r-2 border-primary flex flex-col items-center"
+        class="group disabled:cursor-not-allowed duration-300 ease-in-out p-1 border-r-4 border-primary flex flex-col items-center"
         @click="$emit('previous')"
       >
         <Icon
@@ -92,7 +94,7 @@ const resetOpen = ref<boolean>(false)
           aria-hidden="true"
         />
       </button>
-      <p class="font-medium px-2">
+      <p class="text-sm font-medium">
         {{ $t('components.inputs.initiativeLabel') }}
       </p>
       <button
@@ -100,7 +102,7 @@ const resetOpen = ref<boolean>(false)
         data-test-next
         :disabled="!data?.rows.length"
         :aria-label="$t('actions.next')"
-        class="group disabled:cursor-not-allowed py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"
+        class="group disabled:cursor-not-allowed p-1 border-l-4 border-primary flex flex-col items-center"
         @click="$emit('next')"
       >
         <Icon
