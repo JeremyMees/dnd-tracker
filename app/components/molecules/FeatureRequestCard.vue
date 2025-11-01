@@ -72,12 +72,13 @@ function toggleVote(vote: FeatureVote): void {
     <UiCardContent>
       <div class="flex gap-x-4 flex-1">
         <div class="flex flex-col gap-y-1">
-          <button
+          <UiButton
             data-test-like-button
+            variant="background"
             :disabled="feature.status === 'added'"
-            class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center disabled:opacity-60 disabled:cursor-not-allowed"
+            class="h-auto flex flex-col gap-1"
             :class="{
-              '!bg-primary/50 !border-primary': hasVoted === 'like',
+              'bg-primary/50! border-primary!': hasVoted === 'like',
             }"
             @click="user ? toggleVote('like') : emit('login')"
           >
@@ -91,13 +92,14 @@ function toggleVote(vote: FeatureVote): void {
             >
               {{ feature.voted.like.length }}
             </span>
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             data-test-dislike-button
+            variant="background"
             :disabled="feature.status === 'added'"
-            class="bg-background/50 border-4 border-background rounded-lg py-1 px-2 flex flex-col items-center disabled:opacity-60 disabled:cursor-not-allowed"
+            class="h-auto flex flex-col gap-1"
             :class="{
-              '!bg-primary/50 !border-primary': hasVoted === 'dislike',
+              'bg-primary/50! border-primary!': hasVoted === 'dislike',
             }"
             @click="user ? toggleVote('dislike') : emit('login')"
           >
@@ -111,7 +113,7 @@ function toggleVote(vote: FeatureVote): void {
               name="tabler:thumb-down"
               aria-hidden="true"
             />
-          </button>
+          </UiButton>
         </div>
 
         <div class="flex flex-col flex-1 items-start justify-start gap-y-4">
