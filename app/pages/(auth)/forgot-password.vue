@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+
 import { useToast } from '~/components/ui/toast/use-toast'
 
 definePageMeta({ middleware: ['abort-authenticated'] })
@@ -9,13 +13,21 @@ const { toast } = useToast()
 const localePath = useLocalePath()
 const supabase = useSupabaseClient<DB>()
 
-interface ForgotPassword { email: string }
+const formSchema = toTypedSchema(z.object({
+  email: z.string().min(5).max(50).email(),
+}))
 
-async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<void> {
-  node.clearErrors()
+const form = useForm({
+  validationSchema: formSchema,
+})
+
+const formError = ref<string>('')
+
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
       redirectTo: `${window.location.origin}/reset-password`,
     })
 
@@ -30,7 +42,7 @@ async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<voi
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
-    node.setErrors(err.message)
+    formError.value = err.message || 'An error occurred during password reset'
 
     toast({
       title: t('general.error.title'),
@@ -38,45 +50,96 @@ async function forgotPassword(form: ForgotPassword, node: FormNode): Promise<voi
       variant: 'destructive',
     })
   }
-}
+})
 </script>
 
 <template>
-  <NuxtLayout name="centered">
-    <template #header>
-      <h1 class="text-center head-3">
-        {{ $t('pages.forgotPassword.title') }}
-      </h1>
-    </template>
+  <NuxtLayout name="auth">
+    <h1 class="text-center head-3 mb-6">
+      {{ $t('pages.forgotPassword.title') }}
+    </h1>
 
-    <FormKit
-      type="form"
-      :submit-label="$t('pages.forgotPassword.reset')"
-      @submit="forgotPassword"
-    >
-      <FormKit
+    <UiFormWrapper @submit="onSubmit">
+      <UiFormField
+        v-slot="{ componentField }"
         name="email"
-        :label="$t('components.inputs.emailLabel')"
-        validation="required|length:5,50|email"
-        required
-      />
-    </FormKit>
-
-    <template #footer>
-      <div class="flex flex-wrap gap-2 justify-center">
-        <NuxtLinkLocale
-          to="/register"
-          class="btn-text"
-        >
-          {{ $t('pages.login.new') }}
-        </NuxtLinkLocale>
-        <NuxtLinkLocale
-          to="/login"
-          class="btn-text"
-        >
-          {{ $t('pages.login.signIn') }}
-        </NuxtLinkLocale>
+      >
+        <UiFormItem>
+          <UiFormLabel required>
+            {{ $t('components.inputs.emailLabel') }}
+          </UiFormLabel>
+          <UiFormControl>
+            <UiInput
+              type="email"
+              v-bind="componentField"
+            />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <div
+        v-if="formError"
+        class="text-sm text-destructive"
+      >
+        {{ formError }}
       </div>
+      <UiButton
+        type="submit"
+        class="w-full"
+      >
+        {{ $t('pages.forgotPassword.reset') }}
+      </UiButton>
+    </UiFormWrapper>
+
+    <UiSeparator
+      class="mt-6 mb-2"
+      :label="$t('general.or')"
+    />
+
+    <div class="flex flex-wrap gap-2 justify-center">
+      <NuxtLinkLocale
+        to="/register"
+        class="btn-text flex-1 grow"
+      >
+        {{ $t('pages.login.new') }}
+      </NuxtLinkLocale>
+      <UiSeparator
+        orientation="vertical"
+        class="h-8"
+      />
+      <NuxtLinkLocale
+        to="/forgot-password"
+        class="btn-text flex-1 grow"
+      >
+        {{ $t('pages.login.forgot') }}
+      </NuxtLinkLocale>
+    </div>
+
+    <template #right>
+      <ClientOnly>
+        <UiIconCloud
+          :images="[
+            'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d8.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d10.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d12.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d20.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d8.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d10.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d12.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d20.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d8.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d10.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d12.png',
+            'https://ik.imagekit.io/c2es1qasw/pixel-d20.png',
+          ]"
+        />
+      </ClientOnly>
     </template>
   </NuxtLayout>
 </template>
