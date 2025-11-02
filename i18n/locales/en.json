@@ -956,5 +956,13 @@
     "12": {
       "title": "Congrats, you're ready to go! 🎉"
     }
+  },
+  "zod": {
+    "alphaSpaces": "Only letters and spaces are allowed",
+    "containsLowercase": "At least one lowercase letter is required",
+    "containsUppercase": "At least one uppercase letter is required",
+    "containsNumber": "At least one number is required",
+    "containsSymbol": "At least one symbol is required",
+    "allowedChars": "Only letters, numbers, and symbols are allowed"
   }
 }
