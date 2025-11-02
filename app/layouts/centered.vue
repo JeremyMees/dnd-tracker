@@ -4,7 +4,6 @@ defineProps<{ wide?: boolean }>()
 
 <template>
   <div class="min-h-screen relative overflow-hidden">
-    <AnimationBlob />
     <NuxtLinkLocale
       class="absolute inset-0 bg-transparent cursor-pointer"
       to="/"
@@ -34,7 +33,7 @@ defineProps<{ wide?: boolean }>()
         </NuxtLinkLocale>
         <section class="px-4 mx-h-full max-h-[90dvh] flex flex-col gap-y-6">
           <slot name="header" />
-          <div class="overflow-y-auto">
+          <div class="overflow-y-auto px-1">
             <slot />
           </div>
           <slot name="footer" />
