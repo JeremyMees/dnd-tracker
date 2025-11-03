@@ -1,7 +1,3 @@
-<script setup lang="ts">
-defineProps<{ wide?: boolean }>()
-</script>
-
 <template>
   <div class="min-h-screen relative overflow-hidden">
     <NuxtLinkLocale
@@ -13,8 +9,7 @@ defineProps<{ wide?: boolean }>()
     >
       <div class="inset-0 z-[-1] fancy-shadow" />
       <div
-        :class="[wide ? 'max-w-[1000px]' : 'max-w-prose']"
-        class="bg-muted/50 py-4 px-2 sm:p-6 sm:rounded-lg relative border-4 border-muted mx-auto"
+        class="max-w-prose bg-background py-4 px-2 sm:p-6 sm:rounded-lg relative border-4 border-muted mx-auto"
       >
         <img
           src="/gifs/wolf-rider.gif"
