@@ -1,7 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import {
-  sanitizeForm,
   sortByNumber,
   sortByString,
   sortCreatedAt,
@@ -31,29 +30,6 @@ mockNuxtImport('createError', () => (error: any) => {
 })
 
 describe('ui-helpers', () => {
-  describe('sanitizeForm', () => {
-    it('should trim string values', () => {
-      const data = { name: '  John Doe  ', age: 30 }
-      const result = sanitizeForm(data)
-
-      expect(result).toEqual({ name: 'John Doe', age: 30 })
-    })
-
-    it('should filter out blacklisted keys', () => {
-      const data = { name: 'John', __init: true, _vts: 123, isTrusted: false }
-      const result = sanitizeForm(data)
-
-      expect(result).toEqual({ name: 'John' })
-    })
-
-    it('should use custom blacklist if provided', () => {
-      const data = { name: 'John', custom: 'value', _vts: 123 }
-      const result = sanitizeForm(data, ['custom'])
-
-      expect(result).toEqual({ name: 'John', _vts: 123 })
-    })
-  })
-
   describe('sortByNumber', () => {
     it('should sort numbers in ascending order', () => {
       expect(sortByNumber(5, 10, true)).toBeLessThan(0)

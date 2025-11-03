@@ -1,20 +1,5 @@
 import DOMPurify from 'isomorphic-dompurify'
 
-export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[]): T {
-  const garbage: string[] = blacklist || ['__init', 'isTrusted', '_vts']
-  const sanitized: Record<string, any> = {}
-
-  for (const key in data) {
-    if (garbage.includes(key)) continue
-
-    sanitized[key] = typeof data[key] === 'string'
-      ? data[key].trim()
-      : data[key]
-  }
-
-  return sanitized as T
-}
-
 export function scrollToId(id: string): void {
   const el = document.getElementById(id)
 
