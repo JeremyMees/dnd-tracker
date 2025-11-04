@@ -60,7 +60,7 @@ async function logoutUser(): Promise<void> {
         />
       </NuxtLinkLocale>
       <div class="flex justify-end items-center gap-4">
-        <div class="hidden lg:flex items-center gap-4">
+        <div class="hidden md:flex items-center gap-4">
           <ClientOnly>
             <UiNavigationMenu disable-pointer-leave-close>
               <UiNavigationMenuList>
@@ -195,7 +195,7 @@ async function logoutUser(): Promise<void> {
         </div>
         <ClientOnly>
           <UiDropdownMenu>
-            <UiDropdownMenuTrigger class="lg:hidden">
+            <UiDropdownMenuTrigger class="md:hidden">
               <UiButton
                 size="icon"
                 aria-label="Open menu"
