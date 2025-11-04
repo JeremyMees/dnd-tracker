@@ -92,7 +92,7 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
             iconButton({
               icon: 'tabler:door-exit',
               content: t('actions.leave'),
-              color: 'warning',
+              variant: 'warning-ghost',
               cb: () => onLeave(row.original),
               disabled: isOwner(row.original, user.value.id),
             }),
@@ -105,7 +105,7 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
             iconButton({
               icon: 'tabler:edit',
               content: t('actions.update'),
-              color: 'info',
+              variant: 'info-ghost',
               cb: () => onUpdate(row.original),
             }),
           ],

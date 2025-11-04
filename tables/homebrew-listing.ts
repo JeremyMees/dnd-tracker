@@ -73,7 +73,7 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
       cell: ({ row }) => {
         return h('div', { class: 'flex justify-end' }, [
           hasRights
-            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), color: 'info', cb: () => onUpdate(row.original) })
+            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), variant: 'info-ghost', cb: () => onUpdate(row.original) })
             : '',
         ])
       },
@@ -108,7 +108,7 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
           color: 'text-warning',
         }),
         row.original.link
-          ? iconLink({ icon: 'tabler:link', content: t('actions.link'), color: 'info', to: row.original.link, external: true })
+          ? iconLink({ icon: 'tabler:link', content: t('actions.link'), variant: 'info-ghost', to: row.original.link, external: true })
           : '',
       ]),
     ]),
