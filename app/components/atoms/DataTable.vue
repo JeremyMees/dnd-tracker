@@ -68,6 +68,9 @@ const table = useVueTable({
 
 defineExpose({ vueTable: table })
 
+const search = ref(table.getState().globalFilter)
+watch(search, newValue => table.setGlobalFilter(newValue))
+
 async function fetchPermissions() {
   const permissions: Record<string, boolean> = {}
 
@@ -83,18 +86,35 @@ async function fetchPermissions() {
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-col-reverse sm:flex-row gap-2 justify-between items-center">
-      <FormKit
-        :value="table.getState().globalFilter"
-        type="search"
-        name="search"
-        prefix-icon="tabler:search"
-        outer-class="$remove:mb-4 w-full sm:w-auto"
-        inner-class="$remove:border-background $remove:bg-muted border-secondary bg-secondary/50"
-        @input="table.setGlobalFilter($event)"
-      />
-      <div class="flex justify-end w-full sm:w-auto">
+    <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
+      <UiInputGroup class="max-w-xs">
+        <UiInputGroupInput
+          v-model="search"
+          type="search"
+        />
+        <UiInputGroupAddon align="inline-end">
+          <Icon
+            name="tabler:search"
+            class="size-3"
+            :aria-hidden="true"
+          />
+        </UiInputGroupAddon>
+      </UiInputGroup>
+      <div
+        v-auto-animate
+        class="flex gap-x-4 justify-end items-center"
+      >
         <slot name="top" />
+        <UiButton
+          v-if="selectedRowLength"
+          data-test-remove
+          variant="destructive"
+          size="sm"
+          :aria-label="$t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength)"
+          @click="$emit('remove', table.getSelectedRowModel().rows.map(row => row.original.id))"
+        >
+          {{ $t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength) }}
+        </UiButton>
       </div>
     </div>
 
@@ -266,17 +286,5 @@ async function fetchPermissions() {
         </ClientOnly>
       </div>
     </div>
-
-    <AnimationReveal>
-      <button
-        v-if="selectedRowLength"
-        data-test-remove
-        class="btn-destructive mt-2"
-        :aria-label="$t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength)"
-        @click="$emit('remove', table.getSelectedRowModel().rows.map(row => row.original.id))"
-      >
-        {{ $t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength) }}
-      </button>
-    </AnimationReveal>
   </div>
 </template>
