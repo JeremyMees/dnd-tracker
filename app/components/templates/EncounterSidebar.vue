@@ -86,7 +86,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             </UiSidebarMenuButton>
           </UiDialogTrigger>
           <UiDialogContent
-            class="inset-0 translate-x-0 translate-y-0 max-h-[100dvh] gap-0"
+            class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
             @escape-key-down="openModal = undefined"
             @pointer-down-outside="openModal = undefined"
             @interact-outside="openModal = undefined"
@@ -111,7 +111,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             }"
             name="tabler:alert-triangle"
             :aria-hidden="true"
-            :class="{ 'relative right-[1px]': !isExpanded }"
+            :class="{ 'relative right-px': !isExpanded }"
             class="size-4 min-w-4 text-destructive"
           />
           <span class="group-data-[collapsible=icon]:hidden truncate">
@@ -148,7 +148,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               </UiSidebarMenuButton>
             </UiDialogTrigger>
             <UiDialogContent
-              class="inset-0 translate-x-0 translate-y-0 max-h-[100dvh] gap-0"
+              class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
               @escape-key-down="openModal = undefined"
               @pointer-down-outside="openModal = undefined"
               @interact-outside="openModal = undefined"
@@ -261,13 +261,13 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                   v-if="!$route.fullPath.includes('/playground')"
                   class="flex flex-col gap-x-2 mr-4"
                 >
-                  <FormKit
+                  <!-- <FormKit
                     v-model="saveHomebrewToCampaign"
                     :disabled="sheet && sheet.rows.length >= 100"
                     :label="$t('components.homebrewModal.save')"
                     type="toggle"
                     outer-class="$reset !mb-0"
-                  />
+                  /> -->
                   <span
                     v-if="sheet && sheet.rows.length >= 100"
                     class="text-destructive text-sm"
@@ -275,11 +275,11 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                     {{ $t('components.homebrewModal.max') }}
                   </span>
                 </div>
-                <FormKit
+                <!-- <FormKit
                   type="submit"
                   form="Homebrew"
                   :label="$t('actions.save')"
-                />
+                /> -->
               </UiDialogFooter>
             </UiDialogContent>
           </UiDialog>
@@ -358,11 +358,11 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             </UiDialogHeader>
             <FormInitiativeSettings @close="openModal = undefined" />
             <UiDialogFooter>
-              <FormKit
+              <!-- <FormKit
                 type="submit"
                 form="InitiativeSettings"
                 :label="$t('actions.save')"
-              />
+              /> -->
             </UiDialogFooter>
           </UiDialogContent>
         </UiDialog>
@@ -402,39 +402,41 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                     <p class="font-medium">
                       {{ $t('general.modifierKeys') }}
                     </p>
-                    <span class="flex flex-row">
-                      <kbd>⌃</kbd>
-                      <span class="mx-1 text-muted-foreground">/</span>
-                      <kbd>⌘</kbd>
-                      <span class="mx-1 text-muted-foreground">/</span>
-                      <kbd>⇧</kbd>
-                    </span>
+                    <UiKbdGroup>
+                      <UiKbd>⌃</UiKbd>
+                      <span class="text-muted-foreground">/</span>
+                      <UiKbd>⌘</UiKbd>
+                      <span class="text-muted-foreground">/</span>
+                      <UiKbd>⇧</UiKbd>
+                    </UiKbdGroup>
                   </div>
                   <div class="space-y-2">
                     <p class="font-medium">
                       {{ $t('actions.changeInitiative') }}
                     </p>
-                    <div class="flex items-center">
-                      <span class="mr-1 text-sm text-muted-foreground">
-                        MOD +
-                      </span>
-                      <span class="flex flex-row">
-                        <kbd>←</kbd>
-                        <span class="mx-1 text-muted-foreground">/</span>
-                        <kbd>→</kbd>
-                      </span>
-                    </div>
+                    <UiKbdGroup>
+                      <UiKbd>
+                        MOD
+                      </UiKbd>
+                      <span class="text-muted-foreground">+</span>
+                      <UiKbdGroup>
+                        <UiKbd>←</UiKbd>
+                        <span class="text-muted-foreground">/</span>
+                        <UiKbd>→</UiKbd>
+                      </UiKbdGroup>
+                    </UiKbdGroup>
                   </div>
                   <div class="space-y-2">
                     <p class="font-medium">
                       {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
                     </p>
-                    <div class="flex items-center">
-                      <span class="mr-1 text-muted-foreground">MOD +</span>
-                      <span class="flex flex-row">
-                        <kbd>⏎</kbd>
-                      </span>
-                    </div>
+                    <UiKbdGroup>
+                      <UiKbd>
+                        MOD
+                      </UiKbd>
+                      <span class="text-muted-foreground">+</span>
+                      <UiKbd>⏎</UiKbd>
+                    </UiKbdGroup>
                   </div>
                 </div>
               </div>
