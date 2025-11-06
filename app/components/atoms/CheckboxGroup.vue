@@ -10,10 +10,7 @@ defineProps<{
 <template>
   <UiFormField :name="name">
     <UiFormItem>
-      <UiFormLabel
-        v-if="label"
-        class="text-base"
-      >
+      <UiFormLabel v-if="label">
         {{ label }}
       </UiFormLabel>
       <div
