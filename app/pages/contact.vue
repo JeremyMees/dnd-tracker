@@ -65,7 +65,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="name"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel>
             {{ $t('components.inputs.nameLabel') }}
           </UiFormLabel>
@@ -82,7 +82,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="email"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
@@ -99,7 +99,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="question"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.questionLabel') }}
           </UiFormLabel>

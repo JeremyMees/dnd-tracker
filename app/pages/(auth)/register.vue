@@ -86,7 +86,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="name"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.fullNameLabel') }}
           </UiFormLabel>
@@ -103,7 +103,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="username"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.usernameLabel') }}
           </UiFormLabel>
@@ -120,7 +120,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="email"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
@@ -138,7 +138,10 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ value, handleChange }"
         name="marketing"
       >
-        <UiFormItem class="flex items-center gap-2">
+        <UiFormItem
+          v-auto-animate
+          class="flex items-center gap-2"
+        >
           <UiFormControl>
             <UiSwitch
               class="mb-0"

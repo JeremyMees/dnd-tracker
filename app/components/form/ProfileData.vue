@@ -49,7 +49,7 @@ const onSubmit = formData.handleSubmit(async (values) => {
       v-slot="{ componentField }"
       name="name"
     >
-      <UiFormItem>
+      <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.fullNameLabel') }}
         </UiFormLabel>
@@ -66,7 +66,7 @@ const onSubmit = formData.handleSubmit(async (values) => {
       v-slot="{ componentField }"
       name="username"
     >
-      <UiFormItem>
+      <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.usernameLabel') }}
         </UiFormLabel>

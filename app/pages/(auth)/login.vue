@@ -52,7 +52,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         v-slot="{ componentField }"
         name="email"
       >
-        <UiFormItem>
+        <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
