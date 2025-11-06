@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { initiativeWidgets } from '~~/constants/validation'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
@@ -11,21 +12,22 @@ const popoverOpen = shallowRef(false)
 const isModified = computed(() => sheet.value?.settings?.modified ?? false)
 
 const widgets = computed(() => {
-  const allowed = ['note', 'info-pins']
   const data = sheet.value?.settings?.widgets ?? []
-  return allowed.filter(widget => data.includes(widget))
+  return initiativeWidgets.filter(widget => data.includes(widget))
 })
 
 watch(popoverOpen, (open) => {
   if (!open) return
 
   form.setValues({
-    widgets: isModified.value ? (sheet.value?.settings?.widgets || []) : ['note', 'info-pins'],
+    widgets: isModified.value
+      ? (sheet.value?.settings?.widgets || [])
+      : [...initiativeWidgets],
   })
 })
 
 const formSchema = toTypedSchema(z.object({
-  widgets: z.array(z.string()),
+  widgets: z.array(z.enum(initiativeWidgets)),
 }))
 
 const form = useForm({
