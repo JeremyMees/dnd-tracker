@@ -67,18 +67,16 @@ function calculateDiceRoll() {
         :key="dice"
         class="flex flex-col items-center flex-1"
       >
-        <button
+        <UiButton
           type="button"
+          variant="background-ghost"
+          size="icon-sm"
           :aria-label="$t('general.more')"
           :disabled="toRoll[dice] >= 100"
-          class="icon-btn-ghost"
           @click="toRoll[dice] = toRoll[dice] ? toRoll[dice] + 1 : 1"
         >
-          <Icon
-            name="tabler:caret-up"
-            class="size-5"
-          />
-        </button>
+          <Icon name="tabler:caret-up" />
+        </UiButton>
         <div class="size-5">
           <NuxtImg
             v-tippy="dice.toUpperCase()"
@@ -90,30 +88,31 @@ function calculateDiceRoll() {
             provider="imagekit"
           />
         </div>
-        <button
+        <UiButton
           type="button"
+          variant="background-ghost"
+          size="icon-sm"
           :aria-label="$t('general.less')"
           :disabled="toRoll[dice] <= 0"
-          class="icon-btn-ghost"
           @click="toRoll[dice] = toRoll[dice] ? toRoll[dice] - 1 : 0"
         >
           <Icon
             name="tabler:caret-down"
             class="size-5"
           />
-        </button>
+        </UiButton>
         <span class="text-xs">
           {{ toRoll[dice] }}
         </span>
       </div>
     </div>
-    <button
+    <UiButton
       type="button"
       :disabled="Object.values(toRoll).every((value) => value === 0)"
-      class="btn-primary mt-4 w-full"
+      class="mt-4 w-full"
       @click="calculateDiceRoll"
     >
       {{ $t('actions.roll') }}
-    </button>
+    </UiButton>
   </div>
 </template>
