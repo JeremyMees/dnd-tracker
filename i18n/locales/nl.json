@@ -372,7 +372,8 @@
         "ac": "AC bijwerken",
         "hp": "HP bijwerken",
         "link": "Link bijwerken",
-        "conditions": "Condities bijwerken"
+        "conditions": "Condities bijwerken",
+        "widgets": "Actieve widgets bijwerken"
       },
       "toasts": {
         "removed": {

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
@@ -13,25 +16,39 @@ const widgets = computed(() => {
   return allowed.filter(widget => data.includes(widget))
 })
 
-interface WidgetSettingsForm {
-  widgets: string[]
-}
+watch(popoverOpen, (open) => {
+  if (!open) return
 
-async function handleSubmit(form: WidgetSettingsForm, node: FormNode): Promise<void> {
+  form.setValues({
+    widgets: isModified.value ? (sheet.value?.settings?.widgets || []) : ['note', 'info-pins'],
+  })
+})
+
+const formSchema = toTypedSchema(z.object({
+  widgets: z.array(z.string()),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+})
+
+const formError = ref<string>('')
+
+const onSubmit = form.handleSubmit(async (values) => {
   if (!sheet.value) return
 
-  node.clearErrors()
+  formError.value = ''
 
   await update({
     settings: {
       ...sheet.value?.settings,
-      ...sanitizeForm<WidgetSettingsForm>(form),
+      ...values,
       modified: true,
     },
   })
 
   popoverOpen.value = false
-}
+})
 </script>
 
 <template>
@@ -43,26 +60,33 @@ async function handleSubmit(form: WidgetSettingsForm, node: FormNode): Promise<v
 
       <UiPopover v-model:open="popoverOpen">
         <UiPopoverTrigger as-child>
-          <button class="icon-btn-foreground">
-            <Icon
-              name="tabler:settings"
-              class="size-4 min-w-4"
-            />
-          </button>
+          <UiButton
+            v-tippy="$t('pages.encounter.update.widgets')"
+            variant="foreground-ghost"
+            size="icon-sm"
+          >
+            <Icon name="tabler:settings" />
+          </UiButton>
         </UiPopoverTrigger>
         <UiPopoverContent>
-          <FormKit
-            id="WidgetSettings"
-            type="form"
-            :submit-label="$t('actions.save')"
-            @submit="handleSubmit"
-          >
-            <FormActiveWidgets
-              :settings="sheet?.settings"
-              fieldset-class="$reset "
-              no-label
-            />
-          </FormKit>
+          <h4 class="mb-4">
+            {{ $t('pages.encounter.update.widgets') }}
+          </h4>
+          <UiFormWrapper @submit="onSubmit">
+            <FormActiveWidgets no-label />
+            <div
+              v-if="formError"
+              class="text-sm text-destructive"
+            >
+              {{ formError }}
+            </div>
+            <UiButton
+              type="submit"
+              class="w-full"
+            >
+              {{ $t('actions.save') }}
+            </UiButton>
+          </UiFormWrapper>
         </UiPopoverContent>
       </UiPopover>
     </div>

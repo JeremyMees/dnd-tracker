@@ -372,7 +372,8 @@
         "ac": "Update AC",
         "hp": "Update HP",
         "link": "Update link",
-        "conditions": "Update conditions"
+        "conditions": "Update conditions",
+        "widgets": "Update active widgets"
       },
       "toasts": {
         "removed": {
