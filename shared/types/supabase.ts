@@ -142,10 +142,12 @@ export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'camp
 
 export type InitiativeWidget = 'note' | 'info-pins'
 
+export type InitiativeRowField = 'ac' | 'health' | 'conditions' | 'note' | 'deathSaves' | 'concentration' | 'modify'
+
 export interface InitiativeSettings {
   spacing: TableSpacing
   modified: boolean
-  rows?: string[]
+  rows?: InitiativeRowField[]
   widgets?: InitiativeWidget[]
   pet?: InitiativePet
   negative?: boolean

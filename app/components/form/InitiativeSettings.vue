@@ -1,61 +1,106 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import {
+  initiativeSpacingOptions,
+  initiativeDefaultRows,
+  initiativePets,
+  initiativeWidgets,
+} from '~~/constants/validation'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const rowsDefault = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+const isModified = computed(() => sheet.value?.settings?.modified ?? false)
 
-interface InitiativeSettingsForm {
-  spacing: TableSpacing
-  rows: string[]
-  widgets: string[]
-  pet?: InitiativePet
-  negative: boolean
-}
+const formSchema = toTypedSchema(z.object({
+  spacing: z.enum(initiativeSpacingOptions),
+  rows: z.array(z.enum(initiativeDefaultRows)),
+  widgets: z.array(z.enum(initiativeWidgets)),
+  pet: z.union([z.enum(initiativePets), z.literal('none')]).optional().transform(val => val === 'none' ? undefined : val),
+  negative: z.boolean(),
+}))
 
-async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode): Promise<void> {
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    spacing: sheet.value?.settings?.spacing || 'normal',
+    rows: isModified.value
+      ? (sheet.value?.settings?.rows || [])
+      : [...initiativeDefaultRows],
+    widgets: isModified.value
+      ? (sheet.value?.settings?.widgets || [])
+      : [...initiativeWidgets],
+    pet: sheet.value?.settings?.pet || undefined,
+    negative: sheet.value?.settings?.negative || false,
+  },
+})
+
+const formError = ref<string>('')
+
+const onSubmit = form.handleSubmit(async (values) => {
   if (!sheet.value) return
 
-  node.clearErrors()
+  formError.value = ''
 
-  await update({
-    settings: {
-      ...sanitizeForm<InitiativeSettingsForm>(form),
-      modified: true,
-    },
-  })
+  try {
+    await update({
+      settings: {
+        ...values,
+        modified: true,
+      },
+    })
 
-  emit('close')
-}
+    emit('close')
+  }
+  catch (err: any) {
+    formError.value = err.message || 'An error occurred during updating initiative settings'
+  }
+})
 </script>
 
 <template>
-  <div class="overflow-y-auto">
-    <FormKit
-      id="InitiativeSettings"
-      type="form"
-      :actions="false"
-      @submit="handleSettingsSubmit"
-    >
-      <FormKit
-        name="spacing"
+  <div class="overflow-y-hidden">
+    <UiFormWrapper @submit="onSubmit">
+      <UiFormField
+        v-slot="{ componentField }"
         type="radio"
-        options-class="flex flex-wrap gap-y-2 gap-x-6"
-        :label="$t('components.initiativeSettings.spacing')"
-        :value="sheet?.settings?.spacing || 'normal'"
-        :options="[
-          { label: 'Compact', value: 'compact' },
-          { label: 'Normal', value: 'normal' },
-          { label: 'Cozy', value: 'cozy' },
-        ]"
-      />
-      <FormKit
+        name="spacing"
+      >
+        <UiFormItem v-auto-animate>
+          <UiFormLabel>{{ $t('components.initiativeSettings.spacing') }}</UiFormLabel>
+          <UiFormControl>
+            <UiRadioGroup
+              class="sm:grid-cols-3 rounded-md border border-input bg-background px-3 py-2"
+              v-bind="componentField"
+            >
+              <UiFormItem
+                v-for="option in [
+                  { label: 'Compact', value: 'compact' },
+                  { label: 'Normal', value: 'normal' },
+                  { label: 'Cozy', value: 'cozy' },
+                ]"
+                :key="option.value"
+                class="flex items-center space-y-0 gap-x-3"
+              >
+                <UiFormControl>
+                  <UiRadioGroupItem :value="option.value" />
+                </UiFormControl>
+                <UiFormLabel class="font-normal">
+                  {{ option.label }}
+                </UiFormLabel>
+              </UiFormItem>
+            </UiRadioGroup>
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <CheckboxGroup
         name="rows"
-        type="checkbox"
         :label="$t('components.initiativeSettings.rows')"
-        :value="sheet?.settings?.modified ? (sheet?.settings?.rows || []) : rowsDefault"
         :options="[
           { label: 'AC', value: 'ac' },
           { label: 'HP', value: 'health' },
@@ -65,35 +110,83 @@ async function handleSettingsSubmit(form: InitiativeSettingsForm, node: FormNode
           { label: $t('general.concentration'), value: 'concentration' },
           { label: $t('general.modify'), value: 'modify' },
         ]"
+        list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
       />
-      <FormActiveWidgets
-        :settings="sheet?.settings"
-        options-class="flex flex-wrap gap-y-2 gap-x-6"
-      />
-      <FormKit
-        name="pet"
-        type="select"
-        :label="$t('components.initiativeSettings.pets.label')"
-        :value="sheet?.settings?.pet || undefined"
+      <CheckboxGroup
+        name="widgets"
+        :label="$t('components.initiativeSettings.widgets')"
         :options="[
-          { label: $t('general.none'), value: undefined },
-          { label: $t('components.initiativeSettings.pets.cat'), value: 'cat' },
-          { label: $t('components.initiativeSettings.pets.chicken'), value: 'chicken' },
-          { label: $t('components.initiativeSettings.pets.barmaid'), value: 'barmaid' },
-          { label: $t('components.initiativeSettings.pets.crawler'), value: 'crawler' },
-          { label: $t('components.initiativeSettings.pets.dragon'), value: 'dragon' },
-          { label: $t('components.initiativeSettings.pets.fairy'), value: 'fairy' },
-          { label: $t('components.initiativeSettings.pets.redcap'), value: 'redcap' },
-          { label: $t('components.initiativeSettings.pets.wolf-rider'), value: 'wolf-rider' },
+          { label: $t('general.note'), value: 'note' },
+          { label: $t('general.infoPins'), value: 'info-pins' },
         ]"
+        list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
       />
-      <FormKit
+      <UiFormField
+        v-slot="{ componentField }"
+        name="pet"
+      >
+        <UiFormItem>
+          <UiFormLabel>{{ $t('components.initiativeSettings.pets.label') }}</UiFormLabel>
+          <UiSelect v-bind="componentField">
+            <UiFormControl>
+              <UiSelectTrigger>
+                <UiSelectValue />
+              </UiSelectTrigger>
+            </UiFormControl>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in [
+                    { label: $t('general.none'), value: 'none' },
+                    { label: $t('components.initiativeSettings.pets.cat'), value: 'cat' },
+                    { label: $t('components.initiativeSettings.pets.chicken'), value: 'chicken' },
+                    { label: $t('components.initiativeSettings.pets.barmaid'), value: 'barmaid' },
+                    { label: $t('components.initiativeSettings.pets.crawler'), value: 'crawler' },
+                    { label: $t('components.initiativeSettings.pets.dragon'), value: 'dragon' },
+                    { label: $t('components.initiativeSettings.pets.fairy'), value: 'fairy' },
+                    { label: $t('components.initiativeSettings.pets.redcap'), value: 'redcap' },
+                    { label: $t('components.initiativeSettings.pets.wolf-rider'), value: 'wolf-rider' },
+                  ]"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <UiFormField
+        v-slot="{ value, handleChange }"
         name="negative"
-        type="toggle"
-        :label="$t('components.initiativeSettings.negative')"
-        :value="sheet?.settings?.negative || false"
-        outer-class="$remove:mb-4"
-      />
-    </FormKit>
+      >
+        <UiFormItem class="flex items-center gap-2">
+          <UiFormControl>
+            <UiSwitch
+              class="mb-0"
+              :model-value="value"
+              @update:model-value="handleChange"
+            />
+          </UiFormControl>
+          <UiFormLabel>
+            {{ $t('components.initiativeSettings.negative') }}
+          </UiFormLabel>
+        </UiFormItem>
+      </UiFormField>
+      <div
+        v-if="formError"
+        class="text-sm text-destructive"
+      >
+        {{ formError }}
+      </div>
+      <UiButton
+        type="submit"
+        class="w-full"
+      >
+        {{ $t('actions.save') }}
+      </UiButton>
+    </UiFormWrapper>
   </div>
 </template>

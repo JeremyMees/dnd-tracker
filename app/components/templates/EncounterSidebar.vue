@@ -357,13 +357,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               </UiDialogTitle>
             </UiDialogHeader>
             <FormInitiativeSettings @close="openModal = undefined" />
-            <UiDialogFooter>
-              <!-- <FormKit
-                type="submit"
-                form="InitiativeSettings"
-                :label="$t('actions.save')"
-              /> -->
-            </UiDialogFooter>
           </UiDialogContent>
         </UiDialog>
       </UiSidebarMenuItem>
