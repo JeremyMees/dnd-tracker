@@ -131,7 +131,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </div>
         </div>
 
-        <InitiativeTableFormsAcUpdate
+        <FormsAcUpdate
           v-if="hasAc"
           :item="item"
           :sheet="sheet"
@@ -144,7 +144,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           class="my-3 bg-muted"
         />
 
-        <InitiativeTableFormsAcUpdateBase
+        <FormsAcUpdateBase
           :item="item"
           :sheet="sheet"
           :handle-ac-changes="handleAcChanges"
@@ -156,7 +156,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           class="my-3 bg-muted"
         />
 
-        <InitiativeTableFormsAcOverride
+        <FormsAcOverride
           v-if="hasAc"
           :item="item"
           :sheet="sheet"
