@@ -1,14 +1,59 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const { t } = useI18n()
+const popoverOpen = shallowRef<boolean>(false)
+const formError = ref<string>('')
 
-const popoverOpen = ref<boolean>(false)
+const formSchema = toTypedSchema(z.object({
+  initiative: z.number().min(0).max(50),
+  modifier: z.number().min(-20).max(20).optional(),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+})
+
+watch(popoverOpen, (open) => {
+  if (!open) return
+
+  form.setValues({
+    initiative: props.item.initiative >= 0 ? props.item.initiative : undefined,
+    modifier: props.item.initiative_modifier,
+  })
+})
+
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
+
+  try {
+    if (!sheet.value) return
+
+    const { initiative, modifier } = values
+
+    const index = getCurrentRowIndex(sheet.value, props.item.id)
+    const rows = [...sheet.value.rows]
+
+    if (index === -1 || !rows[index]) return
+
+    rows[index] = {
+      ...rows[index],
+      initiative: Math.max(0, initiative + (modifier ?? 0)),
+    }
+
+    await update({ rows })
+    popoverOpen.value = false
+  }
+  catch (err: any) {
+    formError.value = err.message || 'An error occurred during name update'
+  }
+})
 
 const currentIndex = computed(() => props.item.index)
 
@@ -57,35 +102,6 @@ async function moveRow(up: boolean): Promise<void> {
 
   await update({ rows: [...rows].sort((a, b) => a.index - b.index) })
 }
-
-interface InitiativeForm { initiative: number, modifier?: number }
-
-async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    if (!sheet.value) return
-
-    const { initiative, modifier } = sanitizeForm<InitiativeForm>(form)
-
-    const index = getCurrentRowIndex(sheet.value, props.item.id)
-    const rows = [...sheet.value.rows]
-
-    if (index === -1 || !rows[index]) return
-
-    rows[index] = {
-      ...rows[index],
-      initiative: Math.max(0, initiative + (modifier ?? 0)),
-    }
-
-    await update({ rows })
-    popoverOpen.value = false
-  }
-  catch (err: any) {
-    reset('InitiativeRowInit')
-    node.setErrors(t('general.error.text'))
-  }
-}
 </script>
 
 <template>
@@ -117,33 +133,64 @@ async function handleSubmit(form: InitiativeForm, node: FormNode): Promise<void>
             {{ $t('components.initiativeTableModals.init') }}
           </UiPopoverTitle>
         </UiPopoverHeader>
-        <FormKit
-          id="InitiativeRowInit"
-          type="form"
-          :submit-label="$t('actions.save')"
-          @submit="handleSubmit"
-        >
-          <FormKit
+        <UiFormWrapper @submit="onSubmit">
+          <UiFormField
+            v-slot="{ componentField, setValue }"
             name="initiative"
-            :label="$t('components.inputs.amountLabel')"
-            :value="item.initiative < 0 ? undefined : item.initiative"
-            validation="required|between:0,50|number"
-            type="number"
-            suffix-icon="tabler:hexagon"
-            number
-            @suffix-icon-click="(node: FormNode) => node.input(randomRoll(20))"
-          />
-          <FormKit
+          >
+            <UiFormItem v-auto-animate>
+              <UiFormLabel required>
+                {{ $t('components.inputs.amountLabel') }}
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInputGroup>
+                  <UiInputGroupInput
+                    type="number"
+                    v-bind="componentField"
+                  />
+                  <UiInputGroupAddon align="inline-end">
+                    <UiInputGroupButton
+                      :aria-label="$t('actions.save')"
+                      @click="setValue(randomRoll(20))"
+                    >
+                      <Icon name="tabler:hexagon" />
+                    </UiInputGroupButton>
+                  </UiInputGroupAddon>
+                </UiInputGroup>
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+          <UiFormField
+            v-slot="{ componentField }"
             name="modifier"
-            :label="`${$t('components.inputs.initiativeLabel')} (MODIFIER)`"
-            :value="item.initiative_modifier"
-            validation="between:-20,20|number"
-            min="-20"
-            max="20"
-            type="number"
-            number
-          />
-        </FormKit>
+          >
+            <UiFormItem v-auto-animate>
+              <UiFormLabel>
+                {{ `${$t('components.inputs.initiativeLabel')} (MODIFIER)` }}
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInput
+                  type="number"
+                  v-bind="componentField"
+                />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+          <div
+            v-if="formError"
+            class="text-sm text-destructive"
+          >
+            {{ formError }}
+          </div>
+          <UiButton
+            type="submit"
+            class="w-full"
+          >
+            {{ $t('actions.save') }}
+          </UiButton>
+        </UiFormWrapper>
       </UiPopoverContent>
     </UiPopover>
     <div
