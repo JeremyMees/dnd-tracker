@@ -1,24 +1,29 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const { t } = useI18n()
+const popoverOpen = shallowRef<boolean>(false)
+const formError = ref<string>('')
 
-const popoverOpen = ref<boolean>(false)
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(2).max(30),
+}))
 
-interface NameForm { name: string }
+const form = useForm({
+  validationSchema: formSchema,
+})
 
-async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
-  node.clearErrors()
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   try {
     if (!sheet.value) return
-
-    const { name } = sanitizeForm<NameForm>(form)
 
     const index = getCurrentRowIndex(sheet.value, props.item.id)
     const rows = [...sheet.value.rows]
@@ -27,17 +32,16 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
 
     rows[index] = {
       ...rows[index],
-      name,
+      name: values.name,
     }
 
     await update({ rows })
     popoverOpen.value = false
   }
   catch (err: any) {
-    reset('InitiativeRowName')
-    node.setErrors(t('general.error.text'))
+    formError.value = err.message || 'An error occurred during name update'
   }
-}
+})
 </script>
 
 <template>
@@ -71,18 +75,38 @@ async function handleSubmit(form: NameForm, node: FormNode): Promise<void> {
           {{ $t('components.initiativeTableModals.name') }}
         </UiPopoverTitle>
       </UiPopoverHeader>
-      <FormKit
-        id="InitiativeRowName"
-        type="form"
-        :submit-label="$t('actions.save')"
-        @submit="handleSubmit"
-      >
-        <FormKit
+      <UiFormWrapper @submit="onSubmit">
+        <UiFormField
+          v-slot="{ componentField }"
           name="name"
-          :label="$t('components.inputs.nameLabel')"
-          :value="item.name"
-        />
-      </FormKit>
+        >
+          <UiFormItem v-auto-animate>
+            <UiFormControl>
+              <UiInputGroup>
+                <UiInputGroupInput
+                  type="text"
+                  v-bind="componentField"
+                />
+                <UiInputGroupAddon align="inline-end">
+                  <UiInputGroupButton
+                    :aria-label="$t('actions.save')"
+                    type="submit"
+                  >
+                    <Icon name="tabler:device-floppy" />
+                  </UiInputGroupButton>
+                </UiInputGroupAddon>
+              </UiInputGroup>
+            </UiFormControl>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+        <div
+          v-if="formError"
+          class="text-sm text-destructive"
+        >
+          {{ formError }}
+        </div>
+      </UiFormWrapper>
     </UiPopoverContent>
   </UiPopover>
 </template>
