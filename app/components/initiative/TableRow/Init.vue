@@ -150,7 +150,7 @@ async function moveRow(up: boolean): Promise<void> {
                   />
                   <UiInputGroupAddon align="inline-end">
                     <UiInputGroupButton
-                      :aria-label="$t('actions.save')"
+                      :aria-label="$t('actions.roll')"
                       @click="setValue(randomRoll(20))"
                     >
                       <Icon name="tabler:hexagon" />
