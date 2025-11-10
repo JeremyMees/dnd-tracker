@@ -75,7 +75,13 @@ const onSubmit = form.handleSubmit(async (values) => {
             {{ $t('pages.encounter.update.widgets') }}
           </h4>
           <UiFormWrapper @submit="onSubmit">
-            <FormActiveWidgets no-label />
+            <CheckboxGroup
+              name="widgets"
+              :options="[
+                { label: $t('general.note'), value: 'note' },
+                { label: $t('general.infoPins'), value: 'info-pins' },
+              ]"
+            />
             <div
               v-if="formError"
               class="text-sm text-destructive"
