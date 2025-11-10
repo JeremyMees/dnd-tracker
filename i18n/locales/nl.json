@@ -682,7 +682,9 @@
       "newOwnerLabel": "Nieuwe eigenaar",
       "textRequired": "Tekst is verplicht",
       "showPassword": "Wachtwoord tonen",
-      "hidePassword": "Wachtwoord verbergen"
+      "hidePassword": "Wachtwoord verbergen",
+      "showDiceRoller": "Dobbelsteen roller tonen",
+      "hideDiceRoller": "Dobbelsteen roller verbergen"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",

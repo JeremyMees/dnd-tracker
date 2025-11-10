@@ -682,7 +682,9 @@
       "newOwnerLabel": "New owner",
       "textRequired": "Text is required",
       "showPassword": "Show password",
-      "hidePassword": "Hide password"
+      "hidePassword": "Hide password",
+      "showDiceRoller": "Show dice roller",
+      "hideDiceRoller": "Hide dice roller"
     },
     "campaignModal": {
       "add": "Create a new campaign",
