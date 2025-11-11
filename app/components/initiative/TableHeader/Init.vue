@@ -1,64 +1,101 @@
 <script setup lang="ts">
-import { useFormKitNodeById } from '@formkit/vue'
-import { reset } from '@formkit/core'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 defineProps<{ label: string }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const { t } = useI18n()
-
-const popoverOpen = ref<boolean>(false)
+const popoverOpen = shallowRef(false)
+const formError = ref<string>('')
 
 const usedTypes = computed(() => [...new Set(sheet.value?.rows.map(({ type }) => type))])
 
+const formSchema = toTypedSchema(z.object({
+  selectedTypes: z.array(z.string()),
+  ignore: z.boolean(),
+  selectedCreatures: z.array(z.object({
+    id: z.string(),
+    amount: z.number().min(0).max(50).optional(),
+    initiative: z.number().min(-20).max(20).optional(),
+  })),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    selectedTypes: [],
+    ignore: false,
+    selectedCreatures: [],
+  },
+})
+
+watch(popoverOpen, (open) => {
+  if (!open) return
+
+  form.setValues({
+    selectedTypes: usedTypes.value,
+    ignore: false,
+    selectedCreatures: sheet.value?.rows.map(row => ({
+      id: row.id,
+      amount: isDefined(row.initiative) && row.initiative > -1
+        ? row.initiative
+        : undefined,
+      initiative: row.initiative_modifier,
+    })) ?? [],
+  })
+})
+
 function rollAllInitiatives() {
-  const selected = useFormKitNodeById<string[]>('selected').value?.value ?? []
+  const selected = form.values.selectedTypes ?? []
 
-  sheet.value?.rows
-    .filter(({ type }) => selected.includes(type))
-    .forEach(({ id }) => useFormKitNodeById(id, (node: FormNode) => node.input(randomRoll(20))))
+  sheet.value?.rows.forEach(({ type }, index) => {
+    if (selected.includes(type)) {
+      form.setFieldValue(
+        `selectedCreatures[${index}].amount`,
+        randomRoll(20) as never,
+      )
+    }
+  })
 }
 
-interface QuickInitiativeForm {
-  selected: string[]
-  ignore: boolean
-  [key: string]: any
-}
-
-async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<void> {
-  node.clearErrors()
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   try {
     if (!sheet.value) return
 
-    const { ignore, selected, ...characters } = sanitizeForm<QuickInitiativeForm>(form)
+    const { ignore, selectedCreatures } = values
 
     const rows = [...sheet.value.rows]
 
-    for (const key in characters) {
-      if (characters[key].amount !== undefined) {
-        const index = rows.findIndex(({ id }) => id === key)
+    selectedCreatures.forEach(({ id, amount, initiative }) => {
+      if (amount !== undefined) {
+        const index = rows.findIndex(row => row.id === id)
 
         if (index >= 0) {
-          let init = characters[key].amount
+          let init = amount
 
-          if (!ignore && !isNaN(characters[key].initiative)) init += characters[key].initiative
+          if (
+            !ignore
+            && isDefined(initiative)
+            && !isNaN(initiative)
+          ) init += initiative
 
           if (rows[index]) rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
         }
       }
-    }
+    })
 
     await update({ rows })
     popoverOpen.value = false
   }
   catch (err: any) {
-    reset('InitiativeRowInit')
-    node.setErrors(t('general.error.text'))
+    formError.value = err.message || 'An error occurred during quick initiative roll'
   }
-}
+})
 </script>
 
 <template>
@@ -82,86 +119,130 @@ async function handleSubmit(form: QuickInitiativeForm, node: FormNode): Promise<
             {{ $t('components.initiativeTableHeader.initiative.title') }}
           </UiPopoverTitle>
         </UiPopoverHeader>
-        <FormKit
-          id="form"
-          type="form"
-          :actions="false"
-          @submit="handleSubmit"
-        >
-          <div class="grid md:grid-cols-2 gap-x-4 max-h-[320px] overflow-y-auto">
-            <FormKit
-              v-for="row in sheet?.rows || []"
+        <UiFormWrapper @submit="onSubmit">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div
+              v-for="(row, index) in sheet?.rows || []"
               :key="row.id"
-              :name="row.id.toString()"
-              type="group"
+              class="flex gap-2"
             >
-              <div class="flex gap-x-2">
-                <FormKit
-                  :id="row.id"
-                  name="amount"
-                  :label="row.name"
-                  validation="between:0,50|number"
-                  type="number"
-                  number
-                  outer-class="grow"
-                  suffix-icon="tabler:hexagon"
-                  @suffix-icon-click="(node: FormNode) => node.input(randomRoll(20))"
-                />
-                <FormKit
-                  name="initiative"
-                  label="MOD"
-                  validation="between:-20,20|number"
-                  :value="row.initiative_modifier"
-                  type="number"
-                  number
-                  min="-20"
-                  max="20"
-                  outer-class="w-[80px]"
-                />
-              </div>
-            </FormKit>
+              <UiFormField
+                v-slot="{ componentField, setValue }"
+                :name="`selectedCreatures.${index}.amount`"
+              >
+                <UiFormItem
+                  v-auto-animate
+                  class="w-30"
+                >
+                  <UiFormLabel
+                    :for="row.id"
+                    class="text-ellipsis line-clamp-1"
+                  >
+                    {{ row.name }}
+                  </UiFormLabel>
+                  <UiFormControl>
+                    <UiInputGroup>
+                      <UiInputGroupInput
+                        :id="row.id"
+                        type="number"
+                        v-bind="componentField"
+                      />
+                      <UiInputGroupAddon align="inline-end">
+                        <UiInputGroupButton
+                          :aria-label="$t('actions.roll')"
+                          type="button"
+                          @click="setValue(randomRoll(20))"
+                        >
+                          <Icon name="tabler:hexagon" />
+                        </UiInputGroupButton>
+                      </UiInputGroupAddon>
+                    </UiInputGroup>
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
+              <UiFormField
+                v-slot="{ componentField }"
+                :name="`selectedCreatures.${index}.initiative`"
+              >
+                <UiFormItem
+                  v-auto-animate
+                  class="w-20"
+                >
+                  <UiFormLabel
+                    :for="`${row.id}-mod`"
+                    class="text-ellipsis line-clamp-1"
+                  >
+                    MOD
+                  </UiFormLabel>
+                  <UiFormControl>
+                    <UiInput
+                      :id="`${row.id}-mod`"
+                      type="number"
+                      v-bind="componentField"
+                    />
+                  </UiFormControl>
+                  <UiFormMessage />
+                </UiFormItem>
+              </UiFormField>
+            </div>
           </div>
-          <div class="py-4">
-            <FormKit
-              id="selected"
-              name="selected"
-              type="checkbox"
-              :value="usedTypes"
-              :label="$t('components.initiativeTableHeader.initiative.select')"
-              :options="usedTypes.map((type) => ({
-                label: $t(`general.${type}`),
-                value: type,
-              }))"
-              options-class="flex flex-wrap gap-y-2 gap-x-6"
-            />
-            <FormKit
+
+          <CheckboxGroup
+            name="selectedTypes"
+            :label="$t('components.initiativeTableHeader.initiative.select')"
+            :options="usedTypes.map((type) => ({
+              label: $t(`general.${type}`),
+              value: type,
+            }))"
+            list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
+          />
+
+          <div
+            v-if="formError"
+            class="text-sm text-destructive"
+          >
+            {{ formError }}
+          </div>
+
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <UiFormField
+              v-slot="{ value, handleChange }"
               name="ignore"
-              type="toggle"
-              outer-class="!mb-0"
-              wrapper-class="!mb-0"
-              :label="$t('components.initiativeTableHeader.initiative.ignore')"
-            />
-          </div>
-          <div class="flex gap-2 items-center">
-            <FormKit
-              :aria-label="$t('components.initiativeTableHeader.initiative.roll')"
+            >
+              <UiFormItem
+                v-auto-animate
+                class="flex items-center gap-2"
+              >
+                <UiFormControl>
+                  <UiSwitch
+                    class="mb-0"
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </UiFormControl>
+                <UiFormLabel>
+                  {{ $t('components.initiativeTableHeader.initiative.ignore') }}
+                </UiFormLabel>
+              </UiFormItem>
+            </UiFormField>
+            <UiButton
               type="button"
-              input-class="$reset !mb-0 btn-primary grow"
-              outer-class="!mb-0 grow"
+              variant="foreground"
+              :disabled="!(form.values.selectedTypes ?? []).length"
+              :aria-label="$t('components.initiativeTableHeader.initiative.roll')"
               @click="rollAllInitiatives"
             >
               {{ $t('components.initiativeTableHeader.initiative.roll') }}
-            </FormKit>
-            <FormKit
-              :aria-label="$t('actions.update')"
-              input-class="grow"
-              outer-class="!mb-0 grow"
+            </UiButton>
+            <UiButton
               type="submit"
+              :aria-label="$t('actions.update')"
             >
               {{ $t('actions.update') }}
-            </FormKit>
+            </UiButton>
           </div>
-        </FormKit>
+        </UiFormWrapper>
       </UiPopoverContent>
     </UiPopover>
   </div>
