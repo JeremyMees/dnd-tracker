@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { TabsList, type TabsListProps } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
-import { cn } from '@/utils/shadcn'
+import type { TabsListProps } from 'reka-ui'
+import type { HTMLAttributes } from 'vue'
+import { TabsList } from 'reka-ui'
 
 const props = defineProps<TabsListProps & { class?: HTMLAttributes['class'] }>()
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
-
-  return delegated
-})
+const delegatedProps = reactiveOmit(props, 'class')
 </script>
 
 <template>
