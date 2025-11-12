@@ -98,7 +98,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <CheckboxGroup
+      <FormCheckboxGroup
         name="rows"
         :label="$t('components.initiativeSettings.rows')"
         :options="[
@@ -112,7 +112,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         ]"
         list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
       />
-      <CheckboxGroup
+      <FormCheckboxGroup
         name="widgets"
         :label="$t('components.initiativeSettings.widgets')"
         :options="[

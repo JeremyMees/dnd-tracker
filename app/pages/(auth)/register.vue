@@ -133,7 +133,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <PasswordToggle />
+      <FormPasswordToggle />
       <UiFormField
         v-slot="{ value, handleChange }"
         name="marketing"

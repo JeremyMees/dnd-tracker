@@ -65,7 +65,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <PasswordToggle />
+      <FormPasswordToggle />
       <div
         v-if="formError"
         class="text-sm text-destructive"

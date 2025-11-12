@@ -80,7 +80,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     </h1>
 
     <UiFormWrapper @submit="onSubmit">
-      <PasswordToggle />
+      <FormPasswordToggle />
       <div
         v-if="formError"
         class="text-sm text-destructive"

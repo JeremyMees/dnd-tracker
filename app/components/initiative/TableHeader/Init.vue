@@ -188,7 +188,7 @@ const onSubmit = form.handleSubmit(async (values) => {
             </div>
           </div>
 
-          <CheckboxGroup
+          <FormCheckboxGroup
             name="selectedTypes"
             :label="$t('components.initiativeTableHeader.initiative.select')"
             :options="usedTypes.map((type) => ({

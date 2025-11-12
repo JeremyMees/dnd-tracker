@@ -75,7 +75,7 @@ const onSubmit = form.handleSubmit(async (values) => {
             {{ $t('pages.encounter.update.widgets') }}
           </h4>
           <UiFormWrapper @submit="onSubmit">
-            <CheckboxGroup
+            <FormCheckboxGroup
               name="widgets"
               :options="[
                 { label: $t('general.note'), value: 'note' },
