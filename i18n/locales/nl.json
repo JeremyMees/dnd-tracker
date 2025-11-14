@@ -74,9 +74,11 @@
     "moveUp": "Omhoog",
     "moveDown": "Omlaag",
     "changeInitiative": "Initiatief wijzigen",
-    "applyDamage": "Schade toepassen"
+    "applyDamage": "Schade toepassen",
+    "generateName": "Naam genereren"
   },
   "general": {
+    "actions": "Acties",
     "version": "Versie",
     "advantage": "Advantage",
     "advantageAbb": "Adv.",
@@ -521,6 +523,9 @@
     }
   },
   "components": {
+    "repeaterInput": {
+      "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."
+    },
     "colorModeSwitcher": {
       "light": "Licht",
       "dark": "Donker",

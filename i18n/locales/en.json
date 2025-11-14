@@ -74,9 +74,11 @@
     "moveUp": "Move up",
     "moveDown": "Move down",
     "changeInitiative": "Change initiative",
-    "applyDamage": "Apply damage"
+    "applyDamage": "Apply damage",
+    "generateName": "Generate name"
   },
   "general": {
+    "actions": "Actions",
     "version": "Version",
     "advantage": "Advantage",
     "advantageAbb": "Adv.",
@@ -521,6 +523,9 @@
     }
   },
   "components": {
+    "repeaterInput": {
+      "noItems": "No items added yet. Click \"Add\" to get started."
+    },
     "colorModeSwitcher": {
       "light": "Light",
       "dark": "Dark",
