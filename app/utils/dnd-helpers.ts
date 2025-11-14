@@ -30,8 +30,7 @@ const VALID_DICE_SIDES: DiceSide[] = [4, 6, 8, 10, 12, 20, 100]
 const MAX_DICE_COUNT = 100
 
 export function validateDiceExpression(diceExpr: string): boolean {
-  const dicePattern = /^(\d+)d(\d+)$/
-  const match = diceExpr.match(dicePattern)
+  const match = diceExpr.match(diceExpression)
 
   if (!match) return false
 

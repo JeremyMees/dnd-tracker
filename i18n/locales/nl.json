@@ -966,11 +966,13 @@
     }
   },
   "zod": {
+    "required": "Verplicht",
     "alphaSpaces": "Alleen letters en spaties zijn toegestaan",
     "containsLowercase": "Ten minste één kleine letter is vereist",
     "containsUppercase": "Ten minste één hoofdletter is vereist",
     "containsNumber": "Ten minste één cijfer is vereist",
     "containsSymbol": "Ten minste één symbool is vereist",
-    "allowedChars": "Alleen letters, cijfers en symbolen zijn toegestaan"
+    "allowedChars": "Alleen letters, cijfers en symbolen zijn toegestaan",
+    "diceExpression": "Ongeldige dobbelsteenexpressie. Gebruik het formaat 'XdY' waarbij X het aantal dobbelstenen is en Y het type dobbelsteen."
   }
 }

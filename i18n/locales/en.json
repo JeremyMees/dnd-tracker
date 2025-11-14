@@ -966,11 +966,13 @@
     }
   },
   "zod": {
+    "required": "Required",
     "alphaSpaces": "Only letters and spaces are allowed",
     "containsLowercase": "At least one lowercase letter is required",
     "containsUppercase": "At least one uppercase letter is required",
     "containsNumber": "At least one number is required",
     "containsSymbol": "At least one symbol is required",
-    "allowedChars": "Only letters, numbers, and symbols are allowed"
+    "allowedChars": "Only letters, numbers, and symbols are allowed.",
+    "diceExpression": "Invalid dice expression. Use the format 'XdY' where X is the number of dice and Y is the type of dice."
   }
 }
