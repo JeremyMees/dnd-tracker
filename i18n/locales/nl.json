@@ -689,7 +689,8 @@
       "showPassword": "Wachtwoord tonen",
       "hidePassword": "Wachtwoord verbergen",
       "showDiceRoller": "Dobbelsteen roller tonen",
-      "hideDiceRoller": "Dobbelsteen roller verbergen"
+      "hideDiceRoller": "Dobbelsteen roller verbergen",
+      "noCampaign": "Geen campagne"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",

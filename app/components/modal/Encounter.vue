@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useEncounterCreate, useEncounterUpdate } from '~~/queries/encounters'
 import { useCampaignMinimalListing } from '~~/queries/campaigns'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -15,6 +17,20 @@ const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 
+const formSchema = toTypedSchema(z.object({
+  title: z.string().min(3).max(30),
+  campaign: z.union([z.number(), z.literal('none')]).optional().transform(val => val === 'none' ? null : val),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    title: props.encounter?.title || '',
+    campaign: props.encounter?.campaign?.id || undefined,
+  },
+})
+
+const formError = ref<string>('')
 const input = ref()
 
 const { mutateAsync: updateEncounter } = useEncounterUpdate()
@@ -37,25 +53,17 @@ watch(isError, (err) => {
   }
 })
 
-interface EncounterForm { title: string, campaign?: number }
-
-async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> {
-  node.clearErrors()
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   const onSuccess = () => emit('close')
+  const onError = (error: string) => formError.value = error
 
-  const onError = (error: string) => {
-    reset('Encounter')
-    node.setErrors(error)
-  }
-
-  const formData = sanitizeForm<EncounterForm>(form)
-
-  if (props.campaignId) formData.campaign = props.campaignId
+  if (props.campaignId) values.campaign = props.campaignId
 
   if (props.encounter) {
     await updateEncounter({
-      data: formData,
+      data: values,
       id: props.encounter.id,
       onSuccess,
       onError,
@@ -63,38 +71,78 @@ async function handleSubmit(form: EncounterForm, node: FormNode): Promise<void> 
   }
   else {
     await addEncounter({
-      data: { ...formData, rows: [] },
+      data: { ...values, rows: [] },
       onSuccess,
       onError,
     })
   }
-}
+})
 </script>
 
 <template>
-  <FormKit
-    id="Encounter"
-    type="form"
-    :actions="false"
-    @submit="handleSubmit"
-  >
-    <FormKit
-      ref="input"
+  <UiFormWrapper @submit="onSubmit">
+    <UiFormField
+      v-slot="{ componentField }"
       name="title"
-      :label="$t('components.inputs.titleLabel')"
-      :value="encounter?.title"
-      validation="required|length:3,30"
-    />
-    <FormKit
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel required>
+          {{ $t('components.inputs.titleLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            type="text"
+            v-bind="componentField"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <UiFormField
       v-if="!campaignId"
+      v-slot="{ componentField }"
       name="campaign"
-      type="select"
-      :label="$t('components.inputs.campaignLabel')"
-      :placeholder="$t('general.noSelected')"
-      :disabled="!campaigns"
-      :value="encounter?.campaign?.id"
-      :options="campaigns?.map(c => ({ label: c.title, value: c.id })) || []"
-      outer-class="$remove:mb-4"
-    />
-  </FormKit>
+    >
+      <UiFormItem>
+        <UiFormLabel>{{ $t('components.inputs.campaignLabel') }}</UiFormLabel>
+        <UiSelect
+          v-bind="componentField"
+          :disabled="!campaigns"
+        >
+          <UiFormControl>
+            <UiSelectTrigger>
+              <UiSelectValue :placeholder="$t('general.noSelected')" />
+            </UiSelectTrigger>
+          </UiFormControl>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem
+                v-for="option in [
+                  { label: $t('components.inputs.noCampaign'), value: 'none' },
+                  ...(campaigns?.map(c => ({ label: c.title, value: c.id })) || []),
+                ]"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <div
+      v-if="formError"
+      class="text-sm text-destructive"
+    >
+      {{ formError }}
+    </div>
+    <UiButton
+      type="submit"
+      class="w-full"
+    >
+      {{ encounter ? $t('pages.encounters.update') : $t('pages.encounters.add') }}
+    </UiButton>
+  </UiFormWrapper>
 </template>

@@ -689,7 +689,8 @@
       "showPassword": "Show password",
       "hidePassword": "Hide password",
       "showDiceRoller": "Show dice roller",
-      "hideDiceRoller": "Hide dice roller"
+      "hideDiceRoller": "Hide dice roller",
+      "noCampaign": "No campaign"
     },
     "campaignModal": {
       "add": "Create a new campaign",
