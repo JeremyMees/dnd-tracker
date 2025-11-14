@@ -25,7 +25,6 @@ export interface Modal {
   uuid: string
   component: ModalComponent
   header: string
-  submit?: string
   subHeader?: string
   big?: boolean
   props?: Record<string, any>

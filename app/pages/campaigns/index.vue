@@ -69,7 +69,6 @@ function openModal(campaign?: CampaignItem): void {
   modal.open({
     component: 'Campaign',
     header: t(`components.campaignModal.${campaign ? 'update' : 'add'}`),
-    submit: t(`pages.campaigns.${campaign ? 'update' : 'add'}`),
     events: { finished: () => invalidateQueries() },
     ...(campaign && { props: { campaign } }),
   })

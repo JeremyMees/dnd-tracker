@@ -41,18 +41,5 @@ const modalComponents: Record<ModalComponent, any> = {
         @close="close(modal.uuid)"
       />
     </div>
-
-    <template
-      v-if="modal.submit"
-      #footer
-    >
-      <button
-        type="submit"
-        :form="modal.component"
-        class="btn-foreground w-full"
-      >
-        {{ modal.submit }}
-      </button>
-    </template>
   </Modal>
 </template>
