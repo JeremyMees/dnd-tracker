@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const localePath = useLocalePath()
-  const user = useSupabaseUser()
+  const user = useState<AuthUser | null>('auth-user')
 
   if (!to.params.title || !to.params.id || isNaN(+to.params.id)) {
     return navigateTo(localePath('/'))
