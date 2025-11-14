@@ -10,7 +10,6 @@ type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content
 
 const diceRollerOpen = ref(false)
 const fantasyNameGeneratorOpen = ref(false)
-const saveHomebrewToCampaign = ref(false)
 const openModal = ref<Modals>(undefined)
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
@@ -209,7 +208,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         <UiSidebarMenuItem>
           <UiDialog
             :open="openModal === 'newHomebrew'"
-            @close="saveHomebrewToCampaign = false, openModal = undefined"
+            @close="openModal = undefined"
           >
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
@@ -234,7 +233,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               </UiSidebarMenuButton>
             </UiDialogTrigger>
             <UiDialogContent
-              class="max-w-[1000px]"
+              class="max-w-[800px]"
               @escape-key-down="openModal = undefined"
               @pointer-down-outside="openModal = undefined"
               @interact-outside="openModal = undefined"
@@ -249,38 +248,12 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 <FormHomebrew
                   :campaign-id="sheet?.campaign?.id"
                   :count="sheet?.rows.length || 0"
-                  :save-to-campaign="saveHomebrewToCampaign"
                   :sheet="sheet"
                   :update="update"
                   is-encounter
                   @close="openModal = undefined"
                 />
               </div>
-              <UiDialogFooter class="items-center">
-                <div
-                  v-if="!$route.fullPath.includes('/playground')"
-                  class="flex flex-col gap-x-2 mr-4"
-                >
-                  <!-- <FormKit
-                    v-model="saveHomebrewToCampaign"
-                    :disabled="sheet && sheet.rows.length >= 100"
-                    :label="$t('components.homebrewModal.save')"
-                    type="toggle"
-                    outer-class="$reset !mb-0"
-                  /> -->
-                  <span
-                    v-if="sheet && sheet.rows.length >= 100"
-                    class="text-destructive text-sm"
-                  >
-                    {{ $t('components.homebrewModal.max') }}
-                  </span>
-                </div>
-                <!-- <FormKit
-                  type="submit"
-                  form="Homebrew"
-                  :label="$t('actions.save')"
-                /> -->
-              </UiDialogFooter>
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>

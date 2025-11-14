@@ -29,3 +29,27 @@ export const initiativeWidgets = [
   'note',
   'info-pins',
 ] as const
+
+export const homebrewType = [
+  'player',
+  'summon',
+  'npc',
+  'monster',
+  'lair',
+] as const
+
+export const abilityType = [
+  'STR',
+  'DEX',
+  'CON',
+  'INT',
+  'WIS',
+  'CHA',
+] as const
+
+export const actionType = [
+  'actions',
+  'reactions',
+  'legendary_actions',
+  'special_abilities',
+] as const

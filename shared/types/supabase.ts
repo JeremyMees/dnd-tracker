@@ -68,6 +68,11 @@ export type TableSpacing = DB['public']['Enums']['table_spacing']
 export type UserRole = DB['public']['Enums']['user_role']
 export type WeaponCategory = DB['public']['Enums']['weapon_category']
 
+// Additional Enums
+export type AbilityType = 'STR' | 'DEX' | 'CON' | 'INT' | 'WIS' | 'CHA'
+export type InitiativeWidget = 'note' | 'info-pins'
+export type InitiativeRowField = 'ac' | 'health' | 'conditions' | 'note' | 'deathSaves' | 'concentration' | 'modify'
+
 // Database json schema types
 export interface Action {
   name: string
@@ -77,7 +82,7 @@ export interface Action {
   damage_bonus?: number
   damage_dice?: string
   spell_save?: number
-  spell_save_type?: string
+  spell_save_type?: AbilityType
 }
 
 export interface ActionOpen5E {
@@ -139,10 +144,6 @@ export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'camp
   legendary_actions?: Action[]
   special_abilities?: Action[]
 }
-
-export type InitiativeWidget = 'note' | 'info-pins'
-
-export type InitiativeRowField = 'ac' | 'health' | 'conditions' | 'note' | 'deathSaves' | 'concentration' | 'modify'
 
 export interface InitiativeSettings {
   spacing: TableSpacing
