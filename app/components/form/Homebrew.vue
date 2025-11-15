@@ -49,10 +49,10 @@ const formSchema = toTypedSchema(z.object({
   legendary_actions: actionInputs,
   special_abilities: actionInputs,
 }).refine(
-  data => !(['monster', 'summon'].includes(data.type) && !data.amount),
+  data => !props.isEncounter || !(['monster', 'summon'].includes(data.type) && !data.amount),
   { message: t('zod.required'), path: ['amount'] },
 ).refine(
-  data => !(['summon'].includes(data.type) && !data.summoner),
+  data => !props.isEncounter || !(['summon'].includes(data.type) && !data.summoner),
   { message: t('zod.required'), path: ['summoner'] },
 ))
 
