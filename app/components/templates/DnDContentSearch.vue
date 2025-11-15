@@ -80,62 +80,87 @@ async function removePins(): Promise<void> {
   <div class="max-h-full flex flex-col gap-4">
     <div class="flex flex-col gap-2">
       <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
-        <!-- <FormKit
-          v-model="search"
-          data-test-search
-          :disabled="showPinned"
-          type="search"
-          :label="$t('components.inputs.nameLabel')"
-          outer-class="$reset !pb-0 w-full sm:w-auto sm:flex-1"
-        />
-        <FormKit
-          v-model="type"
-          data-test-type
-          :disabled="showPinned"
-          type="select"
-          :label="$t('components.inputs.typeLabel')"
-          :options="[
-            { value: 'spells', label: $t('general.spell', 2) },
-            { value: 'conditions', label: $t('general.condition', 2) },
-            { value: 'magicitems', label: $t('general.magicItem', 2) },
-            { value: 'weapons', label: $t('general.weapon', 2) },
-            { value: 'armor', label: $t('general.armor') },
-            { value: 'sections', label: $t('general.section', 2) },
-          ]"
-          outer-class="$reset !pb-0 w-full sm:w-auto sm:flex-1"
-          @input="search = ''"
-        /> -->
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="search">
+            {{ $t('components.inputs.nameLabel') }}
+          </UiLabel>
+          <UiInputGroup>
+            <UiInputGroupInput
+              id="search"
+              v-model="search"
+              data-test-search
+              :disabled="showPinned"
+              name="search"
+              type="search"
+            />
+            <UiInputGroupAddon align="inline-end">
+              <Icon
+                name="tabler:search"
+                class="size-3"
+                :aria-hidden="true"
+              />
+            </UiInputGroupAddon>
+          </UiInputGroup>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="type">
+            {{ $t('components.inputs.typeLabel') }}
+          </UiLabel>
+          <UiSelect
+            id="type"
+            v-model="type"
+            data-test-type
+            name="type"
+            :disabled="showPinned"
+            @update:model-value="search = ''"
+          >
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in [
+                    { value: 'spells', label: $t('general.spell', 2) },
+                    { value: 'conditions', label: $t('general.condition', 2) },
+                    { value: 'magicitems', label: $t('general.magicItem', 2) },
+                    { value: 'weapons', label: $t('general.weapon', 2) },
+                    { value: 'armor', label: $t('general.armor') },
+                    { value: 'sections', label: $t('general.section', 2) },
+                  ]"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
       </div>
       <AnimationReveal>
         <div
           v-if="sheet?.info_cards?.length"
           class="flex gap-2"
         >
-          <button
+          <UiButton
             data-test-pin-toggle
             :aria-label="$t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)"
-            :class="[showPinned ? 'btn-background' : 'btn-ghost text-muted-foreground']"
-            class="flex items-center gap-x-2"
+            variant="foreground-ghost"
             @click="showPinned = !showPinned"
           >
-            <Icon
-              name="tabler:pin"
-              class="size-4 min-w-4 text-foreground"
-            />
+            <Icon name="tabler:pin" />
             {{ $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`) }}
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             data-test-remove-pins
             :aria-label="$t('components.dndContentSearch.remove')"
-            class="btn-ghost flex items-center gap-x-2 text-muted-foreground"
+            variant="destructive-ghost"
             @click="removePins"
           >
-            <Icon
-              name="tabler:trash"
-              class="size-4 min-w-4 text-foreground"
-            />
+            <Icon name="tabler:trash" />
             {{ $t('components.dndContentSearch.remove') }}
-          </button>
+          </UiButton>
         </div>
       </AnimationReveal>
     </div>
