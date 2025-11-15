@@ -2,16 +2,17 @@
   <UiAuroraBackground>
     <div class="grid max-w-4xl dnd-container">
       <UiBlurReveal :delay="0.3">
-        <h1 class="text-pretty text-center text-4xl font-bold sm:text-6xl sm:font-extrabold md:text-7xl text-foreground">
+        <h1 class="text-pretty text-center text-4xl font-bold sm:text-5xl sm:font-extrabold md:text-7xl text-foreground">
           {{ $t('components.hero.title') }}
         </h1>
-        <p class="mx-auto py-8 max-w-[720px] text-pretty text-center text-lg md:text-xl md:leading-8 lg:leading-9 lg:text-2xl text-muted-foreground">
+        <p class="mx-auto py-8 max-w-[720px] text-pretty text-center text-lg text-muted-foreground">
           {{ $t('components.hero.description') }}
         </p>
         <div class="flex flex-wrap justify-center gap-4">
           <UiButton
             as-child
             size="lg"
+            variant="foreground"
           >
             <NuxtLinkLocale
               to="/campaigns"
@@ -23,7 +24,6 @@
           <UiButton
             as-child
             size="lg"
-            variant="tertiary"
           >
             <NuxtLinkLocale
               to="/playground"
