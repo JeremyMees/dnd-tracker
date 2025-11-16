@@ -52,7 +52,6 @@ function openModal(item?: HomebrewItemRow): void {
   modal.open({
     component: 'Homebrew',
     header: t(`components.homebrewModal.${item ? 'update' : 'new'}`),
-    submit: t(`components.homebrewModal.${item ? 'update' : 'add'}`),
     big: true,
     props: {
       campaignId: props.campaignId,
