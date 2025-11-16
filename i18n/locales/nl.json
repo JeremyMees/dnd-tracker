@@ -644,7 +644,7 @@
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Doelwit",
-      "emailLabel": "E-mail adres",
+      "emailLabel": "E-mail adres|E-mail adressen",
       "passwordLabel": "Wachtwoord",
       "usernameLabel": "Gebruikersnaam",
       "nameLabel": "Naam",

@@ -644,7 +644,7 @@
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Target",
-      "emailLabel": "Email address",
+      "emailLabel": "Email address|Email addresses",
       "passwordLabel": "Password",
       "usernameLabel": "Username",
       "nameLabel": "Name",

@@ -1,79 +1,59 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 const props = defineProps<{ send: (addresses: string[]) => void }>()
 
-const input = ref()
+const formSchema = toTypedSchema(z.object({
+  mail: z.array(z.string().min(5).max(50).email()).min(1).max(10),
+}))
 
-onMounted(() => {
-  if (input.value) focusInput(input.value)
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    mail: [''],
+  },
 })
 
-interface MailForm { mail: string[] }
+const formError = ref<string>('')
 
-async function handleSubmit(form: MailForm, node: FormNode): Promise<void> {
-  node.clearErrors()
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   try {
-    const formData = sanitizeForm<MailForm>(form)
-
-    props.send(formData.mail)
+    props.send(values.mail)
     emit('close')
   }
   catch (err: any) {
-    reset('Mail')
-    node.setErrors(err.message)
+    formError.value = err.message
   }
-}
+})
 </script>
 
 <template>
-  <FormKit
-    id="Mail"
-    type="form"
-    :actions="false"
-    @submit="handleSubmit"
-  >
-    <FormKit
-      v-slot="{ items, node, value }"
+  <UiFormWrapper @submit="onSubmit">
+    <FormListInput
       name="mail"
-      type="list"
-      :value="['']"
-      dynamic
+      type="email"
+      :empty="''"
+      :label="$t('components.inputs.emailLabel', 2)"
+      :required="true"
+      :max="10"
+      :min="1"
+    />
+    <div
+      v-if="formError"
+      class="text-sm text-destructive"
     >
-      <FormKit
-        v-for="(item, index) in items"
-        :key="item"
-        :ref="index === 0 ? 'input' : undefined"
-        :index="index"
-        :label="$t('components.inputs.emailLabel')"
-        validation="required|length:5,50|email"
-        :suffix-icon="index !== 0 ? 'tabler:trash' : undefined"
-        :sections-schema="{
-          suffixIcon: {
-            $el: 'button',
-            $attrs: {
-              type: 'button',
-            },
-          },
-        }"
-        @suffix-icon-click="() => node.input(value?.filter((_, i) => i !== index))"
-      />
-      <button
-        v-if="items.length < 10"
-        type="button"
-        class="btn-text"
-        @click="() => node.input(value?.concat(''))"
-      >
-        {{ $t('actions.addAnother') }}
-      </button>
-      <span
-        v-else
-        class="text-destructive"
-      >
-        {{ $t('general.max') }} 10
-      </span>
-    </FormKit>
-  </FormKit>
+      {{ formError }}
+    </div>
+    <UiButton
+      type="submit"
+      class="w-full"
+    >
+      {{ $t('actions.sendMail') }}
+    </UiButton>
+  </UiFormWrapper>
 </template>

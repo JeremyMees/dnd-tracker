@@ -18,7 +18,7 @@ watch(debouncedText, () => emit('update', debouncedText.value))
 
 <template>
   <TextEditor
-    color="secondary"
+    variant="widget"
     :content="text"
     @updated="text = $event"
   />

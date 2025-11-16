@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { FormKitMessages } from '@formkit/vue'
-import { reset } from '@formkit/core'
 import { useNoteCreate, useNoteUpdate } from '~~/queries/notes'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -10,29 +11,34 @@ const props = defineProps<{
   note?: NoteRow
 }>()
 
-const input = ref()
-const hiddenText = ref()
-const text = ref<string>(props.note?.text || '')
-
 const { mutateAsync: createNote } = useNoteCreate()
 const { mutateAsync: updateNote } = useNoteUpdate()
+
+const formSchema = toTypedSchema(z.object({
+  title: z.string().min(5).max(50),
+  text: z.string().min(10).max(5000),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    title: props.note?.title || '',
+    text: props.note?.text || '',
+  },
+})
+
+const formError = ref<string>('')
+const input = ref()
 
 onMounted(() => {
   if (input.value) focusInput(input.value)
 })
 
-interface NoteForm { title: string, text: string }
-
-async function handleSubmit(form: NoteForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  const onError = (err: string) => {
-    reset('Note')
-    node.setErrors(err)
-  }
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   const formData = {
-    ...sanitizeForm<NoteForm>(form),
+    ...values,
     campaign: props.campaignId,
   }
 
@@ -41,49 +47,65 @@ async function handleSubmit(form: NoteForm, node: FormNode): Promise<void> {
       data: formData,
       id: props.note.id,
       onSuccess: () => emit('close'),
-      onError,
+      onError: (err: string) => formError.value = err,
     })
   }
   else {
     await createNote({
       data: formData,
       onSuccess: () => emit('close'),
-      onError,
+      onError: (err: string) => formError.value = err,
     })
   }
-}
+})
 </script>
 
 <template>
-  <FormKit
-    id="Note"
-    type="form"
-    :actions="false"
-    @submit="handleSubmit"
-  >
-    <FormKit
-      ref="input"
+  <UiFormWrapper @submit="onSubmit">
+    <UiFormField
+      v-slot="{ componentField }"
       name="title"
-      :label="$t('components.inputs.titleLabel')"
-      :value="note?.title"
-      validation="required|length:3,30"
-    />
-    <FormKit
-      ref="hiddenText"
-      v-model="text"
-      type="hidden"
-      name="text"
-      validation="required|length:10,5000"
-    />
-
-    <TextEditor
-      color="background"
-      :content="text"
-      @updated="text = $event"
     >
-      <template #error>
-        <FormKitMessages :node="hiddenText?.node" />
-      </template>
-    </TextEditor>
-  </FormKit>
+      <UiFormItem v-auto-animate>
+        <UiFormLabel required>
+          {{ $t('components.inputs.titleLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            type="text"
+            v-bind="componentField"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <UiFormField
+      v-slot="{ value, setValue, errorMessage }"
+      name="text"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormControl>
+          <TextEditor
+            :content="value"
+            @updated="setValue($event)"
+          />
+        </UiFormControl>
+        <UiFormMessage v-if="errorMessage">
+          {{ errorMessage }}
+        </UiFormMessage>
+      </UiFormItem>
+    </UiFormField>
+    <div
+      v-if="formError"
+      class="text-sm text-destructive"
+    >
+      {{ formError }}
+    </div>
+    <UiButton
+      type="submit"
+      class="w-full"
+    >
+      {{ $t(`components.noteModal.${note ? 'update' : 'add'}`) }}
+    </UiButton>
+  </UiFormWrapper>
 </template>
