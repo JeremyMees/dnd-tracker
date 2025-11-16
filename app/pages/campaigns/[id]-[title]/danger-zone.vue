@@ -42,7 +42,6 @@ async function transferOwnership(): Promise<void> {
   modal.open({
     component: 'TransferOwnership',
     header: t('components.transferOwnershipModal.title', { campaign: props.current.title }),
-    submit: t('actions.transfer'),
     props: { current: props.current },
     events: {
       finished: () => navigateTo(route.fullPath.replace('danger-zone', 'encounters')),
@@ -73,14 +72,14 @@ async function transferOwnership(): Promise<void> {
                 </p>
               </div>
               <div class="flex justify-end">
-                <button
+                <UiButton
+                  variant="foreground"
                   :aria-label="$t('actions.transfer')"
                   :disabled="!current?.team?.length || !current"
-                  class="btn-foreground"
                   @click="transferOwnership"
                 >
                   {{ $t('actions.transfer') }}
-                </button>
+                </UiButton>
               </div>
             </div>
             <div class="w-full border-2 border-destructive" />
@@ -94,14 +93,14 @@ async function transferOwnership(): Promise<void> {
                 </p>
               </div>
               <div class="flex justify-end">
-                <button
+                <UiButton
+                  variant="foreground"
                   :aria-label="$t('actions.delete')"
                   :disabled="!current"
-                  class="btn-foreground"
                   @click="remove"
                 >
                   {{ $t('actions.delete') }}
-                </button>
+                </UiButton>
               </div>
             </div>
           </template>

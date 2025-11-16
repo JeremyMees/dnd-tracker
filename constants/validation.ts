@@ -53,3 +53,9 @@ export const actionType = [
   'legendary_actions',
   'special_abilities',
 ] as const
+
+export const campaignTransferRole = [
+  'Admin',
+  'Viewer',
+  'Remove',
+] as const

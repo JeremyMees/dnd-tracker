@@ -974,6 +974,7 @@
     "containsNumber": "Ten minste één cijfer is vereist",
     "containsSymbol": "Ten minste één symbool is vereist",
     "allowedChars": "Alleen letters, cijfers en symbolen zijn toegestaan",
-    "diceExpression": "Ongeldige dobbelsteenexpressie. Gebruik het formaat 'XdY' waarbij X het aantal dobbelstenen is en Y het type dobbelsteen."
+    "diceExpression": "Ongeldige dobbelsteenexpressie. Gebruik het formaat 'XdY' waarbij X het aantal dobbelstenen is en Y het type dobbelsteen.",
+    "match": "Waarde moet overeenkomen met '{field}'"
   }
 }
