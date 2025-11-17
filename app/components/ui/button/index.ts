@@ -47,7 +47,7 @@ export const buttonVariants = cva(
           'border-4 bg-background/50 hover:bg-background/60 border-background text-foreground shadow-sm',
         'background-ghost':
           'hover:bg-background hover:text-foreground',
-        'link': 'text-primary underline-offset-4 hover:underline',
+        'link': 'text-muted-foreground underline-offset-4 hover:underline',
       },
       size: {
         'default': 'h-10 px-4 py-2',

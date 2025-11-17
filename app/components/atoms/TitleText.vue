@@ -43,12 +43,12 @@ withDefaults(
       class="flex mt-6"
     >
       <NuxtLinkLocale :to="buttonLink">
-        <button
-          class="w-fit btn-primary"
+        <UiButton
+          class="w-fit"
           :aria-label="buttonLabel"
         >
           {{ buttonLabel }}
-        </button>
+        </UiButton>
       </NuxtLinkLocale>
     </Motion>
   </div>

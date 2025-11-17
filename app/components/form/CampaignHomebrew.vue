@@ -133,7 +133,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
         <UiTableRow
           v-for="headerGroup in table.getHeaderGroups()"
           :key="headerGroup.id"
-          class="border-b border-muted-foreground"
+          class="border-b border-muted"
         >
           <UiTableHead
             v-for="header in headerGroup.headers"
@@ -173,7 +173,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
           >
             <UiTableRow
               :data-state="row.getIsSelected() && 'selected'"
-              class="border-b border-muted-foreground"
+              class="border-b border-muted"
             >
               <UiTableCell
                 v-for="cell in row.getVisibleCells()"

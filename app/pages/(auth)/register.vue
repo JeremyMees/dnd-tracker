@@ -177,22 +177,28 @@ const onSubmit = form.handleSubmit(async (values) => {
     />
 
     <div class="flex flex-wrap gap-2 justify-center">
-      <NuxtLinkLocale
-        to="/login"
-        class="btn-text flex-1 grow"
+      <UiButton
+        as-child
+        variant="link"
+        class="flex-1 grow"
       >
-        {{ $t('pages.login.signIn') }}
-      </NuxtLinkLocale>
+        <NuxtLinkLocale to="/login">
+          {{ $t('pages.login.signIn') }}
+        </NuxtLinkLocale>
+      </UiButton>
       <UiSeparator
         orientation="vertical"
         class="h-8"
       />
-      <NuxtLinkLocale
-        to="/forgot-password"
-        class="btn-text flex-1 grow"
+      <UiButton
+        as-child
+        variant="link"
+        class="flex-1 grow"
       >
-        {{ $t('pages.login.forgot') }}
-      </NuxtLinkLocale>
+        <NuxtLinkLocale to="/forgot-password">
+          {{ $t('pages.login.forgot') }}
+        </NuxtLinkLocale>
+      </UiButton>
     </div>
 
     <template #right>

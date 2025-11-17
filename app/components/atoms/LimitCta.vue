@@ -50,30 +50,33 @@ function checkShow(): void {
     >
       <Card
         color="info"
-        class="flex flex-col md:flex-row md:items-center gap-4 backdrop-blur-xl"
+        class="flex flex-col md:flex-row md:items-center gap-4 backdrop-blur-xl px-6"
       >
-        <button
+        <UiButton
           data-test-close
-          class="absolute top-0 right-0 group"
+          variant="secondary-ghost"
+          size="icon-sm"
           :aria-label="$t('actions.close')"
+          class="absolute top-0 right-0 group"
           @click="isShown=false"
         >
           <Icon
             name="tabler:x"
-            class="text-destructive size-4 rounded-full ring-destructive group-focus-within:ring"
             aria-hidden="true"
           />
-        </button>
+        </UiButton>
         <p class="text-sm">
           {{ $t('components.limitCta.text') }}
         </p>
         <div class="flex justify-end">
-          <NuxtLinkLocale
-            to="/pricing"
-            class="btn-primary whitespace-nowrap"
-          >
-            {{ $t('components.limitCta.cta') }}
-          </NuxtLinkLocale>
+          <UiButton as-child>
+            <NuxtLinkLocale
+              to="/pricing"
+              class="whitespace-nowrap"
+            >
+              {{ $t('components.limitCta.cta') }}
+            </NuxtLinkLocale>
+          </UiButton>
         </div>
       </Card>
     </div>

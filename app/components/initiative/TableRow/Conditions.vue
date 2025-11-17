@@ -112,13 +112,13 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
           </UiBadge>
         </div>
         <div class="flex justify-end mt-4">
-          <button
-            class="btn-foreground"
+          <UiButton
+            variant="foreground"
             :aria-label="$t('actions.update')"
             @click="updateCondition(selected)"
           >
             {{ $t('actions.update') }}
-          </button>
+          </UiButton>
         </div>
       </UiPopoverContent>
     </UiPopover>
@@ -177,13 +177,13 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
             </UiNumberFieldContent>
           </UiNumberField>
           <div class="flex justify-end mt-4">
-            <button
+            <UiButton
               :aria-label="$t('actions.remove')"
-              class="btn-destructive"
+              variant="destructive"
               @click="removeCondition(condition.name)"
             >
               {{ $t('actions.remove') }}
-            </button>
+            </UiButton>
           </div>
         </UiPopoverContent>
       </UiPopover>
