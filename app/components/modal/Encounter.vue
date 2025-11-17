@@ -31,15 +31,10 @@ const form = useForm({
 })
 
 const formError = ref<string>('')
-const input = ref()
 
 const { mutateAsync: updateEncounter } = useEncounterUpdate()
 const { mutateAsync: addEncounter } = useEncounterCreate()
 const { data: campaigns, isError } = useCampaignMinimalListing(user.value.id)
-
-onMounted(() => {
-  if (input.value) focusInput(input.value)
-})
 
 watch(isError, (err) => {
   if (err) {

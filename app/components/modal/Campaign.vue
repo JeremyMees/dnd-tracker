@@ -24,9 +24,6 @@ const form = useForm({
 })
 
 const formError = ref<string>('')
-const input = ref()
-
-onMounted(() => input.value && focusInput(input.value))
 
 const onSubmit = form.handleSubmit(async (values) => {
   formError.value = ''

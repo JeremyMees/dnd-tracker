@@ -20,10 +20,7 @@ const form = useForm({
   validationSchema: toTypedSchema(baseSchema),
 })
 
-const input = ref()
 const formError = ref<string>('')
-
-onMounted(() => input.value && focusInput(input.value))
 
 const onSubmit = form.handleSubmit(async (values) => {
   formError.value = ''
@@ -75,7 +72,6 @@ async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void>
         <UiFormControl>
           <UiInput
             v-bind="componentField"
-            ref="input"
             type="text"
           />
         </UiFormControl>
