@@ -975,6 +975,7 @@
     "containsSymbol": "At least one symbol is required",
     "allowedChars": "Only letters, numbers, and symbols are allowed.",
     "diceExpression": "Invalid dice expression. Use the format 'XdY' where X is the number of dice and Y is the type of dice.",
-    "match": "Value must match '{field}'"
+    "match": "Value must match '{field}'",
+    "invalidEmail": "Invalid email address"
   }
 }

@@ -54,6 +54,11 @@ export const actionType = [
   'special_abilities',
 ] as const
 
+export const roleType = [
+  'Admin',
+  'Viewer',
+] as const
+
 export const campaignTransferRole = [
   'Admin',
   'Viewer',

@@ -975,6 +975,7 @@
     "containsSymbol": "Ten minste één symbool is vereist",
     "allowedChars": "Alleen letters, cijfers en symbolen zijn toegestaan",
     "diceExpression": "Ongeldige dobbelsteenexpressie. Gebruik het formaat 'XdY' waarbij X het aantal dobbelstenen is en Y het type dobbelsteen.",
-    "match": "Waarde moet overeenkomen met '{field}'"
+    "match": "Waarde moet overeenkomen met '{field}'",
+    "invalidEmail": "Ongeldig e-mailadres"
   }
 }
