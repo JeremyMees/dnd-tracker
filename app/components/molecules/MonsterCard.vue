@@ -131,6 +131,7 @@ const isOpen = ref<boolean>(false)
     <UiCardFooter>
       <div class="flex justify-end w-full">
         <UiButton
+          data-test-expand-button
           variant="secondary-ghost"
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"

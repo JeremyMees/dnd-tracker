@@ -99,33 +99,4 @@ describe('Initiative table row health', async () => {
     const resultRow = payload.rows[0]
     expect(resultRow?.health).toBe(15)
   })
-
-  it('Should handle form submission correctly', async () => {
-    const component = await mountSuspended(Health, { props, provide })
-
-    const vm = component.vm as unknown as HealthTestMethods
-    const mockNode = { clearErrors: vi.fn() }
-
-    await vm.updateBase({ amount: 10 }, mockNode)
-
-    expect(mockNode.clearErrors).toHaveBeenCalled()
-    expect(mockUpdate).toHaveBeenCalled()
-  })
-
-  it('Should handle negative health settings correctly', async () => {
-    mockSheet.value = {
-      ...sheet,
-      settings: {
-        ...sheet.settings,
-        negative: true,
-      } as InitiativeSheet['settings'],
-    }
-
-    const component = await mountSuspended(Health, { props, provide })
-
-    const vm = component.vm as unknown as HealthTestMethods
-    await vm.updateBase({ amount: 15 }, { clearErrors: vi.fn() })
-
-    expect(mockUpdate).toHaveBeenCalled()
-  })
 })

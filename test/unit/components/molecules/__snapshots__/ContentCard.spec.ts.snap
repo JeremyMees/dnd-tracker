@@ -9,9 +9,10 @@ exports[`ContentCard > Should match snapshot 1`] = `
   <div class="p-6 pt-0">
     <!--v-if-->
     <!--v-if-->
+    <!--v-if-->
   </div>
   <div class="flex items-center p-6 pt-0">
-    <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
         <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
       </button></div>
   </div>

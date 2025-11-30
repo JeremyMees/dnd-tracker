@@ -1,4 +1,5 @@
 import { config } from '@vue/test-utils'
+import { vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 config.global.mocks = {
@@ -14,6 +15,10 @@ config.global.stubs = {
     props: ['to'],
     template: '<a :href="to"><slot></slot></a>',
   },
+  NuxtLinkLocale: {
+    props: ['to'],
+    template: '<a :href="to"><slot></slot></a>',
+  },
 }
 
 mockNuxtImport('useI18n', () => () => ({
@@ -24,3 +29,5 @@ mockNuxtImport('useI18n', () => () => ({
     { code: 'en', iso: 'en-US', name: 'English' },
   ],
 }))
+
+mockNuxtImport('useLocalePath', () => () => (path: string) => path)

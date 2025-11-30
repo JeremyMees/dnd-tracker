@@ -109,12 +109,11 @@ async function removePins(): Promise<void> {
           <UiSelect
             id="type"
             v-model="type"
-            data-test-type
             name="type"
             :disabled="showPinned"
             @update:model-value="search = ''"
           >
-            <UiSelectTrigger>
+            <UiSelectTrigger data-test-type>
               <UiSelectValue />
             </UiSelectTrigger>
             <UiSelectContent>

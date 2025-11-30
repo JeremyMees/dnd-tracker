@@ -41,7 +41,8 @@ describe('FeatureRequestCard', async () => {
     expect(component.find('[data-test-title]').text()).toContain(props.feature.title)
     expect(component.find('[data-test-status]').text()).toBe(`pages.featureRequest.status.${props.feature.status}`)
     expect(component.find('[data-test-like-button]').exists()).toBeTruthy()
-    expect(component.find('[data-test-like-button]').attributes('class')).not.toContain('!bg-primary/50 !border-primary')
+    expect(component.find('[data-test-like-button]').attributes('class')).not.toContain('bg-primary/50!')
+    expect(component.find('[data-test-like-button]').attributes('class')).not.toContain('border-primary!')
     expect(component.find('[data-test-like-count]').text()).toBe(props.feature.voted.like.length.toString())
     expect(component.find('[data-test-dislike-button]').exists()).toBeTruthy()
     expect(component.find('[data-test-dislike-button]').attributes('class')).not.toContain('!bg-background/50 !border-background')
@@ -83,7 +84,8 @@ describe('FeatureRequestCard', async () => {
       },
     })
 
-    expect(likeButton.attributes('class')).toContain('!bg-primary/50 !border-primary')
+    expect(likeButton.attributes('class')).toContain('bg-primary/50!')
+    expect(likeButton.attributes('class')).toContain('border-primary!')
 
     await likeButton.trigger('click')
     await nextTick()

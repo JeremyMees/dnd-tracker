@@ -13,6 +13,9 @@ const mockSupabaseFrom = vi.fn().mockReturnValue({
 })
 const mockSupabaseEq = vi.fn()
 const mockSupabaseSingle = vi.fn()
+const mockGetUser = vi.fn().mockReturnValue({
+  data: { user: { id: 'test-user-id' } },
+})
 
 let authStateChangeCallback: ((event: string) => void) | null = null
 
@@ -21,6 +24,7 @@ mockNuxtImport('useSupabaseClient', () => () => ({
     signUp: mockSignUp,
     signInWithPassword: mockSignInWithPassword,
     signOut: mockSignOut,
+    getUser: mockGetUser,
     onAuthStateChange: (callback: (event: string) => void) => {
       authStateChangeCallback = callback
       return mockOnAuthStateChange(callback)
@@ -29,7 +33,12 @@ mockNuxtImport('useSupabaseClient', () => () => ({
   from: mockSupabaseFrom,
 }))
 
-mockNuxtImport('useState', () => <T>(key: string, init: () => T) => ref(init()))
+mockNuxtImport(
+  'useState',
+  () =>
+    <T>(_key: string, init: () => T) =>
+      ref(init()),
+)
 
 mockNuxtImport('createError', () => (error: any) => {
   throw new Error(
@@ -88,11 +97,13 @@ describe('useAuthentication', () => {
       expect(mockSignUp).toHaveBeenCalledWith({ email, password })
 
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
-      expect(mockSupabaseFrom().insert).toHaveBeenCalledWith([{
-        ...user,
-        email,
-        id: 'new-user-id',
-      }])
+      expect(mockSupabaseFrom().insert).toHaveBeenCalledWith([
+        {
+          ...user,
+          email,
+          id: 'new-user-id',
+        },
+      ])
     })
 
     it('should throw error if registration fails', async () => {
@@ -194,6 +205,8 @@ describe('useAuthentication', () => {
 
       if (authStateChangeCallback) authStateChangeCallback('SIGNED_IN')
 
+      await new Promise(resolve => setTimeout(resolve, 0))
+
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
     })
 
@@ -204,6 +217,8 @@ describe('useAuthentication', () => {
       })
 
       if (authStateChangeCallback) authStateChangeCallback('USER_UPDATED')
+
+      await new Promise(resolve => setTimeout(resolve, 0))
 
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
     })

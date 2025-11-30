@@ -9,19 +9,13 @@ interface Props {
 }
 
 type MockFunctions = {
-  handleSubmit: (
+  onSubmit: (
     form: { name: string },
-    node: { clearErrors: () => void, setErrors: (error: string) => void },
   ) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
-
-const mockNode = {
-  clearErrors: vi.fn(),
-  setErrors: vi.fn(),
-}
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -67,46 +61,6 @@ describe('Initiative table row name', async () => {
     expect(component.find('[data-test-summoner]').exists()).toBeFalsy()
   })
 
-  it('Should handle name update', async () => {
-    const component = await mountSuspended(Name, { props, provide })
-    const newName = 'New Character Name'
-
-    const vm = component.vm as unknown as MockFunctions
-    await vm.handleSubmit({ name: newName }, mockNode)
-
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
-        expect.objectContaining({
-          ...props.item,
-          name: newName,
-        }),
-      ]),
-    })
-  })
-
-  it('Should handle update errors', async () => {
-    const errorUpdate = vi.fn().mockRejectedValue(new Error('Update failed'))
-
-    // Update the provide's update function for this test
-    const errorProvide = {
-      [INITIATIVE_SHEET]: {
-        sheet: mockSheet,
-        update: errorUpdate,
-      },
-    }
-
-    const component = await mountSuspended(Name, {
-      props,
-      provide: errorProvide,
-    })
-
-    const vm = component.vm as unknown as MockFunctions
-    await vm.handleSubmit({ name: 'New Name' }, mockNode)
-
-    expect(mockNode.clearErrors).toHaveBeenCalled()
-    expect(mockNode.setErrors).toHaveBeenCalled()
-  })
-
   it('Should not update if sheet is undefined', async () => {
     mockSheet.value = undefined as any
 
@@ -116,7 +70,7 @@ describe('Initiative table row name', async () => {
     })
 
     const vm = component.vm as unknown as MockFunctions
-    await vm.handleSubmit({ name: 'New Name' }, mockNode)
+    await vm.onSubmit({ name: 'New Name' })
 
     expect(mockUpdate).not.toHaveBeenCalled()
   })

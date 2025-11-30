@@ -2,6 +2,6 @@
 
 exports[`RefreshCard > Should match snapshot 1`] = `
 "<div class="transition-colors duration-300 border-4 rounded-lg p-4 border-destructive bg-destructive/50 w-full max-w-prose mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-  <h2 class="text-center">general.error.text</h2><button data-test-refresh-button="" class="btn-foreground" aria-label="actions.tryAgain">actions.tryAgain</button>
+  <h2 class="head-3">general.error.text</h2><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-foreground/50 hover:bg-foreground/60 border-foreground text-background shadow-sm h-10 px-4 py-2" data-test-refresh-button="" aria-label="actions.tryAgain">actions.tryAgain</button>
 </div>"
 `;

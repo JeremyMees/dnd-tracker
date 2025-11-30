@@ -17,7 +17,9 @@ exports[`FantasyNameGenerator > Should match snapshot 1`] = `
     <li class="cursor-copy">Test Name</li>
   </div>
 </ol>
-<div class="flex w-full justify-end gap-2 items-center mt-4">
-  <p class="text-muted-foreground text-2xs">pages.fantasyNameGenerator.tip</p><button data-test-generate="" class="btn-primary">actions.generate</button>
+<div class="flex flex-col w-full gap-2 mt-4">
+  <div class="text-muted-foreground flex gap-2 items-center"><span class="iconify i-tabler:info-circle text-info" aria-hidden="true"></span>
+    <p class="text-xs">pages.fantasyNameGenerator.tip</p>
+  </div><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 self-end" data-test-generate="">actions.generate</button>
 </div>"
 `;

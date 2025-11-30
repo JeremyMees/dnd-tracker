@@ -4,11 +4,23 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
 "<div class="max-h-full flex flex-col gap-4">
   <div class="flex flex-col gap-2">
     <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
-      <div id="formkit-stub" modelvalue="" data-test-search="" disabled="false" type="search" label="components.inputs.nameLabel" outer-class="$reset !pb-0 w-full sm:w-auto sm:flex-1"></div>
-      <div id="formkit-stub" modelvalue="spells" data-test-type="" disabled="false" type="select" label="components.inputs.typeLabel" options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" outer-class="$reset !pb-0 w-full sm:w-auto sm:flex-1"></div>
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1"><label for="search" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.nameLabel
+          <!--v-if-->
+        </label>
+        <div data-slot="input-group" role="group" class="group/input-group bg-background border-input relative flex w-full items-center rounded-md border shadow-xs transition-[color,box-shadow] outline-none h-10 min-w-0 has-[>textarea]:h-auto has-[>[data-align=inline-start]]:[&amp;>input]:pl-2 has-[>[data-align=inline-end]]:[&amp;>input]:pr-2 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&amp;>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&amp;>input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-background"><input class="flex h-10 w-full border-input px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 rounded-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent ring-offset-transparent" data-slot="input-group-control" id="search" data-test-search="" name="search" type="search">
+          <div role="group" data-slot="input-group-addon" data-align="inline-end" class="text-muted-foreground flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium select-none [&amp;>svg:not([class*='size-'])]:size-4 [&amp;>kbd]:rounded-[calc(var(--radius)-5px)] group-data-[disabled=true]/input-group:opacity-50 order-last pr-3 has-[>button]:mr-[-0.45rem] has-[>kbd]:mr-[-0.35rem]"><span class="iconify i-tabler:search size-3" aria-hidden="true"></span></div>
+        </div>
+      </div>
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1"><label for="type" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.typeLabel
+          <!--v-if-->
+        </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" data-test-type="" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-0" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">general.spell</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+        <!--teleport start-->
+        <!--teleport end-->
+        <!--v-if-->
+      </div>
     </div>
     <div class="overflow-hidden">
-      <div class="flex gap-2"><button data-test-pin-toggle="" aria-label="components.dndContentSearch.show" class="btn-ghost text-muted-foreground flex items-center gap-x-2"><span class="iconify i-tabler:pin size-4 min-w-4 text-foreground" aria-hidden="true"></span> components.dndContentSearch.show</button><button data-test-remove-pins="" aria-label="components.dndContentSearch.remove" class="btn-ghost flex items-center gap-x-2 text-muted-foreground"><span class="iconify i-tabler:trash size-4 min-w-4 text-foreground" aria-hidden="true"></span> components.dndContentSearch.remove</button></div>
+      <div class="flex gap-2"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-foreground hover:text-background h-10 px-4 py-2" data-test-pin-toggle="" aria-label="components.dndContentSearch.show"><span class="iconify i-tabler:pin" aria-hidden="true"></span> components.dndContentSearch.show</button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground h-10 px-4 py-2" data-test-remove-pins="" aria-label="components.dndContentSearch.remove"><span class="iconify i-tabler:trash" aria-hidden="true"></span> components.dndContentSearch.remove</button></div>
     </div>
   </div>
   <div class="overflow-y-auto">
@@ -22,9 +34,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -37,9 +50,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -52,9 +66,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -67,9 +82,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -82,9 +98,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -97,9 +114,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -112,9 +130,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -127,9 +146,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -142,9 +162,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -159,9 +180,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -174,9 +196,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -189,9 +212,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -204,9 +228,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -219,9 +244,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -234,9 +260,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -249,9 +276,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -264,9 +292,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
@@ -279,9 +308,10 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
           <div class="p-6 pt-0">
             <!--v-if-->
             <!--v-if-->
+            <!--v-if-->
           </div>
           <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="flex gap-2 text-foreground" aria-label="actions.readMore">
+            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
