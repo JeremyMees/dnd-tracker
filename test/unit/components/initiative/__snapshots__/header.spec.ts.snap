@@ -1,13 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initiative header > Should render correctly with required props 1`] = `
-"<div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"><img src="/gifs/cat.gif" loading="lazy" class="size-6 max-[350px]:hidden absolute top-14 sm:top-6 left-4" data-test-pet="">
-  <div class="flex gap-2 items-center"><span class="text-muted-foreground">general.round: <span data-test-round="" class="font-bold text-foreground">1</span></span><button id="tour-11" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-reset="" aria-label="Reset rounds" class="icon-btn-destructive"><span class="iconify i-tabler:refresh text-destructive" aria-hidden="true"></span></button>
+"<div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"><img src="/gifs/cat.gif" loading="lazy" class="size-6 max-[350px]:hidden absolute top-13 sm:top-5 left-4" data-test-pet="">
+  <div class="flex gap-2 items-center"><span class="text-muted-foreground">general.round: <span data-test-round="" class="font-bold text-foreground">1</span></span><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground size-7 group" data-slot="popover-trigger" id="tour-11" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-reset="" aria-label="Reset rounds"><span class="iconify i-tabler:refresh text-destructive group-hover:text-foreground" aria-hidden="true"></span></button>
     <!--teleport start-->
     <!--teleport end-->
   </div>
-  <div id="tour-1" class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"><button data-test-previous="" disabled="" aria-label="actions.prev" class="group disabled:cursor-not-allowed duration-300 ease-in-out py-1 pl-1 pr-2 border-r-2 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-left group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
-    <p class="font-medium px-2">components.inputs.initiativeLabel</p><button data-test-next="" aria-label="actions.next" class="group disabled:cursor-not-allowed py-1 pl-2 pr-1 border-l-2 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-right group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
+  <div id="tour-1" class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"><button data-test-previous="" disabled="" aria-label="actions.prev" class="group disabled:cursor-not-allowed duration-300 ease-in-out p-1 border-r-4 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-left group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
+    <p class="text-sm font-medium">components.inputs.initiativeLabel</p><button data-test-next="" aria-label="actions.next" class="group disabled:cursor-not-allowed p-1 border-l-4 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-right group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
   </div>
 </div>"
 `;

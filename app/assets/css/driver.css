@@ -1,5 +1,7 @@
+@reference "./global.css";
+
 .driver-popover {
-  @apply !bg-secondary/70 !px-5 !pb-4 !pt-6 sm:!p-6 !w-full sm:!max-w-md !ring-4 ring-secondary;
+  @apply bg-secondary/70! px-5! pb-4! pt-6! sm:p-6! w-full! sm:max-w-md! ring-4! ring-secondary;
 }
 
 .driver-popover-arrow {
@@ -7,7 +9,7 @@
 }
 
 .driver-popover-title {
-  @apply text-foreground !mb-4;
+  @apply text-foreground mb-4!;
 }
 
 .driver-popover-description {
@@ -15,23 +17,23 @@
 }
 
 .driver-popover-progress-text {
-  @apply !text-muted-foreground font-medium font-geist text-sm;
+  @apply text-muted-foreground! font-medium font-geist text-sm;
 }
 
 .driver-popover .driver-popover-prev-btn {
   text-shadow: none;
 
-  @apply !bg-black/50 !border-black !py-2 !px-6 !rounded-lg !outline-none !border-4 !text-white duration-200 ease-in-out !font-bold transition-all;
-  @apply hover:!bg-black/60 focus-within:!border-white active:!scale-95 disabled:!cursor-not-allowed disabled:!opacity-50;
+  @apply bg-black/50! border-black! py-2! px-6! rounded-lg! outline-none! border-4! text-white! duration-200 ease-in-out font-bold! transition-all;
+  @apply hover:bg-black/60! focus-within:border-white! active:scale-95! disabled:cursor-not-allowed! disabled:opacity-50!;
 }
 
 .driver-popover .driver-popover-next-btn {
   text-shadow: none;
 
-  @apply !bg-black/50 !border-black !py-2 !px-6 !rounded-lg !outline-none !border-4 !text-white duration-200 ease-in-out !font-bold transition-all;
-  @apply hover:!bg-black/60 focus-within:!border-white active:!scale-95 disabled:!cursor-not-allowed disabled:!opacity-50;
+  @apply bg-black/50! border-black! py-2! px-6! rounded-lg! outline-none! border-4! text-white! duration-200 ease-in-out font-bold! transition-all;
+  @apply hover:bg-black/60! focus-within:border-white! active:scale-95! disabled:cursor-not-allowed! disabled:opacity-50!;
 }
 
 .driver-popover .driver-popover-close-btn {
-  @apply !text-muted-foreground hover:!text-foreground transition-colors duration-300;
+  @apply text-muted-foreground! hover:text-foreground! transition-colors duration-300;
 }

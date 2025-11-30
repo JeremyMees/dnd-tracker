@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { navigationMenuContentStyle, navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
+import { navigationMenuTriggerStyle, navigationMenuContentStyle } from '~/components/ui/navigation-menu'
 
 const { user, logout } = useAuthentication()
 const { playRoutes, routes, profileRoutes } = useUi()
 const { toast } = useToast()
 const { t } = useI18n()
+const localePath = useLocalePath()
 const isSmall = useMediaQuery('(max-width: 1024px)')
 
 const isOpen = ref<boolean>(false)
@@ -59,7 +60,7 @@ async function logoutUser(): Promise<void> {
         />
       </NuxtLinkLocale>
       <div class="flex justify-end items-center gap-4">
-        <div class="hidden lg:flex items-center gap-4">
+        <div class="hidden md:flex items-center gap-4">
           <ClientOnly>
             <UiNavigationMenu disable-pointer-leave-close>
               <UiNavigationMenuList>
@@ -67,9 +68,10 @@ async function logoutUser(): Promise<void> {
                   v-for="route in routes"
                   :key="route.label"
                 >
-                  <NuxtLinkLocale
+                  <NuxtLink
                     v-slot="{ isActive, href, navigate }"
-                    :to="route.url"
+                    :to="localePath(route.url)"
+                    custom
                   >
                     <UiNavigationMenuLink
                       :active="isActive"
@@ -79,26 +81,26 @@ async function logoutUser(): Promise<void> {
                     >
                       {{ $t(route.label) }}
                     </UiNavigationMenuLink>
-                  </NuxtLinkLocale>
+                  </NuxtLink>
                 </UiNavigationMenuItem>
                 <UiNavigationMenuItem>
                   <UiNavigationMenuTrigger
-                    class="mx-1 border-primary border-4 py-1 bg-primary/50 focus:bg-primary hover:bg-primary/60 data-[active]:bg-primary/50 data-[state=open]:bg-primary/50"
+                    class="mx-1 border-primary border-4 py-1 bg-primary/50 focus:bg-primary hover:bg-primary/60 data-active:bg-primary/50 data-[state=open]:hover:bg-primary/50 data-[state=open]:focus:bg-primary/50 data-[state=open]:bg-primary/50"
                   >
                     {{ $t('components.navbar.play') }}
                   </UiNavigationMenuTrigger>
-                  <UiNavigationMenuContent class="flex flex-col p-2 !w-[300px]">
-                    <NuxtLinkLocale
+                  <UiNavigationMenuContent class="flex flex-col p-2 w-[300px]!">
+                    <NuxtLink
                       v-for="route in playRoutes"
                       v-slot="{ isActive, href, navigate }"
                       :key="route.label"
-                      :to="route.url"
-                      :class="navigationMenuContentStyle()"
+                      :to="localePath(route.url)"
+                      custom
                     >
                       <UiNavigationMenuLink
                         :active="isActive"
                         :href="href"
-                        class="flex gap-2 items-center"
+                        class="flex flex-row gap-2 items-center w-full"
                         @click="navigate"
                       >
                         <Icon
@@ -108,7 +110,7 @@ async function logoutUser(): Promise<void> {
                         />
                         {{ $t(route.label) }}
                       </UiNavigationMenuLink>
-                    </NuxtLinkLocale>
+                    </NuxtLink>
                   </UiNavigationMenuContent>
                 </UiNavigationMenuItem>
                 <UiNavigationMenuItem>
@@ -135,21 +137,21 @@ async function logoutUser(): Promise<void> {
                       </UiAvatarFallback>
                     </UiAvatar>
                   </UiNavigationMenuTrigger>
-                  <UiNavigationMenuContent class="flex flex-col py-2 !w-[250px]">
+                  <UiNavigationMenuContent class="flex flex-col py-2 w-[300px]!">
                     <template
                       v-for="route in profileRoutes"
                       :key="route.label"
                     >
-                      <NuxtLinkLocale
+                      <NuxtLink
                         v-if="route.requireAuth ? !!user : true"
                         v-slot="{ isActive, href, navigate }"
-                        :to="route.url"
-                        :class="navigationMenuContentStyle()"
+                        :to="localePath(route.url)"
+                        custom
                       >
                         <UiNavigationMenuLink
                           :active="isActive"
                           :href="href"
-                          class="flex items-center gap-2"
+                          class="flex flex-row gap-2 items-center"
                           @click="navigate"
                         >
                           <Icon
@@ -159,22 +161,20 @@ async function logoutUser(): Promise<void> {
                           />
                           {{ $t(route.label) }}
                         </UiNavigationMenuLink>
-                      </NuxtLinkLocale>
+                      </NuxtLink>
                     </template>
-                    <UiSeparator class="my-1" />
-                    <div class="">
-                      <YbugButton
-                        type="menu"
-                        :class="navigationMenuContentStyle()"
-                      />
-                    </div>
                     <UiDropdownMenuSeparator />
-                    <div class="px-3 py-[6px] space-y-2">
+                    <YbugButton
+                      type="menu"
+                      :class="navigationMenuContentStyle()"
+                    />
+                    <UiDropdownMenuSeparator />
+                    <div class="pl-2 py-[6px] space-y-2">
                       <LangSwitcher />
                       <ColorModeSwitcher />
                     </div>
                     <template v-if="user">
-                      <UiSeparator class="mb-1" />
+                      <UiDropdownMenuSeparator />
                       <button
                         class="text-destructive flex items-center gap-2"
                         :class="navigationMenuContentStyle()"
@@ -182,7 +182,7 @@ async function logoutUser(): Promise<void> {
                       >
                         <Icon
                           name="tabler:logout"
-                          class="size-4 min-w-4"
+                          class="size-3 min-w-3"
                         />
                         {{ $t('components.navbar.logout') }}
                       </button>
@@ -195,16 +195,13 @@ async function logoutUser(): Promise<void> {
         </div>
         <ClientOnly>
           <UiDropdownMenu>
-            <UiDropdownMenuTrigger class="lg:hidden">
-              <button
-                class="text-foreground flex flex-col items-center justify-center p-1 bg-primary/50 border-primary border-4 rounded-lg"
+            <UiDropdownMenuTrigger class="md:hidden">
+              <UiButton
+                size="icon"
                 aria-label="Open menu"
               >
-                <Icon
-                  name="tabler:menu-2"
-                  class="size-8 min-w-8"
-                />
-              </button>
+                <Icon name="tabler:menu-2" />
+              </UiButton>
             </UiDropdownMenuTrigger>
             <UiDropdownMenuContent
               class="w-60"

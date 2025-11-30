@@ -1,3 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CreateButton > Should match snapshot 1`] = `"<button class="btn-primary w-[120px]" aria-label="actions.create">actions.create</button>"`;
+exports[`CreateButton > Should match snapshot 1`] = `"<button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-8 rounded-md px-3 text-xs" aria-label="actions.create">actions.create</button>"`;

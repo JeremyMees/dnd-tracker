@@ -74,9 +74,12 @@
     "moveUp": "Move up",
     "moveDown": "Move down",
     "changeInitiative": "Change initiative",
-    "applyDamage": "Apply damage"
+    "applyDamage": "Apply damage",
+    "generateName": "Generate name"
   },
   "general": {
+    "actions": "Actions",
+    "version": "Version",
     "advantage": "Advantage",
     "advantageAbb": "Adv.",
     "disadvantage": "Disadvantage",
@@ -371,7 +374,8 @@
         "ac": "Update AC",
         "hp": "Update HP",
         "link": "Update link",
-        "conditions": "Update conditions"
+        "conditions": "Update conditions",
+        "widgets": "Update active widgets"
       },
       "toasts": {
         "removed": {
@@ -506,6 +510,10 @@
         }
       }
     },
+    "changelog": {
+      "title": "Changelogs",
+      "description": "Discover the evolution of our DnD Tracker through our detailed changelog. Stay updated on the latest features, improvements, and bug fixes that enhance your experience."
+    },
     "noAccess": {
       "title": "You're not a team member",
       "text": "Oops! It seems like you're not a member, and you don't have access to this content. If you believe this is a mistake, please don't hesitate to reach out to the owner or an admin for assistance."
@@ -515,6 +523,9 @@
     }
   },
   "components": {
+    "repeaterInput": {
+      "noItems": "No items added yet. Click \"Add\" to get started."
+    },
     "colorModeSwitcher": {
       "light": "Light",
       "dark": "Dark",
@@ -633,7 +644,7 @@
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Target",
-      "emailLabel": "Email address",
+      "emailLabel": "Email address|Email addresses",
       "passwordLabel": "Password",
       "usernameLabel": "Username",
       "nameLabel": "Name",
@@ -674,7 +685,12 @@
       "searchByUsername": "Search by username",
       "searchByEmail": "Search by email",
       "newOwnerLabel": "New owner",
-      "textRequired": "Text is required"
+      "textRequired": "Text is required",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "showDiceRoller": "Show dice roller",
+      "hideDiceRoller": "Hide dice roller",
+      "noCampaign": "No campaign"
     },
     "campaignModal": {
       "add": "Create a new campaign",
@@ -824,7 +840,8 @@
         "redcap": "Redcap",
         "wolf-rider": "Wolf rider"
       },
-      "negative": "Allow HP and AC to be negative"
+      "negative": "Allow HP and AC to be negative",
+      "noActiveWidgets": "No active widgets. Use the settings icon to enable widgets."
     },
     "infoCard": {
       "add": "Add pin",
@@ -948,5 +965,17 @@
     "12": {
       "title": "Congrats, you're ready to go! 🎉"
     }
+  },
+  "zod": {
+    "required": "Required",
+    "alphaSpaces": "Only letters and spaces are allowed",
+    "containsLowercase": "At least one lowercase letter is required",
+    "containsUppercase": "At least one uppercase letter is required",
+    "containsNumber": "At least one number is required",
+    "containsSymbol": "At least one symbol is required",
+    "allowedChars": "Only letters, numbers, and symbols are allowed.",
+    "diceExpression": "Invalid dice expression. Use the format 'XdY' where X is the number of dice and Y is the type of dice.",
+    "match": "Value must match '{field}'",
+    "invalidEmail": "Invalid email address"
   }
 }

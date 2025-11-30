@@ -14,7 +14,7 @@ const { user } = useAuthentication()
       <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
         <NuxtLinkLocale
           :to="route.url"
-          class="flex items-center gap-2"
+          class="flex items-center gap-2 w-full"
         >
           <Icon
             v-if="route.icon"

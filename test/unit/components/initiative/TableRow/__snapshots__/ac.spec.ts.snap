@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initiative table row ac > Should match snapshot 1`] = `
-"<div><button id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1">
+"<div><button data-slot="popover-trigger" id="ylqr4a611g-ac" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="flex flex-col gap-y-1 rounded-lg">
     <div class="flex items-center gap-x-1"><span data-test-ac="" class="">1</span><span data-test-temp="" class="text-warning text-xs"> +5</span></div><span data-test-max="" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 19</span>
   </button>
   <!--teleport start-->

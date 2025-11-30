@@ -1,15 +1,15 @@
 import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 import packageJSON from './package.json'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/supabase',
     '@nuxt/image',
-    '@formkit/nuxt',
+    'nuxt-zod-i18n',
     '@nuxtjs/i18n',
     '@nuxt/icon',
     '@vueuse/nuxt',
@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     'motion-v/nuxt',
     '@nuxt/test-utils/module',
     '@sentry/nuxt/module',
+    '@formkit/auto-animate/nuxt',
   ],
 
   components: [
@@ -37,8 +38,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: [
-    '@/assets/css/tippy.css',
-    '@/assets/css/driver.css',
+    '~/assets/css/global.css',
+    '~/assets/css/tippy.css',
+    '~/assets/css/driver.css',
   ],
 
   site: {
@@ -55,7 +57,6 @@ export default defineNuxtConfig({
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,
     public: {
-      formkit: process.env.FORMKIT_PRO,
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
@@ -81,10 +82,6 @@ export default defineNuxtConfig({
     client: 'hidden',
   },
 
-  future: {
-    compatibilityVersion: 4,
-  },
-
   compatibilityDate: '2024-04-03',
 
   nitro: {
@@ -94,11 +91,12 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    optimizeDeps: { force: true },
+    plugins: [
+      tailwindcss(),
+    ],
   },
 
   eslint: { config: { stylistic: true } },
-  formkit: { configFile: './formkit/config.ts' },
 
   i18n: {
     defaultLocale: 'nl',
@@ -132,7 +130,7 @@ export default defineNuxtConfig({
 
   shadcn: {
     prefix: 'ui',
-    componentDir: './app/components/ui',
+    componentDir: '~/components/ui',
   },
 
   stripe: {
@@ -141,6 +139,7 @@ export default defineNuxtConfig({
   },
 
   supabase: {
+    types: '~~/shared/types/database-generated.ts',
     redirectOptions: {
       login: '/login',
       callback: '/',
@@ -149,5 +148,10 @@ export default defineNuxtConfig({
     },
   },
 
-  tailwindcss: { viewer: false },
+  zodI18n: {
+    localeCodesMapping: {
+      'en-GB': 'en',
+      'nl-NL': 'nl',
+    },
+  },
 })

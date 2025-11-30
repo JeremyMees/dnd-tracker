@@ -1,20 +1,5 @@
 import DOMPurify from 'isomorphic-dompurify'
 
-export function sanitizeForm<T>(data: Record<string, any>, blacklist?: string[]): T {
-  const garbage: string[] = blacklist || ['__init', 'isTrusted', '_vts']
-  const sanitized: Record<string, any> = {}
-
-  for (const key in data) {
-    if (garbage.includes(key)) continue
-
-    sanitized[key] = typeof data[key] === 'string'
-      ? data[key].trim()
-      : data[key]
-  }
-
-  return sanitized as T
-}
-
 export function scrollToId(id: string): void {
   const el = document.getElementById(id)
 
@@ -29,11 +14,6 @@ export function randomString(): string {
 
 export function randomColor(): string {
   return Math.floor(Math.random() * 16777215).toString(16)
-}
-
-export function togglePasswordInput(node: FormNode): void {
-  node.props.suffixIcon = node.props.suffixIcon === 'tabler:eye' ? 'tabler:eye-closed' : 'tabler:eye'
-  node.props.type = node.props.type === 'password' ? 'text' : 'password'
 }
 
 export function sortByNumber(a: number | any[], b: number | any[], acs: boolean): number {
@@ -141,4 +121,18 @@ export function validateInject<T>(key: InjectionKey<T>): T {
   if (!injection) throw createError({ statusCode: 500, statusMessage: 'Injection not found' })
 
   return injection
+}
+
+export function animateTableUpdate(id: string, color: 'green' | 'red'): void {
+  const el = document.getElementById(id)
+
+  if (!el) return
+
+  el.style.animation = 'none'
+  void el.offsetHeight
+  el.style.animation = `pulse-${color} 1s ease-in-out`
+
+  setTimeout(() => {
+    if (el) el.style.animation = ''
+  }, 1000)
 }

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useJoinTokenCreate } from '~~/queries/team-members'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -15,20 +17,55 @@ const localePath = useLocalePath()
 const queryClient = useQueryClient()
 const supabase = useSupabaseClient<DB>()
 
-interface AddMemberForm { role: UserRole, id: string, profile: Profile }
-interface InviteMemberForm { users: AddMemberForm[] }
-
-const noUser = ref<string>()
-const form = ref<{ users: AddMemberForm[] }>({ users: [] })
-
 const { mutateAsync: createJoinCampaignToken } = useJoinTokenCreate()
 
-async function handleSearch({ email }: { email: string }, node: FormNode): Promise<void> {
-  node.clearErrors()
-  noUser.value = undefined
+const formError = ref<string>('')
+const searchFormError = ref<string>('')
+const foundUsers = ref<FoundUser[]>([])
+const noUser = ref<string>()
+const search = ref<string>()
+
+const formSchema = toTypedSchema(z.object({
+  users: z.array(z.object({
+    id: z.string(),
+    role: z.string(),
+    profile: z.object({
+      id: z.string(),
+      username: z.string(),
+      name: z.string(),
+      avatar: z.string(),
+      email: z.string().email(),
+    }),
+  })).min(1),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    users: foundUsers.value,
+  },
+})
+
+interface FoundUser {
+  id: string
+  role: string
+  profile: Profile
+}
+
+watch(foundUsers, newUsers => form.setValues({ users: newUsers }), { deep: true })
+watchDebounced(search, () => handleSearch(), { debounce: 500, maxWait: 1000 })
+
+async function handleSearch(): Promise<void> {
+  searchFormError.value = ''
+  const email = search.value
+
+  if (z.string().email().safeParse(email).success === false) {
+    searchFormError.value = t('zod.invalidEmail')
+    return
+  }
 
   try {
-    const error = validateUser(email)
+    const error = validateUser(email ?? '')
 
     if (error) throw createError(error)
 
@@ -47,24 +84,22 @@ async function handleSearch({ email }: { email: string }, node: FormNode): Promi
     })
 
     if (user) {
-      form.value.users.push({
+      foundUsers.value.push({
         id: user.id,
         role: 'Viewer',
         profile: user,
       })
+
+      noUser.value = undefined
     }
     else noUser.value = email
-
-    reset('search')
   }
   catch ({ message }: any) {
-    reset('search')
-
     if (['self', 'alreadyAdded', 'alreadyInvited', 'alreadySelected', 'maxMembers'].includes(message)) {
-      node.setErrors(t(`components.inviteMember.errors.${message}`))
+      searchFormError.value = t(`components.inviteMember.errors.${message}`)
     }
     else {
-      node.setErrors(message)
+      searchFormError.value = message
     }
   }
 }
@@ -74,18 +109,16 @@ function validateUser(email: string): string | undefined {
 
   if (email === user.value.email) return 'self'
   else if (join_campaign.some(({ user }) => user.email === email)) return 'alreadyInvited'
-  else if (form.value.users.some(({ profile }) => profile.email === email)) return 'alreadySelected'
-  else if ([...form.value.users, ...team, ...join_campaign].length >= 9) return 'maxMembers'
+  else if (foundUsers.value.some(({ profile }) => profile.email === email)) return 'alreadySelected'
+  else if ([...foundUsers.value, ...team, ...join_campaign].length >= 9) return 'maxMembers'
   else if (created_by.email === email || team.some(({ user }) => user.email === email)) return 'alreadyAdded'
 }
 
-async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<void> {
-  node.clearErrors()
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   try {
-    const { users } = sanitizeForm<InviteMemberForm>(form)
-
-    await Promise.all(users.map(async user => addTeamMember(user)))
+    await Promise.all(values.users.map(async user => addTeamMember(user)))
 
     queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', props.current.id] })
     queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
@@ -99,12 +132,13 @@ async function handleSubmit(form: InviteMemberForm, node: FormNode): Promise<voi
     emit('close')
   }
   catch (err: any) {
-    reset('form')
-    node.setErrors(err.message)
+    formError.value = err.message || t('general.error.text')
   }
-}
+})
 
-async function addTeamMember(member: AddMemberForm): Promise<void> {
+async function addTeamMember(member: FoundUser): Promise<void> {
+  if (member.role !== 'Admin' && member.role !== 'Viewer') return
+
   const token = await createJoinCampaignToken({
     data: {
       user: member.id,
@@ -144,30 +178,32 @@ async function inviteNewUser(email: string): Promise<void> {
 
 <template>
   <!-- Search form -->
-  <FormKit
-    id="search"
-    type="form"
-    :actions="false"
-    @submit="handleSearch"
-  >
-    <div class="flex flex-col sm:flex-row sm:items-start gap-2">
-      <FormKit
-        name="email"
+  <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+    <UiLabel for="search">
+      {{ $t('components.inputs.searchByEmail') }}
+    </UiLabel>
+    <UiInputGroup>
+      <UiInputGroupInput
+        id="search"
+        v-model="search"
+        name="search"
         type="search"
-        prefix-icon="tabler:search"
-        :placeholder="$t('components.inputs.searchByEmail')"
-        outer-class="$reset !mb-0 grow"
-        validation="required|email"
       />
-      <FormKit
-        type="submit"
-        outer-class="$reset !mb-0"
-        :aria-label="$t('actions.search')"
-      >
-        {{ $t('actions.search') }}
-      </FormKit>
-    </div>
-  </FormKit>
+      <UiInputGroupAddon align="inline-end">
+        <Icon
+          name="tabler:search"
+          :aria-hidden="true"
+        />
+      </UiInputGroupAddon>
+    </UiInputGroup>
+    <p
+      v-if="searchFormError"
+      class="text-sm text-destructive"
+    >
+      {{ searchFormError }}
+    </p>
+  </div>
+
   <!-- No user cta -->
   <AnimationExpand>
     <Card
@@ -179,100 +215,134 @@ async function inviteNewUser(email: string): Promise<void> {
         {{ $t('components.inviteMember.errors.noUser', { email: noUser }) }}
       </p>
       <div class="flex justify-end">
-        <button
-          class="btn-primary whitespace-nowrap"
+        <UiButton
+          variant="foreground"
+          class="whitespace-nowrap"
           @click="inviteNewUser(noUser)"
         >
           {{ $t('actions.invite') }}
-        </button>
+        </UiButton>
       </div>
     </Card>
   </AnimationExpand>
+
   <!-- Users form -->
   <AnimationExpand>
-    <FormKit
-      v-if="form.users.length"
-      id="form"
-      v-model="form"
-      type="form"
-      :submit-label="$t('components.inviteMember.invite')"
-      :submit-attrs="{ wrapperClass: 'mt-4' }"
-      form-class="pt-4"
-      @submit="handleSubmit"
+    <UiFormWrapper
+      v-if="foundUsers.length"
+      @submit="onSubmit"
     >
-      <FormKit
-        v-slot="{ value }"
-        type="list"
-        name="users"
-        dynamic
-        class="border-2 border-secondary rounded-lg p-4 mb-4"
-      >
-        <FormKit
-          v-for="(item, index) in (value as AddMemberForm[])"
-          :key="item.id"
-          type="group"
-          :index="index"
+      <div class="border rounded-lg p-4 my-4">
+        <div
+          v-for="(foundUser, index) in foundUsers"
+          :key="foundUser.id"
+          class="grid sm:grid-cols-3 items-center gap-4 border-t py-2 first:pt-0 first:border-t-0"
         >
-          <div class="grid sm:grid-cols-3 items-center gap-4 border-t-2 border-secondary py-2 first:pt-0 first:border-t-0">
-            <div
-              v-if="item.profile"
-              class="flex items-end gap-2"
-            >
-              <UiAvatar class="border-2 border-primary">
-                <UiAvatarImage
-                  :src="item.profile.avatar"
-                  :alt="item.profile.username"
-                />
-                <UiAvatarFallback>
-                  <Icon
-                    name="tabler:user"
-                    class="size-6 min-w-6 text-muted-foreground"
-                  />
-                </UiAvatarFallback>
-              </UiAvatar>
-              <div class="flex flex-col">
-                <p class="text-sm font-bold">
-                  {{ item.profile.username }}
-                </p>
-                <p class="text-sm text-muted-foreground">
-                  {{ $t(`general.roles.${item.role}.title`) }}
-                </p>
-              </div>
-            </div>
-            <FormKit
-              name="role"
-              type="select"
-              :options="[
-                { value: 'Viewer', label: $t('general.roles.Viewer.title') },
-                { value: 'Admin', label: $t('general.roles.Admin.title') },
-              ]"
-              validation="required"
-              outer-class="$remove:mb-4 w-[200px]"
-              inner-class="$remove:mb-1"
-            />
-            <div class="sm:flex justify-end">
-              <button
-                v-tippy="$t('actions.delete')"
-                :aria-label="$t('actions.delete')"
-                class="icon-btn-destructive"
-                @click="form.users.splice(index, 1)"
-              >
+          <div class="flex items-end gap-2">
+            <UiAvatar class="border-2 border-primary">
+              <UiAvatarImage
+                :src="foundUser.profile.avatar"
+                :alt="foundUser.profile.username"
+              />
+              <UiAvatarFallback>
                 <Icon
-                  name="tabler:trash"
-                  class="size-6"
-                  aria-hidden="true"
+                  name="tabler:user"
+                  class="size-6 min-w-6 text-muted-foreground"
                 />
-              </button>
+              </UiAvatarFallback>
+            </UiAvatar>
+            <div class="flex flex-col">
+              <p class="text-sm font-bold">
+                {{ foundUser.profile.username }}
+              </p>
+              <p class="text-sm text-muted-foreground">
+                {{ $t(`general.roles.${foundUser.role}.title`) }}
+              </p>
             </div>
           </div>
-          <FormKit
+          <div class="col-span-2 flex items-center gap-2">
+            <UiFormField
+              v-slot="{ componentField }"
+              :name="`users.${index}.role`"
+            >
+              <UiFormItem class="space-y-0 w-full">
+                <UiSelect v-bind="componentField">
+                  <UiFormControl>
+                    <UiSelectTrigger>
+                      <UiSelectValue />
+                    </UiSelectTrigger>
+                  </UiFormControl>
+                  <UiSelectContent>
+                    <UiSelectItem value="Viewer">
+                      {{ $t('general.roles.Viewer.title') }}
+                    </UiSelectItem>
+                    <UiSelectItem value="Admin">
+                      {{ $t('general.roles.Admin.title') }}
+                    </UiSelectItem>
+                  </UiSelectContent>
+                </UiSelect>
+                <UiFormMessage />
+              </UiFormItem>
+            </UiFormField>
+            <UiButton
+              v-tippy="$t('actions.delete')"
+              variant="destructive-ghost"
+              size="icon-sm"
+              type="button"
+              :aria-label="$t('actions.delete')"
+              @click="foundUsers.splice(index, 1)"
+            >
+              <Icon
+                name="tabler:trash"
+                aria-hidden="true"
+              />
+            </UiButton>
+          </div>
+
+          <input
             type="hidden"
-            name="id"
-            validation="required"
-            :value="item.id"
-          />
-        </FormKit>
-      </FormKit>
-    </FormKit>
+            :name="`users.${index}.id`"
+            :value="foundUser.id"
+          >
+          <input
+            type="hidden"
+            :name="`users.${index}.profile.id`"
+            :value="foundUser.profile.id"
+          >
+          <input
+            type="hidden"
+            :name="`users.${index}.profile.username`"
+            :value="foundUser.profile.username"
+          >
+          <input
+            type="hidden"
+            :name="`users.${index}.profile.email`"
+            :value="foundUser.profile.email"
+          >
+          <input
+            type="hidden"
+            :name="`users.${index}.profile.name`"
+            :value="foundUser.profile.name"
+          >
+          <input
+            type="hidden"
+            :name="`users.${index}.profile.avatar`"
+            :value="foundUser.profile.avatar"
+          >
+        </div>
+      </div>
+      <div
+        v-if="formError"
+        class="text-sm text-destructive"
+      >
+        {{ formError }}
+      </div>
+      <UiButton
+        type="submit"
+        class="w-full"
+      >
+        {{ $t('components.inviteMember.invite') }}
+      </UiButton>
+    </UiFormWrapper>
   </AnimationExpand>
 </template>

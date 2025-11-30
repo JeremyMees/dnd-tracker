@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
@@ -11,11 +10,8 @@ const { t } = useI18n()
 const { toast } = useToast()
 
 const popoverOpen = shallowRef<boolean>(false)
-const selectedType = shallowRef<HealthType>('heal')
 
 const hasHp = computed(() => isDefined(props.item.health) && isDefined(props.item.maxHealth))
-
-interface HealthForm { amount: number }
 
 function handleToasts(toasts: ToastItem[]): void {
   toasts.forEach(({ title, description, variant }) => {
@@ -40,77 +36,6 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   await update({ rows })
   popoverOpen.value = false
 }
-
-async function updateBase(form: HealthForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    if (!sheet.value) return
-
-    const { amount } = sanitizeForm<HealthForm>(form)
-    const row = {
-      ...props.item,
-      maxHealth: amount,
-      maxHealthOld: undefined,
-      health: amount,
-    }
-
-    await updateRow(row)
-  }
-  catch {
-    reset('InitiativeRowHealthBase')
-    node.setErrors(t('general.error.text'))
-  }
-}
-
-async function updateOverride(form: HealthForm & { reset?: boolean }, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    if (!sheet.value) return
-
-    const { amount, reset } = sanitizeForm<HealthForm & { reset?: boolean }>(form)
-
-    const { row, toasts } = reset || amount === props.item.maxHealthOld
-      ? handleHpChanges(props.item.maxHealthOld ?? 0, 'override-reset', props.item, sheet.value?.settings?.negative ?? false)
-      : handleHpChanges(amount, 'override', props.item, sheet.value?.settings?.negative ?? false)
-
-    handleToasts(toasts)
-
-    await updateRow(row)
-  }
-  catch {
-    reset('InitiativeRowHealthOverride')
-    node.setErrors(t('general.error.text'))
-  }
-}
-
-async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    const selected = selectedType.value
-
-    if (!sheet.value || !selected) return
-
-    const { amount, type } = sanitizeForm<HealthForm & { type?: HealthType }>({ ...form, type: selected })
-
-    try {
-      const { row, toasts } = handleHpChanges(amount, type || 'heal', props.item, sheet.value?.settings?.negative ?? false)
-
-      handleToasts(toasts)
-
-      await updateRow(row)
-    }
-    catch (error) {
-      console.error('Error updating health', error)
-    }
-  }
-  catch {
-    reset('InitiativeRowHealthUpdate')
-    node.setErrors(t('general.error.text'))
-  }
-}
 </script>
 
 <template>
@@ -118,11 +43,12 @@ async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          :id="`${item.id}-hp`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.health) && item.health <= 0,
+            'bg-destructive/20 p-2 w-fit': isDefined(item.health) && item.health <= 0,
           }"
-          class="flex flex-col gap-y-1"
+          class="flex flex-col gap-y-1 rounded-lg"
         >
           <div class="flex items-center gap-x-1">
             <Icon
@@ -201,94 +127,39 @@ async function updateHealth(form: HealthForm, node: FormNode): Promise<void> {
             </p>
           </div>
         </div>
-        <FormKit
+
+        <FormHealthUpdate
           v-if="hasHp"
-          id="InitiativeRowHealthUpdate"
-          type="form"
-          :actions="false"
-          @submit="updateHealth"
-        >
-          <FormDiceRollInput />
-          <div class="flex items-center gap-x-2">
-            <FormKit
-              type="submit"
-              input-class="$remove:btn-foreground btn-success flex items-center gap-x-2 px-2 border-2 text-sm"
-              @click="selectedType = 'heal'"
-            >
-              <Icon
-                name="tabler:heart"
-                class="size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.heal') }}
-            </FormKit>
-            <FormKit
-              type="submit"
-              input-class="$remove:btn-foreground btn-warning flex items-center gap-x-2 px-2 border-2 text-sm"
-              @click="selectedType = 'temp'"
-            >
-              <Icon
-                name="tabler:plus"
-                class="size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.temp') }}
-            </FormKit>
-            <FormKit
-              type="submit"
-              input-class="$remove:btn-foreground btn-destructive flex items-center gap-x-2 px-2 border-2 text-sm"
-              @click="selectedType = 'damage'"
-            >
-              <Icon
-                name="tabler:sword"
-                class="size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.damage') }}
-            </FormKit>
-          </div>
-        </FormKit>
+          :sheet="sheet"
+          :item="item"
+          :handle-toasts="handleToasts"
+          :update-row="updateRow"
+        />
+
         <UiSeparator
           v-if="hasHp"
-          class="my-6 bg-muted-foreground"
+          class="my-3 bg-muted"
         />
-        <FormKit
-          id="InitiativeRowHealthBase"
-          type="form"
-          :submit-label="$t('actions.save')"
-          @submit="updateBase"
-        >
-          <FormKit
-            type="number"
-            name="amount"
-            number
-            :label="$t('components.inputs.baseFieldLabel', { field: 'HP' })"
-            :help="$t('components.inputs.baseFieldHelp', { field: 'HP' })"
-            validation="required|between:1,1000|number"
-          />
-        </FormKit>
+
+        <FormHealthUpdateBase
+          :sheet="sheet"
+          :item="item"
+          :handle-toasts="handleToasts"
+          :update-row="updateRow"
+        />
+
         <UiSeparator
           v-if="hasHp"
-          class="my-6 bg-muted-foreground"
+          class="my-3 bg-muted"
         />
-        <FormKit
+
+        <FormHealthOverride
           v-if="hasHp"
-          id="InitiativeRowHealthOverride"
-          type="form"
-          :submit-label="$t('actions.save')"
-          @submit="updateOverride"
-        >
-          <FormKit
-            type="number"
-            name="amount"
-            number
-            :label="$t('components.inputs.overrideFieldLabel', { field: 'HP' })"
-            :help="$t('components.inputs.optionalFieldHelp', { field: 'HP' })"
-            validation="required|between:1,1000|number"
-            :suffix-icon="item.maxHealthOld ? 'tabler:player-skip-back' : undefined"
-            @suffix-icon-click="(node: FormNode) => updateOverride({ reset: true, amount: item.maxHealthOld || 0 }, node)"
-          />
-        </FormKit>
+          :sheet="sheet"
+          :item="item"
+          :handle-toasts="handleToasts"
+          :update-row="updateRow"
+        />
       </UiPopoverContent>
     </UiPopover>
   </div>

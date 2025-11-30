@@ -39,47 +39,51 @@ function deleteRow(): void {
 
 <template>
   <div class="flex items-center justify-end">
-    <NuxtLink
+    <UiButton
       v-if="item.link"
-      v-tippy="$t('components.actions.link')"
-      data-test-link
-      :aria-label="$t('components.actions.link')"
-      class="icon-btn-info"
-      target="_blank"
-      :to="item.link"
+      variant="info-ghost"
+      size="icon-sm"
+      as-child
     >
-      <Icon
-        name="tabler:link"
-        :aria-hidden="true"
-        class="size-5 min-w-5"
-      />
-    </NuxtLink>
-    <button
+      <NuxtLink
+        v-tippy="$t('components.actions.link')"
+        data-test-link
+        :aria-label="$t('components.actions.link')"
+        target="_blank"
+        :to="item.link"
+      >
+        <Icon
+          name="tabler:link"
+          :aria-hidden="true"
+        />
+      </NuxtLink>
+    </UiButton>
+    <UiButton
       v-tippy="$t('actions.copy')"
       data-test-copy
+      variant="help-ghost"
+      size="icon-sm"
       :disabled="maxCharacters"
       :aria-label="$t('actions.copy')"
-      class="icon-btn-help"
       @click="copyRow"
     >
       <Icon
         name="tabler:copy"
         :aria-hidden="true"
-        class="size-5 min-w-5"
       />
-    </button>
-    <button
+    </UiButton>
+    <UiButton
       v-tippy="$t('actions.delete')"
       data-test-delete
+      variant="destructive-ghost"
+      size="icon-sm"
       :aria-label="$t('actions.delete')"
-      class="icon-btn-destructive"
       @click="deleteRow"
     >
       <Icon
         name="tabler:trash"
         :aria-hidden="true"
-        class="size-5 min-w-5"
       />
-    </button>
+    </UiButton>
   </div>
 </template>

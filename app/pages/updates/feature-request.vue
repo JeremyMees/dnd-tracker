@@ -35,42 +35,69 @@ const { data, status } = useFeatureListing(computed(() => ({
         color="secondary"
         class="flex flex-wrap items-center gap-x-4 gap-y-2"
       >
-        <FormKit
-          v-model="search"
-          type="search"
-          name="search"
-          :label="$t('components.inputs.titleLabel')"
-          outer-class="$reset grow !pb-0"
-        />
-        <FormKit
-          v-if="user"
-          v-model="createdBy"
-          :disabled="status === 'pending'"
-          :label="$t('pages.featureRequest.filter.title')"
-          name="created by"
-          type="select"
-          :options="[
-            { label: $t('pages.featureRequest.filter.options.my'), value: 'my' },
-            { label: $t('pages.featureRequest.filter.options.all'), value: 'all' },
-          ]"
-          outer-class="$reset !pb-0"
-        />
-        <button
-          class="btn-primary mt-5"
+        <div class="space-y-2 flex-1">
+          <UiLabel for="search">
+            {{ $t('actions.search') }}
+          </UiLabel>
+          <UiInputGroup>
+            <UiInputGroupInput
+              id="search"
+              v-model="search"
+              name="search"
+              type="search"
+              :disabled="status === 'pending'"
+            />
+            <UiInputGroupAddon align="inline-end">
+              <Icon
+                name="tabler:search"
+                class="size-3"
+                :aria-hidden="true"
+              />
+            </UiInputGroupAddon>
+          </UiInputGroup>
+        </div>
+        <div class="flex-1">
+          <UiLabel>
+            {{ $t('pages.featureRequest.filter.title') }}
+          </UiLabel>
+          <UiSelect
+            v-model="createdBy"
+            :disabled="status === 'pending'"
+          >
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in [
+                    { label: $t('pages.featureRequest.filter.options.my'), value: 'my' },
+                    { label: $t('pages.featureRequest.filter.options.all'), value: 'all' },
+                  ]"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <UiButton
           :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
+          class="mt-5"
           @click="
             user
               ? modal.open({
                 component: 'FeatureRequest',
                 header: $t('components.addFeatureRequestModal.title'),
-                submit: $t('actions.create'),
               })
               : navigateTo(localePath('/login'))
           "
         >
           {{ $t('pages.featureRequest.request') }}
-        </button>
+        </UiButton>
       </Card>
 
       <!-- Loading feature request -->

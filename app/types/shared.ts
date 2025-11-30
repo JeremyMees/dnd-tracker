@@ -18,3 +18,4 @@ export interface Route {
 }
 
 export type HealthType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
+export type AcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'

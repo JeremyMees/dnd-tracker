@@ -11,14 +11,14 @@ const { t } = useI18n()
 
 const limit = 20
 const sortBy = ref<Open5eSortBy>('name')
-const cr = ref<number>()
+const cr = ref<number | string>('all')
 const search = ref<string>('')
 const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
 
 const queryFilters = ref<Open5eFilters>({
   page: 0,
   search: debouncedSearch.value,
-  cr: cr.value,
+  cr: typeof cr.value === 'string' ? undefined : cr.value,
   ordering: sortBy.value,
 })
 
@@ -26,7 +26,7 @@ watch([debouncedSearch, cr, sortBy], () => {
   queryFilters.value = {
     page: 0,
     search: debouncedSearch.value,
-    cr: cr.value,
+    cr: typeof cr.value === 'string' ? undefined : cr.value,
     ordering: sortBy.value,
   }
 })
@@ -59,43 +59,86 @@ async function addMonster(monster: Open5eItem): Promise<void> {
 <template>
   <div class="max-h-full flex flex-col gap-4">
     <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
-      <FormKit
-        v-model="search"
-        :disabled="status === 'pending'"
-        :label="$t('actions.search')"
-        type="search"
-        name="search"
-        prefix-icon="tabler:search"
-        outer-class="$remove:mb-4 w-full sm:w-auto sm:flex-1"
-      />
-      <FormKit
-        v-model="cr"
-        :disabled="status === 'pending'"
-        :label="$t('components.inputs.challengeLabel')"
-        name="cr"
-        type="select"
-        :options="[{ label: $t('general.all'), value: undefined }, ...crOptions]"
-        inner-class="$remove:mb-1"
-        outer-class="$remove:mb-4 w-full sm:w-auto sm:flex-1"
-      />
-      <FormKit
-        v-model="sortBy"
-        :disabled="status === 'pending'"
-        :label="$t('components.addInitiativeMonster.sort.title')"
-        name="sortBy"
-        type="select"
-        :options="[
-          { label: $t('components.addInitiativeMonster.sort.options.alphabet'), value: 'name' },
-          { label: $t('components.addInitiativeMonster.sort.options.mostHP'), value: '-hit_points' },
-          { label: $t('components.addInitiativeMonster.sort.options.leastHP'), value: 'hit_points' },
-          { label: $t('components.addInitiativeMonster.sort.options.mostAC'), value: '-armor_class' },
-          { label: $t('components.addInitiativeMonster.sort.options.leastAC'), value: 'armor_class' },
-          { label: $t('components.addInitiativeMonster.sort.options.mostCR'), value: '-cr' },
-          { label: $t('components.addInitiativeMonster.sort.options.leastCR'), value: 'cr' },
-        ]"
-        inner-class="$remove:mb-1"
-        outer-class="$remove:mb-4 w-full sm:w-auto sm:flex-1"
-      />
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+        <UiLabel for="search">
+          {{ $t('actions.search') }}
+        </UiLabel>
+        <UiInputGroup>
+          <UiInputGroupInput
+            id="search"
+            v-model="search"
+            name="search"
+            type="search"
+            :disabled="status === 'pending'"
+          />
+          <UiInputGroupAddon align="inline-end">
+            <Icon
+              name="tabler:search"
+              class="size-3"
+              :aria-hidden="true"
+            />
+          </UiInputGroupAddon>
+        </UiInputGroup>
+      </div>
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+        <UiLabel for="cr">
+          {{ $t('components.inputs.challengeLabel') }}
+        </UiLabel>
+        <UiSelect
+          id="cr"
+          v-model="cr"
+          name="cr"
+        >
+          <UiSelectTrigger>
+            <UiSelectValue />
+          </UiSelectTrigger>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem
+                v-for="option in [{ label: $t('general.all'), value: 'all' }, ...crOptions]"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
+      </div>
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+        <UiLabel for="sortBy">
+          {{ $t('components.addInitiativeMonster.sort.title') }}
+        </UiLabel>
+        <UiSelect
+          id="sortBy"
+          v-model="sortBy"
+          name="sortBy"
+          :disabled="status === 'pending'"
+        >
+          <UiSelectTrigger>
+            <UiSelectValue />
+          </UiSelectTrigger>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem
+                v-for="option in [
+                  { label: $t('components.addInitiativeMonster.sort.options.alphabet'), value: 'name' },
+                  { label: $t('components.addInitiativeMonster.sort.options.mostHP'), value: '-hit_points' },
+                  { label: $t('components.addInitiativeMonster.sort.options.leastHP'), value: 'hit_points' },
+                  { label: $t('components.addInitiativeMonster.sort.options.mostAC'), value: '-armor_class' },
+                  { label: $t('components.addInitiativeMonster.sort.options.leastAC'), value: 'armor_class' },
+                  { label: $t('components.addInitiativeMonster.sort.options.mostCR'), value: '-cr' },
+                  { label: $t('components.addInitiativeMonster.sort.options.leastCR'), value: 'cr' },
+                ]"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
+      </div>
     </div>
 
     <div class="overflow-y-auto">

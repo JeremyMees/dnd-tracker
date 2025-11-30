@@ -3,7 +3,10 @@ import { Label, type LabelProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<LabelProps & {
+  class?: HTMLAttributes['class']
+  required?: boolean
+}>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props
@@ -23,5 +26,9 @@ const delegatedProps = computed(() => {
     "
   >
     <slot />
+    <span
+      v-if="props.required"
+      class="text-destructive"
+    >*</span>
   </Label>
 </template>

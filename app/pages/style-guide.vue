@@ -1,9 +1,43 @@
 <script setup lang="ts">
+import type { ButtonVariants } from '~/components/ui/button'
+
 definePageMeta({
   middleware: () => {
     if (!import.meta.dev) return navigateTo('/')
   },
 })
+
+const buttonVariants: ButtonVariants['variant'][] = [
+  'default',
+  'default-ghost',
+  'secondary',
+  'secondary-ghost',
+  'tertiary',
+  'tertiary-ghost',
+  'success',
+  'success-ghost',
+  'info',
+  'info-ghost',
+  'warning',
+  'warning-ghost',
+  'help',
+  'help-ghost',
+  'destructive',
+  'destructive-ghost',
+  'foreground',
+  'foreground-ghost',
+  'background',
+  'background-ghost',
+  'link',
+]
+
+const buttonSizes: ButtonVariants['size'][] = [
+  'lg',
+  'default',
+  'sm',
+  'icon',
+  'icon-sm',
+]
 </script>
 
 <template>
@@ -102,93 +136,37 @@ definePageMeta({
         <p class="text-6xl pb-4">
           Buttons
         </p>
-        <div class="flex gap-4 items-center">
-          <button class="btn-primary w-[200px]">
-            Primary
-          </button>
-          <button class="icon-btn-primary">
+        <div
+          v-for="(variant, i) in buttonVariants"
+          :key="i"
+          class="flex gap-4 items-center"
+        >
+          <UiButton
+            v-for="(size, j) in buttonSizes"
+            :key="`${i}-size-${j}`"
+            :variant="variant"
+            :size="size"
+          >
+            <Icon
+              v-if="size?.includes('icon')"
+              name="tabler:sword"
+            />
+            <span v-else>
+              {{ variant }}
+            </span>
+          </UiButton>
+          <!-- <UiButton
+            size="icon"
+            :variant="variant"
+          >
             <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-secondary w-[200px]">
-            Secondary
-          </button>
-          <button class="icon-btn-secondary">
+          </UiButton>
+          <UiButton
+            size="icon-sm"
+            :variant="variant"
+          >
             <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-tertiary w-[200px]">
-            Tertiary
-          </button>
-          <button class="icon-btn-tertiary">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-success w-[200px]">
-            Success
-          </button>
-          <button class="icon-btn-success">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-info w-[200px]">
-            Info
-          </button>
-          <button class="icon-btn-info">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-warning w-[200px]">
-            Warning
-          </button>
-          <button class="icon-btn-warning">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-help w-[200px]">
-            Help
-          </button>
-          <button class="icon-btn-help">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-destructive w-[200px]">
-            Destructive
-          </button>
-          <button class="icon-btn-destructive">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-foreground w-[200px]">
-            Foreground
-          </button>
-          <button class="icon-btn-foreground">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-background w-[200px]">
-            Background
-          </button>
-          <button class="icon-btn-background">
-            <Icon name="tabler:sword" />
-          </button>
-        </div>
-        <div class="flex gap-4 items-center">
-          <button class="btn-ghost w-[200px]">
-            Ghost
-          </button>
-          <button class="icon-btn-ghost">
-            <Icon name="tabler:sword" />
-          </button>
+          </UiButton> -->
         </div>
       </div>
     </div>

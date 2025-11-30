@@ -1,14 +1,23 @@
 <script setup lang="ts">
-defineProps<{
-  translate: number
-}>()
+import { Motion, useScroll, useTransform } from 'motion-v'
+
+const titleRef = ref<HTMLElement>()
+
+const { scrollYProgress } = useScroll({
+  target: titleRef,
+  offset: ['start end', 'end start'],
+})
+
+const animatedY = useTransform(scrollYProgress, [0, 1], [0, -100])
 </script>
 
 <template>
-  <div
-    :style="{ transform: `translateY(${translate}px)` }"
+  <Motion
+    ref="titleRef"
+    tag="div"
+    :style="{ y: animatedY }"
     class="mx-auto max-w-5xl text-center"
   >
     <slot />
-  </div>
+  </Motion>
 </template>

@@ -74,9 +74,12 @@
     "moveUp": "Omhoog",
     "moveDown": "Omlaag",
     "changeInitiative": "Initiatief wijzigen",
-    "applyDamage": "Schade toepassen"
+    "applyDamage": "Schade toepassen",
+    "generateName": "Naam genereren"
   },
   "general": {
+    "actions": "Acties",
+    "version": "Versie",
     "advantage": "Advantage",
     "advantageAbb": "Adv.",
     "disadvantage": "Disadvantage",
@@ -371,7 +374,8 @@
         "ac": "AC bijwerken",
         "hp": "HP bijwerken",
         "link": "Link bijwerken",
-        "conditions": "Condities bijwerken"
+        "conditions": "Condities bijwerken",
+        "widgets": "Actieve widgets bijwerken"
       },
       "toasts": {
         "removed": {
@@ -506,6 +510,10 @@
         }
       }
     },
+    "changelog": {
+      "title": "Changelogs",
+      "description": "Ontdek de evolutie van onze DnD Tracker door ons gedetailleerde wijzigingslogboek. Blijf op de hoogte van de nieuwste functies, verbeteringen en bugfixes die jouw ervaring verbeteren."
+    },
     "noAccess": {
       "title": "Je bent geen teamlid",
       "text": "Oeps! Het lijkt erop dat je geen lid bent en geen toegang hebt tot deze inhoud. Als je denkt dat dit een vergissing is, aarzel dan niet om contact op te nemen met de eigenaar of een beheerder voor hulp."
@@ -515,6 +523,9 @@
     }
   },
   "components": {
+    "repeaterInput": {
+      "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."
+    },
     "colorModeSwitcher": {
       "light": "Licht",
       "dark": "Donker",
@@ -633,7 +644,7 @@
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Doelwit",
-      "emailLabel": "E-mail adres",
+      "emailLabel": "E-mail adres|E-mail adressen",
       "passwordLabel": "Wachtwoord",
       "usernameLabel": "Gebruikersnaam",
       "nameLabel": "Naam",
@@ -674,7 +685,12 @@
       "searchByUsername": "Zoeken op gebruikersnaam",
       "searchByEmail": "Zoeken op email",
       "newOwnerLabel": "Nieuwe eigenaar",
-      "textRequired": "Tekst is verplicht"
+      "textRequired": "Tekst is verplicht",
+      "showPassword": "Wachtwoord tonen",
+      "hidePassword": "Wachtwoord verbergen",
+      "showDiceRoller": "Dobbelsteen roller tonen",
+      "hideDiceRoller": "Dobbelsteen roller verbergen",
+      "noCampaign": "Geen campagne"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",
@@ -824,7 +840,8 @@
         "redcap": "Paddenstoel",
         "wolf-rider": "Wolf rijder"
       },
-      "negative": "Sta HP en AC toe negatief te zijn"
+      "negative": "Sta HP en AC toe negatief te zijn",
+      "noActiveWidgets": "Geen actieve widgets. Gebruik het settings icoon om widgets in te schakelen."
     },
     "infoCard": {
       "add": "Pin toevoegen",
@@ -948,5 +965,17 @@
     "12": {
       "title": "Proficiat, je bent er helemaal klaar voor! 🎉"
     }
+  },
+  "zod": {
+    "required": "Verplicht",
+    "alphaSpaces": "Alleen letters en spaties zijn toegestaan",
+    "containsLowercase": "Ten minste één kleine letter is vereist",
+    "containsUppercase": "Ten minste één hoofdletter is vereist",
+    "containsNumber": "Ten minste één cijfer is vereist",
+    "containsSymbol": "Ten minste één symbool is vereist",
+    "allowedChars": "Alleen letters, cijfers en symbolen zijn toegestaan",
+    "diceExpression": "Ongeldige dobbelsteenexpressie. Gebruik het formaat 'XdY' waarbij X het aantal dobbelstenen is en Y het type dobbelsteen.",
+    "match": "Waarde moet overeenkomen met '{field}'",
+    "invalidEmail": "Ongeldig e-mailadres"
   }
 }

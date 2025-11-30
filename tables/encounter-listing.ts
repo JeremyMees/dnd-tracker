@@ -96,7 +96,7 @@ export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: Colum
           iconButton({
             icon: 'tabler:share',
             content: t('actions.share'),
-            color: 'success',
+            variant: 'success-ghost',
             cb: () => onShare(row.original),
           }),
           permission({
@@ -106,13 +106,13 @@ export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: Colum
               iconButton({
                 icon: 'tabler:copy',
                 content: t('actions.copy'),
-                color: 'primary',
+                variant: 'default-ghost',
                 cb: () => onCopy({ data: row.original }),
               }),
               iconButton({
                 icon: 'tabler:edit',
                 content: t('actions.update'),
-                color: 'info',
+                variant: 'info-ghost',
                 cb: () => onUpdate(row.original),
               }),
             ],

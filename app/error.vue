@@ -10,9 +10,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen">
-    <div class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center">
-      <div class="text-[100px] font-black pb-10">
+  <div class="flex flex-col items-center min-h-screen">
+    <div class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center pt-10">
+      <div class="text-[100px] font-black">
         {{ error!.statusCode }}
       </div>
       <h1 class="text-primary">
@@ -21,13 +21,15 @@ defineProps({
       <p class="text-muted-foreground">
         {{ $t('pages.error.text') }}
       </p>
-      <div class="flex flex-wrap gap-x-4 pb-10">
-        <NuxtLinkLocale
-          to="/"
-          class="w-fit btn-primary"
-        >
-          {{ $t('pages.error.goHome') }}
-        </NuxtLinkLocale>
+      <div class="flex flex-wrap gap-x-4">
+        <UiButton as-child>
+          <NuxtLinkLocale
+            to="/"
+            class="w-fit"
+          >
+            {{ $t('pages.error.goHome') }}
+          </NuxtLinkLocale>
+        </UiButton>
       </div>
     </div>
     <div class="fixed bottom-0 w-full">

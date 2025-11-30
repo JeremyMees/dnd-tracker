@@ -60,17 +60,21 @@ const tabs = computed<Tab[]>(() => {
   <NuxtLayout name="sidebar">
     <template #header>
       <div class="flex gap-x-4 gap-y-2 items-center">
-        <NuxtLinkLocale
-          v-tippy="$t('actions.back')"
-          to="/campaigns"
-          class="icon-btn-ghost"
+        <UiButton
+          as-child
+          variant="foreground-ghost"
+          size="icon-sm"
         >
-          <Icon
-            name="tabler:arrow-left"
-            class="w-4 h-4"
-            :aria-hidden="true"
-          />
-        </NuxtLinkLocale>
+          <NuxtLinkLocale
+            v-tippy="$t('actions.back')"
+            to="/campaigns"
+          >
+            <Icon
+              name="tabler:arrow-left"
+              :aria-hidden="true"
+            />
+          </NuxtLinkLocale>
+        </UiButton>
         <h2 class="text-muted-foreground flex gap-2">
           <span class="hidden md:block">
             {{ $t('general.campaign') }}:

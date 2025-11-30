@@ -35,10 +35,6 @@ withDefaults(
       <div class="overflow-y-auto">
         <slot />
       </div>
-
-      <UiDialogFooter v-if="$slots.footer">
-        <slot name="footer" />
-      </UiDialogFooter>
     </UiDialogContent>
   </UiDialog>
 </template>

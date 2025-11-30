@@ -1,27 +1,33 @@
 <script setup lang="ts">
 import { useFeatureCreate } from '~~/queries/features'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 
 const { user } = useAuthentication()
 const { t } = useI18n()
 
-const input = ref()
-
 const { mutateAsync: create } = useFeatureCreate()
 
-onMounted(() => input.value && focusInput(input.value))
+const baseSchema = z.object({
+  title: z.string().min(3).max(50),
+  text: z.string().min(10).max(500),
+})
 
-interface FeatureForm { title: string, text: string }
+const form = useForm({
+  validationSchema: toTypedSchema(baseSchema),
+})
 
-async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
-  node.clearErrors()
+const formError = ref<string>('')
 
-  const formData = sanitizeForm<FeatureForm>(form)
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   await create({
     data: {
-      ...formData,
+      ...values,
       created_by: user.value!.id,
       voted: {
         like: [user.value!.id],
@@ -29,17 +35,15 @@ async function handleSubmit(form: FeatureForm, node: FormNode): Promise<void> {
       },
     },
     onSuccess: async () => {
-      await sendFeatureEmail(formData)
+      await sendFeatureEmail(values)
 
       emit('close')
     },
-    onError: (error) => {
-      node.setErrors(error)
-    },
+    onError: error => formError.value = error,
   })
-}
+})
 
-async function sendFeatureEmail(form: FeatureForm): Promise<void> {
+async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void> {
   if (!user.value) return
 
   const { error } = await useFetch('/api/emails/feature-request', {
@@ -56,25 +60,49 @@ async function sendFeatureEmail(form: FeatureForm): Promise<void> {
 </script>
 
 <template>
-  <FormKit
-    id="FeatureRequest"
-    type="form"
-    :actions="false"
-    @submit="handleSubmit"
-  >
-    <FormKit
-      ref="input"
+  <UiFormWrapper @submit="onSubmit">
+    <UiFormField
+      v-slot="{ componentField }"
       name="title"
-      :label="$t('components.inputs.titleLabel')"
-      validation="required|length:3,50"
-    />
-    <FormKit
-      type="textarea"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel required>
+          {{ $t('components.inputs.titleLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            v-bind="componentField"
+            type="text"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <UiFormField
+      v-slot="{ componentField }"
       name="text"
-      :maxlength="500"
-      :label="$t('components.inputs.descriptionLabel')"
-      validation="required|length:10,500"
-      outer-class="$remove:mb-4"
-    />
-  </FormKit>
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel required>
+          {{ $t('components.inputs.descriptionLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiTextarea v-bind="componentField" />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <div
+      v-if="formError"
+      class="text-sm text-destructive"
+    >
+      {{ formError }}
+    </div>
+    <UiButton
+      type="submit"
+      class="w-full"
+    >
+      {{ $t('actions.create') }}
+    </UiButton>
+  </UiFormWrapper>
 </template>

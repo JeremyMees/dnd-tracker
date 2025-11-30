@@ -16,20 +16,20 @@ defineProps<{
     <UiSkeleton
       v-if="loading"
       data-test-skeleton
-      class="w-[120px] h-[47px]"
+      class="w-[70px] h-[32px]"
     />
-    <button
+    <UiButton
       v-else
-      class="btn-primary w-[120px]"
+      size="sm"
       :aria-label="$t('actions.create')"
       :disabled="disabled"
       @click="allowCreate ? $emit('create') : $emit('hitLimit')"
     >
       {{ $t('actions.create') }}
-    </button>
+    </UiButton>
 
     <template #fallback>
-      <UiSkeleton class="w-[120px] h-[47px]" />
+      <UiSkeleton class="w-[70px] h-[32px]" />
     </template>
   </ClientOnly>
 </template>

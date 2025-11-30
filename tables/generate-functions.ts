@@ -2,6 +2,8 @@ import { Tippy } from 'vue-tippy'
 import type { BouncerAbility } from 'nuxt-authorization/utils'
 import { Icon, NuxtLinkLocale, Can, Card, InitiativeActionRoll } from '#components'
 import { Checkbox } from '~/components/ui/checkbox'
+import { Button, buttonVariants, type ButtonVariants } from '~/components/ui/button'
+import { Kbd, KbdGroup } from '~/components/ui/kbd'
 
 export function iconElement(options: {
   icon: string
@@ -10,7 +12,7 @@ export function iconElement(options: {
 }): VNode {
   return h(Icon, {
     name: options.icon,
-    class: `${options.color} ${options.size || 'size-5'}`,
+    class: `${options.color} ${options.size || 'size-3'}`,
     ariaHidden: true,
   })
 }
@@ -34,37 +36,42 @@ export function iconLabelElement(options: {
 export function iconButton(options: {
   icon: string
   content: string
-  color: Color
+  variant: ButtonVariants['variant']
   cb: () => void
   disabled?: boolean
   iconColor?: string
 },
 ): VNode {
   return h(Tippy, { content: options.content },
-    () => h('button', {
+    () => h(Button, {
       tippy: options.content,
       ariaLabel: options.content,
-      class: `icon-btn-${options.color}`,
       onClick: options.cb,
       disabled: options.disabled || false,
-    }, iconElement({ icon: options.icon, color: options.iconColor })),
+      variant: options.variant,
+      size: 'icon-sm',
+    }, iconElement({ icon: options.icon, color: 'hover:text-red-500' })),
   )
 }
 
 export function iconLink(options: {
   icon: string
   content: string
-  color: Color
+  variant: ButtonVariants['variant']
   to: string
   external?: boolean
 }): VNode {
   return h(Tippy, { content: options.content },
+    () => h(Button, {
+      asChild: true,
+      variant: options.variant,
+      size: 'icon-sm',
+    },
     () => h(NuxtLinkLocale, {
       to: options.to,
-      class: `icon-btn-${options.color}`,
       ariaLabel: options.content,
       target: options.external ? '_blank' : undefined,
-    }, () => iconElement({ icon: options.icon })),
+    }, () => iconElement({ icon: options.icon }))),
   )
 }
 
@@ -99,18 +106,31 @@ export function expandButton(options: {
   expanded: boolean
   cb: (event: unknown) => void
 }): VNode {
-  return h(Tippy, { content: options.content },
-    () => h('button', {
+  return h(Tippy, {
+    allowHTML: true,
+  }, {
+    default: () => h(Button, {
       ariaLabel: options.content,
-      class: options.expanded ? 'icon-btn-destructive' : 'icon-btn-help',
+      variant: 'default-ghost',
+      size: 'icon-sm',
       onClick: options.cb,
     }, h(Icon, {
       name: 'tabler:chevron-right',
-      class: `size-5 transition-transform duration-200 ease-in-out ${options.expanded ? 'rotate-90' : ''}`,
+      class: 'transition-transform duration-200 ease-in-out',
+      style: {
+        transform: options.expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+      },
       ariaHidden: true,
-    }),
-    ),
-  )
+    })),
+    content: () => h('div', { class: 'flex gap-2' }, [
+      options.content,
+      h(KbdGroup, [
+        h(Kbd, 'MOD'),
+        h('span', { class: 'text-muted-foreground' }, '+'),
+        h(Kbd, '⏎'),
+      ]),
+    ]),
+  })
 }
 
 export function permission(options: {

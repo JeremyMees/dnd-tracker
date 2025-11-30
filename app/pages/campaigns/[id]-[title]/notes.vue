@@ -58,7 +58,6 @@ function openModal(item?: NoteRow): void {
   modal.open({
     component: 'Note',
     header: t(`components.noteModal.${item ? 'update' : 'new'}`),
-    submit: t(`components.noteModal.${item ? 'update' : 'add'}`),
     props: {
       campaignId: props.campaignId,
       ...(item && { note: item }),
@@ -71,7 +70,6 @@ function openMailModal(item: NoteRow): void {
     component: 'Mail',
     header: t('components.mailModal.title', { type: t('general.note').toLowerCase() }),
     subHeader: item.title,
-    submit: t('actions.sendMail'),
     props: {
       send: (addresses: string[]) => sendNoteAsMail(item, addresses),
     },

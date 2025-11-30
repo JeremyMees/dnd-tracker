@@ -14,11 +14,10 @@ A modern web application designed to streamline your D&D encounter management ex
 
 ## Tech Stack
 
-- [Nuxt 3](https://nuxt.com/) - The Vue Framework
+- [Nuxt 4](https://nuxt.com/) - The Vue Framework
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [Supabase](https://supabase.com/) - Backend as a Service
 - [Tanstack Query](https://tanstack.com/query/latest) - Data fetching and caching
-- [FormKit](https://formkit.com/) - Form handling
 
 ## Getting Started
 

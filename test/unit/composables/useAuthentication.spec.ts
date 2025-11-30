@@ -1,7 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useAuthentication } from '~/composables/useAuthentication'
-import type { Login, Register } from '~/types/forms'
 
 const mockSignUp = vi.fn()
 const mockSignInWithPassword = vi.fn()
@@ -14,6 +13,9 @@ const mockSupabaseFrom = vi.fn().mockReturnValue({
 })
 const mockSupabaseEq = vi.fn()
 const mockSupabaseSingle = vi.fn()
+const mockGetUser = vi.fn().mockReturnValue({
+  data: { user: { id: 'test-user-id' } },
+})
 
 let authStateChangeCallback: ((event: string) => void) | null = null
 
@@ -22,6 +24,7 @@ mockNuxtImport('useSupabaseClient', () => () => ({
     signUp: mockSignUp,
     signInWithPassword: mockSignInWithPassword,
     signOut: mockSignOut,
+    getUser: mockGetUser,
     onAuthStateChange: (callback: (event: string) => void) => {
       authStateChangeCallback = callback
       return mockOnAuthStateChange(callback)
@@ -30,9 +33,12 @@ mockNuxtImport('useSupabaseClient', () => () => ({
   from: mockSupabaseFrom,
 }))
 
-mockNuxtImport('useState', () => <T>(key: string, init: () => T) => ref(init()))
-
-mockNuxtImport('useSupabaseUser', () => () => ref({ id: 'test-user-id' }))
+mockNuxtImport(
+  'useState',
+  () =>
+    <T>(_key: string, init: () => T) =>
+      ref(init()),
+)
 
 mockNuxtImport('createError', () => (error: any) => {
   throw new Error(
@@ -84,18 +90,20 @@ describe('useAuthentication', () => {
 
       mockSupabaseFrom().insert.mockResolvedValue({ error: null })
 
-      const userData: Register = { email, password, ...user }
+      const userData = { email, password, ...user }
 
       await auth.register(userData)
 
       expect(mockSignUp).toHaveBeenCalledWith({ email, password })
 
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
-      expect(mockSupabaseFrom().insert).toHaveBeenCalledWith([{
-        ...user,
-        email,
-        id: 'new-user-id',
-      }])
+      expect(mockSupabaseFrom().insert).toHaveBeenCalledWith([
+        {
+          ...user,
+          email,
+          id: 'new-user-id',
+        },
+      ])
     })
 
     it('should throw error if registration fails', async () => {
@@ -104,7 +112,7 @@ describe('useAuthentication', () => {
         error: { message: 'Registration failed' },
       })
 
-      const userData: Register = { email, password, ...user }
+      const userData = { email, password, ...user }
 
       await expect(auth.register(userData)).rejects.toThrow()
       expect(mockSignUp).toHaveBeenCalled()
@@ -115,7 +123,7 @@ describe('useAuthentication', () => {
     it('should successfully log in a user', async () => {
       mockSignInWithPassword.mockResolvedValue({ error: null })
 
-      const credentials: Login = { email, password }
+      const credentials = { email, password }
       await auth.login(credentials)
 
       expect(mockSignInWithPassword).toHaveBeenCalledWith(credentials)
@@ -126,7 +134,7 @@ describe('useAuthentication', () => {
         error: { message: 'Invalid credentials' },
       })
 
-      const credentials: Login = { email: 'wrong@example.com', password: 'wrong' }
+      const credentials = { email: 'wrong@example.com', password: 'wrong' }
       await expect(auth.login(credentials)).rejects.toThrow()
 
       expect(mockSignInWithPassword).toHaveBeenCalledWith(credentials)
@@ -197,6 +205,8 @@ describe('useAuthentication', () => {
 
       if (authStateChangeCallback) authStateChangeCallback('SIGNED_IN')
 
+      await new Promise(resolve => setTimeout(resolve, 0))
+
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
     })
 
@@ -207,6 +217,8 @@ describe('useAuthentication', () => {
       })
 
       if (authStateChangeCallback) authStateChangeCallback('USER_UPDATED')
+
+      await new Promise(resolve => setTimeout(resolve, 0))
 
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
     })

@@ -1,10 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initiative table row conditions > Should match snapshot 1`] = `
-"<div class="flex items-center gap-2"><button id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="h-[27px] flex flex-col justify-center"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
+"<div class="flex items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" data-test-trigger="" class="h-[27px] flex flex-col justify-center"><span class="iconify i-tabler:plus size-5 min-w-5 text-foreground/10" aria-hidden="true"></span></button>
   <!--teleport start-->
   <!--teleport end-->
-  <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button id="reka-popover-trigger-v-0-0-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
+  <div data-test-conditions="" class="flex flex-wrap justify-center md:justify-start gap-1"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed">
       <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" data-test-badge="">Paralyzed </div>
     </button>
     <!--teleport start-->

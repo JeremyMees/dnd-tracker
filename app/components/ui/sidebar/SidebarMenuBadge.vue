@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import { cn } from '@/utils/shadcn'
 
 const props = defineProps<{
   class?: HTMLAttributes['class']
@@ -9,6 +8,7 @@ const props = defineProps<{
 
 <template>
   <div
+    data-slot="sidebar-menu-badge"
     data-sidebar="menu-badge"
     :class="cn(
       'absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums text-sidebar-foreground select-none pointer-events-none',

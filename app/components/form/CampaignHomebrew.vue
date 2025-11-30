@@ -113,21 +113,27 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 
 <template>
   <div class="max-h-full flex flex-col gap-4">
-    <FormKit
-      :value="table.getState().globalFilter"
-      type="search"
-      name="search"
-      prefix-icon="tabler:search"
-      outer-class="$remove:mb-4 w-full"
-      @input="table.setGlobalFilter($event)"
-    />
+    <UiInputGroup>
+      <UiInputGroupInput
+        v-model="globalFilter"
+        name="search"
+        type="search"
+      />
+      <UiInputGroupAddon align="inline-end">
+        <Icon
+          name="tabler:search"
+          class="size-3"
+          :aria-hidden="true"
+        />
+      </UiInputGroupAddon>
+    </UiInputGroup>
 
     <UiTable>
       <UiTableHeader>
         <UiTableRow
           v-for="headerGroup in table.getHeaderGroups()"
           :key="headerGroup.id"
-          class="border-b border-muted-foreground"
+          class="border-b border-muted"
         >
           <UiTableHead
             v-for="header in headerGroup.headers"
@@ -167,7 +173,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
           >
             <UiTableRow
               :data-state="row.getIsSelected() && 'selected'"
-              class="border-b border-muted-foreground"
+              class="border-b border-muted"
             >
               <UiTableCell
                 v-for="cell in row.getVisibleCells()"
@@ -201,49 +207,76 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       </UiTableBody>
     </UiTable>
 
-    <FormKit
+    <div
       v-if="!!summons.length"
-      type="select"
-      :label="$t('components.inputs.summonerLabel')"
-      :placeholder="$t('components.campaignHomebrew.initiative.select')"
-      :help="$t('components.campaignHomebrew.initiative.info')"
-      :options="summonersOptions"
-      @input="(value) => {
-        if (value) {
-          const filtered = sheet?.rows.find(s => s.id === value)
-          summoner = filtered ? { name: filtered.name, id: filtered.id } : undefined
-        }
-      }"
-    />
+      class="space-y-2"
+    >
+      <UiLabel
+        for="summoner"
+        required
+      >
+        {{ $t('components.inputs.summonerLabel') }}
+      </UiLabel>
+      <UiSelect
+        id="summoner"
+        name="summoner"
+        @update:model-value="(value) => {
+          if (value) {
+            const filtered = sheet?.rows.find(s => s.id === value)
+            summoner = filtered ? { name: filtered.name, id: filtered.id } : undefined
+          }
+        }"
+      >
+        <UiSelectTrigger>
+          <UiSelectValue :placeholder="$t('components.campaignHomebrew.initiative.select')" />
+        </UiSelectTrigger>
+        <UiSelectContent>
+          <UiSelectGroup>
+            <UiSelectItem
+              v-for="option in summonersOptions"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </UiSelectItem>
+          </UiSelectGroup>
+        </UiSelectContent>
+      </UiSelect>
+      <p class="text-sm text-muted-foreground">
+        {{ $t('components.campaignHomebrew.initiative.info') }}
+      </p>
+    </div>
 
-    <div class="flex gap-2 flex-wrap justify-end">
+    <div class="flex gap-2 flex-wrap">
       <template v-if="!summons.length">
-        <button
-          class="btn-primary"
+        <UiButton
           :aria-label="$t('actions.addSelected')"
           :disabled="isPending || !selected.length"
+          class="flex-1"
           @click="addHomebrews(false)"
         >
           {{ $t('actions.addSelected') }} ({{ selected.length }})
-        </button>
-        <button
-          class="btn-foreground"
+        </UiButton>
+        <UiButton
+          variant="foreground"
           :aria-label="$t('actions.addAll')"
           :disabled="isPending"
+          class="flex-1"
           @click="addHomebrews(true)"
         >
           {{ $t('actions.addAll') }}
-        </button>
+        </UiButton>
       </template>
-      <button
+      <UiButton
         v-else
-        class="btn-foreground"
+        variant="foreground"
         :aria-label="$t('components.campaignHomebrew.initiative.add', summons.length)"
         :disabled="isPending || !summoner"
+        class="flex-1"
         @click="addHomebrews(false)"
       >
         {{ $t('components.campaignHomebrew.initiative.add', summons.length) }}
-      </button>
+      </UiButton>
     </div>
   </div>
 </template>

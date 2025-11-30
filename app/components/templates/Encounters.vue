@@ -81,7 +81,6 @@ function openModal(item?: EncounterItem): void {
   modal.open({
     component: 'Encounter',
     header: t(`components.encounterModal.${item ? 'update' : 'add'}`),
-    submit: t(`pages.encounters.${item ? 'update' : 'add'}`),
     props: {
       ...(item && { encounter: item }),
       campaignId: props.campaignId,

@@ -1,10 +1,10 @@
 export type StripeSubscriptionType = 'medior' | 'pro' | 'free' | 'upgrade to pro'
 
-export type StripeFields =
-  | 'subscription_type'
-  | 'temp_subscription'
-  | 'stripe_session_id'
-  | 'stripe_id'
+export type StripeFields
+  = | 'subscription_type'
+    | 'temp_subscription'
+    | 'stripe_session_id'
+    | 'stripe_id'
 
 export interface Stripe {
   subscription_type: StripeSubscriptionType

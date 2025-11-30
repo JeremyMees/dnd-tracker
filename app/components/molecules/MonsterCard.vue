@@ -17,19 +17,21 @@ const isOpen = ref<boolean>(false)
 
 <template>
   <UiCard
-    class="relative bg-background/50 border-4 border-background"
+    class="relative bg-secondary/50 border-secondary border-4"
     @dblclick="isOpen = !isOpen"
   >
     <UiCardHeader>
-      <button
+      <UiButton
         v-if="addable"
         v-tippy="{
           content: $t('actions.add'),
           placement: 'left',
         }"
+        variant="success-ghost"
+        size="icon-sm"
         data-test-add-button
         :aria-label="$t('actions.add')"
-        class="absolute right-4 top-4 icon-btn-success"
+        class="absolute right-4 top-4"
         @click="$emit('add', monster)"
       >
         <Icon
@@ -37,18 +39,18 @@ const isOpen = ref<boolean>(false)
           class="size-4 min-w-4"
           aria-hidden="true"
         />
-      </button>
+      </UiButton>
       <UiCardTitle data-test-title>
         {{ monster.name }}
       </UiCardTitle>
       <div class="flex gap-4">
         <div
           v-tippy="{ content: 'CR' }"
-          class="flex gap-1"
+          class="flex gap-1 items-center"
         >
           <Icon
             name="tabler:skull"
-            class="w-6 h-6 text-warning"
+            class="size-6 min-w-6 text-warning"
             aria-hidden="true"
           />
           <p class="font-bold">
@@ -57,11 +59,11 @@ const isOpen = ref<boolean>(false)
         </div>
         <div
           v-tippy="{ content: 'AC' }"
-          class="flex gap-1"
+          class="flex gap-1 items-center"
         >
           <Icon
             name="tabler:shield"
-            class="w-6 h-6 text-help"
+            class="size-6 min-w-6 text-help"
             aria-hidden="true"
           />
           <p class="font-bold">
@@ -70,11 +72,11 @@ const isOpen = ref<boolean>(false)
         </div>
         <div
           v-tippy="{ content: 'HP' }"
-          class="flex gap-1"
+          class="flex gap-1 items-center"
         >
           <Icon
             name="tabler:heart"
-            class="w-6 h-6 text-destructive"
+            class="size-6 min-w-6 text-destructive"
             aria-hidden="true"
           />
           <p class="font-bold">
@@ -128,8 +130,9 @@ const isOpen = ref<boolean>(false)
     </UiCardContent>
     <UiCardFooter>
       <div class="flex justify-end w-full">
-        <button
+        <UiButton
           data-test-expand-button
+          variant="secondary-ghost"
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"
           @click="isOpen = !isOpen"
@@ -143,7 +146,7 @@ const isOpen = ref<boolean>(false)
             :class="{ 'rotate-180': isOpen }"
             aria-hidden="true"
           />
-        </button>
+        </UiButton>
       </div>
     </UiCardFooter>
   </UiCard>

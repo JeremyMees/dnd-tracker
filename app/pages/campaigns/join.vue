@@ -111,21 +111,23 @@ async function answerInvite(accept: boolean): Promise<void> {
     </I18nT>
 
     <template #footer>
-      <div class="flex flex-col sm:flex-row sm:justify-end gap-2">
-        <button
+      <div class="flex flex-col sm:flex-row gap-2">
+        <UiButton
           :disabled="isLoading"
-          class="btn-destructive"
+          variant="destructive"
+          class="w-full"
           @click="answerInvite(false)"
         >
           {{ $t('actions.decline') }}
-        </button>
-        <button
+        </UiButton>
+        <UiButton
           :disabled="isLoading"
-          class="btn-success"
+          variant="foreground"
+          class="w-full"
           @click="answerInvite(true)"
         >
           {{ $t('actions.join') }}
-        </button>
+        </UiButton>
       </div>
     </template>
   </NuxtLayout>

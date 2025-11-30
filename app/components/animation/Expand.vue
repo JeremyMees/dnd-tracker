@@ -21,6 +21,8 @@ function end(el: Element): void {
 </template>
 
 <style scoped>
+@reference '~/assets/css/global.css';
+
 * {
   @apply will-change-[height] transform-gpu;
 }
@@ -30,6 +32,6 @@ function end(el: Element): void {
 }
 
 .expand-leave-to, .expand-enter-from {
-  @apply !h-0 opacity-0;
+  @apply h-0! opacity-0;
 }
 </style>

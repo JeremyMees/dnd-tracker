@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { acFunctions } from '~/utils/dnd-helpers'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
-
-const { t } = useI18n()
-
 const { add, remove, temp, override, overrideReset } = acFunctions
 
 const popoverOpen = shallowRef<boolean>(false)
-const selectedType = shallowRef<AcType>('remove')
 
 const hasAc = computed(() => isDefined(props.item.ac) && isDefined(props.item.maxAc))
-
-type AcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'
-interface AcForm { amount: number }
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   if (!sheet.value) return
@@ -31,68 +22,6 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
 
   await update({ rows })
   popoverOpen.value = false
-}
-
-async function updateBase(form: AcForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    if (!sheet.value) return
-
-    const { amount } = sanitizeForm<AcForm>(form)
-    const row = {
-      ...props.item,
-      maxAc: amount,
-      maxAcOld: undefined,
-      ac: amount,
-    }
-
-    await updateRow(row)
-  }
-  catch {
-    reset('InitiativeRowAcBase')
-    node.setErrors(t('general.error.text'))
-  }
-}
-
-async function updateOverride(form: AcForm & { reset?: boolean }, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    if (!sheet.value) return
-
-    const { amount, reset } = sanitizeForm<AcForm & { reset?: boolean }>(form)
-
-    const row = reset || amount === props.item.maxAcOld
-      ? handleAcChanges(props.item.maxAcOld ?? 0, 'override-reset')
-      : handleAcChanges(amount, 'override')
-
-    await updateRow(row)
-  }
-  catch {
-    reset('InitiativeRowAcOverride')
-    node.setErrors(t('general.error.text'))
-  }
-}
-
-async function updateAc(form: AcForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  try {
-    const selected = selectedType.value
-
-    if (!sheet.value || !selected) return
-
-    const { amount, type } = sanitizeForm<AcForm & { type?: AcType }>({ ...form, type: selected })
-
-    const row = handleAcChanges(amount, type || 'remove')
-
-    await updateRow(row)
-  }
-  catch {
-    reset('InitiativeRowAcUpdate')
-    node.setErrors(t('general.error.text'))
-  }
 }
 
 function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
@@ -117,11 +46,12 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
+          :id="`${item.id}-ac`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 rounded-lg w-fit': isDefined(item.ac) && item.ac <= 0,
+            'bg-destructive/20 p-2 w-fit': isDefined(item.ac) && item.ac <= 0,
           }"
-          class="flex flex-col gap-y-1"
+          class="flex flex-col gap-y-1 rounded-lg"
         >
           <div class="flex items-center gap-x-1">
             <Icon
@@ -200,94 +130,39 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             </p>
           </div>
         </div>
-        <FormKit
+
+        <FormsAcUpdate
           v-if="hasAc"
-          id="InitiativeRowAcUpdate"
-          type="form"
-          :actions="false"
-          @submit="updateAc"
-        >
-          <FormDiceRollInput />
-          <div class="flex items-center gap-x-2">
-            <FormKit
-              type="submit"
-              input-class="$remove:btn-foreground btn-success flex items-center gap-x-2 px-2 border-2 text-sm"
-              @click="selectedType = 'add'"
-            >
-              <Icon
-                name="tabler:arrow-big-up"
-                class="size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.increase') }}
-            </FormKit>
-            <FormKit
-              type="submit"
-              input-class="$remove:btn-foreground btn-warning flex items-center gap-x-2 px-2 border-2 text-sm"
-              @click="selectedType = 'temp'"
-            >
-              <Icon
-                name="tabler:plus"
-                class="size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.temp') }}
-            </FormKit>
-            <FormKit
-              type="submit"
-              input-class="$remove:btn-foreground btn-destructive flex items-center gap-x-2 px-2 border-2 text-sm"
-              @click="selectedType = 'remove'"
-            >
-              <Icon
-                name="tabler:arrow-big-down"
-                class="size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.decrease') }}
-            </FormKit>
-          </div>
-        </FormKit>
+          :item="item"
+          :sheet="sheet"
+          :handle-ac-changes="handleAcChanges"
+          :update-row="updateRow"
+        />
+
         <UiSeparator
           v-if="hasAc"
-          class="my-6 bg-muted-foreground"
+          class="my-3 bg-muted"
         />
-        <FormKit
-          id="InitiativeRowAcBase"
-          type="form"
-          :submit-label="$t('actions.save')"
-          @submit="updateBase"
-        >
-          <FormKit
-            type="number"
-            name="amount"
-            number
-            :label="$t('components.inputs.baseFieldLabel', { field: 'AC' })"
-            :help="$t('components.inputs.baseFieldHelp', { field: 'AC' })"
-            validation="required|between:1,100|number"
-          />
-        </FormKit>
+
+        <FormsAcUpdateBase
+          :item="item"
+          :sheet="sheet"
+          :handle-ac-changes="handleAcChanges"
+          :update-row="updateRow"
+        />
+
         <UiSeparator
           v-if="hasAc"
-          class="my-6 bg-muted-foreground"
+          class="my-3 bg-muted"
         />
-        <FormKit
+
+        <FormsAcOverride
           v-if="hasAc"
-          id="InitiativeRowAcOverride"
-          type="form"
-          :submit-label="$t('actions.save')"
-          @submit="updateOverride"
-        >
-          <FormKit
-            type="number"
-            name="amount"
-            number
-            :label="$t('components.inputs.overrideFieldLabel', { field: 'AC' })"
-            :help="$t('components.inputs.optionalFieldHelp', { field: 'AC' })"
-            validation="required|between:1,100|number"
-            :suffix-icon="item.maxAcOld ? 'tabler:player-skip-back' : undefined"
-            @suffix-icon-click="(node: FormNode) => updateOverride({ reset: true, amount: item.maxAcOld || 0 }, node)"
-          />
-        </FormKit>
+          :item="item"
+          :sheet="sheet"
+          :handle-ac-changes="handleAcChanges"
+          :update-row="updateRow"
+        />
       </UiPopoverContent>
     </UiPopover>
   </div>

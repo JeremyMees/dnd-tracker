@@ -11,12 +11,12 @@ const props = withDefaults(
     content?: string
     charLimit?: number
     placeholder?: string
-    color?: 'background' | 'secondary'
+    variant?: 'input' | 'widget'
   }>(), {
     content: '',
     charLimit: 5000,
     placeholder: 'components.tipTapEditor.placeholder',
-    color: 'secondary',
+    variant: 'input',
   },
 )
 
@@ -125,21 +125,20 @@ function setLink() {
 
 <template>
   <ClientOnly>
-    <Card
+    <div
       v-if="editor"
-      :color="color"
-      no-padding
-      class="py-2 px-0"
+      class="py-2 px-0 rounded-lg"
       :class="{
-        'border-primary': isFocused,
-        '!bg-background': color === 'background',
+        'border border-input bg-background': variant === 'input',
+        'border-4 border-secondary bg-secondary/50': variant === 'widget',
+        'ring-offset-background ring-2 ring-ring': isFocused && variant === 'input',
+        'border-primary!': isFocused && variant === 'widget',
       }"
     >
       <div
         class="border-b pb-1 px-2 mb-2 flex items-center gap-x-2 flex-wrap"
         :class="{
-          'border-background': color === 'background',
-          'border-secondary': color === 'secondary',
+          'border-secondary': variant === 'widget',
         }"
       >
         <div
@@ -170,14 +169,14 @@ function setLink() {
           <AnimationExpand>
             <div
               v-if="isOpen"
-              class="absolute z-[1] block w-max left-0"
+              class="absolute z-1 block w-max left-0"
             >
               <div class="flex flex-col gap-y-1 p-2 relative rounded-b-lg rounded-tr-lg bg-secondary">
                 <button
                   type="button"
                   :aria-label="$t('general.paragraph')"
                   :class="{
-                    '!bg-muted': editor.isActive('paragraph'),
+                    'bg-muted!': editor.isActive('paragraph'),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
                   @click="() => {
@@ -200,7 +199,7 @@ function setLink() {
                   type="button"
                   :aria-label="`${$t('general.heading')} ${level}`"
                   :class="{
-                    '!bg-muted': editor.isActive('heading', { level }),
+                    'bg-muted!': editor.isActive('heading', { level }),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
                   @click="() => {
@@ -224,203 +223,203 @@ function setLink() {
         <div
           class="flex items-center border-r pr-2"
           :class="{
-            'border-background': color === 'background',
-            'border-secondary': color === 'secondary',
+            'border-input': variant === 'input',
+            'border-secondary': variant === 'widget',
           }"
         >
-          <button
+          <UiButton
             v-tippy="$t('general.link')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary': buttonStates.isLink }"
             :aria-label="$t('general.link')"
-            :class="{ '!bg-primary/100': buttonStates.isLink }"
-            class="icon-btn-primary size-6 text-foreground"
             @click="setLink"
           >
             <Icon
               name="tabler:link"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('actions.unlink')"
             type="button"
-            :aria-label="$t('actions.unlink')"
-            class="icon-btn-primary size-6 text-foreground"
+            size="icon-sm"
+            variant="default-ghost"
             :disabled="!buttonStates.isLink"
+            :aria-label="$t('actions.unlink')"
             @click="editor.chain().focus().unsetLink().run()"
           >
             <Icon
               name="tabler:unlink"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('general.unOrderedList')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isBulletList }"
             :aria-label="$t('general.unOrderedList')"
-            :class="{ '!bg-primary/100': buttonStates.isBulletList }"
-            class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleBulletList().run()"
           >
             <Icon
               name="tabler:list"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('general.orderedList')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isOrderedList }"
             :aria-label="$t('general.orderedList')"
-            :class="{ '!bg-primary/100': buttonStates.isOrderedList }"
-            class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleOrderedList().run()"
           >
             <Icon
               name="tabler:list-numbers"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('general.quote')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isBlockquote }"
             :aria-label="$t('general.quote')"
-            :class="{ '!bg-primary/100': buttonStates.isBlockquote }"
-            class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleBlockquote().run()"
           >
             <Icon
               name="tabler:blockquote"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('general.horizontalRule')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
             :aria-label="$t('general.horizontalRule')"
-            class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().setHorizontalRule().run()"
           >
             <Icon
               name="tabler:separator"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
+          </UiButton>
         </div>
         <div
           class="flex items-center border-r pr-2"
           :class="{
-            'border-background': color === 'background',
-            'border-secondary': color === 'secondary',
+            'border-input': variant === 'input',
+            'border-secondary': variant === 'widget',
           }"
         >
-          <button
+          <UiButton
             v-tippy="$t('general.bold')"
             type="button"
-            :aria-label="$t('general.bold')"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isBold }"
             :disabled="!buttonStates.canBold"
-            :class="{ '!bg-primary/100': buttonStates.isBold }"
-            class="icon-btn-primary size-6 text-foreground"
+            :aria-label="$t('general.bold')"
             @click="editor.chain().focus().toggleBold().run()"
           >
             <Icon
               name="tabler:bold"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('general.italic')"
             type="button"
-            :aria-label="$t('general.italic')"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isItalic }"
             :disabled="!buttonStates.canItalic"
-            :class="{ '!bg-primary/100': buttonStates.isItalic }"
-            class="icon-btn-primary size-6 text-foreground"
+            :aria-label="$t('general.italic')"
             @click="editor.chain().focus().toggleItalic().run()"
           >
             <Icon
               name="tabler:italic"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('general.strikeThrough')"
             type="button"
-            :aria-label="$t('general.strikeThrough')"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isStrike }"
             :disabled="!buttonStates.canStrike"
-            :class="{ '!bg-primary/100': buttonStates.isStrike }"
-            class="icon-btn-primary size-6 text-foreground"
+            :aria-label="$t('general.strikeThrough')"
             @click="editor.chain().focus().toggleStrike().run()"
           >
             <Icon
               name="tabler:strikethrough"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('actions.highlight')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
+            :class="{ 'bg-primary!': buttonStates.isHighlight }"
             :aria-label="$t('actions.highlight')"
-            :class="{ '!bg-primary/100': buttonStates.isHighlight }"
-            class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().toggleHighlight().run()"
           >
             <Icon
               name="tabler:highlight"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('actions.clearFormatting')"
             type="button"
+            size="icon-sm"
+            variant="default-ghost"
             :aria-label="$t('actions.clearFormatting')"
-            class="icon-btn-primary size-6 text-foreground"
             @click="editor.chain().focus().unsetAllMarks().run()"
           >
             <Icon
               name="tabler:clear-formatting"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
+          </UiButton>
         </div>
         <div class="flex items-center">
-          <button
+          <UiButton
             v-tippy="$t('actions.undo')"
             type="button"
-            :aria-label="$t('actions.undo')"
+            size="icon-sm"
+            variant="default-ghost"
             :disabled="!buttonStates.canUndo"
-            class="icon-btn-primary size-6 text-foreground"
+            :aria-label="$t('actions.undo')"
             @click="editor.chain().focus().undo().run()"
           >
             <Icon
               name="tabler:arrow-back"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             v-tippy="$t('actions.redo')"
             type="button"
-            :aria-label="$t('actions.redo')"
+            size="icon-sm"
+            variant="default-ghost"
             :disabled="!buttonStates.canRedo"
-            class="icon-btn-primary size-6 text-foreground"
+            :aria-label="$t('actions.redo')"
             @click="editor.chain().focus().redo().run()"
           >
             <Icon
               name="tabler:arrow-forward"
-              class="size-4"
               aria-hidden="true"
             />
-          </button>
+          </UiButton>
         </div>
       </div>
       <EditorContent
@@ -446,7 +445,7 @@ function setLink() {
           </span>
         </div>
       </div>
-    </Card>
+    </div>
     <slot name="error" />
     <template #fallback>
       <UiSkeleton class="w-full h-[190px]" />
@@ -455,8 +454,10 @@ function setLink() {
 </template>
 
 <style>
+@reference '~/assets/css/global.css';
+
 .html-invalid .tiptap {
-  @apply !outline-destructive;
+  @apply outline-destructive!;
 }
 
 .tiptap {

@@ -28,18 +28,16 @@ defineProps<{ value: Open5eItem[] }>()
             :type="item.type"
           />
           <div class="flex justify-end pt-4">
-            <button
+            <UiButton
               :aria-label="$t(`components.infoCard.remove`)"
-              class="btn-primary flex items-center gap-2"
               @click="$emit('update', value.filter(i => i.slug !== item.slug))"
             >
               <Icon
                 name="tabler:pinned-off"
-                class="size-4 min-w-4"
                 aria-hidden="true"
               />
               {{ $t('components.infoCard.remove') }}
-            </button>
+            </UiButton>
           </div>
         </UiAccordionContent>
       </UiAccordionItem>

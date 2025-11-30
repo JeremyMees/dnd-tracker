@@ -80,6 +80,8 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
 </template>
 
 <style scoped>
+@reference '~/assets/css/global.css';
+
 .dragon {
   left: calc(100vw - 450px);
 

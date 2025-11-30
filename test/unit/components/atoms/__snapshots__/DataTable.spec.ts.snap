@@ -2,9 +2,13 @@
 
 exports[`DataTable > Should match snapshot 1`] = `
 "<div class="flex flex-col gap-2">
-  <div class="flex flex-col-reverse sm:flex-row gap-2 justify-between items-center">
-    <div id="formkit-stub" type="search" name="search" prefix-icon="tabler:search" outer-class="$remove:mb-4 w-full sm:w-auto" inner-class="$remove:border-background $remove:bg-muted border-secondary bg-secondary/50" value=""></div>
-    <div class="flex justify-end w-full sm:w-auto"></div>
+  <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
+    <div data-slot="input-group" role="group" class="group/input-group bg-background border-input relative flex w-full items-center rounded-md border shadow-xs transition-[color,box-shadow] outline-none h-10 min-w-0 has-[>textarea]:h-auto has-[>[data-align=inline-start]]:[&amp;>input]:pl-2 has-[>[data-align=inline-end]]:[&amp;>input]:pr-2 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&amp;>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&amp;>input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-background max-w-xs"><input class="flex h-10 w-full border-input px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 rounded-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent ring-offset-transparent" data-slot="input-group-control" type="search">
+      <div role="group" data-slot="input-group-addon" data-align="inline-end" class="text-muted-foreground flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium select-none [&amp;>svg:not([class*='size-'])]:size-4 [&amp;>kbd]:rounded-[calc(var(--radius)-5px)] group-data-[disabled=true]/input-group:opacity-50 order-last pr-3 has-[>button]:mr-[-0.45rem] has-[>kbd]:mr-[-0.35rem]"><span class="iconify i-tabler:search size-3" aria-hidden="true"></span></div>
+    </div>
+    <div class="flex gap-x-4 justify-end items-center">
+      <!--v-if-->
+    </div>
   </div>
   <div class="rounded-lg border-4 border-secondary bg-secondary/50">
     <div class="relative w-full overflow-auto">
@@ -40,33 +44,33 @@ exports[`DataTable > Should match snapshot 1`] = `
         </thead>
         <tbody class="[&amp;_tr:last-child]:border-0">
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="peer size-5 shrink-0 rounded-lg border-2 border-foreground bg-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary/50 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
                 <!--v-if-->
               </button></td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">1</td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">John Doe</td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">30</td>
           </tr>
           <!--v-if-->
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="peer size-5 shrink-0 rounded-lg border-2 border-foreground bg-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary/50 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
                 <!--v-if-->
               </button></td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">2</td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">Jane Smith</td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">25</td>
           </tr>
           <!--v-if-->
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="peer size-5 shrink-0 rounded-lg border-2 border-foreground bg-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary/50 data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
                 <!--v-if-->
               </button></td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button arialabel="actions.show" class="icon-btn-help"><span class="iconify i-tabler:chevron-right size-5 transition-transform duration-200 ease-in-out" aria-hidden="true" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">3</td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">Bob Johnson</td>
             <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">40</td>
@@ -82,9 +86,6 @@ exports[`DataTable > Should match snapshot 1`] = `
         <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background"><button aria-label="First Page" type="button" disabled="" class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0 border-r rounded-r-none border-r-foreground"><span class="iconify i-tabler:chevrons-left size-4 min-w-4" aria-hidden="true"></span></button><button aria-label="Previous Page" type="button" disabled="" data-test-pagination-prev="" class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0 border-r rounded-r-none border-r-foreground"><span class="iconify i-tabler:chevron-left size-4 min-w-4" aria-hidden="true"></span></button><button aria-label="Next Page" type="button" disabled="" data-test-pagination-next="" class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0 border-r rounded-r-none border-r-foreground"><span class="iconify i-tabler:chevron-right size-4 min-w-4" aria-hidden="true"></span></button><button aria-label="Last Page" type="button" disabled="" class="size-8 border-secondary rounded-lg p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed border-0"><span class="iconify i-tabler:chevrons-right size-4 min-w-4" aria-hidden="true"></span></button></div>
       </nav>
     </div>
-  </div>
-  <div class="overflow-hidden">
-    <!---->
   </div>
 </div>"
 `;

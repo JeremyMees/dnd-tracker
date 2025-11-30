@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { togglePasswordInput } from '~/utils/ui-helpers'
 import { defaultAvatar } from '~~/constants/default-avatar'
 
 definePageMeta({ middleware: ['abort-authenticated'] })
@@ -13,14 +15,36 @@ const localePath = useLocalePath()
 
 const avatar = ref<Avatar>(defaultAvatar)
 
-async function handleRegister(form: Register, node: FormNode): Promise<void> {
-  node.clearErrors()
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(3).max(30).regex(alphaSpaces, t('zod.alphaSpaces')),
+  username: z.string().min(5).max(50).regex(alphaSpaces, t('zod.alphaSpaces')),
+  email: z.string().min(5).max(50).email(),
+  password: z
+    .string()
+    .min(6)
+    .max(50)
+    .regex(containsLowercase, t('zod.containsLowercase'))
+    .regex(containsUppercase, t('zod.containsUppercase'))
+    .regex(containsNumber, t('zod.containsNumber'))
+    .regex(containsSymbol, t('zod.containsSymbol'))
+    .regex(allowedChars, t('zod.allowedChars')),
+  marketing: z.boolean(),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+})
+
+const formError = ref<string>('')
+
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   if (!avatar.value) return
 
   try {
     await register({
-      ...form,
+      ...values,
       avatar: avatar.value.url,
       avatar_options: avatar.value.extra,
     })
@@ -34,7 +58,7 @@ async function handleRegister(form: Register, node: FormNode): Promise<void> {
     navigateTo(localePath('/login'))
   }
   catch (err: any) {
-    node.setErrors(err.message)
+    formError.value = err.message || 'An error occurred during registration'
 
     toast({
       title: t('general.error.title'),
@@ -42,7 +66,7 @@ async function handleRegister(form: Register, node: FormNode): Promise<void> {
       variant: 'destructive',
     })
   }
-}
+})
 </script>
 
 <template>
@@ -57,41 +81,92 @@ async function handleRegister(form: Register, node: FormNode): Promise<void> {
       class="lg:hidden mb-6"
     />
 
-    <FormKit
-      type="form"
-      :submit-label="$t('pages.register.register')"
-      @submit="handleRegister"
-    >
-      <FormKit
+    <UiFormWrapper @submit="onSubmit">
+      <UiFormField
+        v-slot="{ componentField }"
         name="name"
-        :label="$t('components.inputs.fullNameLabel')"
-        validation="required|length:3,30|alpha_spaces"
-      />
-      <FormKit
+      >
+        <UiFormItem v-auto-animate>
+          <UiFormLabel required>
+            {{ $t('components.inputs.fullNameLabel') }}
+          </UiFormLabel>
+          <UiFormControl>
+            <UiInput
+              type="text"
+              v-bind="componentField"
+            />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <UiFormField
+        v-slot="{ componentField }"
         name="username"
-        :label="$t('components.inputs.usernameLabel')"
-        validation="required|length:3,15|alpha_spaces"
-      />
-      <FormKit
+      >
+        <UiFormItem v-auto-animate>
+          <UiFormLabel required>
+            {{ $t('components.inputs.usernameLabel') }}
+          </UiFormLabel>
+          <UiFormControl>
+            <UiInput
+              type="text"
+              v-bind="componentField"
+            />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <UiFormField
+        v-slot="{ componentField }"
         name="email"
-        :label="$t('components.inputs.emailLabel')"
-        validation="required|length:5,50|email"
-      />
-      <FormKit
-        name="password"
-        type="password"
-        suffix-icon="tabler:eye"
-        :label="$t('components.inputs.passwordLabel')"
-        validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
-        @suffix-icon-click="togglePasswordInput"
-      />
-      <FormKit
+      >
+        <UiFormItem v-auto-animate>
+          <UiFormLabel required>
+            {{ $t('components.inputs.emailLabel') }}
+          </UiFormLabel>
+          <UiFormControl>
+            <UiInput
+              type="email"
+              v-bind="componentField"
+            />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <FormPasswordToggle />
+      <UiFormField
+        v-slot="{ value, handleChange }"
         name="marketing"
-        type="toggle"
-        :value="true"
-        :label="$t('components.inputs.marketingLabel')"
-      />
-    </FormKit>
+      >
+        <UiFormItem
+          v-auto-animate
+          class="flex items-center gap-2"
+        >
+          <UiFormControl>
+            <UiSwitch
+              class="mb-0"
+              :model-value="value"
+              @update:model-value="handleChange"
+            />
+          </UiFormControl>
+          <UiFormLabel>
+            {{ $t('components.inputs.marketingLabel') }}
+          </UiFormLabel>
+        </UiFormItem>
+      </UiFormField>
+      <div
+        v-if="formError"
+        class="text-sm text-destructive"
+      >
+        {{ formError }}
+      </div>
+      <UiButton
+        type="submit"
+        class="w-full"
+      >
+        {{ $t('pages.register.register') }}
+      </UiButton>
+    </UiFormWrapper>
     <p class="text-sm text-center text-muted-foreground my-4">
       {{ $t('pages.register.consent') }}
     </p>
@@ -102,22 +177,28 @@ async function handleRegister(form: Register, node: FormNode): Promise<void> {
     />
 
     <div class="flex flex-wrap gap-2 justify-center">
-      <NuxtLinkLocale
-        to="/login"
-        class="btn-text flex-1 grow"
+      <UiButton
+        as-child
+        variant="link"
+        class="flex-1 grow"
       >
-        {{ $t('pages.login.signIn') }}
-      </NuxtLinkLocale>
+        <NuxtLinkLocale to="/login">
+          {{ $t('pages.login.signIn') }}
+        </NuxtLinkLocale>
+      </UiButton>
       <UiSeparator
         orientation="vertical"
         class="h-8"
       />
-      <NuxtLinkLocale
-        to="/forgot-password"
-        class="btn-text flex-1 grow"
+      <UiButton
+        as-child
+        variant="link"
+        class="flex-1 grow"
       >
-        {{ $t('pages.login.forgot') }}
-      </NuxtLinkLocale>
+        <NuxtLinkLocale to="/forgot-password">
+          {{ $t('pages.login.forgot') }}
+        </NuxtLinkLocale>
+      </UiButton>
     </div>
 
     <template #right>

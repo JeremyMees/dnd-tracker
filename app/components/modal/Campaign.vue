@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { useCampaignCreate, useCampaignUpdate } from '~~/queries/campaigns'
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -10,27 +12,28 @@ const user = useAuthenticatedUser()
 const { mutateAsync: createCampaign } = useCampaignCreate()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
-const input = ref()
+const formSchema = toTypedSchema(z.object({
+  title: z.string().min(3).max(30),
+}))
 
-onMounted(() => input.value && focusInput(input.value))
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    title: props.campaign?.title || '',
+  },
+})
 
-interface CampaignForm { title: string }
+const formError = ref<string>('')
 
-async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
-  node.clearErrors()
-
-  const onError = (error: string) => {
-    reset('Campaign')
-    node.setErrors(error)
-  }
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   const onSuccess = () => emit('close')
-
-  const formData = sanitizeForm<CampaignForm>(form)
+  const onError = (error: string) => formError.value = error
 
   if (props.campaign) {
     await updateCampaign({
-      data: formData,
+      data: values,
       id: props.campaign.id,
       onError,
       onSuccess,
@@ -38,28 +41,44 @@ async function handleSubmit(form: CampaignForm, node: FormNode): Promise<void> {
   }
   else {
     await createCampaign({
-      data: { ...formData, created_by: user.value.id },
+      data: { ...values, created_by: user.value.id },
       onError,
       onSuccess,
     })
   }
-}
+})
 </script>
 
 <template>
-  <FormKit
-    id="Campaign"
-    type="form"
-    :actions="false"
-    @submit="handleSubmit"
-  >
-    <FormKit
-      ref="input"
+  <UiFormWrapper @submit="onSubmit">
+    <UiFormField
+      v-slot="{ componentField }"
       name="title"
-      :label="$t('components.inputs.titleLabel')"
-      :value="campaign?.title ? campaign.title : ''"
-      validation="required|length:3,30"
-      outer-class="$remove:mb-4"
-    />
-  </FormKit>
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel required>
+          {{ $t('components.inputs.titleLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            type="text"
+            v-bind="componentField"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <div
+      v-if="formError"
+      class="text-sm text-destructive"
+    >
+      {{ formError }}
+    </div>
+    <UiButton
+      type="submit"
+      class="w-full"
+    >
+      {{ campaign ? $t('pages.campaigns.update') : $t('pages.campaigns.add') }}
+    </UiButton>
+  </UiFormWrapper>
 </template>

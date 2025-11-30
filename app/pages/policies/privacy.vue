@@ -84,6 +84,8 @@ useSeo('Privacy policy')
 </template>
 
 <style scoped>
+@reference '~/assets/css/global.css';
+
 p {
   @apply max-w-prose;
 }

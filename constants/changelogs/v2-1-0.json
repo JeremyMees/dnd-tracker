@@ -1,0 +1,51 @@
+{
+  "version": "v2.1.0",
+  "date": "2025-11-30",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Small visual animation when HP or AC values change because of another creature's action"
+        },
+        {
+          "text": "Quick popup for changing encounter widgets"
+        },
+        {
+          "text": "Added hotkeys in some tooltips"
+        },
+        {
+          "text": "Added feature request have a small label"
+        },
+        {
+          "text": "Filter by major versions on the changelog page"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Better authentication protection"
+        },
+        {
+          "text": "Performance updated homepage"
+        },
+        {
+          "text": "Updated internal tools to newest version"
+        },
+        {
+          "text": "New form validation library"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Homepage scroll animation for encounter builder did not work"
+        }
+      ]
+    }
+  ]
+}

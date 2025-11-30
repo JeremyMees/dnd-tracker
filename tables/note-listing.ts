@@ -69,12 +69,12 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
           iconButton({
             icon: 'tabler:send',
             content: t('actions.sendMail'),
-            color: 'info',
+            variant: 'info-ghost',
             cb: () => onSendMail(row.original),
             disabled: isInCoolDown(row.original.id),
           }),
           hasRights
-            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), color: 'info', cb: () => onUpdate(row.original) })
+            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), variant: 'info-ghost', cb: () => onUpdate(row.original) })
             : '',
         ])
       },

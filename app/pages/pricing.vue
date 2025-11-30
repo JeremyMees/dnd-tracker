@@ -139,21 +139,23 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 v-if="isPending"
                 class="h-[52px] rounded-lg w-full"
               />
-              <div
+              <UiButton
                 v-else-if="isCurrent(product.type)"
-                class="btn-success w-full text-center"
+                variant="success"
+                class="w-full"
               >
                 {{ t('general.current') }}
-              </div>
-              <button
+              </UiButton>
+              <UiButton
                 v-else-if="!user || (product.id && product.price !== 0 && isUpgradeable(product.type))"
-                class="btn-tertiary w-full"
                 :aria-label="t('pages.pricing.cta')"
                 :disabled="isPending"
+                variant="tertiary"
+                class="w-full"
                 @click="subscribe(product?.id || '', product.type)"
               >
                 {{ t('pages.pricing.cta') }}
-              </button>
+              </UiButton>
             </UiCardFooter>
           </UiCard>
         </Motion>
@@ -162,11 +164,12 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
         {{ t('pages.pricing.text') }}
       </p>
       <div class="flex justify-center">
-        <a
-          href="https://ko-fi.com/B0B2SSBBQ"
-          target="_blank"
-        >
-          <div class="btn-primary flex items-center gap-4">
+        <UiButton as-child>
+          <NuxtLink
+            href="https://ko-fi.com/B0B2SSBBQ"
+            target="_blank"
+            class="flex items-center gap-4"
+          >
             <span>
               {{ t('actions.buyCoffee') }}
             </span>
@@ -175,8 +178,8 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
               class="size-5"
               aria-hidden="true"
             />
-          </div>
-        </a>
+          </NuxtLink>
+        </UiButton>
       </div>
     </section>
   </NuxtLayout>

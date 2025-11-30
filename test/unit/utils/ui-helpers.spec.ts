@@ -1,7 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import {
-  sanitizeForm,
   sortByNumber,
   sortByString,
   sortCreatedAt,
@@ -13,6 +12,7 @@ import {
   isDefined,
   validateParamId,
   sanitizeHTML,
+  animateTableUpdate,
 } from '~/utils/ui-helpers'
 
 beforeEach(() => {
@@ -30,29 +30,6 @@ mockNuxtImport('createError', () => (error: any) => {
 })
 
 describe('ui-helpers', () => {
-  describe('sanitizeForm', () => {
-    it('should trim string values', () => {
-      const data = { name: '  John Doe  ', age: 30 }
-      const result = sanitizeForm(data)
-
-      expect(result).toEqual({ name: 'John Doe', age: 30 })
-    })
-
-    it('should filter out blacklisted keys', () => {
-      const data = { name: 'John', __init: true, _vts: 123, isTrusted: false }
-      const result = sanitizeForm(data)
-
-      expect(result).toEqual({ name: 'John' })
-    })
-
-    it('should use custom blacklist if provided', () => {
-      const data = { name: 'John', custom: 'value', _vts: 123 }
-      const result = sanitizeForm(data, ['custom'])
-
-      expect(result).toEqual({ name: 'John', _vts: 123 })
-    })
-  })
-
   describe('sortByNumber', () => {
     it('should sort numbers in ascending order', () => {
       expect(sortByNumber(5, 10, true)).toBeLessThan(0)
@@ -247,6 +224,36 @@ describe('ui-helpers', () => {
 
       expect(result).toContain('<hr>')
       expect(result).not.toContain('<hr />')
+    })
+  })
+
+  describe('animateTableUpdate', () => {
+    it('applies and clears table update animation', () => {
+      vi.useFakeTimers()
+
+      const el: any = { style: {}, offsetHeight: 0 }
+      document.getElementById = vi.fn().mockReturnValue(el)
+
+      animateTableUpdate('row-1', 'green')
+
+      expect(document.getElementById).toHaveBeenCalledWith('row-1')
+      expect(el.style.animation).toBe('pulse-green 1s ease-in-out')
+
+      vi.advanceTimersByTime(1000)
+      expect(el.style.animation).toBe('')
+
+      vi.useRealTimers()
+    })
+
+    it('returns early when element is not found', () => {
+      vi.useFakeTimers()
+      document.getElementById = vi.fn().mockReturnValue(null)
+
+      expect(() => animateTableUpdate('missing', 'green')).not.toThrow()
+      expect(document.getElementById).toHaveBeenCalledWith('missing')
+
+      vi.runAllTimers()
+      vi.useRealTimers()
     })
   })
 })

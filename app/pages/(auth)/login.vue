@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+
 definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Log in')
 
@@ -6,11 +10,22 @@ const { login } = useAuthentication()
 const localePath = useLocalePath()
 const redirect = useCookie<string>('sb-redirect-path')
 
-async function handleLogin(form: Login, node: FormNode): Promise<void> {
-  node.clearErrors()
+const formSchema = toTypedSchema(z.object({
+  email: z.string().min(5).max(50).email(),
+  password: z.string().min(6).max(50),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+})
+
+const formError = ref<string>('')
+
+const onSubmit = form.handleSubmit(async (values) => {
+  formError.value = ''
 
   try {
-    await login(sanitizeForm<Login>(form))
+    await login(values)
 
     setTimeout(() => {
       const route = redirect.value || '/'
@@ -21,34 +36,49 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
     }, 100)
   }
   catch (err: any) {
-    node.setErrors(err.message)
+    formError.value = err.message || 'An error occurred during login'
   }
-}
+})
 </script>
 
 <template>
   <NuxtLayout name="auth">
-    <h1 class="text-center head-3 mb-4">
+    <h1 class="text-center head-3 mb-6">
       {{ $t('pages.login.title') }}
     </h1>
 
-    <FormKit
-      type="form"
-      :submit-label="$t('pages.login.signIn')"
-      @submit="handleLogin"
-    >
-      <FormKit
+    <UiFormWrapper @submit="onSubmit">
+      <UiFormField
+        v-slot="{ componentField }"
         name="email"
-        :label="$t('components.inputs.emailLabel')"
-        validation="required|length:5,50|email"
-      />
-      <FormKit
-        name="password"
-        type="password"
-        :label="$t('components.inputs.passwordLabel')"
-        validation="required|length:6,50"
-      />
-    </FormKit>
+      >
+        <UiFormItem v-auto-animate>
+          <UiFormLabel required>
+            {{ $t('components.inputs.emailLabel') }}
+          </UiFormLabel>
+          <UiFormControl>
+            <UiInput
+              type="email"
+              v-bind="componentField"
+            />
+          </UiFormControl>
+          <UiFormMessage />
+        </UiFormItem>
+      </UiFormField>
+      <FormPasswordToggle />
+      <div
+        v-if="formError"
+        class="text-sm text-destructive"
+      >
+        {{ formError }}
+      </div>
+      <UiButton
+        type="submit"
+        class="w-full"
+      >
+        {{ $t('pages.login.signIn') }}
+      </UiButton>
+    </UiFormWrapper>
 
     <UiSeparator
       class="mt-6 mb-2"
@@ -56,22 +86,28 @@ async function handleLogin(form: Login, node: FormNode): Promise<void> {
     />
 
     <div class="flex flex-wrap gap-2 justify-center">
-      <NuxtLinkLocale
-        to="/register"
-        class="btn-text flex-1 grow"
+      <UiButton
+        as-child
+        variant="link"
+        class="flex-1 grow"
       >
-        {{ $t('pages.login.new') }}
-      </NuxtLinkLocale>
+        <NuxtLinkLocale to="/register">
+          {{ $t('pages.login.new') }}
+        </NuxtLinkLocale>
+      </UiButton>
       <UiSeparator
         orientation="vertical"
         class="h-8"
       />
-      <NuxtLinkLocale
-        to="/forgot-password"
-        class="btn-text flex-1 grow"
+      <UiButton
+        as-child
+        variant="link"
+        class="flex-1 grow"
       >
-        {{ $t('pages.login.forgot') }}
-      </NuxtLinkLocale>
+        <NuxtLinkLocale to="/forgot-password">
+          {{ $t('pages.login.forgot') }}
+        </NuxtLinkLocale>
+      </UiButton>
     </div>
 
     <template #right>

@@ -7,16 +7,16 @@ defineEmits<{ refresh: [] }>()
     color="danger"
     class="w-full max-w-prose mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
   >
-    <h2 class="text-center">
+    <h2 class="head-3">
       {{ $t('general.error.text') }}
     </h2>
-    <button
+    <UiButton
       data-test-refresh-button
-      class="btn-foreground"
+      variant="foreground"
       :aria-label="$t('actions.tryAgain')"
       @click="$emit('refresh')"
     >
       {{ $t('actions.tryAgain') }}
-    </button>
+    </UiButton>
   </Card>
 </template>

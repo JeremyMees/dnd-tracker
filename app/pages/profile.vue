@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useProfileUpdate, useProfileRemove } from '~~/queries/profiles'
 
@@ -11,13 +10,6 @@ const { toast } = useToast()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
-
-const formInfo = ref<ProfileUpdate>({
-  email: user.value.email || '',
-  name: user.value.name || '',
-  username: user.value.username || '',
-  marketing: user.value.marketing ?? true,
-})
 
 const avatar = ref<Avatar>({
   url: user.value.avatar || '',
@@ -34,31 +26,28 @@ async function updateAvatar(avatar: Avatar): Promise<void> {
   })
 }
 
-const handleUpdateProfile = useThrottleFn(async (form: ProfileUpdate & { password?: string }, node?: FormNode): Promise<void> => {
-  node?.clearErrors()
-
+const handleUpdateProfile = useThrottleFn(async (data: ProfileUpdate & { password?: string }): Promise<void> => {
   await updateProfile({
-    data: sanitizeForm<ProfileUpdate & { password?: string }>(form),
+    data,
     id: user.value.id,
     onSuccess: () => {
       toast({
         description: t('pages.profile.toast.success.text'),
         variant: 'success',
       })
-
-      reset('password')
     },
     onError: (error) => {
       const message = error === 'New password should be different from the old password.'
         ? t('pages.profile.password.same')
         : error
 
-      node?.setErrors(message)
-
       toast({
-        description: message,
+        title: t('general.error.title'),
+        description: error || t('general.error.text'),
         variant: 'destructive',
       })
+
+      throw new Error(message)
     },
   })
 }, 1000)
@@ -122,34 +111,16 @@ async function handleRemoveUser(): Promise<void> {
             {{ $t('pages.profile.data.subtitle') }}
           </p>
         </div>
-        <div class="md:max-w-xl flex-1">
-          <FormKit
-            v-model="formInfo"
-            type="form"
-            :submit-label="$t('actions.save')"
-            @submit="handleUpdateProfile"
-          >
-            <FormKit
-              name="name"
-              :label="$t('components.inputs.nameLabel')"
-              validation="required|length:3,30|alpha_spaces"
-            />
-            <FormKit
-              name="username"
-              :label="$t('components.inputs.usernameLabel')"
-              validation="required|length:3,15|alpha_spaces"
-            />
-            <FormKit
-              name="email"
-              :label="$t('components.inputs.emailLabel')"
-              validation="required|length:5,50|email"
-            />
-            <FormKit
-              name="marketing"
-              type="toggle"
-              :label="$t('components.inputs.marketingLabel')"
-            />
-          </FormKit>
+        <div class="md:max-w-md flex-1">
+          <FormProfileData
+            :update="handleUpdateProfile"
+            :initial-values="{
+              name: user.name || 'tester',
+              username: user.username || '',
+              email: user.email || '',
+              marketing: user.marketing ?? true,
+            }"
+          />
         </div>
       </div>
       <UiSeparator />
@@ -162,33 +133,19 @@ async function handleRemoveUser(): Promise<void> {
             {{ $t('pages.profile.password.subtitle') }}
           </p>
         </div>
-        <div class="md:max-w-xl flex-1">
-          <FormKit
-            id="password"
-            type="form"
-            :submit-label="$t('actions.save')"
-            @submit="handleUpdateProfile"
-          >
-            <FormKit
-              name="password"
-              type="password"
-              suffix-icon="tabler:eye"
-              :label="$t('components.inputs.passwordLabel')"
-              validation="required|length:6,50|contains_lowercase|contains_uppercase|contains_alpha|contains_numeric|contains_symbol"
-              @suffix-icon-click="togglePasswordInput"
-            />
-          </FormKit>
+        <div class="md:max-w-md flex-1">
+          <FormProfilePassword :update="handleUpdateProfile" />
         </div>
       </div>
       <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
-        <button
-          class="btn-destructive"
+        <UiButton
+          variant="destructive"
           :aria-label="$t('pages.profile.delete')"
           @click="handleRemoveUser"
         >
           {{ $t('pages.profile.delete') }}
-        </button>
+        </UiButton>
       </div>
     </section>
   </NuxtLayout>

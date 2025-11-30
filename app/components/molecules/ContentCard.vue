@@ -32,24 +32,26 @@ function hideOpenButton(): boolean {
     @dblclick="isOpen = !isOpen"
   >
     <UiCardHeader>
-      <button
+      <UiButton
         v-if="allowPin"
         v-tippy="{
           content: $t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
           placement: 'left',
         }"
         data-test-pin
+        variant="secondary-ghost"
+        size="icon"
         :aria-label="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
-        class="absolute right-4 top-4"
+        class="absolute right-0 top-0"
         @click="pinned ? $emit('unpin') : $emit('pin')"
       >
         <Icon
           :name="pinned ? 'tabler:pinned-off' : 'tabler:pin'"
-          class="size-4 min-w-4"
+          class="size-4 min-w-4 group-hover:text-foreground!"
           :class="[pinned ? 'text-destructive' : 'text-primary']"
           aria-hidden="true"
         />
-      </button>
+      </UiButton>
       <UiCardTitle data-test-title>
         {{ hit.name }}
       </UiCardTitle>
@@ -67,7 +69,8 @@ function hideOpenButton(): boolean {
         v-if="!hideOpenButton()"
         class="flex justify-end w-full"
       >
-        <button
+        <UiButton
+          variant="secondary-ghost"
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"
           @click="isOpen = !isOpen"
@@ -81,7 +84,7 @@ function hideOpenButton(): boolean {
             :class="{ 'rotate-180': isOpen }"
             aria-hidden="true"
           />
-        </button>
+        </UiButton>
       </div>
     </UiCardFooter>
   </UiCard>
