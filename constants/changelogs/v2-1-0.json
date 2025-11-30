@@ -6,10 +6,19 @@
       "title": "New",
       "items": [
         {
-          "text": "Filter by major versions on the changelog page"
+          "text": "Small visual animation when HP or AC values change because of another creature's action"
+        },
+        {
+          "text": "Quick popup for changing encounter widgets"
         },
         {
           "text": "Added hotkeys in some tooltips"
+        },
+        {
+          "text": "Added feature request have a small label"
+        },
+        {
+          "text": "Filter by major versions on the changelog page"
         }
       ]
     },
