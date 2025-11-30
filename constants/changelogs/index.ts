@@ -1,35 +1,14 @@
-import v1_0_8 from './v1-0-8.json'
-import v1_0_9 from './v1-0-9.json'
-import v1_0_10 from './v1-0-10.json'
-import v1_0_11 from './v1-0-11.json'
-import v1_0_12 from './v1-0-12.json'
-import v1_0_13 from './v1-0-13.json'
-import v1_0_14 from './v1-0-14.json'
-import v1_0_15 from './v1-0-15.json'
-import v1_0_16 from './v1-0-16.json'
-import v1_0_17 from './v1-0-17.json'
-import v1_0_18 from './v1-0-18.json'
-import v1_0_19 from './v1-0-19.json'
-import v1_0_20 from './v1-0-20.json'
-import v2_0_0 from './v2-0-0.json'
-import v2_0_1 from './v2-0-1.json'
-import v2_0_2 from './v2-0-2.json'
+const modules = import.meta.glob<{ default: any }>('./*.json', { eager: true })
 
-export const changelogs = [
-  v2_0_2,
-  v2_0_1,
-  v2_0_0,
-  v1_0_20,
-  v1_0_19,
-  v1_0_18,
-  v1_0_17,
-  v1_0_16,
-  v1_0_15,
-  v1_0_14,
-  v1_0_13,
-  v1_0_12,
-  v1_0_11,
-  v1_0_10,
-  v1_0_9,
-  v1_0_8,
-]
+export const changelogs = Object.keys(modules)
+  .map(path => modules[path]?.default)
+  .sort((a, b) => {
+    const versionA = a.version.replace(/v/g, '').split('.').map(Number)
+    const versionB = b.version.replace(/v/g, '').split('.').map(Number)
+
+    for (let i = 0; i < 3; i++) {
+      if (versionB[i] !== versionA[i]) return versionB[i] - versionA[i]
+    }
+
+    return 0
+  })
