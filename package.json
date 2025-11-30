@@ -101,7 +101,8 @@
   },
   "overrides": {
     "@vercel/nft": "^0.27.10",
-    "vue": "latest"
+    "vue": "latest",
+    "parse5": "^6.0.1"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
