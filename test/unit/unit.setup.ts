@@ -8,6 +8,7 @@ config.global.mocks = {
 
 config.global.directives = {
   tippy: {},
+  autoAnimate: {},
 }
 
 config.global.stubs = {
