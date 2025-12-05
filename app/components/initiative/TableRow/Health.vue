@@ -88,7 +88,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           v-if="isDefined(item.health) && isDefined(item.maxHealth)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
+          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.current') }}
             </p>
@@ -99,7 +99,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
               {{ item.health || 0 }}
             </p>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
+          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.max') }}
             </p>
@@ -118,7 +118,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
               </p>
             </div>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
+          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.temp') }}
             </p>
