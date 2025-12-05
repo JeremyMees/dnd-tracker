@@ -50,7 +50,7 @@ export function iconButton(options: {
       disabled: options.disabled || false,
       variant: options.variant,
       size: 'icon-sm',
-    }, iconElement({ icon: options.icon, color: 'hover:text-red-500' })),
+    }, () => iconElement({ icon: options.icon })),
   )
 }
 
