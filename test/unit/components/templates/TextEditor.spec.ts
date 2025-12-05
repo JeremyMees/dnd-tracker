@@ -6,14 +6,14 @@ interface Props {
   content?: string
   charLimit?: number
   placeholder?: string
-  color?: 'background' | 'secondary'
+  variant?: 'input' | 'widget'
 }
 
 const props: Props = {
   content: '',
   charLimit: 5000,
   placeholder: 'components.tipTapEditor.placeholder',
-  color: 'secondary',
+  variant: 'input',
 }
 
 describe('TextEditor', async () => {
