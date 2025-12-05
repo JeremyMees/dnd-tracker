@@ -1,5 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
 import Widgets from '~/components/initiative/Widgets/index.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
@@ -15,17 +16,27 @@ const provide = {
 }
 
 describe('Initiative widgets wrapper', async () => {
+  let component: VueWrapper | null = null
+
   beforeEach(() => {
     mockSheet.value = sheet
   })
 
+  afterEach(async () => {
+    component?.unmount()
+    await vi.runAllTimersAsync()
+    vi.useRealTimers()
+  })
+
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Widgets, { provide })
+    vi.useFakeTimers()
+    component = await mountSuspended(Widgets, { provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render note widget when enabled', async () => {
+    vi.useFakeTimers()
     mockSheet.value = {
       ...sheet,
       settings: {
@@ -35,12 +46,13 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    const component = await mountSuspended(Widgets, { provide })
+    component = await mountSuspended(Widgets, { provide })
 
     expect(component.findComponent({ name: 'InitiativeWidgetsNote' }).exists()).toBeTruthy()
   })
 
   it('Should render pinned content widget when enabled', async () => {
+    vi.useFakeTimers()
     mockSheet.value = {
       ...sheet,
       settings: {
@@ -50,12 +62,13 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    const component = await mountSuspended(Widgets, { provide })
+    component = await mountSuspended(Widgets, { provide })
 
     expect(component.findComponent({ name: 'InitiativeWidgetsPinnedContent' }).exists()).toBeTruthy()
   })
 
   it('Should render all widgets when not modified', async () => {
+    vi.useFakeTimers()
     mockSheet.value = {
       ...sheet,
       settings: {
@@ -64,14 +77,15 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    const component = await mountSuspended(Widgets, { provide })
+    component = await mountSuspended(Widgets, { provide })
 
     expect(component.findComponent({ name: 'InitiativeWidgetsNote' }).exists()).toBeTruthy()
     expect(component.findComponent({ name: 'InitiativeWidgetsPinnedContent' }).exists()).toBeTruthy()
   })
 
   it('Should call update when note content changes', async () => {
-    const component = await mountSuspended(Widgets, { provide })
+    vi.useFakeTimers()
+    component = await mountSuspended(Widgets, { provide })
     const noteWidget = component.findComponent({ name: 'InitiativeWidgetsNote' })
 
     await noteWidget.vm.$emit('update', 'New note content')
@@ -80,7 +94,8 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should call update when pinned content changes', async () => {
-    const component = await mountSuspended(Widgets, { provide })
+    vi.useFakeTimers()
+    component = await mountSuspended(Widgets, { provide })
     const pinnedContentWidget = component.findComponent({ name: 'InitiativeWidgetsPinnedContent' })
 
     await pinnedContentWidget.vm.$emit('update', [])
