@@ -15,28 +15,24 @@ const provide = {
   },
 }
 
-describe('Initiative widgets wrapper', async () => {
-  let component: VueWrapper | null = null
+let component: VueWrapper<InstanceType<typeof Widgets>>
 
+describe('Initiative widgets wrapper', async () => {
   beforeEach(() => {
     mockSheet.value = sheet
   })
 
-  afterEach(async () => {
+  afterEach(() => {
     component?.unmount()
-    await vi.runAllTimersAsync()
-    vi.useRealTimers()
   })
 
   it('Should match snapshot', async () => {
-    vi.useFakeTimers()
     component = await mountSuspended(Widgets, { provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render note widget when enabled', async () => {
-    vi.useFakeTimers()
     mockSheet.value = {
       ...sheet,
       settings: {
@@ -52,7 +48,6 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should render pinned content widget when enabled', async () => {
-    vi.useFakeTimers()
     mockSheet.value = {
       ...sheet,
       settings: {
@@ -68,7 +63,6 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should render all widgets when not modified', async () => {
-    vi.useFakeTimers()
     mockSheet.value = {
       ...sheet,
       settings: {
@@ -84,7 +78,6 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should call update when note content changes', async () => {
-    vi.useFakeTimers()
     component = await mountSuspended(Widgets, { provide })
     const noteWidget = component.findComponent({ name: 'InitiativeWidgetsNote' })
 
@@ -94,7 +87,6 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should call update when pinned content changes', async () => {
-    vi.useFakeTimers()
     component = await mountSuspended(Widgets, { provide })
     const pinnedContentWidget = component.findComponent({ name: 'InitiativeWidgetsPinnedContent' })
 
