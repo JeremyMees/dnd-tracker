@@ -1,0 +1,34 @@
+{
+  "version": "v2.1.1",
+  "date": "2025-12-5",
+  "features": [
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Upgraded image component for better performance and loading"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "When typing in the note widget the data sync would overwrite your current text"
+        },
+        {
+          "text": "Ac forms would not be visible in some cases"
+        },
+        {
+          "text": "Initiative modifier would give errors when kept empty in the quick initiative popup"
+        },
+        {
+          "text": "Initiative modifier would not be saved when creating homebrew in the encounter"
+        },
+        {
+          "text": "Solved multiple hydration errors"
+        }
+      ]
+    }
+  ]
+}
