@@ -91,7 +91,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           v-if="isDefined(item.ac) && isDefined(item.maxAc)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
+          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.current') }}
             </p>
@@ -102,7 +102,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
               {{ item.ac || 0 }}
             </p>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
+          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.max') }}
             </p>
@@ -121,7 +121,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
               </p>
             </div>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-background text-center flex-1">
+          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.temp') }}
             </p>
@@ -131,7 +131,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           </div>
         </div>
 
-        <FormsAcUpdate
+        <FormAcUpdate
           v-if="hasAc"
           :item="item"
           :sheet="sheet"
@@ -144,7 +144,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           class="my-3 bg-muted"
         />
 
-        <FormsAcUpdateBase
+        <FormAcUpdateBase
           :item="item"
           :sheet="sheet"
           :handle-ac-changes="handleAcChanges"
@@ -156,7 +156,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           class="my-3 bg-muted"
         />
 
-        <FormsAcOverride
+        <FormAcOverride
           v-if="hasAc"
           :item="item"
           :sheet="sheet"

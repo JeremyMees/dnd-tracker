@@ -13,7 +13,7 @@ const formError = ref<string>('')
 
 const formSchema = toTypedSchema(z.object({
   initiative: z.number().min(0).max(50),
-  modifier: z.number().min(-20).max(20).optional(),
+  modifier: z.number().min(-20).max(20).nullable().optional(),
 }))
 
 const form = useForm({

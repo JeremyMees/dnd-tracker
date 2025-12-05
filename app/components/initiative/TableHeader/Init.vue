@@ -18,8 +18,8 @@ const formSchema = toTypedSchema(z.object({
   ignore: z.boolean(),
   selectedCreatures: z.array(z.object({
     id: z.string(),
-    amount: z.number().min(0).max(50).optional(),
-    initiative: z.number().min(-20).max(20).optional(),
+    amount: z.number().min(0).max(50).nullable().optional(),
+    initiative: z.number().min(-20).max(20).nullable().optional(),
   })),
 }))
 
@@ -76,7 +76,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         const index = rows.findIndex(row => row.id === id)
 
         if (index >= 0) {
-          let init = amount
+          let init = amount ?? 0
 
           if (
             !ignore

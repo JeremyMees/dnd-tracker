@@ -67,6 +67,7 @@ onMounted(() => {
 onBeforeUnmount(() => editor.value?.destroy())
 
 watchDebounced(() => props.content, (v) => {
+  if (isFocused.value) return
   if (v !== editor.value?.getHTML()) editor.value?.commands.setContent(v)
 }, { debounce: 500, maxWait: 1000 })
 

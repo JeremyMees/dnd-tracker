@@ -2,7 +2,7 @@ import { Tippy } from 'vue-tippy'
 import type { BouncerAbility } from 'nuxt-authorization/utils'
 import { Icon, NuxtLinkLocale, Can, Card, InitiativeActionRoll } from '#components'
 import { Checkbox } from '~/components/ui/checkbox'
-import { Button, buttonVariants, type ButtonVariants } from '~/components/ui/button'
+import { Button, type ButtonVariants } from '~/components/ui/button'
 import { Kbd, KbdGroup } from '~/components/ui/kbd'
 
 export function iconElement(options: {
@@ -50,7 +50,7 @@ export function iconButton(options: {
       disabled: options.disabled || false,
       variant: options.variant,
       size: 'icon-sm',
-    }, iconElement({ icon: options.icon, color: 'hover:text-red-500' })),
+    }, () => iconElement({ icon: options.icon })),
   )
 }
 
@@ -114,7 +114,7 @@ export function expandButton(options: {
       variant: 'default-ghost',
       size: 'icon-sm',
       onClick: options.cb,
-    }, h(Icon, {
+    }, () => h(Icon, {
       name: 'tabler:chevron-right',
       class: 'transition-transform duration-200 ease-in-out',
       style: {
@@ -124,10 +124,10 @@ export function expandButton(options: {
     })),
     content: () => h('div', { class: 'flex gap-2' }, [
       options.content,
-      h(KbdGroup, [
-        h(Kbd, 'MOD'),
+      h(KbdGroup, () => [
+        h(Kbd, () => 'MOD'),
         h('span', { class: 'text-muted-foreground' }, '+'),
-        h(Kbd, '⏎'),
+        h(Kbd, () => '⏎'),
       ]),
     ]),
   })
