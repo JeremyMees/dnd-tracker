@@ -168,6 +168,7 @@ async function addInitiative(options: {
     ...(options.initiative && options.initiative_modifier ? { initiative: +options.initiative + +options.initiative_modifier } : {}),
     ...(options.initiative && !options.initiative_modifier ? { initiative: +options.initiative } : {}),
     ...(sum ? { summoner: { name: sum.name, id: sum.id } } : {}),
+    ...(isDefined(options.initiative_modifier) ? { initiative_modifier: +options.initiative_modifier } : {}),
   }
 
   const rows = [...props.sheet.rows]
