@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LangSwitcher > Should match snapshot 1`] = `
+"<div class="flex items-center justify-between gap-2"><span class="iconify i-tabler:world size-3 min-w-3" aria-hidden="true"></span><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-0" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">English</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+  <!--teleport start-->
+  <!--teleport end-->
+  <!--v-if-->
+</div>"
+`;
