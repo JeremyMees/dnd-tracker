@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Summary > Should match snapshot 1`] = `
+"<div class="group relative">
+  <h2 class="pb-4 relative max-w-max">Test Title</h2>
+  <ul>
+    <li class="flex items-center gap-4" style="transform: translateX(-50px); opacity: 0;"><img src="/art/coin.svg" loading="lazy" alt="Coin" class="w-6 h-6"><span class="text-muted-foreground">Item 1</span></li>
+    <li class="flex items-center gap-4" style="transform: translateX(-50px); opacity: 0;"><img src="/art/coin.svg" loading="lazy" alt="Coin" class="w-6 h-6"><span class="text-muted-foreground">Item 2</span></li>
+    <li class="flex items-center gap-4" style="transform: translateX(-50px); opacity: 0;"><img src="/art/coin.svg" loading="lazy" alt="Coin" class="w-6 h-6"><span class="text-muted-foreground">Item 3</span></li>
+  </ul>
+</div>"
+`;
