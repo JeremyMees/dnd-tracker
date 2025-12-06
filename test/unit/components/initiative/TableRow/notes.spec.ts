@@ -26,10 +26,11 @@ describe('Initiative table row notes', async () => {
   beforeEach(() => {
     mockUpdate.mockClear()
     mockSheet.value = sheet
-    vi.useFakeTimers()
   })
 
-  afterEach(() => vi.useRealTimers())
+  afterEach(() => {
+    vi.useRealTimers()
+  })
 
   it('Should match snapshot', async () => {
     const component = await mountSuspended(Notes, { props, provide })
@@ -60,16 +61,17 @@ describe('Initiative table row notes', async () => {
   })
 
   it('Should debounce note updates', async () => {
+    vi.useFakeTimers()
     const component = await mountSuspended(Notes, { props, provide })
     const textarea = component.find('textarea')
 
     await textarea.setValue('New note')
     expect(mockUpdate).not.toHaveBeenCalled()
 
-    vi.advanceTimersByTime(400)
+    await vi.advanceTimersByTimeAsync(400)
     expect(mockUpdate).not.toHaveBeenCalled()
 
-    vi.advanceTimersByTime(100)
+    await vi.advanceTimersByTimeAsync(100)
     expect(mockUpdate).toHaveBeenCalledWith({
       rows: expect.arrayContaining([
         expect.objectContaining({
@@ -81,6 +83,7 @@ describe('Initiative table row notes', async () => {
   })
 
   it('Should not update when sheet is undefined', async () => {
+    vi.useFakeTimers()
     mockSheet.value = undefined as any
 
     const component = await mountSuspended(Notes, {
@@ -89,7 +92,7 @@ describe('Initiative table row notes', async () => {
     })
 
     await component.find('textarea').setValue('New note')
-    vi.advanceTimersByTime(500)
+    await vi.advanceTimersByTimeAsync(500)
 
     expect(mockUpdate).not.toHaveBeenCalled()
   })
