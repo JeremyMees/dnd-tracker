@@ -1,0 +1,56 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SkeletonInitiativeTableRow > Should match snapshot 1`] = `
+"<tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary">
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 max-w-20 p-2">
+    <div class="flex gap-2">
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+    </div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="flex gap-2">
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+      <div class="animate-pulse bg-muted w-[160px] h-5 rounded-full"></div>
+    </div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="animate-pulse bg-muted h-7 w-20 rounded-full"></div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="animate-pulse bg-muted h-10 min-w-[150px] rounded-lg"></div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="grid gap-1 w-fit mx-auto">
+      <div class="grid grid-cols-3 gap-1 w-14">
+        <div class="animate-pulse bg-muted size-4 rounded"></div>
+        <div class="animate-pulse bg-muted size-4 rounded"></div>
+        <div class="animate-pulse bg-muted size-4 rounded"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-1 w-14">
+        <div class="animate-pulse bg-muted size-4 rounded"></div>
+        <div class="animate-pulse bg-muted size-4 rounded"></div>
+        <div class="animate-pulse bg-muted size-4 rounded"></div>
+      </div>
+    </div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="animate-pulse bg-muted size-5 rounded-full"></div>
+  </td>
+  <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+    <div class="flex justify-end gap-1">
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+    </div>
+  </td>
+</tr>"
+`;

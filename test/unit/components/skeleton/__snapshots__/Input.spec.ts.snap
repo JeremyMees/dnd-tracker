@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SkeletonInput > Should match snapshot 1`] = `
+"<div class="flex flex-col gap-y-1">
+  <div class="animate-pulse bg-muted w-[60px] h-5 rounded-full"></div>
+  <div class="animate-pulse bg-muted w-full h-10 rounded-lg"></div>
+</div>"
+`;
