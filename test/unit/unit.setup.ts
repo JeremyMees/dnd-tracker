@@ -25,6 +25,11 @@ config.global.stubs = {
   },
 }
 
+// Disable payload extraction in tests
+vi.mock('#app/plugins/payload.client', () => ({
+  default: () => {},
+}))
+
 mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
   locale: { value: 'en' },
