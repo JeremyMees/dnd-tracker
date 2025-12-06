@@ -35,7 +35,7 @@ describe('LimitCta', async () => {
     cookieValue.value = undefined
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
-    await vi.advanceTimersByTimeAsync(50)
+    await vi.advanceTimersByTimeAsync(100)
     await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBe(true)
@@ -49,7 +49,7 @@ describe('LimitCta', async () => {
 
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
-    await vi.advanceTimersByTimeAsync(50)
+    await vi.advanceTimersByTimeAsync(100)
     await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBe(true)
@@ -63,7 +63,7 @@ describe('LimitCta', async () => {
 
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
-    await vi.advanceTimersByTimeAsync(50)
+    await vi.advanceTimersByTimeAsync(100)
     await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBe(false)
