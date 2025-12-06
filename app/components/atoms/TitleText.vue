@@ -35,6 +35,7 @@ withDefaults(
     </Motion>
     <Motion
       v-if="buttonLink && buttonLabel"
+      data-test-button
       as="div"
       :initial="{ transform: 'translateX(-50px)', opacity: 0 }"
       :in-view="{ transform: 'translateX(0px)', opacity: 1 }"
@@ -42,7 +43,10 @@ withDefaults(
       :class="[center ? 'justify-center' : 'justify-start']"
       class="flex mt-6"
     >
-      <NuxtLinkLocale :to="buttonLink">
+      <NuxtLinkLocale
+        data-test-link
+        :to="buttonLink"
+      >
         <UiButton
           class="w-fit"
           :aria-label="buttonLabel"
