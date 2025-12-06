@@ -85,10 +85,11 @@ describe('Initiative table', () => {
     expect(component.html()).toMatchSnapshot()
   })
 
-  it('Should display table rows when data is available', async () => {
+  it('Should display table rows when data is available and widgets section', async () => {
     const component = await mountSuspended(Table, { props, provide })
 
     expect(component.findAll('[data-test-row]').length).toBe(sheet.rows.length)
+    expect(component.find('[data-test-widgets]').exists()).toBeTruthy()
   })
 
   it('Should display loading state when loading is true', async () => {
@@ -116,14 +117,13 @@ describe('Initiative table', () => {
     expect(component.find('[data-test-empty-state]').exists()).toBeTruthy()
   })
 
-  it('Should display widgets section', async () => {
-    const component = await mountSuspended(Table, { props, provide })
-
-    expect(component.find('[data-test-widgets]').exists()).toBeTruthy()
-  })
-
   describe('Table padding', () => {
-    it('Should handle compact spacing', async () => {
+    it('Should handle all spacing variants', async () => {
+      // Test normal spacing (default)
+      const component = await mountSuspended(Table, { props, provide })
+      expect(component.findAll('.p-2').length).toBeGreaterThan(0)
+
+      // Test compact spacing
       mockSheet.value = {
         ...sheet,
         settings: {
@@ -131,13 +131,10 @@ describe('Initiative table', () => {
           spacing: 'compact',
         } as InitiativeSheet['settings'],
       }
-
-      const component = await mountSuspended(Table, { props, provide })
-
+      await nextTick()
       expect(component.findAll('.p-1').length).toBeGreaterThan(0)
-    })
 
-    it('Should handle cozy spacing', async () => {
+      // Test cozy spacing
       mockSheet.value = {
         ...sheet,
         settings: {
@@ -145,24 +142,29 @@ describe('Initiative table', () => {
           spacing: 'cozy',
         } as InitiativeSheet['settings'],
       }
-
-      const component = await mountSuspended(Table, { props, provide })
-
+      await nextTick()
       expect(component.findAll('.p-4').length).toBeGreaterThan(0)
-    })
-
-    it('Should handle normal spacing', async () => {
-      const component = await mountSuspended(Table, { props, provide })
-
-      expect(component.findAll('.p-2').length).toBeGreaterThan(0)
     })
   })
 
   describe('Column visibility', () => {
-    it('Should show all columns by default', async () => {
+    it('Should show all columns by default and update when settings change', async () => {
       const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('[data-test-header]').length).toBe(10)
+
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: ['index', 'name', 'initiative'],
+        } as InitiativeSheet['settings'],
+      }
+
+      await nextTick()
+
+      expect(component.findAll('[data-test-header]').length).toBe(3)
     })
 
     it('Should hide columns based on settings', async () => {
@@ -178,25 +180,6 @@ describe('Initiative table', () => {
       const component = await mountSuspended(Table, { props, provide })
 
       expect(component.findAll('[data-test-header]').length).toBe(5)
-    })
-
-    it('Should update visible columns when settings change', async () => {
-      const component = await mountSuspended(Table, { props, provide })
-
-      expect(component.findAll('[data-test-header]').length).toBe(10)
-
-      mockSheet.value = {
-        ...sheet,
-        settings: {
-          ...sheet.settings,
-          modified: true,
-          rows: ['index', 'name', 'initiative'],
-        } as InitiativeSheet['settings'],
-      }
-
-      const updatedComponent = await mountSuspended(Table, { props, provide })
-
-      expect(updatedComponent.findAll('[data-test-header]').length).toBe(3)
     })
 
     it('Should maintain column visibility state after row expansion', async () => {
@@ -215,27 +198,26 @@ describe('Initiative table', () => {
       const expandButton = firstRow.find('button[arialabel="actions.show"]')
 
       await expandButton.trigger('click')
+      await nextTick()
 
       expect(component.findAll('[data-test-header]').length).toBe(3)
     })
   })
 
-  it('Should handle row selection', async () => {
+  it('Should handle row selection and expansion', async () => {
     const component = await mountSuspended(Table, { props, provide })
 
+    // Test row selection
     const firstRow = component.find('[data-test-row]')
     await firstRow.trigger('click')
+    await nextTick()
 
     expect(firstRow.attributes('data-state')).toBe('selected')
-  })
 
-  it('Should handle row expansion', async () => {
-    const component = await mountSuspended(Table, { props, provide })
-
-    const firstRow = component.find('[data-test-row]')
+    // Test row expansion
     const expandButton = firstRow.find('button[arialabel="actions.show"]')
-
     await expandButton.trigger('click')
+    await nextTick()
 
     expect(component.find('[data-test-expanded]').exists()).toBeTruthy()
   })

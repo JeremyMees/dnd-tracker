@@ -36,6 +36,7 @@ describe('LimitCta', async () => {
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
     await vi.advanceTimersByTimeAsync(50)
+    await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBe(true)
   })
@@ -49,6 +50,7 @@ describe('LimitCta', async () => {
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
     await vi.advanceTimersByTimeAsync(50)
+    await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBe(true)
   })
@@ -62,6 +64,7 @@ describe('LimitCta', async () => {
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
     await vi.advanceTimersByTimeAsync(50)
+    await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBe(false)
   })
@@ -90,6 +93,7 @@ describe('LimitCta', async () => {
     expect(component.find('[data-test-cta]').exists()).toBeTruthy()
 
     await vi.advanceTimersByTimeAsync(10000)
+    await nextTick()
 
     expect(component.find('[data-test-cta]').exists()).toBeFalsy()
   })
@@ -108,10 +112,12 @@ describe('LimitCta', async () => {
 
     // After 5 more seconds (10 total from first show, 5 from second), should still be visible
     await vi.advanceTimersByTimeAsync(5000)
+    await nextTick()
     expect(component.find('[data-test-cta]').exists()).toBeTruthy()
 
     // After another 5 seconds (10 from second show), should be hidden
     await vi.advanceTimersByTimeAsync(5000)
+    await nextTick()
     expect(component.find('[data-test-cta]').exists()).toBeFalsy()
   })
 })

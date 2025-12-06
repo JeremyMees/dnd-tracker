@@ -25,7 +25,9 @@ export function useCoolDown() {
     Object.keys(coolDowns).forEach(key => delete coolDowns[key])
   }
 
-  onBeforeUnmount(() => clearAllCoolDowns())
+  if (getCurrentInstance()) {
+    onBeforeUnmount(() => clearAllCoolDowns())
+  }
 
   const isInCoolDown = (id: number): boolean => !!coolDowns[id] && coolDowns[id].seconds > 0
   const getRemainingTime = (id: number) => coolDowns[id]?.seconds || 0
