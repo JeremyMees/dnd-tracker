@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import PinnedContent from '~/components/initiative/Widgets/PinnedContent.vue'
+import PinnedContent from '~/components/initiative/Widgets/PinnedContent'
 import open5eItem from '~~/test/unit/fixtures/open5e-item.json'
 
 interface Props { value: Open5eItem[] }

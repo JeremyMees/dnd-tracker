@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended, mockComponent } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import TabItem from '~/components/atoms/TabItem.vue'
+import TabItem from '~/components/atoms/TabItem'
 
 interface Props {
   link: string

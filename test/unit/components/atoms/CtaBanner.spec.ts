@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
-import CtaBanner from '~/components/atoms/CtaBanner.vue'
+import CtaBanner from '~/components/atoms/CtaBanner'
 
 const userRef = ref<{ id: string }>(null)
 

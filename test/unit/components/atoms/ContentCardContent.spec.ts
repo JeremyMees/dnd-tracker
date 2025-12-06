@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
-import ContentCardContent from '~/components/atoms/ContentCardContent.vue'
+import ContentCardContent from '~/components/atoms/ContentCardContent'
 import open5eItem from '~~/test/unit/fixtures/open5e-item.json'
 
 interface Props {

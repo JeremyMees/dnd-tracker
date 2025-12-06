@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import AvatarPicker from '~/components/atoms/AvatarPicker.vue'
+import AvatarPicker from '~/components/atoms/AvatarPicker'
 import type { AvatarVariants } from '~/components/ui/avatar'
 import type { Avatar } from '~/composables/useAvatar'
 import { defaultAvatar } from '~~/constants/default-avatar'

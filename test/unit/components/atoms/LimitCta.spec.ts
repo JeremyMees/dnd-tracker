@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import LimitCta from '~/components/atoms/LimitCta.vue'
+import LimitCta from '~/components/atoms/LimitCta'
 
 const stubs = {
   AnimationExpand: {

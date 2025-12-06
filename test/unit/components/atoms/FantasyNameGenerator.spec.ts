@@ -1,7 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import * as dndHelpers from '~/utils/dnd-helpers'
-import FantasyNameGenerator from '~/components/atoms/FantasyNameGenerator.vue'
+import FantasyNameGenerator from '~/components/atoms/FantasyNameGenerator'
 
 interface Props {
   amount: number

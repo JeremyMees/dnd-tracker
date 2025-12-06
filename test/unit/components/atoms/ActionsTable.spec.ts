@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import ActionsTable from '~/components/atoms/ActionsTable.vue'
+import ActionsTable from '~/components/atoms/ActionsTable'
 
 interface Props {
   actions?: (Action | ActionOpen5E)[]

@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import MonsterCard from '~/components/molecules/MonsterCard.vue'
+import MonsterCard from '~/components/molecules/MonsterCard'
 import open5eItem from '~~/test/unit/fixtures/open5e-item.json'
 
 interface Props {

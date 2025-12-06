@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
-import CreateButton from '~/components/atoms/CreateButton.vue'
+import CreateButton from '~/components/atoms/CreateButton'
 
 interface Props {
   allowCreate: boolean

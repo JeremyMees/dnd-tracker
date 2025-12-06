@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import Conditions from '~/components/initiative/TableRow/Conditions.vue'
+import Conditions from '~/components/initiative/TableRow/Conditions'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 import conditions from '~~/test/unit/fixtures/conditions.json'

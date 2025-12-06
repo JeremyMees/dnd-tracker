@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import Card from '~/components/atoms/Card.vue'
+import Card from '~/components/atoms/Card'
 
 describe('Card', () => {
   it('Should render correctly with default props', async () => {

@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
-import CookieBanner from '~/components/atoms/CookieBanner.vue'
+import CookieBanner from '~/components/atoms/CookieBanner'
 
 const cookiesConsentRef = ref<boolean | undefined>(undefined)
 const cookiesSetRef = ref<boolean | undefined>(undefined)

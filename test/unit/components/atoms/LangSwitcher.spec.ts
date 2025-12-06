@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
-import LangSwitcher from '~/components/atoms/LangSwitcher.vue'
+import LangSwitcher from '~/components/atoms/LangSwitcher'
 import { Select } from '~/components/ui/select'
 
 const localeRef = ref('en')

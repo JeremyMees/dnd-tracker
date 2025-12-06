@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import Pagination from '~/components/atoms/Pagination.vue'
+import Pagination from '~/components/atoms/Pagination'
 import { Pagination as UiPagination } from '~/components/ui/pagination'
 
 const props = {
