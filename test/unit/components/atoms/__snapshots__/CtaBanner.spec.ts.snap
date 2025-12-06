@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CtaBanner > Should match snapshot 1`] = `
+"<div class="dnd-container max-w-[1600px] relative">
+  <div class="grid lg:grid-cols-2 gap-8 p-6 md:p-12 bg-primary/20 backdrop-blur-lg rounded-[32px] overflow-hidden transition-colors duration-300">
+    <div class="max-w-prose relative z-1">
+      <p class="head-1 mb-4 text-foreground">Test Title</p>
+      <p class="pb-8 text-muted-foreground">Test Subtitle</p><a href="/login" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-tertiary/50 hover:bg-tertiary/60 border-tertiary text-foreground shadow-sm h-10 px-4 py-2" data-test-link="">Test Button</a>
+    </div>
+    <div class="relative -bottom-10 left-12 md:-bottom-16 flex justify-end"><img width="2978" height="1502" data-nuxt-img="" sizes="(max-width: 768px) 1000px, (max-width: 1024px) 1000px, 1000px" srcset="https://ik.imagekit.io/c2es1qasw/campaign.png?tr=w-1000,h-504,q-90 1000w, https://ik.imagekit.io/c2es1qasw/campaign.png?tr=w-2000,h-1008,q-90 2000w" alt="Cta Banner" class="rounded-lg" loading="lazy" src="https://ik.imagekit.io/c2es1qasw/campaign.png?tr=w-2000,h-1008,q-90"></div>
+    <div class="absolute inset-0 tracker-shadow-inset border-4 border-primary rounded-[32px]"></div>
+  </div>
+</div>"
+`;

@@ -23,6 +23,7 @@ const { user } = useAuthentication()
           as-child
         >
           <NuxtLinkLocale
+            data-test-link
             :to="user ? '/pricing' : '/login'"
             :style="false"
           >
