@@ -4,6 +4,9 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,
+  $md: {
+    render: (mdText: string) => mdText,
+  },
 }
 
 config.global.directives = {
