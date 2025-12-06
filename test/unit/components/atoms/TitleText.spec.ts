@@ -8,8 +8,8 @@ const props = {
 }
 
 const slots = {
-  default: 'Test Title',
-  text: 'This is a description text.',
+  default: () => 'Test Title',
+  text: () => 'This is a description text.',
 }
 
 describe('TitleText', async () => {

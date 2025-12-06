@@ -11,7 +11,7 @@ describe('Card', () => {
   it('Should render slot content', async () => {
     const component = await mountSuspended(Card, {
       slots: {
-        default: '<p>Card content</p>',
+        default: () => '<p>Card content</p>',
       },
     })
 
