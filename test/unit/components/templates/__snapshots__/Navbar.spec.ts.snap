@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Navbar > Should match snapshot 1`] = `
+"<nav class="bg-transparent backdrop-blur-none transition-all duration-500">
+  <div class="container-max p-4 flex justify-between items-center gap-4"><a href="/"><img width="356" height="125" data-nuxt-img="" sizes="(max-width: 768px) 500px, (max-width: 1024px) 500px, 500px" srcset="https://ik.imagekit.io/c2es1qasw/logo.svg?tr=w-500,h-176,q-90 500w, https://ik.imagekit.io/c2es1qasw/logo.svg?tr=w-1000,h-352,q-90 1000w" alt="DnD Tracker logo" class="w-[150px]" src="https://ik.imagekit.io/c2es1qasw/logo.svg?tr=w-1000,h-352,q-90"></a>
+    <div class="flex justify-end items-center gap-4">
+      <div class="hidden md:flex items-center gap-4">
+        <nav data-slot="navigation-menu" data-viewport="true" class="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center" aria-label="Main" data-orientation="horizontal" dir="ltr" data-reka-navigation-menu="">
+          <div style="position: relative;">
+            <ul data-slot="navigation-menu-list" class="group flex flex-1 list-none items-center justify-center gap-1" data-orientation="horizontal">
+              <li data-menu-item="" data-slot="navigation-menu-item" class="relative"><a href="/" custom=""><a data-slot="navigation-menu-link" class="data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground ring-ring/10 outline-ring/50 [&amp;_svg:not([class*='text-'])]:text-muted-foreground flex-col gap-1 p-2 [&amp;_svg:not([class*='size-'])]:size-4 group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:focus:bg-accent data-[state=open]:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1" data-reka-collection-item="">home</a></a></li>
+              <li data-menu-item="" data-slot="navigation-menu-item" class="relative"><button data-reka-collection-item="" id="reka-navigation-menu-v-0-0-0-trigger-reka-v-0-0-2" data-state="closed" data-navigation-menu-trigger="" aria-expanded="false" aria-controls="reka-navigation-menu-v-0-0-0-content-reka-v-0-0-2" data-slot="navigation-menu-trigger" icon="true" styled="true" class="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 text-sm font-medium hover:text-accent-foreground focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:text-accent-foreground focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 group mx-1 border-primary border-4 py-1 bg-primary/50 focus:bg-primary hover:bg-primary/60 data-active:bg-primary/50 data-[state=open]:hover:bg-primary/50 data-[state=open]:focus:bg-primary/50 data-[state=open]:bg-primary/50">components.navbar.play<span class="iconify i-tabler:chevron-down relative top-px ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" aria-hidden="true"></span></button>
+                <!--v-if-->
+                <!--teleport start-->
+                <!---->
+                <!--teleport end-->
+              </li>
+              <li data-menu-item="" data-slot="navigation-menu-item" class="relative"><button data-reka-collection-item="" id="reka-navigation-menu-v-0-0-0-trigger-reka-v-0-0-3" data-state="closed" data-navigation-menu-trigger="" aria-expanded="false" aria-controls="reka-navigation-menu-v-0-0-0-content-reka-v-0-0-3" data-slot="navigation-menu-trigger" icon="false" styled="false" class="size-12"><span class="inline-flex items-center justify-center font-normal text-foreground select-none shrink-0 bg-secondary overflow-hidden h-12 w-12 text-2xl rounded-full border-tertiary border-4"><img role="img" src="/avatar.png" class="h-full w-full object-cover scale-x-[-1]" alt="Avatar image" style="display: none;"><span class="h-6"><span class="iconify i-tabler:user size-6 min-w-6 text-muted-foreground" aria-hidden="true"></span></span></span>
+                  <!--v-if-->
+                </button>
+                <!--v-if-->
+                <!--teleport start-->
+                <!---->
+                <!--teleport end-->
+              </li>
+            </ul>
+          </div>
+          <div class="absolute top-full left-0 isolate z-50 flex justify-center">
+            <!---->
+          </div>
+        </nav>
+      </div><button class="outline-none md:hidden" id="reka-dropdown-menu-trigger-v-0-0-4" type="button" aria-haspopup="menu" aria-expanded="false" data-state="closed"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm size-10" aria-label="Open menu"><span class="iconify i-tabler:menu-2" aria-hidden="true"></span></button></button>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+</nav>"
+`;
