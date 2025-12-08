@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ListInput > Should match snapshot 1`] = `
+"<div class="space-y-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" data-test-label="">label
+    <!--v-if-->
+  </label>
+  <div class="flex flex-col gap-2"></div><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-foreground hover:text-background h-8 rounded-md px-3 text-xs" data-test-add="" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.addAnother</button>
+</div>"
+`;

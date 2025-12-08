@@ -38,6 +38,7 @@ function moveDown(index: number) {
     <div class="flex items-end justify-between gap-2">
       <UiLabel
         v-if="label"
+        data-test-label
         :required="required"
       >
         {{ label }}
