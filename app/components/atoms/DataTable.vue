@@ -38,6 +38,13 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => props.permission,
+  async () => {
+    if (props.data?.length) await fetchPermissions()
+  },
+)
+
 const table = useVueTable({
   ...props.options,
   data: computed(() => props.data),
