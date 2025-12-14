@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SkeletonMonsterCard > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-background/50 border-4 border-background">
+  <div class="flex flex-col gap-y-1.5 p-6">
+    <h3 class="text-2xl font-semibold leading-none tracking-tight">
+      <div class="animate-pulse rounded-md bg-muted w-[120px] h-7"></div>
+    </h3>
+    <div class="flex gap-4 mt-1">
+      <div class="animate-pulse rounded-md bg-muted w-10 h-6"></div>
+      <div class="animate-pulse rounded-md bg-muted w-10 h-6"></div>
+      <div class="animate-pulse rounded-md bg-muted w-10 h-6"></div>
+    </div>
+  </div>
+  <div class="p-6 pt-0">
+    <div class="animate-pulse rounded-md bg-muted w-full h-16"></div>
+  </div>
+  <div class="flex items-center p-6 pt-0">
+    <div class="flex justify-end w-full">
+      <div class="animate-pulse rounded-md bg-muted w-[120px] h-7"></div>
+    </div>
+  </div>
+</div>"
+`;

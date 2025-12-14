@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, beforeEach, vi } from 'vitest'
-import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
+import DnDContentSearch from '~/components/templates/DnDContentSearch'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 import open5eItem from '~~/test/unit/fixtures/open5e-item.json'
 import armorListing from '~~/test/unit/fixtures/armor-listing.json'
@@ -87,7 +87,9 @@ describe('DnDContentSearch', async () => {
   it('Should show only pinned items', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
+    vi.useFakeTimers()
     await component.find('[data-test-pin-toggle]').trigger('click')
+    await vi.advanceTimersByTimeAsync(600)
 
     const grid = component.find('[data-test-content-grid]')
 
@@ -98,7 +100,9 @@ describe('DnDContentSearch', async () => {
   it('Should handle remove pins', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
+    vi.useFakeTimers()
     await component.find('[data-test-remove-pins]').trigger('click')
+    await vi.advanceTimersByTimeAsync(600)
 
     expect(mockUpdate).toHaveBeenCalledWith({
       info_cards: [],
@@ -117,8 +121,10 @@ describe('DnDContentSearch', async () => {
       },
     })
 
+    vi.useFakeTimers()
     const contentCard = component.findComponent({ name: 'ContentCard' })
     await contentCard.vm.$emit('pin', open5eItem)
+    await vi.advanceTimersByTimeAsync(600)
 
     expect(mockToast).toHaveBeenCalledWith({
       title: expect.stringMatching('components.dndContentSearch.toast.maxTitle'),

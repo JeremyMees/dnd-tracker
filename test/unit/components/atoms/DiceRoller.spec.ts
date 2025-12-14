@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
-import DiceRoller from '~/components/atoms/DiceRoller.vue'
+import DiceRoller from '~/components/atoms/DiceRoller'
 
 interface Props { styled?: boolean }
 

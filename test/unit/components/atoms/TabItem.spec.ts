@@ -1,6 +1,6 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport, mountSuspended, mockComponent } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import TabItem from '~/components/atoms/TabItem.vue'
+import TabItem from '~/components/atoms/TabItem'
 
 interface Props {
   link: string
@@ -15,6 +15,10 @@ const props: Props = {
   label: 'Home',
   disabled: false,
 }
+
+mockComponent('Icon', {
+  template: '<span data-testid="icon" />',
+})
 
 describe('TabItem', async () => {
   mockNuxtImport('useRoute', () => () => ({

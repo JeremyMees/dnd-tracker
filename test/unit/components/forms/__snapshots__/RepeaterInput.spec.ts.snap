@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RepeaterInput > Should match snapshot 1`] = `
+"<div class="space-y-4">
+  <div class="flex items-end justify-between gap-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" data-test-label="">label
+      <!--v-if-->
+    </label><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-8 rounded-md px-3 text-xs" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.add</button></div>
+  <div class="space-y-4">
+    <div class="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg text-sm">components.repeaterInput.noItems</div>
+  </div>
+</div>"
+`;

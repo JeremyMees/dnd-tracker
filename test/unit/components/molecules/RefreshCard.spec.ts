@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import RefreshCard from '~/components/molecules/RefreshCard.vue'
+import RefreshCard from '~/components/molecules/RefreshCard'
 
 describe('RefreshCard', async () => {
   it('Should match snapshot', async () => {

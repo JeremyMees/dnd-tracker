@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import AvatarSelector from '~/components/atoms/AvatarSelector.vue'
+import AvatarSelector from '~/components/atoms/AvatarSelector'
 
 type Identifier = 'backgroundColor' | 'accessories' | 'clothingColor' | 'face' | 'facialHair' | 'head' | 'color'
 

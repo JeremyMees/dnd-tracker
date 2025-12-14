@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SkeletonCampaignTableRow > Should match snapshot 1`] = `
+"<tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary">
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 max-w-6">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted w-[200px] h-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted size-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted size-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted size-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted w-[75px] h-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted w-[80px] h-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="flex justify-end gap-1">
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+      <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+    </div>
+  </td>
+</tr>"
+`;

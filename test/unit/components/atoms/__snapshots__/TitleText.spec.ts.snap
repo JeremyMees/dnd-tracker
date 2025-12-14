@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TitleText > Should match snapshot 1`] = `
+"<div class="group">
+  <h2 class="pb-4 relative max-w-max">Test Title</h2>
+  <p class="max-w-prose text-muted-foreground" style="transform: translateX(-50px); opacity: 0;">This is a description text.</p>
+  <div data-test-button="" class="justify-start flex mt-6" style="transform: translateX(-50px); opacity: 0;"><a href="/test" data-test-link=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 w-fit" aria-label="Click Me">Click Me</button></a></div>
+</div>"
+`;

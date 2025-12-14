@@ -1,4 +1,4 @@
-function urlMatches(url: string, patterns: string[]): boolean {
+export function urlMatches(url: string, patterns: string[]): boolean {
   for (const pattern of patterns) {
     const regex = new RegExp(`^${pattern.replace(/\*/g, '.*')}$`)
     if (regex.test(url)) return true

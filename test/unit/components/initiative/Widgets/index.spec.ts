@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
-import Widgets from '~/components/initiative/Widgets/index.vue'
+import Widgets from '~/components/initiative/Widgets/index'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 

@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import Concentration from '~/components/initiative/TableRow/Concentration.vue'
+import Concentration from '~/components/initiative/TableRow/Concentration'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 

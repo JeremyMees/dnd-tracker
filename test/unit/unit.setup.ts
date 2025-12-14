@@ -4,6 +4,9 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,
+  $md: {
+    render: (mdText: string) => mdText,
+  },
 }
 
 config.global.directives = {
@@ -24,6 +27,11 @@ config.global.stubs = {
     template: '<a :href="to"><slot></slot></a>',
   },
 }
+
+// Disable payload extraction in tests
+vi.mock('#app/plugins/payload.client', () => ({
+  default: () => {},
+}))
 
 mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,

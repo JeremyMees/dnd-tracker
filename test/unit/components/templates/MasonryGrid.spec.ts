@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, beforeEach } from 'vitest'
-import MasonryGrid from '~/components/templates/MasonryGrid.vue'
+import MasonryGrid from '~/components/templates/MasonryGrid'
 
 interface Props {
   data: any[]

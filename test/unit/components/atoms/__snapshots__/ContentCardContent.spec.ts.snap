@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContentCardContent > Should render correctly with default props 1`] = `
+"<!--v-if-->
+<!--v-if-->
+<!--v-if-->"
+`;

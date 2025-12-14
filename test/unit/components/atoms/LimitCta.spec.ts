@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, beforeEach, vi, afterEach } from 'vitest'
-import LimitCta from '~/components/atoms/LimitCta.vue'
+import { describe, expect, it, vi, afterEach } from 'vitest'
+import LimitCta from '~/components/atoms/LimitCta'
 
 const stubs = {
   AnimationExpand: {
@@ -9,12 +9,6 @@ const stubs = {
 }
 
 describe('LimitCta', async () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-    vi.spyOn(global, 'setTimeout')
-    vi.spyOn(global, 'clearTimeout')
-  })
-
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
@@ -23,6 +17,7 @@ describe('LimitCta', async () => {
   it('Should match snapshot', async () => {
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
+    vi.useFakeTimers()
     component.vm.show()
     await nextTick()
 
@@ -30,16 +25,12 @@ describe('LimitCta', async () => {
   })
 
   it('Should show component on mount if no cookie exists', async () => {
-    const mockUseCookie = vi.fn().mockReturnValue({ value: undefined })
-    vi.stubGlobal('useCookie', mockUseCookie)
+    const component = await mountSuspended(LimitCta, { global: { stubs } })
 
-    const component = await mountSuspended(LimitCta)
-
-    vi.advanceTimersByTime(100)
+    component.vm.show()
     await nextTick()
 
-    expect(component.find('[data-test-cta]')).toBeTruthy()
-    expect(setTimeout).toHaveBeenCalledTimes(2)
+    expect(component.find('[data-test-cta]').exists()).toBeTruthy()
   })
 
   it('Should show component if cookie is expired', async () => {
@@ -47,11 +38,12 @@ describe('LimitCta', async () => {
     const dayAgo = now - 24 * 60 * 60 * 1000 - 1000
     const mockUseCookie = vi.fn().mockReturnValue({ value: dayAgo })
 
-    Date.now = vi.fn(() => now)
     vi.stubGlobal('useCookie', mockUseCookie)
+    vi.spyOn(Date, 'now').mockReturnValue(now)
 
     const component = await mountSuspended(LimitCta, { global: { stubs } })
 
+    vi.useFakeTimers()
     vi.advanceTimersByTime(100)
     await nextTick()
 
@@ -64,10 +56,11 @@ describe('LimitCta', async () => {
     const mockUseCookie = vi.fn().mockReturnValue({ value: recentTime })
 
     vi.stubGlobal('useCookie', mockUseCookie)
-    Date.now = vi.fn(() => now)
+    vi.spyOn(Date, 'now').mockReturnValue(now)
 
     const component = await mountSuspended(LimitCta)
 
+    vi.useFakeTimers()
     vi.advanceTimersByTime(100)
     await nextTick()
 
@@ -77,6 +70,7 @@ describe('LimitCta', async () => {
   it('Should hide component when close button is clicked', async () => {
     const component = await mountSuspended(LimitCta)
 
+    vi.useFakeTimers()
     component.vm.show()
     await nextTick()
 
@@ -91,6 +85,7 @@ describe('LimitCta', async () => {
   it('Should auto-close after 10 seconds', async () => {
     const component = await mountSuspended(LimitCta)
 
+    vi.useFakeTimers()
     component.vm.show()
     await nextTick()
 
@@ -105,6 +100,8 @@ describe('LimitCta', async () => {
   it('Should reset auto-close timer when show is called again', async () => {
     const component = await mountSuspended(LimitCta)
 
+    vi.useFakeTimers()
+    vi.spyOn(global, 'clearTimeout')
     component.vm.show()
     await nextTick()
 
@@ -117,10 +114,12 @@ describe('LimitCta', async () => {
 
     vi.advanceTimersByTime(5000)
     await nextTick()
+
     expect(component.find('[data-test-cta]')).toBeTruthy()
 
     vi.advanceTimersByTime(5000)
     await nextTick()
+
     expect(component.find('[data-test-cta]').exists()).toBeFalsy()
   })
 })

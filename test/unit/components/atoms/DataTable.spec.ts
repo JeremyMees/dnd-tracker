@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { describe, expect, it, vi } from 'vitest'
-import DataTable from '~/components/atoms/DataTable.vue'
+import DataTable from '~/components/atoms/DataTable'
 import { expandButton, selectButton } from '~~/tables/generate-functions'
 
 interface TestData {

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ActionRoll component > Should match snapshot 1`] = `
+"<button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-tertiary hover:text-tertiary-foreground size-7 group" data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" aria-label="actions.roll"><span class="iconify i-tabler:hexagon text-tertiary group-hover:text-foreground transition-colors" aria-hidden="true"></span></button>
+<!--teleport start-->
+<!--teleport end-->"
+`;

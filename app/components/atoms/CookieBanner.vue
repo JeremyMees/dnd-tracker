@@ -11,6 +11,7 @@ function handleConsent(): void {
 <template>
   <div
     v-if="!cookiesSet"
+    data-test-banner
     class="fixed z-50 flex flex-col items-center justify-center p-6 bg-primary/50 border-4 border-primary backdrop-blur rounded-lg gap-y-6 bottom-4 left-4 right-4 lg:flex-row md:justify-between lg:px-10 md:py-8 md:bottom-10 md:left-10 md:right-10"
   >
     <Icon
@@ -23,12 +24,14 @@ function handleConsent(): void {
     </p>
     <div class="inline-flex gap-x-24 md:gap-x-8">
       <NuxtLinkLocale
+        data-test-cookie
         to="/policies/cookie"
         class="underline whitespace-pre underline-offset-4"
       >
         {{ $t('components.cookieBanner.policy') }}
       </NuxtLinkLocale>
       <button
+        data-test-consent
         class="underline underline-offset-4"
         @click="handleConsent"
       >

@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Card > Should render correctly with default props 1`] = `"<div class="transition-colors duration-300 border-4 rounded-lg p-4 border-black bg-black/50"></div>"`;

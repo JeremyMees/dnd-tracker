@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SkeletonHomebrewTableRow > Should match snapshot 1`] = `
+"<tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary">
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 max-w-6">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 max-w-5">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 flex gap-2">
+    <div class="animate-pulse bg-muted w-[90px] h-5 rounded-lg"></div>
+    <div class="animate-pulse bg-muted w-[200px] h-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted w-[90px] h-6 rounded-lg"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted w-[200px] h-5 rounded-full"></div>
+  </td>
+  <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
+    <div class="animate-pulse bg-muted size-5 rounded-lg"></div>
+  </td>
+</tr>"
+`;

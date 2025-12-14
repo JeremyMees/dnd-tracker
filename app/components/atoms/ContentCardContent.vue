@@ -18,6 +18,7 @@ defineProps<{
   />
   <UiSeparator
     v-if="isOpen && ['spells', 'magicitems'].includes(type)"
+    data-test-separator
     class="mt-1"
   />
   <template v-if="isOpen || hideOpenButton()">

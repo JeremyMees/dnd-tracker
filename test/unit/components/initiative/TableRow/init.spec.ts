@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import Init from '~/components/initiative/TableRow/Init.vue'
+import Init from '~/components/initiative/TableRow/Init'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/unit/fixtures/initiative-sheet'
 
