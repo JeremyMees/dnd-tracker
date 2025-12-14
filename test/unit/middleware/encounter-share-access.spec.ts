@@ -14,7 +14,7 @@ const mockQueryClient = {
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('createError', () => vi.fn(message => new Error(message)))
 
-describe('encounter-share-access middleware', () => {
+describe('Encounter share access middleware', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
