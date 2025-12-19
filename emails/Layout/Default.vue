@@ -36,7 +36,6 @@ withDefaults(
       },
       separator: '',
       safelist: '',
-      experimental: '',
       corePlugins: '',
 
     }"
