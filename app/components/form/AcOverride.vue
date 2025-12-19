@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 
 const formSchema = toTypedSchema(z.object({
-  amount: z.number().min(0).max(100),
+  amount: z.number().min(0).max(1000),
   reset: z.boolean().optional(),
 }))
 
