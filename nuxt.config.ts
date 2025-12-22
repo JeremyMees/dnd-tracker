@@ -88,6 +88,9 @@ export default defineNuxtConfig({
     rollupConfig: {
       plugins: [vue()],
     },
+    devProxy: {
+      '/sw.js': { target: '/sw.js' },
+    },
   },
 
   vite: {
