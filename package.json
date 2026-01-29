@@ -22,7 +22,7 @@
     "pnpm": "please-use-npm",
     "yarn": "please-use-npm",
     "npm": ">=10.0.0",
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.4",
@@ -64,7 +64,7 @@
     "isomorphic-dompurify": "^2.34.0",
     "markdown-it": "^14.1.0",
     "motion-v": "^1.7.4",
-    "nuxt": "^4.2.2",
+    "nuxt": "^4.3.0",
     "nuxt-authorization": "^0.3.5",
     "nuxt-zod-i18n": "^1.12.1",
     "oslo": "^1.2.1",
