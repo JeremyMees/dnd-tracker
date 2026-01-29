@@ -13,7 +13,7 @@ defineProps({
   <div class="flex flex-col items-center min-h-screen">
     <div class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center pt-10">
       <div class="text-[100px] font-black">
-        {{ error!.statusCode }}
+        {{ error!.status }}
       </div>
       <h1 class="text-primary">
         {{ $t('pages.error.404') }}
