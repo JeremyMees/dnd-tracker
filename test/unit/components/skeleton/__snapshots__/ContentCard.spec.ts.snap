@@ -2,15 +2,15 @@
 
 exports[`SkeletonContentCard > Should match snapshot 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-4 border-secondary">
-  <div class="flex flex-col gap-y-1.5 p-6">
+  <div class="flex flex-col gap-y-1.5 p-4">
     <h3 class="text-2xl font-semibold leading-none tracking-tight">
       <div class="animate-pulse rounded-md bg-muted w-[120px] h-7"></div>
     </h3>
   </div>
-  <div class="p-6 pt-0">
+  <div class="p-6 px-4 py-0">
     <div class="animate-pulse rounded-md bg-muted w-full h-16"></div>
   </div>
-  <div class="flex items-center p-6 pt-0">
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
     <div class="flex justify-end w-full">
       <div class="animate-pulse rounded-md bg-muted w-[123px] h-10"></div>
     </div>
@@ -20,15 +20,15 @@ exports[`SkeletonContentCard > Should match snapshot 1`] = `
 
 exports[`SkeletonContentCard > Should match snapshot with variant background 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-background border-4 border-background">
-  <div class="flex flex-col gap-y-1.5 p-6">
+  <div class="flex flex-col gap-y-1.5 p-4">
     <h3 class="text-2xl font-semibold leading-none tracking-tight">
       <div class="animate-pulse rounded-md bg-muted w-[120px] h-7"></div>
     </h3>
   </div>
-  <div class="p-6 pt-0">
+  <div class="p-6 px-4 py-0">
     <div class="animate-pulse rounded-md bg-muted w-full h-16"></div>
   </div>
-  <div class="flex items-center p-6 pt-0">
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
     <div class="flex justify-end w-full">
       <div class="animate-pulse rounded-md bg-muted w-[123px] h-10"></div>
     </div>

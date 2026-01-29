@@ -1,14 +1,14 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import PinnedContent from '~/components/initiative/Widgets/PinnedContent'
-import open5eItem from '~~/test/unit/fixtures/open5e-item.json'
+import { open5eSpellFixture, open5eArmorFixture } from '~~/test/unit/fixtures/open5e'
 
 interface Props { value: Open5eItem[] }
 
 const props: Props = {
   value: [
-    open5eItem as unknown as Open5eItem,
-    open5eItem as unknown as Open5eItem,
+    open5eSpellFixture,
+    open5eArmorFixture,
   ],
 }
 

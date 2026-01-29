@@ -78,6 +78,8 @@
     "generateName": "Naam genereren"
   },
   "general": {
+    "yes": "Ja",
+    "no": "Nee",
     "actions": "Acties",
     "version": "Versie",
     "advantage": "Advantage",
@@ -655,6 +657,8 @@
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
     },
     "inputs": {
+      "gameSystemLabel": "Game system",
+      "systemDocumentLabel": "Geselecteerde systeem documenten",
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Doelwit",

@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import MonsterCard from '~/components/molecules/MonsterCard'
-import open5eItem from '~~/test/unit/fixtures/open5e-item.json'
+import { open5eMonsterFixture } from '~~/test/unit/fixtures/open5e'
 
 interface Props {
   monster: Open5eItem
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const props: Props = {
-  monster: open5eItem as unknown as Open5eItem,
+  monster: open5eMonsterFixture,
   addable: false,
 }
 

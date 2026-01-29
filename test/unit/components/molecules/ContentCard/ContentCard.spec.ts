@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCard from '~/components/molecules/ContentCard'
-import hit from '~~/test/unit/fixtures/open5e-item.json'
+import { open5eSpellFixture } from '~~/test/unit/fixtures/open5e'
 
 interface Props {
   hit: Open5eItem
@@ -12,8 +12,8 @@ interface Props {
 }
 
 const props: Props = {
-  hit: hit as unknown as Open5eItem,
-  type: 'monsters',
+  hit: open5eSpellFixture,
+  type: 'spells',
   allowPin: false,
   pinned: false,
   variant: 'secondary',
@@ -30,7 +30,7 @@ describe('ContentCard', async () => {
     const component = await mountSuspended(ContentCard, { props })
 
     expect(component.find('[data-test-pin]').exists()).toBeFalsy()
-    expect(component.find('[data-test-title]').text()).toBe(hit.name)
+    expect(component.find('[data-test-title]').text()).toBe(open5eSpellFixture.name)
   })
 
   it('Should show pin button when allowPin is true', async () => {

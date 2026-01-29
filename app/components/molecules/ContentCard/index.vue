@@ -16,10 +16,6 @@ const props = withDefaults(
 )
 
 const isOpen = ref<boolean>(false)
-
-function hideOpenButton(): boolean {
-  return props.type === 'weapons' || props.type === 'armor'
-}
 </script>
 
 <template>
@@ -31,7 +27,7 @@ function hideOpenButton(): boolean {
     class="relative border-4"
     @dblclick="isOpen = !isOpen"
   >
-    <UiCardHeader>
+    <UiCardHeader class="p-4">
       <UiButton
         v-if="allowPin"
         v-tippy="{
@@ -52,21 +48,41 @@ function hideOpenButton(): boolean {
           aria-hidden="true"
         />
       </UiButton>
-      <UiCardTitle data-test-title>
+      <UiCardTitle
+        data-test-title
+        class="overflow-hidden text-ellipsis"
+      >
         {{ hit.name }}
       </UiCardTitle>
     </UiCardHeader>
-    <UiCardContent>
-      <ContentCardContent
+    <UiCardContent class="px-4 py-0">
+      <ContentCardSpell
+        v-if="isSpell(hit)"
+        data-test-spell
         :content="hit"
         :is-open="isOpen"
-        :hide-open-button="hideOpenButton"
-        :type="type"
+      />
+      <ContentCardMagicItem
+        v-if="isMagicItem(hit)"
+        data-test-magic-item
+        :content="hit"
+        :is-open="isOpen"
+      />
+      <ContentCardWeapon
+        v-if="isWeapon(hit)"
+        data-test-weapon
+        :content="hit"
+        :is-open="isOpen"
+      />
+      <ContentCardArmor
+        v-if="isArmor(hit)"
+        data-test-armor
+        :content="hit"
       />
     </UiCardContent>
-    <UiCardFooter>
+    <UiCardFooter class="pl-4 pr-0 pb-0 pt-2">
       <div
-        v-if="!hideOpenButton()"
+        v-if="!['armor'].includes(type)"
         class="flex justify-end w-full"
       >
         <UiButton

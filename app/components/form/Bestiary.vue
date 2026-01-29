@@ -2,7 +2,15 @@
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd-rules'
-import { useOpen5eListing } from '~~/queries/open5e'
+import { useOpen5eDocuments, useOpen5eListing } from '~~/queries/open5e'
+
+const props = withDefaults(defineProps<{
+  system?: Open5eGameSystem
+  preSelectedDocuments?: string[]
+}>(), {
+  system: '5e-2024',
+  preSelectedDocuments: () => ['srd-2024'],
+})
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
@@ -14,12 +22,15 @@ const sortBy = ref<Open5eSortBy>('name')
 const cr = ref<number | string>('all')
 const search = ref<string>('')
 const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
+const selectedSystem = ref<Open5eGameSystem>(props.system)
+const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
 const queryFilters = ref<Open5eFilters>({
   page: 0,
   search: debouncedSearch.value,
   cr: typeof cr.value === 'string' ? undefined : cr.value,
   ordering: sortBy.value,
+  document__key__in: selectedDocuments.value,
 })
 
 watch([debouncedSearch, cr, sortBy], () => {
@@ -28,13 +39,29 @@ watch([debouncedSearch, cr, sortBy], () => {
     search: debouncedSearch.value,
     cr: typeof cr.value === 'string' ? undefined : cr.value,
     ordering: sortBy.value,
+    document__key__in: selectedDocuments.value,
   }
 })
 
-const { data, status } = useOpen5eListing(computed(() => ({
+watch(selectedDocuments, () => {
+  queryFilters.value = {
+    page: 0,
+    search: '',
+    cr: typeof cr.value === 'string' ? undefined : cr.value,
+    ordering: sortBy.value,
+    document__key__in: selectedDocuments.value,
+  }
+})
+
+const { data, status: monstersStatus } = useOpen5eListing(computed(() => ({
   type: 'monsters',
   filters: queryFilters.value,
 })))
+
+const { data: documents, status: documentsStatus } = useOpen5eDocuments()
+
+const isLoading = computed(() => monstersStatus.value === 'pending' || documentsStatus.value === 'pending')
+const isError = computed(() => monstersStatus.value === 'error' || documentsStatus.value === 'error')
 
 async function addMonster(monster: Open5eItem): Promise<void> {
   if (!sheet.value) return
@@ -69,7 +96,7 @@ async function addMonster(monster: Open5eItem): Promise<void> {
             v-model="search"
             name="search"
             type="search"
-            :disabled="status === 'pending'"
+            :disabled="isLoading"
           />
           <UiInputGroupAddon align="inline-end">
             <Icon
@@ -88,6 +115,7 @@ async function addMonster(monster: Open5eItem): Promise<void> {
           id="cr"
           v-model="cr"
           name="cr"
+          :disabled="isLoading"
         >
           <UiSelectTrigger>
             <UiSelectValue />
@@ -113,7 +141,7 @@ async function addMonster(monster: Open5eItem): Promise<void> {
           id="sortBy"
           v-model="sortBy"
           name="sortBy"
-          :disabled="status === 'pending'"
+          :disabled="isLoading"
         >
           <UiSelectTrigger>
             <UiSelectValue />
@@ -139,11 +167,23 @@ async function addMonster(monster: Open5eItem): Promise<void> {
           </UiSelectContent>
         </UiSelect>
       </div>
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+        <UiLabel for="system">
+          {{ $t('components.inputs.gameSystemLabel') }}
+        </UiLabel>
+        <GameSystemFilter
+          id="system"
+          v-model:document="selectedDocuments"
+          v-model:system="selectedSystem"
+          :documents="documents || []"
+          :disabled="isLoading"
+        />
+      </div>
     </div>
 
     <div class="overflow-y-auto">
       <MasonryGrid
-        v-if="status === 'pending'"
+        v-if="isLoading"
         v-slot="{ column }"
         :data="Array.from({ length: 30 }, () => ({}))"
       >
@@ -169,7 +209,7 @@ async function addMonster(monster: Open5eItem): Promise<void> {
     </div>
 
     <Pagination
-      v-if="data?.pages && data.pages > 1 && status !== 'pending' && data?.items?.length"
+      v-if="data?.pages && data.pages > 1 && !isLoading && data?.items?.length"
       v-model:page="queryFilters.page"
       :pages="data.pages"
       :per-page="limit"
@@ -178,13 +218,13 @@ async function addMonster(monster: Open5eItem): Promise<void> {
       @paginate="scrollToId('el')"
     />
     <p
-      v-if="status === 'error'"
+      v-if="isError"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
-      v-if="status !== 'pending' && !data?.items?.length && search !== ''"
+      v-if="!isLoading && !data?.items?.length && search !== ''"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.notFound') }}

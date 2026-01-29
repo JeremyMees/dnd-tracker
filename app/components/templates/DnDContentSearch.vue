@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useOpen5eListing } from '~~/queries/open5e'
+import { useOpen5eListing, useOpen5eDocuments } from '~~/queries/open5e'
 
 const props = withDefaults(defineProps<{
   variant?: 'secondary' | 'background'
   sheet?: InitiativeSheet
   update?: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
   allowPin?: boolean
+  system?: Open5eGameSystem
+  preSelectedDocuments?: string[]
 }>(), {
   variant: 'secondary',
   allowPin: false,
+  system: '5e-2024',
+  preSelectedDocuments: () => ['srd-2024'],
 })
 
 const { toast } = useToast()
@@ -21,11 +25,14 @@ const type = ref<Open5eType>('spells')
 const limit = 20
 const search = ref<string>('')
 const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
+const selectedSystem = ref<Open5eGameSystem>(props.system)
+const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
 const queryFilters = ref<Open5eFilters>({
   page: 0,
   search: debouncedSearch.value,
   ordering: sortBy.value,
+  document__key__in: selectedDocuments.value,
 })
 
 watch([debouncedSearch, sortBy], () => {
@@ -33,21 +40,28 @@ watch([debouncedSearch, sortBy], () => {
     page: 0,
     search: debouncedSearch.value,
     ordering: sortBy.value,
+    document__key__in: selectedDocuments.value,
   }
 })
 
-watch(type, () => {
+watch([type, selectedDocuments], () => {
   queryFilters.value = {
     page: 0,
     search: '',
     ordering: 'name',
+    document__key__in: selectedDocuments.value,
   }
 })
 
-const { data, status } = useOpen5eListing(computed(() => ({
+const { data, status: listingStatus } = useOpen5eListing(computed(() => ({
   type: type.value,
   filters: queryFilters.value,
 })))
+
+const { data: documents, status: documentsStatus } = useOpen5eDocuments()
+
+const isLoading = computed(() => listingStatus.value === 'pending' || documentsStatus.value === 'pending')
+const isError = computed(() => listingStatus.value === 'error' || documentsStatus.value === 'error')
 
 async function handlePinToggle(content: Open5eItem, remove: boolean): Promise<void> {
   if (!props.sheet || !props.update) return
@@ -89,7 +103,7 @@ async function removePins(): Promise<void> {
               id="search"
               v-model="search"
               data-test-search
-              :disabled="showPinned"
+              :disabled="showPinned || isLoading"
               name="search"
               type="search"
             />
@@ -110,7 +124,7 @@ async function removePins(): Promise<void> {
             id="type"
             v-model="type"
             name="type"
-            :disabled="showPinned"
+            :disabled="showPinned || isLoading"
             @update:model-value="search = ''"
           >
             <UiSelectTrigger data-test-type>
@@ -135,6 +149,18 @@ async function removePins(): Promise<void> {
               </UiSelectGroup>
             </UiSelectContent>
           </UiSelect>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="system">
+            {{ $t('components.inputs.gameSystemLabel') }}
+          </UiLabel>
+          <GameSystemFilter
+            id="system"
+            v-model:document="selectedDocuments"
+            v-model:system="selectedSystem"
+            :documents="documents || []"
+            :disabled="showPinned || isLoading"
+          />
         </div>
       </div>
       <AnimationReveal>
@@ -166,7 +192,7 @@ async function removePins(): Promise<void> {
 
     <div class="overflow-y-auto">
       <MasonryGrid
-        v-if="status === 'pending'"
+        v-if="isLoading"
         v-slot="{ column }"
         data-test-loading
         :data="Array.from({ length: 30 }, () => ({}))"
@@ -186,12 +212,12 @@ async function removePins(): Promise<void> {
         <ContentCard
           v-for="(hit, j) in column"
           :id="j === 0 ? 'el' : ''"
-          :key="hit.slug"
+          :key="hit.key"
           :type="type"
           :hit="hit"
           :variant="variant"
           :allow-pin="allowPin"
-          :pinned="sheet?.info_cards?.some(i => i.slug === hit.slug)"
+          :pinned="sheet?.info_cards?.some(i => (i.key === hit.key || i.slug === hit.slug) ? true : false) ?? false"
           @pin="handlePinToggle(hit, false)"
           @unpin="handlePinToggle(hit, true)"
         />
@@ -199,7 +225,7 @@ async function removePins(): Promise<void> {
     </div>
 
     <Pagination
-      v-if="data?.pages && data.pages > 1 && status !== 'pending' && data?.items?.length && !showPinned"
+      v-if="data?.pages && data.pages > 1 && !isLoading && data?.items?.length && !showPinned"
       v-model:page="queryFilters.page"
       data-test-pagination
       :pages="data.pages"
@@ -212,14 +238,14 @@ async function removePins(): Promise<void> {
       @paginate="scrollToId('el')"
     />
     <p
-      v-if="status === 'error'"
+      v-if="isError"
       data-test-error
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
-      v-if="status !== 'pending' && !data?.items?.length && search !== ''"
+      v-if="!isLoading && !data?.items?.length && search !== ''"
       data-test-not-found
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >

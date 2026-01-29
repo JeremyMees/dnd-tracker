@@ -18,6 +18,12 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
         <!--teleport end-->
         <!--v-if-->
       </div>
+      <div class="space-y-2 w-full sm:w-auto sm:flex-1"><label for="system" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.gameSystemLabel
+          <!--v-if-->
+        </label><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-1" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">5e-2024 <span class="iconify i-tabler:chevron-down ml-auto my-auto size-4 text-muted-foreground" aria-hidden="true"></span></button>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
     </div>
     <div class="overflow-hidden">
       <div class="flex gap-2"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-foreground hover:text-background h-10 px-4 py-2" data-test-pin-toggle="" aria-label="components.dndContentSearch.show"><span class="iconify i-tabler:pin" aria-hidden="true"></span> components.dndContentSearch.show</button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground h-10 px-4 py-2" data-test-remove-pins="" aria-label="components.dndContentSearch.remove"><span class="iconify i-tabler:trash" aria-hidden="true"></span> components.dndContentSearch.remove</button></div>
@@ -27,144 +33,161 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
     <div class="grid gap-4 overflow-y-auto" style="grid-template-columns: repeat(2, minmax(0, 1fr));" data-test-content-grid="">
       <div class="flex flex-col gap-4">
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="el">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Breastplate</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Breastplate</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 14 + Dex modifier (max 2)</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 14</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Chain mail</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Chain Shirt</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 13 + Dex modifier (max 2)</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 13</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Half plate</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Hide Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 12 + Dex modifier (max 2)</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 12</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Leather</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Padded Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> light</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 11 + Dex modifier</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 11</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Padded</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Ring Mail</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> heavy</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 14</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 14</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Ring mail</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Shield</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> heavy</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 2</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 2</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Shield</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Studded Leather Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> light</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 12 + Dex modifier</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 12</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Studded Leather</h3>
-          </div>
-          <div class="p-6 pt-0">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-          </div>
-          <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Unarmored Defense (Barbarian)</h3>
-          </div>
-          <div class="p-6 pt-0">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-          </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
@@ -173,144 +196,138 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
       </div>
       <div class="flex flex-col gap-4">
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="el">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Chain Shirt</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Chain Mail</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> heavy</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 16</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 16</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Strength Required:</span> 13</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Draconic Resilience</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Half Plate Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 15 + Dex modifier (max 2)</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 15</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Hide</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Leather Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> light</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 11 + Dex modifier</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 11</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Mage Armor</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Plate Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> heavy</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 18</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 18</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Strength Required:</span> 15</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Plate</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Scale Mail</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 14 + Dex modifier (max 2)</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 14</p>
+              <!--v-if-->
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
           </div>
         </div>
         <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
+          <div class="flex flex-col gap-y-1.5 p-4">
             <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Scale mail</h3>
+            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Splint Armor</h3>
           </div>
-          <div class="p-6 pt-0">
+          <div class="p-6 px-4 py-0">
             <!--v-if-->
             <!--v-if-->
             <!--v-if-->
+            <div class="text-sm" data-test-armor="">
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> heavy</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 17</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 17</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Strength Required:</span> 15</p>
+              <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.yes</p>
+            </div>
           </div>
-          <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Splint</h3>
-          </div>
-          <div class="p-6 pt-0">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-          </div>
-          <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Unarmored</h3>
-          </div>
-          <div class="p-6 pt-0">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-          </div>
-          <div class="flex items-center p-6 pt-0">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="">
-          <div class="flex flex-col gap-y-1.5 p-6">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight" data-test-title="">Unarmored Defense (Monk)</h3>
-          </div>
-          <div class="p-6 pt-0">
-            <!--v-if-->
-            <!--v-if-->
-            <!--v-if-->
-          </div>
-          <div class="flex items-center p-6 pt-0">
+          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
             <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
                 <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
               </button></div>
