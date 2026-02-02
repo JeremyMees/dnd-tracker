@@ -60,6 +60,7 @@ export default defineNuxtConfig({
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
+      c15tUrl: process.env.NUXT_PUBLIC_C15T_URL,
       sentry: {
         dsn: process.env.SENTRY_DSN,
       },

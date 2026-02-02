@@ -626,10 +626,24 @@
       "options": "Toggle avatar options",
       "deprecated": "You have a old avatar, please update it."
     },
-    "cookieBanner": {
-      "text": "Embark on an Epic Adventure: Accept Cookies to Enhance Your D&D Experience!",
+    "ConsentBanner": {
+      "rejectAll": "Reject all",
+      "acceptAll": "Accept all",
+      "customize": "Customize",
+      "saveSettings": "Save settings",
       "policy": "Cookie policy",
-      "button": "OK"
+      "necessary": "Necessary",
+      "necessaryText": "These cookies are essential for the website to function properly. They ensure basic functionalities and security features of the website, anonymously.",
+      "measurement": "Analytics",
+      "measurementText": "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.",
+      "banner": {
+        "title": "We value your privacy",
+        "text": "This site uses cookies to improve your browsing experience, analyze site traffic."
+      },
+      "settings": {
+        "title": "Privacy Settings",
+        "text": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you allow."
+      }
     },
     "hero": {
       "title": "Run immersive D&D campaigns your way",

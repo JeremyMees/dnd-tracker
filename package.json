@@ -25,6 +25,7 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
+    "@c15t/scripts": "^1.0.1",
     "@dicebear/collection": "^9.2.4",
     "@dicebear/core": "^9.2.4",
     "@formkit/auto-animate": "^0.9.0",
@@ -55,6 +56,7 @@
     "@vue-email/render": "^0.0.9",
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
+    "c15t": "^1.8.3",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -626,10 +626,24 @@
       "options": "In/uitschakelen avatar opties",
       "deprecated": "Je hebt een oude avatar, kies een nieuwe"
     },
-    "cookieBanner": {
-      "text": "Start een Episch Avontuur: Accepteer Cookies voor Verbetering van je D&D Ervaring!",
-      "policy": "Cookie policy",
-      "button": "Oke"
+    "ConsentBanner": {
+      "rejectAll": "Weiger alle",
+      "acceptAll": "Accepteer alle",
+      "customize": "Aanpassen",
+      "saveSettings": "Instellingen opslaan",
+      "policy": "Cookiebeleid",
+      "necessary": "Noodzakelijk",
+      "necessaryText": "Deze cookies zijn essentieel voor de goede werking van de website. Ze zorgen voor basisfunctionaliteiten en beveiligingsfuncties van de website, anoniem.",
+      "measurement": "Analyse",
+      "measurementText": "Deze cookies helpen ons te begrijpen hoe bezoekers omgaan met de website door anonieme gegevens te verzamelen en te rapporteren.",
+      "banner": {
+        "title": "Wij hechten veel waarde aan uw privacy",
+        "text": "Deze website maakt gebruik van cookies om uw browse-ervaring te verbeteren en het websiteverkeer te analyseren."
+      },
+      "settings": {
+        "title": "Privacy instellingen",
+        "text": "Pas hier je privacy-instellingen aan. Je kunt kiezen welke soorten cookies en trackingtechnologieën je toestaat."
+      }
     },
     "hero": {
       "title": "Voer meeslepende D&D campagnes op jouw manier",

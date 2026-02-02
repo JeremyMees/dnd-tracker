@@ -19,7 +19,7 @@ const pageName = computed<string>(() => !route.name || typeof route.name !== 'st
     />
 
     <ClientOnly>
-      <CookieBanner />
+      <ConsentBanner />
       <UiToaster />
       <ModalGroup />
       <ConfirmDialog

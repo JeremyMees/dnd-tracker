@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ConsentBanner > Should match snapshot when banner is visible 1`] = `
+"<div tabindex="0" aria-label="components.ConsentBanner.banner.title" aria-modal="true" role="dialog" data-state="open" data-test-banner="" class="fixed border-4 border-muted bg-background shadow-lg z-50 md:w-md overflow-hidden rounded-2xl right-4 left-4 bottom-4 p-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom">
+  <div data-test-banner-info="" class="flex flex-col gap-6">
+    <div class="flex flex-col gap-1">
+      <p class="font-bold">components.ConsentBanner.banner.title</p>
+      <p class="text-muted-foreground text-sm">components.ConsentBanner.banner.text</p>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between gap-2">
+      <div class="flex flex-row gap-2"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-secondary/50 hover:bg-secondary/60 border-secondary text-foreground shadow-sm h-10 px-4 py-2 w-full md:w-fit" data-test-reject-all="">components.ConsentBanner.rejectAll</button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-secondary/50 hover:bg-secondary/60 border-secondary text-foreground shadow-sm h-10 px-4 py-2 w-full md:w-fit" data-test-accept-all="">components.ConsentBanner.acceptAll</button></div><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-tertiary/50 hover:bg-tertiary/60 border-tertiary text-foreground shadow-sm h-10 px-4 py-2" data-test-customize="">components.ConsentBanner.customize</button>
+    </div>
+  </div>
+</div>"
+`;
