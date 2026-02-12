@@ -96,6 +96,7 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [
+      // @ts-expect-error - Temporary fix for tailwindcss plugin types mismatch
       tailwindcss(),
     ],
   },
