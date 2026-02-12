@@ -61,6 +61,7 @@ export default defineNuxtConfig({
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
       c15tUrl: process.env.NUXT_PUBLIC_C15T_URL,
+      gId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
       sentry: {
         dsn: process.env.SENTRY_DSN,
       },

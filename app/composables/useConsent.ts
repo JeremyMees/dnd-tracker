@@ -1,11 +1,12 @@
 import { configureConsentManager, createConsentManagerStore } from 'c15t'
+import { gtag } from '@c15t/scripts/google-tag'
 import type { AllConsentNames } from 'c15t'
 
 let consentManager: ReturnType<typeof configureConsentManager>
 let c15tStore: ReturnType<typeof createConsentManagerStore>
 
 export function useConsent() {
-  const { c15tUrl } = useRuntimeConfig().public
+  const { c15tUrl, gId } = useRuntimeConfig().public
 
   if (!consentManager) {
     consentManager = configureConsentManager({
@@ -17,6 +18,12 @@ export function useConsent() {
   if (!c15tStore) {
     c15tStore = createConsentManagerStore(consentManager, {
       initialGdprTypes: ['necessary', 'measurement'],
+      scripts: [
+        gtag({
+          id: gId,
+          category: 'measurement',
+        }),
+      ],
     })
   }
 
