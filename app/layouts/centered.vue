@@ -9,7 +9,7 @@
     >
       <div class="inset-0 z-[-1] fancy-shadow" />
       <div
-        class="max-w-prose bg-background py-4 px-2 sm:p-6 sm:rounded-lg relative border-4 border-muted mx-auto"
+        class="max-w-prose bg-background py-4 px-2 sm:p-6 sm:rounded-2xl relative border-4 border-muted mx-auto"
       >
         <img
           src="/gifs/wolf-rider.gif"
