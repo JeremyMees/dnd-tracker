@@ -1,12 +1,20 @@
 import { initiativeKeys } from '~~/constants/dnd-rules'
-import { firstName, lastName, middleName } from '~~/constants/names.json'
+import {
+  names,
+  races,
+  genders,
+} from '~~/constants/names'
 
-export function randomName(): string {
-  const first = randomArrayItem(firstName)
-  const last = randomArrayItem(lastName.prefixes) + randomArrayItem(lastName.suffixes)
+export function randomName(race?: DndRace, gender?: Gender): string {
+  const selectedRace = race ?? randomArrayItem(races)
+  const selectedGender = gender ?? randomArrayItem(genders)
 
-  if (Math.random() <= 0.10) {
-    return `${first} ${randomArrayItem(middleName)} ${last}`
+  const raceData = names[selectedRace][selectedGender]
+  const first = randomArrayItem(raceData.first)
+  const last = randomArrayItem(raceData.last.prefixes) + randomArrayItem(raceData.last.suffixes)
+
+  if (Math.random() <= 0.10 && raceData.middle.length > 0) {
+    return `${first} ${randomArrayItem(raceData.middle)} ${last}`
   }
 
   return `${first} ${last}`

@@ -22,7 +22,7 @@ describe('DnD Helpers', () => {
   describe('randomName', () => {
     afterEach(() => vi.restoreAllMocks())
 
-    it('Should randomName generate a name with first and last name', () => {
+    it('Should generate a name with first and last name', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0.5)
 
       const name = randomName()
@@ -30,17 +30,44 @@ describe('DnD Helpers', () => {
       expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+$/)
     })
 
-    it('Should randomName include a middle name when probability is met', () => {
+    it('Should include a middle name when probability is met', () => {
       vi.spyOn(Math, 'random').mockReturnValue(0.05)
 
       const name = randomName()
 
       expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+ [A-Z][a-z]+$/)
     })
+
+    it('Should generate a race-specific name when race and gender are provided', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
+      const name = randomName('elf', 'female')
+
+      expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+$/)
+      expect(name).toBeTruthy()
+    })
+
+    it('Should generate a dragonborn name with appropriate structure', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
+      const name = randomName('dragonborn', 'male')
+
+      expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+$/)
+      expect(name).toBeTruthy()
+    })
+
+    it('Should generate nonbinary names when selected', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
+      const name = randomName('human', 'nonbinary')
+
+      expect(name).toMatch(/^[A-Z][a-z]+ [A-Z][a-z]+$/)
+      expect(name).toBeTruthy()
+    })
   })
 
   describe('randomRoll', () => {
-    it('Should randomRoll return a number between 1 and max', () => {
+    it('Should return a number between 1 and max', () => {
       const max = 20
       const roll = randomRoll(max)
 
@@ -50,7 +77,7 @@ describe('DnD Helpers', () => {
   })
 
   describe('rollDice', () => {
-    it('Should rollDice return array of rolls with correct length and range', () => {
+    it('Should return array of rolls with correct length and range', () => {
       const dice = 20
       const amount = 3
       const rolls = rollDice(dice, amount)
@@ -456,7 +483,7 @@ describe('DnD Helpers', () => {
   })
 
   describe('deathSavesFunctions', () => {
-    it('Should hasDeathSaves return false for summon and lair types', () => {
+    it('Should return false for summon and lair types', () => {
       expect(deathSavesFunctions.hasDeathSaves('summon')).toBe(false)
       expect(deathSavesFunctions.hasDeathSaves('lair')).toBe(false)
     })
@@ -484,7 +511,7 @@ describe('DnD Helpers', () => {
   })
 
   describe('indexCorrect', () => {
-    it('Should indexCorrect sort rows by initiative and add index', () => {
+    it('Should sort rows by initiative and add index', () => {
       const rows = [
         { id: '1', initiative: 15 },
         { id: '2', initiative: 20 },
@@ -503,25 +530,25 @@ describe('DnD Helpers', () => {
   })
 
   describe('getCurrentRowIndex', () => {
-    it('Should getCurrentRowIndex return correct index for existing id', () => {
+    it('Should return correct index for existing id', () => {
       const index = getCurrentRowIndex(sheet, sheet.rows[0]?.id ?? '')
       expect(index).toBe(0)
     })
 
-    it('Should getCurrentRowIndex return -1 for non-existent id', () => {
+    it('Should return -1 for non-existent id', () => {
       const index = getCurrentRowIndex(sheet, 'non-existent-id')
       expect(index).toBe(-1)
     })
   })
 
   describe('getHP', () => {
-    it('Should getHP return health from InitiativeSheetRow', () => {
+    it('Should return health from InitiativeSheetRow', () => {
       const row = { name: 'Test', health: 20 } as InitiativeSheetRow
 
       expect(getHP(row)).toBe(20)
     })
 
-    it('Should getHP return hit_points from Open5eItem', () => {
+    it('Should return hit_points from Open5eItem', () => {
       const item = { name: 'Test', hit_points: 30 } as Open5eItem
 
       expect(getHP(item)).toBe(30)
@@ -529,13 +556,13 @@ describe('DnD Helpers', () => {
   })
 
   describe('getAC', () => {
-    it('Should getAC return ac from InitiativeSheetRow', () => {
+    it('Should return ac from InitiativeSheetRow', () => {
       const row = { name: 'Test', ac: 15 } as InitiativeSheetRow
 
       expect(getAC(row)).toBe(15)
     })
 
-    it('Should getAC return armor_class from Open5eItem', () => {
+    it('Should return armor_class from Open5eItem', () => {
       const item = { name: 'Test', armor_class: 18 } as Open5eItem
 
       expect(getAC(item)).toBe(18)
@@ -543,7 +570,7 @@ describe('DnD Helpers', () => {
   })
 
   describe('createInitiativeRow', () => {
-    it('Should createInitiativeRow create row with correct structure', () => {
+    it('Should create row with correct structure', () => {
       const formData = {
         name: 'Test',
         health: 20,
@@ -564,7 +591,7 @@ describe('DnD Helpers', () => {
   })
 
   describe('hasMaxCharacters', () => {
-    it('Should hasMaxCharacters return true when sheet has 50 rows', () => {
+    it('Should return true when sheet has 50 rows', () => {
       const fullSheet = {
         ...sheet,
         rows: Array(50).fill(sheet.rows[0]),
@@ -573,11 +600,11 @@ describe('DnD Helpers', () => {
       expect(hasMaxCharacters(fullSheet)).toBe(true)
     })
 
-    it('Should hasMaxCharacters return false when sheet has less than 50 rows', () => {
+    it('Should return false when sheet has less than 50 rows', () => {
       expect(hasMaxCharacters(sheet)).toBe(false)
     })
 
-    it('Should hasMaxCharacters return false when sheet is undefined', () => {
+    it('Should return false when sheet is undefined', () => {
       expect(hasMaxCharacters(undefined)).toBe(false)
     })
   })

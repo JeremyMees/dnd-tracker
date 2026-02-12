@@ -290,7 +290,10 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             side="right"
             prioritize-position
           >
-            <FantasyNameGenerator :amount="10" />
+            <FantasyNameGenerator
+              :amount="10"
+              compact
+            />
           </UiPopoverContent>
         </UiPopover>
       </UiSidebarMenuItem>
