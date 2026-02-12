@@ -209,9 +209,9 @@ async function logoutUser(): Promise<void> {
           </h1>
         </div>
       </header>
-      <main class="w-full h-full py-3 px-7 mx-auto overflow-auto no-scrollbar">
+      <div class="w-full h-full pt-1 pb-3 px-7 mx-auto overflow-auto no-scrollbar">
         <slot />
-      </main>
+      </div>
     </UiSidebarInset>
   </UiSidebarProvider>
 </template>
