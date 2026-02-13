@@ -27,7 +27,7 @@ describe('FantasyNameGenerator', async () => {
     vi.restoreAllMocks()
   })
 
-  it('Should render actions correctly', async () => {
+  it('Should render items correctly', async () => {
     const component = await mountSuspended(FantasyNameGenerator, { props })
     const names = component.findAll('li')
 
@@ -57,5 +57,38 @@ describe('FantasyNameGenerator', async () => {
     await nextTick()
 
     expect(mockClipboard).toHaveBeenCalled()
+  })
+
+  it('Should show everything when not in compact mode', async () => {
+    const component = await mountSuspended(FantasyNameGenerator, { props })
+
+    const labels = component.findAll('[data-test-label]')
+    const actions = component.find('[data-test-actions]')
+    const name = component.find('li')
+    const columns = component.findAll('.flex.flex-col.gap-1')
+
+    expect(labels.length).toBe(2)
+    expect(actions.classes()).toContain('flex-col')
+    expect(name.classes()).not.toContain('text-sm')
+    expect(columns.length).toBe(2)
+  })
+
+  it('Should hide items in compact mode', async () => {
+    const component = await mountSuspended(FantasyNameGenerator, {
+      props: {
+        ...props,
+        compact: true,
+      },
+    })
+
+    const labels = component.findAll('[data-test-label]')
+    const actions = component.find('[data-test-actions]')
+    const name = component.find('li')
+    const columns = component.findAll('.flex.flex-col.gap-1')
+
+    expect(labels.length).toBe(0)
+    expect(actions.classes()).not.toContain('flex-col')
+    expect(name.classes()).toContain('text-sm')
+    expect(columns.length).toBe(1)
   })
 })

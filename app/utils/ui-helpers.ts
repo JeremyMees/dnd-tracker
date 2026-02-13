@@ -110,7 +110,7 @@ export function validateParamId(id: string | string[] | undefined): number {
     !id
     || typeof id !== 'string'
     || isNaN(+id)
-  ) throw createError({ statusCode: 404, statusMessage: 'Id is not valid' })
+  ) throw createError({ status: 404, statusText: 'Id is not valid' })
 
   return +id
 }
@@ -118,7 +118,7 @@ export function validateParamId(id: string | string[] | undefined): number {
 export function validateInject<T>(key: InjectionKey<T>): T {
   const injection = inject(key)
 
-  if (!injection) throw createError({ statusCode: 500, statusMessage: 'Injection not found' })
+  if (!injection) throw createError({ status: 500, statusText: 'Injection not found' })
 
   return injection
 }

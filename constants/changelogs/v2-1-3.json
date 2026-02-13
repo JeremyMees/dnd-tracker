@@ -1,0 +1,36 @@
+{
+  "version": "v2.1.3",
+  "date": "2026-02-13",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Added Google Analytics for better understanding of user behavior and improving the app based on insights gathered from usage patterns."
+        },
+        {
+          "text": "New consent banner with more options for users to manage their cookie preferences and ensure compliance with privacy regulations."
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Update fantasy name generator to use race and gender"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Modals had inconsistent styling"
+        },
+        {
+          "text": "Encounter hotkey tooltip only showed when clicked, now it shows on hover as well"
+        }
+      ]
+    }
+  ]
+}

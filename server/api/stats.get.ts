@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const { trmnl } = useRuntimeConfig()
 
   if (authHeader !== `Bearer ${trmnl}`) {
-    throw createError({ statusCode: 401, message: 'Unauthorized' })
+    throw createError({ status: 401, statusText: 'Unauthorized' })
   }
 
   const tables: DatabaseTable[] = ['campaigns', 'homebrew_items', 'initiative_sheets', 'notes', 'profiles', 'team']

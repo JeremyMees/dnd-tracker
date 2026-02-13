@@ -7,19 +7,20 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxtjs/supabase',
     '@nuxt/image',
-    'nuxt-zod-i18n',
-    '@nuxtjs/i18n',
     '@nuxt/icon',
-    '@vueuse/nuxt',
+    '@nuxt/hints',
+    '@nuxt/test-utils/module',
+    '@nuxtjs/supabase',
+    '@nuxtjs/i18n',
     '@nuxtjs/seo',
+    '@nuxtjs/color-mode',
+    '@vueuse/nuxt',
+    'nuxt-zod-i18n',
     '@unlok-co/nuxt-stripe',
     'shadcn-nuxt',
-    '@nuxtjs/color-mode',
     'nuxt-authorization',
     'motion-v/nuxt',
-    '@nuxt/test-utils/module',
     '@sentry/nuxt/module',
     '@formkit/auto-animate/nuxt',
   ],
@@ -60,6 +61,8 @@ export default defineNuxtConfig({
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
+      c15tUrl: process.env.NUXT_PUBLIC_C15T_URL,
+      gId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
       sentry: {
         dsn: process.env.SENTRY_DSN,
       },
@@ -88,10 +91,14 @@ export default defineNuxtConfig({
     rollupConfig: {
       plugins: [vue()],
     },
+    devProxy: {
+      '/sw.js': { target: '/sw.js' },
+    },
   },
 
   vite: {
     plugins: [
+      // @ts-expect-error - Temporary fix for tailwindcss plugin types mismatch
       tailwindcss(),
     ],
   },

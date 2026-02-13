@@ -29,7 +29,7 @@ export function isUnderMaintenance(path: string, exclude: string[] | null): bool
 
 export function throwMaintenanceError(): void {
   throw createError({
-    statusCode: 503,
-    statusMessage: 'Site is under maintenance',
+    status: 503,
+    statusText: 'Site is under maintenance',
   })
 }

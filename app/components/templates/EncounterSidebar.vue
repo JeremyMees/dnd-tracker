@@ -290,7 +290,10 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             side="right"
             prioritize-position
           >
-            <FantasyNameGenerator :amount="10" />
+            <FantasyNameGenerator
+              :amount="10"
+              compact
+            />
           </UiPopoverContent>
         </UiPopover>
       </UiSidebarMenuItem>
@@ -340,17 +343,12 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>
           <tippy
-            trigger="click"
+            trigger="mouseenter focus click"
             placement="right"
             :delay="0"
           >
             <button
               id="tour-8"
-              v-tippy="{
-                content: $t('general.hotkey', 2),
-                placement: 'right',
-                onShow: () => !isExpanded,
-              }"
               :aria-label="$t('general.hotkey', 2)"
               class="flex items-center gap-x-2"
             >
@@ -364,9 +362,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             </button>
             <template #content>
               <div class="p-4 space-y-2 overflow-auto">
-                <p class="head-2 pb-4">
-                  {{ $t('general.hotkey', 2) }}
-                </p>
                 <div class="space-y-4">
                   <div class="space-y-2">
                     <p class="font-medium">

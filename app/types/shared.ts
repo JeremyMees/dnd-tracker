@@ -19,3 +19,6 @@ export interface Route {
 
 export type HealthType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
 export type AcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'
+
+export type DndRace = 'human' | 'elf' | 'dwarf' | 'halfling' | 'dragonborn' | 'gnome' | 'half-elf' | 'half-orc' | 'tiefling'
+export type Gender = 'male' | 'female' | 'nonbinary'

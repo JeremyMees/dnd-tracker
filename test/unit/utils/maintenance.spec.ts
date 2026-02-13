@@ -89,7 +89,7 @@ describe('Maintenance utils', () => {
   })
 
   describe('throwMaintenanceError', () => {
-    it('should throw an error with statusCode 503 and statusMessage', () => {
+    it('should throw an error with status 503 and statusText', () => {
       expect(() => throwMaintenanceError()).toThrow()
 
       try {
