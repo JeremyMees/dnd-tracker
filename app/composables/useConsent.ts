@@ -22,6 +22,11 @@ export function useConsent() {
         gtag({
           id: gId,
           category: 'measurement',
+          script: {
+            attributes: {
+              crossorigin: 'anonymous',
+            },
+          },
         }),
       ],
     })
