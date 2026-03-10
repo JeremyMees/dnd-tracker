@@ -7,7 +7,12 @@ const updateFn = vi.fn()
 const mockSheet = ref<InitiativeSheet>({ ...sheet })
 
 const update = async (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => {
-  mockSheet.value = { ...mockSheet.value, ...payload }
+  const currentSheet = mockSheet.value
+
+  mockSheet.value = {
+    ...currentSheet,
+    ...payload,
+  }
 
   updateFn(payload)
 }
