@@ -161,6 +161,7 @@ describe('Initiative TableHeader Init', () => {
     it('Should handle rows with undefined initiative values', async () => {
       mockSheet.value = {
         ...sheet,
+        // @ts-expect-error - Testing undefined initiative values
         rows: [{ ...sheet.rows[0]!, initiative: undefined, initiative_modifier: undefined }],
       }
 
