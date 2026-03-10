@@ -31,7 +31,7 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
 
   const { data, error, count } = await query
 
-  if (error) createError(error)
+  if (error) throw createError(error)
 
   return {
     data: data as T[],

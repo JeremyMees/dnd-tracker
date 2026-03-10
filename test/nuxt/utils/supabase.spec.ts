@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { sbRange, sbPages, sbCount, sbQuery, sbOrQuery } from '~/utils/supabase'
 import type { SbFetchOptions } from '~~/shared/types/supabase'
 
