@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import mockModal from '../fixtures/modal.json'
+import { mockModal } from '../fixtures/modal'
 import { useModal } from '~/composables/useModal'
 
 describe('useModal', async () => {
@@ -8,7 +8,7 @@ describe('useModal', async () => {
   it('Should add a modal to the array', async () => {
     const modal = useModal()
 
-    modal.open(mockModal as Modal)
+    modal.open(mockModal)
 
     expect(modal.modals.value.length).toBe(1)
   })
@@ -16,8 +16,8 @@ describe('useModal', async () => {
   it('Should not add a modal to the array if it already exists', async () => {
     const modal = useModal()
 
-    modal.open(mockModal as Modal)
-    modal.open(mockModal as Modal)
+    modal.open(mockModal)
+    modal.open(mockModal)
 
     expect(modal.modals.value.length).toBe(1)
   })
@@ -25,7 +25,7 @@ describe('useModal', async () => {
   it('Should close a modal', async () => {
     const modal = useModal()
 
-    const uuid = modal.open(mockModal as Modal)
+    const uuid = modal.open(mockModal)
 
     expect(modal.modals.value.length).toBe(1)
 
@@ -37,7 +37,7 @@ describe('useModal', async () => {
   it('Should not close a modal if it does not exist', async () => {
     const modal = useModal()
 
-    modal.open(mockModal as Modal)
+    modal.open(mockModal)
     modal.close('123')
 
     expect(modal.modals.value.length).toBe(1)

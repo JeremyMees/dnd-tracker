@@ -300,7 +300,6 @@ export const sheet: InitiativeSheet = {
     spacing: 'normal',
     pet: 'cat',
     rows: [
-      'summoner',
       'ac',
       'health',
       'conditions',
