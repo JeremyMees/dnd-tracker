@@ -4,15 +4,16 @@ import { useInitiativeSheet } from '~/composables/useInitiativeSheet'
 
 const updateFn = vi.fn()
 
-const mockSheet = ref<InitiativeSheet>({ ...sheet })
+const mockSheet = ref<any>({ ...sheet })
+
+const sheetComputed = {
+  get value() {
+    return mockSheet.value
+  },
+} as unknown as ComputedRef<InitiativeSheet | undefined>
 
 const update = async (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => {
-  const currentSheet = mockSheet.value
-
-  mockSheet.value = {
-    ...currentSheet,
-    ...payload,
-  }
+  Object.assign(mockSheet.value, payload)
 
   updateFn(payload)
 }
@@ -22,7 +23,7 @@ describe('useInitiativeSheet', async () => {
 
   it('Should set the first row as selected and navigate properly', async () => {
     const { next, previous } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -40,7 +41,7 @@ describe('useInitiativeSheet', async () => {
   it('Should go to first row when the last row is active and next is called', async () => {
     mockSheet.value.activeIndex = sheet.rows.length - 1
     const { next } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -56,7 +57,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.round = 2
 
     const { previous } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -70,7 +71,7 @@ describe('useInitiativeSheet', async () => {
 
   it('Should not go to last row when the first row is active and previous is called', async () => {
     const { previous } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -88,7 +89,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.round = 4
 
     const { reset } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -112,7 +113,7 @@ describe('useInitiativeSheet', async () => {
     const maxHealthOld = firstItem.maxHealthOld
 
     const { reset } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -145,7 +146,7 @@ describe('useInitiativeSheet', async () => {
 
   it('Should show all columns by default', async () => {
     const { columnVisibility } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -168,7 +169,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.modified = true
 
     const { columnVisibility } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
@@ -191,7 +192,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.modified = true
 
     const { columnVisibility } = useInitiativeSheet(
-      computed(() => mockSheet.value),
+      sheetComputed,
       update,
     )
 
