@@ -1,8 +1,9 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { mockSheetCampaign } from '~~/test/nuxt/fixtures/campaign'
 
 interface EncounterSidebarVM {
   diceRollerOpen: boolean
@@ -76,7 +77,7 @@ describe('EncounterSidebar', () => {
   it('Should render campaign homebrew button when campaign exists', async () => {
     mockSheet.value = {
       ...sheet,
-      campaign: { id: 1, title: 'Test Campaign' },
+      campaign: mockSheetCampaign,
     }
 
     const component = await mountSuspended(EncounterSidebar, { props, provide })
