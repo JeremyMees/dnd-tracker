@@ -6,6 +6,12 @@ const logoutMock = vi.fn()
 const toastMock = vi.fn()
 const userMock = { name: 'Test User', avatar: '/avatar.png' }
 
+interface NavbarVm {
+  logoutUser: () => Promise<void>
+  isOpen: boolean
+  isScrolled: boolean
+}
+
 vi.mock('~/composables/useAuthentication', () => ({
   useAuthentication: () => ({ user: userMock, logout: logoutMock }),
 }))
@@ -37,29 +43,36 @@ describe('Navbar', async () => {
 
   it('Should call logout on logoutUser', async () => {
     const component = await mountSuspended(Navbar)
-    await component.vm.logoutUser()
+    const vm = component.vm as unknown as NavbarVm
+
+    await vm.logoutUser()
 
     expect(logoutMock).toHaveBeenCalled()
-    expect(component.vm.isOpen).toBe(false)
+    expect(vm.isOpen).toBe(false)
   })
 
   it('Should show toast on logout error', async () => {
     const component = await mountSuspended(Navbar)
 
     logoutMock.mockRejectedValueOnce(new Error('fail'))
-    await component.vm.logoutUser()
+    const vm = component.vm as unknown as NavbarVm
+
+    await vm.logoutUser()
 
     expect(toastMock).toHaveBeenCalled()
   })
 
   it('Should set isScrolled on scroll', async () => {
     const component = await mountSuspended(Navbar)
+    const vm = component.vm as unknown as NavbarVm
 
     window.scrollY = 20
+    // @ts-expect-error - Error is expected to be thrown
     window?.onscroll?.()
-    expect(component.vm.isScrolled).toBe(true)
+    expect(vm.isScrolled).toBe(true)
     window.scrollY = 0
+    // @ts-expect-error - Error is expected to be thrown
     window?.onscroll?.()
-    expect(component.vm.isScrolled).toBe(false)
+    expect(vm.isScrolled).toBe(false)
   })
 })
