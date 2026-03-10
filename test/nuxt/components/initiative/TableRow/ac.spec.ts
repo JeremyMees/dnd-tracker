@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import Ac from '~/components/initiative/TableRow/Ac'
+import Ac from '~/components/initiative/TableRow/Ac.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 

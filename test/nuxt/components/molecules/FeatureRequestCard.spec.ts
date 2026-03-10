@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
-import FeatureRequestCard from '~/components/molecules/FeatureRequestCard'
-import SocialProfile from '~~/test/unit/fixtures/social-profile.json'
+import FeatureRequestCard from '~/components/molecules/FeatureRequestCard.vue'
+import SocialProfile from '~~/test/nuxt/fixtures/social-profile.json'
 
 interface Props {
   feature: FeatureRequest

@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import ActionRoll from '~/components/initiative/ActionRoll'
+import ActionRoll from '~/components/initiative/ActionRoll.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 

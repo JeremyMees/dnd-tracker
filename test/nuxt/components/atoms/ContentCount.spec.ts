@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import ContentCount from '~/components/atoms/ContentCount'
+import ContentCount from '~/components/atoms/ContentCount.vue'
 
 interface Props {
   count: number | undefined

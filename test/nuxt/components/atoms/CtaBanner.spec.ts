@@ -1,8 +1,8 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
-import CtaBanner from '~/components/atoms/CtaBanner'
+import CtaBanner from '~/components/atoms/CtaBanner.vue'
 
-const userRef = ref<{ id: string }>(null)
+const userRef = ref<{ id: string } | null>(null)
 
 mockNuxtImport('useAuthentication', () => () => ({
   user: userRef,

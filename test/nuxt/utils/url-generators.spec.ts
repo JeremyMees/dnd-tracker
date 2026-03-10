@@ -7,9 +7,13 @@ import {
   slugify,
 } from '~/utils/url-generators'
 
-vi.mock('#app', () => ({
-  useRuntimeConfig: () => ({ public: { appDomain: 'https://example.com' } }),
-}))
+vi.mock('#app', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    useRuntimeConfig: () => ({ public: { appDomain: 'https://example.com' } }),
+  }
+})
 
 describe('url-generators', () => {
   describe('campaignUrl', () => {

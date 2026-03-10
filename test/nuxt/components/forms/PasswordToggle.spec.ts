@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import PasswordToggle from '~/components/form/PasswordToggle'
+import PasswordToggle from '~/components/form/PasswordToggle.vue'
 
 describe('PasswordToggle', async () => {
   it('Should match snapshot', async () => {

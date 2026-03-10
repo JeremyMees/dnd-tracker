@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import Modal from '~/components/atoms/Modal'
+import Modal from '~/components/atoms/Modal.vue'
 import { DialogContent } from '~/components/ui/dialog'
 
 describe('Modal', async () => {

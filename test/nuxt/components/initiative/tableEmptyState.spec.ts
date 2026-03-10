@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
-import TableEmptyState from '~/components/initiative/TableEmptyState'
+import { describe, expect, it } from 'vitest'
+import TableEmptyState from '~/components/initiative/TableEmptyState.vue'
 
 describe('Initiative table empty state', () => {
   it('Should match snapshot with campaign prop', async () => {

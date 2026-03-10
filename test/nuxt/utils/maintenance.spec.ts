@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   urlMatches,
   isMaintenanceEnabled,
@@ -7,11 +7,23 @@ import {
   throwMaintenanceError,
 } from '~~/shared/utils/maintenance'
 
-const mockConfig = { public: { maintenanceMode: false } }
+const mockConfig = { public: { maintenanceMode: false as any } }
 
-mockNuxtImport('useRuntimeConfig', () => () => mockConfig)
+const { mockUseRuntimeConfig } = vi.hoisted(() => ({
+  mockUseRuntimeConfig: vi.fn(),
+}))
+
+mockNuxtImport('useRuntimeConfig', (original: any) => {
+  mockUseRuntimeConfig.mockImplementation(original)
+  return mockUseRuntimeConfig
+})
 
 describe('Maintenance utils', () => {
+  beforeEach(() => {
+    mockConfig.public.maintenanceMode = false
+    mockUseRuntimeConfig.mockReturnValue(mockConfig)
+  })
+
   describe('urlMatches', () => {
     it('should return the correct value if url matches exact pattern', () => {
       expect(urlMatches('/maintenance', ['/maintenance'])).toBeTruthy()

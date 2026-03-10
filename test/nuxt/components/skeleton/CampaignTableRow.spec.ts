@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import CampaignTableRow from '~/components/skeleton/CampaignTableRow'
+import CampaignTableRow from '~/components/skeleton/CampaignTableRow.vue'
 
 describe('SkeletonCampaignTableRow', async () => {
   it('Should match snapshot', async () => {

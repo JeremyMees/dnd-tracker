@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import EncounterSidebar from '~/components/templates/EncounterSidebar'
+import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 

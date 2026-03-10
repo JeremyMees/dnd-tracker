@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import InitiativeTableRow from '~/components/skeleton/InitiativeTableRow'
+import InitiativeTableRow from '~/components/skeleton/InitiativeTableRow.vue'
 
 describe('SkeletonInitiativeTableRow', async () => {
   it('Should match snapshot', async () => {

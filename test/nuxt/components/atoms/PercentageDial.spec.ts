@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import PercentageDial from '~/components/atoms/PercentageDial'
+import PercentageDial from '~/components/atoms/PercentageDial.vue'
 
 interface Props {
   limit: number

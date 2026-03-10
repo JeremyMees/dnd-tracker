@@ -1,8 +1,8 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import Table from '~/components/initiative/Table'
+import Table from '~/components/initiative/Table.vue'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
-import conditions from '~~/test/unit/fixtures/conditions.json'
+import conditions from '~~/test/nuxt/fixtures/conditions.json'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 interface Props {

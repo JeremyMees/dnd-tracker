@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import Note from '~/components/initiative/Widgets/Note'
+import Note from '~/components/initiative/Widgets/Note.vue'
 
 interface Props { value: string }
 

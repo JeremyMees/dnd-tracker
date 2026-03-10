@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import TitleText from '~/components/atoms/TitleText'
+import TitleText from '~/components/atoms/TitleText.vue'
 
 const props = {
   buttonLabel: 'Click Me',

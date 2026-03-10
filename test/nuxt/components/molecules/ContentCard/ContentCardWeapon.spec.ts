@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import ContentCardWeapon from '~/components/molecules/ContentCard/ContentCardWeapon'
+import ContentCardWeapon from '~/components/molecules/ContentCard/ContentCardWeapon.vue'
 import { open5eWeaponFixture } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {

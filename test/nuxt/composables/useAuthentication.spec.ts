@@ -41,7 +41,7 @@ mockNuxtImport(
 )
 
 mockNuxtImport('createError', () => (error: any) => {
-  throw new Error(
+  return new Error(
     typeof error === 'string'
       ? error
       : error.message || error.details || 'Unknown error',

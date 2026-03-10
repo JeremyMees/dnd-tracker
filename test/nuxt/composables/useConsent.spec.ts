@@ -28,11 +28,15 @@ vi.mock('c15t', () => {
   }
 })
 
-vi.mock('#app', () => ({
-  useRuntimeConfig: () => ({
-    public: { c15tUrl: 'https://test.c15t.dev' },
-  }),
-}))
+vi.mock('#app', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>()
+  return {
+    ...actual,
+    useRuntimeConfig: () => ({
+      public: { c15tUrl: 'https://test.c15t.dev' },
+    }),
+  }
+})
 
 describe('useConsent', () => {
   let consent: ReturnType<typeof useConsent>

@@ -1,12 +1,12 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import ActionsTable from '~/components/atoms/ActionsTable'
+import ActionsTable from '~/components/atoms/ActionsTable.vue'
 
 interface Props {
-  actions?: (Action | Open5eAction)[]
-  reactions?: (Action | Open5eAction)[]
-  legendaryActions?: (Action | Open5eAction)[]
-  specialAbilities?: (Action | Open5eAction)[]
+  actions?: Action[]
+  reactions?: Action[]
+  legendaryActions?: Action[]
+  specialAbilities?: Action[]
 }
 
 const props: Props = {

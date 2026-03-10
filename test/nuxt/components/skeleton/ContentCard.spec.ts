@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import ContentCard from '~/components/skeleton/ContentCard'
+import ContentCard from '~/components/skeleton/ContentCard.vue'
 
 describe('SkeletonContentCard', async () => {
   it('Should match snapshot', async () => {

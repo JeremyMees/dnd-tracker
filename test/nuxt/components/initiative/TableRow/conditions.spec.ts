@@ -1,9 +1,9 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import Conditions from '~/components/initiative/TableRow/Conditions'
+import Conditions from '~/components/initiative/TableRow/Conditions.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
-import conditions from '~~/test/unit/fixtures/conditions.json'
+import conditions from '~~/test/nuxt/fixtures/conditions.json'
 
 interface Props {
   item: InitiativeSheetRow

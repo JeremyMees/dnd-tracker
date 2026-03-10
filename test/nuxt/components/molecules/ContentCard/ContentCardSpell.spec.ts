@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import ContentCardSpell from '~/components/molecules/ContentCard/ContentCardSpell'
+import ContentCardSpell from '~/components/molecules/ContentCard/ContentCardSpell.vue'
 import { open5eSpellFixture } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {

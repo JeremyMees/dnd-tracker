@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import List from '~/components/skeleton/List'
+import List from '~/components/skeleton/List.vue'
 
 describe('SkeletonList', async () => {
   it('Should match snapshot', async () => {

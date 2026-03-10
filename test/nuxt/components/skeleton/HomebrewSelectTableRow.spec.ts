@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import HomebrewSelectTableRow from '~/components/skeleton/HomebrewSelectTableRow'
+import HomebrewSelectTableRow from '~/components/skeleton/HomebrewSelectTableRow.vue'
 
 describe('SkeletonHomebrewSelectTableRow', async () => {
   it('Should match snapshot', async () => {

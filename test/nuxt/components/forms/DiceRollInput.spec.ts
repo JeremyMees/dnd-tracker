@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import DiceRollInput from '~/components/form/DiceRollInput'
-import DiceRoller from '~/components/atoms/DiceRoller'
+import DiceRollInput from '~/components/form/DiceRollInput.vue'
+import DiceRoller from '~/components/atoms/DiceRoller.vue'
 
 describe('DiceRollInput', async () => {
   it('Should match snapshot', async () => {

@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import NoteTableRow from '~/components/skeleton/NoteTableRow'
+import NoteTableRow from '~/components/skeleton/NoteTableRow.vue'
 
 describe('SkeletonNoteTableRow', async () => {
   it('Should match snapshot', async () => {

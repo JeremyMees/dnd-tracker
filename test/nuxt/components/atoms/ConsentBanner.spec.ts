@@ -1,10 +1,14 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
-import ConsentBanner from '~/components/atoms/ConsentBanner'
+import ConsentBanner from '~/components/atoms/ConsentBanner.vue'
+
+const { mockUseConsent } = vi.hoisted(() => ({
+  mockUseConsent: vi.fn(),
+}))
+
+mockNuxtImport('useConsent', () => mockUseConsent)
 
 let consentState: any
-
-mockNuxtImport('useConsent', () => () => consentState)
 
 describe('ConsentBanner', async () => {
   beforeEach(() => {
@@ -21,6 +25,7 @@ describe('ConsentBanner', async () => {
       rejectAll: vi.fn(),
       savePreferences: vi.fn(),
     }
+    mockUseConsent.mockReturnValue(consentState)
   })
 
   afterEach(() => {

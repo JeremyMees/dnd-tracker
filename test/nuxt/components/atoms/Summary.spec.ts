@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import Summary from '~/components/atoms/Summary'
+import Summary from '~/components/atoms/Summary.vue'
 
 const props = {
   title: 'Test Title',

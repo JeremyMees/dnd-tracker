@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import DnDContentSearch from '~/components/templates/DnDContentSearch'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
+import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 import {
   open5eArmorFixture,
