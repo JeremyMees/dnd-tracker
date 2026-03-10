@@ -1,6 +1,7 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import middleware from '@/middleware/encounter-share-access.ts'
+import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
+import middleware from '~/middleware/encounter-share-access'
 
 vi.mock('@tanstack/vue-query', () => ({
   useQueryClient: vi.fn(() => mockQueryClient),
@@ -20,9 +21,7 @@ describe('Encounter share access middleware', () => {
   })
 
   it('should return early when no token in query', async () => {
-    const to = { query: {} }
-
-    await middleware(to)
+    await middleware(mockTo, mockFrom)
 
     expect(mockQueryClient.setQueryData).not.toHaveBeenCalled()
     expect(mockQueryClient.removeQueries).not.toHaveBeenCalled()
@@ -30,12 +29,12 @@ describe('Encounter share access middleware', () => {
   })
 
   it('should set query data when fetch succeeds with encounter', async () => {
-    const to = { query: { token: 'valid-token' } }
     const mockEncounter = { id: 1, name: 'Test Encounter' }
 
+    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
     global.$fetch = vi.fn().mockResolvedValue(mockEncounter)
 
-    await middleware(to)
+    await middleware({ ...mockTo, query: { token: 'valid-token' } }, mockFrom)
 
     expect(global.$fetch).toHaveBeenCalledWith('/api/encounter/share', {
       query: { token: 'valid-token' },
@@ -49,11 +48,10 @@ describe('Encounter share access middleware', () => {
   })
 
   it('should remove queries and navigate when fetch succeeds but no encounter', async () => {
-    const to = { query: { token: 'invalid-token' } }
-
+    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
     global.$fetch = vi.fn().mockResolvedValue(null)
 
-    await middleware(to)
+    await middleware({ ...mockTo, query: { token: 'invalid-token' } }, mockFrom)
 
     expect(mockQueryClient.removeQueries).toHaveBeenCalledWith({
       queryKey: ['useInitiativeSheetPlayground', 'invalid-token'],
@@ -63,11 +61,10 @@ describe('Encounter share access middleware', () => {
   })
 
   it('should remove queries and navigate on fetch error', async () => {
-    const to = { query: { token: 'error-token' } }
-
+    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
     global.$fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'))
 
-    await middleware(to)
+    await middleware({ ...mockTo, query: { token: 'error-token' } }, mockFrom)
 
     expect(mockQueryClient.removeQueries).toHaveBeenCalledWith({
       queryKey: ['useInitiativeSheetPlayground', 'error-token'],

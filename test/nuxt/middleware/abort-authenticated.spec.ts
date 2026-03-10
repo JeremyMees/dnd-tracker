@@ -1,9 +1,9 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { ref } from 'vue'
-import middleware from '@/middleware/abort-authenticated.ts'
+import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
+import middleware from '~/middleware/abort-authenticated'
 
-const userValue = ref<Partial<ProfileRow> | null>({ id: 1 })
+const userValue = ref<Partial<ProfileRow> | null>({ id: '1' })
 
 mockNuxtImport('useSupabaseUser', () => vi.fn(() => userValue))
 mockNuxtImport('navigateTo', () => vi.fn())
@@ -14,9 +14,9 @@ describe('Abort authenticated middleware', () => {
   })
 
   it('should redirect to home page when user is authenticated', () => {
-    userValue.value = { id: 1 }
+    userValue.value = { id: '1' }
 
-    middleware()
+    middleware(mockTo, mockFrom)
 
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
@@ -24,7 +24,7 @@ describe('Abort authenticated middleware', () => {
   it('should not redirect when user is not authenticated', () => {
     userValue.value = null
 
-    middleware()
+    middleware(mockTo, mockFrom)
 
     expect(navigateTo).not.toHaveBeenCalled()
   })

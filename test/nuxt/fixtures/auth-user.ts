@@ -1,0 +1,16 @@
+export const authUser: AuthUser = {
+  id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  email: 'tavern.keeper@example.com',
+  name: 'Aldric Stonebrew',
+  username: 'aldric_stonebrew',
+  avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=aldric',
+  avatar_options: {},
+  badges: [],
+  completedTour: true,
+  created_at: '2024-03-15T08:30:00.000Z',
+  marketing: false,
+  stripe_id: null,
+  stripe_session_id: null,
+  subscription_type: 'free',
+  temp_subscription: 'free',
+}
