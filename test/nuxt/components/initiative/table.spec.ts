@@ -158,7 +158,7 @@ describe('Initiative table', () => {
         settings: {
           ...sheet.settings,
           modified: true,
-          rows: ['index', 'name', 'initiative'],
+          rows: [],
         } as InitiativeSheet['settings'],
       }
 
@@ -173,7 +173,7 @@ describe('Initiative table', () => {
         settings: {
           ...sheet.settings,
           modified: true,
-          rows: ['index', 'name', 'initiative', 'ac', 'health'],
+          rows: ['ac', 'health'],
         } as InitiativeSheet['settings'],
       }
 
@@ -188,7 +188,7 @@ describe('Initiative table', () => {
         settings: {
           ...sheet.settings,
           modified: true,
-          rows: ['index', 'name', 'initiative'],
+          rows: [],
         } as InitiativeSheet['settings'],
       }
 
