@@ -159,7 +159,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should show all the selected columns', async () => {
-    mockSheet.value.settings.rows = ['index', 'name', 'initiative', 'ac', 'health']
+    mockSheet.value.settings.rows = ['ac', 'health']
     mockSheet.value.settings.modified = true
 
     const { columnVisibility } = useInitiativeSheet(
@@ -173,6 +173,29 @@ describe('useInitiativeSheet', async () => {
       initiative: true,
       ac: true,
       health: true,
+      conditions: false,
+      note: false,
+      deathSaves: false,
+      concentration: false,
+      modify: false,
+    })
+  })
+
+  it('Should show only the required columns', async () => {
+    mockSheet.value.settings.rows = []
+    mockSheet.value.settings.modified = true
+
+    const { columnVisibility } = useInitiativeSheet(
+      computed(() => mockSheet.value),
+      update,
+    )
+
+    expect(columnVisibility.value).toStrictEqual({
+      index: true,
+      name: true,
+      initiative: true,
+      ac: false,
+      health: false,
       conditions: false,
       note: false,
       deathSaves: false,
