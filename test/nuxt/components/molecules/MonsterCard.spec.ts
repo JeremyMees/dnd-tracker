@@ -4,7 +4,7 @@ import MonsterCard from '~/components/molecules/MonsterCard.vue'
 import { open5eMonsterFixture } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {
-  monster: Open5eItem
+  monster: Open5eMonster
   addable?: boolean
 }
 

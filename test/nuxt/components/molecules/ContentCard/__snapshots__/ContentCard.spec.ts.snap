@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`ContentCard > Should match snapshot 1`] = `
-"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4">
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="spells">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
     <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Acid Arrow</h3>
