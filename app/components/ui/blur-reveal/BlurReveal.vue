@@ -13,7 +13,7 @@
       :transition="{
         duration: props.duration,
         ease: 'easeInOut',
-        delay: props.delay * index,
+        delay: props.delay * Number(index),
       }"
     >
       <component :is="child" />
