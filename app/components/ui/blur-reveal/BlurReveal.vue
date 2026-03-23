@@ -9,11 +9,11 @@
       ref="childElements"
       as="div"
       :initial="getInitial()"
-      :in-view="getAnimate()"
+      :while-in-view="getAnimate()"
       :transition="{
         duration: props.duration,
         ease: 'easeInOut',
-        delay: props.delay * index,
+        delay: props.delay * Number(index),
       }"
     >
       <component :is="child" />

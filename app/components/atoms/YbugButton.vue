@@ -8,7 +8,7 @@ defineProps<{ type: 'menu' | 'footer' }>()
     :class="{
       'gap-2 w-full cursor-pointer': type === 'menu',
     }"
-    @click="($ybug as any)?.open('feedback')"
+    @click="$ybug?.open('feedback')"
   >
     <Icon
       name="tabler:bug"

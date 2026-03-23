@@ -1,7 +1,7 @@
 name: 💜 Pull request
 on:
   pull_request:
-    branches: ['main', 'develop', 'develop/*']
+    branches: ["main", "develop", "develop/*"]
 
 jobs:
   linting:
@@ -13,11 +13,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Run eslint
         run: npm run lint
+
   typechecking:
     name: 🕵 Typechecking
     needs: linting
@@ -28,11 +30,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Run typechecking
         run: npm run typecheck
+
   testing:
     name: 🧪 Testing
     needs: linting
@@ -43,9 +47,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Run tests
         run: npm run test
-    

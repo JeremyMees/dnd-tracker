@@ -98,9 +98,30 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [
-      // @ts-expect-error - Temporary fix for tailwindcss plugin types mismatch
       tailwindcss(),
     ],
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'vue-dompurify-html',
+        'isomorphic-dompurify',
+        'markdown-it',
+        'ybug-vue',
+        'vue-tippy',
+        '@unhead/schema-org/vue',
+        '@tanstack/vue-query',
+        'class-variance-authority',
+        'c15t',
+        '@c15t/scripts/google-tag',
+        'reka-ui',
+        'clsx',
+        'tailwind-merge',
+        '@vee-validate/zod',
+        'vee-validate',
+        'zod',
+      ],
+    },
   },
 
   eslint: { config: { stylistic: true } },

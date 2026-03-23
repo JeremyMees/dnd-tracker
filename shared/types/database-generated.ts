@@ -891,9 +891,12 @@ export type Database = {
     Enums: {
       action_type:
         | 'actions'
+        | 'bonus_actions'
         | 'legendary_actions'
         | 'reactions'
         | 'special_abilities'
+        | 'mythic_actions'
+        | 'lair_actions'
       alignment:
         | 'Lawful good'
         | 'Lawful neutral'
@@ -1131,9 +1134,12 @@ export const Constants = {
     Enums: {
       action_type: [
         'actions',
+        'bonus_actions',
         'legendary_actions',
         'reactions',
         'special_abilities',
+        'mythic_actions',
+        'lair_actions',
       ],
       alignment: [
         'Lawful good',

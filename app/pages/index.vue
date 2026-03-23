@@ -8,7 +8,6 @@ const dragon = ref<InstanceType<typeof Dragon>>()
 
 <template>
   <NuxtLayout no-padding>
-    <AnimationBlob />
     <Hero />
     <div class="flex flex-col pb-20 relative overflow-hidden">
       <div

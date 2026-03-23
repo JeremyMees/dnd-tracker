@@ -33,7 +33,7 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
   <Motion
     ref="dragon"
     :initial="{ y: '50%', x: '25%', rotate: '-45deg' }"
-    :in-view="{
+    :while-in-view="{
       y: '0%',
       x: '0%',
       transition: {
