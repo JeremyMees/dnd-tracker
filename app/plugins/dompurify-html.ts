@@ -1,5 +1,5 @@
 import VueDOMPurifyHTML from 'vue-dompurify-html'
-import DOMPurify from 'isomorphic-dompurify'
+import DOMPurify from 'dompurify'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(
