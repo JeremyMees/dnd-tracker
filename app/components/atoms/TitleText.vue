@@ -27,7 +27,7 @@ withDefaults(
     <Motion
       as="p"
       :initial="{ transform: 'translateX(-50px)', opacity: 0 }"
-      :in-view="{ transform: 'translateX(0px)', opacity: 1 }"
+      :while-in-view="{ transform: 'translateX(0px)', opacity: 1 }"
       :class="{ 'mx-auto': center }"
       class="max-w-prose text-muted-foreground"
     >
@@ -38,7 +38,7 @@ withDefaults(
       data-test-button
       as="div"
       :initial="{ transform: 'translateX(-50px)', opacity: 0 }"
-      :in-view="{ transform: 'translateX(0px)', opacity: 1 }"
+      :while-in-view="{ transform: 'translateX(0px)', opacity: 1 }"
       :transition="{ delay: 0.2 }"
       :class="[center ? 'justify-center' : 'justify-start']"
       class="flex mt-6"

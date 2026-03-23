@@ -25,7 +25,7 @@ withDefaults(
         :key="item"
         as="li"
         :initial="{ transform: 'translateX(-50px)', opacity: 0 }"
-        :in-view="{ transform: 'translateX(0px)', opacity: 1 }"
+        :while-in-view="{ transform: 'translateX(0px)', opacity: 1 }"
         :transition="{ delay: index * 0.1 }"
         class="flex items-center gap-4"
       >
