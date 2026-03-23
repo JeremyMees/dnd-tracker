@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark-mode *));
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --font-geist: "Geist", sans-serif;
@@ -119,7 +119,7 @@
   --chart-5: hsl(27 87% 67%);
 }
 
-.dark-mode {
+.dark {
   --background: hsl(240 10% 3.9%);
   --foreground: hsl(0 0% 98%);
   --muted: hsl(240 3.7% 15.9%);
