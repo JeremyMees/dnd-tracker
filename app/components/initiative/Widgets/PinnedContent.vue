@@ -25,7 +25,6 @@ defineProps<{ value: Open5eItem[] }>()
             :content="item"
             :is-open="true"
             :hide-open-button="() => true"
-            :type="item.type"
           />
           <div class="flex justify-end pt-4">
             <UiButton

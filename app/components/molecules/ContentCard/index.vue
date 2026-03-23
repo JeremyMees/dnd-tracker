@@ -4,7 +4,6 @@ defineEmits<{ pin: [], unpin: [] }>()
 const props = withDefaults(
   defineProps<{
     hit: Open5eItem
-    type: Open5eType
     pinned?: boolean
     allowPin?: boolean
     variant?: 'secondary' | 'background'
@@ -82,7 +81,7 @@ const isOpen = ref<boolean>(false)
     </UiCardContent>
     <UiCardFooter class="pl-4 pr-0 pb-0 pt-2">
       <div
-        v-if="!['armor'].includes(type)"
+        v-if="!isArmor(hit)"
         class="flex justify-end w-full"
       >
         <UiButton

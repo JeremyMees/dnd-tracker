@@ -139,7 +139,6 @@ async function removePins(): Promise<void> {
                     { value: 'magicitems', label: $t('general.magicItem', 2) },
                     { value: 'weapons', label: $t('general.weapon', 2) },
                     { value: 'armor', label: $t('general.armor') },
-                    { value: 'sections', label: $t('general.section', 2) },
                   ]"
                   :key="option.value"
                   :value="option.value"

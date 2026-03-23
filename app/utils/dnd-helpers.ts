@@ -320,6 +320,10 @@ export const createInitiativeRow = (
   const ac = getAC(formData)
   const baseArray: [boolean, boolean, boolean] = [false, false, false]
 
+  const monsterActions = isMonster(formData as Open5eItem)
+    ? mapOpen5eMonsterActions(formData as Open5eMonster)
+    : undefined
+
   const baseRow: Record<string, unknown> = {
     ...formData,
     id: crypto.randomUUID(),
@@ -337,6 +341,15 @@ export const createInitiativeRow = (
     tempAc: 0,
     concentration: false,
     deathSaves: { save: baseArray, fail: baseArray },
+    ...(monsterActions && {
+      actions: monsterActions.actions,
+      bonus_actions: monsterActions.bonus_actions,
+      reactions: monsterActions.reactions,
+      legendary_actions: monsterActions.legendary_actions,
+      mythic_actions: monsterActions.mythic_actions,
+      special_abilities: monsterActions.special_abilities,
+      lair_actions: monsterActions.lair_actions,
+    }),
   }
 
   const allowedKeys = new Set(initiativeKeys)

@@ -2,13 +2,12 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
 const urlMap = new Map<Open5eType, string>([
-  ['monsters', 'https://api.open5e.com/v1/monsters'],
+  ['monsters', 'https://api.open5e.com/v2/creatures'],
   ['spells', 'https://api.open5e.com/v2/spells'],
-  ['conditions', 'https://api.open5e.com/v1/conditions'],
+  ['conditions', 'https://api.open5e.com/v2/conditions'],
   ['magicitems', 'https://api.open5e.com/v2/magicitems'],
   ['weapons', 'https://api.open5e.com/v2/weapons'],
   ['armor', 'https://api.open5e.com/v2/armor'],
-  ['sections', 'https://api.open5e.com/v1/sections'],
 ])
 
 export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: Open5eFilters }>) {
@@ -77,7 +76,7 @@ async function fetchConditions() {
   const { t } = useI18n()
 
   try {
-    const { results } = await $fetch<Open5eResponse<Open5eConditions>>('https://api.open5e.com/conditions/?page=1')
+    const { results } = await $fetch<Open5eResponse<Open5eCondition>>('https://api.open5e.com/conditions/?page=1')
 
     return results.map(c => c.name === 'Exhaustion' ? { ...c, level: 1, hasLevels: true } : c)
   }
@@ -104,5 +103,42 @@ export async function useConditionsListing() {
   return useQuery({
     queryKey: ['useConditionsListing'],
     queryFn: fetchConditions,
+  })
+}
+
+export function useOpen5eMonsterListing(data: ComputedRef<{ filters: Open5eFilters }>) {
+  const { toast } = useToast()
+  const { t } = useI18n()
+
+  return useQuery({
+    queryKey: ['useOpen5eMonsterListing', data],
+    queryFn: async () => {
+      try {
+        const query = generateParams(removeEmptyKeys<Open5eFilters>({
+          ...data.value.filters,
+          limit: 20,
+          page: data.value.filters.page + 1, // Open5e uses 1-based indexing
+        }))
+
+        const url = `${urlMap.get('monsters')}/?${query}`
+
+        return await $fetch<Open5eResponse<Open5eMonster>>(url)
+      }
+      catch (error: any) {
+        toast({
+          title: t('general.error.title'),
+          description: error.message,
+          variant: 'destructive',
+        })
+      }
+    },
+    select: (response) => {
+      if (response) {
+        return {
+          items: response.results,
+          pages: Math.ceil(response.count / 20),
+        }
+      }
+    },
   })
 }

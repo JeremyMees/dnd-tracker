@@ -85,16 +85,6 @@ export interface Action {
   spell_save_type?: AbilityType
 }
 
-export interface ActionOpen5E {
-  name: string
-  desc: {
-    en: string
-  }
-  attack_bonus?: number
-  damage_bonus?: number
-  damage_dice?: string
-}
-
 export interface DeathSaves {
   fail: [boolean, boolean, boolean]
   save: [boolean, boolean, boolean]
@@ -132,16 +122,20 @@ export interface InitiativeSheetRow {
     name: string
     id: string
   }
-  actions?: (Action | ActionOpen5E)[]
-  reactions?: (Action | ActionOpen5E)[]
-  legendary_actions?: (Action | ActionOpen5E)[]
-  special_abilities?: (Action | ActionOpen5E)[]
+  actions?: Action[]
+  bonus_actions?: Action[]
+  reactions?: Action[]
+  legendary_actions?: Action[]
+  mythic_actions?: Action[]
+  special_abilities?: Action[]
 }
 
 export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'campaign' | 'amount' | 'initiative' | 'initiative_modifier' | 'summoner' | NotUpdatable> {
   actions?: Action[]
+  bonus_actions?: Action[]
   reactions?: Action[]
   legendary_actions?: Action[]
+  mythic_actions?: Action[]
   special_abilities?: Action[]
 }
 

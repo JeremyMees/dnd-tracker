@@ -148,7 +148,7 @@ export function permission(options: {
   }, () => options.children)
 }
 
-const actionRoll = (action: Action | ActionOpen5E, id: string) => {
+const actionRoll = (action: Action, id: string) => {
   const attackBonus = action.attack_bonus
   const damageDice = action.damage_dice
   const damageBonus = action.damage_bonus ?? 0
@@ -163,7 +163,7 @@ const actionRoll = (action: Action | ActionOpen5E, id: string) => {
   })
 }
 
-const actionToHit = (action: Action | ActionOpen5E) => {
+const actionToHit = (action: Action) => {
   if (action.attack_bonus && action.attack_bonus > 0) {
     return h('div', { class: 'flex flex-wrap gap-x-2 items-center' }, [
       h('span', {}, 'To hit:'),
@@ -173,7 +173,7 @@ const actionToHit = (action: Action | ActionOpen5E) => {
   return null
 }
 
-const actionDamage = (action: Action | ActionOpen5E) => {
+const actionDamage = (action: Action) => {
   return action.damage_dice && h('div', {
     class: 'flex flex-wrap gap-x-2 items-center',
   }, [
@@ -185,7 +185,7 @@ const actionDamage = (action: Action | ActionOpen5E) => {
   ])
 }
 
-const actionSave = (action: Action | ActionOpen5E) => {
+const actionSave = (action: Action) => {
   if ('spell_save' in action && action.spell_save) {
     return h('div', {
       class: 'flex flex-wrap gap-x-2 items-center',
@@ -202,7 +202,7 @@ const actionSave = (action: Action | ActionOpen5E) => {
 
 const generateActionsTableRow = (
   label: string,
-  actionArray: (Action | ActionOpen5E)[],
+  actionArray: Action[],
   id: string,
   type: 'initiative' | 'campaign',
 ) => {
@@ -246,14 +246,18 @@ export function actionsTable(
 
   const id = item.id as string
   const actions = item.actions
+  const bonusActions = 'bonus_actions' in item ? item.bonus_actions : undefined
   const reactions = item.reactions
   const legendary = item.legendary_actions
+  const mythic = 'mythic_actions' in item ? item.mythic_actions : undefined
   const special = item.special_abilities
 
   const rows = [
     actions?.length ? generateActionsTableRow(t('general.action', 2), actions, id, type) : '',
+    bonusActions?.length ? generateActionsTableRow(t('general.bonusAction', 2), bonusActions, id, type) : '',
     reactions?.length ? generateActionsTableRow(t('general.reaction', 2), reactions, id, type) : '',
     legendary?.length ? generateActionsTableRow(t('general.legendaryAction', 2), legendary, id, type) : '',
+    mythic?.length ? generateActionsTableRow(t('general.mythicAction', 2), mythic, id, type) : '',
     special?.length ? generateActionsTableRow(t('general.specialAbility', 2), special, id, type) : '',
   ].filter(Boolean)
 

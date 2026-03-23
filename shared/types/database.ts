@@ -15,41 +15,39 @@ interface DatabaseOverrides {
           settings?: InitiativeSettings
           info_cards?: Open5eItem[]
         }
-        Update: {
-          rows?: InitiativeSheetRow[]
-          settings?: InitiativeSettings
-          info_cards?: Open5eItem[]
+        monsters: {
+          Row: {
+            actions: Action[]
+            bonus_actions: Action[]
+            legendary_actions: Action[]
+            reactions: Action[]
+            special_abilities: Action[]
+          }
+          Insert: {
+            actions?: Action[]
+            bonus_actions?: Action[]
+            legendary_actions?: Action[]
+            reactions?: Action[]
+            special_abilities?: Action[]
+          }
+          Update: {
+            actions?: Action[]
+            bonus_actions?: Action[]
+            legendary_actions?: Action[]
+            reactions?: Action[]
+            special_abilities?: Action[]
+          }
         }
-      }
-      homebrew_items: {
-        Row: {
-          actions: Action[]
-          legendary_actions: Action[]
-          reactions: Action[]
-          special_abilities: Action[]
-        }
-        Insert: {
-          actions: Action[]
-          legendary_actions: Action[]
-          reactions: Action[]
-          special_abilities: Action[]
-        }
-        Update: {
-          actions?: Action[]
-          legendary_actions?: Action[]
-          reactions?: Action[]
-          special_abilities?: Action[]
-        }
-      }
-      profiles: {
-        Row: {
-          avatar_options?: Record<string, string | number>
-        }
-        Insert: {
-          avatar_options?: Record<string, string | number>
-        }
-        Update: {
-          avatar_options?: Record<string, string | number>
+        profiles: {
+          Row: {
+            avatar_options?: Record<string, string | number>
+          }
+          Insert: {
+            avatar_options?: Record<string, string | number>
+          }
+          Update: {
+            avatar_options?: Record<string, string | number>
+          }
         }
       }
     }

@@ -49,9 +49,12 @@ export const abilityType = [
 
 export const actionType = [
   'actions',
+  'bonus_actions',
   'reactions',
   'legendary_actions',
+  'mythic_actions',
   'special_abilities',
+  'lair_actions',
 ] as const
 
 export const roleType = [

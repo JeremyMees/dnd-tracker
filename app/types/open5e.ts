@@ -6,7 +6,6 @@ export type Open5eType
     | 'weapons'
     | 'armor'
     | 'documents'
-    | 'sections'
 
 export type Open5eSortBy
   = | 'name'
@@ -45,7 +44,7 @@ export type Open5eItem
     | Open5eWeapon
     | Open5eArmor
     | Open5eCondition
-    | Open5eSection
+    | Open5eMonster
 
 export interface Open5eMinimalDocument {
   name: string
@@ -66,6 +65,81 @@ export interface Open5eSpellCastingOption {
   concentration: boolean | null
   shape_size: number | null
   desc?: string | null
+}
+
+export type Open5eSpeed = Partial<Movement> & {
+  unit: 'feet'
+  walk: number
+}
+
+export interface Open5eLanguages {
+  as_string: string
+  data: Open5eLanguage[]
+}
+
+export interface Open5eLanguage {
+  name: string
+  key: string
+  url: string
+  desc: string
+}
+
+export interface Open5eResistancesAndImmunities {
+  damage_immunities_display: string
+  damage_immunities: Open5eInfoObject[]
+  damage_resistances_display: string
+  damage_resistances: Open5eInfoObject[]
+  damage_vulnerabilities_display: string
+  damage_vulnerabilities: Open5eInfoObject[]
+  condition_immunities_display: string
+  condition_immunities: Open5eInfoObject[]
+}
+
+export type Open5eActionType = 'ACTION'
+  | 'BONUS_ACTION'
+  | 'REACTION'
+  | 'LEGENDARY_ACTION'
+  | 'MYTHIC_ACTION'
+  | 'LAIR_ACTION'
+
+export interface Open5eAction {
+  name: string
+  desc: string
+  attacks: Open5eAttack[]
+  action_type: Open5eActionType
+  order_in_statblock: number | null
+  legendary_action_cost: number | null
+  limited_to_form: string | null
+  usage_limits: Open5eUsageLimits | null
+}
+
+export interface Open5eAttack {
+  name: string
+  attack_type: string
+  to_hit_mod: number
+  reach: number | null
+  range: number | null
+  long_range: number | null
+  target_creature_only: boolean
+  damage_die_count: number | null
+  damage_die_type: string | null
+  damage_bonus: number | null
+  damage_type: Open5eInfoObject | null
+  extra_damage_die_count: number | null
+  extra_damage_die_type: string | null
+  extra_damage_bonus: number | null
+  extra_damage_type: Open5eInfoObject | null
+  distance_unit: string
+}
+
+export interface Open5eUsageLimits {
+  type: string
+  param: number
+}
+
+export interface Open5eTrait {
+  name: string
+  desc: string
 }
 
 export interface Open5eSpell extends Open5eInfoObject {
@@ -161,8 +235,42 @@ export interface Open5eArmor extends Open5eInfoObject {
 }
 
 export interface Open5eMonster extends Open5eInfoObject {
-  desc: string
   document: Open5eMinimalDocument
+  type: Open5eInfoObject
+  size: Open5eInfoObject
+  challenge_rating_decimal: string
+  challenge_rating_text: string
+  proficiency_bonus: number | null
+  speed: Partial<Movement>
+  speed_all: Movement
+  category: string
+  subcategory: string | null
+  alignment: string
+  languages: Open5eLanguages
+  armor_class: number
+  armor_detail: string
+  hit_points: number
+  hit_dice: string
+  experience_points: number
+  ability_scores: AbilityScores
+  modifiers: Modifiers
+  initiative_bonus: number
+  saving_throws: Partial<SavingThrowBonuses>
+  saving_throws_all: SavingThrowBonuses
+  skill_bonuses: Partial<SkillBonuses>
+  skill_bonuses_all: SkillBonuses
+  passive_perception: number
+  resistances_and_immunities: Open5eResistancesAndImmunities
+  normal_sight_range: number | null
+  darkvision_range: number | null
+  blindsight_range: number | null
+  tremorsense_range: number | null
+  truesight_range: number | null
+  actions: Open5eAction[]
+  traits: Open5eTrait[]
+  creaturesets: unknown[]
+  environments: unknown[]
+  illustration: string | null
 }
 
 export interface Open5eCondition extends Open5eInfoObject {
@@ -170,13 +278,7 @@ export interface Open5eCondition extends Open5eInfoObject {
   document: Open5eMinimalDocument
 }
 
-export interface Open5eSection extends Open5eInfoObject {
-  desc: string
-  document: Open5eMinimalDocument
-  parent: string
-}
-
-export type Open5eGameSystem = '5e-2014' | '5e-2024'
+export type Open5eGameSystem = '5e-2014' | '5e-2024' | 'a5e'
 
 export interface Open5eDocument extends Open5eInfoObject {
   licenses: Open5eInfoObject[]
@@ -190,4 +292,14 @@ export interface Open5eDocument extends Open5eInfoObject {
   permalink: string
   distance_unit: string
   weight_unit: string
+}
+
+export interface Open5eEndpointMap {
+  spells: Open5eSpell
+  monsters: Open5eMonster
+  conditions: Open5eCondition
+  magicitems: Open5eMagicItem
+  weapons: Open5eWeapon
+  armor: Open5eArmor
+  documents: Open5eDocument
 }

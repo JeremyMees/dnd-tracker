@@ -1,18 +1,47 @@
 <script setup lang="ts">
 import { abilities, abilitiesNames } from '~~/constants/dnd-rules'
 
-defineEmits<{ add: [monster: Open5eItem] }>()
+defineEmits<{ add: [monster: Open5eMonster] }>()
 
-withDefaults(defineProps<{
-  monster: Open5eItem
+const props = withDefaults(defineProps<{
+  monster: Open5eMonster
   addable?: boolean
 }>(), {
   addable: false,
 })
 
 const names = ref(abilitiesNames)
-const stats = ref<(keyof Open5eItem)[]>(['type', 'subtype', 'size', 'alignment', 'xp'])
 const isOpen = ref<boolean>(false)
+
+const mappedActions = computed(() => mapOpen5eMonsterActions(props.monster))
+
+const stats: { key: keyof Open5eMonster, label: string, nested: boolean }[] = ([
+  {
+    key: 'type',
+    label: 'Type',
+    nested: true,
+  },
+  {
+    key: 'subcategory',
+    label: 'Subcategory',
+    nested: false,
+  },
+  {
+    key: 'size',
+    label: 'Size',
+    nested: true,
+  },
+  {
+    key: 'alignment',
+    label: 'Alignment',
+    nested: false,
+  },
+  {
+    key: 'experience_points',
+    label: 'XP',
+    nested: false,
+  },
+])
 </script>
 
 <template>
@@ -54,7 +83,7 @@ const isOpen = ref<boolean>(false)
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.challenge_rating || '_' }}
+            {{ monster.challenge_rating_text || '_' }}
           </p>
         </div>
         <div
@@ -96,24 +125,28 @@ const isOpen = ref<boolean>(false)
             {{ ability }}:
           </span>
           <span>
-            {{ names[index] ? monster[names[index] as keyof Open5eItem] : '_' }}
+            {{ names[index] ? monster.ability_scores[names[index] as keyof AbilityScores] : '_' }}
           </span>
         </div>
       </div>
       <div class="flex gap-x-4 gap-y-1 flex-wrap">
         <template
           v-for="stat in stats"
-          :key="stat"
+          :key="stat.key"
         >
           <div
-            v-if="monster[stat]"
+            v-if="stat.nested? getValueFromNestedKeys(monster, stat.key) : monster[stat.key]"
             class="flex gap-1"
           >
             <span class="text-muted-foreground">
-              {{ stat }}:
+              {{ stat.label }}:
             </span>
             <span class="lowercase">
-              {{ monster[stat] || '_' }}
+              {{
+                stat.nested
+                  ? getValueFromNestedKeys(monster, stat.key)?.name || '_'
+                  : monster[stat.key] || '_'
+              }}
             </span>
           </div>
         </template>
@@ -121,10 +154,13 @@ const isOpen = ref<boolean>(false)
       <ActionsTable
         v-if="monster.actions && isOpen"
         data-test-actions-table
-        :actions="monster.actions"
-        :legendary-actions="monster.legendary_actions"
-        :special-abilities="monster.special_abilities"
-        :reactions="monster.reactions"
+        :actions="mappedActions.actions"
+        :bonus-actions="mappedActions.bonus_actions"
+        :legendary-actions="mappedActions.legendary_actions"
+        :mythic-actions="mappedActions.mythic_actions"
+        :special-abilities="mappedActions.special_abilities"
+        :reactions="mappedActions.reactions"
+        :lair-actions="mappedActions.lair_actions"
         :class="{ 'py-5': isOpen }"
       />
     </UiCardContent>

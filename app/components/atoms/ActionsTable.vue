@@ -1,16 +1,22 @@
 <script setup lang="ts">
 const props = defineProps<{
-  specialAbilities?: (Action | ActionOpen5E)[]
-  legendaryActions?: (Action | ActionOpen5E)[]
-  actions?: (Action | ActionOpen5E)[]
-  reactions?: (Action | ActionOpen5E)[]
+  specialAbilities?: Action[]
+  mythicActions?: Action[]
+  legendaryActions?: Action[]
+  actions?: Action[]
+  bonusActions?: Action[]
+  reactions?: Action[]
+  lairActions?: Action[]
 }>()
 
 const allActions = computed<Option<Action[]>[]>(() => [
   { label: 'specialAbility', value: props.specialAbilities },
-  { label: 'legendaryAction', value: props.legendaryActions },
   { label: 'action', value: props.actions },
+  { label: 'bonusAction', value: props.bonusActions },
   { label: 'reaction', value: props.reactions },
+  { label: 'legendaryAction', value: props.legendaryActions },
+  { label: 'mythicAction', value: props.mythicActions },
+  { label: 'lairAction', value: props.lairActions },
 ].filter((action): action is Option<Action[]> => !!action.value?.length),
 )
 </script>

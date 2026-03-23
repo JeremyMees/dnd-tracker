@@ -2,7 +2,7 @@
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd-rules'
-import { useOpen5eDocuments, useOpen5eListing } from '~~/queries/open5e'
+import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/queries/open5e'
 
 const props = withDefaults(defineProps<{
   system?: Open5eGameSystem
@@ -53,8 +53,7 @@ watch(selectedDocuments, () => {
   }
 })
 
-const { data, status: monstersStatus } = useOpen5eListing(computed(() => ({
-  type: 'monsters',
+const { data, status: monstersStatus } = useOpen5eMonsterListing(computed(() => ({
   filters: queryFilters.value,
 })))
 
@@ -63,7 +62,7 @@ const { data: documents, status: documentsStatus } = useOpen5eDocuments()
 const isLoading = computed(() => monstersStatus.value === 'pending' || documentsStatus.value === 'pending')
 const isError = computed(() => monstersStatus.value === 'error' || documentsStatus.value === 'error')
 
-async function addMonster(monster: Open5eItem): Promise<void> {
+async function addMonster(monster: Open5eMonster): Promise<void> {
   if (!sheet.value) return
 
   const rows = [

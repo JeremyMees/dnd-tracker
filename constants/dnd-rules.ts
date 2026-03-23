@@ -58,7 +58,10 @@ export const initiativeKeys = [
   'type',
   'summoner',
   'actions',
-  'legendary_actions',
+  'bonus_actions',
   'reactions',
   'special_abilities',
+  'legendary_actions',
+  'mythic_actions',
+  'lair_actions',
 ]
