@@ -22,6 +22,19 @@ const props = withDefaults(
 
 const { t } = useI18n()
 
+type SupportedActionType = (typeof actionType)[number]
+type SupportedAction = Omit<Action, 'type'> & { type: SupportedActionType }
+
+function isSupportedActionType(type: Action['type']): type is SupportedActionType {
+  return (actionType as readonly Action['type'][]).includes(type)
+}
+
+function filterSupportedActions(actions?: Action[] | null): SupportedAction[] {
+  if (!actions) return []
+
+  return actions.filter((a): a is SupportedAction => isSupportedActionType(a.type))
+}
+
 const actionInputs = z.array(z.object({
   type: z.enum(actionType),
   name: z.string().min(3).max(30),
@@ -69,10 +82,10 @@ const form = useForm({
     ac: props.item?.ac || undefined,
     health: props.item?.health || undefined,
     link: props.item?.link || '',
-    actions: props.item?.actions || [],
-    reactions: props.item?.reactions || [],
-    legendary_actions: props.item?.legendary_actions || [],
-    special_abilities: props.item?.special_abilities || [],
+    actions: filterSupportedActions(props.item?.actions),
+    reactions: filterSupportedActions(props.item?.reactions),
+    legendary_actions: filterSupportedActions(props.item?.legendary_actions),
+    special_abilities: filterSupportedActions(props.item?.special_abilities),
   },
 })
 
