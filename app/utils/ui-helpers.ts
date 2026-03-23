@@ -1,4 +1,4 @@
-import DOMPurify from 'isomorphic-dompurify'
+import DOMPurify from 'dompurify'
 
 export function scrollToId(id: string): void {
   const el = document.getElementById(id)
