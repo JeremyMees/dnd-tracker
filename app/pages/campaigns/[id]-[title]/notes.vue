@@ -24,6 +24,7 @@ const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
 const queryClient = useQueryClient()
 
 const table = ref<InstanceType<typeof DataTable>>()
+const pageSize = 20
 const max = 100
 
 const hasRights = computed(() => props.isOwner || props.isAdmin)
@@ -32,19 +33,23 @@ const enableDateFetching = computed(() => props.fetchReady)
 const { data: count } = useNoteCount(props.campaignId, enableDateFetching)
 const { mutateAsync: removeNote } = useNoteRemove()
 
-const { data, status } = useNoteListing(computed(() => {
-  const pagination = table.value?.vueTable.getState().pagination
-  const sorting = table.value?.vueTable.getState().sorting
-  const search = table.value?.vueTable.getState().globalFilter
+const { data, status } = useNoteListing(
+  computed(() => {
+    const pagination = table.value?.vueTable.getState().pagination
+    const sorting = table.value?.vueTable.getState().sorting
+    const search = table.value?.vueTable.getState().globalFilter
 
-  return {
-    search,
-    sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
-    sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
-    page: pagination?.pageIndex ?? 0,
-    eq: { field: 'campaign', value: props.campaignId },
-  }
-}), enableDateFetching)
+    return {
+      search,
+      sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
+      sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
+      page: pagination?.pageIndex ?? 0,
+      eq: { field: 'campaign', value: props.campaignId },
+    }
+  }),
+  enableDateFetching,
+  pageSize,
+)
 
 const columns = generateColumns({
   onUpdate: (item: NoteRow) => openModal(item),
@@ -135,6 +140,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
       :columns="columns"
       :data="data?.notes || []"
       :total="data?.amount || 0"
+      :page-size="pageSize"
       :loading="status === 'pending'"
       :options="{
         pageCount: data?.pages ?? -1,

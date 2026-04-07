@@ -1,0 +1,25 @@
+{
+  "version": "v2.1.4",
+  "date": "2026-04-07",
+  "features": [
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Updated page size to 20 items for campaign homebrew and notes"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Permission check wasn't redone when a item was removed from the table and another item was added, causing the new item to have incorrect permissions until the page was refreshed"
+        },
+        {
+          "text": "Alert dialog action and cancel buttons had the wrong color variants, making the cancel button look like a destructive action"
+        }
+      ]
+    }
+  ]
+}
