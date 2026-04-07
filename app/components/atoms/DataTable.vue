@@ -7,19 +7,25 @@ const emit = defineEmits<{
   invalidate: []
 }>()
 
-const props = defineProps<{
-  columns: ColumnDef<any, any>[]
-  data: any[]
-  loading: boolean
-  options?: Partial<TableOptions<any>>
-  emptyMessage?: string
-  permission?: boolean | ((item: any) => Promise<boolean>)
-  expandedMarkup?: (row: Row<any>) => VNode
-}>()
+const props = withDefaults(
+  defineProps<{
+    columns: ColumnDef<any, any>[]
+    data: any[]
+    loading: boolean
+    options?: Partial<TableOptions<any>>
+    emptyMessage?: string
+    permission?: boolean | ((item: any) => Promise<boolean>)
+    expandedMarkup?: (row: Row<any>) => VNode
+    pageSize?: number
+  }>(),
+  {
+    pageSize: 10,
+  },
+)
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(props.options?.initialState?.sorting || [])
-const pagination = ref<PaginationState>({ pageIndex: 0, pageSize: 10 })
+const pagination = ref<PaginationState>({ pageIndex: 0, pageSize: props.pageSize })
 const rowSelectionPermissions = ref<Record<string, boolean>>({})
 
 // Convert 0-based to 1-based for Radix
