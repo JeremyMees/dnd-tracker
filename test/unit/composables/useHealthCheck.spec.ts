@@ -83,7 +83,7 @@ describe('useHealthCheck', () => {
     mockFetch.mockResolvedValue({})
     await intervalCallback()
 
-    expect(mockFetch).toHaveBeenCalledWith('https://api.open5e.com/')
+    expect(mockFetch).toHaveBeenCalledWith('https://api.open5e.com/v1')
   })
 
   it('should handle Open5e failure', async () => {

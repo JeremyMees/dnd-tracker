@@ -18,7 +18,7 @@ export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: 
       try {
         const query = generateParams(removeEmptyKeys<Open5eFilters>(queryFilters))
 
-        const url = `https://api.open5e.com/${data.value.type}/?${query}`
+        const url = `https://api.open5e.com/v1/${data.value.type}/?${query}`
 
         return await $fetch<Open5eResponse>(url)
       }
@@ -47,7 +47,7 @@ async function fetchConditions() {
   const { t } = useI18n()
 
   try {
-    const { results } = await $fetch<Open5eResponse>('https://api.open5e.com/conditions/?page=1')
+    const { results } = await $fetch<Open5eResponse>('https://api.open5e.com/v1/conditions/?page=1')
 
     return results.map(c => c.name === 'Exhaustion' ? { ...c, level: 1, hasLevels: true } : c)
   }
