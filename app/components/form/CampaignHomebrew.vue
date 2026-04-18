@@ -94,6 +94,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       initiative: undefined,
       initiative_modifier: hb.initiative_modifier ? Number(hb.initiative_modifier) : undefined,
       actions: hb.actions || [],
+      bonus_actions: hb.bonus_actions || [],
       legendary_actions: hb.legendary_actions || [],
       reactions: hb.reactions || [],
       special_abilities: hb.special_abilities || [],

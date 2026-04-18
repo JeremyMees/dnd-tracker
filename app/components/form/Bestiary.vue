@@ -2,7 +2,7 @@
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd-rules'
-import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/queries/open5e'
+import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/shared/types/open5e'
 
 const props = withDefaults(defineProps<{
   system?: Open5eGameSystem

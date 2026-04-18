@@ -13,8 +13,8 @@ defineProps<{ value: Open5eItem[] }>()
     >
       <UiAccordionItem
         v-for="item in value"
-        :key="item.slug"
-        :value="item.slug"
+        :key="item.key"
+        :value="item.key"
         class="last:border-b-0"
       >
         <UiAccordionTrigger class="hover:no-underline">
@@ -29,13 +29,18 @@ defineProps<{ value: Open5eItem[] }>()
           <div class="flex justify-end pt-4">
             <UiButton
               :aria-label="$t(`components.infoCard.remove`)"
-              @click="$emit('update', value.filter(i => i.slug !== item.slug))"
+              @click="
+                $emit(
+                  'update',
+                  value.filter((i) => i.key !== item.key),
+                )
+              "
             >
               <Icon
                 name="tabler:pinned-off"
                 aria-hidden="true"
               />
-              {{ $t('components.infoCard.remove') }}
+              {{ $t("components.infoCard.remove") }}
             </UiButton>
           </div>
         </UiAccordionContent>
@@ -45,7 +50,7 @@ defineProps<{ value: Open5eItem[] }>()
       v-else
       class="text-muted-foreground"
     >
-      {{ $t('pages.encounter.pinnedContent.empty') }}
+      {{ $t("pages.encounter.pinnedContent.empty") }}
     </p>
   </Card>
 </template>

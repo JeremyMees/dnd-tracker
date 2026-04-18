@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useConditionsListing } from '~~/queries/open5e'
+import { useConditionsListing } from '~~/shared/types/open5e'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
@@ -43,7 +43,7 @@ function updateCondition(conditions: Condition[]): void {
   popoverOpen.value = false
 }
 
-function toggleSelected(item: Open5eItem | Condition): void {
+function toggleSelected(item: Open5eCondition | Condition): void {
   const arr = [...selected.value]
   const index: number = arr.findIndex(s => s.name === item.name)
 
