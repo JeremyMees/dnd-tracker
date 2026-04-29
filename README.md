@@ -1,8 +1,9 @@
-# D&D Tracker
+![CI](https://www.shieldcn.dev/github/ci/jeremyMees/dnd-tracker.svg?variant=secondary&size=sm)
+![License](https://www.shieldcn.dev/github/license/jeremyMees/dnd-tracker.svg?variant=ghost&size=sm)
+![Open issues](https://www.shieldcn.dev/github/open-issues/jeremyMees/dnd-tracker.svg?variant=secondary&size=sm)
+![Open PRs](https://www.shieldcn.dev/github/open-prs/jeremyMees/dnd-tracker.svg?variant=secondary&size=sm)
 
-[![Nuxt](https://img.shields.io/badge/Nuxt-3.17.1-00DC82?logo=nuxt.js&logoColor=white)](https://nuxt.com/)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen)](https://nodejs.org/)
-[![npm Version](https://img.shields.io/badge/npm-%3E%3D10.0.0-blue)](https://www.npmjs.com/)
+# D&D Tracker
 
 A modern web application designed to streamline your D&D encounter management experience. Say goodbye to the hassle of manual tracking and hello to smooth, efficient gameplay sessions.
 
