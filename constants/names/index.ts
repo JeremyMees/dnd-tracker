@@ -8,7 +8,7 @@ import halfElf from './half-elf.json'
 import halfOrc from './half-orc.json'
 import tiefling from './tiefling.json'
 
-type Content = Record<Gender, {
+type Content = Record<DndGender, {
   first: string[]
   middle: string[]
   last: {
@@ -44,9 +44,9 @@ const raceOptions: Option<DndRace | 'random'>[] = [
   { label: 'Tiefling', value: 'tiefling' },
 ]
 
-const genders: Gender[] = ['male', 'female', 'nonbinary']
+const genders: DndGender[] = ['male', 'female', 'nonbinary']
 
-const genderOptions: Option<Gender | 'random'>[] = [
+const genderOptions: Option<DndGender | 'random'>[] = [
   { label: 'Random gender', value: 'random' },
   { label: 'Male', value: 'male' },
   { label: 'Female', value: 'female' },

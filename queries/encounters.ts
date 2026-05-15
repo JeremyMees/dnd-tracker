@@ -12,11 +12,11 @@ export function useEncounterListing(
       table: 'initiative_sheets',
       select: `
         *, 
-        created_by(id, username, avatar),
+        createdBy(id, username, avatar),
         campaign( 
           id,
           title,
-          created_by(id, username, avatar), 
+          createdBy(id, username, avatar), 
           team(
             id,
             user(id, username, avatar),
@@ -190,11 +190,11 @@ export function useEncounterCopy() {
 
   return useMutation({
     mutationFn: async ({ data }: { data: EncounterItem } & QueryDefaults) => {
-      const { campaign, created_by, id, homebrew_items, initiative_sheets, ...enc } = data
+      const { campaign, createdBy, id, homebrew_items, initiative_sheets, ...enc } = data
 
       const { error } = await supabase.from('initiative_sheets').insert([{
         ...enc,
-        created_by: created_by.id,
+        createdBy: createdBy.id,
         title: `copy ${enc.title}`.slice(0, 30),
         ...(campaign && { campaign: campaign.id }),
       }])

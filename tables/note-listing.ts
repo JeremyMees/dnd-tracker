@@ -46,10 +46,10 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
       header: t('general.title'),
       cell: ({ row }) => row.getValue('title'),
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('createdAt', {
       header: t('general.createdAt'),
       cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('created_at'),
+        datetime: row.getValue<Date>('createdAt'),
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',
@@ -90,5 +90,5 @@ export function expandedMarkup(row: Row<NoteRow>) {
 }
 
 export const initialState: InitialTableState = {
-  sorting: [{ id: 'created_at', desc: true }],
+  sorting: [{ id: 'createdAt', desc: true }],
 }

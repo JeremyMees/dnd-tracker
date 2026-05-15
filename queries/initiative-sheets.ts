@@ -13,7 +13,7 @@ export function useInitiativeSheetDetail(id: number) {
         campaign(
           id,
           title,
-          created_by(id, username, avatar), 
+          createdBy(id, username, avatar), 
           team(
             id,
             role, 
@@ -36,7 +36,15 @@ export function useInitiativeSheetDetailUpdate() {
 
   return useMutation({
     mutationFn: async ({ data, id }: { data: Omit<InitiativeUpdate, NotUpdatable | 'campaign'>, id: number } & QueryDefaults) => {
-      if (data.rows?.length) data.rows = indexCorrect(data.rows)
+      if (data.rows?.length) {
+        data.rows = indexCorrect(data.rows).map(row => ({
+          ...row,
+          conditions: row.conditions.map(c => ({
+            ...c,
+            desc: c.desc ?? '',
+          })),
+        }))
+      }
 
       const { error } = await supabase.from('initiative_sheets').update(data).eq('id', id)
 

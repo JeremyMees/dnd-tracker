@@ -78,6 +78,8 @@
     "generateName": "Naam genereren"
   },
   "general": {
+    "yes": "Ja",
+    "no": "Nee",
     "actions": "Acties",
     "version": "Versie",
     "advantage": "Advantage",
@@ -179,8 +181,11 @@
     "modify": "Aanpassen",
     "type": "Type | Types",
     "action": "Actie | Acties",
+    "bonusAction": "Bonusactie | Bonusacties",
     "specialAbility": "Speciale vaardigheid | Speciale vaardigheden",
     "legendaryAction": "Legendarische actie | Legendarische acties",
+    "mythicAction": "Mythische actie | Mythische acties",
+    "lairAction": "Lair actie | Lair acties",
     "reaction": "Reactie | Reacties",
     "row": "Rij | Rijen",
     "concentration": "Concentratie",
@@ -545,7 +550,7 @@
     "initiativeTableModals": {
       "name": "Naam wijzigen",
       "init": "Initiatief wijzigen",
-      "health": "HP wijzigen"
+      "hp": "HP wijzigen"
     },
     "healthCheck": {
       "offline": {
@@ -655,6 +660,8 @@
       "placeholder": "Te midden van het rijk der draken en kerkerdoolhoven blijft de legende van een held onverteld, omdat de gebruiker de saga van hun personage nog niet heeft gelinkt."
     },
     "inputs": {
+      "gameSystemLabel": "Game system",
+      "systemDocumentLabel": "Geselecteerde systeem documenten",
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Doelwit",
@@ -761,7 +768,7 @@
         "name": "Naam",
         "init": "Init",
         "ac": "AC",
-        "health": "HP",
+        "hp": "HP",
         "manage": "Acties",
         "conditions": "Condities",
         "note": "Notitie",

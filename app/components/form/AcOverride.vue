@@ -6,7 +6,7 @@ import * as z from 'zod'
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (amount: number, type: AcType) => Partial<InitiativeSheetRow>
+  handleAcChanges: (amount: number, type: DndAcType) => Partial<InitiativeSheetRow>
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
@@ -18,7 +18,7 @@ const formSchema = toTypedSchema(z.object({
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: formSchema,
   initialValues: {
-    ...(props.item.maxAcOld ? { amount: props.item.maxAc } : { }),
+    ...(props.item.maxArmorClassOld ? { amount: props.item.maxArmorClass } : { }),
   },
 })
 
@@ -32,8 +32,8 @@ const onSubmit = handleSubmit(async (values) => {
 
     const { amount, reset } = values
 
-    const row = reset || amount === props.item.maxAcOld
-      ? props.handleAcChanges(props.item.maxAcOld ?? 0, 'override-reset')
+    const row = reset || amount === props.item.maxArmorClassOld
+      ? props.handleAcChanges(props.item.maxArmorClassOld ?? 0, 'override-reset')
       : props.handleAcChanges(amount, 'override')
 
     await props.updateRow(row)
@@ -63,10 +63,10 @@ const onSubmit = handleSubmit(async (values) => {
             <UiInputGroupAddon align="inline-end">
               <UiInputGroupButton
                 type="submit"
-                :aria-label="item.maxAcOld ? $t('actions.reset') : $t('actions.save')"
-                @click="setFieldValue('reset', !!item.maxAcOld)"
+                :aria-label="item.maxArmorClassOld ? $t('actions.reset') : $t('actions.save')"
+                @click="setFieldValue('reset', !!item.maxArmorClassOld)"
               >
-                <Icon :name="item.maxAcOld ? 'tabler:player-skip-back' : 'tabler:device-floppy'" />
+                <Icon :name="item.maxArmorClassOld ? 'tabler:player-skip-back' : 'tabler:device-floppy'" />
               </UiInputGroupButton>
             </UiInputGroupAddon>
           </UiInputGroup>

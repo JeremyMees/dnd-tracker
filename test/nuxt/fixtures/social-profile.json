@@ -1,0 +1,9 @@
+{
+  "avatar": "avatar",
+  "id": "id",
+  "username": "username",
+  "completedTour": false,
+  "email": "email",
+  "name": "name",
+  "createdAt": "2021-01-01"
+}

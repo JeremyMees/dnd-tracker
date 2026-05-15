@@ -42,3 +42,5 @@ logs
 
 # VSCode
 .vscode/mcp.json
+
+/supabase

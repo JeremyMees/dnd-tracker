@@ -6,7 +6,7 @@ export function useFeatureListing(data: ComputedRef<SbFilter>) {
     queryKey: ['useFeatureListing', data],
     queryFn: () => sbQuery<FeatureRequest>({
       table: 'features',
-      select: '*, created_by(id, avatar, username)',
+      select: '*, createdBy(id, avatar, username)',
       filters: data.value,
       page: data.value.page,
       perPage: 10,

@@ -7,11 +7,7 @@ export function useProfileDetail(id: string) {
 
   return useQuery({
     queryKey: ['useProfileDetail', id],
-    queryFn: async () => await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', id)
-      .single(),
+    queryFn: async () => await supabase.from('profiles').select('*').eq('id', id).single(),
     select: async ({ data, error }) => {
       if (error?.details.includes('Results contain 0 rows')) {
         await logout()
@@ -29,12 +25,14 @@ export function useProfileUpdate() {
   const user = useState<ProfileRow | null>('auth-user', () => null)
 
   return useMutation({
-    mutationFn: async ({ data, id }: { data: ProfileUpdate & { password?: string }, id: string } & QueryDefaults) => {
+    mutationFn: async ({
+      data,
+      id,
+    }: { data: ProfileUpdate & { password?: string }, id: string } & QueryDefaults) => {
+      const { password, ...profileData } = data
+
       if (!data.password) {
-        const { error } = await supabase
-          .from('profiles')
-          .update(data)
-          .eq('id', id)
+        const { error } = await supabase.from('profiles').update(profileData).eq('id', id)
 
         if (error) throw createError(error)
       }
@@ -42,7 +40,7 @@ export function useProfileUpdate() {
       if (data.email || data.password) {
         const updateUser = removeEmptyKeys<UserAttributes>({
           email: data.email,
-          password: data.password,
+          password,
         })
 
         const { error } = await supabase.auth.updateUser(updateUser)

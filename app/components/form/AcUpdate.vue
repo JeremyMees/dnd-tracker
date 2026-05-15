@@ -6,11 +6,11 @@ import * as z from 'zod'
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (amount: number, type: AcType) => Partial<InitiativeSheetRow>
+  handleAcChanges: (amount: number, type: DndAcType) => Partial<InitiativeSheetRow>
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
-const selectedType = ref<AcType>('remove')
+const selectedType = ref<DndAcType>('remove')
 
 const formSchema = toTypedSchema(z.object({
   amount: z.number().min(0).max(1000),

@@ -37,9 +37,9 @@ export function sortByString(a: string, b: string, acs: boolean): number {
   return acs ? a.localeCompare(b) : b.localeCompare(a)
 }
 
-export function sortCreatedAt<T extends { created_at: string }>(arr: T[]): T[] {
+export function sortCreatedAt<T extends { createdAt: string }>(arr: T[]): T[] {
   return arr.sort((a, b) => {
-    return new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()
+    return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
   })
 }
 

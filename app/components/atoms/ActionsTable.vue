@@ -1,29 +1,46 @@
 <script setup lang="ts">
-const props = defineProps<{
-  specialAbilities?: (Action | ActionOpen5E)[]
-  legendaryActions?: (Action | ActionOpen5E)[]
-  actions?: (Action | ActionOpen5E)[]
-  reactions?: (Action | ActionOpen5E)[]
-}>()
+const props = defineProps<{ actions: DndAction[] }>()
 
-const allActions = computed<Option<Action[]>[]>(() => [
-  { label: 'specialAbility', value: props.specialAbilities },
-  { label: 'legendaryAction', value: props.legendaryActions },
-  { label: 'action', value: props.actions },
-  { label: 'reaction', value: props.reactions },
-].filter((action): action is Option<Action[]> => !!action.value?.length),
-)
+const groupOrder: DndActionType[] = [
+  'specialAbility',
+  'action',
+  'bonusAction',
+  'reaction',
+  'legendaryAction',
+  'mythicAction',
+  'lairAction',
+]
+
+const groupLabel: Record<DndActionType, string> = {
+  specialAbility: 'specialAbility',
+  action: 'action',
+  bonusAction: 'bonusAction',
+  reaction: 'reaction',
+  legendaryAction: 'legendaryAction',
+  mythicAction: 'mythicAction',
+  lairAction: 'lairAction',
+}
+
+const grouped = computed(() => {
+  return groupOrder
+    .map(actionType => ({
+      actionType,
+      label: groupLabel[actionType],
+      items: props.actions.filter(a => a.actionType === actionType),
+    }))
+    .filter(group => group.items.length > 0)
+})
 </script>
 
 <template>
   <div class="space-y-4">
     <div
-      v-for="{ label, value } in allActions"
-      :key="label"
+      v-for="group in grouped"
+      :key="group.actionType"
       class="space-y-2"
     >
       <p class="head-4">
-        {{ $t(`general.${label}`, 2) }}
+        {{ $t(`general.${group.label}`, 2) }}
       </p>
       <Card
         color="secondary"
@@ -31,7 +48,7 @@ const allActions = computed<Option<Action[]>[]>(() => [
         as="ul"
       >
         <li
-          v-for="action in value"
+          v-for="action in group.items"
           :key="action.name"
           class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc"
         >
@@ -43,36 +60,58 @@ const allActions = computed<Option<Action[]>[]>(() => [
               {{ action.desc }}
             </p>
           </div>
-          <div
-            v-if="action.attack_bonus || action.damage_dice"
-            class="flex flex-wrap gap-x-4 items-center mt-2"
+          <template
+            v-for="(attack, i) in action.attacks"
+            :key="i"
           >
             <div
-              v-if="action.attack_bonus && action.attack_bonus > 0"
-              class="flex flex-wrap gap-x-2 items-center"
+              v-if="attack.toHitMod || attack.damageDieCount || attack.spellSave"
+              class="flex flex-wrap gap-x-4 items-center mt-2"
             >
-              <p class="font-bold">
-                To hit:
+              <p
+                v-if="action.attacks.length > 1"
+                class="w-full text-xs text-muted-foreground italic"
+              >
+                {{ attack.name || `Attack ${i + 1}` }}
               </p>
-              <p class="text-sm text-muted-foreground">
-                +{{ action.attack_bonus }}
-              </p>
+              <div
+                v-if="attack.toHitMod"
+                class="flex flex-wrap gap-x-2 items-center"
+              >
+                <p class="font-bold">
+                  To hit:
+                </p>
+                <p class="text-sm text-muted-foreground">
+                  +{{ attack.toHitMod }}
+                </p>
+              </div>
+              <div
+                v-if="attack.damageDieCount && attack.damageDieType"
+                class="flex flex-wrap gap-x-2 items-center"
+              >
+                <p class="font-bold">
+                  Dice:
+                </p>
+                <p class="text-sm text-muted-foreground">
+                  {{ attack.damageDieCount }}{{ attack.damageDieType }}
+                  <span v-if="attack.damageBonus">
+                    +{{ attack.damageBonus }}
+                  </span>
+                </p>
+              </div>
+              <div
+                v-if="attack.spellSave"
+                class="flex flex-wrap gap-x-2 items-center"
+              >
+                <p class="font-bold">
+                  Save:
+                </p>
+                <p class="text-sm text-muted-foreground">
+                  DC {{ attack.spellSave }}<span v-if="attack.spellSaveType"> ({{ attack.spellSaveType }})</span>
+                </p>
+              </div>
             </div>
-            <div
-              v-if="action.damage_dice"
-              class="flex flex-wrap gap-x-2 items-center"
-            >
-              <p class="font-bold">
-                Dice:
-              </p>
-              <p class="text-sm text-muted-foreground">
-                {{ action.damage_dice }}
-                <span v-if="action.damage_bonus">
-                  +{{ action.damage_bonus }}
-                </span>
-              </p>
-            </div>
-          </div>
+          </template>
         </li>
       </Card>
     </div>

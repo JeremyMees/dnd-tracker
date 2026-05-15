@@ -1,0 +1,13 @@
+{
+  "subscriptionType": "medior",
+  "id": "test-id",
+  "email": "test@example.com",
+  "avatar": "",
+  "completedTour": false,
+  "createdAt": "2021-01-01",
+  "display_name": "Test User",
+  "nickname": "testuser",
+  "theme": "dark",
+  "twitch_id": null,
+  "updated_at": "2021-01-01"
+}

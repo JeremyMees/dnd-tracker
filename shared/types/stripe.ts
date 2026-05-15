@@ -1,16 +1,16 @@
 export type StripeSubscriptionType = 'medior' | 'pro' | 'free' | 'upgrade to pro'
 
 export type StripeFields
-  = | 'subscription_type'
-    | 'temp_subscription'
-    | 'stripe_session_id'
-    | 'stripe_id'
+  = | 'subscriptionType'
+    | 'tempSubscription'
+    | 'stripeSessionId'
+    | 'stripeId'
 
 export interface Stripe {
-  subscription_type: StripeSubscriptionType
-  temp_subscription: StripeSubscriptionType
-  stripe_session_id?: string
-  stripe_id?: string
+  subscriptionType: StripeSubscriptionType
+  tempSubscription: StripeSubscriptionType
+  stripeSessionId?: string
+  stripeId?: string
 }
 
 export interface StripeProduct {

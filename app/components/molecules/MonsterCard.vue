@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import { abilities, abilitiesNames } from '~~/constants/dnd-rules'
+import { abilities, abilitiesNames } from '~~/constants/dnd'
 
-defineEmits<{ add: [monster: Open5eItem] }>()
+defineEmits<{ add: [monster: DndMonster] }>()
 
-withDefaults(defineProps<{
-  monster: Open5eItem
+const props = withDefaults(defineProps<{
+  monster: DndMonster
   addable?: boolean
 }>(), {
   addable: false,
 })
 
 const names = ref(abilitiesNames)
-const stats = ref<(keyof Open5eItem)[]>(['type', 'subtype', 'size', 'alignment', 'xp'])
 const isOpen = ref<boolean>(false)
+
+const stats: { key: keyof DndMonster, label: string }[] = [
+  { key: 'type', label: 'Type' },
+  { key: 'size', label: 'Size' },
+  { key: 'alignment', label: 'Alignment' },
+  { key: 'experiencePoints', label: 'XP' },
+]
 </script>
 
 <template>
@@ -54,7 +60,7 @@ const isOpen = ref<boolean>(false)
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.challenge_rating || '_' }}
+            {{ monster.challengeRating != null ? formatChallengeRating(monster.challengeRating) : '_' }}
           </p>
         </div>
         <div
@@ -67,7 +73,7 @@ const isOpen = ref<boolean>(false)
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.armor_class || '_' }}
+            {{ monster.armorClass || '_' }}
           </p>
         </div>
         <div
@@ -80,7 +86,7 @@ const isOpen = ref<boolean>(false)
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.hit_points || '_' }}
+            {{ monster.hitPoints || '_' }}
           </p>
         </div>
       </div>
@@ -96,35 +102,28 @@ const isOpen = ref<boolean>(false)
             {{ ability }}:
           </span>
           <span>
-            {{ names[index] ? monster[names[index] as keyof Open5eItem] : '_' }}
+            {{ names[index] ? monster.abilityScores[names[index] as keyof DndAbilityScores] : '_' }}
           </span>
         </div>
       </div>
       <div class="flex gap-x-4 gap-y-1 flex-wrap">
-        <template
+        <div
           v-for="stat in stats"
-          :key="stat"
+          :key="stat.key"
+          class="flex gap-1"
         >
-          <div
-            v-if="monster[stat]"
-            class="flex gap-1"
-          >
-            <span class="text-muted-foreground">
-              {{ stat }}:
-            </span>
-            <span class="lowercase">
-              {{ monster[stat] || '_' }}
-            </span>
-          </div>
-        </template>
+          <span class="text-muted-foreground">
+            {{ stat.label }}:
+          </span>
+          <span class="lowercase">
+            {{ monster[stat.key] || '_' }}
+          </span>
+        </div>
       </div>
       <ActionsTable
-        v-if="monster.actions && isOpen"
+        v-if="monster.actions?.length && isOpen"
         data-test-actions-table
         :actions="monster.actions"
-        :legendary-actions="monster.legendary_actions"
-        :special-abilities="monster.special_abilities"
-        :reactions="monster.reactions"
         :class="{ 'py-5': isOpen }"
       />
     </UiCardContent>

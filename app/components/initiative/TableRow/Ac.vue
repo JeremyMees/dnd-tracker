@@ -8,7 +8,7 @@ const { add, remove, temp, override, overrideReset } = acFunctions
 
 const popoverOpen = shallowRef<boolean>(false)
 
-const hasAc = computed(() => isDefined(props.item.ac) && isDefined(props.item.maxAc))
+const hasArmorClass = computed(() => isDefined(props.item.armorClass) && isDefined(props.item.maxArmorClass))
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   if (!sheet.value) return
@@ -24,7 +24,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   popoverOpen.value = false
 }
 
-function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
+function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
   const row = { ...props.item }
 
   if (type === 'add') add(row, amount)
@@ -35,7 +35,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
 
   // when ac is an negative number change it to 0
   const resetNegative = sheet.value?.settings?.negative === false
-  if (resetNegative && row.ac && row.ac < 0) row.ac = 0
+  if (resetNegative && row.armorClass && row.armorClass < 0) row.armorClass = 0
 
   return row
 }
@@ -49,13 +49,13 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
           :id="`${item.id}-ac`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 w-fit': isDefined(item.ac) && item.ac <= 0,
+            'bg-destructive/20 p-2 w-fit': isDefined(item.armorClass) && item.armorClass <= 0,
           }"
           class="flex flex-col gap-y-1 rounded-lg"
         >
           <div class="flex items-center gap-x-1">
             <Icon
-              v-if="!isDefined(item.ac) && item.type !== 'lair'"
+              v-if="!isDefined(item.armorClass) && item.type !== 'lair'"
               data-test-empty
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
@@ -64,31 +64,31 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             <span
               v-else
               data-test-ac
-              :class="{ 'text-destructive': isDefined(item.ac) && item.ac <= 0 }"
+              :class="{ 'text-destructive': isDefined(item.armorClass) && item.armorClass <= 0 }"
             >
-              {{ item.ac }}
+              {{ item.armorClass }}
             </span>
             <span
-              v-if="isDefined(item.ac) && item.tempAc"
+              v-if="isDefined(item.armorClass) && item.tempArmorClass"
               v-tippy="$t('general.temp')"
               data-test-temp
               class="text-warning text-xs"
             >
-              +{{ item.tempAc }}
+              +{{ item.tempArmorClass }}
             </span>
           </div>
           <span
-            v-if="item.maxAc !== item.ac"
+            v-if="item.maxArmorClass !== item.armorClass"
             data-test-max
             class="text-2xs text-muted-foreground whitespace-nowrap"
           >
-            {{ $t('general.max') }}: {{ item.maxAc }}
+            {{ $t('general.max') }}: {{ item.maxArmorClass }}
           </span>
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent class="max-h-[600px]">
         <div
-          v-if="isDefined(item.ac) && isDefined(item.maxAc)"
+          v-if="isDefined(item.armorClass) && isDefined(item.maxArmorClass)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
@@ -97,9 +97,9 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             </p>
             <p
               class="head-2"
-              :class="{ 'text-destructive': item.ac < 1 }"
+              :class="{ 'text-destructive': item.armorClass < 1 }"
             >
-              {{ item.ac || 0 }}
+              {{ item.armorClass || 0 }}
             </p>
           </div>
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
@@ -109,15 +109,15 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
             <div class="flex gap-1 items-start justify-center">
               <p
                 class="head-2"
-                :class="[!item.maxAcOld ? undefined : item.maxAcOld < item.maxAc ? 'text-success' : 'text-destructive']"
+                :class="[!item.maxArmorClassOld ? undefined : item.maxArmorClassOld < item.maxArmorClass ? 'text-success' : 'text-destructive']"
               >
-                {{ item.maxAc || 0 }}
+                {{ item.maxArmorClass || 0 }}
               </p>
               <p
-                v-if="item.maxAcOld === 0 || item.maxAcOld"
+                v-if="item.maxArmorClassOld === 0 || item.maxArmorClassOld"
                 class="text-sm"
               >
-                ({{ item.maxAcOld }})
+                ({{ item.maxArmorClassOld }})
               </p>
             </div>
           </div>
@@ -126,13 +126,13 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
               {{ $t('general.temp') }}
             </p>
             <p class="head-2">
-              {{ item.tempAc || 0 }}
+              {{ item.tempArmorClass || 0 }}
             </p>
           </div>
         </div>
 
         <FormAcUpdate
-          v-if="hasAc"
+          v-if="hasArmorClass"
           :item="item"
           :sheet="sheet"
           :handle-ac-changes="handleAcChanges"
@@ -140,7 +140,7 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
         />
 
         <UiSeparator
-          v-if="hasAc"
+          v-if="hasArmorClass"
           class="my-3 bg-muted"
         />
 
@@ -152,12 +152,12 @@ function handleAcChanges(amount: number, type: AcType): InitiativeSheetRow {
         />
 
         <UiSeparator
-          v-if="hasAc"
+          v-if="hasArmorClass"
           class="my-3 bg-muted"
         />
 
         <FormAcOverride
-          v-if="hasAc"
+          v-if="hasArmorClass"
           :item="item"
           :sheet="sheet"
           :handle-ac-changes="handleAcChanges"

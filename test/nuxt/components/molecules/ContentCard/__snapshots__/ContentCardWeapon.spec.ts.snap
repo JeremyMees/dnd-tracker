@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContentCardWeapon > Should match snapshot 1`] = `
+"<div class="text-sm">
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage:</span> 1d8 <span>(slashing)</span></p>
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Range:</span> 0 <span class="ml-0.5">feet</span></p>
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Simple Weapon:</span> No</p>
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Improvised:</span> No</p>
+  <!--v-if-->
+</div>"
+`;

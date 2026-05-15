@@ -102,8 +102,8 @@ const onSubmit = form.handleSubmit(async (values) => {
         name="rows"
         :label="$t('components.initiativeSettings.rows')"
         :options="[
-          { label: 'AC', value: 'ac' },
-          { label: 'HP', value: 'health' },
+          { label: 'AC', value: 'armorClass' },
+          { label: 'HP', value: 'hitPoints' },
           { label: $t('general.condition', 2), value: 'conditions' },
           { label: $t('general.note'), value: 'note' },
           { label: 'Death saves', value: 'deathSaves' },

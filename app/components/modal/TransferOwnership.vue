@@ -37,13 +37,13 @@ const formError = ref<string>('')
 
 const currentTeamMemberSubscription = computed<SubscriptionType | undefined>(() => {
   const member = props.current.team?.find(t => t.user.id === form.values.user)
-  return member?.user.subscription_type
+  return member?.user.subscriptionType
 })
 
 const onSubmit = form.handleSubmit(async (values) => {
   formError.value = ''
 
-  const oldOwner = props.current.created_by
+  const oldOwner = props.current.createdBy
   const newOwner = props.current.team?.find(t => t.user.id === values.user)
   const campaignId = props.current.id
 
@@ -70,7 +70,7 @@ const onSubmit = form.handleSubmit(async (values) => {
   })
 
   await updateCampaign({
-    data: { created_by: newOwner.user.id },
+    data: { createdBy: newOwner.user.id },
     id: campaignId,
     onError: (err: string) => formError.value = err,
   })

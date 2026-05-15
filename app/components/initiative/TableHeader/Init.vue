@@ -43,7 +43,7 @@ watch(popoverOpen, (open) => {
       amount: isDefined(row.initiative) && row.initiative > -1
         ? row.initiative
         : undefined,
-      initiative: row.initiative_modifier,
+      initiative: row.initiativeModifier,
     })) ?? [],
   })
 })

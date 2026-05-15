@@ -24,15 +24,15 @@ export default defineEventHandler(async (event) => {
 
       const { data } = await client
         .from('profiles')
-        .select('temp_subscription')
-        .eq('stripe_id', subscription.customer)
+        .select('tempSubscription')
+        .eq('stripeId', subscription.customer)
         .single()
 
-      if (data?.temp_subscription) {
+      if (data?.tempSubscription) {
         await client
           .from('profiles')
-          .update({ subscription_type: data.temp_subscription })
-          .eq('stripe_id', subscription.customer)
+          .update({ subscriptionType: data.tempSubscription })
+          .eq('stripeId', subscription.customer)
       }
     }
     catch (error) {

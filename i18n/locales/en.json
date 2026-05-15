@@ -78,6 +78,8 @@
     "generateName": "Generate name"
   },
   "general": {
+    "yes": "Yes",
+    "no": "No",
     "actions": "Actions",
     "version": "Version",
     "advantage": "Advantage",
@@ -179,8 +181,11 @@
     "modify": "Modify",
     "type": "Type | Types",
     "action": "Action | Actions",
+    "bonusAction": "Bonus action | Bonus actions",
     "specialAbility": "Special ability | Special abilities",
     "legendaryAction": "Legendary action | Legendary actions",
+    "mythicAction": "Mythic action | Mythic actions",
+    "lairAction": "Lair action | Lair actions",
     "reaction": "Reaction | Reactions",
     "row": "Row | Rows",
     "concentration": "Concentration",
@@ -545,7 +550,7 @@
     "initiativeTableModals": {
       "name": "Change name",
       "init": "Change initiative",
-      "health": "Change HP"
+      "hp": "Change HP"
     },
     "healthCheck": {
       "online": {
@@ -655,6 +660,8 @@
       "placeholder": "Amidst the realm of dragons and dungeons, a hero's legend remains untold, as the user has not yet linked their character's saga."
     },
     "inputs": {
+      "gameSystemLabel": "Game system",
+      "systemDocumentLabel": "Selected documents",
       "spellSaveLabel": "Spell save",
       "saveTypeLabel": "Save type",
       "targetLabel": "Target",
@@ -761,7 +768,7 @@
         "name": "Name",
         "init": "Init",
         "ac": "AC",
-        "health": "HP",
+        "hp": "HP",
         "manage": "Actions",
         "conditions": "Conditions",
         "note": "Notes",

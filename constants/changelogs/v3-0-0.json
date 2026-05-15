@@ -1,0 +1,36 @@
+{
+  "version": "v3.0.0",
+  "date": "2026-05-15",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "D&D 2024 rules are now the default for all content — spells, monsters, magic items, weapons, armor and conditions all use the updated 2024 SRD"
+        },
+        {
+          "text": "Choose your game system (2014 or 2024) and which source documents to pull content from when searching — mix and match official books and supplements from the Open5e library"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Challenge rating is now shown correctly in the bestiary for all monsters, including fractional values like 1/8, 1/4 and 1/2"
+        },
+        {
+          "text": "Clicking a condition on the encounter sheet now shows the full description text for that condition"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Fixed an issue where adding a condition to an encounter row could fail silently"
+        }
+      ]
+    }
+  ]
+}

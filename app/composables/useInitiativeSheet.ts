@@ -3,7 +3,7 @@ export function useInitiativeSheet(
   update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>,
 ) {
   const defaultColumns = ['index', 'name', 'initiative']
-  const hidableColumns = ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+  const hidableColumns = ['armorClass', 'hitPoints', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 
   const expanded = ref<Record<string, boolean>>({})
   const selected = ref<Record<string, boolean>>({})
@@ -128,14 +128,14 @@ export function useInitiativeSheet(
               save: [false, false, false],
             },
           }),
-          ...(row.ac !== undefined && { ac: row.maxAcOld || row.maxAc }),
-          ...(row.health !== undefined && { health: row.maxHealthOld || row.maxHealth }),
-          ...(row.maxAcOld !== undefined && { maxAc: row.maxAcOld }),
-          ...(row.maxHealthOld !== undefined && { maxHealth: row.maxHealthOld }),
-          maxAcOld: undefined,
-          maxHealthOld: undefined,
-          tempHealth: undefined,
-          tempAc: undefined,
+          ...(row.armorClass !== undefined && { armorClass: row.maxArmorClassOld || row.maxArmorClass }),
+          ...(row.hitPoints !== undefined && { hitPoints: row.maxHitPointsOld || row.maxHitPoints }),
+          ...(row.maxArmorClassOld !== undefined && { maxArmorClass: row.maxArmorClassOld }),
+          ...(row.maxHitPointsOld !== undefined && { maxHitPoints: row.maxHitPointsOld }),
+          maxArmorClassOld: undefined,
+          maxHitPointsOld: undefined,
+          tempHitPoints: undefined,
+          tempArmorClass: undefined,
         })),
       }
     }

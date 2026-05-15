@@ -41,7 +41,7 @@ const onSubmit = form.handleSubmit(async (values) => {
   }
   else {
     await createCampaign({
-      data: { ...values, created_by: user.value.id },
+      data: { ...values, createdBy: user.value.id },
       onError,
       onSuccess,
     })

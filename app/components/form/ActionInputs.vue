@@ -1,11 +1,42 @@
 <script setup lang="ts">
-import { abilities, abilitiesNames } from '~~/constants/dnd-rules'
+import { abilities, abilitiesNames } from '~~/constants/dnd'
+import { actionType } from '~~/constants/validation'
 
 defineProps<{ fieldName: string }>()
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
+    <UiFormField
+      v-slot="{ componentField }"
+      :name="`${fieldName}.actionType`"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel required>
+          {{ $t('components.inputs.actionTypeLabel') }}
+        </UiFormLabel>
+        <UiSelect v-bind="componentField">
+          <UiFormControl>
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+          </UiFormControl>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem
+                v-for="value in actionType"
+                :key="value"
+                :value="value"
+              >
+                {{ $t(`general.${value}`) }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+
     <UiFormField
       v-slot="{ componentField }"
       :name="`${fieldName}.name`"
@@ -42,7 +73,7 @@ defineProps<{ fieldName: string }>()
     <div class="grid sm:grid-cols-3 gap-x-3 gap-y-2">
       <UiFormField
         v-slot="{ componentField }"
-        :name="`${fieldName}.damage_dice`"
+        :name="`${fieldName}.damageDice`"
       >
         <UiFormItem v-auto-animate>
           <UiFormLabel>
@@ -61,7 +92,7 @@ defineProps<{ fieldName: string }>()
 
       <UiFormField
         v-slot="{ componentField }"
-        :name="`${fieldName}.damage_bonus`"
+        :name="`${fieldName}.damageBonus`"
       >
         <UiFormItem v-auto-animate>
           <UiFormLabel>
@@ -79,7 +110,7 @@ defineProps<{ fieldName: string }>()
 
       <UiFormField
         v-slot="{ componentField }"
-        :name="`${fieldName}.attack_bonus`"
+        :name="`${fieldName}.attackBonus`"
       >
         <UiFormItem v-auto-animate>
           <UiFormLabel>
@@ -99,7 +130,7 @@ defineProps<{ fieldName: string }>()
     <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2">
       <UiFormField
         v-slot="{ componentField }"
-        :name="`${fieldName}.spell_save`"
+        :name="`${fieldName}.spellSave`"
       >
         <UiFormItem v-auto-animate>
           <UiFormLabel>
@@ -117,7 +148,7 @@ defineProps<{ fieldName: string }>()
 
       <UiFormField
         v-slot="{ componentField }"
-        :name="`${fieldName}.spell_save_type`"
+        :name="`${fieldName}.spellSaveType`"
       >
         <UiFormItem>
           <UiFormLabel>
@@ -136,7 +167,7 @@ defineProps<{ fieldName: string }>()
                     { label: $t('components.inputs.nothing'), value: 'none' },
                     ...abilities.map((ability, index) => ({
                       label: abilitiesNames[index] || ability,
-                      value: ability,
+                      value: abilitiesNames[index] || ability.toLowerCase(),
                     })),
                   ]"
                   :key="option.value"

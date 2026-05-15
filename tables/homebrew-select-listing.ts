@@ -34,24 +34,24 @@ export function generateColumns() {
       header: t('general.player'),
       cell: ({ row }) => row.getValue('player'),
     }),
-    columnHelper.accessor('health', {
+    columnHelper.accessor('hitPoints', {
       enableGlobalFilter: false,
       enableSorting: false,
       header: t('general.hp'),
       cell: ({ row }) => iconLabelElement({
         icon: 'tabler:heart',
-        label: row.getValue('health') || '-',
+        label: row.getValue('hitPoints') || '-',
         tooltip: t('general.hp'),
         color: 'text-destructive',
       }),
     }),
-    columnHelper.accessor('ac', {
+    columnHelper.accessor('armorClass', {
       enableGlobalFilter: false,
       enableSorting: false,
       header: t('general.ac'),
       cell: ({ row }) => iconLabelElement({
         icon: 'tabler:shield',
-        label: row.getValue('ac') || '-',
+        label: row.getValue('armorClass') || '-',
         tooltip: t('general.ac'),
         color: 'text-help',
       }),

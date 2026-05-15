@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ContentCardArmor > Should match snapshot 1`] = `
+"<div class="text-sm">
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 14 + Dex modifier (max 2)</p>
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 14</p>
+  <!--v-if-->
+  <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+</div>"
+`;

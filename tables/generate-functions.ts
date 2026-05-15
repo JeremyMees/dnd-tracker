@@ -148,61 +148,76 @@ export function permission(options: {
   }, () => options.children)
 }
 
-const actionRoll = (action: Action | ActionOpen5E, id: string) => {
-  const attackBonus = action.attack_bonus
-  const damageDice = action.damage_dice
-  const damageBonus = action.damage_bonus ?? 0
+const attackRoll = (attack: DndAttack, id: string) => {
+  const damageDice = formatAttackDice(attack.damageDieCount, attack.damageDieType)
+  const attackBonus = attack.toHitMod || undefined
 
   if (!attackBonus && !damageDice) return null
 
   return h(InitiativeActionRoll, {
     attackBonus,
     damageDice,
-    damageBonus,
+    damageBonus: attack.damageBonus ?? 0,
     id,
   })
 }
 
-const actionToHit = (action: Action | ActionOpen5E) => {
-  if (action.attack_bonus && action.attack_bonus > 0) {
+const attackToHit = (attack: DndAttack) => {
+  if (attack.toHitMod && attack.toHitMod > 0) {
     return h('div', { class: 'flex flex-wrap gap-x-2 items-center' }, [
       h('span', {}, 'To hit:'),
-      h('span', { class: 'text-sm text-muted-foreground' }, `+${action.attack_bonus}`),
+      h('span', { class: 'text-sm text-muted-foreground' }, `+${attack.toHitMod}`),
     ])
   }
   return null
 }
 
-const actionDamage = (action: Action | ActionOpen5E) => {
-  return action.damage_dice && h('div', {
+const attackDamage = (attack: DndAttack) => {
+  const damageDice = formatAttackDice(attack.damageDieCount, attack.damageDieType)
+
+  return damageDice && h('div', {
     class: 'flex flex-wrap gap-x-2 items-center',
   }, [
     h('span', {}, 'Dice:'),
     h('span', { class: 'text-sm text-muted-foreground' }, [
-      action.damage_dice,
-      action.damage_bonus && ` +${action.damage_bonus}`,
+      damageDice,
+      attack.damageBonus && ` +${attack.damageBonus}`,
     ].filter(Boolean).join('')),
   ])
 }
 
-const actionSave = (action: Action | ActionOpen5E) => {
-  if ('spell_save' in action && action.spell_save) {
+const attackSave = (attack: DndAttack) => {
+  if (attack.spellSave) {
     return h('div', {
       class: 'flex flex-wrap gap-x-2 items-center',
     }, [
       h('span', {}, 'Spell save:'),
       h('span', { class: 'text-sm text-muted-foreground' }, [
-        action.spell_save,
-        action.spell_save_type,
+        attack.spellSave,
+        attack.spellSaveType,
       ].filter(Boolean).join(' ')),
     ])
   }
   else return null
 }
 
+const attackRow = (attack: DndAttack, id: string, type: 'initiative' | 'campaign') => {
+  if (!attack.toHitMod && !attack.damageDieCount && !attack.spellSave) return null
+
+  return h('div', {
+    class: 'flex flex-wrap gap-x-4 items-center mt-2',
+  }, [
+    attack.name ? h('span', { class: 'font-semibold text-xs' }, attack.name) : null,
+    type === 'initiative' ? attackRoll(attack, id) : null,
+    attackToHit(attack),
+    attackDamage(attack),
+    attackSave(attack),
+  ])
+}
+
 const generateActionsTableRow = (
   label: string,
-  actionArray: (Action | ActionOpen5E)[],
+  actionArray: DndAction[],
   id: string,
   type: 'initiative' | 'campaign',
 ) => {
@@ -220,23 +235,22 @@ const generateActionsTableRow = (
             h('span', {}, action.name + ':'),
             h('span', { class: 'text-sm text-muted-foreground' }, action.desc),
           ]),
-          (
-            action.attack_bonus
-            || action.damage_dice
-            || ('spell_save' in action && action.spell_save)
-          ) && h('div', {
-            class: 'flex flex-wrap gap-x-4 items-center mt-2',
-          }, [
-            type === 'initiative' ? actionRoll(action, id) : null,
-            actionToHit(action),
-            actionDamage(action),
-            actionSave(action),
-          ]),
+          ...action.attacks.map(attack => attackRow(attack, id, type)).filter(Boolean),
         ]),
       )),
     ),
   ])
 }
+
+const actionGroups: { actionType: DndActionType, labelKey: string }[] = [
+  { actionType: 'specialAbility', labelKey: 'specialAbility' },
+  { actionType: 'action', labelKey: 'action' },
+  { actionType: 'bonusAction', labelKey: 'bonusAction' },
+  { actionType: 'reaction', labelKey: 'reaction' },
+  { actionType: 'legendaryAction', labelKey: 'legendaryAction' },
+  { actionType: 'mythicAction', labelKey: 'mythicAction' },
+  { actionType: 'lairAction', labelKey: 'lairAction' },
+]
 
 export function actionsTable(
   item: HomebrewItemRow | InitiativeSheetRow,
@@ -245,17 +259,16 @@ export function actionsTable(
   const { t } = useI18n()
 
   const id = item.id as string
-  const actions = item.actions
-  const reactions = item.reactions
-  const legendary = item.legendary_actions
-  const special = item.special_abilities
+  const actions = item.actions ?? []
 
-  const rows = [
-    actions?.length ? generateActionsTableRow(t('general.action', 2), actions, id, type) : '',
-    reactions?.length ? generateActionsTableRow(t('general.reaction', 2), reactions, id, type) : '',
-    legendary?.length ? generateActionsTableRow(t('general.legendaryAction', 2), legendary, id, type) : '',
-    special?.length ? generateActionsTableRow(t('general.specialAbility', 2), special, id, type) : '',
-  ].filter(Boolean)
+  const rows = actionGroups
+    .map(({ actionType, labelKey }) => {
+      const filtered = actions.filter(a => a.actionType === actionType)
+      return filtered.length
+        ? generateActionsTableRow(t(`general.${labelKey}`, 2), filtered, id, type)
+        : ''
+    })
+    .filter(Boolean)
 
   return rows.length
     ? h('div', { class: 'space-y-4' }, rows)

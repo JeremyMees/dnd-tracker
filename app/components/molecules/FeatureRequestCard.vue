@@ -45,9 +45,9 @@ function toggleVote(vote: FeatureVote): void {
         <div class="flex items-center gap-x-2">
           <UiAvatar class="border-2 border-background">
             <UiAvatarImage
-              v-tippy="feature.created_by.username"
-              :src="feature.created_by.avatar"
-              :alt="feature.created_by.username"
+              v-tippy="feature.createdBy.username"
+              :src="feature.createdBy.avatar"
+              :alt="feature.createdBy.username"
             />
             <UiAvatarFallback>
               <Icon
@@ -60,7 +60,7 @@ function toggleVote(vote: FeatureVote): void {
             {{ feature.title }}
             <NuxtTime
               class="text-xs ml-2 text-muted-foreground font-normal"
-              :datetime="feature.created_at"
+              :datetime="feature.createdAt"
               month="numeric"
               day="numeric"
               year="numeric"

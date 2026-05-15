@@ -1,0 +1,119 @@
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import ConsentBanner from '~/components/atoms/ConsentBanner.vue'
+
+const { mockUseConsent } = vi.hoisted(() => ({
+  mockUseConsent: vi.fn(),
+}))
+
+mockNuxtImport('useConsent', () => mockUseConsent)
+
+describe('ConsentBanner', async () => {
+  beforeEach(() => {
+    mockUseConsent.mockReturnValue({
+      showPopup: true,
+      consents: {
+        necessary: true,
+        analytics: false,
+        marketing: false,
+      },
+      consentTypes: ['necessary', 'analytics', 'marketing'],
+      toggleConsent: vi.fn(),
+      acceptAll: vi.fn(),
+      rejectAll: vi.fn(),
+      savePreferences: vi.fn(),
+    })
+  })
+
+  it('Should match snapshot when banner is visible', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    expect(component.html()).toMatchSnapshot()
+  })
+
+  it('Should show banner when showPopup is true', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    expect(component.find('[data-test-banner]').exists()).toBeTruthy()
+  })
+
+  it('Should hide banner when showPopup is false', async () => {
+    mockUseConsent.mockReturnValue({
+      showPopup: false,
+      consents: {
+        necessary: true,
+        analytics: false,
+        marketing: false,
+      },
+      consentTypes: ['necessary', 'analytics', 'marketing'],
+      toggleConsent: vi.fn(),
+      acceptAll: vi.fn(),
+      rejectAll: vi.fn(),
+      savePreferences: vi.fn(),
+    })
+
+    const component = await mountSuspended(ConsentBanner)
+
+    expect(component.find('[data-test-banner]').exists()).toBeFalsy()
+  })
+
+  it('Should call acceptAll when accept all button is clicked', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const acceptButton = component.find('[data-test-accept-all]')
+    await acceptButton?.trigger('click')
+
+    expect(mockUseConsent().acceptAll).toHaveBeenCalled()
+  })
+
+  it('Should call rejectAll when reject all button is clicked', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const rejectButton = component.find('[data-test-reject-all]')
+    await rejectButton?.trigger('click')
+
+    expect(mockUseConsent().rejectAll).toHaveBeenCalled()
+  })
+
+  it('Should show settings view when customize button is clicked', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const customizeButton = component.find('[data-test-customize]')
+    await customizeButton?.trigger('click')
+
+    const settingsView = component.find('[data-test-banner-settings]')
+    expect(settingsView.exists()).toBeTruthy()
+  })
+
+  it('Should display all consent types in settings view', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const customizeButton = component.find('[data-test-customize]')
+    await customizeButton?.trigger('click')
+
+    const consentLabels = component.findAll('[role="switch"]')
+    expect(consentLabels.length).toBe(mockUseConsent().consentTypes.length)
+  })
+
+  it('Should call savePreferences when save settings button is clicked in settings view', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const customizeButton = component.find('[data-test-customize]')
+    await customizeButton?.trigger('click')
+
+    const saveButton = component.find('[data-test-save-preferences]')
+    await saveButton?.trigger('click')
+
+    expect(mockUseConsent().savePreferences).toHaveBeenCalled()
+  })
+
+  it('Should disable necessary consent toggle', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const customizeButton = component.find('[data-test-customize]')
+    await customizeButton?.trigger('click')
+
+    const necessarySwitch = component.find('[id="necessary"]')
+    expect(necessarySwitch.attributes('disabled')).toBeDefined()
+  })
+})

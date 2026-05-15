@@ -46,7 +46,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     await register({
       ...values,
       avatar: avatar.value.url,
-      avatar_options: avatar.value.extra,
+      avatarOptions: avatar.value.extra,
     })
 
     toast({

@@ -1,55 +1,44 @@
 import type { MergeDeep } from 'type-fest'
 import type { Database } from './database-generated'
 
+interface AllActions {
+  actions: DndAction[]
+}
+
 interface DatabaseOverrides {
   public: {
     Tables: {
+      homebrew_items: {
+        Row: AllActions
+        Insert: AllActions
+        Update: Partial<AllActions>
+      }
       initiative_sheets: {
         Row: {
           rows: InitiativeSheetRow[]
           settings: InitiativeSettings
-          info_cards: Open5eItem[]
+          infoCards: DndItem[]
         }
         Insert: {
           rows: InitiativeSheetRow[]
           settings?: InitiativeSettings
-          info_cards?: Open5eItem[]
+          infoCards?: DndItem[]
         }
         Update: {
           rows?: InitiativeSheetRow[]
           settings?: InitiativeSettings
-          info_cards?: Open5eItem[]
-        }
-      }
-      homebrew_items: {
-        Row: {
-          actions: Action[]
-          legendary_actions: Action[]
-          reactions: Action[]
-          special_abilities: Action[]
-        }
-        Insert: {
-          actions: Action[]
-          legendary_actions: Action[]
-          reactions: Action[]
-          special_abilities: Action[]
-        }
-        Update: {
-          actions?: Action[]
-          legendary_actions?: Action[]
-          reactions?: Action[]
-          special_abilities?: Action[]
+          infoCards?: DndItem[]
         }
       }
       profiles: {
         Row: {
-          avatar_options?: Record<string, string | number>
+          avatarOptions?: Record<string, string | number>
         }
         Insert: {
-          avatar_options?: Record<string, string | number>
+          avatarOptions?: Record<string, string | number>
         }
         Update: {
-          avatar_options?: Record<string, string | number>
+          avatarOptions?: Record<string, string | number>
         }
       }
     }

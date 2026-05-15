@@ -16,11 +16,11 @@ const { mutateAsync: vote } = useFeatureVote()
 
 const { data, status } = useFeatureListing(computed(() => ({
   search: debouncedSearch.value,
-  sortBy: 'created_at',
+  sortBy: 'createdAt',
   sortDesc: true,
   page: page.value,
   eq: user.value && createdBy.value === 'my'
-    ? { field: 'created_by', value: user.value.id }
+    ? { field: 'createdBy', value: user.value.id }
     : undefined,
 })))
 </script>
@@ -123,7 +123,7 @@ const { data, status } = useFeatureListing(computed(() => ({
             <FeatureRequestCard
               v-if="
                 feature.status !== 'review'
-                  || (feature.status === 'review' && feature.created_by.id === user?.id)
+                  || (feature.status === 'review' && feature.createdBy.id === user?.id)
               "
               :feature="feature"
               @update="vote({ id: feature.id, votes: $event })"

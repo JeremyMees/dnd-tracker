@@ -25,7 +25,7 @@ watch(popoverOpen, (open) => {
 
   form.setValues({
     initiative: props.item.initiative >= 0 ? props.item.initiative : undefined,
-    modifier: props.item.initiative_modifier,
+    modifier: props.item.initiativeModifier,
   })
 })
 

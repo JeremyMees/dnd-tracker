@@ -103,7 +103,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     if (
       index === -1
       || !rows[index]
-      || (!isDefined(rows[index].health) && !isDefined(rows[index].hit_points))
+      || !isDefined(rows[index].hitPoints)
     ) return
 
     const { row, toasts } = handleHpChanges(

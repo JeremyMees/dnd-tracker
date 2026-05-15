@@ -15,8 +15,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // Owner can always access the page
     if (
       data.campaign
-        ? data.campaign.created_by.id === user.value?.id
-        : data.created_by === user.value?.id
+        ? data.campaign.createdBy.id === user.value?.id
+        : data.createdBy === user.value?.id
     ) return
 
     // If no campaign is associated or user is not a team member, deny access
@@ -44,7 +44,7 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
       campaign(
         id,
         title,
-        created_by(id, username, avatar), 
+        createdBy(id, username, avatar), 
         team(
           id,
           role, 

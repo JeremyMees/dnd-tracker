@@ -184,7 +184,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
     </UiFormField>
     <UiFormField
       v-slot="{ componentField }"
-      name="initiative_modifier"
+      name="initiativeModifier"
     >
       <UiFormItem v-auto-animate>
         <UiFormLabel>
@@ -206,7 +206,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
   >
     <UiFormField
       v-slot="{ componentField }"
-      name="ac"
+      name="armorClass"
     >
       <UiFormItem v-auto-animate>
         <UiFormLabel>
@@ -223,7 +223,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
     </UiFormField>
     <UiFormField
       v-slot="{ componentField }"
-      name="health"
+      name="hitPoints"
     >
       <UiFormItem v-auto-animate>
         <UiFormLabel>

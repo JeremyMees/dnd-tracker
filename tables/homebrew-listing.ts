@@ -56,11 +56,11 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
       header: t('general.player'),
       cell: ({ row }) => row.getValue('player'),
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('createdAt', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
       cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('created_at'),
+        datetime: row.getValue<Date>('createdAt'),
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',
@@ -91,19 +91,19 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
       h('div', { class: 'flex gap-x-4 gap-y-2' }, [
         iconLabelElement({
           icon: 'tabler:heart',
-          label: row.original.health?.toString() || '-',
+          label: row.original.hitPoints?.toString() || '-',
           tooltip: t('general.hp'),
           color: 'text-destructive',
         }),
         iconLabelElement({
           icon: 'tabler:shield',
-          label: row.original.ac?.toString() || '-',
+          label: row.original.armorClass?.toString() || '-',
           tooltip: t('general.ac'),
           color: 'text-help',
         }),
         iconLabelElement({
           icon: 'tabler:bolt',
-          label: row.original.initiative_modifier ? `+${row.original.initiative_modifier}` : '-',
+          label: row.original.initiativeModifier ? `+${row.original.initiativeModifier}` : '-',
           tooltip: t('general.initiativeModifier'),
           color: 'text-warning',
         }),
@@ -117,5 +117,5 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
 }
 
 export const initialState: InitialTableState = {
-  sorting: [{ id: 'created_at', desc: true }],
+  sorting: [{ id: 'createdAt', desc: true }],
 }
