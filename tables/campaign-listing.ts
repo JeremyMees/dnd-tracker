@@ -55,11 +55,11 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       header: t('general.member', 2),
       cell: ({ row }) => row.original.team.length + 1,
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('createdAt', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
       cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('created_at'),
+        datetime: row.getValue<Date>('createdAt'),
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',
@@ -116,5 +116,5 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
 }
 
 export const initialState: InitialTableState = {
-  sorting: [{ id: 'created_at', desc: true }],
+  sorting: [{ id: 'createdAt', desc: true }],
 }

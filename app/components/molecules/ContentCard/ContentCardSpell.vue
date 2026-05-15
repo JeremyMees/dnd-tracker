@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  content: Open5eSpell
+  content: DndSpell
   isOpen: boolean
 }>()
 </script>
@@ -28,28 +28,28 @@ defineProps<{
         <span class="font-bold text-foreground">Level:</span> {{ content.level }}
       </p>
       <p
-        v-if="content.higher_level"
+        v-if="content.higherLevel"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Higher level:</span> {{ content.higher_level }}
+        <span class="font-bold text-foreground">Higher level:</span> {{ content.higherLevel }}
       </p>
       <p
         v-if="content.school"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">School:</span> {{ content.school.name }}
+        <span class="font-bold text-foreground">School:</span> {{ content.school }}
       </p>
       <p
         v-if="content.classes?.length"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Classes:</span> {{ content.classes.map(c => c.name).join(', ') }}
+        <span class="font-bold text-foreground">Classes:</span> {{ content.classes.join(', ') }}
       </p>
 
       <UiSeparator
         v-if="
-          content.casting_time
-            || content.range_text
+          content.castingTime
+            || content.rangeText
             || content.verbal
             || content.somatic
             || content.material
@@ -60,10 +60,10 @@ defineProps<{
       />
 
       <p
-        v-if="content.casting_time"
+        v-if="content.castingTime"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Casting time:</span> {{ content.casting_time }}
+        <span class="font-bold text-foreground">Casting time:</span> {{ content.castingTime }}
       </p>
       <p
         v-if="content.duration"
@@ -79,16 +79,16 @@ defineProps<{
         <span class="font-bold text-foreground">Concentration:</span> Yes
       </p>
       <p
-        v-if="content.range_text"
+        v-if="content.rangeText"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Range:</span> {{ content.range_text }}
+        <span class="font-bold text-foreground">Range:</span> {{ content.rangeText }}
       </p>
       <p
         v-if="content.verbal || content.somatic || content.material"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Components:</span> {{ [content.verbal ? 'V' : '', content.somatic ? 'S' : '', content.material ? 'M' : ''].filter(Boolean).join(', ') }}{{ content.material_specified ? ` (${content.material_specified})` : '' }}
+        <span class="font-bold text-foreground">Components:</span> {{ [content.verbal ? 'V' : '', content.somatic ? 'S' : '', content.material ? 'M' : ''].filter(Boolean).join(', ') }}{{ content.materialSpecified ? ` (${content.materialSpecified})` : '' }}
       </p>
       <p
         v-if="content.ritual"
@@ -99,97 +99,97 @@ defineProps<{
 
       <UiSeparator
         v-if="
-          content.target_type
-            || content.target_count
-            || content.shape_type
-            || content.shape_size"
+          content.targetType
+            || content.targetCount
+            || content.shapeType
+            || content.shapeSize"
         class="my-2"
       />
 
       <p
-        v-if="content.target_type"
+        v-if="content.targetType"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Target type:</span> {{ content.target_type }}
+        <span class="font-bold text-foreground">Target type:</span> {{ content.targetType }}
       </p>
       <p
-        v-if="content.target_count"
+        v-if="content.targetCount"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Target count:</span> {{ content.target_count }}
+        <span class="font-bold text-foreground">Target count:</span> {{ content.targetCount }}
       </p>
       <p
-        v-if="content.shape_type"
+        v-if="content.shapeType"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Shape type:</span> {{ content.shape_type }}
+        <span class="font-bold text-foreground">Shape type:</span> {{ content.shapeType }}
       </p>
       <p
-        v-if="content.shape_size"
+        v-if="content.shapeSize"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Shape size:</span> {{ content.shape_size }}
+        <span class="font-bold text-foreground">Shape size:</span> {{ content.shapeSize }}
       </p>
 
       <UiSeparator
         v-if="
-          content.attack_roll !== undefined
-            || content.damage_roll
-            || (content.damage_types && content.damage_types.length)
-            || content.saving_throw_ability"
+          content.attackRoll !== undefined
+            || content.damageRoll
+            || (content.damageTypes && content.damageTypes.length)
+            || content.savingThrowAbility"
         class="my-2"
       />
 
       <p
-        v-if="content.attack_roll !== undefined"
+        v-if="content.attackRoll !== undefined"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Attack roll:</span> {{ content.attack_roll ? $t('general.yes') : $t('general.no') }}
+        <span class="font-bold text-foreground">Attack roll:</span> {{ content.attackRoll ? $t('general.yes') : $t('general.no') }}
       </p>
       <p
-        v-if="content.damage_roll"
+        v-if="content.damageRoll"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Damage roll:</span> {{ content.damage_roll }}
+        <span class="font-bold text-foreground">Damage roll:</span> {{ content.damageRoll }}
       </p>
       <p
-        v-if="content.damage_types?.length"
+        v-if="content.damageTypes?.length"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Damage types:</span> {{ content.damage_types.join(', ') }}
+        <span class="font-bold text-foreground">Damage types:</span> {{ content.damageTypes.join(', ') }}
       </p>
       <p
-        v-if="content.saving_throw_ability"
+        v-if="content.savingThrowAbility"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Saving throw:</span> {{ content.saving_throw_ability }}
+        <span class="font-bold text-foreground">Saving throw:</span> {{ content.savingThrowAbility }}
       </p>
 
       <UiSeparator
         v-if="
-          content.reaction_condition
-            || content.material_cost
-            || content.material_consumed !== undefined"
+          content.reactionCondition
+            || content.materialCost
+            || content.materialConsumed !== undefined"
         class="my-2"
       />
 
       <p
-        v-if="content.reaction_condition"
+        v-if="content.reactionCondition"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Reaction condition:</span> {{ content.reaction_condition }}
+        <span class="font-bold text-foreground">Reaction condition:</span> {{ content.reactionCondition }}
       </p>
       <p
-        v-if="content.material_cost"
+        v-if="content.materialCost"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Material cost:</span> {{ content.material_cost }}
+        <span class="font-bold text-foreground">Material cost:</span> {{ content.materialCost }}
       </p>
       <p
-        v-if="content.material_consumed !== undefined"
+        v-if="content.materialConsumed !== undefined"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Material consumed:</span> {{ content.material_consumed ? $t('general.yes') : $t('general.no') }}
+        <span class="font-bold text-foreground">Material consumed:</span> {{ content.materialConsumed ? $t('general.yes') : $t('general.no') }}
       </p>
     </template>
   </div>

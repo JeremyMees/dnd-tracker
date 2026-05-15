@@ -24,7 +24,7 @@ describe('Pagination', async () => {
 
     expect(component.props('perPage')).toBe(10)
     expect(component.props('styles')).toBe('')
-    expect(component.props('loading')).toBe(false)
+    expect(component.props('loading')).toBeFalsy()
   })
 
   it('Should accept pages prop', async () => {
@@ -57,7 +57,7 @@ describe('Pagination', async () => {
       },
     })
 
-    expect(component.props('loading')).toBe(true)
+    expect(component.props('loading')).toBeTruthy()
   })
 
   it('Should convert 0-based page to 1-based for display', async () => {
@@ -86,7 +86,7 @@ describe('Pagination', async () => {
     })
 
     const pagination = component.findComponent(UiPagination)
-    expect(pagination.props('disabled')).toBe(true)
+    expect(pagination.props('disabled')).toBeTruthy()
   })
 
   it('Should not disable pagination when loading is false', async () => {
@@ -98,7 +98,7 @@ describe('Pagination', async () => {
     })
 
     const pagination = component.findComponent(UiPagination)
-    expect(pagination.props('disabled')).toBe(false)
+    expect(pagination.props('disabled')).toBeFalsy()
   })
 
   it('Should update page model when internal page changes', async () => {

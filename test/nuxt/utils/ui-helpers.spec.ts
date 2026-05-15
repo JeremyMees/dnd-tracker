@@ -66,11 +66,11 @@ describe('ui-helpers', () => {
   })
 
   describe('sortCreatedAt', () => {
-    it('should sort objects by created_at date in descending order', () => {
+    it('should sort objects by createdAt date in descending order', () => {
       const items = [
-        { id: 1, created_at: '2023-01-01' },
-        { id: 2, created_at: '2023-02-01' },
-        { id: 3, created_at: '2023-01-15' },
+        { id: 1, createdAt: '2023-01-01' },
+        { id: 2, createdAt: '2023-02-01' },
+        { id: 3, createdAt: '2023-01-15' },
       ]
       const sorted = sortCreatedAt(items)
 
@@ -136,15 +136,15 @@ describe('ui-helpers', () => {
 
   describe('isDefined', () => {
     it('should return true for defined values', () => {
-      expect(isDefined(0)).toBe(true)
-      expect(isDefined('')).toBe(true)
-      expect(isDefined(false)).toBe(true)
-      expect(isDefined({})).toBe(true)
+      expect(isDefined(0)).toBeTruthy()
+      expect(isDefined('')).toBeTruthy()
+      expect(isDefined(false)).toBeTruthy()
+      expect(isDefined({})).toBeTruthy()
     })
 
     it('should return false for null or undefined', () => {
-      expect(isDefined(null)).toBe(false)
-      expect(isDefined(undefined)).toBe(false)
+      expect(isDefined(null)).toBeFalsy()
+      expect(isDefined(undefined)).toBeFalsy()
     })
   })
 

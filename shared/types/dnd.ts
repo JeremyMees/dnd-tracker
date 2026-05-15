@@ -2,7 +2,7 @@ export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4'
 
 export type DndDiceSide = 4 | 6 | 8 | 10 | 12 | 20 | 100
 
-export type DndHealthType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
+export type DndHpType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
 
 export type DndAcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'
 
@@ -139,6 +139,7 @@ export type DndActionType = 'action'
   | 'legendaryAction'
   | 'mythicAction'
   | 'lairAction'
+  | 'specialAbility'
 
 export type DndAttackType
   = | 'melee'
@@ -196,10 +197,10 @@ export interface DndSpeed {
 
 export interface DndSight {
   normalSightRange: number
-  darkvisionRange?: number
-  blindsightRange?: number
-  tremorsenseRange?: number
-  truesightRange?: number
+  darkVisionRange?: number
+  blindSightRange?: number
+  tremorSenseRange?: number
+  trueSightRange?: number
 }
 
 export interface DndSpellCastingOption {
@@ -223,6 +224,11 @@ export interface DndResistancesAndImmunities {
   damageResistances: DndDamageType[]
   damageVulnerabilities: DndDamageType[]
   conditionImmunities: DndConditionType[]
+}
+
+export interface DndDeathSaves {
+  fail: [boolean, boolean, boolean]
+  save: [boolean, boolean, boolean]
 }
 
 export interface DndAction {
@@ -252,6 +258,8 @@ export interface DndAttack {
   extraDamageBonus?: number
   extraDamageType?: DndDamageType
   distanceUnit: DndDistanceUnit
+  spellSave?: number
+  spellSaveType?: DndAbility
 }
 
 export interface DndUsageLimits {
@@ -264,7 +272,7 @@ export interface DndTrait {
   desc: string
 }
 
-export interface DnDSpell {
+export interface DndSpell {
   name: string
   id: string
   castingOptions: DndSpellCastingOption[]
@@ -335,7 +343,7 @@ export interface DndWeapon {
   properties: DndWeaponProperty[]
   damageType: DndDamageType
   distanceUnit: DndDistanceUnit
-  damageDice: DndDice
+  damageDice: string
   range: number
   longRange: number
   isSimple: boolean
@@ -366,7 +374,6 @@ export interface DndMonster {
   type: DndMonsterType
   size: DndSize
   challengeRating: number
-  challengeRatingText: string
   proficiencyBonus?: number
   speed: DndSpeed
   alignment: DndAlignment
@@ -395,3 +402,11 @@ export interface DndCondition {
   level?: number
   hasLevels?: boolean
 }
+
+export type DndItem
+  = | DndSpell
+    | DndMagicItem
+    | DndWeapon
+    | DndArmor
+    | DndCondition
+    | DndMonster

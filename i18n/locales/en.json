@@ -550,7 +550,7 @@
     "initiativeTableModals": {
       "name": "Change name",
       "init": "Change initiative",
-      "health": "Change HP"
+      "hp": "Change HP"
     },
     "healthCheck": {
       "online": {
@@ -768,7 +768,7 @@
         "name": "Name",
         "init": "Init",
         "ac": "AC",
-        "health": "HP",
+        "hp": "HP",
         "manage": "Actions",
         "conditions": "Conditions",
         "note": "Notes",

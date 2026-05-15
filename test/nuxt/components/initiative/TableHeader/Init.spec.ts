@@ -45,7 +45,7 @@ describe('Initiative TableHeader Init', () => {
     const vm = component.vm as unknown as InitVM
 
     expect(vm.formError).toBe('')
-    expect(vm.popoverOpen).toBe(false)
+    expect(vm.popoverOpen).toBeFalsy()
   })
 
   describe('usedTypes computed', () => {
@@ -148,8 +148,8 @@ describe('Initiative TableHeader Init', () => {
       mockSheet.value = {
         ...sheet,
         rows: [
-          { ...sheet.rows[0]!, initiative: 15, initiative_modifier: 2 },
-          { ...sheet.rows[1]!, initiative: 10, initiative_modifier: -1 },
+          { ...sheet.rows[0]!, initiative: 15, initiativeModifier: 2 },
+          { ...sheet.rows[1]!, initiative: 10, initiativeModifier: -1 },
         ],
       }
 
@@ -162,7 +162,7 @@ describe('Initiative TableHeader Init', () => {
       mockSheet.value = {
         ...sheet,
         // @ts-expect-error - Testing undefined initiative values
-        rows: [{ ...sheet.rows[0]!, initiative: undefined, initiative_modifier: undefined }],
+        rows: [{ ...sheet.rows[0]!, initiative: undefined, initiativeModifier: undefined }],
       }
 
       const component = await mountSuspended(Init, { props, provide })
@@ -173,7 +173,7 @@ describe('Initiative TableHeader Init', () => {
     it('Should handle rows with negative initiative values', async () => {
       mockSheet.value = {
         ...sheet,
-        rows: [{ ...sheet.rows[0]!, initiative: -1, initiative_modifier: -5 }],
+        rows: [{ ...sheet.rows[0]!, initiative: -1, initiativeModifier: -5 }],
       }
 
       const component = await mountSuspended(Init, { props, provide })

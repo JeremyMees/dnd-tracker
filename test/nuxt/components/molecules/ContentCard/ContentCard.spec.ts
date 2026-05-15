@@ -1,10 +1,10 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCard from '~/components/molecules/ContentCard/index.vue'
-import { open5eSpellFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndSpellFixture } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {
-  hit: Open5eItem
+  hit: DndItem
   type: Open5eType
   pinned?: boolean
   allowPin?: boolean
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const props: Props = {
-  hit: open5eSpellFixture,
+  hit: dndSpellFixture,
   type: 'spells',
   allowPin: false,
   pinned: false,
@@ -30,7 +30,7 @@ describe('ContentCard', async () => {
     const component = await mountSuspended(ContentCard, { props })
 
     expect(component.find('[data-test-pin]').exists()).toBeFalsy()
-    expect(component.find('[data-test-title]').text()).toBe(open5eSpellFixture.name)
+    expect(component.find('[data-test-title]').text()).toBe(dndSpellFixture.name)
   })
 
   it('Should show pin button when allowPin is true', async () => {

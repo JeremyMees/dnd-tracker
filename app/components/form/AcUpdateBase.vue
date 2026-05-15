@@ -6,7 +6,7 @@ import * as z from 'zod'
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (amount: number, type: AcType) => Partial<InitiativeSheetRow>
+  handleAcChanges: (amount: number, type: DndAcType) => Partial<InitiativeSheetRow>
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 

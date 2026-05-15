@@ -8,7 +8,7 @@ describe('abilities', () => {
   const mockCampaign = {
     id: 1,
     title: 'Test Campaign',
-    created_by: {
+    createdBy: {
       id: userId,
       avatar: 'avatar.png',
       username: 'testuser',
@@ -38,7 +38,7 @@ describe('abilities', () => {
   const mockEncounter = {
     id: 1,
     title: 'Test Encounter',
-    created_by: {
+    createdBy: {
       id: userId,
       avatar: 'avatar.png',
       username: 'testuser',
@@ -48,35 +48,35 @@ describe('abilities', () => {
 
   describe('isOwner', () => {
     it('should return true if the user is the owner of the item', () => {
-      expect(isOwner(mockCampaign as any, userId)).toBe(true)
-      expect(isOwner(mockEncounter as any, userId)).toBe(true)
+      expect(isOwner(mockCampaign as any, userId)).toBeTruthy()
+      expect(isOwner(mockEncounter as any, userId)).toBeTruthy()
     })
 
     it('should return false if the user is not the owner of the item', () => {
-      expect(isOwner(mockCampaign as any, otherUserId)).toBe(false)
-      expect(isOwner(mockEncounter as any, otherUserId)).toBe(false)
+      expect(isOwner(mockCampaign as any, otherUserId)).toBeFalsy()
+      expect(isOwner(mockEncounter as any, otherUserId)).toBeFalsy()
     })
   })
 
   describe('isAdmin', () => {
     it('should return true if the user is an admin in the team', () => {
-      expect(isAdmin(mockCampaign.team as TeamMember[], 'admin-789')).toBe(true)
+      expect(isAdmin(mockCampaign.team as TeamMember[], 'admin-789')).toBeTruthy()
     })
 
     it('should return false if the user is not an admin in the team', () => {
-      expect(isAdmin(mockCampaign.team as TeamMember[], 'member-101')).toBe(false)
-      expect(isAdmin(mockCampaign.team as TeamMember[], userId)).toBe(false)
+      expect(isAdmin(mockCampaign.team as TeamMember[], 'member-101')).toBeFalsy()
+      expect(isAdmin(mockCampaign.team as TeamMember[], userId)).toBeFalsy()
     })
   })
 
   describe('isMember', () => {
     it('should return true if the user is a member in the team', () => {
-      expect(isMember(mockCampaign.team as TeamMember[], 'admin-789')).toBe(true)
-      expect(isMember(mockCampaign.team as TeamMember[], 'member-101')).toBe(true)
+      expect(isMember(mockCampaign.team as TeamMember[], 'admin-789')).toBeTruthy()
+      expect(isMember(mockCampaign.team as TeamMember[], 'member-101')).toBeTruthy()
     })
 
     it('should return false if the user is not a member in the team', () => {
-      expect(isMember(mockCampaign.team as TeamMember[], userId)).toBe(false)
+      expect(isMember(mockCampaign.team as TeamMember[], userId)).toBeFalsy()
     })
   })
 })

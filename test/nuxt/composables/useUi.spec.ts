@@ -43,7 +43,7 @@ describe('useUi', async () => {
   })
 
   it('Should not show the upgrade cta when the user is a pro', async () => {
-    vi.mocked(useAuthentication).mockReturnValue(createAuthMock({ ...user, subscription_type: 'pro' }))
+    vi.mocked(useAuthentication).mockReturnValue(createAuthMock({ ...user, subscriptionType: 'pro' }))
 
     const ui = useUi()
 

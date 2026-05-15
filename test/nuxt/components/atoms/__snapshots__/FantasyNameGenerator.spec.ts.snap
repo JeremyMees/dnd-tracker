@@ -8,7 +8,7 @@ exports[`FantasyNameGenerator > Should match snapshot 1`] = `
       <!--teleport end-->
       <!--v-if-->
     </div>
-    <div class="flex flex-col gap-2"><label data-test-label="" class="text-sm font-medium"> Gender </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-1" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">Random gender</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+    <div class="flex flex-col gap-2"><label data-test-label="" class="text-sm font-medium"> DndGender </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-1" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">Random gender</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
       <!--teleport start-->
       <!--teleport end-->
       <!--v-if-->

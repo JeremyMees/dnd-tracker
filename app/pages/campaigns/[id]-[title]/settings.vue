@@ -22,8 +22,8 @@ const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
   return [
     {
       user: {
-        ...props.current.created_by,
-        subscription_type: 'pro' as SubscriptionType,
+        ...props.current.createdBy,
+        subscriptionType: 'pro' as SubscriptionType,
       },
       role: 'Owner' as UserRole,
       id: 0,

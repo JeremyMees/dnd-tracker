@@ -1,7 +1,7 @@
 type Campaign = CampaignItem | CampaignFull | CampaignMinimal
 type Encounter = EncounterItem
 
-export const isOwner = (item: Campaign | Encounter, id: string) => item.created_by.id === id
+export const isOwner = (item: Campaign | Encounter, id: string) => item.createdBy.id === id
 export const isAdmin = (item: TeamMember[], id: string) => !!item.find(u => u.user.id === id && u.role === 'Admin')
 export const isMember = (item: TeamMember[], id: string) => !!item.find(u => u.user.id === id)
 
@@ -49,7 +49,7 @@ export const isEncounterMember = defineAbility((user: AuthUser, encounter: Encou
 
 export const canUpdateEncounter = defineAbility((user: AuthUser, encounter: Encounter, isCampaign = false) => {
   const owner = isCampaign
-    ? encounter.campaign?.created_by.id === user.id
+    ? encounter.campaign?.createdBy.id === user.id
     : isOwner(encounter, user.id)
   const admin = isAdmin(encounter.campaign?.team || [], user.id)
   const member = isMember(encounter.campaign?.team || [], user.id)

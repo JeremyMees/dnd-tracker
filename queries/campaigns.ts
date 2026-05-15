@@ -10,16 +10,16 @@ export function useCampaignDetail(id: number) {
       .from('campaigns')
       .select(`
         *, 
-        created_by(id, username, avatar, name, email), 
+        createdBy(id, username, avatar, name, email), 
         team(
           id,
           role,
-          user(id, username, avatar, name, email, subscription_type)
+          user(id, username, avatar, name, email, subscriptionType)
         ), 
         join_campaign(
           id,
           role,
-          user(id, username, avatar, name, email, subscription_type)
+          user(id, username, avatar, name, email, subscriptionType)
         )
       `)
       .eq('id', id)
@@ -38,7 +38,7 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
       table: 'campaigns',
       select: `
         *,
-        created_by(id, username, avatar),
+        createdBy(id, username, avatar),
         initiative_sheets(count),
         homebrew_items(count),
         team(
@@ -75,7 +75,7 @@ export function useCampaignMinimalListing(id: string) {
       .select(`
         id,
         title,
-        created_by(id, username, avatar),
+        createdBy(id, username, avatar),
         team(
           id,
           role,
@@ -86,7 +86,7 @@ export function useCampaignMinimalListing(id: string) {
       if (error) throw createError(error)
       else return data.filter((campaign) => {
         if (
-          campaign.created_by.id === id
+          campaign.createdBy.id === id
           || campaign.team.find(u => u.user.id === id && u.role !== 'Viewer')
         ) return true
       })
@@ -106,7 +106,7 @@ export function useCampaignMinimalDetail(id?: number) {
       .select(`
         id,
         title,
-        created_by(id, username, avatar),
+        createdBy(id, username, avatar),
         team(
           id,
           role,

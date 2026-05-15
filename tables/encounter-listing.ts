@@ -12,7 +12,7 @@ interface ColumnOptions {
 }
 
 function isCampaignOwner(user: AuthUser, encounter: EncounterItem) {
-  return user.id === encounter.campaign?.created_by.id
+  return user.id === encounter.campaign?.createdBy.id
 }
 
 export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: ColumnOptions) {
@@ -52,11 +52,11 @@ export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: Colum
         ? linkButton({ to: campaignUrl(row.original.campaign, 'encounters'), content: row.original.campaign.title })
         : '',
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('createdAt', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
       cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('created_at'),
+        datetime: row.getValue<Date>('createdAt'),
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',
@@ -124,5 +124,5 @@ export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: Colum
 }
 
 export const initialState: InitialTableState = {
-  sorting: [{ id: 'created_at', desc: true }],
+  sorting: [{ id: 'createdAt', desc: true }],
 }

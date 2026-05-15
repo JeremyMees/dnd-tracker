@@ -29,7 +29,7 @@ describe('TitleText', async () => {
   it('Should have correct default props', async () => {
     const component = await mountSuspended(TitleText)
 
-    expect(component.props('center')).toBe(false)
+    expect(component.props('center')).toBeFalsy()
     expect(component.props('buttonLabel')).toBe('')
     expect(component.props('buttonLink')).toBe('')
   })

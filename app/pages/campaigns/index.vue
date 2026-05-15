@@ -36,7 +36,7 @@ const { data, status } = useCampaignListing(computed(() => {
   }
 }))
 
-const max = computed<number>(() => getMax('campaign', user.value.subscription_type || 'free'))
+const max = computed<number>(() => getMax('campaign', user.value.subscriptionType || 'free'))
 
 const columns = generateColumns({
   onUpdate: (item: CampaignItem) => openModal(item),

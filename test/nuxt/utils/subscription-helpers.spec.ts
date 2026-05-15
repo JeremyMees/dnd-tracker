@@ -5,62 +5,62 @@ import type { StripeSubscriptionType } from '~~/shared/types/stripe'
 describe('subscription-helpers', () => {
   describe('isPro', () => {
     it('returns true for pro subscription', () => {
-      const profile = { subscription_type: 'pro' } as any
-      expect(isPro(profile)).toBe(true)
+      const profile = { subscriptionType: 'pro' } as any
+      expect(isPro(profile)).toBeTruthy()
     })
 
     it('returns false for non-pro subscription', () => {
-      const mediorProfile = { subscription_type: 'medior' } as any
-      const freeProfile = { subscription_type: 'free' } as any
+      const mediorProfile = { subscriptionType: 'medior' } as any
+      const freeProfile = { subscriptionType: 'free' } as any
 
-      expect(isPro(mediorProfile)).toBe(false)
-      expect(isPro(freeProfile)).toBe(false)
+      expect(isPro(mediorProfile)).toBeFalsy()
+      expect(isPro(freeProfile)).toBeFalsy()
     })
   })
 
   describe('isMedior', () => {
     it('returns true for medior subscription', () => {
-      const profile = { subscription_type: 'medior' } as any
-      expect(isMedior(profile)).toBe(true)
+      const profile = { subscriptionType: 'medior' } as any
+      expect(isMedior(profile)).toBeTruthy()
     })
 
     it('returns true for pro subscription', () => {
-      const profile = { subscription_type: 'pro' } as any
-      expect(isMedior(profile)).toBe(true)
+      const profile = { subscriptionType: 'pro' } as any
+      expect(isMedior(profile)).toBeTruthy()
     })
 
     it('returns false for free subscription', () => {
-      const profile = { subscription_type: 'free' } as any
-      expect(isMedior(profile)).toBe(false)
+      const profile = { subscriptionType: 'free' } as any
+      expect(isMedior(profile)).toBeFalsy()
     })
   })
 
   describe('hasCorrectSubscription', () => {
     it('returns true when subscription is pro regardless of expected', () => {
-      expect(hasCorrectSubscription('pro', 'free')).toBe(true)
-      expect(hasCorrectSubscription('pro', 'medior')).toBe(true)
-      expect(hasCorrectSubscription('pro', 'pro')).toBe(true)
+      expect(hasCorrectSubscription('pro', 'free')).toBeTruthy()
+      expect(hasCorrectSubscription('pro', 'medior')).toBeTruthy()
+      expect(hasCorrectSubscription('pro', 'pro')).toBeTruthy()
     })
 
     it('returns true when subscription matches expected', () => {
-      expect(hasCorrectSubscription('free', 'free')).toBe(true)
-      expect(hasCorrectSubscription('medior', 'medior')).toBe(true)
+      expect(hasCorrectSubscription('free', 'free')).toBeTruthy()
+      expect(hasCorrectSubscription('medior', 'medior')).toBeTruthy()
     })
 
     it('returns true when subscription is medior and expected is free', () => {
-      expect(hasCorrectSubscription('medior', 'free')).toBe(true)
+      expect(hasCorrectSubscription('medior', 'free')).toBeTruthy()
     })
 
     it('returns false when subscription is free and expected is medior', () => {
-      expect(hasCorrectSubscription('free', 'medior')).toBe(false)
+      expect(hasCorrectSubscription('free', 'medior')).toBeFalsy()
     })
 
     it('returns false when subscription is free and expected is pro', () => {
-      expect(hasCorrectSubscription('free', 'pro')).toBe(false)
+      expect(hasCorrectSubscription('free', 'pro')).toBeFalsy()
     })
 
     it('returns false when subscription is medior and expected is pro', () => {
-      expect(hasCorrectSubscription('medior', 'pro')).toBe(false)
+      expect(hasCorrectSubscription('medior', 'pro')).toBeFalsy()
     })
   })
 

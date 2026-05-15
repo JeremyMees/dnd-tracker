@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  content: Open5eMagicItem
+  content: DndMagicItem
   isOpen: boolean
 }>()
 </script>
@@ -22,10 +22,10 @@ defineProps<{
     />
     <template v-if="isOpen">
       <p
-        v-if="content.category"
+        v-if="content.type"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Category:</span> {{ content.category.name }}
+        <span class="font-bold text-foreground">Category:</span> {{ content.type }}
       </p>
       <p
         v-if="content.rarity"
@@ -37,13 +37,13 @@ defineProps<{
         v-if="content.size"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Size:</span> {{ content.size.name }}
+        <span class="font-bold text-foreground">Size:</span> {{ content.size }}
       </p>
       <p
         v-if="content.weight"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Weight:</span> {{ content.weight }} {{ content.weight_unit }}
+        <span class="font-bold text-foreground">Weight:</span> {{ content.weight }} {{ content.weightUnit }}
       </p>
       <p
         v-if="content.cost"
@@ -52,44 +52,44 @@ defineProps<{
         <span class="font-bold text-foreground">Cost:</span> {{ content.cost }}
       </p>
       <p
-        v-if="content.requires_attunement !== undefined"
+        v-if="content.requiresAttunement !== undefined"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Requires Attunement:</span> {{ content.requires_attunement ? 'Yes' : 'No' }}
+        <span class="font-bold text-foreground">Requires Attunement:</span> {{ content.requiresAttunement ? 'Yes' : 'No' }}
       </p>
       <p
-        v-if="content.attunement_detail"
+        v-if="content.attunementDetail"
         class="mt-1 text-muted-foreground"
       >
-        <span class="font-bold text-foreground">Attunement Detail:</span> {{ content.attunement_detail }}
+        <span class="font-bold text-foreground">Attunement Detail:</span> {{ content.attunementDetail }}
       </p>
 
       <template v-if="content.armor">
         <UiSeparator class="my-2" />
 
         <p class="mt-1 text-muted-foreground">
-          <span class="font-bold text-foreground">Armor Class:</span> {{ content.armor.ac_display }}
+          <span class="font-bold text-foreground">Armor Class:</span> {{ content.armor.acDisplay }}
         </p>
         <p class="mt-1 text-muted-foreground">
-          <span class="font-bold text-foreground">Armor Category:</span> {{ content.armor.category }}
+          <span class="font-bold text-foreground">Armor Category:</span> {{ content.armor.type }}
         </p>
         <p
-          v-if="content.armor.ac_base"
+          v-if="content.armor.acBase"
           class="mt-1 text-muted-foreground"
         >
-          <span class="font-bold text-foreground">Base AC:</span> {{ content.armor.ac_base }}
+          <span class="font-bold text-foreground">Base AC:</span> {{ content.armor.acBase }}
         </p>
         <p
-          v-if="content.armor.grants_stealth_disadvantage !== undefined"
+          v-if="content.armor.grantsStealthDisadvantage !== undefined"
           class="mt-1 text-muted-foreground"
         >
-          <span class="font-bold text-foreground">Stealth Disadvantage:</span> {{ content.armor.grants_stealth_disadvantage ? 'Yes' : 'No' }}
+          <span class="font-bold text-foreground">Stealth Disadvantage:</span> {{ content.armor.grantsStealthDisadvantage ? 'Yes' : 'No' }}
         </p>
         <p
-          v-if="content.armor.strength_score_required"
+          v-if="content.armor.strengthScoreRequired"
           class="mt-1 text-muted-foreground"
         >
-          <span class="font-bold text-foreground">Strength Required:</span> {{ content.armor.strength_score_required }}
+          <span class="font-bold text-foreground">Strength Required:</span> {{ content.armor.strengthScoreRequired }}
         </p>
       </template>
     </template>

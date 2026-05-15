@@ -11,7 +11,7 @@ const { data: products, isPending } = usePricingListing()
 
 const shownProduct = computed<ProductPricing[]>(() => {
   if (!products.value) return []
-  if (user.value?.subscription_type === 'medior') return products.value.filter(p => p.type !== 'pro')
+  if (user.value?.subscriptionType === 'medior') return products.value.filter(p => p.type !== 'pro')
   else return products.value.filter(p => p.type !== 'upgrade to pro')
 })
 
@@ -25,7 +25,7 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
       lookup: id,
       locale: locale.value,
       type,
-      ...(user.value?.stripe_id && { customer: user.value.stripe_id }),
+      ...(user.value?.stripeId && { customer: user.value.stripeId }),
     },
   })
 
@@ -34,11 +34,11 @@ async function subscribe(id: string, type: StripeSubscriptionType): Promise<void
 
 function isCurrent(type: StripeSubscriptionType): boolean {
   if (!user.value) return false
-  return type === (user.value.subscription_type || 'free')
+  return type === (user.value.subscriptionType || 'free')
 }
 
 function isUpgradeable(type: StripeSubscriptionType): boolean {
-  const current = user.value?.subscription_type || 'free'
+  const current = user.value?.subscriptionType || 'free'
   if (current === 'free') return true
   return type === 'upgrade to pro' && current === 'medior'
 }

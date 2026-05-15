@@ -25,11 +25,13 @@ const props: Props = {
   item: sheet.rows[0]!,
 }
 
-// Mock the useConditionsListing composable
 vi.mock('~~/queries/open5e', () => ({
   useConditionsListing: () => ({
     data: ref(conditions),
     isPending: ref(false),
+  }),
+  useOpen5eDocuments: () => ({
+    data: ref([]),
   }),
 }))
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { crOptions } from '~~/constants/dnd-rules'
-import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/shared/types/open5e'
+import { crOptions } from '~~/constants/dnd'
+import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/queries/open5e'
 
 const props = withDefaults(defineProps<{
   system?: Open5eGameSystem
@@ -30,7 +30,7 @@ const queryFilters = ref<Open5eFilters>({
   search: debouncedSearch.value,
   cr: typeof cr.value === 'string' ? undefined : cr.value,
   ordering: sortBy.value,
-  document__key__in: selectedDocuments.value,
+  document__key__in: selectedDocuments.value.join(','),
 })
 
 watch([debouncedSearch, cr, sortBy], () => {
@@ -39,7 +39,7 @@ watch([debouncedSearch, cr, sortBy], () => {
     search: debouncedSearch.value,
     cr: typeof cr.value === 'string' ? undefined : cr.value,
     ordering: sortBy.value,
-    document__key__in: selectedDocuments.value,
+    document__key__in: selectedDocuments.value.join(','),
   }
 })
 
@@ -49,7 +49,7 @@ watch(selectedDocuments, () => {
     search: '',
     cr: typeof cr.value === 'string' ? undefined : cr.value,
     ordering: sortBy.value,
-    document__key__in: selectedDocuments.value,
+    document__key__in: selectedDocuments.value.join(','),
   }
 })
 
@@ -62,7 +62,7 @@ const { data: documents, status: documentsStatus } = useOpen5eDocuments()
 const isLoading = computed(() => monstersStatus.value === 'pending' || documentsStatus.value === 'pending')
 const isError = computed(() => monstersStatus.value === 'error' || documentsStatus.value === 'error')
 
-async function addMonster(monster: Open5eMonster): Promise<void> {
+async function addMonster(monster: DndMonster): Promise<void> {
   if (!sheet.value) return
 
   const rows = [
@@ -154,8 +154,8 @@ async function addMonster(monster: Open5eMonster): Promise<void> {
                   { label: $t('components.addInitiativeMonster.sort.options.leastHP'), value: 'hit_points' },
                   { label: $t('components.addInitiativeMonster.sort.options.mostAC'), value: '-armor_class' },
                   { label: $t('components.addInitiativeMonster.sort.options.leastAC'), value: 'armor_class' },
-                  { label: $t('components.addInitiativeMonster.sort.options.mostCR'), value: '-cr' },
-                  { label: $t('components.addInitiativeMonster.sort.options.leastCR'), value: 'cr' },
+                  { label: $t('components.addInitiativeMonster.sort.options.mostCR'), value: '-challenge_rating' },
+                  { label: $t('components.addInitiativeMonster.sort.options.leastCR'), value: 'challenge_rating' },
                 ]"
                 :key="option.value"
                 :value="option.value"
@@ -199,7 +199,7 @@ async function addMonster(monster: Open5eMonster): Promise<void> {
         <MonsterCard
           v-for="(hit, j) in column"
           :id="j === 0 ? 'el' : ''"
-          :key="hit.slug"
+          :key="hit.id"
           :monster="hit"
           addable
           @add="addMonster"

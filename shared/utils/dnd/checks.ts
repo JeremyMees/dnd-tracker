@@ -1,0 +1,32 @@
+export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
+  return sheet ? sheet.rows.length >= 50 : false
+}
+
+export function isSpell(item: DndItem): item is DndSpell {
+  return 'castingOptions' in item && 'school' in item
+}
+
+export function isMagicItem(item: DndItem): item is DndMagicItem {
+  return 'isMagicItem' in item && 'rarity' in item
+}
+
+export function isWeapon(item: DndItem): item is DndWeapon {
+  return 'damageDice' in item && 'isSimple' in item && !('isMagicItem' in item)
+}
+
+export function isArmor(item: DndItem): item is DndArmor {
+  return 'acDisplay' in item && 'acBase' in item && !('isMagicItem' in item)
+}
+
+export function isCondition(item: DndItem): item is DndCondition {
+  return 'desc' in item
+    && !('castingOptions' in item)
+    && !('isMagicItem' in item)
+    && !('challengeRating' in item)
+    && !('damageDice' in item)
+    && !('acDisplay' in item)
+}
+
+export function isMonster(item: DndItem): item is DndMonster {
+  return 'challengeRating' in item && 'abilityScores' in item
+}

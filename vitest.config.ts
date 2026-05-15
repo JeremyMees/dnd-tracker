@@ -7,4 +7,9 @@ export default defineVitestConfig({
     setupFiles: ['./test/nuxt/unit.setup.ts'],
     exclude: ['node_modules', 'test/e2e/**'],
   },
+  server: {
+    fs: {
+      strict: false,
+    },
+  },
 })

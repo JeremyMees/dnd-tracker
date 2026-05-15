@@ -41,7 +41,7 @@ describe('Initiative table row modify', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-link]').exists()).toBe(true)
+    expect(component.find('[data-test-link]').exists()).toBeTruthy()
   })
 
   it('Should not display link button when item has no link', async () => {
@@ -52,7 +52,7 @@ describe('Initiative table row modify', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-link]').exists()).toBe(false)
+    expect(component.find('[data-test-link]').exists()).toBeFalsy()
   })
 
   it('Should call update with new row when copy button is clicked', async () => {

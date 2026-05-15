@@ -29,7 +29,7 @@ const realtimeData = computed(() => {
   if (!data.value) return false
 
   const campaignEncounter = data.value?.campaign
-  const correctSubscription = hasCorrectSubscription(user.value.subscription_type, 'medior')
+  const correctSubscription = hasCorrectSubscription(user.value.subscriptionType, 'medior')
 
   return correctSubscription && !!campaignEncounter
 })

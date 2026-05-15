@@ -112,8 +112,8 @@ const onSubmit = form.handleSubmit(async (values) => {
       <LazyInitiativeWidgetsPinnedContent
         v-if="widgets.includes('info-pins') || !isModified"
         hydrate-on-idle
-        :value="sheet?.info_cards ?? []"
-        @update="update({ info_cards: $event })"
+        :value="sheet?.infoCards ?? []"
+        @update="update({ infoCards: $event })"
       />
     </div>
     <p

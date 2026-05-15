@@ -74,7 +74,7 @@ describe('Encounter access middleware', () => {
   it('should allow access when user is the campaign owner', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
-      campaign: { created_by: { id: '1' } },
+      campaign: { createdBy: { id: '1' } },
       team: [],
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
@@ -87,7 +87,7 @@ describe('Encounter access middleware', () => {
   it('should allow access when user is the direct owner', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
-      created_by: '1',
+      createdBy: '1',
       campaign: null,
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
@@ -101,7 +101,7 @@ describe('Encounter access middleware', () => {
     mockUser = { ...authUser, id: '2' }
     const mockData = {
       campaign: {
-        created_by: { id: '1' },
+        createdBy: { id: '1' },
         team: [{ user: { id: '2' } }],
       },
     }
@@ -115,7 +115,7 @@ describe('Encounter access middleware', () => {
   it('should navigate to /no-access when no campaign is associated', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
-      created_by: '2',
+      createdBy: '2',
       campaign: null,
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
@@ -129,7 +129,7 @@ describe('Encounter access middleware', () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
       campaign: {
-        created_by: { id: '1' },
+        createdBy: { id: '1' },
         team: [{ user: { id: '2' } }],
       },
     }
@@ -143,7 +143,7 @@ describe('Encounter access middleware', () => {
   it('should fetch from supabase when not cached and allow access for owner', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
-      campaign: { created_by: { id: '1' } },
+      campaign: { createdBy: { id: '1' } },
       team: [],
     }
     mockSupabaseResponse.data = mockData
@@ -159,7 +159,7 @@ describe('Encounter access middleware', () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
       campaign: {
-        created_by: { id: '1' },
+        createdBy: { id: '1' },
         team: [{ user: { id: '2' } }],
       },
     }

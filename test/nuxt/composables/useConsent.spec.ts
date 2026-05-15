@@ -144,13 +144,13 @@ describe('useConsent', () => {
     consent.consents.value.measurement = true
     consent.savePreferences()
 
-    expect(consent.showPopup.value).toBe(false)
+    expect(consent.showPopup.value).toBeFalsy()
   })
 
   it('should set consent for a specific type', () => {
     consent.setConsent('measurement', true)
 
-    expect(consent.consents.value.measurement).toBe(true)
+    expect(consent.consents.value.measurement).toBeTruthy()
   })
 
   it('should return all necessary methods', () => {

@@ -63,8 +63,8 @@ describe('EncounterSidebar', () => {
     const component = await mountSuspended(EncounterSidebar, { props, provide })
     const vm = component.vm as unknown as EncounterSidebarVM
 
-    expect(vm.diceRollerOpen).toBe(false)
-    expect(vm.fantasyNameGeneratorOpen).toBe(false)
+    expect(vm.diceRollerOpen).toBeFalsy()
+    expect(vm.fantasyNameGeneratorOpen).toBeFalsy()
     expect(vm.openModal).toBeUndefined()
   })
 
@@ -101,7 +101,7 @@ describe('EncounterSidebar', () => {
       const component = await mountSuspended(EncounterSidebar, { props, provide })
       const vm = component.vm as unknown as EncounterSidebarVM
 
-      expect(vm.maxCharacters).toBe(false)
+      expect(vm.maxCharacters).toBeFalsy()
     })
 
     it('Should be true when sheet has 50 or more rows', async () => {
@@ -115,7 +115,7 @@ describe('EncounterSidebar', () => {
       const component = await mountSuspended(EncounterSidebar, { props, provide })
       const vm = component.vm as unknown as EncounterSidebarVM
 
-      expect(vm.maxCharacters).toBe(true)
+      expect(vm.maxCharacters).toBeTruthy()
     })
 
     it('Should hide bestiary and homebrew buttons when at max characters', async () => {

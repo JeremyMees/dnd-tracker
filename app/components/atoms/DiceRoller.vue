@@ -12,15 +12,15 @@ withDefaults(defineProps<{
 const { toast } = useToast()
 const { t } = useI18n()
 
-const dices: Dice[] = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
-const toRoll = ref<Record<Dice, number>>({ d4: 0, d6: 0, d8: 0, d10: 0, d12: 0, d20: 0, d100: 0 })
+const dices: DndDice[] = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
+const toRoll = ref<Record<DndDice, number>>({ d4: 0, d6: 0, d8: 0, d10: 0, d12: 0, d20: 0, d100: 0 })
 
-function calculateDiceRoll() {
-  const rolled: Partial<Record<Dice, number[]>> = {}
+function calculateDndDiceRoll() {
+  const rolled: Partial<Record<DndDice, number[]>> = {}
 
   for (const [dice, count] of Object.entries(toRoll.value)) {
     if (count > 0) {
-      rolled[dice as Dice] = rollDice(+dice.replace('d', ''), count)
+      rolled[dice as DndDice] = rollDice(+dice.replace('d', ''), count)
     }
   }
 
@@ -110,7 +110,7 @@ function calculateDiceRoll() {
       type="button"
       :disabled="Object.values(toRoll).every((value) => value === 0)"
       class="mt-4 w-full"
-      @click="calculateDiceRoll"
+      @click="calculateDndDiceRoll"
     >
       {{ $t('actions.roll') }}
     </UiButton>

@@ -55,7 +55,7 @@ const user = {
   username: 'testuser',
   marketing: false,
   avatar: 'avatar-url',
-  avatar_options: { color: 'blue' },
+  avatarOptions: { color: 'blue' },
 }
 
 describe('useAuthentication', () => {

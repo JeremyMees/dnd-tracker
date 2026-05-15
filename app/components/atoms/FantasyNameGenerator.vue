@@ -17,7 +17,7 @@ const { t } = useI18n()
 
 const names = ref<string[]>([])
 const selectedRace = ref<DndRace | 'random'>('random')
-const selectedGender = ref<Gender | 'random'>('random')
+const selectedDndGender = ref<DndGender | 'random'>('random')
 
 onMounted(() => generate())
 
@@ -25,7 +25,7 @@ function generate(): void {
   names.value = []
 
   const race = selectedRace.value === 'random' ? undefined : selectedRace.value
-  const gender = selectedGender.value === 'random' ? undefined : selectedGender.value
+  const gender = selectedDndGender.value === 'random' ? undefined : selectedDndGender.value
 
   for (let i = 0; i < props.amount; i++) {
     names.value.push(randomName(race, gender))
@@ -41,7 +41,7 @@ function handleCopy(name: string): void {
   })
 }
 
-watch([selectedRace, selectedGender], () => {
+watch([selectedRace, selectedDndGender], () => {
   generate()
 })
 </script>
@@ -79,9 +79,9 @@ watch([selectedRace, selectedGender], () => {
           data-test-label
           class="text-sm font-medium"
         >
-          Gender
+          DndGender
         </label>
-        <UiSelect v-model="selectedGender">
+        <UiSelect v-model="selectedDndGender">
           <UiSelectTrigger>
             <UiSelectValue />
           </UiSelectTrigger>

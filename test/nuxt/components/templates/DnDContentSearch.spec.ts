@@ -3,8 +3,8 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 import {
-  open5eArmorFixture,
-  open5eArmorListingFixture,
+  dndArmorFixture,
+  open5eV2ArmorListingFixture,
 } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {
@@ -17,9 +17,9 @@ interface Props {
 const mockUpdate = vi.fn()
 const mockToast = vi.fn()
 
-const mockItem = open5eArmorFixture
+const mockItem = dndArmorFixture
 const status = ref('success')
-const data = ref({ items: open5eArmorListingFixture, pages: 1 })
+const data = ref({ items: open5eV2ArmorListingFixture, pages: 1 })
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast: mockToast }),
@@ -36,14 +36,14 @@ const props: Props = {
   update: mockUpdate,
   sheet: {
     ...sheet,
-    info_cards: [mockItem],
+    infoCards: [mockItem],
   },
 }
 
 describe('DnDContentSearch', async () => {
   beforeEach(() => {
     status.value = 'success'
-    data.value = { items: open5eArmorListingFixture, pages: 1 }
+    data.value = { items: open5eV2ArmorListingFixture, pages: 1 }
     mockUpdate.mockClear()
     mockToast.mockClear()
   })
@@ -69,7 +69,7 @@ describe('DnDContentSearch', async () => {
         ...props,
         sheet: {
           ...sheet,
-          info_cards: [],
+          infoCards: [],
         },
       },
     })
@@ -84,7 +84,7 @@ describe('DnDContentSearch', async () => {
     const grid = component.find('[data-test-content-grid]')
 
     expect(grid.exists()).toBeTruthy()
-    expect(grid.findAllComponents({ name: 'ContentCard' })).toHaveLength(open5eArmorListingFixture.length)
+    expect(grid.findAllComponents({ name: 'ContentCard' })).toHaveLength(open5eV2ArmorListingFixture.length)
   })
 
   it('Should show only pinned items', async () => {
@@ -108,7 +108,7 @@ describe('DnDContentSearch', async () => {
     await vi.advanceTimersByTimeAsync(600)
 
     expect(mockUpdate).toHaveBeenCalledWith({
-      info_cards: [],
+      infoCards: [],
     })
   })
 
@@ -119,14 +119,14 @@ describe('DnDContentSearch', async () => {
         allowPin: true,
         sheet: {
           ...sheet,
-          info_cards: Array(10).fill(open5eArmorFixture),
+          infoCards: Array(10).fill(dndArmorFixture),
         },
       },
     })
 
     vi.useFakeTimers()
     const contentCard = component.findComponent({ name: 'ContentCard' })
-    await contentCard.vm.$emit('pin', open5eArmorFixture)
+    await contentCard.vm.$emit('pin', dndArmorFixture)
     await vi.advanceTimersByTimeAsync(600)
 
     expect(mockToast).toHaveBeenCalledWith({
@@ -158,7 +158,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should show pagination when there are more than 1 page', async () => {
-    data.value = { items: open5eArmorListingFixture, pages: 2 }
+    data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
     const component = await mountSuspended(DnDContentSearch, { props })
 
@@ -166,7 +166,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should not show pagination when there are no pages', async () => {
-    data.value = { items: open5eArmorListingFixture, pages: 0 }
+    data.value = { items: open5eV2ArmorListingFixture, pages: 0 }
 
     const component = await mountSuspended(DnDContentSearch, { props })
 

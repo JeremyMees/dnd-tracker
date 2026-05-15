@@ -22,29 +22,71 @@ const props = withDefaults(
 
 const { t } = useI18n()
 
-type SupportedActionType = (typeof actionType)[number]
-type SupportedAction = Omit<Action, 'type'> & { type: SupportedActionType }
-
-function isSupportedActionType(type: Action['type']): type is SupportedActionType {
-  return (actionType as readonly Action['type'][]).includes(type)
+interface FormAction {
+  actionType: DndActionType
+  name: string
+  desc: string
+  attackBonus?: number
+  damageBonus?: number
+  damageDice?: string
+  spellSave?: number
+  spellSaveType?: DndAbility
 }
 
-function filterSupportedActions(actions?: Action[] | null): SupportedAction[] {
-  if (!actions) return []
+function dndActionToForm(action: DndAction): FormAction {
+  const attack = action.attacks[0]
 
-  return actions.filter((a): a is SupportedAction => isSupportedActionType(a.type))
+  return {
+    actionType: action.actionType,
+    name: action.name,
+    desc: action.desc,
+    attackBonus: attack?.toHitMod || undefined,
+    damageBonus: attack?.damageBonus,
+    damageDice: formatAttackDice(attack?.damageDieCount, attack?.damageDieType),
+    spellSave: attack?.spellSave,
+    spellSaveType: attack?.spellSaveType,
+  }
+}
+
+function formToDndAction(formAction: FormAction): DndAction {
+  const dice = parseAttackDice(formAction.damageDice)
+  const hasAttack
+    = formAction.attackBonus != null
+      || dice != null
+      || formAction.damageBonus != null
+      || formAction.spellSave != null
+
+  const attack: DndAttack | undefined = hasAttack
+    ? {
+        name: formAction.name,
+        attackType: 'melee',
+        toHitMod: formAction.attackBonus ?? 0,
+        distanceUnit: 'feet',
+        ...(dice ?? {}),
+        ...(formAction.damageBonus != null ? { damageBonus: formAction.damageBonus } : {}),
+        ...(formAction.spellSave != null ? { spellSave: formAction.spellSave } : {}),
+        ...(formAction.spellSaveType ? { spellSaveType: formAction.spellSaveType } : {}),
+      }
+    : undefined
+
+  return {
+    name: formAction.name,
+    desc: formAction.desc,
+    actionType: formAction.actionType,
+    attacks: attack ? [attack] : [],
+  }
 }
 
 const actionInputs = z.array(z.object({
-  type: z.enum(actionType),
+  actionType: z.enum(actionType),
   name: z.string().min(3).max(30),
   desc: z.string().min(10).max(1000),
-  attack_bonus: z.number().gte(1).lte(100).optional(),
-  damage_bonus: z.number().min(1).lte(100).optional(),
-  damage_dice: z.string().min(3).max(15).regex(diceExpression, t('zod.diceExpression')).optional().or(z.literal('')),
-  spell_save: z.number().min(1).lte(100).optional(),
-  spell_save_type: z.union([z.enum(abilityType), z.literal('none')]).optional().transform(val => val === 'none' ? undefined : val),
-})).max(10)
+  attackBonus: z.number().gte(1).lte(100).optional(),
+  damageBonus: z.number().min(1).lte(100).optional(),
+  damageDice: z.string().min(3).max(15).regex(diceExpression, t('zod.diceExpression')).optional().or(z.literal('')),
+  spellSave: z.number().min(1).lte(100).optional(),
+  spellSaveType: z.union([z.enum(abilityType), z.literal('none'), z.literal('')]).optional().transform(val => !val || val === 'none' ? undefined : val),
+})).max(40)
 
 const formSchema = toTypedSchema(z.object({
   type: z.enum(homebrewType),
@@ -53,14 +95,11 @@ const formSchema = toTypedSchema(z.object({
   name: z.string().min(3).max(30),
   player: z.string().min(3).max(30).optional().or(z.literal('')),
   initiative: z.number().gte(1).lte(50).optional(),
-  initiative_modifier: z.number().gte(-20).lte(20).optional(),
-  ac: z.number().gte(1).lte(100).optional(),
-  health: z.number().gte(1).lte(1000).optional(),
+  initiativeModifier: z.number().gte(-20).lte(20).optional(),
+  armorClass: z.number().gte(1).lte(100).optional(),
+  hitPoints: z.number().gte(1).lte(1000).optional(),
   link: z.string().url().optional().or(z.literal('')),
   actions: actionInputs,
-  reactions: actionInputs,
-  legendary_actions: actionInputs,
-  special_abilities: actionInputs,
 }).refine(
   data => !props.isEncounter || !(['monster', 'summon'].includes(data.type) && !data.amount),
   { message: t('zod.required'), path: ['amount'] },
@@ -76,16 +115,13 @@ const form = useForm({
     name: props.item?.name || '',
     player: props.item?.player || '',
     initiative: undefined,
-    initiative_modifier: props.item?.initiative_modifier
-      ? isNaN(+props.item.initiative_modifier) ? undefined : +props.item.initiative_modifier
+    initiativeModifier: props.item?.initiativeModifier
+      ? isNaN(+props.item.initiativeModifier) ? undefined : +props.item.initiativeModifier
       : undefined,
-    ac: props.item?.ac || undefined,
-    health: props.item?.health || undefined,
+    armorClass: props.item?.armorClass || undefined,
+    hitPoints: props.item?.hitPoints || undefined,
     link: props.item?.link || '',
-    actions: filterSupportedActions(props.item?.actions),
-    reactions: filterSupportedActions(props.item?.reactions),
-    legendary_actions: filterSupportedActions(props.item?.legendary_actions),
-    special_abilities: filterSupportedActions(props.item?.special_abilities),
+    actions: (props.item?.actions ?? []).map(dndActionToForm),
   },
 })
 
@@ -99,17 +135,14 @@ const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
 const onSubmit = form.handleSubmit(async (values) => {
   formError.value = ''
 
-  const { amount, initiative, initiative_modifier, summoner, ...rest } = values
+  const { amount, initiative, initiativeModifier, summoner, ...rest } = values
 
   const formData = {
     ...rest,
-    actions: castActionFieldsToNumber(values.actions),
-    reactions: castActionFieldsToNumber(values.reactions),
-    legendary_actions: castActionFieldsToNumber(values.legendary_actions),
-    special_abilities: castActionFieldsToNumber(values.special_abilities),
+    actions: (values.actions as FormAction[]).map(formToDndAction),
   }
-  const initMod = isDefined(initiative_modifier)
-    ? { initiative_modifier: initiative_modifier.toString() }
+  const initMod = isDefined(initiativeModifier)
+    ? { initiativeModifier: initiativeModifier.toString() }
     : {}
 
   const onSuccess = () => emit('close')
@@ -120,7 +153,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       data: formData as InitiativeSheetRowInsert,
       amount: amount ?? 1,
       initiative,
-      initiative_modifier: isDefined(initiative_modifier) ? initiative_modifier : undefined,
+      initiativeModifier: isDefined(initiativeModifier) ? initiativeModifier : undefined,
       summoner,
     })
 
@@ -167,7 +200,7 @@ async function addInitiative(options: {
   data: InitiativeSheetRowInsert
   amount: number
   initiative?: number
-  initiative_modifier?: number | string
+  initiativeModifier?: number | string
   summoner?: string
 }): Promise<void> {
   if (!props.sheet || !props.update) return
@@ -178,10 +211,10 @@ async function addInitiative(options: {
 
   const row: Partial<InitiativeSheetRow> & { name: string } = {
     ...options.data,
-    ...(options.initiative && options.initiative_modifier ? { initiative: +options.initiative + +options.initiative_modifier } : {}),
-    ...(options.initiative && !options.initiative_modifier ? { initiative: +options.initiative } : {}),
+    ...(options.initiative && options.initiativeModifier ? { initiative: +options.initiative + +options.initiativeModifier } : {}),
+    ...(options.initiative && !options.initiativeModifier ? { initiative: +options.initiative } : {}),
     ...(sum ? { summoner: { name: sum.name, id: sum.id } } : {}),
-    ...(isDefined(options.initiative_modifier) ? { initiative_modifier: +options.initiative_modifier } : {}),
+    ...(isDefined(options.initiativeModifier) ? { initiativeModifier: +options.initiativeModifier } : {}),
   }
 
   const rows = [...props.sheet.rows]
@@ -194,18 +227,6 @@ async function addInitiative(options: {
   const sortedRows = indexCorrect(rows)
 
   await props.update({ rows: sortedRows })
-}
-
-function castActionFieldsToNumber(actions: Action[]): Action[] {
-  if (!actions) return []
-
-  return actions.map((action) => {
-    return {
-      ...action,
-      ...(action.damage_bonus && !isNaN(+action.damage_bonus) ? { damage_bonus: +action.damage_bonus } : {}),
-      ...(action.attack_bonus && !isNaN(+action.attack_bonus) ? { attack_bonus: +action.attack_bonus } : {}),
-    }
-  })
 }
 </script>
 

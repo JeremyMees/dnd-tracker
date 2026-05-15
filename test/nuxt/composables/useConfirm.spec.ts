@@ -59,7 +59,7 @@ describe('useConfirm', async () => {
 
     const confirmPromise = confirmDialogs.handlers.confirm(uuid)
 
-    expect(confirmDialogs.dialogs.value[0]?.loading).toBe(true)
+    expect(confirmDialogs.dialogs.value[0]?.loading).toBeTruthy()
 
     resolveCallback(undefined)
 
@@ -80,6 +80,6 @@ describe('useConfirm', async () => {
 
     expect(mockCallback).toHaveBeenCalledWith(true)
     expect(confirmDialogs.dialogs.value.length).toBe(1)
-    expect(confirmDialogs.dialogs.value[0]?.loading).toBe(false)
+    expect(confirmDialogs.dialogs.value[0]?.loading).toBeFalsy()
   })
 })

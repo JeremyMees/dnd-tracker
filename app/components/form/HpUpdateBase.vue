@@ -12,41 +12,26 @@ const props = defineProps<{
 
 const formSchema = toTypedSchema(z.object({
   amount: z.number().min(0).max(1000),
-  reset: z.boolean().optional(),
 }))
 
-const { handleSubmit, setFieldValue } = useForm({
+const form = useForm({
   validationSchema: formSchema,
-  initialValues: {
-    ...(props.item.maxHealthOld ? { amount: props.item.maxHealth } : { }),
-  },
 })
 
 const formError = ref<string>('')
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async (values) => {
   formError.value = ''
 
   try {
     if (!props.sheet) return
 
-    const { amount, reset } = values
-
-    const { row, toasts } = reset || amount === props.item.maxHealthOld
-      ? handleHpChanges(
-          props.item.maxHealthOld ?? 0,
-          'override-reset',
-          props.item,
-          props.sheet?.settings?.negative ?? false,
-        )
-      : handleHpChanges(
-          amount,
-          'override',
-          props.item,
-          props.sheet?.settings?.negative ?? false,
-        )
-
-    props.handleToasts(toasts)
+    const row = {
+      ...props.item,
+      maxHitPoints: values.amount,
+      maxHitPointsOld: undefined,
+      hitPoints: values.amount,
+    }
 
     await props.updateRow(row)
   }
@@ -64,7 +49,7 @@ const onSubmit = handleSubmit(async (values) => {
     >
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
-          {{ $t('components.inputs.overrideFieldLabel', { field: 'HP' }) }}
+          {{ $t('components.inputs.baseFieldLabel', { field: 'HP' }) }}
         </UiFormLabel>
         <UiFormControl>
           <UiInputGroup>
@@ -74,17 +59,16 @@ const onSubmit = handleSubmit(async (values) => {
             />
             <UiInputGroupAddon align="inline-end">
               <UiInputGroupButton
+                :aria-label="$t('actions.save')"
                 type="submit"
-                :aria-label="item.maxHealthOld ? $t('actions.reset') : $t('actions.save')"
-                @click="setFieldValue('reset', !!item.maxHealthOld)"
               >
-                <Icon :name="item.maxHealthOld ? 'tabler:player-skip-back' : 'tabler:device-floppy'" />
+                <Icon name="tabler:device-floppy" />
               </UiInputGroupButton>
             </UiInputGroupAddon>
           </UiInputGroup>
         </UiFormControl>
         <UiFormDescription>
-          {{ $t('components.inputs.optionalFieldHelp', { field: 'HP' }) }}
+          {{ $t('components.inputs.baseFieldHelp', { field: 'HP' }) }}
         </UiFormDescription>
         <UiFormMessage />
       </UiFormItem>

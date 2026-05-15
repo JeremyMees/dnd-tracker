@@ -11,7 +11,7 @@ const { toast } = useToast()
 
 const popoverOpen = shallowRef<boolean>(false)
 
-const hasHp = computed(() => isDefined(props.item.health) && isDefined(props.item.maxHealth))
+const hasHp = computed(() => isDefined(props.item.hitPoints) && isDefined(props.item.maxHitPoints))
 
 function handleToasts(toasts: ToastItem[]): void {
   toasts.forEach(({ title, description, variant }) => {
@@ -46,13 +46,13 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           :id="`${item.id}-hp`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 w-fit': isDefined(item.health) && item.health <= 0,
+            'bg-destructive/20 p-2 w-fit': isDefined(item.hitPoints) && item.hitPoints <= 0,
           }"
           class="flex flex-col gap-y-1 rounded-lg"
         >
           <div class="flex items-center gap-x-1">
             <Icon
-              v-if="!isDefined(item.health) && item.type !== 'lair'"
+              v-if="!isDefined(item.hitPoints) && item.type !== 'lair'"
               data-test-empty
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
@@ -60,32 +60,32 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
             />
             <span
               v-else
-              data-test-health
-              :class="{ 'text-destructive': isDefined(item.health) && item.health <= 0 }"
+              data-test-hp
+              :class="{ 'text-destructive': isDefined(item.hitPoints) && item.hitPoints <= 0 }"
             >
-              {{ item.health }}
+              {{ item.hitPoints }}
             </span>
             <span
-              v-if="isDefined(item.health) && item.tempHealth"
+              v-if="isDefined(item.hitPoints) && item.tempHitPoints"
               v-tippy="$t('general.temp')"
               data-test-temp
               class="text-warning text-xs"
             >
-              +{{ item.tempHealth }}
+              +{{ item.tempHitPoints }}
             </span>
           </div>
           <span
-            v-if="item.maxHealth !== item.health"
+            v-if="item.maxHitPoints !== item.hitPoints"
             data-test-max
             class="text-2xs text-muted-foreground whitespace-nowrap"
           >
-            {{ $t('general.max') }}: {{ item.maxHealth }}
+            {{ $t('general.max') }}: {{ item.maxHitPoints }}
           </span>
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent class="max-h-[600px]">
         <div
-          v-if="isDefined(item.health) && isDefined(item.maxHealth)"
+          v-if="isDefined(item.hitPoints) && isDefined(item.maxHitPoints)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
@@ -94,9 +94,9 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
             </p>
             <p
               class="head-2"
-              :class="{ 'text-destructive': item.health < 1 }"
+              :class="{ 'text-destructive': item.hitPoints < 1 }"
             >
-              {{ item.health || 0 }}
+              {{ item.hitPoints || 0 }}
             </p>
           </div>
           <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
@@ -106,15 +106,15 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
             <div class="flex gap-1 items-start justify-center">
               <p
                 class="head-2"
-                :class="[!item.maxHealthOld ? undefined : item.maxHealthOld < item.maxHealth ? 'text-success' : 'text-destructive']"
+                :class="[!item.maxHitPointsOld ? undefined : item.maxHitPointsOld < item.maxHitPoints ? 'text-success' : 'text-destructive']"
               >
-                {{ item.maxHealth || 0 }}
+                {{ item.maxHitPoints || 0 }}
               </p>
               <p
-                v-if="isDefined(item.maxHealthOld)"
+                v-if="isDefined(item.maxHitPointsOld)"
                 class="text-sm"
               >
-                ({{ item.maxHealthOld }})
+                ({{ item.maxHitPointsOld }})
               </p>
             </div>
           </div>
@@ -123,12 +123,12 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
               {{ $t('general.temp') }}
             </p>
             <p class="head-2">
-              {{ item.tempHealth || 0 }}
+              {{ item.tempHitPoints || 0 }}
             </p>
           </div>
         </div>
 
-        <FormHealthUpdate
+        <FormHpUpdate
           v-if="hasHp"
           :sheet="sheet"
           :item="item"
@@ -141,7 +141,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           class="my-3 bg-muted"
         />
 
-        <FormHealthUpdateBase
+        <FormHpUpdateBase
           :sheet="sheet"
           :item="item"
           :handle-toasts="handleToasts"
@@ -153,7 +153,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           class="my-3 bg-muted"
         />
 
-        <FormHealthOverride
+        <FormHpOverride
           v-if="hasHp"
           :sheet="sheet"
           :item="item"

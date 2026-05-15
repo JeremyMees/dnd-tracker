@@ -39,27 +39,27 @@ describe('Initiative table row ac', async () => {
   })
 
   it('Should display AC values correctly', async () => {
-    const ac = 1
-    const maxAc = 15
-    const maxAcOld = 10
-    const tempAc = 5
+    const armorClass = 1
+    const maxArmorClass = 15
+    const maxArmorClassOld = 10
+    const tempArmorClass = 5
 
     const component = await mountSuspended(Ac, {
       props: {
-        item: { ...props.item, ac, maxAc, maxAcOld, tempAc },
+        item: { ...props.item, armorClass, maxArmorClass, maxArmorClassOld, tempArmorClass },
       },
       provide,
     })
 
-    expect(component.get('[data-test-ac]').text()).toBe(ac.toString())
-    expect(component.get('[data-test-max]').text()).toContain(maxAc.toString())
-    expect(component.get('[data-test-temp]').text()).toContain(tempAc.toString())
+    expect(component.get('[data-test-ac]').text()).toBe(armorClass.toString())
+    expect(component.get('[data-test-max]').text()).toContain(maxArmorClass.toString())
+    expect(component.get('[data-test-temp]').text()).toContain(tempArmorClass.toString())
   })
 
   it('Should show destructive styling when AC is 0', async () => {
     const component = await mountSuspended(Ac, {
       props: {
-        item: { ...props.item, ac: 0 },
+        item: { ...props.item, armorClass: 0 },
       },
       provide,
     })
@@ -72,7 +72,7 @@ describe('Initiative table row ac', async () => {
     const component = await mountSuspended(Ac, {
       props: {
         ...props,
-        item: { ...props.item, ac: undefined },
+        item: { ...props.item, armorClass: undefined },
       },
       provide,
     })
@@ -85,9 +85,9 @@ describe('Initiative table row ac', async () => {
       props: {
         item: {
           ...props.item,
-          ac: 10,
-          maxAc: 20,
-          tempAc: 0,
+          armorClass: 10,
+          maxArmorClass: 20,
+          tempArmorClass: 0,
         },
       },
       provide,
@@ -97,7 +97,7 @@ describe('Initiative table row ac', async () => {
     const updatedRow = vm.handleAcChanges(15, 'remove')
     await vm.updateRow(updatedRow)
 
-    expect(updatedRow.ac).toBe(0)
+    expect(updatedRow.armorClass).toBe(0)
   })
 
   it('Should allow negative AC when negative values are allowed', async () => {
@@ -113,9 +113,9 @@ describe('Initiative table row ac', async () => {
       props: {
         item: {
           ...props.item,
-          ac: 10,
-          maxAc: 20,
-          tempAc: 0,
+          armorClass: 10,
+          maxArmorClass: 20,
+          tempArmorClass: 0,
         },
       },
       provide,
@@ -125,6 +125,6 @@ describe('Initiative table row ac', async () => {
     const updatedRow = vm.handleAcChanges(15, 'remove')
     await vm.updateRow(updatedRow)
 
-    expect(updatedRow.ac).toBe(-5)
+    expect(updatedRow.armorClass).toBe(-5)
   })
 })

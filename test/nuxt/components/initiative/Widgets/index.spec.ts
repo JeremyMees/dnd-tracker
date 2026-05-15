@@ -92,6 +92,6 @@ describe('Initiative widgets wrapper', async () => {
 
     await pinnedContentWidget.vm.$emit('update', [])
 
-    expect(mockUpdate).toHaveBeenCalledWith({ info_cards: [] })
+    expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
   })
 })

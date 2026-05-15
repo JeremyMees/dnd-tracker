@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   if (!body.customer) {
     customer = await stripe.customers.create({ email: body.user.email })
 
-    update = { stripe_id: customer.id }
+    update = { stripeId: customer.id }
   }
 
   const lang = body.locale === 'nl' ? '' : `/${body.locale}`
@@ -33,8 +33,8 @@ export default defineEventHandler(async (event) => {
   await client.from('profiles')
     .update({
       ...update,
-      stripe_session_id: session.id,
-      temp_subscription: body.type === 'upgrade to pro' ? 'pro' : body.type,
+      stripeSessionId: session.id,
+      tempSubscription: body.type === 'upgrade to pro' ? 'pro' : body.type,
     } as never)
     .eq('id', body.user.id)
 

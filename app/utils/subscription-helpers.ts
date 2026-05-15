@@ -1,9 +1,9 @@
 export function isPro(profile: ProfileRow): boolean {
-  return profile.subscription_type === 'pro'
+  return profile.subscriptionType === 'pro'
 }
 
 export function isMedior(profile: ProfileRow): boolean {
-  return profile.subscription_type === 'pro' || profile.subscription_type === 'medior'
+  return profile.subscriptionType === 'pro' || profile.subscriptionType === 'medior'
 }
 
 export function hasCorrectSubscription(

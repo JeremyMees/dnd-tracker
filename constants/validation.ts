@@ -2,17 +2,17 @@ export const initiativeSpacingOptions = [
   'compact',
   'normal',
   'cozy',
-] as const
+] as const satisfies readonly TableSpacing[]
 
 export const initiativeDefaultRows = [
-  'ac',
-  'health',
+  'armorClass',
+  'hitPoints',
   'conditions',
   'note',
   'deathSaves',
   'concentration',
   'modify',
-] as const
+] as const satisfies readonly InitiativeRowField[]
 
 export const initiativePets = [
   'cat',
@@ -23,12 +23,12 @@ export const initiativePets = [
   'fairy',
   'redcap',
   'wolf-rider',
-] as const
+] as const satisfies readonly InitiativePet[]
 
 export const initiativeWidgets = [
   'note',
   'info-pins',
-] as const
+] as const satisfies readonly InitiativeWidget[]
 
 export const homebrewType = [
   'player',
@@ -36,31 +36,31 @@ export const homebrewType = [
   'npc',
   'monster',
   'lair',
-] as const
+] as const satisfies readonly HomebrewType[]
 
 export const abilityType = [
-  'STR',
-  'DEX',
-  'CON',
-  'INT',
-  'WIS',
-  'CHA',
-] as const
+  'strength',
+  'dexterity',
+  'constitution',
+  'intelligence',
+  'wisdom',
+  'charisma',
+] as const satisfies readonly DndAbility[]
 
 export const actionType = [
-  'actions',
-  'bonus_actions',
-  'reactions',
-  'legendary_actions',
-  'mythic_actions',
-  'special_abilities',
-  'lair_actions',
-] as const
+  'action',
+  'bonusAction',
+  'reaction',
+  'legendaryAction',
+  'mythicAction',
+  'specialAbility',
+  'lairAction',
+] as const satisfies readonly DndActionType[]
 
 export const roleType = [
   'Admin',
   'Viewer',
-] as const
+] as const satisfies readonly UserRole[]
 
 export const campaignTransferRole = [
   'Admin',

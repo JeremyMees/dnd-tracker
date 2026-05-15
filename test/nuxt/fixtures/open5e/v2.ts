@@ -16,7 +16,7 @@ export const open5eDocumentFixture: Open5eMinimalDocument = {
   permalink: 'https://dnd.wizards.com/resources/systems-reference-document',
 }
 
-export const open5eSpellFixture: Open5eSpell = {
+export const open5eV2SpellFixture: Open5eSpell = {
   url: 'https://api.open5e.com/v2/spells/srd-2024_acid-arrow/',
   document: open5eDocumentFixture,
   key: 'srd-2024_acid-arrow',
@@ -135,7 +135,7 @@ export const open5eSpellFixture: Open5eSpell = {
   concentration: false,
 }
 
-export const open5eMagicItemFixture: Open5eMagicItem = {
+export const open5eV2MagicItemFixture: Open5eMagicItem = {
   url: 'https://api.open5e.com/v2/items/srd-2024_adamantine-armor-breastplate/',
   key: 'srd-2024_adamantine-armor-breastplate',
   name: 'Adamantine Armor (Breastplate)',
@@ -178,7 +178,7 @@ export const open5eMagicItemFixture: Open5eMagicItem = {
   document: open5eDocumentFixture,
 }
 
-export const open5eWeaponFixture: Open5eWeapon = {
+export const open5eV2WeaponFixture: Open5eWeapon = {
   url: 'https://api.open5e.com/v2/weapons/srd-2024_battleaxe/',
   key: 'srd-2024_battleaxe',
   document: open5eDocumentFixture,
@@ -216,7 +216,7 @@ export const open5eWeaponFixture: Open5eWeapon = {
   is_improvised: false,
 }
 
-export const open5eArmorFixture: Open5eArmor = {
+export const open5eV2ArmorFixture: Open5eArmor = {
   url: 'https://api.open5e.com/v2/armor/srd-2024_breastplate/',
   key: 'srd-2024_breastplate',
   ac_display: '14 + Dex modifier (max 2)',
@@ -230,7 +230,7 @@ export const open5eArmorFixture: Open5eArmor = {
   ac_cap_dexmod: 2,
 }
 
-export const open5eArmorListingFixture: Open5eArmor[] = [
+export const open5eV2ArmorListingFixture: Open5eArmor[] = [
   {
     url: 'https://api.open5e.com/v2/armor/srd-2024_breastplate/',
     key: 'srd-2024_breastplate',
@@ -402,7 +402,7 @@ export const open5eArmorListingFixture: Open5eArmor[] = [
   },
 ]
 
-export const open5eMonsterFixture: Open5eMonster = {
+export const open5eV2MonsterFixture: Open5eMonster = {
   url: 'https://api.open5e.com/v2/creatures/a5e-mm_aboleth/',
   key: 'a5e-mm_aboleth',
   name: 'Aboleth',
@@ -433,8 +433,7 @@ export const open5eMonsterFixture: Open5eMonster = {
     key: 'large',
     url: 'https://api.open5e.com/v2/sizes/large/',
   },
-  challenge_rating_decimal: '11.000',
-  challenge_rating_text: '11',
+  challenge_rating: 11,
   proficiency_bonus: null,
   speed: {
     walk: 10.0,
@@ -508,7 +507,7 @@ export const open5eMonsterFixture: Open5eMonster = {
   },
   skill_bonuses_all: {
     acrobatics: 1,
-    animal_handling: 5,
+    animalHandling: 5,
     arcana: 5,
     athletics: 5,
     deception: 8,
@@ -522,7 +521,7 @@ export const open5eMonsterFixture: Open5eMonster = {
     performance: 4,
     persuasion: 4,
     religion: 5,
-    sleight_of_hand: 1,
+    sleightOfHand: 1,
     stealth: 5,
     survival: 5,
   },
@@ -663,4 +662,26 @@ export const open5eMonsterFixture: Open5eMonster = {
   creaturesets: [],
   environments: [],
   illustration: null,
+}
+
+export const open5eV2ConditionFixture: Open5eCondition = {
+  key: 'blinded',
+  name: 'Blinded',
+  url: 'https://api.open5e.com/v2/conditions/blinded/',
+  descriptions: [
+    { desc: 'The 2014 blinded desc.', document: 'srd-2014', gamesystem: '5e-2014' },
+    { desc: 'A Blinded creature cannot see.', document: 'srd-2024', gamesystem: '5e-2024' },
+  ],
+  document: open5eDocumentFixture,
+}
+
+export const open5eV2ExhaustionFixture: Open5eCondition = {
+  key: 'exhaustion',
+  name: 'Exhaustion',
+  url: 'https://api.open5e.com/v2/conditions/exhaustion/',
+  descriptions: [
+    { desc: 'The 2014 exhaustion desc.', document: 'srd-2014', gamesystem: '5e-2014' },
+    { desc: 'Exhaustion drains your body.', document: 'srd-2024', gamesystem: '5e-2024' },
+  ],
+  document: open5eDocumentFixture,
 }

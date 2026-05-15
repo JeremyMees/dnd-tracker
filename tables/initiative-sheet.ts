@@ -3,7 +3,7 @@ import { actionsTable, expandButton } from './generate-functions'
 
 import {
   InitiativeTableRowName,
-  InitiativeTableRowHealth,
+  InitiativeTableRowHp,
   InitiativeTableRowConditions,
   InitiativeTableRowNotes,
   InitiativeTableRowInit,
@@ -48,13 +48,13 @@ export function generateColumns() {
         item: row.original,
       }),
     }),
-    columnHelper.accessor('health', {
-      header: t('components.encounterTable.headers.health'),
-      cell: ({ row }) => h(InitiativeTableRowHealth, {
+    columnHelper.accessor('hitPoints', {
+      header: t('components.encounterTable.headers.hp'),
+      cell: ({ row }) => h(InitiativeTableRowHp, {
         item: row.original,
       }),
     }),
-    columnHelper.accessor('ac', {
+    columnHelper.accessor('armorClass', {
       header: t('components.encounterTable.headers.ac'),
       cell: ({ row }) => h(InitiativeTableRowAc, {
         item: row.original,

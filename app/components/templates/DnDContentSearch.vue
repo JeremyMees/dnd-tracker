@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useOpen5eListing, useOpen5eDocuments } from '~~/shared/types/open5e'
+import { useOpen5eListing, useOpen5eDocuments } from '~~/queries/open5e'
 
 const props = withDefaults(
   defineProps<{
@@ -35,7 +35,7 @@ const queryFilters = ref<Open5eFilters>({
   page: 0,
   search: debouncedSearch.value,
   ordering: sortBy.value,
-  document__key__in: selectedDocuments.value,
+  document__key__in: selectedDocuments.value.join(','),
 })
 
 watch([debouncedSearch, sortBy], () => {
@@ -43,7 +43,7 @@ watch([debouncedSearch, sortBy], () => {
     page: 0,
     search: debouncedSearch.value,
     ordering: sortBy.value,
-    document__key__in: selectedDocuments.value,
+    document__key__in: selectedDocuments.value.join(','),
   }
 })
 
@@ -52,7 +52,7 @@ watch([type, selectedDocuments], () => {
     page: 0,
     search: '',
     ordering: 'name',
-    document__key__in: selectedDocuments.value,
+    document__key__in: selectedDocuments.value.join(','),
   }
 })
 
@@ -72,12 +72,12 @@ const isError = computed(
   () => listingStatus.value === 'error' || documentsStatus.value === 'error',
 )
 
-async function handlePinToggle(content: Open5eItem, remove: boolean): Promise<void> {
+async function handlePinToggle(content: DndItem, remove: boolean): Promise<void> {
   if (!props.sheet || !props.update) return
 
-  let cards = [...props.sheet.info_cards]
+  let cards = [...props.sheet.infoCards]
 
-  if (remove) cards = cards.filter(i => i.key !== content.key)
+  if (remove) cards = cards.filter(i => i.id !== content.id)
   else if (cards.length >= 10) {
     toast({
       title: t('components.dndContentSearch.toast.maxTitle'),
@@ -87,13 +87,13 @@ async function handlePinToggle(content: Open5eItem, remove: boolean): Promise<vo
   }
   else cards.push(content)
 
-  await props.update({ info_cards: cards })
+  await props.update({ infoCards: cards })
 }
 
 async function removePins(): Promise<void> {
   if (!props.sheet || !props.update) return
 
-  await props.update({ info_cards: [] })
+  await props.update({ infoCards: [] })
 
   showPinned.value = false
 }
@@ -173,7 +173,7 @@ async function removePins(): Promise<void> {
       </div>
       <AnimationReveal>
         <div
-          v-if="sheet?.info_cards?.length"
+          v-if="sheet?.infoCards?.length"
           class="flex gap-2"
         >
           <UiButton
@@ -212,20 +212,20 @@ async function removePins(): Promise<void> {
         />
       </MasonryGrid>
       <MasonryGrid
-        v-else-if="data?.items?.length || (showPinned && sheet?.info_cards?.length)"
+        v-else-if="data?.items?.length || (showPinned && sheet?.infoCards?.length)"
         v-slot="{ column }"
         data-test-content-grid
-        :data="showPinned && sheet ? (sheet?.info_cards ?? []) : (data?.items ?? [])"
+        :data="showPinned && sheet ? (sheet?.infoCards ?? []) : (data?.items ?? [])"
       >
         <ContentCard
           v-for="(hit, j) in column"
           :id="j === 0 ? 'el' : ''"
-          :key="hit.key"
+          :key="hit.id"
           :type="type"
           :hit="hit"
           :variant="variant"
           :allow-pin="allowPin"
-          :pinned="sheet?.info_cards?.some((i) => i.key === hit.key) ?? false"
+          :pinned="sheet?.infoCards?.some((i) => i.id === hit.id) ?? false"
           @pin="handlePinToggle(hit, false)"
           @unpin="handlePinToggle(hit, true)"
         />

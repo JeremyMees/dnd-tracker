@@ -3,7 +3,7 @@ defineEmits<{ pin: [], unpin: [] }>()
 
 const props = withDefaults(
   defineProps<{
-    hit: Open5eItem
+    hit: DndItem
     pinned?: boolean
     allowPin?: boolean
     variant?: 'secondary' | 'background'

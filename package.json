@@ -89,7 +89,7 @@
   "devDependencies": {
     "@iconify-json/tabler": "^1.2.32",
     "@inspira-ui/plugins": "^0.0.2",
-    "@nuxt/test-utils": "^4.0.0",
+    "@nuxt/test-utils": "^4.0.3",
     "@playwright/test": "^1.58.2",
     "@tanstack/eslint-plugin-query": "^5.95.0",
     "@types/markdown-it": "^14.1.2",
@@ -99,7 +99,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18",
+    "vitest": "^4.1.6",
     "vue-tsc": "^3.2.6"
   },
   "overrides": {

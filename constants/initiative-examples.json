@@ -1,7 +1,7 @@
 {
   "id": 2,
-  "created_at": "2022-12-07T07:34:18+00:00",
-  "created_by": "me :)",
+  "createdAt": "2022-12-07T07:34:18+00:00",
+  "createdBy": "me :)",
   "title": "Sandbox",
   "round": 1,
   "activeIndex": 0,
@@ -13,7 +13,7 @@
       "index": 0,
       "conditions": [],
       "initiative": 20,
-      "initiative_modifier": 2,
+      "initiativeModifier": 2,
       "link": null
     },
     {
@@ -29,7 +29,7 @@
       "tempHealth": 0,
       "conditions": [],
       "initiative": 19,
-      "initiative_modifier": 1,
+      "initiativeModifier": 1,
       "concentration": true,
       "link": "https://www.youtube.com/watch?v=uxauCAtFckw",
       "deathSaves": {
@@ -69,7 +69,7 @@
         }
       ],
       "initiative": 19,
-      "initiative_modifier": 4,
+      "initiativeModifier": 4,
       "concentration": false,
       "link": "https://www.youtube.com/embed/y90yaLFoYoA?si=zWL9zZslBib6Fcni&amp;controls=0",
       "deathSaves": {
@@ -98,7 +98,7 @@
       "tempHealth": 0,
       "conditions": [],
       "initiative": 19,
-      "initiative_modifier": 3,
+      "initiativeModifier": 3,
       "concentration": false,
       "link": "https://www.youtube.com/embed/AWM5ZNdWlqw?si=l-87E9B2t65gR35X&amp;controls=0",
       "deathSaves": {
@@ -127,7 +127,7 @@
       "tempHealth": 0,
       "conditions": [],
       "initiative": 17,
-      "initiative_modifier": 2,
+      "initiativeModifier": 2,
       "concentration": false,
       "link": "https://www.aidedd.org/dnd/monstres.php?vo=dragon-turtle",
       "note": "",
@@ -206,7 +206,7 @@
       },
       "conditions": [],
       "initiative": 16,
-      "initiative_modifier": 2,
+      "initiativeModifier": 2,
       "concentration": false,
       "link": null
     },
@@ -223,7 +223,7 @@
       "tempHealth": 0,
       "conditions": [],
       "initiative": 7,
-      "initiative_modifier": 6,
+      "initiativeModifier": 6,
       "concentration": false,
       "link": "https://www.aidedd.org/dnd/monstres.php?vo=water-elemental",
       "note": "",
@@ -293,7 +293,7 @@
         }
       ],
       "initiative": 1,
-      "initiative_modifier": -1,
+      "initiativeModifier": -1,
       "concentration": false,
       "link": null,
       "deathSaves": {
@@ -311,7 +311,7 @@
     }
   ],
   "info": null,
-  "info_cards": [],
+  "infoCards": [],
   "settings": {
     "spacing": "normal",
     "pet": "cat",

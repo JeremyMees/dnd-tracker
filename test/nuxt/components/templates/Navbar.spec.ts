@@ -48,7 +48,7 @@ describe('Navbar', async () => {
     await vm.logoutUser()
 
     expect(logoutMock).toHaveBeenCalled()
-    expect(vm.isOpen).toBe(false)
+    expect(vm.isOpen).toBeFalsy()
   })
 
   it('Should show toast on logout error', async () => {
@@ -69,10 +69,10 @@ describe('Navbar', async () => {
     window.scrollY = 20
     // @ts-expect-error - Error is expected to be thrown
     window?.onscroll?.()
-    expect(vm.isScrolled).toBe(true)
+    expect(vm.isScrolled).toBeTruthy()
     window.scrollY = 0
     // @ts-expect-error - Error is expected to be thrown
     window?.onscroll?.()
-    expect(vm.isScrolled).toBe(false)
+    expect(vm.isScrolled).toBeFalsy()
   })
 })

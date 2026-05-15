@@ -105,13 +105,13 @@ async function handleSearch(): Promise<void> {
 }
 
 function validateUser(email: string): string | undefined {
-  const { team, join_campaign, created_by } = props.current
+  const { team, join_campaign, createdBy } = props.current
 
   if (email === user.value.email) return 'self'
   else if (join_campaign.some(({ user }) => user.email === email)) return 'alreadyInvited'
   else if (foundUsers.value.some(({ profile }) => profile.email === email)) return 'alreadySelected'
   else if ([...foundUsers.value, ...team, ...join_campaign].length >= 9) return 'maxMembers'
-  else if (created_by.email === email || team.some(({ user }) => user.email === email)) return 'alreadyAdded'
+  else if (createdBy.email === email || team.some(({ user }) => user.email === email)) return 'alreadyAdded'
 }
 
 const onSubmit = form.handleSubmit(async (values) => {

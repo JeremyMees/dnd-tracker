@@ -21,7 +21,7 @@ export function useHealthCheck() {
 
   async function checkOpen5e() {
     try {
-      const res = await $fetch('https://api.open5e.com/v1')
+      const res = await $fetch('https://api.open5e.com/v2')
       isOpen5eOnline.value = !!res
     }
     catch {

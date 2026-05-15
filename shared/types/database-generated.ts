@@ -14,62 +14,29 @@ export type Database = {
   }
   public: {
     Tables: {
-      badges: {
-        Row: {
-          background: string
-          code: string | null
-          color: string
-          created_at: string
-          description: Json
-          icon: string
-          id: number
-          label: Json
-        }
-        Insert: {
-          background: string
-          code?: string | null
-          color: string
-          created_at?: string
-          description: Json
-          icon: string
-          id?: number
-          label: Json
-        }
-        Update: {
-          background?: string
-          code?: string | null
-          color?: string
-          created_at?: string
-          description?: Json
-          icon?: string
-          id?: number
-          label?: Json
-        }
-        Relationships: []
-      }
       campaigns: {
         Row: {
-          created_at: string | null
-          created_by: string
+          createdAt: string | null
+          createdBy: string
           id: number
           title: string
         }
         Insert: {
-          created_at?: string | null
-          created_by: string
+          createdAt?: string | null
+          createdBy: string
           id?: number
           title: string
         }
         Update: {
-          created_at?: string | null
-          created_by?: string
+          createdAt?: string | null
+          createdBy?: string
           id?: number
           title?: string
         }
         Relationships: [
           {
             foreignKeyName: 'campaigns_created_by_fkey'
-            columns: ['created_by']
+            columns: ['createdBy']
             isOneToOne: false
             referencedRelation: 'profiles'
             referencedColumns: ['id']
@@ -78,8 +45,8 @@ export type Database = {
       }
       features: {
         Row: {
-          created_at: string
-          created_by: string
+          createdAt: string
+          createdBy: string
           id: number
           status: Database['public']['Enums']['feature_request_status']
           text: string
@@ -87,8 +54,8 @@ export type Database = {
           voted: Json
         }
         Insert: {
-          created_at?: string
-          created_by: string
+          createdAt?: string
+          createdBy: string
           id?: number
           status?: Database['public']['Enums']['feature_request_status']
           text: string
@@ -96,8 +63,8 @@ export type Database = {
           voted?: Json
         }
         Update: {
-          created_at?: string
-          created_by?: string
+          createdAt?: string
+          createdBy?: string
           id?: number
           status?: Database['public']['Enums']['feature_request_status']
           text?: string
@@ -107,7 +74,7 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'features_created_by_fkey'
-            columns: ['created_by']
+            columns: ['createdBy']
             isOneToOne: false
             referencedRelation: 'profiles'
             referencedColumns: ['id']
@@ -116,51 +83,42 @@ export type Database = {
       }
       homebrew_items: {
         Row: {
-          ac: number | null
           actions: Json
+          armorClass: number | null
           campaign: number
-          created_at: string
-          health: number | null
+          createdAt: string
+          hitPoints: number | null
           id: number
-          initiative_modifier: string | null
-          legendary_actions: Json
+          initiativeModifier: string | null
           link: string | null
           name: string
           player: string | null
-          reactions: Json
-          special_abilities: Json
           type: Database['public']['Enums']['homebrew_type']
         }
         Insert: {
-          ac?: number | null
           actions: Json
+          armorClass?: number | null
           campaign: number
-          created_at?: string
-          health?: number | null
+          createdAt?: string
+          hitPoints?: number | null
           id?: number
-          initiative_modifier?: string | null
-          legendary_actions: Json
+          initiativeModifier?: string | null
           link?: string | null
           name: string
           player?: string | null
-          reactions: Json
-          special_abilities: Json
           type?: Database['public']['Enums']['homebrew_type']
         }
         Update: {
-          ac?: number | null
           actions?: Json
+          armorClass?: number | null
           campaign?: number
-          created_at?: string
-          health?: number | null
+          createdAt?: string
+          hitPoints?: number | null
           id?: number
-          initiative_modifier?: string | null
-          legendary_actions?: Json
+          initiativeModifier?: string | null
           link?: string | null
           name?: string
           player?: string | null
-          reactions?: Json
-          special_abilities?: Json
           type?: Database['public']['Enums']['homebrew_type']
         }
         Relationships: [
@@ -177,11 +135,11 @@ export type Database = {
         Row: {
           activeIndex: number
           campaign: number | null
-          created_at: string | null
-          created_by: string
+          createdAt: string | null
+          createdBy: string
           id: number
           info: string | null
-          info_cards: Json
+          infoCards: Json
           round: number
           rows: Json
           settings: Json | null
@@ -190,11 +148,11 @@ export type Database = {
         Insert: {
           activeIndex?: number
           campaign?: number | null
-          created_at?: string | null
-          created_by?: string
+          createdAt?: string | null
+          createdBy?: string
           id?: number
           info?: string | null
-          info_cards?: Json
+          infoCards?: Json
           round?: number
           rows: Json
           settings?: Json | null
@@ -203,11 +161,11 @@ export type Database = {
         Update: {
           activeIndex?: number
           campaign?: number | null
-          created_at?: string | null
-          created_by?: string
+          createdAt?: string | null
+          createdBy?: string
           id?: number
           info?: string | null
-          info_cards?: Json
+          infoCards?: Json
           round?: number
           rows?: Json
           settings?: Json | null
@@ -223,7 +181,7 @@ export type Database = {
           },
           {
             foreignKeyName: 'initiative_sheets_created_by_fkey'
-            columns: ['created_by']
+            columns: ['createdBy']
             isOneToOne: false
             referencedRelation: 'profiles'
             referencedColumns: ['id']
@@ -233,7 +191,7 @@ export type Database = {
       join_campaign: {
         Row: {
           campaign: number
-          created_at: string
+          createdAt: string
           id: number
           role: Database['public']['Enums']['user_role']
           token: string
@@ -241,7 +199,7 @@ export type Database = {
         }
         Insert: {
           campaign: number
-          created_at?: string
+          createdAt?: string
           id?: number
           role?: Database['public']['Enums']['user_role']
           token: string
@@ -249,7 +207,7 @@ export type Database = {
         }
         Update: {
           campaign?: number
-          created_at?: string
+          createdAt?: string
           id?: number
           role?: Database['public']['Enums']['user_role']
           token?: string
@@ -275,21 +233,21 @@ export type Database = {
       notes: {
         Row: {
           campaign: number
-          created_at: string | null
+          createdAt: string | null
           id: number
           text: string | null
           title: string
         }
         Insert: {
           campaign: number
-          created_at?: string | null
+          createdAt?: string | null
           id?: number
           text?: string | null
           title: string
         }
         Update: {
           campaign?: number
-          created_at?: string | null
+          createdAt?: string | null
           id?: number
           text?: string | null
           title?: string
@@ -307,50 +265,47 @@ export type Database = {
       profiles: {
         Row: {
           avatar: string
-          avatar_options: Json | null
-          badges: Json
+          avatarOptions: Json | null
           completedTour: boolean
-          created_at: string
+          createdAt: string
           email: string
           id: string
           marketing: boolean
           name: string
-          stripe_id: string | null
-          stripe_session_id: string | null
-          subscription_type: Database['public']['Enums']['subscription_type']
-          temp_subscription: Database['public']['Enums']['subscription_type']
+          stripeId: string | null
+          stripeSessionId: string | null
+          subscriptionType: Database['public']['Enums']['subscription_type']
+          tempSubscription: Database['public']['Enums']['subscription_type']
           username: string
         }
         Insert: {
           avatar: string
-          avatar_options?: Json | null
-          badges?: Json
+          avatarOptions?: Json | null
           completedTour?: boolean
-          created_at?: string
+          createdAt?: string
           email: string
           id: string
           marketing?: boolean
           name: string
-          stripe_id?: string | null
-          stripe_session_id?: string | null
-          subscription_type?: Database['public']['Enums']['subscription_type']
-          temp_subscription?: Database['public']['Enums']['subscription_type']
+          stripeId?: string | null
+          stripeSessionId?: string | null
+          subscriptionType?: Database['public']['Enums']['subscription_type']
+          tempSubscription?: Database['public']['Enums']['subscription_type']
           username: string
         }
         Update: {
           avatar?: string
-          avatar_options?: Json | null
-          badges?: Json
+          avatarOptions?: Json | null
           completedTour?: boolean
-          created_at?: string
+          createdAt?: string
           email?: string
           id?: string
           marketing?: boolean
           name?: string
-          stripe_id?: string | null
-          stripe_session_id?: string | null
-          subscription_type?: Database['public']['Enums']['subscription_type']
-          temp_subscription?: Database['public']['Enums']['subscription_type']
+          stripeId?: string | null
+          stripeSessionId?: string | null
+          subscriptionType?: Database['public']['Enums']['subscription_type']
+          tempSubscription?: Database['public']['Enums']['subscription_type']
           username?: string
         }
         Relationships: []
@@ -358,21 +313,21 @@ export type Database = {
       team: {
         Row: {
           campaign: number
-          created_at: string
+          createdAt: string
           id: number
           role: Database['public']['Enums']['user_role']
           user: string
         }
         Insert: {
           campaign: number
-          created_at?: string
+          createdAt?: string
           id?: number
           role?: Database['public']['Enums']['user_role']
           user: string
         }
         Update: {
           campaign?: number
-          created_at?: string
+          createdAt?: string
           id?: number
           role?: Database['public']['Enums']['user_role']
           user?: string

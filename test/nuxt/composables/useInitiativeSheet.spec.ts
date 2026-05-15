@@ -107,10 +107,10 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.round = 4
 
     const firstItem = mockSheet.value.rows[0]!
-    const currentAc = firstItem.ac
-    const currentHealth = firstItem.health
-    const maxAcOld = firstItem.maxAcOld
-    const maxHealthOld = firstItem.maxHealthOld
+    const currentAc = firstItem.armorClass
+    const currentHp = firstItem.hitPoints
+    const maxAcOld = firstItem.maxArmorClassOld
+    const maxHpOld = firstItem.maxHitPointsOld
 
     const { reset } = useInitiativeSheet(
       sheetComputed,
@@ -119,11 +119,11 @@ describe('useInitiativeSheet', async () => {
 
     expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
     expect(mockSheet.value.round).toBe(4)
-    expect(mockSheet.value.rows[0]!.ac).toBe(currentAc)
-    expect(mockSheet.value.rows[0]!.health).toBe(currentHealth)
-    expect(mockSheet.value.rows[0]!.tempAc).toBe(5)
-    expect(mockSheet.value.rows[0]!.tempHealth).toBe(5)
-    expect(mockSheet.value.rows[0]!.concentration).toBe(true)
+    expect(mockSheet.value.rows[0]!.armorClass).toBe(currentAc)
+    expect(mockSheet.value.rows[0]!.hitPoints).toBe(currentHp)
+    expect(mockSheet.value.rows[0]!.tempArmorClass).toBe(5)
+    expect(mockSheet.value.rows[0]!.tempHitPoints).toBe(5)
+    expect(mockSheet.value.rows[0]!.concentration).toBeTruthy()
     expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([true, false, false])
     expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([true, false, false])
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(1)
@@ -132,13 +132,13 @@ describe('useInitiativeSheet', async () => {
 
     expect(mockSheet.value.activeIndex).toBe(0)
     expect(mockSheet.value.round).toBe(1)
-    expect(mockSheet.value.rows[0]!.ac).toBe(maxAcOld)
-    expect(mockSheet.value.rows[0]!.health).toBe(maxHealthOld)
-    expect(mockSheet.value.rows[0]!.maxAcOld).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.maxHealthOld).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.tempAc).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.tempHealth).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.concentration).toBe(false)
+    expect(mockSheet.value.rows[0]!.armorClass).toBe(maxAcOld)
+    expect(mockSheet.value.rows[0]!.hitPoints).toBe(maxHpOld)
+    expect(mockSheet.value.rows[0]!.maxArmorClassOld).toBe(undefined)
+    expect(mockSheet.value.rows[0]!.maxHitPointsOld).toBe(undefined)
+    expect(mockSheet.value.rows[0]!.tempArmorClass).toBe(undefined)
+    expect(mockSheet.value.rows[0]!.tempHitPoints).toBe(undefined)
+    expect(mockSheet.value.rows[0]!.concentration).toBeFalsy()
     expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([false, false, false])
     expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([false, false, false])
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
@@ -154,8 +154,8 @@ describe('useInitiativeSheet', async () => {
       index: true,
       name: true,
       initiative: true,
-      ac: true,
-      health: true,
+      armorClass: true,
+      hitPoints: true,
       conditions: true,
       note: true,
       deathSaves: true,
@@ -165,7 +165,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should show all the selected columns', async () => {
-    mockSheet.value.settings.rows = ['ac', 'health']
+    mockSheet.value.settings.rows = ['armorClass', 'hitPoints']
     mockSheet.value.settings.modified = true
 
     const { columnVisibility } = useInitiativeSheet(
@@ -177,8 +177,8 @@ describe('useInitiativeSheet', async () => {
       index: true,
       name: true,
       initiative: true,
-      ac: true,
-      health: true,
+      armorClass: true,
+      hitPoints: true,
       conditions: false,
       note: false,
       deathSaves: false,
@@ -200,8 +200,8 @@ describe('useInitiativeSheet', async () => {
       index: true,
       name: true,
       initiative: true,
-      ac: false,
-      health: false,
+      armorClass: false,
+      hitPoints: false,
       conditions: false,
       note: false,
       deathSaves: false,

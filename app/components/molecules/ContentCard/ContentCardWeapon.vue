@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  content: Open5eWeapon
+  content: DndWeapon
   isOpen: boolean
 }>()
 </script>
@@ -8,34 +8,34 @@ defineProps<{
 <template>
   <div class="text-sm">
     <p
-      v-if="content.damage_dice"
+      v-if="content.damageDice"
       class="mt-1 text-muted-foreground"
     >
-      <span class="font-bold text-foreground">Damage:</span> {{ content.damage_dice }}
-      <span v-if="content.damage_type">({{ content.damage_type.name }})</span>
+      <span class="font-bold text-foreground">Damage:</span> {{ content.damageDice }}
+      <span v-if="content.damageType">({{ content.damageType }})</span>
     </p>
     <p
       v-if="content.range !== undefined"
       class="mt-1 text-muted-foreground"
     >
       <span class="font-bold text-foreground">Range:</span>
-      {{ content.range }}{{ content.long_range ? `/${content.long_range}` : '' }}
+      {{ content.range }}{{ content.longRange ? `/${content.longRange}` : '' }}
       <span
-        v-if="content.distance_unit"
+        v-if="content.distanceUnit"
         class="ml-0.5"
-      >{{ content.distance_unit }}</span>
+      >{{ content.distanceUnit }}</span>
     </p>
     <p
-      v-if="content.is_simple !== undefined"
+      v-if="content.isSimple !== undefined"
       class="mt-1 text-muted-foreground"
     >
-      <span class="font-bold text-foreground">Simple Weapon:</span> {{ content.is_simple ? 'Yes' : 'No' }}
+      <span class="font-bold text-foreground">Simple Weapon:</span> {{ content.isSimple ? 'Yes' : 'No' }}
     </p>
     <p
-      v-if="content.is_improvised !== undefined"
+      v-if="content.isImprovised !== undefined"
       class="mt-1 text-muted-foreground"
     >
-      <span class="font-bold text-foreground">Improvised:</span> {{ content.is_improvised ? 'Yes' : 'No' }}
+      <span class="font-bold text-foreground">Improvised:</span> {{ content.isImprovised ? 'Yes' : 'No' }}
     </p>
 
     <template v-if="isOpen">

@@ -10,6 +10,30 @@ const urlMap = new Map<Open5eType, string>([
   ['armor', 'https://api.open5e.com/v2/armor'],
 ])
 
+function transformOpen5eItem(type: Open5eType, item: Open5eItem): DndItem {
+  switch (type) {
+    case 'spells': return toSpell(item as Open5eSpell)
+    case 'monsters': return toMonster(item as Open5eMonster)
+    case 'conditions': return toCondition(item as Open5eCondition)
+    case 'magicitems': return toMagicItem(item as Open5eMagicItem)
+    case 'weapons': return toWeapon(item as Open5eWeapon)
+    case 'armor': return toArmor(item as Open5eArmor)
+    default: throw new Error(`Unsupported open5e type: ${type}`)
+  }
+}
+
+function narrowListing(type: Open5eType, items: DndItem[], pages: number): Open5eListingResult {
+  switch (type) {
+    case 'spells': return { type, items: items.filter(isSpell), pages }
+    case 'monsters': return { type, items: items.filter(isMonster), pages }
+    case 'conditions': return { type, items: items.filter(isCondition), pages }
+    case 'magicitems': return { type, items: items.filter(isMagicItem), pages }
+    case 'weapons': return { type, items: items.filter(isWeapon), pages }
+    case 'armor': return { type, items: items.filter(isArmor), pages }
+    default: throw new Error(`Unsupported open5e type: ${type}`)
+  }
+}
+
 export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: Open5eFilters }>) {
   const { toast } = useToast()
   const { t } = useI18n()
@@ -36,13 +60,13 @@ export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: 
         })
       }
     },
-    select: (response) => {
-      if (response) {
-        return {
-          items: response.results,
-          pages: Math.ceil(response.count / 20),
-        }
-      }
+    select: (response): Open5eListingResult | undefined => {
+      if (!response) return
+
+      const type = data.value.type
+      const items = response.results.map(item => transformOpen5eItem(type, item))
+
+      return narrowListing(type, items, Math.ceil(response.count / 20))
     },
   })
 }
@@ -71,38 +95,43 @@ export function useOpen5eDocuments() {
   })
 }
 
-async function fetchConditions() {
-  const { toast } = useToast()
-  const { t } = useI18n()
-
-  try {
-    const { results } = await $fetch<Open5eResponse<Open5eCondition>>('https://api.open5e.com/conditions/?page=1')
-
-    return results.map(c => c.name === 'Exhaustion' ? { ...c, level: 1, hasLevels: true } : c)
-  }
-  catch (error: any) {
-    toast({
-      title: t('general.error.title'),
-      description: error.message,
-      variant: 'destructive',
-    })
-  }
-}
-
 export async function prefetchConditionsListing() {
   const queryClient = useQueryClient()
 
   return queryClient.prefetchQuery({
     queryKey: ['useConditionsListing'],
-    queryFn: fetchConditions,
+    queryFn: async () => {
+      const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
+        'https://api.open5e.com/v2/conditions/?page=1&document__key__in=core',
+      )
+      return results.map(c => toCondition(c, ['srd-2024']))
+    },
     staleTime: 1000 * 60 * 60 * 24,
   })
 }
 
-export async function useConditionsListing() {
+export function useConditionsListing() {
+  const { toast } = useToast()
+  const { t } = useI18n()
+
   return useQuery({
     queryKey: ['useConditionsListing'],
-    queryFn: fetchConditions,
+    queryFn: async () => {
+      try {
+        const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
+          `https://api.open5e.com/v2/conditions/?document__key__in=core`,
+        )
+
+        return results.map(c => toCondition(c, ['srd-2024']))
+      }
+      catch (error: any) {
+        toast({
+          title: t('general.error.title'),
+          description: error.message,
+          variant: 'destructive',
+        })
+      }
+    },
   })
 }
 
@@ -114,10 +143,18 @@ export function useOpen5eMonsterListing(data: ComputedRef<{ filters: Open5eFilte
     queryKey: ['useOpen5eMonsterListing', data],
     queryFn: async () => {
       try {
+        const { page, cr, ...filters } = data.value.filters
+
         const query = generateParams(removeEmptyKeys<Open5eFilters>({
-          ...data.value.filters,
+          ...filters,
+          ...(cr
+            ? {
+                challenge_rating__gte: cr,
+                challenge_rating__lte: cr,
+              }
+            : {}),
           limit: 20,
-          page: data.value.filters.page + 1, // Open5e uses 1-based indexing
+          page: page + 1, // Open5e uses 1-based indexing
         }))
 
         const url = `${urlMap.get('monsters')}/?${query}`
@@ -132,10 +169,10 @@ export function useOpen5eMonsterListing(data: ComputedRef<{ filters: Open5eFilte
         })
       }
     },
-    select: (response) => {
+    select: (response): { items: DndMonster[], pages: number } | undefined => {
       if (response) {
         return {
-          items: response.results,
+          items: response.results.map(toMonster),
           pages: Math.ceil(response.count / 20),
         }
       }

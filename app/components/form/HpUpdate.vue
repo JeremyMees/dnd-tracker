@@ -10,7 +10,7 @@ const props = defineProps<{
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
-const selectedType = ref<HealthType>('heal')
+const selectedType = ref<DndHpType>('heal')
 
 const formSchema = toTypedSchema(z.object({
   amount: z.number().min(0).max(1000),

@@ -28,7 +28,7 @@ const onSubmit = form.handleSubmit(async (values) => {
   await create({
     data: {
       ...values,
-      created_by: user.value!.id,
+      createdBy: user.value!.id,
       voted: {
         like: [user.value!.id],
         dislike: [],

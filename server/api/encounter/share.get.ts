@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
       campaign(
         id,
         title,
-        created_by(id, username, avatar), 
+        createdBy(id, username, avatar), 
         team(
           id,
           role, 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
   if (error) throw createError(error)
 
-  const isOwner = data.created_by === user
+  const isOwner = data.createdBy === user
   const isTeamMember = data.campaign?.team.some(member => member.user.id === user)
 
   if (!isOwner && !isTeamMember) throw createError('Unauthorized')

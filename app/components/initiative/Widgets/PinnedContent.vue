@@ -1,6 +1,6 @@
 <script setup lang="ts">
-defineEmits<{ update: [Open5eItem[]] }>()
-defineProps<{ value: Open5eItem[] }>()
+defineEmits<{ update: [DndItem[]] }>()
+defineProps<{ value: DndItem[] }>()
 </script>
 
 <template>
@@ -13,18 +13,32 @@ defineProps<{ value: Open5eItem[] }>()
     >
       <UiAccordionItem
         v-for="item in value"
-        :key="item.key"
-        :value="item.key"
+        :key="item.id"
+        :value="item.id"
         class="last:border-b-0"
       >
         <UiAccordionTrigger class="hover:no-underline">
           {{ item.name }}
         </UiAccordionTrigger>
         <UiAccordionContent>
-          <ContentCardContent
+          <ContentCardSpell
+            v-if="isSpell(item)"
             :content="item"
-            :is-open="true"
-            :hide-open-button="() => true"
+            is-open
+          />
+          <ContentCardMagicItem
+            v-if="isMagicItem(item)"
+            :content="item"
+            is-open
+          />
+          <ContentCardWeapon
+            v-if="isWeapon(item)"
+            :content="item"
+            is-open
+          />
+          <ContentCardArmor
+            v-if="isArmor(item)"
+            :content="item"
           />
           <div class="flex justify-end pt-4">
             <UiButton
@@ -32,7 +46,7 @@ defineProps<{ value: Open5eItem[] }>()
               @click="
                 $emit(
                   'update',
-                  value.filter((i) => i.key !== item.key),
+                  value.filter((i) => i.id !== item.id),
                 )
               "
             >

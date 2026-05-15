@@ -41,7 +41,7 @@ const { data, status } = useEncounterListing(computed(() => {
   }
 }), enableDateFetching)
 
-const max = computed<number>(() => getMax('encounter', user.value.subscription_type))
+const max = computed<number>(() => getMax('encounter', user.value.subscriptionType))
 
 const columns = generateColumns({
   isCampaign: !!props.campaignId,

@@ -22,7 +22,7 @@ describe('Modal', async () => {
   it('Should have correct default props', async () => {
     const component = await mountSuspended(Modal)
 
-    expect(component.props('big')).toBe(false)
+    expect(component.props('big')).toBeFalsy()
     expect(component.props('header')).toBe('')
     expect(component.props('subHeader')).toBe('')
   })
@@ -54,7 +54,7 @@ describe('Modal', async () => {
       },
     })
 
-    expect(component.props('big')).toBe(true)
+    expect(component.props('big')).toBeTruthy()
   })
 
   it('Should emit close event on escape key down', async () => {

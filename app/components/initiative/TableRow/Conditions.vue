@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useConditionsListing } from '~~/shared/types/open5e'
+import { useConditionsListing } from '~~/queries/open5e'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-type Condition = InitiativeSheetRow['conditions'][0]
-
-const selected = ref<Condition[]>([])
+const selected = ref<DndCondition[]>([])
 const popoverOpen = ref<boolean>(false)
 
-const { data: conditions, isPending } = await useConditionsListing()
+const { data: conditions, isPending } = useConditionsListing()
 
 watch(popoverOpen, open => selected.value = open ? props.item.conditions : [])
 
@@ -28,7 +26,7 @@ function removeCondition(name: string): void {
   })
 }
 
-function updateCondition(conditions: Condition[]): void {
+function updateCondition(conditions: DndCondition[]): void {
   if (!sheet.value) return
 
   const index = getCurrentRowIndex(sheet.value, props.item.id)
@@ -43,34 +41,14 @@ function updateCondition(conditions: Condition[]): void {
   popoverOpen.value = false
 }
 
-function toggleSelected(item: Open5eCondition | Condition): void {
+function toggleSelected(item: DndCondition): void {
   const arr = [...selected.value]
-  const index: number = arr.findIndex(s => s.name === item.name)
+  const index: number = arr.findIndex(s => s.id === item.id)
 
-  const condition: Condition = {
-    name: item.name,
-    desc: typeof item.desc === 'string' ? item.desc : (item.desc as any)?.en || '',
-    ...(item.level !== undefined && {
-      level: typeof item.level === 'number' ? item.level : Number(item.level) || undefined,
-    }),
-    ...(('hasLevels' in item) && { hasLevels: item.hasLevels }),
-  }
-
-  if (index === -1) arr.push(condition)
+  if (index === -1) arr.push(item)
   else arr.splice(index, 1)
 
   selected.value = arr
-}
-
-function listFromText(text: string, exhaustion: boolean = false): string[] {
-  return exhaustion
-    ? text
-        .replace('*', '')
-        .split(/\|\s\d+\s+\|/g)
-        .slice(1)
-        .map(bullet => bullet.split('|')[0])
-        .filter((s): s is string => s !== undefined)
-    : text.replace('*', '').split(/\s\*\s/g)
 }
 </script>
 
@@ -143,18 +121,10 @@ function listFromText(text: string, exhaustion: boolean = false): string[] {
           <UiPopoverHeader>
             <UiPopoverTitle>{{ condition.name }}</UiPopoverTitle>
           </UiPopoverHeader>
-          <template v-if="condition.desc">
-            <ul class="mx-6">
-              <li
-                v-for="bullet in listFromText(condition.desc, condition.name === 'Exhaustion')"
-                :key="bullet"
-                class="text-sm pb-1"
-                :class="[condition.name === 'Exhaustion' ? 'list-decimal' : 'list-disc']"
-              >
-                {{ bullet }}
-              </li>
-            </ul>
-          </template>
+          <div
+            v-dompurify-html="$md.render(condition.desc)"
+            class="text-sm text-muted-foreground"
+          />
           <UiNumberField
             v-if="condition.hasLevels"
             id="level"

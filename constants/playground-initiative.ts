@@ -1,12 +1,12 @@
 export default {
   id: 1,
-  created_at: `${Date.now()}`,
+  createdAt: `${Date.now()}`,
   title: 'Playground',
   round: 1,
   rows: [],
-  created_by: 'user',
+  createdBy: 'user',
   activeIndex: 0,
-  info_cards: [],
+  infoCards: [],
   info: '',
   settings: {
     spacing: 'normal',

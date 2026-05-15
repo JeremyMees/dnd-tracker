@@ -40,26 +40,8 @@ export type TableSpacing = Database['public']['Enums']['table_spacing']
 export type UserRole = Database['public']['Enums']['user_role']
 
 // Additional Enums
-export type AbilityType = 'STR' | 'DEX' | 'CON' | 'INT' | 'WIS' | 'CHA'
 export type InitiativeWidget = 'note' | 'info-pins'
-export type InitiativeRowField = 'ac' | 'health' | 'conditions' | 'note' | 'deathSaves' | 'concentration' | 'modify'
-
-// Database json schema types
-export interface Action {
-  name: string
-  desc: string
-  type: ActionType
-  attack_bonus?: number
-  damage_bonus?: number
-  damage_dice?: string
-  spell_save?: number
-  spell_save_type?: AbilityType
-}
-
-export interface DeathSaves {
-  fail: [boolean, boolean, boolean]
-  save: [boolean, boolean, boolean]
-}
+export type InitiativeRowField = 'armorClass' | 'hitPoints' | 'conditions' | 'note' | 'deathSaves' | 'concentration' | 'modify'
 
 export interface InitiativeSheetRow {
   id: string
@@ -67,48 +49,31 @@ export interface InitiativeSheetRow {
   initiative: number
   name: string
   type: HomebrewType
-  conditions: {
-    name: string
-    desc: string
-    level?: number
-    hasLevels?: boolean
-  }[]
-  deathSaves?: DeathSaves
+  conditions: DndCondition[]
+  deathSaves?: DndDeathSaves
   concentration?: boolean
-  ac?: number
-  maxAc?: number
-  maxAcOld?: number
-  tempAc?: number
-  health?: number
-  maxHealth?: number
-  maxHealthOld?: number
-  tempHealth?: number
-  initiative_modifier?: number
+  armorClass?: number
+  maxArmorClass?: number
+  maxArmorClassOld?: number
+  tempArmorClass?: number
+  hitPoints?: number
+  maxHitPoints?: number
+  maxHitPointsOld?: number
+  tempHitPoints?: number
+  initiativeModifier?: number
   campaign?: number
+  createdAt?: string
   link?: string
   note?: string
-  armor_class?: string
-  hit_points?: string
+  player?: string
   summoner?: {
     name: string
     id: string
   }
-  actions?: Action[]
-  bonus_actions?: Action[]
-  reactions?: Action[]
-  legendary_actions?: Action[]
-  mythic_actions?: Action[]
-  special_abilities?: Action[]
+  actions?: DndAction[]
 }
 
-export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'campaign' | 'amount' | 'initiative' | 'initiative_modifier' | 'summoner' | NotUpdatable> {
-  actions?: Action[]
-  bonus_actions?: Action[]
-  reactions?: Action[]
-  legendary_actions?: Action[]
-  mythic_actions?: Action[]
-  special_abilities?: Action[]
-}
+export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'campaign' | 'amount' | 'initiative' | 'initiativeModifier' | 'summoner' | NotUpdatable> {}
 
 export interface InitiativeSettings {
   spacing: TableSpacing
@@ -120,9 +85,9 @@ export interface InitiativeSettings {
 }
 
 // Extended Types
-export type NotUpdatable = 'id' | 'created_at' | 'updated_at'
+export type NotUpdatable = 'id' | 'createdAt' | 'updated_at'
 
-export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role' | 'avatar_options'>>
+export type SocialProfile = Required<Omit<ProfileRow, StripeFields | 'marketing' | 'role' | 'avatarOptions'>>
 
 export type MinimalProfile = {
   avatar: string
@@ -132,37 +97,37 @@ export type MinimalProfile = {
 
 export type Profile = Pick<ProfileRow, 'avatar' | 'id' | 'username' | 'name' | 'email'>
 
-export type FeatureRequest = Omit<FeatureRow, 'created_by' | 'voted'> & {
-  created_by: SocialProfile
+export type FeatureRequest = Omit<FeatureRow, 'createdBy' | 'voted'> & {
+  createdBy: SocialProfile
   voted: FeatureVotes
 }
 
-export interface TeamMember extends Omit<TeamRow, 'user' | 'campaign' | 'created_at'> {
+export interface TeamMember extends Omit<TeamRow, 'user' | 'campaign' | 'createdAt'> {
   user: MinimalProfile
 }
 
-export interface TeamMemberFull extends Omit<TeamRow, 'user' | 'campaign' | 'created_at'> {
-  user: Profile & { subscription_type: SubscriptionType }
+export interface TeamMemberFull extends Omit<TeamRow, 'user' | 'campaign' | 'createdAt'> {
+  user: Profile & { subscriptionType: SubscriptionType }
 }
 
-export interface CampaignItem extends Omit<CampaignRow, 'team' | 'created_by'> {
+export interface CampaignItem extends Omit<CampaignRow, 'team' | 'createdBy'> {
   initiative_sheets: number
   homebrew_items: number
-  created_by: MinimalProfile
+  createdBy: MinimalProfile
   team: TeamMember[]
 }
 
 export interface CampaignMinimal {
   id: number
   title: string
-  created_by: MinimalProfile
+  createdBy: MinimalProfile
   team: TeamMember[]
 }
 
 export interface CampaignFull {
   id: number
   title: string
-  created_by: Profile
+  createdBy: Profile
   team: TeamMemberFull[]
   join_campaign: TeamMemberFull[]
 }
@@ -175,8 +140,8 @@ export interface JoinCampaignKey extends Omit<JoinCampaignRow, 'user'> {
   user: MinimalProfile
 }
 
-export interface EncounterItem extends Omit<InitiativeRow, 'created_by' | 'campaign'> {
-  created_by: MinimalProfile
+export interface EncounterItem extends Omit<InitiativeRow, 'createdBy' | 'campaign'> {
+  createdBy: MinimalProfile
   campaign: CampaignMinimal
   homebrew_items: number
   initiative_sheets: number
@@ -186,7 +151,7 @@ export interface InitiativeSheet extends Omit<InitiativeRow, 'campaign'> {
   campaign?: {
     id: CampaignRow['id']
     title: CampaignRow['title']
-    created_by: MinimalProfile
+    createdBy: MinimalProfile
     team: {
       id: TeamRow['id']
       role: TeamRow['role']

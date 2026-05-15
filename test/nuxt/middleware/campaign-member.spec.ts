@@ -84,7 +84,7 @@ describe('Campaign member middleware', () => {
 
   it('should redirect to encounters when accessing index page', async () => {
     mockUser = { ...authUser, id: '1' }
-    mockQueryClient.getQueryData.mockReturnValue({ created_by: '1', team: [], join_campaign: [] })
+    mockQueryClient.getQueryData.mockReturnValue({ createdBy: '1', team: [], join_campaign: [] })
 
     await middleware(
       { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1' },
@@ -98,7 +98,7 @@ describe('Campaign member middleware', () => {
     it('should allow viewer', async () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [{ role: 'Viewer', user: '2' }],
         join_campaign: [],
       }
@@ -115,7 +115,7 @@ describe('Campaign member middleware', () => {
     it('should allow admin', async () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [{ role: 'Admin', user: '2' }],
         join_campaign: [],
       }
@@ -131,7 +131,7 @@ describe('Campaign member middleware', () => {
 
     it('should allow owner', async () => {
       mockUser = { ...authUser, id: '1' }
-      mockQueryClient.getQueryData.mockReturnValue({ created_by: '1', team: [], join_campaign: [] })
+      mockQueryClient.getQueryData.mockReturnValue({ createdBy: '1', team: [], join_campaign: [] })
 
       await middleware(
         { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
@@ -146,7 +146,7 @@ describe('Campaign member middleware', () => {
     it('should redirect viewer', async () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [{ role: 'Viewer', user: '2' }],
         join_campaign: [],
       }
@@ -163,7 +163,7 @@ describe('Campaign member middleware', () => {
     it('should allow admin', async () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [{ role: 'Admin', user: '2' }],
         join_campaign: [],
       }
@@ -180,7 +180,7 @@ describe('Campaign member middleware', () => {
     it('should allow owner', async () => {
       mockUser = { ...authUser, id: '1' } as AuthUser
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [],
         join_campaign: [],
       }
@@ -199,7 +199,7 @@ describe('Campaign member middleware', () => {
     it('should redirect viewer', async () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [{ role: 'Viewer', user: '2' }],
         join_campaign: [],
       }
@@ -216,7 +216,7 @@ describe('Campaign member middleware', () => {
     it('should redirect admin', async () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [{ role: 'Admin', user: '2' }],
         join_campaign: [],
       }
@@ -233,7 +233,7 @@ describe('Campaign member middleware', () => {
     it('should allow owner', async () => {
       mockUser = { ...authUser, id: '1' }
       const mockData = {
-        created_by: '1',
+        createdBy: '1',
         team: [],
         join_campaign: [],
       }
@@ -251,7 +251,7 @@ describe('Campaign member middleware', () => {
   it('should navigate to /no-access when user is not a team member', async () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
-      created_by: '1',
+      createdBy: '1',
       team: [{ role: 'Viewer', user: '2' }],
       join_campaign: [],
     }
@@ -269,7 +269,7 @@ describe('Campaign member middleware', () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
       id: 1,
-      created_by: '1',
+      createdBy: '1',
       team: [],
       join_campaign: [],
     }
@@ -289,7 +289,7 @@ describe('Campaign member middleware', () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
       id: 1,
-      created_by: '1',
+      createdBy: '1',
       team: [{ role: 'Viewer', user: '2' }],
       join_campaign: [],
     }

@@ -32,6 +32,9 @@ vi.mock('~~/queries/open5e', () => ({
     isLoading: false,
     isError: false,
   }),
+  useOpen5eDocuments: () => ({
+    data: ref([]),
+  }),
 }))
 
 vi.mock('~~/composables/initiative-sheet', () => ({
@@ -45,14 +48,14 @@ vi.mock('~~/composables/initiative-sheet', () => ({
     const columnVisibility = computed(() => {
       const rows = data.value?.settings?.modified
         ? (data.value.settings.rows || [])
-        : ['ac', 'health', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+        : ['armorClass', 'hitPoints', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
 
       return {
         index: true,
         name: true,
         initiative: true,
-        ac: rows.includes('ac'),
-        health: rows.includes('health'),
+        ac: rows.includes('armorClass'),
+        hp: rows.includes('hitPoints'),
         conditions: rows.includes('conditions'),
         note: rows.includes('note'),
         deathSaves: rows.includes('deathSaves'),
@@ -173,7 +176,7 @@ describe('Initiative table', () => {
         settings: {
           ...sheet.settings,
           modified: true,
-          rows: ['ac', 'health'],
+          rows: ['armorClass', 'hitPoints'],
         } as InitiativeSheet['settings'],
       }
 

@@ -1,15 +1,15 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCardMagicItem from '~/components/molecules/ContentCard/ContentCardMagicItem.vue'
-import { open5eMagicItemFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndMagicItemFixture } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {
-  content: Open5eMagicItem
+  content: DndMagicItem
   isOpen: boolean
 }
 
 const props: Props = {
-  content: open5eMagicItemFixture,
+  content: dndMagicItemFixture,
   isOpen: false,
 }
 

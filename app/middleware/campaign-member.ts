@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const { data } = await getCampaign(+to.params.id)
 
     // Owner can always access the page
-    if (data.created_by === user.value?.id) return
+    if (data.createdBy === user.value?.id) return
 
     const member = data.team.find(member => member.user === user.value?.id)
 
@@ -41,7 +41,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
 type CampaignMember = {
   id: number
-  created_by: string
+  createdBy: string
   team: {
     role: UserRole
     user: string
@@ -95,7 +95,7 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
     .from('campaigns')
     .select(`
       id,
-      created_by,
+      createdBy,
       team(
         role,
         user

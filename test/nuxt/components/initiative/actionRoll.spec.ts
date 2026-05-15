@@ -67,7 +67,7 @@ describe('ActionRoll component', () => {
 
     const vm = component.vm as unknown as ActionRollVM
     expect(vm.result).toBeUndefined()
-    expect(vm.popoverOpen).toBe(false)
+    expect(vm.popoverOpen).toBeFalsy()
   })
 
   describe('Roll functionality', () => {

@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
-import * as dndHelpers from '~/utils/dnd-helpers'
+import * as dndHelpers from '~~/shared/utils/dnd/names'
 import FantasyNameGenerator from '~/components/atoms/FantasyNameGenerator.vue'
 
 interface Props {

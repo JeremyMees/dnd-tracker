@@ -1,15 +1,15 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCardSpell from '~/components/molecules/ContentCard/ContentCardSpell.vue'
-import { open5eSpellFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndSpellFixture } from '~~/test/nuxt/fixtures/open5e'
 
 interface Props {
-  content: Open5eSpell
+  content: DndSpell
   isOpen: boolean
 }
 
 const props: Props = {
-  content: open5eSpellFixture,
+  content: dndSpellFixture,
   isOpen: false,
 }
 
@@ -33,7 +33,7 @@ describe('ContentCardSpell', async () => {
 
     expect(component.find('[data-test-separator]').exists()).toBeTruthy()
     expect(component.text()).toContain('Level: 2')
-    expect(component.text()).toContain('School: Evocation')
-    expect(component.text()).toContain('Classes: Wizard')
+    expect(component.text()).toContain('School: evocation')
+    expect(component.text()).toContain('Classes: wizard')
   })
 })

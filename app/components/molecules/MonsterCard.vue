@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { abilities, abilitiesNames } from '~~/constants/dnd-rules'
+import { abilities, abilitiesNames } from '~~/constants/dnd'
 
-defineEmits<{ add: [monster: Open5eMonster] }>()
+defineEmits<{ add: [monster: DndMonster] }>()
 
 const props = withDefaults(defineProps<{
-  monster: Open5eMonster
+  monster: DndMonster
   addable?: boolean
 }>(), {
   addable: false,
@@ -13,35 +13,12 @@ const props = withDefaults(defineProps<{
 const names = ref(abilitiesNames)
 const isOpen = ref<boolean>(false)
 
-const mappedActions = computed(() => mapOpen5eMonsterActions(props.monster))
-
-const stats: { key: keyof Open5eMonster, label: string, nested: boolean }[] = ([
-  {
-    key: 'type',
-    label: 'Type',
-    nested: true,
-  },
-  {
-    key: 'subcategory',
-    label: 'Subcategory',
-    nested: false,
-  },
-  {
-    key: 'size',
-    label: 'Size',
-    nested: true,
-  },
-  {
-    key: 'alignment',
-    label: 'Alignment',
-    nested: false,
-  },
-  {
-    key: 'experience_points',
-    label: 'XP',
-    nested: false,
-  },
-])
+const stats: { key: keyof DndMonster, label: string }[] = [
+  { key: 'type', label: 'Type' },
+  { key: 'size', label: 'Size' },
+  { key: 'alignment', label: 'Alignment' },
+  { key: 'experiencePoints', label: 'XP' },
+]
 </script>
 
 <template>
@@ -83,7 +60,7 @@ const stats: { key: keyof Open5eMonster, label: string, nested: boolean }[] = ([
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.challenge_rating_text || '_' }}
+            {{ monster.challengeRating != null ? formatChallengeRating(monster.challengeRating) : '_' }}
           </p>
         </div>
         <div
@@ -96,7 +73,7 @@ const stats: { key: keyof Open5eMonster, label: string, nested: boolean }[] = ([
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.armor_class || '_' }}
+            {{ monster.armorClass || '_' }}
           </p>
         </div>
         <div
@@ -109,7 +86,7 @@ const stats: { key: keyof Open5eMonster, label: string, nested: boolean }[] = ([
             aria-hidden="true"
           />
           <p class="font-bold">
-            {{ monster.hit_points || '_' }}
+            {{ monster.hitPoints || '_' }}
           </p>
         </div>
       </div>
@@ -125,42 +102,28 @@ const stats: { key: keyof Open5eMonster, label: string, nested: boolean }[] = ([
             {{ ability }}:
           </span>
           <span>
-            {{ names[index] ? monster.ability_scores[names[index] as keyof AbilityScores] : '_' }}
+            {{ names[index] ? monster.abilityScores[names[index] as keyof DndAbilityScores] : '_' }}
           </span>
         </div>
       </div>
       <div class="flex gap-x-4 gap-y-1 flex-wrap">
-        <template
+        <div
           v-for="stat in stats"
           :key="stat.key"
+          class="flex gap-1"
         >
-          <div
-            v-if="stat.nested? getValueFromNestedKeys(monster, stat.key) : monster[stat.key]"
-            class="flex gap-1"
-          >
-            <span class="text-muted-foreground">
-              {{ stat.label }}:
-            </span>
-            <span class="lowercase">
-              {{
-                stat.nested
-                  ? getValueFromNestedKeys(monster, stat.key)?.name || '_'
-                  : monster[stat.key] || '_'
-              }}
-            </span>
-          </div>
-        </template>
+          <span class="text-muted-foreground">
+            {{ stat.label }}:
+          </span>
+          <span class="lowercase">
+            {{ monster[stat.key] || '_' }}
+          </span>
+        </div>
       </div>
       <ActionsTable
-        v-if="monster.actions && isOpen"
+        v-if="monster.actions?.length && isOpen"
         data-test-actions-table
-        :actions="mappedActions.actions"
-        :bonus-actions="mappedActions.bonus_actions"
-        :legendary-actions="mappedActions.legendary_actions"
-        :mythic-actions="mappedActions.mythic_actions"
-        :special-abilities="mappedActions.special_abilities"
-        :reactions="mappedActions.reactions"
-        :lair-actions="mappedActions.lair_actions"
+        :actions="monster.actions"
         :class="{ 'py-5': isOpen }"
       />
     </UiCardContent>

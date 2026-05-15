@@ -12,26 +12,41 @@ const props = defineProps<{
 
 const formSchema = toTypedSchema(z.object({
   amount: z.number().min(0).max(1000),
+  reset: z.boolean().optional(),
 }))
 
-const form = useForm({
+const { handleSubmit, setFieldValue } = useForm({
   validationSchema: formSchema,
+  initialValues: {
+    ...(props.item.maxHitPointsOld ? { amount: props.item.maxHitPoints } : { }),
+  },
 })
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = handleSubmit(async (values) => {
   formError.value = ''
 
   try {
     if (!props.sheet) return
 
-    const row = {
-      ...props.item,
-      maxHealth: values.amount,
-      maxHealthOld: undefined,
-      health: values.amount,
-    }
+    const { amount, reset } = values
+
+    const { row, toasts } = reset || amount === props.item.maxHitPointsOld
+      ? handleHpChanges(
+          props.item.maxHitPointsOld ?? 0,
+          'override-reset',
+          props.item,
+          props.sheet?.settings?.negative ?? false,
+        )
+      : handleHpChanges(
+          amount,
+          'override',
+          props.item,
+          props.sheet?.settings?.negative ?? false,
+        )
+
+    props.handleToasts(toasts)
 
     await props.updateRow(row)
   }
@@ -49,7 +64,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     >
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
-          {{ $t('components.inputs.baseFieldLabel', { field: 'HP' }) }}
+          {{ $t('components.inputs.overrideFieldLabel', { field: 'HP' }) }}
         </UiFormLabel>
         <UiFormControl>
           <UiInputGroup>
@@ -59,16 +74,17 @@ const onSubmit = form.handleSubmit(async (values) => {
             />
             <UiInputGroupAddon align="inline-end">
               <UiInputGroupButton
-                :aria-label="$t('actions.save')"
                 type="submit"
+                :aria-label="item.maxHitPointsOld ? $t('actions.reset') : $t('actions.save')"
+                @click="setFieldValue('reset', !!item.maxHitPointsOld)"
               >
-                <Icon name="tabler:device-floppy" />
+                <Icon :name="item.maxHitPointsOld ? 'tabler:player-skip-back' : 'tabler:device-floppy'" />
               </UiInputGroupButton>
             </UiInputGroupAddon>
           </UiInputGroup>
         </UiFormControl>
         <UiFormDescription>
-          {{ $t('components.inputs.baseFieldHelp', { field: 'HP' }) }}
+          {{ $t('components.inputs.optionalFieldHelp', { field: 'HP' }) }}
         </UiFormDescription>
         <UiFormMessage />
       </UiFormItem>

@@ -13,7 +13,7 @@ const localePath = useLocalePath()
 
 const avatar = ref<Avatar>({
   url: user.value.avatar || '',
-  extra: user.value.avatar_options || {},
+  extra: user.value.avatarOptions || {},
 })
 
 const { mutateAsync: updateProfile } = useProfileUpdate()
@@ -22,7 +22,7 @@ const { mutateAsync: removeProfile } = useProfileRemove()
 async function updateAvatar(avatar: Avatar): Promise<void> {
   return handleUpdateProfile({
     avatar: avatar.url,
-    avatar_options: avatar.extra as Record<string, string | number>,
+    avatarOptions: avatar.extra as Record<string, string | number>,
   })
 }
 
@@ -88,7 +88,7 @@ async function handleRemoveUser(): Promise<void> {
         <AvatarPicker
           v-model="avatar"
           profile
-          :deprecated-avatar="!user.avatar_options"
+          :deprecated-avatar="!user.avatarOptions"
           @save="updateAvatar"
         />
       </div>
@@ -97,7 +97,7 @@ async function handleRemoveUser(): Promise<void> {
         <div class="flex gap-4">
           {{ $t('pages.profile.subscription.current') }}:
           <span class="font-bold capitalize">
-            {{ user.subscription_type }}
+            {{ user.subscriptionType }}
           </span>
         </div>
       </div>

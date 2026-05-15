@@ -44,7 +44,7 @@ describe('url-generators', () => {
       const encounter = {
         id: 1,
         title: 'Dragon Battle',
-        created_by: 'user1',
+        createdBy: 'user1',
       }
       const url = encounterUrl(encounter as any)
 
@@ -55,7 +55,7 @@ describe('url-generators', () => {
       const encounter = {
         id: 2,
         title: 'Goblins & Trolls!',
-        created_by: 'user1',
+        createdBy: 'user1',
       }
       const url = encounterUrl(encounter as any)
 
@@ -66,7 +66,7 @@ describe('url-generators', () => {
       const encounter = {
         id: 3,
         title: '',
-        created_by: 'user1',
+        createdBy: 'user1',
       }
       const url = encounterUrl(encounter as any)
 

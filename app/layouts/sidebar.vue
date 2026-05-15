@@ -122,7 +122,7 @@ async function logoutUser(): Promise<void> {
       <UiSidebarFooter>
         <ClientOnly>
           <NuxtLinkLocale
-            v-if="user && user.subscription_type !== 'pro'"
+            v-if="user && user.subscriptionType !== 'pro'"
             v-tippy="{
               content: $t('components.navbar.upgrade'),
               placement: 'right',

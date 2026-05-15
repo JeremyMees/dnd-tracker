@@ -10,7 +10,7 @@ interface Register extends Credentials {
   name: string
   marketing: boolean
   avatar: Avatar['url']
-  avatar_options: Avatar['extra']
+  avatarOptions: Avatar['extra']
 }
 
 export function useAuthentication() {
@@ -36,7 +36,7 @@ export function useAuthentication() {
     if (data?.user) {
       const profile: ProfileInsert = {
         ...userData,
-        avatar_options: userData.avatar_options as Record<string, string | number>,
+        avatarOptions: userData.avatarOptions as Record<string, string | number>,
         email,
         id: data.user.id,
       }
