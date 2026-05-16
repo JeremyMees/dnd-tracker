@@ -38,7 +38,6 @@
     "@nuxtjs/seo": "^4.0.2",
     "@nuxtjs/supabase": "^2.0.4",
     "@oslojs/jwt": "^0.3.0",
-    "@plunk/node": "^3.0.3",
     "@sentry/nuxt": "^10.45.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/vue-query": "^5.95.0",
