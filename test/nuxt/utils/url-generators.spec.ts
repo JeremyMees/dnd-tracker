@@ -113,6 +113,34 @@ describe('url-generators', () => {
 
       expect(result).toBe('enabled=true&count=5&visible=false')
     })
+
+    it('should skip null values', () => {
+      const params = { limit: 10, filter: null }
+      const result = generateParams(params as any)
+
+      expect(result).toBe('limit=10')
+    })
+
+    it('should skip undefined values', () => {
+      const params = { limit: 10, filter: undefined }
+      const result = generateParams(params as any)
+
+      expect(result).toBe('limit=10')
+    })
+
+    it('should percent-encode comma-separated string values', () => {
+      const params = { exclude: 'document,speed,saving_throws' }
+      const result = generateParams(params)
+
+      expect(result).toBe('exclude=document%2Cspeed%2Csaving_throws')
+    })
+
+    it('should append array values as repeated params', () => {
+      const params = { tags: ['a', 'b', 'c'] }
+      const result = generateParams(params)
+
+      expect(result).toBe('tags=a&tags=b&tags=c')
+    })
   })
 
   describe('slugify', () => {

@@ -4,7 +4,10 @@ export function generateParams<T extends object>(data: T): string {
   Object.keys(data).forEach((key) => {
     const value = data[key as keyof T]
 
-    if (Array.isArray(value)) {
+    if (value === undefined || value === null) {
+      return
+    }
+    else if (Array.isArray(value)) {
       value.forEach(v => params.append(key, String(v)))
     }
     else {
