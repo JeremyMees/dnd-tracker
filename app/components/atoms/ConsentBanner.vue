@@ -21,7 +21,7 @@ const showSettings = ref(false)
     role="dialog"
     :data-state="showPopup ? 'open' : 'closed'"
     data-test-banner
-    class="fixed border-4 border-muted bg-background shadow-lg z-50 md:w-md overflow-hidden rounded-2xl right-4 left-4 bottom-4 p-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
+    class="fixed border-4 border-muted bg-background shadow-lg z-50 md:w-lg overflow-hidden rounded-2xl right-4 left-4 bottom-4 p-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
   >
     <div
       v-if="!showSettings"
@@ -81,27 +81,26 @@ const showSettings = ref(false)
 
       <div class="flex flex-col gap-2">
         <div
-          v-for="type in consentTypes"
-          :key="type"
+          v-for="{ name } in consentTypes"
+          :key="name"
           class="border rounded-lg p-4 flex flex-col gap-2"
         >
           <div class="flex items-center justify-between">
-            <UiLabel :for="type">
-              {{ $t(`components.ConsentBanner.${type}`) }}
+            <UiLabel :for="name">
+              {{ $t(`components.ConsentBanner.${name}`) }}
             </UiLabel>
             <UiSwitch
-              :id="type"
-              :checked="consents?.[type] || false"
-              :default-value="consents?.[type] || false"
-              :disabled="type === 'necessary'"
+              :id="name"
+              :checked="consents?.[name] || false"
+              :default-value="consents?.[name] || false"
+              :disabled="name === 'necessary'"
               @update:model-value="() => {
-                console.log('toggling consent for', type)
-                toggleConsent(type)
+                toggleConsent(name)
               }"
             />
           </div>
           <p class="text-sm text-muted-foreground">
-            {{ $t(`components.ConsentBanner.${type}Text`) }}
+            {{ $t(`components.ConsentBanner.${name}Text`) }}
           </p>
         </div>
       </div>
