@@ -19,7 +19,7 @@ export type Open5eSortBy
 export interface Open5eFilters {
   page: number
   limit?: number
-  search?: string
+  name__icontains?: string
   cr?: number
   ordering?: Open5eSortBy
   document__key__in?: string
