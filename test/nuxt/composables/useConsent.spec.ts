@@ -6,17 +6,22 @@ let mockConsents = { necessary: true, measurement: false }
 
 vi.mock('c15t', () => {
   return {
-    configureConsentManager: vi.fn(() => ({ config: {} })),
-    createConsentManagerStore: vi.fn(() => {
+    getOrCreateConsentRuntime: vi.fn(() => {
       const subscribers: Array<() => void> = []
+      let activeUI = mockShowPopup ? 'banner' : 'none'
 
-      return {
+      const consentStore = {
         getState: () => ({
           consents: mockConsents,
-          gdprTypes: ['necessary', 'measurement'],
-          showPopup: mockShowPopup,
+          consentTypes: [{ name: 'necessary' }, { name: 'measurement' }],
+          consentCategories: ['necessary', 'measurement'],
+          activeUI,
           setConsent: (type: string, value: boolean) => {
-            mockConsents[type as keyof typeof mockConsents] = value
+            mockConsents = { ...mockConsents, [type]: value }
+            subscribers.forEach(cb => cb())
+          },
+          setActiveUI: (value: string) => {
+            activeUI = value
             subscribers.forEach(cb => cb())
           },
         }),
@@ -24,6 +29,8 @@ vi.mock('c15t', () => {
           subscribers.push(callback)
         },
       }
+
+      return { consentStore }
     }),
   }
 })
@@ -67,8 +74,8 @@ describe('useConsent', () => {
       necessary: true,
       measurement: false,
     })
-    expect(consent.consentTypes).toContain('necessary')
-    expect(consent.consentTypes).toContain('measurement')
+    expect(consent.consentTypes).toContainEqual({ name: 'necessary' })
+    expect(consent.consentTypes).toContainEqual({ name: 'measurement' })
   })
 
   it('should show popup on initialization', () => {
