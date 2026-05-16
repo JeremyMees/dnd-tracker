@@ -7,8 +7,6 @@ import * as z from 'zod'
 const emit = defineEmits<{ close: [] }>()
 
 const { user } = useAuthentication()
-const { t } = useI18n()
-
 const { mutateAsync: create } = useFeatureCreate()
 
 const baseSchema = z.object({
@@ -46,7 +44,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void> {
   if (!user.value) return
 
-  const { error } = await useFetch('/api/emails/feature-request', {
+  await $fetch('/api/emails/feature-request', {
     method: 'POST',
     body: {
       ...form,
@@ -54,8 +52,6 @@ async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void>
       email: user.value.email,
     },
   })
-
-  if (error.value) throw createError(t('general.mail.fail.text'))
 }
 </script>
 

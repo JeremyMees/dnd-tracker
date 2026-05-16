@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxt/icon',
-    '@nuxt/hints',
     '@nuxt/test-utils/module',
     '@nuxtjs/supabase',
     '@nuxtjs/i18n',
@@ -89,7 +88,10 @@ export default defineNuxtConfig({
 
   nitro: {
     rollupConfig: {
-      plugins: [vue()],
+      plugins: [
+        // @ts-expect-error Needed for vue-email
+        vue(),
+      ],
     },
     devProxy: {
       '/sw.js': { target: '/sw.js' },
