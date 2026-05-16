@@ -26,12 +26,10 @@ const onSubmit = form.handleSubmit(async (values) => {
   formError.value = ''
 
   try {
-    const { error } = await useFetch('/api/emails/contact-request', {
+    await $fetch('/api/emails/contact-request', {
       method: 'POST',
       body: values,
     })
-
-    if (error.value) throw createError(error.value)
 
     toast({
       description: t('pages.contact.success'),
