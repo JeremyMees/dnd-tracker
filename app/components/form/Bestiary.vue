@@ -27,7 +27,7 @@ const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
 const queryFilters = ref<Open5eFilters>({
   page: 0,
-  search: debouncedSearch.value,
+  name__icontains: debouncedSearch.value,
   cr: typeof cr.value === 'string' ? undefined : cr.value,
   ordering: sortBy.value,
   document__key__in: selectedDocuments.value.join(','),
@@ -36,7 +36,7 @@ const queryFilters = ref<Open5eFilters>({
 watch([debouncedSearch, cr, sortBy], () => {
   queryFilters.value = {
     page: 0,
-    search: debouncedSearch.value,
+    name__icontains: debouncedSearch.value,
     cr: typeof cr.value === 'string' ? undefined : cr.value,
     ordering: sortBy.value,
     document__key__in: selectedDocuments.value.join(','),
@@ -46,7 +46,7 @@ watch([debouncedSearch, cr, sortBy], () => {
 watch(selectedDocuments, () => {
   queryFilters.value = {
     page: 0,
-    search: '',
+    name__icontains: '',
     cr: typeof cr.value === 'string' ? undefined : cr.value,
     ordering: sortBy.value,
     document__key__in: selectedDocuments.value.join(','),
@@ -95,7 +95,6 @@ async function addMonster(monster: DndMonster): Promise<void> {
             v-model="search"
             name="search"
             type="search"
-            :disabled="isLoading"
           />
           <UiInputGroupAddon align="inline-end">
             <Icon

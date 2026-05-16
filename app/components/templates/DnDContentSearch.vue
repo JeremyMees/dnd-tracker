@@ -33,7 +33,7 @@ const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
 const queryFilters = ref<Open5eFilters>({
   page: 0,
-  search: debouncedSearch.value,
+  name__icontains: debouncedSearch.value,
   ordering: sortBy.value,
   document__key__in: selectedDocuments.value.join(','),
 })
@@ -41,7 +41,7 @@ const queryFilters = ref<Open5eFilters>({
 watch([debouncedSearch, sortBy], () => {
   queryFilters.value = {
     page: 0,
-    search: debouncedSearch.value,
+    name__icontains: debouncedSearch.value,
     ordering: sortBy.value,
     document__key__in: selectedDocuments.value.join(','),
   }
@@ -50,7 +50,7 @@ watch([debouncedSearch, sortBy], () => {
 watch([type, selectedDocuments], () => {
   queryFilters.value = {
     page: 0,
-    search: '',
+    name__icontains: '',
     ordering: 'name',
     document__key__in: selectedDocuments.value.join(','),
   }
@@ -112,7 +112,7 @@ async function removePins(): Promise<void> {
               id="search"
               v-model="search"
               data-test-search
-              :disabled="showPinned || isLoading"
+              :disabled="showPinned"
               name="search"
               type="search"
             />
