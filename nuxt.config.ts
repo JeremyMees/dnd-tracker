@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxt/icon',
-    '@nuxt/hints',
     '@nuxt/test-utils/module',
     '@nuxtjs/supabase',
     '@nuxtjs/i18n',
