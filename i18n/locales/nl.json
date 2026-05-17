@@ -600,7 +600,7 @@
       },
       "concentration": {
         "title": "Maak een concentratie check",
-        "text": "{name} die zich concentreerde, liep schade op"
+        "text": "{name} liep schade op terwijl hij/zij zich concentreerde — DC {dc} Constitution saving throw"
       },
       "downed": {
         "title": "{name} is neer",

@@ -600,7 +600,7 @@
       },
       "concentration": {
         "title": "Make a concentration check",
-        "text": "{name}, maintaining concentration took damage"
+        "text": "{name} took damage while concentrating — DC {dc} Constitution saving throw"
       },
       "downed": {
         "title": "{name} is down",

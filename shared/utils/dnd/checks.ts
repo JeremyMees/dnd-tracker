@@ -2,6 +2,12 @@ export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
   return sheet ? sheet.rows.length >= 50 : false
 }
 
+export function concentrationDC(damage: number): number {
+  const halfDamage = Math.floor(Math.max(0, damage) / 2)
+
+  return Math.min(30, Math.max(10, halfDamage))
+}
+
 export function isSpell(item: DndItem): item is DndSpell {
   return 'castingOptions' in item && 'school' in item
 }
