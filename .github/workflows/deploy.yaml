@@ -1,7 +1,12 @@
-name: Pull request
+name: Production deploy
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 on:
-  pull_request:
-    branches: ["main", "develop", "develop/*"]
+  push:
+    branches: [main]
 
 jobs:
   linting:
@@ -33,6 +38,8 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm install
+      - name: Generate types
+        run: npm run typegen
       - name: Run typechecking
         run: npm run typecheck
 
@@ -51,3 +58,31 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm run test
+
+  deploy:
+    name: Deploying
+    needs:
+      - typechecking
+      - linting
+      - testing
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://www.dnd-tracker.com
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - name: Vercel deploy
+        id: deployment
+        uses: amondnet/vercel-action@v42.2.0
+        with:
+          vercel-args: --prod
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: lilmees
