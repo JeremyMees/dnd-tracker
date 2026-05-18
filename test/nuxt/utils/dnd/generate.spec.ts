@@ -5,7 +5,7 @@ describe('dnd/generate', () => {
     it('should only include walk when no optional speeds are set', () => {
       const result = generateSpeedEntries({ unit: 'feet', walk: 30 })
 
-      expect(result).toEqual([{ label: 'Walk', val: '30 feet' }])
+      expect(result).toEqual([{ label: 'Walk', val: '30 ft' }])
     })
 
     it('should include all provided speed types', () => {
