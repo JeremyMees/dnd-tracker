@@ -184,6 +184,28 @@ export type DndShapeType
     | 'line'
     | 'sphere'
 
+export type DndSpeedType
+  = | 'walk'
+    | 'crawl'
+    | 'hover'
+    | 'fly'
+    | 'burrow'
+    | 'climb'
+    | 'swim'
+
+export type DndSightRangeType
+  = | 'normalSightRange'
+    | 'darkVisionRange'
+    | 'blindSightRange'
+    | 'tremorSenseRange'
+    | 'trueSightRange'
+
+export type DndResistanceType
+  = | 'damageImmunities'
+    | 'damageResistances'
+    | 'damageVulnerabilities'
+    | 'conditionImmunities'
+
 export interface DndSpeed {
   unit: DndDistanceUnit
   walk: number

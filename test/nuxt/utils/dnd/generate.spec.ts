@@ -12,12 +12,12 @@ describe('dnd/generate', () => {
       const result = generateSpeedEntries({ unit: 'feet', walk: 30, fly: 60, swim: 20, burrow: 10, climb: 15, crawl: 5 })
 
       expect(result).toHaveLength(6)
-      expect(result).toContainEqual({ label: 'Walk', val: '30 feet' })
-      expect(result).toContainEqual({ label: 'Fly', val: '60 feet' })
-      expect(result).toContainEqual({ label: 'Swim', val: '20 feet' })
-      expect(result).toContainEqual({ label: 'Burrow', val: '10 feet' })
-      expect(result).toContainEqual({ label: 'Climb', val: '15 feet' })
-      expect(result).toContainEqual({ label: 'Crawl', val: '5 feet' })
+      expect(result).toContainEqual({ label: 'Walk', val: '30 ft' })
+      expect(result).toContainEqual({ label: 'Fly', val: '60 ft' })
+      expect(result).toContainEqual({ label: 'Swim', val: '20 ft' })
+      expect(result).toContainEqual({ label: 'Burrow', val: '10 ft' })
+      expect(result).toContainEqual({ label: 'Climb', val: '15 ft' })
+      expect(result).toContainEqual({ label: 'Crawl', val: '5 ft' })
     })
 
     it('should omit undefined optional speeds', () => {
@@ -30,7 +30,7 @@ describe('dnd/generate', () => {
     it('should use the speed unit in the value', () => {
       const result = generateSpeedEntries({ unit: 'miles', walk: 9 })
 
-      expect(result[0]?.val).toBe('9 miles')
+      expect(result[0]?.val).toBe('9 mi')
     })
   })
 

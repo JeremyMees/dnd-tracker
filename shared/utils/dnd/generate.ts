@@ -1,22 +1,27 @@
-import { speedMap, sightRangeMap, skillMap } from '~~/constants/dnd'
+import { speedMap, speedUnitMap, sightRangeMap, skillMap } from '~~/constants/dnd'
 
 export function generateSpeedEntries(speed: DndSpeed): { label: string, val: string }[] {
   const entries: { label: string, val: string }[] = []
-  if (speed.walk) entries.push({ label: speedMap.walk, val: `${speed.walk} ${speed.unit}` })
-  if (speed.fly) entries.push({ label: speedMap.fly, val: `${speed.fly} ${speed.unit}` })
-  if (speed.swim) entries.push({ label: speedMap.swim, val: `${speed.swim} ${speed.unit}` })
-  if (speed.burrow) entries.push({ label: speedMap.burrow, val: `${speed.burrow} ${speed.unit}` })
-  if (speed.climb) entries.push({ label: speedMap.climb, val: `${speed.climb} ${speed.unit}` })
-  if (speed.crawl) entries.push({ label: speedMap.crawl, val: `${speed.crawl} ${speed.unit}` })
+  const unit = speedUnitMap[speed.unit]
+
+  if (speed.walk) entries.push({ label: speedMap.walk, val: `${speed.walk} ${unit}` })
+  if (speed.fly) entries.push({ label: speedMap.fly, val: `${speed.fly} ${unit}` })
+  if (speed.swim) entries.push({ label: speedMap.swim, val: `${speed.swim} ${unit}` })
+  if (speed.burrow) entries.push({ label: speedMap.burrow, val: `${speed.burrow} ${unit}` })
+  if (speed.climb) entries.push({ label: speedMap.climb, val: `${speed.climb} ${unit}` })
+  if (speed.crawl) entries.push({ label: speedMap.crawl, val: `${speed.crawl} ${unit}` })
+
   return entries
 }
 
 export function generateSightEntries(sight: Partial<DndSight>): { label: string, val: string }[] {
   const entries: { label: string, val: string }[] = []
+
   if (sight.darkVisionRange) entries.push({ label: sightRangeMap.darkVisionRange, val: `${sight.darkVisionRange} ft` })
   if (sight.blindSightRange) entries.push({ label: sightRangeMap.blindSightRange, val: `${sight.blindSightRange} ft` })
   if (sight.tremorSenseRange) entries.push({ label: sightRangeMap.tremorSenseRange, val: `${sight.tremorSenseRange} ft` })
   if (sight.trueSightRange) entries.push({ label: sightRangeMap.trueSightRange, val: `${sight.trueSightRange} ft` })
+
   return entries
 }
 
