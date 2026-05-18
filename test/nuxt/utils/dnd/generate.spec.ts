@@ -35,17 +35,21 @@ describe('dnd/generate', () => {
   })
 
   describe('generateSightEntries', () => {
-    it('should include normalSightRange when set', () => {
+    it('should not include normalSightRange when set', () => {
       const result = generateSightEntries({ normalSightRange: 60 })
 
-      expect(result).toEqual([{ label: 'Normal Sight', val: '60 ft' }])
+      expect(result).toEqual([])
     })
 
     it('should include all provided sight types', () => {
-      const result = generateSightEntries({ normalSightRange: 60, darkVisionRange: 120, blindSightRange: 30, tremorSenseRange: 10, trueSightRange: 60 })
+      const result = generateSightEntries({
+        darkVisionRange: 120,
+        blindSightRange: 30,
+        tremorSenseRange: 10,
+        trueSightRange: 60,
+      })
 
-      expect(result).toHaveLength(5)
-      expect(result).toContainEqual({ label: 'Normal Sight', val: '60 ft' })
+      expect(result).toHaveLength(4)
       expect(result).toContainEqual({ label: 'Darkvision', val: '120 ft' })
       expect(result).toContainEqual({ label: 'Blindsight', val: '30 ft' })
       expect(result).toContainEqual({ label: 'Tremorsense', val: '10 ft' })
@@ -53,14 +57,14 @@ describe('dnd/generate', () => {
     })
 
     it('should omit undefined optional sight ranges', () => {
-      const result = generateSightEntries({ normalSightRange: 60, darkVisionRange: undefined })
+      const result = generateSightEntries({ darkVisionRange: undefined })
 
-      expect(result).toHaveLength(1)
+      expect(result).toHaveLength(0)
       expect(result).not.toContainEqual(expect.objectContaining({ label: 'Darkvision' }))
     })
 
     it('should always use ft as the unit', () => {
-      const result = generateSightEntries({ normalSightRange: 30 })
+      const result = generateSightEntries({ darkVisionRange: 30 })
 
       expect(result[0]?.val).toBe('30 ft')
     })

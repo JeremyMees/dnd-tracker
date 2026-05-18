@@ -11,9 +11,8 @@ export function generateSpeedEntries(speed: DndSpeed): { label: string, val: str
   return entries
 }
 
-export function generateSightEntries(sight: DndSight): { label: string, val: string }[] {
+export function generateSightEntries(sight: Partial<DndSight>): { label: string, val: string }[] {
   const entries: { label: string, val: string }[] = []
-  if (sight.normalSightRange) entries.push({ label: sightRangeMap.normalSightRange, val: `${sight.normalSightRange} ft` })
   if (sight.darkVisionRange) entries.push({ label: sightRangeMap.darkVisionRange, val: `${sight.darkVisionRange} ft` })
   if (sight.blindSightRange) entries.push({ label: sightRangeMap.blindSightRange, val: `${sight.blindSightRange} ft` })
   if (sight.tremorSenseRange) entries.push({ label: sightRangeMap.tremorSenseRange, val: `${sight.tremorSenseRange} ft` })
