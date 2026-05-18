@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { abilities, abilitiesNames } from '~~/constants/dnd'
+import { abilityTypeMap } from '~~/constants/dnd'
 import { actionType } from '~~/constants/validation'
 
 defineProps<{ fieldName: string }>()
@@ -165,9 +165,9 @@ defineProps<{ fieldName: string }>()
                 <UiSelectItem
                   v-for="option in [
                     { label: $t('components.inputs.nothing'), value: 'none' },
-                    ...abilities.map((ability, index) => ({
-                      label: abilitiesNames[index] || ability,
-                      value: abilitiesNames[index] || ability.toLowerCase(),
+                    ...Object.entries(abilityTypeMap).map(([_key, value]) => ({
+                      label: value.charAt(0).toUpperCase() + value.slice(1),
+                      value: value,
                     })),
                   ]"
                   :key="option.value"
