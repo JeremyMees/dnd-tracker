@@ -1,3 +1,17 @@
+export function hasResistances(resistances: DndResistancesAndImmunities): boolean {
+  const {
+    damageImmunities,
+    damageResistances,
+    damageVulnerabilities,
+    conditionImmunities,
+  } = resistances
+
+  return damageImmunities.length > 0
+    || damageResistances.length > 0
+    || damageVulnerabilities.length > 0
+    || conditionImmunities.length > 0
+}
+
 export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
   return sheet ? sheet.rows.length >= 50 : false
 }

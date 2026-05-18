@@ -2,6 +2,39 @@ import { describe, expect, it } from 'vitest'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 
 describe('dnd/checks', () => {
+  describe('hasResistances', () => {
+    const empty = {
+      damageImmunities: [],
+      damageResistances: [],
+      damageVulnerabilities: [],
+      conditionImmunities: [],
+    }
+
+    it('should return false when all arrays are empty', () => {
+      expect(hasResistances(empty)).toBeFalsy()
+    })
+
+    it('should return true when damageImmunities is not empty', () => {
+      expect(hasResistances({ ...empty, damageImmunities: ['fire'] })).toBeTruthy()
+    })
+
+    it('should return true when damageResistances is not empty', () => {
+      expect(hasResistances({ ...empty, damageResistances: ['cold'] })).toBeTruthy()
+    })
+
+    it('should return true when damageVulnerabilities is not empty', () => {
+      expect(hasResistances({ ...empty, damageVulnerabilities: ['thunder'] })).toBeTruthy()
+    })
+
+    it('should return true when conditionImmunities is not empty', () => {
+      expect(hasResistances({ ...empty, conditionImmunities: ['charmed'] })).toBeTruthy()
+    })
+
+    it('should return true when multiple fields are populated', () => {
+      expect(hasResistances({ ...empty, damageImmunities: ['fire'], conditionImmunities: ['charmed'] })).toBeTruthy()
+    })
+  })
+
   describe('hasMaxCharacters', () => {
     it('should return true when sheet has 50 rows', () => {
       const fullSheet = {
