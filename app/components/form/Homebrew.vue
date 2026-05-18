@@ -238,7 +238,7 @@ async function addInitiative(options: {
           {{ $t('general.info') }}
         </UiTabsTrigger>
         <UiTabsTrigger value="actions">
-          {{ $t('general.actions') }}
+          {{ $t('general.action', 2) }}
         </UiTabsTrigger>
       </UiTabsList>
 

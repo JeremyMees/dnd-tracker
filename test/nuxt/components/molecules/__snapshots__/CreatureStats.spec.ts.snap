@@ -59,16 +59,16 @@ exports[`CreatureStats > should match snapshot 1`] = `
 <div data-test-traits="">
   <p class="head-6">general.trait</p>
   <ul class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50 p-2">
-    <li data-test-trait="" class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
+    <li data-test-trait="" class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
       <div class="flex flex-wrap gap-x-4 items-center">
         <p class="font-bold">Amphibious: </p>
-        <p class="text-sm text-muted-foreground">The aboleth can breathe air and water.</p>
+        <p class="text-muted-foreground">The aboleth can breathe air and water.</p>
       </div>
     </li>
-    <li data-test-trait="" class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
+    <li data-test-trait="" class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
       <div class="flex flex-wrap gap-x-4 items-center">
         <p class="font-bold">Innate Spellcasting: </p>
-        <p class="text-sm text-muted-foreground">The aboleths spellcasting ability is Charisma (spell save DC 16). It can innately cast the following spells, requiring no components: 3/day each: detect thoughts (range 120 ft, desc: ), project image (range 1 mile), phantasmal force</p>
+        <p class="text-muted-foreground">The aboleths spellcasting ability is Charisma (spell save DC 16). It can innately cast the following spells, requiring no components: 3/day each: detect thoughts (range 120 ft, desc: ), project image (range 1 mile), phantasmal force</p>
       </div>
     </li>
   </ul>

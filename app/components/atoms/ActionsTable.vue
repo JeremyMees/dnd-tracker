@@ -2,23 +2,23 @@
 const props = defineProps<{ actions: DndAction[] }>()
 
 const groupOrder: DndActionType[] = [
-  'specialAbility',
   'action',
   'bonusAction',
   'reaction',
   'legendaryAction',
   'mythicAction',
   'lairAction',
+  'specialAbility',
 ]
 
 const groupLabel: Record<DndActionType, string> = {
-  specialAbility: 'specialAbility',
   action: 'action',
   bonusAction: 'bonusAction',
   reaction: 'reaction',
   legendaryAction: 'legendaryAction',
   mythicAction: 'mythicAction',
   lairAction: 'lairAction',
+  specialAbility: 'specialAbility',
 }
 
 const grouped = computed(() => {
@@ -39,7 +39,7 @@ const grouped = computed(() => {
       :key="group.actionType"
       class="space-y-2"
     >
-      <p class="head-4">
+      <p class="head-6">
         {{ $t(`general.${group.label}`, 2) }}
       </p>
       <Card
@@ -50,13 +50,13 @@ const grouped = computed(() => {
         <li
           v-for="action in group.items"
           :key="action.name"
-          class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc"
+          class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc"
         >
           <div class="flex flex-wrap gap-x-4 items-center">
             <p class="font-bold">
               {{ action.name }}:
             </p>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-muted-foreground">
               {{ action.desc }}
             </p>
           </div>
@@ -81,7 +81,7 @@ const grouped = computed(() => {
                 <p class="font-bold">
                   To hit:
                 </p>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground">
                   +{{ attack.toHitMod }}
                 </p>
               </div>
@@ -92,7 +92,7 @@ const grouped = computed(() => {
                 <p class="font-bold">
                   Dice:
                 </p>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground">
                   {{ attack.damageDieCount }}{{ attack.damageDieType }}
                   <span v-if="attack.damageBonus">
                     +{{ attack.damageBonus }}
@@ -106,7 +106,7 @@ const grouped = computed(() => {
                 <p class="font-bold">
                   Save:
                 </p>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground">
                   DC {{ attack.spellSave }}<span v-if="attack.spellSaveType"> ({{ attack.spellSaveType }})</span>
                 </p>
               </div>

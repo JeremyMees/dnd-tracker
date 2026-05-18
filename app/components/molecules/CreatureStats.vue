@@ -153,13 +153,13 @@ const isResistant = computed(() => hasResistances(props.creature.resistancesAndI
         v-for="trait in creature.traits"
         :key="trait.name"
         data-test-trait
-        class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0"
+        class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0"
       >
         <div class="flex flex-wrap gap-x-4 items-center">
           <p class="font-bold">
             {{ trait.name }}:
           </p>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-muted-foreground">
             {{ trait.desc }}
           </p>
         </div>
