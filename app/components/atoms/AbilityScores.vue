@@ -25,13 +25,13 @@ const props = defineProps<{
         {{ key }}
       </span>
       <span data-test-ability-modifier>
-        {{ formatBonus(modifiers[value]) }}
+        {{ isDefined(modifiers?.[value]) ? formatBonus(modifiers[value]) : '_' }}
       </span>
       <span
         data-test-ability-score
         class="text-xs text-muted-foreground"
       >
-        {{ value ? abilityScores[value] : '_' }}
+        {{ isDefined(abilityScores[value]) ? abilityScores[value] : '_' }}
       </span>
     </div>
   </div>

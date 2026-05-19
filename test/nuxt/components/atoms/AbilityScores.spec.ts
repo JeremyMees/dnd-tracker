@@ -76,4 +76,30 @@ describe('AbilityScores', () => {
     expect(scoreTexts).toContain('12')
     expect(scoreTexts).toContain('8')
   })
+
+  it('should display _ for missing modifiers and formatted values for present ones', async () => {
+    const partialModifiers = {
+      strength: 4,
+      dexterity: 2,
+    } as DndModifiers
+
+    const component = await mountSuspended(AbilityScores, { props: { abilityScores, modifiers: partialModifiers } })
+    const modifierTexts = component.findAll('[data-test-ability-modifier]').map(el => el.text())
+
+    expect(modifierTexts).toContain('+4')
+    expect(modifierTexts).toContain('+2')
+    expect(modifierTexts.filter(t => t === '_')).toHaveLength(4)
+  })
+
+  it('should display 0 values when present and not _', async () => {
+    const partialModifiers = {
+      strength: 0,
+    } as DndModifiers
+
+    const component = await mountSuspended(AbilityScores, { props: { abilityScores, modifiers: partialModifiers } })
+    const modifierTexts = component.findAll('[data-test-ability-modifier]').map(el => el.text())
+
+    expect(modifierTexts).toContain('+0')
+    expect(modifierTexts.filter(t => t === '_')).toHaveLength(5)
+  })
 })
