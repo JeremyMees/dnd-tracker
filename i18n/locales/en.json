@@ -1013,6 +1013,7 @@
     "containsSymbol": "At least one symbol is required",
     "allowedChars": "Only letters, numbers, and symbols are allowed.",
     "diceExpression": "Invalid dice expression. Use the format 'XdY' where X is the number of dice and Y is the type of dice.",
+    "hitDiceExpression": "Invalid hit dice expression. Use the format 'XdY' or 'XdY+Z' where X is the number of dice, Y is the type, and Z is an optional modifier.",
     "match": "Value must match '{field}'",
     "invalidEmail": "Invalid email address"
   }

@@ -1013,6 +1013,7 @@
     "containsSymbol": "Ten minste één symbool is vereist",
     "allowedChars": "Alleen letters, cijfers en symbolen zijn toegestaan",
     "diceExpression": "Ongeldige dobbelsteenexpressie. Gebruik het formaat 'XdY' waarbij X het aantal dobbelstenen is en Y het type dobbelsteen.",
+    "hitDiceExpression": "Ongeldige trefferdobbelsteenexpressie. Gebruik het formaat 'XdY' of 'XdY+Z' waarbij X het aantal dobbelstenen is, Y het type en Z een optionele modifier.",
     "match": "Waarde moet overeenkomen met '{field}'",
     "invalidEmail": "Ongeldig e-mailadres"
   }

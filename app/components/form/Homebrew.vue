@@ -106,7 +106,7 @@ const formSchema = toTypedSchema(z.object({
   armorClass: z.number().gte(1).lte(100).optional(),
   hitPoints: z.number().gte(1).lte(1000).optional(),
   link: z.string().url().optional().or(z.literal('')),
-  hitDice: z.string().min(3).max(10).regex(diceExpression, t('zod.diceExpression')).optional().or(z.literal('')),
+  hitDice: z.string().min(3).max(15).regex(hitDiceExpression, t('zod.hitDiceExpression')).optional().or(z.literal('')),
   armorDetail: z.string().max(100).optional().or(z.literal('')),
   proficiencyBonus: z.number().gte(0).lte(10).optional(),
   passivePerception: z.number().gte(0).lte(30).optional(),
