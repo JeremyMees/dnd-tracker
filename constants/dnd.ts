@@ -41,46 +41,6 @@ export const abilityTypeMap: Record<typeof abilityTypes[number], DndAbility> = {
   CHA: 'charisma',
 }
 
-export const initiativeKeys = [
-  'armorClass',
-  'campaign',
-  'concentration',
-  'createdAt',
-  'conditions',
-  'deathSaves',
-  'hitPoints',
-  'id',
-  'index',
-  'initiative',
-  'initiativeModifier',
-  'link',
-  'maxArmorClass',
-  'maxHitPoints',
-  'maxArmorClassOld',
-  'maxHitPointsOld',
-  'name',
-  'note',
-  'player',
-  'tempArmorClass',
-  'tempHitPoints',
-  'type',
-  'summoner',
-  'actions',
-  'traits',
-  'hitDice',
-  'armorDetail',
-  'proficiencyBonus',
-  'passivePerception',
-  'speed',
-  'sight',
-  'languages',
-  'abilityScores',
-  'modifiers',
-  'savingThrows',
-  'skillBonuses',
-  'resistancesAndImmunities',
-]
-
 export const dices: DndDiceSide[] = [4, 6, 8, 10, 12, 20, 100]
 
 export const damageTypes: DndDamageType[] = [

@@ -55,7 +55,7 @@ describe('dnd/row', () => {
       })
     })
 
-    it('should preserve extended homebrew fields that are in the allowlist', () => {
+    it('should preserve extended homebrew fields from formData', () => {
       const abilityScores = { strength: 10, dexterity: 14, constitution: 12, intelligence: 8, wisdom: 10, charisma: 16 } as DndAbilityScores
       const traits = [{ name: 'Brave', desc: 'Advantage on saves vs fear' }] as DndTrait[]
       const formData = {
