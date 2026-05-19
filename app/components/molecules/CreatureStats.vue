@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { resistanceTypeMap, abilityTypeMap } from '~~/constants/dnd'
-import type { DndMonster } from '#shared/types/dnd'
+import type { DndCreatureStats } from '#shared/types/dnd'
 
 const props = defineProps<{
-  creature: DndMonster // TODO: refactor later on so homebrew creatures can also use this
+  creature: DndCreatureStats
 }>()
 
 const resistanceTypes = Object.entries(resistanceTypeMap)
   .map(([key, label]) => ({ key: key as DndResistanceType, label }))
 
-const speedEntries = computed(() => generateSpeedEntries(props.creature.speed))
-const sightEntries = computed(() => generateSightEntries(props.creature.sight))
-const skillEntries = computed(() => generateSkillEntries(props.creature.skillBonuses))
-const isResistant = computed(() => hasResistances(props.creature.resistancesAndImmunities))
+const speedEntries = computed(() => props.creature.speed ? generateSpeedEntries(props.creature.speed) : [])
+const sightEntries = computed(() => props.creature.sight ? generateSightEntries(props.creature.sight) : [])
+const skillEntries = computed(() => props.creature.skillBonuses ? generateSkillEntries(props.creature.skillBonuses) : [])
+const isResistant = computed(() => props.creature.resistancesAndImmunities ? hasResistances(props.creature.resistancesAndImmunities) : false)
+const languageNames = computed(() => {
+  if (!props.creature.languages?.length) return []
+  return props.creature.languages.map(l => typeof l === 'string' ? l : l.name)
+})
 </script>
 
 <template>
@@ -30,7 +34,7 @@ const isResistant = computed(() => hasResistances(props.creature.resistancesAndI
         class="flex gap-1"
       >
         <span class="text-muted-foreground">{{ key }}:</span>
-        <span>{{ formatBonus(creature.savingThrows[label]) }}</span>
+        <span>{{ formatBonus(creature.savingThrows ? creature.savingThrows[label] : 0) }}</span>
       </div>
     </div>
   </div>
@@ -96,14 +100,14 @@ const isResistant = computed(() => hasResistances(props.creature.resistancesAndI
   </div>
 
   <div
-    v-if="creature.languages?.length"
+    v-if="languageNames.length"
     data-test-languages
   >
     <p class="head-6">
       {{ $t('general.language', 2) }}
     </p>
     <p class="text-sm text-muted-foreground">
-      {{ creature.languages.map(l => l.name).join(', ') }}
+      {{ languageNames.join(', ') }}
     </p>
   </div>
 
@@ -120,7 +124,7 @@ const isResistant = computed(() => hasResistances(props.creature.resistancesAndI
         :key="cat.key"
       >
         <div
-          v-if="creature.resistancesAndImmunities[cat.key]?.length"
+          v-if="creature.resistancesAndImmunities?.[cat.key]?.length"
           class="flex gap-x-2 gap-y-1 flex-wrap items-center"
         >
           <span class="text-muted-foreground text-sm">{{ cat.label }}:</span>

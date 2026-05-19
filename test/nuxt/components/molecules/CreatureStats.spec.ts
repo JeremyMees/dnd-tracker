@@ -94,4 +94,22 @@ describe('CreatureStats', () => {
     expect(component.find('[data-test-languages]').exists()).toBeFalsy()
     expect(component.find('[data-test-traits]').exists()).toBeFalsy()
   })
+
+  it('should render languages from a string array (homebrew)', async () => {
+    const creature = { ...dndMonsterFixture, languages: ['Common', 'Elvish'] }
+    const component = await mountSuspended(CreatureStats, { props: { creature } })
+    const languages = component.find('[data-test-languages]')
+
+    expect(languages.exists()).toBeTruthy()
+    expect(languages.text()).toContain('Common')
+    expect(languages.text()).toContain('Elvish')
+  })
+
+  it('should hide speed and sight sections when null (homebrew)', async () => {
+    const creature = { ...dndMonsterFixture, speed: null, sight: null }
+    const component = await mountSuspended(CreatureStats, { props: { creature } })
+
+    expect(component.find('[data-test-speed]').exists()).toBeFalsy()
+    expect(component.find('[data-test-senses]').exists()).toBeFalsy()
+  })
 })
