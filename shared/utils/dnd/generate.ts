@@ -2,7 +2,7 @@ import { speedMap, speedUnitMap, sightRangeMap, skillMap } from '~~/constants/dn
 
 export function generateSpeedEntries(speed: DndSpeed): { label: string, val: string }[] {
   const entries: { label: string, val: string }[] = []
-  const unit = speedUnitMap[speed.unit]
+  const unit = speedUnitMap[speed.unit] ?? 'ft'
 
   if (speed.walk) entries.push({ label: speedMap.walk, val: `${speed.walk} ${unit}` })
   if (speed.fly) entries.push({ label: speedMap.fly, val: `${speed.fly} ${unit}` })
@@ -26,9 +26,7 @@ export function generateSightEntries(sight: Partial<DndSight>): { label: string,
 }
 
 export function generateSkillEntries(skillBonuses: DndSkillBonuses): { key: DndSkill, label: string, val: number }[] {
-  return (Object.keys(skillBonuses) as DndSkill[]).map(key => ({
-    key,
-    label: skillMap[key],
-    val: skillBonuses[key],
-  }))
+  return (Object.keys(skillBonuses) as DndSkill[])
+    .map(key => ({ key, label: skillMap[key], val: skillBonuses[key] }))
+    .sort((a, b) => a.label.localeCompare(b.label))
 }

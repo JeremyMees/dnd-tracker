@@ -88,5 +88,12 @@ describe('dnd/generate', () => {
     it('should return an empty array for empty skill bonuses', () => {
       expect(generateSkillEntries({} as any)).toEqual([])
     })
+
+    it('should return entries sorted alphabetically by label', () => {
+      const result = generateSkillEntries({ stealth: 2, acrobatics: 1, perception: 3 } as any)
+      const labels = result.map(e => e.label)
+
+      expect(labels).toEqual([...labels].sort((a, b) => a.localeCompare(b)))
+    })
   })
 })
