@@ -110,9 +110,9 @@ export function expandedMarkup(row: Row<InitiativeSheetRow>) {
       initiativeModifier: row.original.initiativeModifier,
       passivePerception: row.original.passivePerception,
     }),
-    row.original.abilityScores && row.original.modifiers
-      ? abilityScoresElement({ abilityScores: row.original.abilityScores, modifiers: row.original.modifiers })
-      : null,
+    ...(row.original.abilityScores && row.original.modifiers
+      ? [abilityScoresElement({ abilityScores: row.original.abilityScores, modifiers: row.original.modifiers })]
+      : []),
     creatureStatsElement(row.original),
     actionsTable(row.original, 'initiative'),
   ])
