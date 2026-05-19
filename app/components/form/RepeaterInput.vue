@@ -1,5 +1,6 @@
 <script setup generic="T" lang="ts">
 import { useFieldArray } from 'vee-validate'
+import type { HTMLAttributes } from 'vue'
 
 const props = withDefaults(defineProps<{
   name: string
@@ -8,10 +9,12 @@ const props = withDefaults(defineProps<{
   max?: number
   min?: number
   required?: boolean
+  class?: HTMLAttributes['class']
 }>(), {
   max: 10,
   min: 0,
   required: false,
+  class: '',
 })
 
 const { fields, prepend, remove, move } = useFieldArray(props.name)
@@ -34,7 +37,7 @@ function moveDown(index: number) {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div :class="cn('space-y-4', props.class)">
     <div class="flex items-end justify-between gap-2">
       <UiLabel
         v-if="label"
