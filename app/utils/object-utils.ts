@@ -1,3 +1,11 @@
+type NullToUndefined<T> = { [K in keyof T]: null extends T[K] ? Exclude<T[K], null> | undefined : T[K] }
+
+export function nullsToUndefined<T extends Record<string, unknown>>(obj: T): NullToUndefined<T> {
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, v === null ? undefined : v]),
+  ) as NullToUndefined<T>
+}
+
 export function removeEmptyKeys<T>(object: Record<string, any>, deep: boolean = false): T {
   const result: Record<string, any> = {}
 

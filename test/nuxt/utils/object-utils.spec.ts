@@ -1,11 +1,43 @@
 import { describe, expect, it } from 'vitest'
-import {
-  removeEmptyKeys,
-  getValueFromNestedKeys,
-  flattenObject,
-} from '~/utils/object-utils'
 
 describe('object-utils', () => {
+  describe('nullsToUndefined', () => {
+    it('should convert null values to undefined', () => {
+      const input = { name: 'Goblin', armorClass: null, hitPoints: null }
+      const result = nullsToUndefined(input)
+
+      expect(result.armorClass).toBeUndefined()
+      expect(result.hitPoints).toBeUndefined()
+      expect(result.name).toBe('Goblin')
+    })
+
+    it('should leave non-null values unchanged', () => {
+      const input = { name: 'Orc', armorClass: 13, hitPoints: 15, traits: null }
+      const result = nullsToUndefined(input)
+
+      expect(result.name).toBe('Orc')
+      expect(result.armorClass).toBe(13)
+      expect(result.hitPoints).toBe(15)
+    })
+
+    it('should preserve arrays', () => {
+      const input = { tags: ['undead', 'monster'], extra: null }
+      const result = nullsToUndefined(input)
+
+      expect(result.tags).toEqual(['undead', 'monster'])
+    })
+
+    it('should handle an object with no null values', () => {
+      const input = { name: 'Dragon', cr: 17 }
+
+      expect(nullsToUndefined(input)).toEqual({ name: 'Dragon', cr: 17 })
+    })
+
+    it('should handle an empty object', () => {
+      expect(nullsToUndefined({})).toEqual({})
+    })
+  })
+
   describe('removeEmptyKeys', () => {
     it('should remove keys with null or undefined values', () => {
       const input = {
