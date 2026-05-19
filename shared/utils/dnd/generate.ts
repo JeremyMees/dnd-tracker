@@ -28,5 +28,6 @@ export function generateSightEntries(sight: Partial<DndSight>): { label: string,
 export function generateSkillEntries(skillBonuses: DndSkillBonuses): { key: DndSkill, label: string, val: number }[] {
   return (Object.keys(skillBonuses) as DndSkill[])
     .map(key => ({ key, label: skillMap[key], val: skillBonuses[key] }))
+    .filter(entry => entry.label !== undefined)
     .sort((a, b) => a.label.localeCompare(b.label))
 }
