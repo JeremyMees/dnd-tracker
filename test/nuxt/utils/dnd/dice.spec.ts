@@ -111,4 +111,45 @@ describe('dnd/dice', () => {
       })
     })
   })
+
+  describe('parseDndDiceToString', () => {
+    it('should convert hit dice object to string with bonus', () => {
+      const hitDice = {
+        hitDiceCount: 12,
+        hitDiceType: 'd10' as const,
+        hitDiceBonus: 36,
+      }
+
+      expect(parseDndDiceToString(hitDice)).toBe('12d10+36')
+    })
+
+    it('should convert hit dice object to string without bonus', () => {
+      const hitDice = {
+        hitDiceCount: 4,
+        hitDiceType: 'd8' as const,
+      }
+
+      expect(parseDndDiceToString(hitDice)).toBe('4d8')
+    })
+
+    it('should handle zero bonus correctly', () => {
+      const hitDiceWithZeroBonus = {
+        hitDiceCount: 3,
+        hitDiceType: 'd6' as const,
+        hitDiceBonus: 0,
+      }
+
+      expect(parseDndDiceToString(hitDiceWithZeroBonus)).toBe('3d6')
+    })
+
+    it('should handle negative bonus correctly', () => {
+      const hitDiceWithNegativeBonus = {
+        hitDiceCount: 5,
+        hitDiceType: 'd12' as const,
+        hitDiceBonus: -10,
+      }
+
+      expect(parseDndDiceToString(hitDiceWithNegativeBonus)).toBe('5d12-10')
+    })
+  })
 })
