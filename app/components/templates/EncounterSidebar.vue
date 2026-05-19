@@ -12,6 +12,12 @@ const diceRollerOpen = ref(false)
 const fantasyNameGeneratorOpen = ref(false)
 const openModal = ref<Modals>(undefined)
 
+onBeforeUnmount(() => {
+  openModal.value = undefined
+  diceRollerOpen.value = false
+  fantasyNameGeneratorOpen.value = false
+})
+
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 </script>
 
