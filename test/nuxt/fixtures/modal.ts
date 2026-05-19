@@ -3,7 +3,7 @@ export const mockModal: Modal = {
   component: 'test' as ModalComponent,
   header: 'Header',
   subHeader: 'Subheader',
-  big: false,
+  variant: 'default',
   props: {},
   events: {},
 }

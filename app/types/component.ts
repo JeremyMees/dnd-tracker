@@ -21,12 +21,14 @@ export type ModalComponent
     | 'Note'
     | 'Mail'
 
+export type ModalVariant = 'default' | 'big' | 'fullScreen'
+
 export interface Modal {
   uuid: string
   component: ModalComponent
   header: string
   subHeader?: string
-  big?: boolean
+  variant?: ModalVariant
   props?: Record<string, any>
   events?: Record<string, (...args: any[]) => any>
 }

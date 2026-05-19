@@ -30,16 +30,14 @@ const modalComponents: Record<ModalComponent, any> = {
     :key="modal.uuid"
     :header="modal.header"
     :sub-header="modal.subHeader"
-    :big="modal.big"
+    :variant="modal.variant"
     @close="close(modal.uuid)"
   >
-    <div class="overflow-y-auto">
-      <component
-        :is="modalComponents[modal.component]"
-        v-bind="modal.props"
-        v-on="modal.events"
-        @close="close(modal.uuid)"
-      />
-    </div>
+    <component
+      :is="modalComponents[modal.component]"
+      v-bind="modal.props"
+      v-on="modal.events"
+      @close="close(modal.uuid)"
+    />
   </Modal>
 </template>

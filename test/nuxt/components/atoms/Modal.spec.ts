@@ -22,7 +22,7 @@ describe('Modal', async () => {
   it('Should have correct default props', async () => {
     const component = await mountSuspended(Modal)
 
-    expect(component.props('big')).toBeFalsy()
+    expect(component.props('variant')).toBe('default')
     expect(component.props('header')).toBe('')
     expect(component.props('subHeader')).toBe('')
   })
@@ -47,14 +47,42 @@ describe('Modal', async () => {
     expect(component.props('subHeader')).toBe('Test Sub Header')
   })
 
-  it('Should accept big prop', async () => {
+  it('Should use default variant when no variant is set', async () => {
+    const component = await mountSuspended(Modal, {
+      props: {},
+    })
+
+    expect(component.props('variant')).toBe('default')
+  })
+
+  it('Should accept default variant', async () => {
     const component = await mountSuspended(Modal, {
       props: {
-        big: true,
+        variant: 'default',
       },
     })
 
-    expect(component.props('big')).toBeTruthy()
+    expect(component.props('variant')).toBe('default')
+  })
+
+  it('Should accept big variant', async () => {
+    const component = await mountSuspended(Modal, {
+      props: {
+        variant: 'big',
+      },
+    })
+
+    expect(component.props('variant')).toBe('big')
+  })
+
+  it('Should accept fullScreen variant', async () => {
+    const component = await mountSuspended(Modal, {
+      props: {
+        variant: 'fullScreen',
+      },
+    })
+
+    expect(component.props('variant')).toBe('fullScreen')
   })
 
   it('Should emit close event on escape key down', async () => {
