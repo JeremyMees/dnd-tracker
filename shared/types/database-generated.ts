@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '10.2.0 (e07807d)'
+    PostgrestVersion: '14.5'
   }
   public: {
     Tables: {
@@ -83,42 +83,81 @@ export type Database = {
       }
       homebrew_items: {
         Row: {
+          abilityScores: Json | null
           actions: Json
           armorClass: number | null
+          armorDetail: string | null
           campaign: number
           createdAt: string
+          hitDice: string | null
           hitPoints: number | null
           id: number
           initiativeModifier: string | null
+          languages: Json | null
           link: string | null
+          modifiers: Json | null
           name: string
+          passivePerception: number | null
           player: string | null
+          proficiencyBonus: number | null
+          resistancesAndImmunities: Json | null
+          savingThrows: Json | null
+          sight: Json | null
+          skillBonuses: Json | null
+          speed: Json | null
+          traits: Json | null
           type: Database['public']['Enums']['homebrew_type']
         }
         Insert: {
+          abilityScores?: Json | null
           actions: Json
           armorClass?: number | null
+          armorDetail?: string | null
           campaign: number
           createdAt?: string
+          hitDice?: string | null
           hitPoints?: number | null
           id?: number
           initiativeModifier?: string | null
+          languages?: Json | null
           link?: string | null
+          modifiers?: Json | null
           name: string
+          passivePerception?: number | null
           player?: string | null
+          proficiencyBonus?: number | null
+          resistancesAndImmunities?: Json | null
+          savingThrows?: Json | null
+          sight?: Json | null
+          skillBonuses?: Json | null
+          speed?: Json | null
+          traits?: Json | null
           type?: Database['public']['Enums']['homebrew_type']
         }
         Update: {
+          abilityScores?: Json | null
           actions?: Json
           armorClass?: number | null
+          armorDetail?: string | null
           campaign?: number
           createdAt?: string
+          hitDice?: string | null
           hitPoints?: number | null
           id?: number
           initiativeModifier?: string | null
+          languages?: Json | null
           link?: string | null
+          modifiers?: Json | null
           name?: string
+          passivePerception?: number | null
           player?: string | null
+          proficiencyBonus?: number | null
+          resistancesAndImmunities?: Json | null
+          savingThrows?: Json | null
+          sight?: Json | null
+          skillBonuses?: Json | null
+          speed?: Json | null
+          traits?: Json | null
           type?: Database['public']['Enums']['homebrew_type']
         }
         Relationships: [
@@ -354,6 +393,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_valid_languages: { Args: { _j: Json }, Returns: boolean }
+      is_valid_resistances: { Args: { _j: Json }, Returns: boolean }
+      is_valid_traits: { Args: { _j: Json }, Returns: boolean }
       show_limit: { Args: never, Returns: number }
       show_trgm: { Args: { '': string }, Returns: string[] }
     }

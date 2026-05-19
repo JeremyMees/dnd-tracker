@@ -417,6 +417,16 @@ export interface DndMonster {
   traits: DndTrait[]
 }
 
+export interface DndCreatureStats {
+  savingThrows?: DndSavingThrowBonuses | null
+  speed?: DndSpeed | null
+  sight?: DndSight | null
+  skillBonuses?: DndSkillBonuses | null
+  resistancesAndImmunities?: DndResistancesAndImmunities | null
+  languages?: DndLanguage[] | string[] | null
+  traits?: DndTrait[] | null
+}
+
 export interface DndCondition {
   name: string
   id: string

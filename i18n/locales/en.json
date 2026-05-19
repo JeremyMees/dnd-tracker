@@ -200,7 +200,7 @@
     "row": "Row | Rows",
     "concentration": "Concentration",
     "none": "None",
-    "stats": "Statistics",
+    "stats": "Stats",
     "backgroundColor": "Background color",
     "clothingColor": "Clothing color",
     "facialHair": "Facial hair",
@@ -721,7 +721,14 @@
       "hidePassword": "Hide password",
       "showDiceRoller": "Show dice roller",
       "hideDiceRoller": "Hide dice roller",
-      "noCampaign": "No campaign"
+      "noCampaign": "No campaign",
+      "hitDiceLabel": "Hit dice",
+      "armorDetailLabel": "Armor detail",
+      "traitsLabel": "Traits",
+      "modifiersLabel": "Ability modifiers",
+      "savingThrowsLabel": "Saving throws",
+      "skillBonusesLabel": "Skill bonuses",
+      "resistancesLabel": "Resistances & immunities"
     },
     "campaignModal": {
       "add": "Create a new campaign",

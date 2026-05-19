@@ -8,6 +8,9 @@ import {
   homebrewTag,
   iconLink,
   selectButton,
+  abilityScoresElement,
+  creatureStatsElement,
+  statsBadgesElement,
 } from './generate-functions'
 import { NuxtTime } from '#components'
 
@@ -112,6 +115,15 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
           : '',
       ]),
     ]),
+    statsBadgesElement({
+      proficiencyBonus: row.original.proficiencyBonus,
+      initiativeModifier: row.original.initiativeModifier,
+      passivePerception: row.original.passivePerception,
+    }),
+    row.original.abilityScores && row.original.modifiers
+      ? abilityScoresElement({ abilityScores: row.original.abilityScores, modifiers: row.original.modifiers })
+      : null,
+    creatureStatsElement(row.original),
     actionsTable(row.original, 'campaign'),
   ])
 }

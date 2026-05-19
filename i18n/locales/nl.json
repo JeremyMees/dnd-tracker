@@ -200,7 +200,7 @@
     "row": "Rij | Rijen",
     "concentration": "Concentratie",
     "none": "Geen",
-    "stats": "Statistieken",
+    "stats": "Stats",
     "backgroundColor": "Achtergrondkleur",
     "clothingColor": "Kledingkleur",
     "facialHair": "Gezichtshaar",
@@ -721,7 +721,14 @@
       "hidePassword": "Wachtwoord verbergen",
       "showDiceRoller": "Dobbelsteen roller tonen",
       "hideDiceRoller": "Dobbelsteen roller verbergen",
-      "noCampaign": "Geen campagne"
+      "noCampaign": "Geen campagne",
+      "hitDiceLabel": "Hit dice",
+      "armorDetailLabel": "Armor detail",
+      "traitsLabel": "Traits",
+      "modifiersLabel": "Ability modifiers",
+      "savingThrowsLabel": "Saving throws",
+      "skillBonusesLabel": "Skill bonuses",
+      "resistancesLabel": "Resistances & immunities"
     },
     "campaignModal": {
       "add": "Maak een nieuwe campagne",

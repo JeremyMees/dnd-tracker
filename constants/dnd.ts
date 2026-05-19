@@ -66,6 +66,19 @@ export const initiativeKeys = [
   'type',
   'summoner',
   'actions',
+  'traits',
+  'hitDice',
+  'armorDetail',
+  'proficiencyBonus',
+  'passivePerception',
+  'speed',
+  'sight',
+  'languages',
+  'abilityScores',
+  'modifiers',
+  'savingThrows',
+  'skillBonuses',
+  'resistancesAndImmunities',
 ]
 
 export const dices: DndDiceSide[] = [4, 6, 8, 10, 12, 20, 100]
