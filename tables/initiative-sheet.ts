@@ -1,5 +1,11 @@
 import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
-import { actionsTable, expandButton } from './generate-functions'
+import {
+  abilityScoresElement,
+  actionsTable,
+  creatureStatsElement,
+  expandButton,
+  statsBadgesElement,
+} from './generate-functions'
 
 import {
   InitiativeTableRowName,
@@ -96,7 +102,20 @@ export function generateColumns() {
 }
 
 export function expandedMarkup(row: Row<InitiativeSheetRow>) {
-  return actionsTable(row.original, 'initiative')
+  return h('div', {
+    class: 'flex flex-col gap-4',
+  }, [
+    statsBadgesElement({
+      proficiencyBonus: row.original.proficiencyBonus,
+      initiativeModifier: row.original.initiativeModifier,
+      passivePerception: row.original.passivePerception,
+    }),
+    row.original.abilityScores && row.original.modifiers
+      ? abilityScoresElement({ abilityScores: row.original.abilityScores, modifiers: row.original.modifiers })
+      : null,
+    creatureStatsElement(row.original),
+    actionsTable(row.original, 'initiative'),
+  ])
 }
 
 export const initialState: InitialTableState = {}

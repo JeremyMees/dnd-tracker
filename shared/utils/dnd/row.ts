@@ -29,7 +29,7 @@ export const createInitiativeRow = (
   const ac = getAC(formData)
   const baseArray: [boolean, boolean, boolean] = [false, false, false]
 
-  const baseRow: Partial<InitiativeSheetRow> = {
+  const baseRow = {
     ...formData,
     id: crypto.randomUUID(),
     index: encounterRows + 1,
