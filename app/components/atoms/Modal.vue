@@ -38,7 +38,7 @@ withDefaults(
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <div class="overflow-y-auto">
+      <div class="overflow-y-auto mt-4">
         <slot />
       </div>
     </UiDialogContent>
