@@ -12,6 +12,22 @@ export function hasResistances(resistances: DndResistancesAndImmunities): boolea
     || conditionImmunities.length > 0
 }
 
+export function hasCreatureStats(creature: DndCreatureStats): boolean {
+  return (
+    Object.keys(creature.savingThrows ?? {}).length > 0
+    || Object.keys(creature.speed ?? {}).length > 0
+    || Object.keys(creature.sight ?? {}).length > 0
+    || Object.keys(creature.skillBonuses ?? {}).length > 0
+    || (creature.languages?.length ?? 0) > 0
+    || (creature.traits?.length ?? 0) > 0
+    || (creature.resistancesAndImmunities != null && hasResistances(creature.resistancesAndImmunities))
+  )
+}
+
+export function hasAbilityScores(creature: { abilityScores?: DndAbilityScores | null }): boolean {
+  return Object.keys(creature.abilityScores ?? {}).length > 0
+}
+
 export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
   return sheet ? sheet.rows.length >= 50 : false
 }
