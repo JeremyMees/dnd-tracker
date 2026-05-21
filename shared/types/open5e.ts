@@ -256,8 +256,8 @@ export interface Open5eMonster extends Open5eInfoObject {
   initiative_bonus: number
   saving_throws: Partial<DndSavingThrowBonuses>
   saving_throws_all: DndSavingThrowBonuses
-  skill_bonuses: Partial<DndSkillBonuses>
-  skill_bonuses_all: DndSkillBonuses
+  skill_bonuses: Record<string, number>
+  skill_bonuses_all: Record<string, number>
   passive_perception: number
   resistances_and_immunities: Open5eResistancesAndImmunities
   normal_sight_range: number | null

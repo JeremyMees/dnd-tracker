@@ -70,6 +70,10 @@ async function addMonster(monster: DndMonster): Promise<void> {
     hitDice,
     languages,
     type: _type,
+    size: _size,
+    challengeRating: _challengeRating,
+    alignment: _alignment,
+    experiencePoints: _experiencePoints,
     ...rest
   } = monster
 

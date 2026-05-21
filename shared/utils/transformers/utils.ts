@@ -174,6 +174,17 @@ export function mapSightV1(senses: string): DndSight {
   }
 }
 
+export function mapSkillBonusesV2(skills: Record<string, number>): DndSkillBonuses {
+  const mapped = {} as DndSkillBonuses
+
+  for (const [key, value] of Object.entries(skills ?? {})) {
+    const mappedKey = skillKeyMap[key] ?? key as DndSkill
+    mapped[mappedKey] = value
+  }
+
+  return mapped
+}
+
 export function mapSkillBonusesV1(skills: Record<string, number>, perception: number): DndSkillBonuses {
   const mapped: DndSkillBonuses = {
     acrobatics: 0,

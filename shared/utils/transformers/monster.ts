@@ -11,6 +11,7 @@ import {
   mapSightV1,
   mapSize,
   mapSkillBonusesV1,
+  mapSkillBonusesV2,
   mapSpeedV1,
   mapTraitsV1,
 } from './utils'
@@ -99,7 +100,7 @@ function mapMonsterV2(dto: Open5eMonster): DndMonster {
     modifiers: dto.modifiers,
     initiativeBonus: dto.initiative_bonus,
     savingThrows: dto.saving_throws_all,
-    skillBonuses: dto.skill_bonuses_all,
+    skillBonuses: mapSkillBonusesV2(dto.skill_bonuses_all as unknown as Record<string, number>),
     passivePerception: dto.passive_perception,
     resistancesAndImmunities: {
       damageImmunities: dto.resistances_and_immunities.damage_immunities

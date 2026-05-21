@@ -507,7 +507,7 @@ export const open5eV2MonsterFixture: Open5eMonster = {
   },
   skill_bonuses_all: {
     acrobatics: 1,
-    animalHandling: 5,
+    animal_handling: 5,
     arcana: 5,
     athletics: 5,
     deception: 8,
@@ -521,7 +521,7 @@ export const open5eV2MonsterFixture: Open5eMonster = {
     performance: 4,
     persuasion: 4,
     religion: 5,
-    sleightOfHand: 1,
+    sleight_of_hand: 1,
     stealth: 5,
     survival: 5,
   },
