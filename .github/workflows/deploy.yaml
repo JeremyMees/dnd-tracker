@@ -38,8 +38,6 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm install
-      - name: Generate types
-        run: npm run typegen
       - name: Run typechecking
         run: npm run typecheck
 
