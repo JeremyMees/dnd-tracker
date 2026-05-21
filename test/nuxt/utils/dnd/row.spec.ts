@@ -54,5 +54,26 @@ describe('dnd/row', () => {
         save: [false, false, false],
       })
     })
+
+    it('should preserve extended homebrew fields from formData', () => {
+      const abilityScores = { strength: 10, dexterity: 14, constitution: 12, intelligence: 8, wisdom: 10, charisma: 16 } as DndAbilityScores
+      const traits = [{ name: 'Brave', desc: 'Advantage on saves vs fear' }] as DndTrait[]
+      const formData = {
+        name: 'Homebrew Monster',
+        hitPoints: 30,
+        armorClass: 13,
+        abilityScores,
+        traits,
+        proficiencyBonus: 2,
+        passivePerception: 12,
+      }
+
+      const row = createInitiativeRow(formData, 'monster', 0)
+
+      expect(row.abilityScores).toEqual(abilityScores)
+      expect(row.traits).toEqual(traits)
+      expect(row.proficiencyBonus).toBe(2)
+      expect(row.passivePerception).toBe(12)
+    })
   })
 })

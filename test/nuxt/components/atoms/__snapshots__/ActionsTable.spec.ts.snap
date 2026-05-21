@@ -3,24 +3,29 @@
 exports[`ActionsTable > Should match snapshot 1`] = `
 "<div class="space-y-4">
   <div class="space-y-2">
-    <p class="head-4">general.action</p>
+    <p class="head-6">general.action</p>
     <ul class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50 p-2">
-      <li class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc">
-        <div class="flex flex-wrap gap-x-4 items-center">
+      <li class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
+        <div class="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
           <p class="font-bold">Test Action: </p>
-          <p class="text-sm text-muted-foreground">Test Description</p>
+          <!--v-if-->
+          <!--v-if-->
         </div>
-        <div class="flex flex-wrap gap-x-4 items-center mt-2">
+        <div class="text-muted-foreground">Test Description</div>
+        <!--v-if-->
+        <div class="mt-2 flex flex-col gap-1">
           <!--v-if-->
-          <div class="flex flex-wrap gap-x-2 items-center">
-            <p class="font-bold"> To hit: </p>
-            <p class="text-sm text-muted-foreground"> +10</p>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 items-center">
+            <!--v-if--><span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">general.melee</span>
+            <div class="flex gap-x-1 items-center"><span class="font-semibold">To hit:</span><span class="text-muted-foreground">+10</span></div>
+            <!--v-if-->
+            <!--v-if-->
           </div>
-          <div class="flex flex-wrap gap-x-2 items-center">
-            <p class="font-bold"> Dice: </p>
-            <p class="text-sm text-muted-foreground">1d10 <span> +10</span></p>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 items-center">
+            <div class="flex gap-x-1 items-center"><span class="font-semibold">Damage:</span><span class="text-muted-foreground">1d10  + 10<!--v-if--></span></div>
+            <!--v-if-->
+            <!--v-if-->
           </div>
-          <!--v-if-->
         </div>
       </li>
     </ul>
@@ -31,36 +36,43 @@ exports[`ActionsTable > Should match snapshot 1`] = `
 exports[`ActionsTable > Should show attack name when action has multiple attacks 1`] = `
 "<div class="space-y-4">
   <div class="space-y-2">
-    <p class="head-4">general.action</p>
+    <p class="head-6">general.action</p>
     <ul class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50 p-2">
-      <li class="flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0 list-disc">
-        <div class="flex flex-wrap gap-x-4 items-center">
+      <li class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
+        <div class="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
           <p class="font-bold">Test Action: </p>
-          <p class="text-sm text-muted-foreground">Test Description</p>
-        </div>
-        <div class="flex flex-wrap gap-x-4 items-center mt-2">
-          <p class="w-full text-xs text-muted-foreground italic">Claw</p>
-          <div class="flex flex-wrap gap-x-2 items-center">
-            <p class="font-bold"> To hit: </p>
-            <p class="text-sm text-muted-foreground"> +10</p>
-          </div>
-          <div class="flex flex-wrap gap-x-2 items-center">
-            <p class="font-bold"> Dice: </p>
-            <p class="text-sm text-muted-foreground">1d10 <span> +10</span></p>
-          </div>
+          <!--v-if-->
           <!--v-if-->
         </div>
-        <div class="flex flex-wrap gap-x-4 items-center mt-2">
-          <p class="w-full text-xs text-muted-foreground italic">Bite</p>
-          <div class="flex flex-wrap gap-x-2 items-center">
-            <p class="font-bold"> To hit: </p>
-            <p class="text-sm text-muted-foreground"> +10</p>
+        <div class="text-muted-foreground">Test Description</div>
+        <!--v-if-->
+        <div class="mt-2 flex flex-col gap-1">
+          <p class="text-xs text-muted-foreground italic">Claw</p>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 items-center">
+            <!--v-if--><span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">general.melee</span>
+            <div class="flex gap-x-1 items-center"><span class="font-semibold">To hit:</span><span class="text-muted-foreground">+10</span></div>
+            <!--v-if-->
+            <!--v-if-->
           </div>
-          <div class="flex flex-wrap gap-x-2 items-center">
-            <p class="font-bold"> Dice: </p>
-            <p class="text-sm text-muted-foreground">1d10 <span> +10</span></p>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 items-center">
+            <div class="flex gap-x-1 items-center"><span class="font-semibold">Damage:</span><span class="text-muted-foreground">1d10  + 10<!--v-if--></span></div>
+            <!--v-if-->
+            <!--v-if-->
           </div>
-          <!--v-if-->
+        </div>
+        <div class="mt-2 flex flex-col gap-1">
+          <p class="text-xs text-muted-foreground italic">Bite</p>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 items-center">
+            <!--v-if--><span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">general.melee</span>
+            <div class="flex gap-x-1 items-center"><span class="font-semibold">To hit:</span><span class="text-muted-foreground">+10</span></div>
+            <!--v-if-->
+            <!--v-if-->
+          </div>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 items-center">
+            <div class="flex gap-x-1 items-center"><span class="font-semibold">Damage:</span><span class="text-muted-foreground">1d10  + 10<!--v-if--></span></div>
+            <!--v-if-->
+            <!--v-if-->
+          </div>
         </div>
       </li>
     </ul>

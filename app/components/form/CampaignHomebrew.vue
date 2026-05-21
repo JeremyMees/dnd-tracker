@@ -87,13 +87,11 @@ async function addHomebrews(addAll: boolean): Promise<void> {
     : selected.value
 
   selection.forEach((hb: HomebrewItemRow) => {
+    const { id: _id, ...rest } = hb
+
     const row: Partial<InitiativeSheetRow> & { name: string } = {
-      armorClass: hb.armorClass || undefined,
-      hitPoints: hb.hitPoints || undefined,
-      name: hb.name,
-      initiative: undefined,
+      ...nullsToUndefined(rest),
       initiativeModifier: hb.initiativeModifier ? Number(hb.initiativeModifier) : undefined,
-      actions: hb.actions || [],
       ...(hb.type === 'summon' && summoner.value ? { summoner: summoner.value } : {}),
     }
 

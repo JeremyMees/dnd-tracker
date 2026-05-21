@@ -111,7 +111,10 @@ export function handleHpChanges(
     if (row.concentration && !downed) {
       toasts.push({
         title: ['components.initiativeTable.concentration.title'],
-        description: ['components.initiativeTable.concentration.text', { name: row.name }],
+        description: [
+          'components.initiativeTable.concentration.text',
+          { name: row.name, dc: concentrationDC(amount) },
+        ],
         variant: 'info',
       })
     }
@@ -130,7 +133,9 @@ export function handleHpChanges(
 
   // when user is dies because of going to much in the negative hp
   const dead = (row.hitPoints && row.maxHitPoints && row.hitPoints < 0 && Math.abs(row.hitPoints) >= row.maxHitPoints)
-  const { failed, saved } = row.deathSaves ? checkDeathSaves(row.deathSaves) : { failed: false, saved: false }
+  const { failed, saved } = row.deathSaves
+    ? checkDeathSaves(row.deathSaves)
+    : { failed: false, saved: false }
 
   if (dead || (failed && !saved)) {
     toasts.push({

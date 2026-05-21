@@ -65,9 +65,30 @@ const isError = computed(() => monstersStatus.value === 'error' || documentsStat
 async function addMonster(monster: DndMonster): Promise<void> {
   if (!sheet.value) return
 
+  const {
+    initiativeBonus,
+    hitDice,
+    languages,
+    type: _type,
+    size: _size,
+    challengeRating: _challengeRating,
+    alignment: _alignment,
+    experiencePoints: _experiencePoints,
+    ...rest
+  } = monster
+
   const rows = [
     ...sheet.value.rows,
-    createInitiativeRow(monster, 'monster', sheet.value.rows.length),
+    createInitiativeRow(
+      {
+        ...rest,
+        hitDice: parseDndDiceToString(hitDice),
+        languages: parseDndLanguages(languages),
+        initiativeModifier: initiativeBonus,
+      },
+      'monster',
+      sheet.value.rows.length,
+    ),
   ]
 
   const sortedRows = indexCorrect(rows)

@@ -184,6 +184,28 @@ export type DndShapeType
     | 'line'
     | 'sphere'
 
+export type DndSpeedType
+  = | 'walk'
+    | 'crawl'
+    | 'hover'
+    | 'fly'
+    | 'burrow'
+    | 'climb'
+    | 'swim'
+
+export type DndSightRangeType
+  = | 'normalSightRange'
+    | 'darkVisionRange'
+    | 'blindSightRange'
+    | 'tremorSenseRange'
+    | 'trueSightRange'
+
+export type DndResistanceType
+  = | 'damageImmunities'
+    | 'damageResistances'
+    | 'damageVulnerabilities'
+    | 'conditionImmunities'
+
 export interface DndSpeed {
   unit: DndDistanceUnit
   walk: number
@@ -244,7 +266,7 @@ export interface DndAction {
 export interface DndAttack {
   name: string
   attackType: DndAttackType
-  toHitMod: number
+  toHitMod?: number
   reach?: number
   range?: number
   longRange?: number
@@ -393,6 +415,16 @@ export interface DndMonster {
   sight: DndSight
   actions: DndAction[]
   traits: DndTrait[]
+}
+
+export interface DndCreatureStats {
+  savingThrows?: DndSavingThrowBonuses | null
+  speed?: DndSpeed | null
+  sight?: DndSight | null
+  skillBonuses?: DndSkillBonuses | null
+  resistancesAndImmunities?: DndResistancesAndImmunities | null
+  languages?: DndLanguage[] | string[] | null
+  traits?: DndTrait[] | null
 }
 
 export interface DndCondition {

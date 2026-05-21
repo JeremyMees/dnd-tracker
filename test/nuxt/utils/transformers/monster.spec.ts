@@ -77,6 +77,14 @@ describe('transformers/monster', () => {
       expect(monster.sight.darkVisionRange).toBe(120)
       expect(monster.sight.blindSightRange).toBe(30)
     })
+
+    it('maps skill bonuses converting snake_case keys to camelCase', () => {
+      const monster = toMonster(open5eV2MonsterFixture)
+
+      expect(monster.skillBonuses.animalHandling).toBe(5)
+      expect(monster.skillBonuses.sleightOfHand).toBe(1)
+      expect(monster.skillBonuses.stealth).toBe(5)
+    })
   })
 
   describe('toMonster (V1)', () => {
@@ -159,6 +167,14 @@ describe('transformers/monster', () => {
       const monster = toMonster(open5eV1MonsterFixture)
 
       expect(monster.passivePerception).toBe(9)
+    })
+
+    it('maps skill bonuses converting snake_case keys to camelCase', () => {
+      const monster = toMonster(open5eV1MonsterFixture)
+
+      expect(monster.skillBonuses.stealth).toBe(6)
+      expect(monster.skillBonuses.animalHandling).toBe(0)
+      expect(monster.skillBonuses.sleightOfHand).toBe(0)
     })
   })
 })

@@ -119,4 +119,67 @@ describe('validation utils', () => {
       expect(diceExpression.test('')).toBeFalsy()
     })
   })
+
+  describe('hitDiceExpression', () => {
+    it('should match valid hit dice notation without modifier', () => {
+      expect(hitDiceExpression.test('1d4')).toBeTruthy()
+      expect(hitDiceExpression.test('1d6')).toBeTruthy()
+      expect(hitDiceExpression.test('1d8')).toBeTruthy()
+      expect(hitDiceExpression.test('1d10')).toBeTruthy()
+      expect(hitDiceExpression.test('1d12')).toBeTruthy()
+      expect(hitDiceExpression.test('1d20')).toBeTruthy()
+      expect(hitDiceExpression.test('1d100')).toBeTruthy()
+    })
+
+    it('should match valid hit dice notation with positive modifier', () => {
+      expect(hitDiceExpression.test('12d10+36')).toBeTruthy()
+      expect(hitDiceExpression.test('4d8+5')).toBeTruthy()
+      expect(hitDiceExpression.test('1d6+1')).toBeTruthy()
+    })
+
+    it('should match valid hit dice notation with negative modifier', () => {
+      expect(hitDiceExpression.test('5d12-10')).toBeTruthy()
+      expect(hitDiceExpression.test('2d8-3')).toBeTruthy()
+    })
+
+    it('should be case insensitive for the d', () => {
+      expect(hitDiceExpression.test('1D20')).toBeTruthy()
+      expect(hitDiceExpression.test('3D6+5')).toBeTruthy()
+    })
+
+    it('should accept quantities from 1 to 100', () => {
+      expect(hitDiceExpression.test('1d20+10')).toBeTruthy()
+      expect(hitDiceExpression.test('99d8+5')).toBeTruthy()
+      expect(hitDiceExpression.test('100d4-3')).toBeTruthy()
+    })
+
+    it('should reject invalid quantities', () => {
+      expect(hitDiceExpression.test('0d20')).toBeFalsy()
+      expect(hitDiceExpression.test('101d6')).toBeFalsy()
+      expect(hitDiceExpression.test('999d8+5')).toBeFalsy()
+    })
+
+    it('should reject invalid dice sides', () => {
+      expect(hitDiceExpression.test('1d2+5')).toBeFalsy()
+      expect(hitDiceExpression.test('1d3')).toBeFalsy()
+      expect(hitDiceExpression.test('1d7+1')).toBeFalsy()
+      expect(hitDiceExpression.test('1d9')).toBeFalsy()
+      expect(hitDiceExpression.test('1d15+3')).toBeFalsy()
+    })
+
+    it('should reject malformed modifier', () => {
+      expect(hitDiceExpression.test('1d20+')).toBeFalsy()
+      expect(hitDiceExpression.test('1d20-')).toBeFalsy()
+      expect(hitDiceExpression.test('1d20+5+2')).toBeFalsy()
+      expect(hitDiceExpression.test('1d20 +5')).toBeFalsy()
+    })
+
+    it('should reject malformed strings', () => {
+      expect(hitDiceExpression.test('d20')).toBeFalsy()
+      expect(hitDiceExpression.test('1x20')).toBeFalsy()
+      expect(hitDiceExpression.test(' 1d20+5')).toBeFalsy()
+      expect(hitDiceExpression.test('abc')).toBeFalsy()
+      expect(hitDiceExpression.test('')).toBeFalsy()
+    })
+  })
 })

@@ -1,5 +1,3 @@
-import { initiativeKeys } from '~~/constants/dnd'
-
 export function indexCorrect(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
   const sortedObjects = [...rows]
 
@@ -19,7 +17,7 @@ export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
 }
 
 export const createInitiativeRow = (
-  formData: DndMonster | Partial<InitiativeSheetRow> & { name: string },
+  formData: Partial<InitiativeSheetRow> & { name: string },
   type: HomebrewType,
   encounterRows: number,
 ): InitiativeSheetRow => {
@@ -29,7 +27,7 @@ export const createInitiativeRow = (
   const ac = getAC(formData)
   const baseArray: [boolean, boolean, boolean] = [false, false, false]
 
-  const baseRow: Partial<InitiativeSheetRow> = {
+  return {
     ...formData,
     id: crypto.randomUUID(),
     index: encounterRows + 1,
@@ -47,10 +45,4 @@ export const createInitiativeRow = (
     concentration: false,
     deathSaves: { save: baseArray, fail: baseArray },
   }
-
-  const allowedKeys = new Set(initiativeKeys)
-
-  return Object.fromEntries(
-    Object.entries(baseRow).filter(([key]) => allowedKeys.has(key)),
-  ) as unknown as InitiativeSheetRow
 }

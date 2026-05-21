@@ -1,17 +1,39 @@
 import type { MergeDeep } from 'type-fest'
 import type { Database } from './database-generated'
 
-interface AllActions {
+interface HomebrewItemRow {
   actions: DndAction[]
+  abilityScores: DndAbilityScores | null
+  modifiers: DndModifiers | null
+  savingThrows: DndSavingThrowBonuses | null
+  skillBonuses: DndSkillBonuses | null
+  speed: DndSpeed | null
+  sight: DndSight | null
+  languages: string[] | null
+  resistancesAndImmunities: DndResistancesAndImmunities | null
+  traits: DndTrait[] | null
+}
+
+interface HomebrewItemInsert {
+  actions: DndAction[]
+  abilityScores?: DndAbilityScores | null
+  modifiers?: DndModifiers | null
+  savingThrows?: DndSavingThrowBonuses | null
+  skillBonuses?: DndSkillBonuses | null
+  speed?: DndSpeed | null
+  sight?: DndSight | null
+  languages?: string[] | null
+  resistancesAndImmunities?: DndResistancesAndImmunities | null
+  traits?: DndTrait[] | null
 }
 
 interface DatabaseOverrides {
   public: {
     Tables: {
       homebrew_items: {
-        Row: AllActions
-        Insert: AllActions
-        Update: Partial<AllActions>
+        Row: HomebrewItemRow
+        Insert: HomebrewItemInsert
+        Update: Partial<HomebrewItemRow>
       }
       initiative_sheets: {
         Row: {

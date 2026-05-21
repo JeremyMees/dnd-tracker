@@ -1,11 +1,11 @@
-name: 💜 Pull request
+name: Pull request
 on:
   pull_request:
     branches: ["main", "develop", "develop/*"]
 
 jobs:
   linting:
-    name: ✨ Linting
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -21,8 +21,7 @@ jobs:
         run: npm run lint
 
   typechecking:
-    name: 🕵 Typechecking
-    needs: linting
+    name: Typechecking
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -38,8 +37,7 @@ jobs:
         run: npm run typecheck
 
   testing:
-    name: 🧪 Testing
-    needs: linting
+    name: Testing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

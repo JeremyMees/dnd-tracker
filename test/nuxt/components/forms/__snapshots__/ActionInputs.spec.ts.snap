@@ -1,0 +1,50 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ActionInputs > Should match snapshot 1`] = `
+"<div class="flex flex-col gap-2">
+  <div class="space-y-2"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.actionTypeLabel<span class="text-destructive">*</span>
+      <!--v-if-->
+    </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-1" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">general.action</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+    <!--teleport start-->
+    <!--teleport end-->
+    <!--v-if-->
+    <!---->
+  </div>
+  <div class="space-y-2"><label for="reka-v-0-0-2-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.nameLabel<span class="text-destructive">*</span>
+      <!--v-if-->
+    </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-2-form-item" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" type="text" name="action.name">
+    <!---->
+  </div>
+  <div class="space-y-2"><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.descriptionLabel<span class="text-destructive">*</span>
+      <!--v-if-->
+    </label><textarea data-slot="textarea" class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 aria-invalid:border-destructive flex field-sizing-content min-h-16 w-full rounded-md border bg-background px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="reka-v-0-0-3-form-item" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" name="action.desc"></textarea>
+    <!---->
+  </div>
+  <!--v-if-->
+  <div class="space-y-2"><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.limitedToFormLabel
+      <!--v-if-->
+      <!--v-if-->
+    </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-4-form-item" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" type="text" name="action.limitedToForm">
+    <!---->
+  </div>
+  <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2">
+    <div class="space-y-2"><label for="reka-v-0-0-5-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.usageTypeLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-6" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+  </div>
+  <div class="space-y-4">
+    <div class="flex items-end justify-between gap-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" data-test-label="">components.inputs.attacksLabel
+        <!--v-if-->
+      </label><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-8 rounded-md px-3 text-xs" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.add</button></div>
+    <div class="space-y-4">
+      <div class="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg text-sm">components.repeaterInput.noItems</div>
+    </div>
+  </div>
+</div>"
+`;

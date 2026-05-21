@@ -71,9 +71,22 @@ export interface InitiativeSheetRow {
     id: string
   }
   actions?: DndAction[]
+  traits?: DndTrait[]
+  hitDice?: string
+  armorDetail?: string
+  proficiencyBonus?: number
+  passivePerception?: number
+  speed?: DndSpeed
+  sight?: DndSight
+  languages?: string[]
+  abilityScores?: DndAbilityScores
+  modifiers?: DndModifiers
+  savingThrows?: DndSavingThrowBonuses
+  skillBonuses?: DndSkillBonuses
+  resistancesAndImmunities?: DndResistancesAndImmunities
 }
 
-export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'campaign' | 'amount' | 'initiative' | 'initiativeModifier' | 'summoner' | NotUpdatable> {}
+export interface InitiativeSheetRowInsert extends Omit<InitiativeSheetRow, 'campaign' | 'amount' | 'initiative' | 'initiativeModifier' | 'summoner' | 'conditions' | 'index' | NotUpdatable> {}
 
 export interface InitiativeSettings {
   spacing: TableSpacing

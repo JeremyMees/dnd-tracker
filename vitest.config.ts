@@ -6,6 +6,9 @@ export default defineVitestConfig({
     environment: 'nuxt',
     setupFiles: ['./test/nuxt/unit.setup.ts'],
     exclude: ['node_modules', 'test/e2e/**'],
+    onConsoleLog: (l) => {
+      return !l.startsWith('<Suspense>')
+    },
   },
   server: {
     fs: {

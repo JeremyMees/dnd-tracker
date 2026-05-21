@@ -3,7 +3,7 @@ import { useHomebrewCreate, useHomebrewUpdate } from '~~/queries/homebrews'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
-import { homebrewType, abilityType, actionType } from '~~/constants/validation'
+import { homebrewType } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -22,71 +22,12 @@ const props = withDefaults(
 
 const { t } = useI18n()
 
-interface FormAction {
-  actionType: DndActionType
-  name: string
-  desc: string
-  attackBonus?: number
-  damageBonus?: number
-  damageDice?: string
-  spellSave?: number
-  spellSaveType?: DndAbility
-}
+const tabs = ['info', 'stats', 'traits', 'actions'] as const
 
-function dndActionToForm(action: DndAction): FormAction {
-  const attack = action.attacks[0]
-
-  return {
-    actionType: action.actionType,
-    name: action.name,
-    desc: action.desc,
-    attackBonus: attack?.toHitMod || undefined,
-    damageBonus: attack?.damageBonus,
-    damageDice: formatAttackDice(attack?.damageDieCount, attack?.damageDieType),
-    spellSave: attack?.spellSave,
-    spellSaveType: attack?.spellSaveType,
-  }
-}
-
-function formToDndAction(formAction: FormAction): DndAction {
-  const dice = parseAttackDice(formAction.damageDice)
-  const hasAttack
-    = formAction.attackBonus != null
-      || dice != null
-      || formAction.damageBonus != null
-      || formAction.spellSave != null
-
-  const attack: DndAttack | undefined = hasAttack
-    ? {
-        name: formAction.name,
-        attackType: 'melee',
-        toHitMod: formAction.attackBonus ?? 0,
-        distanceUnit: 'feet',
-        ...(dice ?? {}),
-        ...(formAction.damageBonus != null ? { damageBonus: formAction.damageBonus } : {}),
-        ...(formAction.spellSave != null ? { spellSave: formAction.spellSave } : {}),
-        ...(formAction.spellSaveType ? { spellSaveType: formAction.spellSaveType } : {}),
-      }
-    : undefined
-
-  return {
-    name: formAction.name,
-    desc: formAction.desc,
-    actionType: formAction.actionType,
-    attacks: attack ? [attack] : [],
-  }
-}
-
-const actionInputs = z.array(z.object({
-  actionType: z.enum(actionType),
-  name: z.string().min(3).max(30),
-  desc: z.string().min(10).max(1000),
-  attackBonus: z.number().gte(1).lte(100).optional(),
-  damageBonus: z.number().min(1).lte(100).optional(),
-  damageDice: z.string().min(3).max(15).regex(diceExpression, t('zod.diceExpression')).optional().or(z.literal('')),
-  spellSave: z.number().min(1).lte(100).optional(),
-  spellSaveType: z.union([z.enum(abilityType), z.literal('none'), z.literal('')]).optional().transform(val => !val || val === 'none' ? undefined : val),
-})).max(40)
+const activeTab = ref<typeof tabs[number]>('info')
+const tabIndex = computed(() => tabs.indexOf(activeTab.value))
+const canGoBack = computed(() => tabIndex.value > 0)
+const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 
 const formSchema = toTypedSchema(z.object({
   type: z.enum(homebrewType),
@@ -99,7 +40,20 @@ const formSchema = toTypedSchema(z.object({
   armorClass: z.number().gte(1).lte(100).optional(),
   hitPoints: z.number().gte(1).lte(1000).optional(),
   link: z.string().url().optional().or(z.literal('')),
-  actions: actionInputs,
+  hitDice: z.string().min(3).max(15).regex(hitDiceExpression, t('zod.hitDiceExpression')).optional().or(z.literal('')),
+  armorDetail: z.string().max(100).optional().or(z.literal('')),
+  proficiencyBonus: z.number().gte(0).lte(10).optional(),
+  passivePerception: z.number().gte(0).lte(30).optional(),
+  speed: speedSchema.optional(),
+  sight: sightSchema.optional(),
+  languages: z.array(z.string().min(1).max(50)).max(20),
+  abilityScores: abilityScoresSchema.optional(),
+  modifiers: abilityBonusSchema.optional(),
+  savingThrows: abilityBonusSchema.optional(),
+  skillBonuses: skillBonusesSchema.optional(),
+  resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
+  traits: z.array(traitSchema).max(40),
+  actions: z.array(actionSchema).max(40),
 }).refine(
   data => !props.isEncounter || !(['monster', 'summon'].includes(data.type) && !data.amount),
   { message: t('zod.required'), path: ['amount'] },
@@ -121,12 +75,29 @@ const form = useForm({
     armorClass: props.item?.armorClass || undefined,
     hitPoints: props.item?.hitPoints || undefined,
     link: props.item?.link || '',
-    actions: (props.item?.actions ?? []).map(dndActionToForm),
+    hitDice: props.item?.hitDice || '',
+    armorDetail: props.item?.armorDetail || '',
+    proficiencyBonus: props.item?.proficiencyBonus || undefined,
+    passivePerception: props.item?.passivePerception || undefined,
+    speed: props.item?.speed || undefined,
+    sight: props.item?.sight || undefined,
+    languages: props.item?.languages || [],
+    abilityScores: props.item?.abilityScores || undefined,
+    modifiers: props.item?.modifiers || undefined,
+    savingThrows: props.item?.savingThrows || undefined,
+    skillBonuses: props.item?.skillBonuses || undefined,
+    resistancesAndImmunities: {
+      damageImmunities: props.item?.resistancesAndImmunities?.damageImmunities ?? [],
+      damageResistances: props.item?.resistancesAndImmunities?.damageResistances ?? [],
+      damageVulnerabilities: props.item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+      conditionImmunities: props.item?.resistancesAndImmunities?.conditionImmunities ?? [],
+    },
+    traits: (props.item?.traits ?? []) as { name: string, desc: string }[],
+    actions: props.item?.actions ?? [],
   },
 })
 
 const saveToCampaign = ref<boolean>(false)
-const activeTab = ref<string>('info')
 const formError = ref<string>('')
 
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
@@ -137,10 +108,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
   const { amount, initiative, initiativeModifier, summoner, ...rest } = values
 
-  const formData = {
-    ...rest,
-    actions: (values.actions as FormAction[]).map(formToDndAction),
-  }
+  const formData = { ...rest }
   const initMod = isDefined(initiativeModifier)
     ? { initiativeModifier: initiativeModifier.toString() }
     : {}
@@ -157,10 +125,9 @@ const onSubmit = form.handleSubmit(async (values) => {
       summoner,
     })
 
-    // Also save homebrew to campaign
     if (saveToCampaign.value && props.campaignId) {
       await create({
-        data: { ...formData, ...initMod, campaign: props.campaignId },
+        data: { ...formData, ...initMod, campaign: props.campaignId } as HomebrewItemInsert,
         onSuccess,
         onError,
       })
@@ -172,7 +139,7 @@ const onSubmit = form.handleSubmit(async (values) => {
   else {
     if (props.item) {
       await updateHomebrew({
-        data: { ...formData, ...initMod },
+        data: { ...formData, ...initMod } as any,
         id: props.item.id,
         onSuccess,
         onError,
@@ -180,7 +147,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     }
     else if (props.campaignId) {
       await create({
-        data: { ...formData, ...initMod, campaign: props.campaignId },
+        data: { ...formData, ...initMod, campaign: props.campaignId } as HomebrewItemInsert,
         onSuccess,
         onError,
       })
@@ -233,12 +200,18 @@ async function addInitiative(options: {
 <template>
   <UiFormWrapper @submit="onSubmit">
     <UiTabs v-model="activeTab">
-      <UiTabsList class="grid w-full grid-cols-2">
+      <UiTabsList class="grid w-full grid-cols-4">
         <UiTabsTrigger value="info">
           {{ $t('general.info') }}
         </UiTabsTrigger>
+        <UiTabsTrigger value="stats">
+          {{ $t('general.stats') }}
+        </UiTabsTrigger>
+        <UiTabsTrigger value="traits">
+          {{ $t('general.trait', 2) }}
+        </UiTabsTrigger>
         <UiTabsTrigger value="actions">
-          {{ $t('general.actions') }}
+          {{ $t('general.action', 2) }}
         </UiTabsTrigger>
       </UiTabsList>
 
@@ -250,6 +223,20 @@ async function addInitiative(options: {
           :sheet="props.sheet"
           :type="form.values.type"
         />
+      </div>
+
+      <div
+        v-show="activeTab === 'stats'"
+        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <FormHomebrewStats />
+      </div>
+
+      <div
+        v-show="activeTab === 'traits'"
+        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <FormHomebrewTraits />
       </div>
 
       <div
@@ -284,15 +271,15 @@ async function addInitiative(options: {
         </span>
       </div>
 
-      <div class="flex gap-2">
+      <div class="flex justify-end gap-2">
         <UiButton
           v-tippy="$t('actions.prev')"
           type="button"
           variant="foreground"
           size="icon"
           class="min-w-10"
-          :disabled="activeTab === 'info'"
-          @click="activeTab = 'info'"
+          :disabled="!canGoBack"
+          @click="activeTab = tabs[tabIndex - 1]!"
         >
           <Icon name="tabler:arrow-left" />
         </UiButton>
@@ -302,14 +289,14 @@ async function addInitiative(options: {
           variant="foreground"
           size="icon"
           class="min-w-10"
-          :disabled="activeTab === 'actions'"
-          @click="activeTab = 'actions'"
+          :disabled="!canGoForward"
+          @click="activeTab = tabs[tabIndex + 1]!"
         >
           <Icon name="tabler:arrow-right" />
         </UiButton>
         <UiButton
           type="submit"
-          class="w-full"
+          class="w-full md:w-fit"
         >
           {{ $t('actions.save') }}
         </UiButton>

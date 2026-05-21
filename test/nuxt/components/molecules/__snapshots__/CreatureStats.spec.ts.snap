@@ -1,0 +1,78 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CreatureStats > should match snapshot 1`] = `
+"<section class="flex flex-col gap-4">
+  <div data-test-saving-throws="">
+    <p class="head-6">general.savingThrow</p>
+    <div class="flex gap-x-4 gap-y-1 flex-wrap">
+      <div class="flex gap-1"><span class="text-muted-foreground">STR:</span><span>+5</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">DEX:</span><span>+5</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">CON:</span><span>+8</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">INT:</span><span>+9</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">WIS:</span><span>+9</span></div>
+      <div class="flex gap-1"><span class="text-muted-foreground">CHA:</span><span>+4</span></div>
+    </div>
+  </div>
+  <div data-test-speed="">
+    <p class="head-6">general.speed</p>
+    <div class="flex gap-x-4 gap-y-1 flex-wrap">
+      <div data-test-speed-entry="" class="flex gap-1"><span class="text-muted-foreground">Walk:</span><span>10 ft</span></div>
+      <div data-test-speed-entry="" class="flex gap-1"><span class="text-muted-foreground">Swim:</span><span>40 ft</span></div>
+      <div data-test-speed-entry="" class="flex gap-1"><span class="text-muted-foreground">Climb:</span><span>5 ft</span></div>
+      <div data-test-speed-entry="" class="flex gap-1"><span class="text-muted-foreground">Crawl:</span><span>5 ft</span></div>
+    </div>
+  </div>
+  <div data-test-senses="">
+    <p class="head-6">general.sense</p>
+    <div class="flex gap-x-4 gap-y-1 flex-wrap">
+      <div data-test-sense-entry="" class="flex gap-1"><span class="text-muted-foreground">Darkvision:</span><span>120 ft</span></div>
+      <div data-test-sense-entry="" class="flex gap-1"><span class="text-muted-foreground">Blindsight:</span><span>30 ft</span></div>
+    </div>
+  </div>
+  <div data-test-skills="">
+    <p class="head-6">general.skill</p>
+    <div class="flex gap-x-4 gap-y-1 flex-wrap">
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Acrobatics:</span><span>+1</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Animal Handling:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Arcana:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Athletics:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Deception:</span><span>+8</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">History:</span><span>+9</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Insight:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Intimidation:</span><span>+4</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Investigation:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Medicine:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Nature:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Perception:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Performance:</span><span>+4</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Persuasion:</span><span>+4</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Religion:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Sleight of Hand:</span><span>+1</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Stealth:</span><span>+5</span></div>
+      <div data-test-skill-entry="" class="flex gap-1"><span class="text-muted-foreground">Survival:</span><span>+5</span></div>
+    </div>
+  </div>
+  <div data-test-languages="">
+    <p class="head-6">general.language</p>
+    <p class="text-sm text-muted-foreground">Deep Speech</p>
+  </div>
+  <!--v-if-->
+  <div data-test-traits="">
+    <p class="head-6">general.trait</p>
+    <ul class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50 p-2">
+      <li data-test-trait="" class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
+        <div class="flex flex-wrap gap-x-4 items-center">
+          <p class="font-bold">Amphibious: </p>
+          <p class="text-muted-foreground">The aboleth can breathe air and water.</p>
+        </div>
+      </li>
+      <li data-test-trait="" class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0">
+        <div class="flex flex-wrap gap-x-4 items-center">
+          <p class="font-bold">Innate Spellcasting: </p>
+          <p class="text-muted-foreground">The aboleths spellcasting ability is Charisma (spell save DC 16). It can innately cast the following spells, requiring no components: 3/day each: detect thoughts (range 120 ft, desc: ), project image (range 1 mile), phantasmal force</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>"
+`;

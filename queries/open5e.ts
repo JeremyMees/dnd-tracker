@@ -10,6 +10,15 @@ const urlMap = new Map<Open5eType, string>([
   ['armor', 'https://api.open5e.com/v2/armor'],
 ])
 
+const excludeMap = new Map<Open5eType, string>([
+  ['monsters', 'document,speed,saving_throws,skill_bonuses,subcategory,creaturesets,environments,illustration'],
+  ['spells', 'document'],
+  ['conditions', 'document'],
+  ['magicitems', 'document'],
+  ['weapons', 'document'],
+  ['armor', 'document'],
+])
+
 function transformOpen5eItem(type: Open5eType, item: Open5eItem): DndItem {
   switch (type) {
     case 'spells': return toSpell(item as Open5eSpell)
@@ -42,15 +51,14 @@ export function useOpen5eListing(data: ComputedRef<{ type: Open5eType, filters: 
     queryKey: ['useOpen5e', data],
     queryFn: async () => {
       try {
-        const query = generateParams(removeEmptyKeys<Open5eFilters>({
+        const query = generateParams({
           ...data.value.filters,
           limit: 20,
           page: data.value.filters.page + 1, // Open5e uses 1-based indexing
-        }))
+          exclude: excludeMap.get(data.value.type),
+        })
 
-        const url = `${urlMap.get(data.value.type)}/?${query}`
-
-        return await $fetch<Open5eResponse<Open5eItem>>(url)
+        return await $fetch<Open5eResponse<Open5eItem>>(`${urlMap.get(data.value.type)}/?${query}`)
       }
       catch (error: any) {
         toast({
@@ -79,7 +87,12 @@ export function useOpen5eDocuments() {
     queryKey: ['useOpen5eDocuments'],
     queryFn: async () => {
       try {
-        const { results } = await $fetch<Open5eResponse<Open5eDocument>>('https://api.open5e.com/v2/documents/?page=1&ordering=-publication_date')
+        const query = generateParams({
+          page: 1,
+          ordering: '-publication_date',
+        })
+
+        const { results } = await $fetch<Open5eResponse<Open5eDocument>>(`https://api.open5e.com/v2/documents/?${query}`)
 
         return results.filter(doc => ['5e-2014', '5e-2024'].includes(doc.gamesystem.key))
       }
@@ -101,9 +114,13 @@ export async function prefetchConditionsListing() {
   return queryClient.prefetchQuery({
     queryKey: ['useConditionsListing'],
     queryFn: async () => {
-      const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
-        'https://api.open5e.com/v2/conditions/?page=1&document__key__in=core',
-      )
+      const query = generateParams({
+        page: 1,
+        document__key__in: 'core',
+        exclude: excludeMap.get('conditions'),
+      })
+
+      const { results } = await $fetch<Open5eResponse<Open5eCondition>>(`https://api.open5e.com/v2/conditions/?${query}`)
       return results.map(c => toCondition(c, ['srd-2024']))
     },
     staleTime: 1000 * 60 * 60 * 24,
@@ -118,9 +135,13 @@ export function useConditionsListing() {
     queryKey: ['useConditionsListing'],
     queryFn: async () => {
       try {
-        const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
-          `https://api.open5e.com/v2/conditions/?document__key__in=core`,
-        )
+        const query = generateParams({
+          page: 1,
+          document__key__in: 'core',
+          exclude: excludeMap.get('conditions'),
+        })
+
+        const { results } = await $fetch<Open5eResponse<Open5eCondition>>(`https://api.open5e.com/v2/conditions/?${query}`)
 
         return results.map(c => toCondition(c, ['srd-2024']))
       }
@@ -145,7 +166,7 @@ export function useOpen5eMonsterListing(data: ComputedRef<{ filters: Open5eFilte
       try {
         const { page, cr, ...filters } = data.value.filters
 
-        const query = generateParams(removeEmptyKeys<Open5eFilters>({
+        const query = generateParams({
           ...filters,
           ...(cr
             ? {
@@ -155,11 +176,10 @@ export function useOpen5eMonsterListing(data: ComputedRef<{ filters: Open5eFilte
             : {}),
           limit: 20,
           page: page + 1, // Open5e uses 1-based indexing
-        }))
+          exclude: excludeMap.get('monsters'),
+        })
 
-        const url = `${urlMap.get('monsters')}/?${query}`
-
-        return await $fetch<Open5eResponse<Open5eMonster>>(url)
+        return await $fetch<Open5eResponse<Open5eMonster>>(`${urlMap.get('monsters')}/?${query}`)
       }
       catch (error: any) {
         toast({

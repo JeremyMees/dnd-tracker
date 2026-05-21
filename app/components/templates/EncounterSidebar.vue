@@ -12,6 +12,12 @@ const diceRollerOpen = ref(false)
 const fantasyNameGeneratorOpen = ref(false)
 const openModal = ref<Modals>(undefined)
 
+onBeforeUnmount(() => {
+  openModal.value = undefined
+  diceRollerOpen.value = false
+  fantasyNameGeneratorOpen.value = false
+})
+
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 </script>
 
@@ -237,7 +243,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               </UiSidebarMenuButton>
             </UiDialogTrigger>
             <UiDialogContent
-              class="max-w-[800px]"
+              class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
               @escape-key-down="openModal = undefined"
               @pointer-down-outside="openModal = undefined"
               @interact-outside="openModal = undefined"

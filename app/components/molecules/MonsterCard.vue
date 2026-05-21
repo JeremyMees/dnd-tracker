@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { abilities, abilitiesNames } from '~~/constants/dnd'
+import type { DndMonster } from '#shared/types/dnd'
 
 defineEmits<{ add: [monster: DndMonster] }>()
 
@@ -10,7 +10,6 @@ const props = withDefaults(defineProps<{
   addable: false,
 })
 
-const names = ref(abilitiesNames)
 const isOpen = ref<boolean>(false)
 
 const stats: { key: keyof DndMonster, label: string }[] = [
@@ -91,21 +90,14 @@ const stats: { key: keyof DndMonster, label: string }[] = [
         </div>
       </div>
     </UiCardHeader>
+
     <UiCardContent>
-      <div class="flex gap-x-4 gap-y-1 flex-wrap">
-        <div
-          v-for="(ability, index) in abilities"
-          :key="ability"
-          class="flex gap-1"
-        >
-          <span class="text-muted-foreground">
-            {{ ability }}:
-          </span>
-          <span>
-            {{ names[index] ? monster.abilityScores[names[index] as keyof DndAbilityScores] : '_' }}
-          </span>
-        </div>
-      </div>
+      <AbilityScores
+        :ability-scores=" monster.abilityScores"
+        :modifiers="monster.modifiers"
+        class="mb-4"
+      />
+
       <div class="flex gap-x-4 gap-y-1 flex-wrap">
         <div
           v-for="stat in stats"
@@ -120,13 +112,54 @@ const stats: { key: keyof DndMonster, label: string }[] = [
           </span>
         </div>
       </div>
-      <ActionsTable
-        v-if="monster.actions?.length && isOpen"
-        data-test-actions-table
-        :actions="monster.actions"
-        :class="{ 'py-5': isOpen }"
-      />
+
+      <div class="flex gap-x-2 gap-y-1 flex-wrap mt-2">
+        <UiBadge
+          v-if="monster.proficiencyBonus"
+          variant="outline"
+        >
+          <span class="text-muted-foreground mr-2">
+            {{ $t('general.proficiencyBonus') }}:
+          </span>
+          +{{ monster.proficiencyBonus }}
+        </UiBadge>
+        <UiBadge
+          v-if="monster.initiativeBonus"
+          variant="outline"
+        >
+          <span class="text-muted-foreground mr-2">
+            {{ $t('general.initiativeBonus') }}:
+          </span>
+          +{{ monster.initiativeBonus }}
+        </UiBadge>
+        <UiBadge
+          v-if="monster.passivePerception"
+          variant="outline"
+        >
+          <span class="text-muted-foreground mr-2">
+            {{ $t('general.passivePerception') }}:
+          </span>
+          {{ monster.passivePerception }}
+        </UiBadge>
+      </div>
+
+      <div
+        v-if="isOpen"
+        class="space-y-4 pt-2"
+      >
+        <CreatureStats
+          data-test-stats
+          :creature="monster"
+        />
+
+        <ActionsTable
+          v-if="monster.actions?.length"
+          data-test-actions-table
+          :actions="monster.actions"
+        />
+      </div>
     </UiCardContent>
+
     <UiCardFooter>
       <div class="flex justify-end w-full">
         <UiButton

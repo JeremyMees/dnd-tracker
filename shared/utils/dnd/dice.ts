@@ -79,3 +79,10 @@ export function parseHitDice(hitDice: string): DndHitDice {
     ...(bonus ? { hitDiceBonus: Number.parseInt(bonus, 10) } : {}),
   }
 }
+
+export function parseDndDiceToString(hitDice: DndHitDice): string {
+  const { hitDiceCount, hitDiceType, hitDiceBonus } = hitDice
+  const bonusStr = hitDiceBonus ? (hitDiceBonus > 0 ? `+${hitDiceBonus}` : `${hitDiceBonus}`) : ''
+
+  return `${hitDiceCount}${hitDiceType}${bonusStr}`
+}

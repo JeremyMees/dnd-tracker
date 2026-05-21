@@ -18,19 +18,24 @@ exports[`MonsterCard > Should match snapshot 1`] = `
     </div>
   </div>
   <div class="p-6 pt-0">
-    <div class="flex gap-x-4 gap-y-1 flex-wrap">
-      <div class="flex gap-1"><span class="text-muted-foreground">STR: </span><span>20</span></div>
-      <div class="flex gap-1"><span class="text-muted-foreground">DEX: </span><span>12</span></div>
-      <div class="flex gap-1"><span class="text-muted-foreground">CON: </span><span>18</span></div>
-      <div class="flex gap-1"><span class="text-muted-foreground">INT: </span><span>20</span></div>
-      <div class="flex gap-1"><span class="text-muted-foreground">WIS: </span><span>20</span></div>
-      <div class="flex gap-1"><span class="text-muted-foreground">CHA: </span><span>18</span></div>
+    <div class="flex gap-x-4 gap-y-1 flex-wrap mb-4">
+      <div data-test-ability-block="" class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"><span data-test-ability-label="" class="text-muted-foreground">STR</span><span data-test-ability-modifier="">+5</span><span data-test-ability-score="" class="text-xs text-muted-foreground">20</span></div>
+      <div data-test-ability-block="" class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"><span data-test-ability-label="" class="text-muted-foreground">DEX</span><span data-test-ability-modifier="">+1</span><span data-test-ability-score="" class="text-xs text-muted-foreground">12</span></div>
+      <div data-test-ability-block="" class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"><span data-test-ability-label="" class="text-muted-foreground">CON</span><span data-test-ability-modifier="">+4</span><span data-test-ability-score="" class="text-xs text-muted-foreground">18</span></div>
+      <div data-test-ability-block="" class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"><span data-test-ability-label="" class="text-muted-foreground">INT</span><span data-test-ability-modifier="">+5</span><span data-test-ability-score="" class="text-xs text-muted-foreground">20</span></div>
+      <div data-test-ability-block="" class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"><span data-test-ability-label="" class="text-muted-foreground">WIS</span><span data-test-ability-modifier="">+5</span><span data-test-ability-score="" class="text-xs text-muted-foreground">20</span></div>
+      <div data-test-ability-block="" class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"><span data-test-ability-label="" class="text-muted-foreground">CHA</span><span data-test-ability-modifier="">+4</span><span data-test-ability-score="" class="text-xs text-muted-foreground">18</span></div>
     </div>
     <div class="flex gap-x-4 gap-y-1 flex-wrap">
       <div class="flex gap-1"><span class="text-muted-foreground">Type: </span><span class="lowercase">aberration</span></div>
       <div class="flex gap-1"><span class="text-muted-foreground">Size: </span><span class="lowercase">large</span></div>
       <div class="flex gap-1"><span class="text-muted-foreground">Alignment: </span><span class="lowercase">chaoticEvil</span></div>
       <div class="flex gap-1"><span class="text-muted-foreground">XP: </span><span class="lowercase">7200</span></div>
+    </div>
+    <div class="flex gap-x-2 gap-y-1 flex-wrap mt-2">
+      <!--v-if-->
+      <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"><span class="text-muted-foreground mr-2">general.initiativeBonus: </span> +1</div>
+      <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"><span class="text-muted-foreground mr-2">general.passivePerception: </span> 15</div>
     </div>
     <!--v-if-->
   </div>

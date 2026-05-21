@@ -30,36 +30,16 @@ export const crOptions = [
   { label: '30', value: 30.0 },
 ]
 
-export const abilities = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
+export const abilityTypes = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
 
-export const abilitiesNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']
-
-export const initiativeKeys = [
-  'armorClass',
-  'campaign',
-  'concentration',
-  'createdAt',
-  'conditions',
-  'deathSaves',
-  'hitPoints',
-  'id',
-  'index',
-  'initiative',
-  'initiativeModifier',
-  'link',
-  'maxArmorClass',
-  'maxHitPoints',
-  'maxArmorClassOld',
-  'maxHitPointsOld',
-  'name',
-  'note',
-  'player',
-  'tempArmorClass',
-  'tempHitPoints',
-  'type',
-  'summoner',
-  'actions',
-]
+export const abilityTypeMap: Record<typeof abilityTypes[number], DndAbility> = {
+  STR: 'strength',
+  DEX: 'dexterity',
+  CON: 'constitution',
+  INT: 'intelligence',
+  WIS: 'wisdom',
+  CHA: 'charisma',
+}
 
 export const dices: DndDiceSide[] = [4, 6, 8, 10, 12, 20, 100]
 
@@ -157,6 +137,27 @@ export const skillKeyMap: Record<string, DndSkill> = {
   survival: 'survival',
 }
 
+export const skillMap: Record<DndSkill, string> = {
+  acrobatics: 'Acrobatics',
+  animalHandling: 'Animal Handling',
+  arcana: 'Arcana',
+  athletics: 'Athletics',
+  deception: 'Deception',
+  history: 'History',
+  insight: 'Insight',
+  intimidation: 'Intimidation',
+  investigation: 'Investigation',
+  medicine: 'Medicine',
+  nature: 'Nature',
+  perception: 'Perception',
+  performance: 'Performance',
+  persuasion: 'Persuasion',
+  religion: 'Religion',
+  sleightOfHand: 'Sleight of Hand',
+  stealth: 'Stealth',
+  survival: 'Survival',
+}
+
 export const usageTypeMap: Record<string, DndUsageType> = {
   per_day: 'perDay',
   perday: 'perDay',
@@ -239,4 +240,85 @@ export const shapeTypeMap: Record<string, DndShapeType> = {
   cylinder: 'cylinder',
   line: 'line',
   sphere: 'sphere',
+}
+
+export const speedTypes: DndSpeedType[] = [
+  'walk',
+  'crawl',
+  'hover',
+  'fly',
+  'burrow',
+  'climb',
+  'swim',
+]
+
+export const speedMap: Record<DndSpeedType, string> = {
+  walk: 'Walk',
+  crawl: 'Crawl',
+  hover: 'Hover',
+  fly: 'Fly',
+  burrow: 'Burrow',
+  climb: 'Climb',
+  swim: 'Swim',
+}
+
+export const attackTypes: DndAttackType[] = [
+  'melee',
+  'ranged',
+  'meleeSpell',
+  'rangedSpell',
+]
+
+export const usageTypes: DndUsageType[] = [
+  'perDay',
+  'recharge',
+  'atWill',
+  'perRest',
+]
+
+export const diceTypes: DndDice[] = [
+  'd4',
+  'd6',
+  'd8',
+  'd10',
+  'd12',
+  'd20',
+  'd100',
+]
+
+export const distanceUnits: DndDistanceUnit[] = ['feet', 'miles']
+
+export const speedUnitMap: Record<DndDistanceUnit, string> = {
+  feet: 'ft',
+  miles: 'mi',
+}
+
+export const sightRangeTypes: DndSightRangeType[] = [
+  'normalSightRange',
+  'darkVisionRange',
+  'blindSightRange',
+  'tremorSenseRange',
+  'trueSightRange',
+]
+
+export const sightRangeMap: Record<DndSightRangeType, string> = {
+  normalSightRange: 'Normal Sight',
+  darkVisionRange: 'Darkvision',
+  blindSightRange: 'Blindsight',
+  tremorSenseRange: 'Tremorsense',
+  trueSightRange: 'Truesight',
+}
+
+export const resistanceTypes: DndResistanceType[] = [
+  'damageImmunities',
+  'damageResistances',
+  'damageVulnerabilities',
+  'conditionImmunities',
+]
+
+export const resistanceTypeMap: Record<DndResistanceType, string> = {
+  damageImmunities: 'Damage immunities',
+  damageResistances: 'Damage resistances',
+  damageVulnerabilities: 'Damage vulnerabilities',
+  conditionImmunities: 'Condition immunities',
 }

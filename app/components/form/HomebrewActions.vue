@@ -3,15 +3,11 @@ defineProps<{
   sheet?: InitiativeSheet
 }>()
 
-const emptyAction = {
-  actionType: 'action' as DndActionType,
+const emptyAction: DndAction = {
+  actionType: 'action',
   name: '',
   desc: '',
-  attackBonus: undefined,
-  damageBonus: undefined,
-  damageDice: undefined,
-  spellSave: undefined,
-  spellSaveType: undefined,
+  attacks: [],
 }
 </script>
 
