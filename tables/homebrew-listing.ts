@@ -1,5 +1,5 @@
 import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
-
+import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   actionsTable,
   expandButton,
@@ -120,10 +120,17 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
       initiativeModifier: row.original.initiativeModifier,
       passivePerception: row.original.passivePerception,
     }),
-    row.original.abilityScores && row.original.modifiers
-      ? abilityScoresElement({ abilityScores: row.original.abilityScores, modifiers: row.original.modifiers })
-      : null,
-    creatureStatsElement(row.original),
+    ...(
+      hasAbilityScores(row.original)
+        ? [
+            abilityScoresElement({
+              abilityScores: row.original.abilityScores!,
+              modifiers: row.original.modifiers!,
+            }),
+          ]
+        : []
+    ),
+    ...(hasCreatureStats(row.original) ? [creatureStatsElement(row.original)] : []),
     actionsTable(row.original, 'campaign'),
   ])
 }

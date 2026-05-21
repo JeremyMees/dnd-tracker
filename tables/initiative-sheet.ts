@@ -1,4 +1,5 @@
 import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
+import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   abilityScoresElement,
   actionsTable,
@@ -110,10 +111,17 @@ export function expandedMarkup(row: Row<InitiativeSheetRow>) {
       initiativeModifier: row.original.initiativeModifier,
       passivePerception: row.original.passivePerception,
     }),
-    ...(row.original.abilityScores && row.original.modifiers
-      ? [abilityScoresElement({ abilityScores: row.original.abilityScores, modifiers: row.original.modifiers })]
-      : []),
-    creatureStatsElement(row.original),
+    ...(
+      hasAbilityScores(row.original)
+        ? [
+            abilityScoresElement({
+              abilityScores: row.original.abilityScores!,
+              modifiers: row.original.modifiers!,
+            }),
+          ]
+        : []
+    ),
+    ...(hasCreatureStats(row.original) ? [creatureStatsElement(row.original)] : []),
     actionsTable(row.original, 'initiative'),
   ])
 }
