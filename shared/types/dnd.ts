@@ -266,7 +266,7 @@ export interface DndAction {
 export interface DndAttack {
   name: string
   attackType: DndAttackType
-  toHitMod: number
+  toHitMod?: number
   reach?: number
   range?: number
   longRange?: number

@@ -92,6 +92,16 @@
     "legendaryAction": "Legendary action | Legendary actions",
     "mythicAction": "Mythic action | Mythic actions",
     "lairAction": "Lair action | Lair actions",
+    "melee": "Melee",
+    "ranged": "Ranged",
+    "meleeSpell": "Melee spell",
+    "rangedSpell": "Ranged spell",
+    "perDay": "Per day",
+    "recharge": "Recharge",
+    "atWill": "At will",
+    "perRest": "Per rest",
+    "feet": "Feet",
+    "miles": "Miles",
     "specialAbility": "Special ability | Special abilities",
     "proficiencyBonus": "Proficiency bonus | Proficiency bonuses",
     "initiativeBonus": "Initiative bonus | Initiative bonuses",
@@ -538,6 +548,11 @@
     }
   },
   "components": {
+    "actionsTable": {
+      "cost": "Cost { cost } action | Costs { cost } actions",
+      "form": " While in { form } form.",
+      "oneTarget": "One target"
+    },
     "repeaterInput": {
       "noItems": "No items added yet. Click \"Add\" to get started."
     },
@@ -728,7 +743,27 @@
       "modifiersLabel": "Ability modifiers",
       "savingThrowsLabel": "Saving throws",
       "skillBonusesLabel": "Skill bonuses",
-      "resistancesLabel": "Resistances & immunities"
+      "resistancesLabel": "Resistances & immunities",
+      "legendaryActionCostLabel": "Legendary action cost",
+      "limitedToFormLabel": "Limited to form",
+      "usageLimitsLabel": "Usage limits",
+      "usageTypeLabel": "Usage type",
+      "usageParamLabel": "Usage amount",
+      "attacksLabel": "Attacks",
+      "attackTypeLabel": "Attack type",
+      "toHitModLabel": "To hit modifier",
+      "reachLabel": "Reach",
+      "rangeLabel": "Range",
+      "longRangeLabel": "Long range",
+      "targetCreatureOnlyLabel": "Target one creature only",
+      "damageDieCountLabel": "Die count",
+      "damageDieTypeLabel": "Die type",
+      "damageTypeLabel": "Damage type",
+      "extraDamageDieCountLabel": "Extra die count",
+      "extraDamageDieTypeLabel": "Extra die type",
+      "extraDamageBonusLabel": "Extra damage bonus",
+      "extraDamageTypeLabel": "Extra damage type",
+      "distanceUnitLabel": "Distance unit"
     },
     "campaignModal": {
       "add": "Create a new campaign",

@@ -3,7 +3,7 @@ import { useHomebrewCreate, useHomebrewUpdate } from '~~/queries/homebrews'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
-import { homebrewType, abilityType, actionType } from '~~/constants/validation'
+import { homebrewType } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -29,72 +29,6 @@ const tabIndex = computed(() => tabs.indexOf(activeTab.value))
 const canGoBack = computed(() => tabIndex.value > 0)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 
-interface FormAction {
-  actionType: DndActionType
-  name: string
-  desc: string
-  attackBonus?: number
-  damageBonus?: number
-  damageDice?: string
-  spellSave?: number
-  spellSaveType?: DndAbility
-}
-
-function dndActionToForm(action: DndAction): FormAction {
-  const attack = action.attacks[0]
-
-  return {
-    actionType: action.actionType,
-    name: action.name,
-    desc: action.desc,
-    attackBonus: attack?.toHitMod || undefined,
-    damageBonus: attack?.damageBonus,
-    damageDice: formatAttackDice(attack?.damageDieCount, attack?.damageDieType),
-    spellSave: attack?.spellSave,
-    spellSaveType: attack?.spellSaveType,
-  }
-}
-
-function formToDndAction(formAction: FormAction): DndAction {
-  const dice = parseAttackDice(formAction.damageDice)
-  const hasAttack
-    = formAction.attackBonus != null
-      || dice != null
-      || formAction.damageBonus != null
-      || formAction.spellSave != null
-
-  const attack: DndAttack | undefined = hasAttack
-    ? {
-        name: formAction.name,
-        attackType: 'melee',
-        toHitMod: formAction.attackBonus ?? 0,
-        distanceUnit: 'feet',
-        ...(dice ?? {}),
-        ...(formAction.damageBonus != null ? { damageBonus: formAction.damageBonus } : {}),
-        ...(formAction.spellSave != null ? { spellSave: formAction.spellSave } : {}),
-        ...(formAction.spellSaveType ? { spellSaveType: formAction.spellSaveType } : {}),
-      }
-    : undefined
-
-  return {
-    name: formAction.name,
-    desc: formAction.desc,
-    actionType: formAction.actionType,
-    attacks: attack ? [attack] : [],
-  }
-}
-
-const actionInputs = z.array(z.object({
-  actionType: z.enum(actionType),
-  name: z.string().min(3).max(30),
-  desc: z.string().min(10).max(1000),
-  attackBonus: z.number().gte(1).lte(100).optional(),
-  damageBonus: z.number().min(1).lte(100).optional(),
-  damageDice: z.string().min(3).max(15).regex(diceExpression, t('zod.diceExpression')).optional().or(z.literal('')),
-  spellSave: z.number().min(1).lte(100).optional(),
-  spellSaveType: z.union([z.enum(abilityType), z.literal('none'), z.literal('')]).optional().transform(val => !val || val === 'none' ? undefined : val),
-})).max(40)
-
 const formSchema = toTypedSchema(z.object({
   type: z.enum(homebrewType),
   amount: z.number().gte(1).lte(15).optional(),
@@ -119,7 +53,7 @@ const formSchema = toTypedSchema(z.object({
   skillBonuses: skillBonusesSchema.optional(),
   resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
   traits: z.array(traitSchema).max(40),
-  actions: actionInputs,
+  actions: z.array(actionSchema).max(40),
 }).refine(
   data => !props.isEncounter || !(['monster', 'summon'].includes(data.type) && !data.amount),
   { message: t('zod.required'), path: ['amount'] },
@@ -128,40 +62,38 @@ const formSchema = toTypedSchema(z.object({
   { message: t('zod.required'), path: ['summoner'] },
 ))
 
-const item = props.item as any
-
 const form = useForm({
   validationSchema: formSchema,
   initialValues: {
-    type: item?.type || 'player',
-    name: item?.name || '',
-    player: item?.player || '',
+    type: props.item?.type || 'player',
+    name: props.item?.name || '',
+    player: props.item?.player || '',
     initiative: undefined,
-    initiativeModifier: item?.initiativeModifier
-      ? isNaN(+item.initiativeModifier) ? undefined : +item.initiativeModifier
+    initiativeModifier: props.item?.initiativeModifier
+      ? isNaN(+props.item.initiativeModifier) ? undefined : +props.item.initiativeModifier
       : undefined,
-    armorClass: item?.armorClass || undefined,
-    hitPoints: item?.hitPoints || undefined,
-    link: item?.link || '',
-    hitDice: item?.hitDice || '',
-    armorDetail: item?.armorDetail || '',
-    proficiencyBonus: item?.proficiencyBonus || undefined,
-    passivePerception: item?.passivePerception || undefined,
-    speed: item?.speed || undefined,
-    sight: item?.sight || undefined,
-    languages: item?.languages || [],
-    abilityScores: item?.abilityScores || undefined,
-    modifiers: item?.modifiers || undefined,
-    savingThrows: item?.savingThrows || undefined,
-    skillBonuses: item?.skillBonuses || undefined,
+    armorClass: props.item?.armorClass || undefined,
+    hitPoints: props.item?.hitPoints || undefined,
+    link: props.item?.link || '',
+    hitDice: props.item?.hitDice || '',
+    armorDetail: props.item?.armorDetail || '',
+    proficiencyBonus: props.item?.proficiencyBonus || undefined,
+    passivePerception: props.item?.passivePerception || undefined,
+    speed: props.item?.speed || undefined,
+    sight: props.item?.sight || undefined,
+    languages: props.item?.languages || [],
+    abilityScores: props.item?.abilityScores || undefined,
+    modifiers: props.item?.modifiers || undefined,
+    savingThrows: props.item?.savingThrows || undefined,
+    skillBonuses: props.item?.skillBonuses || undefined,
     resistancesAndImmunities: {
-      damageImmunities: item?.resistancesAndImmunities?.damageImmunities ?? [],
-      damageResistances: item?.resistancesAndImmunities?.damageResistances ?? [],
-      damageVulnerabilities: item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
-      conditionImmunities: item?.resistancesAndImmunities?.conditionImmunities ?? [],
+      damageImmunities: props.item?.resistancesAndImmunities?.damageImmunities ?? [],
+      damageResistances: props.item?.resistancesAndImmunities?.damageResistances ?? [],
+      damageVulnerabilities: props.item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+      conditionImmunities: props.item?.resistancesAndImmunities?.conditionImmunities ?? [],
     },
-    traits: (item?.traits ?? []) as { name: string, desc: string }[],
-    actions: (item?.actions ?? []).map(dndActionToForm),
+    traits: (props.item?.traits ?? []) as { name: string, desc: string }[],
+    actions: props.item?.actions ?? [],
   },
 })
 
@@ -176,10 +108,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
   const { amount, initiative, initiativeModifier, summoner, ...rest } = values
 
-  const formData = {
-    ...rest,
-    actions: (values.actions as FormAction[]).map(formToDndAction),
-  }
+  const formData = { ...rest }
   const initMod = isDefined(initiativeModifier)
     ? { initiativeModifier: initiativeModifier.toString() }
     : {}

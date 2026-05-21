@@ -262,6 +262,32 @@ export const speedMap: Record<DndSpeedType, string> = {
   swim: 'Swim',
 }
 
+export const attackTypes: DndAttackType[] = [
+  'melee',
+  'ranged',
+  'meleeSpell',
+  'rangedSpell',
+]
+
+export const usageTypes: DndUsageType[] = [
+  'perDay',
+  'recharge',
+  'atWill',
+  'perRest',
+]
+
+export const diceTypes: DndDice[] = [
+  'd4',
+  'd6',
+  'd8',
+  'd10',
+  'd12',
+  'd20',
+  'd100',
+]
+
+export const distanceUnits: DndDistanceUnit[] = ['feet', 'miles']
+
 export const speedUnitMap: Record<DndDistanceUnit, string> = {
   feet: 'ft',
   miles: 'mi',

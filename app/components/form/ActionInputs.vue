@@ -1,8 +1,48 @@
 <script setup lang="ts">
-import { abilityTypeMap } from '~~/constants/dnd'
+import type { AcceptableValue } from 'reka-ui'
+import { useField, useFieldValue } from 'vee-validate'
+import { usageTypes } from '~~/constants/dnd'
 import { actionType } from '~~/constants/validation'
 
-defineProps<{ fieldName: string }>()
+const props = defineProps<{ fieldName: string }>()
+
+const actionTypeValue = useFieldValue<DndActionType>(`${props.fieldName}.actionType`)
+
+const {
+  value: usageLimits,
+  handleChange: handleUsageLimitsChange,
+} = useField<DndUsageLimits | undefined>(`${props.fieldName}.usageLimits`)
+
+const showLegendaryCost = computed(() =>
+  actionTypeValue.value === 'legendaryAction' || actionTypeValue.value === 'mythicAction',
+)
+const showUsageParam = computed(() =>
+  isDefined(usageLimits.value) && usageLimits.value.type !== 'atWill',
+)
+
+function handleUsageTypeChange(value: AcceptableValue) {
+  if (!value || value === 'none') {
+    handleUsageLimitsChange(undefined)
+  }
+  else {
+    handleUsageLimitsChange({
+      type: value as DndUsageType,
+      param: usageLimits.value?.param ?? 1,
+    })
+  }
+}
+
+function handleUsageParamChange(value: number) {
+  if (!usageLimits.value) return
+
+  handleUsageLimitsChange({ ...usageLimits.value, param: value })
+}
+
+const emptyAttack: DndAttack = {
+  name: '',
+  attackType: 'melee',
+  distanceUnit: 'feet',
+}
 </script>
 
 <template>
@@ -70,117 +110,95 @@ defineProps<{ fieldName: string }>()
       </UiFormItem>
     </UiFormField>
 
-    <div class="grid sm:grid-cols-3 gap-x-3 gap-y-2">
-      <UiFormField
-        v-slot="{ componentField }"
-        :name="`${fieldName}.damageDice`"
-      >
-        <UiFormItem v-auto-animate>
-          <UiFormLabel>
-            {{ $t('components.inputs.damageDiceLabel') }}
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput
-              type="text"
-              v-bind="componentField"
-              placeholder="2d6"
-            />
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+    <UiFormField
+      v-if="showLegendaryCost"
+      v-slot="{ componentField }"
+      :name="`${fieldName}.legendaryActionCost`"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel>
+          {{ $t('components.inputs.legendaryActionCostLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            type="number"
+            v-bind="componentField"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
 
-      <UiFormField
-        v-slot="{ componentField }"
-        :name="`${fieldName}.damageBonus`"
-      >
-        <UiFormItem v-auto-animate>
-          <UiFormLabel>
-            {{ $t('components.inputs.damageBonusLabel') }}
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput
-              type="number"
-              v-bind="componentField"
-            />
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-
-      <UiFormField
-        v-slot="{ componentField }"
-        :name="`${fieldName}.attackBonus`"
-      >
-        <UiFormItem v-auto-animate>
-          <UiFormLabel>
-            {{ $t('components.inputs.attackBonusLabel') }}
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput
-              type="number"
-              v-bind="componentField"
-            />
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-    </div>
+    <UiFormField
+      v-slot="{ componentField }"
+      :name="`${fieldName}.limitedToForm`"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel>
+          {{ $t('components.inputs.limitedToFormLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            type="text"
+            v-bind="componentField"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
 
     <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2">
-      <UiFormField
-        v-slot="{ componentField }"
-        :name="`${fieldName}.spellSave`"
-      >
-        <UiFormItem v-auto-animate>
-          <UiFormLabel>
-            {{ $t('components.inputs.spellSaveLabel') }}
-          </UiFormLabel>
-          <UiFormControl>
-            <UiInput
-              type="number"
-              v-bind="componentField"
-            />
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+      <UiFormItem v-auto-animate>
+        <UiFormLabel>
+          {{ $t('components.inputs.usageTypeLabel') }}
+        </UiFormLabel>
+        <UiSelect
+          :model-value="usageLimits?.type ?? 'none'"
+          @update:model-value="handleUsageTypeChange"
+        >
+          <UiSelectTrigger>
+            <UiSelectValue :placeholder="$t('components.inputs.nothing')" />
+          </UiSelectTrigger>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem value="none">
+                {{ $t('components.inputs.nothing') }}
+              </UiSelectItem>
+              <UiSelectItem
+                v-for="type in usageTypes"
+                :key="type"
+                :value="type"
+              >
+                {{ $t(`general.${type}`) }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
+      </UiFormItem>
 
-      <UiFormField
-        v-slot="{ componentField }"
-        :name="`${fieldName}.spellSaveType`"
+      <UiFormItem
+        v-if="showUsageParam"
+        v-auto-animate
       >
-        <UiFormItem>
-          <UiFormLabel>
-            {{ $t('components.inputs.saveTypeLabel') }}
-          </UiFormLabel>
-          <UiSelect v-bind="componentField">
-            <UiFormControl>
-              <UiSelectTrigger>
-                <UiSelectValue :placeholder="$t('components.inputs.nothing')" />
-              </UiSelectTrigger>
-            </UiFormControl>
-            <UiSelectContent>
-              <UiSelectGroup>
-                <UiSelectItem
-                  v-for="option in [
-                    { label: $t('components.inputs.nothing'), value: 'none' },
-                    ...Object.entries(abilityTypeMap).map(([_key, value]) => ({
-                      label: value.charAt(0).toUpperCase() + value.slice(1),
-                      value: value,
-                    })),
-                  ]"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.label }}
-                </UiSelectItem>
-              </UiSelectGroup>
-            </UiSelectContent>
-          </UiSelect>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+        <UiFormLabel>
+          {{ $t('components.inputs.usageParamLabel') }}
+        </UiFormLabel>
+        <UiInput
+          type="number"
+          :model-value="usageLimits?.param"
+          @update:model-value="v => handleUsageParamChange(+v)"
+        />
+      </UiFormItem>
     </div>
+
+    <FormRepeaterInput
+      :name="`${fieldName}.attacks`"
+      :label="$t('components.inputs.attacksLabel')"
+      :empty-object="emptyAttack"
+    >
+      <template #item="{ fieldName: attackFieldName }">
+        <FormAttackInputs :field-name="attackFieldName" />
+      </template>
+    </FormRepeaterInput>
   </div>
 </template>

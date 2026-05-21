@@ -1,0 +1,122 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AttackInputs > Should match snapshot 1`] = `
+"<div class="flex flex-col gap-2">
+  <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2">
+    <div class="space-y-2"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.nameLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" type="text" name="attack.name">
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-1-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.attackTypeLabel<span class="text-destructive">*</span>
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-1-form-item" aria-describedby="reka-v-0-0-1-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-2" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">general.melee</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+      <!---->
+    </div>
+  </div>
+  <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2">
+    <div class="space-y-2"><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.toHitModLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-3-form-item" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" type="number" name="attack.toHitMod">
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.distanceUnitLabel<span class="text-destructive">*</span>
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-4-form-item" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-5" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder=""></span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+      <!---->
+    </div>
+  </div>
+  <div class="grid sm:grid-cols-3 gap-x-3 gap-y-2">
+    <div class="space-y-2"><label for="reka-v-0-0-6-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.reachLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-6-form-item" aria-describedby="reka-v-0-0-6-form-item-description" aria-invalid="false" type="number" name="attack.reach">
+      <!---->
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="space-y-2 flex items-center gap-2 py-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground mb-0" aria-describedby="reka-v-0-0-7-form-item-description" aria-invalid="false" id="reka-v-0-0-7-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+      <!---->
+      <!--v-if-->
+    </button><label for="reka-v-0-0-7-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.targetCreatureOnlyLabel
+      <!--v-if-->
+      <!--v-if-->
+    </label>
+    <!---->
+  </div>
+  <div class="grid sm:grid-cols-4 gap-x-3 gap-y-2">
+    <div class="space-y-2"><label for="reka-v-0-0-8-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageDieCountLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-8-form-item" aria-describedby="reka-v-0-0-8-form-item-description" aria-invalid="false" type="number" name="attack.damageDieCount">
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-9-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageDieTypeLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-9-form-item" aria-describedby="reka-v-0-0-9-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-10" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder="components.inputs.nothing">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-11-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageBonusLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-11-form-item" aria-describedby="reka-v-0-0-11-form-item-description" aria-invalid="false" type="number" name="attack.damageBonus">
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-12-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageTypeLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-12-form-item" aria-describedby="reka-v-0-0-12-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-13" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder="components.inputs.nothing">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+      <!---->
+    </div>
+  </div>
+  <div class="grid sm:grid-cols-4 gap-x-3 gap-y-2">
+    <div class="space-y-2"><label for="reka-v-0-0-14-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageDieCountLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-14-form-item" aria-describedby="reka-v-0-0-14-form-item-description" aria-invalid="false" type="number" name="attack.extraDamageDieCount">
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-15-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageDieTypeLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-15-form-item" aria-describedby="reka-v-0-0-15-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-16" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder="components.inputs.nothing">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-17-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageBonusLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-17-form-item" aria-describedby="reka-v-0-0-17-form-item-description" aria-invalid="false" type="number" name="attack.extraDamageBonus">
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-18-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageTypeLabel
+        <!--v-if-->
+        <!--v-if-->
+      </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-18-form-item" aria-describedby="reka-v-0-0-18-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-19" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder="components.inputs.nothing">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--teleport start-->
+      <!--teleport end-->
+      <!--v-if-->
+      <!---->
+    </div>
+  </div>
+  <!--v-if-->
+</div>"
+`;
