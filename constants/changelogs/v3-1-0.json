@@ -1,0 +1,39 @@
+{
+  "version": "v3.1.0",
+  "date": "2026-05-21",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Added new fields to homebrew items"
+        },
+        {
+          "text": "Show new fields in monster cards"
+        },
+        {
+          "text": "New action and attack fields"
+        },
+        {
+          "text": "Show concentration check DC in concentration notifications"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Homebrew modal is now fullscreen because it needs to show more fields and the previous layout was cramped"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Search did not work for bestiary and dnd content"
+        }
+      ]
+    }
+  ]
+}
