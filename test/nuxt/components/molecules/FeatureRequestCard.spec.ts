@@ -3,6 +3,12 @@ import { describe, expect, it, vi } from 'vitest'
 import FeatureRequestCard from '~/components/molecules/FeatureRequestCard.vue'
 import SocialProfile from '~~/test/nuxt/fixtures/social-profile.json'
 
+vi.mock('~/composables/useAuthentication', () => ({
+  useAuthentication: () => ({
+    user: ref({ id: 'test-user-id' }),
+  }),
+}))
+
 interface Props {
   feature: FeatureRequest
 }
@@ -23,12 +29,6 @@ const props: Props = {
 }
 
 describe('FeatureRequestCard', async () => {
-  vi.mock('~/composables/useAuthentication', () => ({
-    useAuthentication: () => ({
-      user: ref({ id: 'test-user-id' }),
-    }),
-  }))
-
   it('Should match snapshot', async () => {
     const component = await mountSuspended(FeatureRequestCard, { props })
 
