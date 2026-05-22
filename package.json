@@ -79,6 +79,7 @@
     "vee-validate": "^4.15.1",
     "vue": "latest",
     "vue-dompurify-html": "^5.3.0",
+    "vue-draggable-plus": "^0.6.1",
     "vue-router": "latest",
     "vue-tippy": "^6.7.1",
     "ybug-vue": "^1.2.0",
