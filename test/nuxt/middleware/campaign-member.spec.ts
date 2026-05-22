@@ -4,9 +4,10 @@ import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
 import { authUser } from '~~/test/nuxt/fixtures/auth-user'
 import middleware from '~/middleware/campaign-member'
 
-vi.mock('@tanstack/vue-query', () => ({
-  useQueryClient: vi.fn(() => mockQueryClient),
-}))
+vi.mock('@tanstack/vue-query', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tanstack/vue-query')>()
+  return { ...actual, useQueryClient: vi.fn(() => mockQueryClient) }
+})
 
 const mockQueryClient = {
   getQueryData: vi.fn(),
@@ -25,9 +26,9 @@ const mockSupabase = {
 
 let mockSupabaseResponse: { data: any, error: any }
 
-mockNuxtImport('useState', () => vi.fn((key: string) => {
+mockNuxtImport('useState', () => vi.fn((key: string, init?: () => any) => {
   if (key === 'auth-user') return { value: mockUser }
-  return { value: null }
+  return { value: init ? init() : null }
 }))
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))

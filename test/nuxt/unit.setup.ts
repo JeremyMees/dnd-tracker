@@ -29,7 +29,11 @@ config.global.stubs = {
 }
 
 // Disable payload extraction in tests
-vi.mock('#app/plugins/payload.client', () => ({
+vi.mock('~/plugins/payload.client', () => ({
+  default: () => {},
+}))
+
+vi.mock('~/plugins/session.client', () => ({
   default: () => {},
 }))
 
@@ -37,8 +41,8 @@ mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
   locale: { value: 'en' },
   locales: [
-    { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },
-    { code: 'en', iso: 'en-US', name: 'English' },
+    { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
+    { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
   ],
 }))
 
