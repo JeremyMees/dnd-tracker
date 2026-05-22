@@ -22,7 +22,9 @@ describe('Initiative pinned content widget', async () => {
   it('Should show empty state when no items', async () => {
     const component = await mountSuspended(PinnedContent, { props: { value: [] } })
 
-    expect(component.text()).toContain('pages.encounter.pinnedContent.empty')
+    expect(component.html()).toMatchSnapshot()
+    expect(component.text()).toContain('pages.encounter.pinnedContent.empty.title')
+    expect(component.text()).toContain('pages.encounter.pinnedContent.empty.text')
   })
 
   it('Should show accordion when items are present', async () => {

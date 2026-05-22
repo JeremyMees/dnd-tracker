@@ -60,11 +60,25 @@ defineProps<{ value: DndItem[] }>()
         </UiAccordionContent>
       </UiAccordionItem>
     </UiAccordion>
-    <p
+    <div
       v-else
-      class="text-muted-foreground"
+      class="flex flex-col gap-2"
     >
-      {{ $t("pages.encounter.pinnedContent.empty") }}
-    </p>
+      <span class="head-6">
+        {{ $t("pages.encounter.pinnedContent.empty.title") }}
+      </span>
+      <p class="text-muted-foreground">
+        {{ $t("pages.encounter.pinnedContent.empty.text") }}
+        <span class="inline-flex items-center gap-1">
+          <Icon
+            name="tabler:book"
+            class="size-4 min-w-4 text-help"
+          />
+          <span>
+            {{ $t('components.navbar.dnd-content') }}
+          </span>
+        </span>
+      </p>
+    </div>
   </Card>
 </template>

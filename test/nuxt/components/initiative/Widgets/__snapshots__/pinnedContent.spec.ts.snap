@@ -18,3 +18,11 @@ exports[`Initiative pinned content widget > Should match snapshot 1`] = `
   </div>
 </div>"
 `;
+
+exports[`Initiative pinned content widget > Should show empty state when no items 1`] = `
+"<div class="transition-colors duration-300 border-4 rounded-lg p-4 border-secondary bg-secondary/50">
+  <div class="flex flex-col gap-2"><span class="head-6">pages.encounter.pinnedContent.empty.title</span>
+    <p class="text-muted-foreground">pages.encounter.pinnedContent.empty.text <span class="inline-flex items-center gap-1"><span class="iconify i-tabler:book size-4 min-w-4 text-help" aria-hidden="true"></span><span>components.navbar.dnd-content</span></span></p>
+  </div>
+</div>"
+`;
