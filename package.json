@@ -65,7 +65,7 @@
     "driver.js": "^1.4.0",
     "markdown-it": "^14.1.1",
     "motion-v": "^2.2.1",
-    "nuxt": "^4.4.5",
+    "nuxt": "^4.4.8",
     "nuxt-authorization": "^0.3.5",
     "nuxt-zod-i18n": "^1.12.1",
     "oslo": "^1.2.1",
