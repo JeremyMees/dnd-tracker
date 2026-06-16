@@ -156,6 +156,10 @@ function removeWidget(id: InitiativeWidget) {
           v-if="widget === 'fantasy-name-generator'"
           hydrate-on-idle
         />
+        <LazyInitiativeWidgetsDiceRoll
+          v-if="widget === 'dice-roll'"
+          hydrate-on-idle
+        />
       </div>
     </VueDraggable>
 

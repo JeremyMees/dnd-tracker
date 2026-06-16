@@ -40,7 +40,7 @@ export type TableSpacing = Database['public']['Enums']['table_spacing']
 export type UserRole = Database['public']['Enums']['user_role']
 
 // Additional Enums
-export type InitiativeWidget = 'note' | 'info-pins' | 'fantasy-name-generator'
+export type InitiativeWidget = 'note' | 'info-pins' | 'fantasy-name-generator' | 'dice-roll'
 export type InitiativeRowField = 'armorClass' | 'hitPoints' | 'conditions' | 'note' | 'deathSaves' | 'concentration' | 'modify'
 
 export interface InitiativeSheetRow {
