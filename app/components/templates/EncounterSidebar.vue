@@ -9,13 +9,11 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
 
 const diceRollerOpen = ref(false)
-const fantasyNameGeneratorOpen = ref(false)
 const openModal = ref<Modals>(undefined)
 
 onBeforeUnmount(() => {
   openModal.value = undefined
   diceRollerOpen.value = false
-  fantasyNameGeneratorOpen.value = false
 })
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
@@ -268,41 +266,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
           </UiDialog>
         </UiSidebarMenuItem>
       </template>
-      <UiSidebarMenuItem>
-        <UiPopover v-model:open="fantasyNameGeneratorOpen">
-          <UiPopoverTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('components.navbar.fantasy'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('components.navbar.fantasy')"
-                class="flex items-center gap-x-2 p-2 w-full text-sm"
-              >
-                <Icon
-                  name="tabler:signature"
-                  class="size-4 min-w-4 text-success"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('components.navbar.fantasy') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiPopoverTrigger>
-          <UiPopoverContent
-            align="center"
-            side="right"
-            prioritize-position
-          >
-            <FantasyNameGenerator
-              :amount="10"
-              compact
-            />
-          </UiPopoverContent>
-        </UiPopover>
-      </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiDialog
           :open="openModal === 'settings'"
