@@ -5,6 +5,7 @@ import {
   initiativeDefaultRows,
   initiativePets,
   initiativeWidgets,
+  widgetLabels,
 } from '~~/constants/validation'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
@@ -115,10 +116,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       <FormCheckboxGroup
         name="widgets"
         :label="$t('components.initiativeSettings.widgets')"
-        :options="[
-          { label: $t('general.note'), value: 'note' },
-          { label: $t('general.infoPins'), value: 'info-pins' },
-        ]"
+        :options="initiativeWidgets.map(id => ({ label: $t(widgetLabels[id]), value: id }))"
         list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
       />
       <UiFormField

@@ -1,6 +1,14 @@
 import { config } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import * as dndHelpers from '~~/shared/utils/dnd/names'
+
+let nameIndex = 0
+
+beforeEach(() => {
+  nameIndex = 0
+  vi.spyOn(dndHelpers, 'randomName').mockImplementation(() => `Test Name ${++nameIndex}`)
+})
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,

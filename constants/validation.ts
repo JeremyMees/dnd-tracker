@@ -28,7 +28,14 @@ export const initiativePets = [
 export const initiativeWidgets = [
   'note',
   'info-pins',
+  'fantasy-name-generator',
 ] as const satisfies readonly InitiativeWidget[]
+
+export const widgetLabels: Record<InitiativeWidget, string> = {
+  'note': 'general.note',
+  'info-pins': 'general.infoPins',
+  'fantasy-name-generator': 'general.fantasyNameGenerator',
+}
 
 export const homebrewType = [
   'player',

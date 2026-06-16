@@ -1,8 +1,8 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { randomName } from '~~/shared/utils/dnd/names'
 
 describe('dnd/names', () => {
-  afterEach(() => vi.restoreAllMocks())
+  beforeEach(() => vi.restoreAllMocks())
 
   it('should generate a name with first and last name', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5)

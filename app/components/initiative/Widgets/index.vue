@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { initiativeWidgets } from '~~/constants/validation'
+import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
@@ -9,11 +9,6 @@ import * as z from 'zod'
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const definitions = initiativeWidgets.map(id => ({ id }))
-
-const widgetLabels: Record<InitiativeWidget, string> = {
-  'note': 'general.note',
-  'info-pins': 'general.infoPins',
-}
 
 const formSchema = toTypedSchema(z.object({
   widgets: z.array(z.enum(initiativeWidgets)),
@@ -156,6 +151,10 @@ function removeWidget(id: InitiativeWidget) {
           hydrate-on-idle
           :value="sheet?.infoCards ?? []"
           @update="update({ infoCards: $event })"
+        />
+        <LazyInitiativeWidgetsFantasyNameGenerator
+          v-if="widget === 'fantasy-name-generator'"
+          hydrate-on-idle
         />
       </div>
     </VueDraggable>
