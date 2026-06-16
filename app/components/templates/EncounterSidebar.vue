@@ -8,13 +8,9 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
 
-const diceRollerOpen = ref(false)
 const openModal = ref<Modals>(undefined)
 
-onBeforeUnmount(() => {
-  openModal.value = undefined
-  diceRollerOpen.value = false
-})
+onBeforeUnmount(() => openModal.value = undefined)
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 </script>
@@ -25,42 +21,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       {{ $t('pages.encounter.options') }}
     </UiSidebarGroupLabel>
     <UiSidebarMenu>
-      <UiSidebarMenuItem>
-        <UiPopover v-model:open="diceRollerOpen">
-          <UiPopoverTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                id="tour-2"
-                v-tippy="{
-                  content: $t('actions.roll'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('actions.roll')"
-                class="flex items-center gap-x-2 p-2 w-full text-sm"
-              >
-                <Icon
-                  name="tabler:hexagon"
-                  class="size-4 min-w-4 text-tertiary"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('actions.roll') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiPopoverTrigger>
-          <UiPopoverContent
-            align="center"
-            side="right"
-            prioritize-position
-          >
-            <DiceRoller
-              :styled="false"
-              @rolled="diceRollerOpen = false"
-            />
-          </UiPopoverContent>
-        </UiPopover>
-      </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiDialog
           :open="openModal === 'content'"
