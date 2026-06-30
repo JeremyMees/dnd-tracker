@@ -69,7 +69,7 @@
     "nuxt-authorization": "^0.3.5",
     "nuxt-zod-i18n": "^1.12.1",
     "oslo": "^1.2.1",
-    "reka-ui": "^2.9.7",
+    "reka-ui": "^2.10.1",
     "shadcn-nuxt": "^2.7.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",

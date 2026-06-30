@@ -46,8 +46,8 @@ exports[`AttackInputs > Should match snapshot 1`] = `
   </div>
   <div class="space-y-2 flex items-center gap-2 py-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground mb-0" aria-describedby="reka-v-0-0-7-form-item-description" aria-invalid="false" id="reka-v-0-0-7-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
       <!---->
-      <!--v-if-->
-    </button><label for="reka-v-0-0-7-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.targetCreatureOnlyLabel
+    </button>
+    <!--v-if--><label for="reka-v-0-0-7-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.targetCreatureOnlyLabel
       <!--v-if-->
       <!--v-if-->
     </label>
