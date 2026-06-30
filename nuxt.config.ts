@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
-    'nuxt-zod-i18n',
     '@unlok-co/nuxt-stripe',
     'shadcn-nuxt',
     'nuxt-authorization',
@@ -113,7 +112,6 @@ export default defineNuxtConfig({
         '@tiptap/starter-kit',
         '@tiptap/vue-3',
         '@unhead/schema-org/vue',
-        '@vee-validate/zod',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'c15t',
@@ -184,13 +182,6 @@ export default defineNuxtConfig({
       callback: '/',
       include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
       saveRedirectToCookie: true,
-    },
-  },
-
-  zodI18n: {
-    localeCodesMapping: {
-      'en-GB': 'en',
-      'nl-NL': 'nl',
     },
   },
 })

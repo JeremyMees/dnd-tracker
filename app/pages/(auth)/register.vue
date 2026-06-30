@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { useToast } from '~/components/ui/toast/use-toast'
@@ -15,21 +14,21 @@ const localePath = useLocalePath()
 
 const avatar = ref<Avatar>(defaultAvatar)
 
-const formSchema = toTypedSchema(z.object({
-  name: z.string().min(3).max(30).regex(alphaSpaces, t('zod.alphaSpaces')),
-  username: z.string().min(5).max(50).regex(alphaSpaces, t('zod.alphaSpaces')),
-  email: z.string().min(5).max(50).email(),
+const formSchema = z.object({
+  name: z.string().min(3).max(30).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
+  username: z.string().min(5).max(50).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
+  email: z.email().min(5).max(50),
   password: z
     .string()
     .min(6)
     .max(50)
-    .regex(containsLowercase, t('zod.containsLowercase'))
-    .regex(containsUppercase, t('zod.containsUppercase'))
-    .regex(containsNumber, t('zod.containsNumber'))
-    .regex(containsSymbol, t('zod.containsSymbol'))
-    .regex(allowedChars, t('zod.allowedChars')),
+    .regex(containsLowercase, { error: () => t('zod.containsLowercase') })
+    .regex(containsUppercase, { error: () => t('zod.containsUppercase') })
+    .regex(containsNumber, { error: () => t('zod.containsNumber') })
+    .regex(containsSymbol, { error: () => t('zod.containsSymbol') })
+    .regex(allowedChars, { error: () => t('zod.allowedChars') }),
   marketing: z.boolean(),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

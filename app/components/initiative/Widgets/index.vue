@@ -2,7 +2,6 @@
 import { VueDraggable } from 'vue-draggable-plus'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -10,9 +9,9 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const definitions = initiativeWidgets.map(id => ({ id }))
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   widgets: z.array(z.enum(initiativeWidgets)),
-}))
+})
 
 const form = useForm({ validationSchema: formSchema })
 const formError = ref<string>('')

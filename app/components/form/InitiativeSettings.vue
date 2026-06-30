@@ -7,7 +7,6 @@ import {
   initiativeWidgets,
   widgetLabels,
 } from '~~/constants/validation'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -17,13 +16,13 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const isModified = computed(() => sheet.value?.settings?.modified ?? false)
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   spacing: z.enum(initiativeSpacingOptions),
   rows: z.array(z.enum(initiativeDefaultRows)),
   widgets: z.array(z.enum(initiativeWidgets)),
   pet: z.union([z.enum(initiativePets), z.literal('none')]).optional().transform(val => val === 'none' ? undefined : val),
   negative: z.boolean(),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

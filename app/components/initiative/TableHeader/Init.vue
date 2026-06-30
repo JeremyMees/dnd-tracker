@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -13,7 +12,7 @@ const formError = ref<string>('')
 
 const usedTypes = computed(() => [...new Set(sheet.value?.rows.map(({ type }) => type))])
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   selectedTypes: z.array(z.string()),
   ignore: z.boolean(),
   selectedCreatures: z.array(z.object({
@@ -21,7 +20,7 @@ const formSchema = toTypedSchema(z.object({
     amount: z.number().min(0).max(50).nullable().optional(),
     initiative: z.number().min(-20).max(20).nullable().optional(),
   })),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -22,9 +21,9 @@ type RollType = 'advantage' | 'straight' | 'disadvantage'
 const popoverOpen = shallowRef(false)
 const formError = ref<string>('')
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   target: z.string().min(2).max(50),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

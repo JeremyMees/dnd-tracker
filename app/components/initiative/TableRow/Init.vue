@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -11,10 +10,10 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const popoverOpen = shallowRef<boolean>(false)
 const formError = ref<string>('')
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   initiative: z.number().min(0).max(50),
   modifier: z.number().min(-20).max(20).nullable().optional(),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useHomebrewCreate, useHomebrewUpdate } from '~~/queries/homebrews'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { homebrewType } from '~~/constants/validation'
@@ -29,7 +28,7 @@ const tabIndex = computed(() => tabs.indexOf(activeTab.value))
 const canGoBack = computed(() => tabIndex.value > 0)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   type: z.enum(homebrewType),
   amount: z.number().gte(1).lte(15).optional(),
   summoner: z.string().max(50).optional().or(z.literal('')),
@@ -40,7 +39,7 @@ const formSchema = toTypedSchema(z.object({
   armorClass: z.number().gte(1).lte(100).optional(),
   hitPoints: z.number().gte(1).lte(1000).optional(),
   link: z.string().url().optional().or(z.literal('')),
-  hitDice: z.string().min(3).max(15).regex(hitDiceExpression, t('zod.hitDiceExpression')).optional().or(z.literal('')),
+  hitDice: z.string().min(3).max(15).regex(hitDiceExpression, { error: () => t('zod.hitDiceExpression') }).optional().or(z.literal('')),
   armorDetail: z.string().max(100).optional().or(z.literal('')),
   proficiencyBonus: z.number().gte(0).lte(10).optional(),
   passivePerception: z.number().gte(0).lte(30).optional(),
@@ -56,11 +55,11 @@ const formSchema = toTypedSchema(z.object({
   actions: z.array(actionSchema).max(40),
 }).refine(
   data => !props.isEncounter || !(['monster', 'summon'].includes(data.type) && !data.amount),
-  { message: t('zod.required'), path: ['amount'] },
+  { error: () => t('zod.required'), path: ['amount'] },
 ).refine(
   data => !props.isEncounter || !(['summon'].includes(data.type) && !data.summoner),
-  { message: t('zod.required'), path: ['summoner'] },
-))
+  { error: () => t('zod.required'), path: ['summoner'] },
+)
 
 const form = useForm({
   validationSchema: formSchema,

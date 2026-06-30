@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -10,11 +9,11 @@ const { t } = useI18n()
 const { toast } = useToast()
 const localePath = useLocalePath()
 
-const formSchema = toTypedSchema(z.object({
-  name: z.string().min(3).max(30).regex(alphaSpaces, t('zod.alphaSpaces')).optional(),
-  email: z.string().min(5).max(50).email(),
+const formSchema = z.object({
+  name: z.string().min(3).max(30).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }).optional(),
+  email: z.email().min(5).max(50),
   question: z.string().min(3).max(1000),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

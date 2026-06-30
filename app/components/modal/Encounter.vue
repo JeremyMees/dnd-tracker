@@ -2,7 +2,6 @@
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useEncounterCreate, useEncounterUpdate } from '~~/queries/encounters'
 import { useCampaignMinimalListing } from '~~/queries/campaigns'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -17,10 +16,10 @@ const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   title: z.string().min(3).max(30),
   campaign: z.union([z.number(), z.literal('none')]).optional().transform(val => val === 'none' ? null : val),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

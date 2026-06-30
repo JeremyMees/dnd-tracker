@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useCampaignCreate, useCampaignUpdate } from '~~/queries/campaigns'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -12,9 +11,9 @@ const user = useAuthenticatedUser()
 const { mutateAsync: createCampaign } = useCampaignCreate()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   title: z.string().min(3).max(30),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

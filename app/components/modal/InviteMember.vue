@@ -2,7 +2,6 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useJoinTokenCreate } from '~~/queries/team-members'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -25,7 +24,7 @@ const foundUsers = ref<FoundUser[]>([])
 const noUser = ref<string>()
 const search = ref<string>()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   users: z.array(z.object({
     id: z.string(),
     role: z.string(),
@@ -34,10 +33,10 @@ const formSchema = toTypedSchema(z.object({
       username: z.string(),
       name: z.string(),
       avatar: z.string(),
-      email: z.string().email(),
+      email: z.email(),
     }),
   })).min(1),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -59,7 +58,7 @@ async function handleSearch(): Promise<void> {
   searchFormError.value = ''
   const email = search.value
 
-  if (z.string().email().safeParse(email).success === false) {
+  if (z.email().safeParse(email).success === false) {
     searchFormError.value = t('zod.invalidEmail')
     return
   }

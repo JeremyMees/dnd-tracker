@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -10,10 +9,10 @@ const { login } = useAuthentication()
 const localePath = useLocalePath()
 const redirect = useCookie<string>('sb-redirect-path')
 
-const formSchema = toTypedSchema(z.object({
-  email: z.string().min(5).max(50).email(),
+const formSchema = z.object({
+  email: z.email().min(5).max(50),
   password: z.string().min(6).max(50),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

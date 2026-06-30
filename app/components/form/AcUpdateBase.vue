@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -10,9 +9,9 @@ const props = defineProps<{
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   amount: z.number().min(0).max(1000),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

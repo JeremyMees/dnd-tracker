@@ -2,7 +2,6 @@
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useTeamMemberCreate, useTeamMemberRemove } from '~~/queries/team-members'
 import { useCampaignUpdate } from '~~/queries/campaigns'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { campaignTransferRole } from '~~/constants/validation'
@@ -21,13 +20,13 @@ const { mutateAsync: createTeamMember } = useTeamMemberCreate()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   role: z.enum(campaignTransferRole),
   user: z.string(),
   title: z.string().min(1).max(100).refine(val => val === props.current.title, {
-    message: t('zod.match', { field: props.current.title }),
+    error: () => t('zod.match', { field: props.current.title }),
   }),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

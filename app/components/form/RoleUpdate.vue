@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { useTeamMemberUpdate } from '~~/queries/team-members'
@@ -12,9 +11,9 @@ const props = defineProps<{
 
 const { mutateAsync: updateTeamMember } = useTeamMemberUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   role: z.enum(roleType),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

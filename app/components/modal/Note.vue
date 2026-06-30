@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useNoteCreate, useNoteUpdate } from '~~/queries/notes'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -14,10 +13,10 @@ const props = defineProps<{
 const { mutateAsync: createNote } = useNoteCreate()
 const { mutateAsync: updateNote } = useNoteUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   title: z.string().min(5).max(50),
   text: z.string().min(10).max(5000),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,

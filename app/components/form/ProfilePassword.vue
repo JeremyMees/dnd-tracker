@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -13,17 +12,17 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const formSchemaData = toTypedSchema(z.object({
+const formSchemaData = z.object({
   password: z
     .string()
     .min(6)
     .max(50)
-    .regex(containsLowercase, t('zod.containsLowercase'))
-    .regex(containsUppercase, t('zod.containsUppercase'))
-    .regex(containsNumber, t('zod.containsNumber'))
-    .regex(containsSymbol, t('zod.containsSymbol'))
-    .regex(allowedChars, t('zod.allowedChars')),
-}))
+    .regex(containsLowercase, { error: () => t('zod.containsLowercase') })
+    .regex(containsUppercase, { error: () => t('zod.containsUppercase') })
+    .regex(containsNumber, { error: () => t('zod.containsNumber') })
+    .regex(containsSymbol, { error: () => t('zod.containsSymbol') })
+    .regex(allowedChars, { error: () => t('zod.allowedChars') }),
+})
 
 const formData = useForm({
   validationSchema: formSchemaData,

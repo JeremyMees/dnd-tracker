@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useFeatureCreate } from '~~/queries/features'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -15,7 +14,7 @@ const baseSchema = z.object({
 })
 
 const form = useForm({
-  validationSchema: toTypedSchema(baseSchema),
+  validationSchema: baseSchema,
 })
 
 const formError = ref<string>('')
