@@ -48,7 +48,9 @@ describe('AttackInputs', () => {
   it('Should always render the targetCreatureOnly checkbox', async () => {
     const component = await mountWithForm()
 
-    expect(component.html()).toContain('components.inputs.targetCreatureOnlyLabel')
+    expect(component.html()).toContain(
+      'components.inputs.targetCreatureOnlyLabel',
+    )
   })
 
   describe('Conditional fields based on attackType', () => {
@@ -101,8 +103,12 @@ describe('AttackInputs', () => {
       for (const type of ['melee', 'ranged'] as DndAttackType[]) {
         const component = await mountWithForm(type)
 
-        expect(component.html()).not.toContain('components.inputs.spellSaveLabel')
-        expect(component.html()).not.toContain('components.inputs.saveTypeLabel')
+        expect(component.html()).not.toContain(
+          'components.inputs.spellSaveLabel',
+        )
+        expect(component.html()).not.toContain(
+          'components.inputs.saveTypeLabel',
+        )
       }
     })
   })

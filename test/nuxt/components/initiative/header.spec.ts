@@ -77,7 +77,9 @@ describe('Initiative header', () => {
       },
     })
 
-    expect(component.find('[data-test-previous]').attributes('disabled')).toBeDefined()
+    expect(
+      component.find('[data-test-previous]').attributes('disabled'),
+    ).toBeDefined()
   })
 
   it('Should disable action buttons when there are no rows', async () => {
@@ -90,9 +92,15 @@ describe('Initiative header', () => {
       },
     })
 
-    expect(component.find('[data-test-next]').attributes('disabled')).toBeDefined()
-    expect(component.find('[data-test-previous]').attributes('disabled')).toBeDefined()
-    expect(component.find('[data-test-reset]').attributes('disabled')).toBeDefined()
+    expect(
+      component.find('[data-test-next]').attributes('disabled'),
+    ).toBeDefined()
+    expect(
+      component.find('[data-test-previous]').attributes('disabled'),
+    ).toBeDefined()
+    expect(
+      component.find('[data-test-reset]').attributes('disabled'),
+    ).toBeDefined()
   })
 
   it('Should emit next event when next button is clicked', async () => {

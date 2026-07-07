@@ -17,13 +17,13 @@ const formSchema = z.object({
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: formSchema,
   initialValues: {
-    ...(props.item.maxHitPointsOld ? { amount: props.item.maxHitPoints } : { }),
+    ...(props.item.maxHitPointsOld ? { amount: props.item.maxHitPoints } : {}),
   },
 })
 
 const formError = ref<string>('')
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -31,25 +31,25 @@ const onSubmit = handleSubmit(async (values) => {
 
     const { amount, reset } = values
 
-    const { row, toasts } = reset || amount === props.item.maxHitPointsOld
-      ? handleHpChanges(
-          props.item.maxHitPointsOld ?? 0,
-          'override-reset',
-          props.item,
-          props.sheet?.settings?.negative ?? false,
-        )
-      : handleHpChanges(
-          amount,
-          'override',
-          props.item,
-          props.sheet?.settings?.negative ?? false,
-        )
+    const { row, toasts } =
+      reset || amount === props.item.maxHitPointsOld
+        ? handleHpChanges(
+            props.item.maxHitPointsOld ?? 0,
+            'override-reset',
+            props.item,
+            props.sheet?.settings?.negative ?? false,
+          )
+        : handleHpChanges(
+            amount,
+            'override',
+            props.item,
+            props.sheet?.settings?.negative ?? false,
+          )
 
     props.handleToasts(toasts)
 
     await props.updateRow(row)
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred while updating base HP'
   }
 })
@@ -57,27 +57,31 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="amount"
-    >
+    <UiFormField v-slot="{ componentField }" name="amount">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.overrideFieldLabel', { field: 'HP' }) }}
         </UiFormLabel>
         <UiFormControl>
           <UiInputGroup>
-            <UiInputGroupInput
-              type="number"
-              v-bind="componentField"
-            />
+            <UiInputGroupInput type="number" v-bind="componentField" />
             <UiInputGroupAddon align="inline-end">
               <UiInputGroupButton
                 type="submit"
-                :aria-label="item.maxHitPointsOld ? $t('actions.reset') : $t('actions.save')"
+                :aria-label="
+                  item.maxHitPointsOld
+                    ? $t('actions.reset')
+                    : $t('actions.save')
+                "
                 @click="setFieldValue('reset', !!item.maxHitPointsOld)"
               >
-                <Icon :name="item.maxHitPointsOld ? 'tabler:player-skip-back' : 'tabler:device-floppy'" />
+                <Icon
+                  :name="
+                    item.maxHitPointsOld
+                      ? 'tabler:player-skip-back'
+                      : 'tabler:device-floppy'
+                  "
+                />
               </UiInputGroupButton>
             </UiInputGroupAddon>
           </UiInputGroup>
@@ -88,10 +92,7 @@ const onSubmit = handleSubmit(async (values) => {
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
   </UiFormWrapper>

@@ -1,6 +1,6 @@
 import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const supabase = serverSupabaseServiceRole<DB>(event)
   const user = await serverSupabaseUser(event)
   const { token } = await readBody(event)
@@ -14,7 +14,8 @@ export default defineEventHandler(async (event) => {
     .match({ token, user: user.id })
     .single()
 
-  if (joinError || !joinCampaign) throw createError('Join campaign token not found')
+  if (joinError || !joinCampaign)
+    throw createError('Join campaign token not found')
 
   // Insert the new user into the team
   const { data: member, error: teamError } = await supabase

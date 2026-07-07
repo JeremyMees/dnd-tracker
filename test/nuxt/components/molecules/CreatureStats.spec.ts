@@ -22,21 +22,27 @@ describe('CreatureStats', () => {
     const component = await mountSuspended(CreatureStats, { props })
 
     expect(component.find('[data-test-speed]').exists()).toBeTruthy()
-    expect(component.findAll('[data-test-speed-entry]').length).toBeGreaterThan(0)
+    expect(component.findAll('[data-test-speed-entry]').length).toBeGreaterThan(
+      0,
+    )
   })
 
   it('should render senses section with entries', async () => {
     const component = await mountSuspended(CreatureStats, { props })
 
     expect(component.find('[data-test-senses]').exists()).toBeTruthy()
-    expect(component.findAll('[data-test-sense-entry]').length).toBeGreaterThan(0)
+    expect(component.findAll('[data-test-sense-entry]').length).toBeGreaterThan(
+      0,
+    )
   })
 
   it('should render skills section with entries', async () => {
     const component = await mountSuspended(CreatureStats, { props })
 
     expect(component.find('[data-test-skills]').exists()).toBeTruthy()
-    expect(component.findAll('[data-test-skill-entry]').length).toBeGreaterThan(0)
+    expect(component.findAll('[data-test-skill-entry]').length).toBeGreaterThan(
+      0,
+    )
   })
 
   it('should render languages section', async () => {
@@ -62,7 +68,9 @@ describe('CreatureStats', () => {
       } as DndResistancesAndImmunities,
     }
 
-    const component = await mountSuspended(CreatureStats, { props: { creature } })
+    const component = await mountSuspended(CreatureStats, {
+      props: { creature },
+    })
 
     expect(component.find('[data-test-resistances]').exists()).toBeTruthy()
     expect(component.find('[data-test-resistances]').text()).toContain('fire')
@@ -87,7 +95,9 @@ describe('CreatureStats', () => {
       traits: [],
     }
 
-    const component = await mountSuspended(CreatureStats, { props: { creature } })
+    const component = await mountSuspended(CreatureStats, {
+      props: { creature },
+    })
 
     expect(component.find('[data-test-saving-throws]').exists()).toBeFalsy()
     expect(component.find('[data-test-skills]').exists()).toBeFalsy()
@@ -97,7 +107,9 @@ describe('CreatureStats', () => {
 
   it('should render languages from a string array (homebrew)', async () => {
     const creature = { ...dndMonsterFixture, languages: ['Common', 'Elvish'] }
-    const component = await mountSuspended(CreatureStats, { props: { creature } })
+    const component = await mountSuspended(CreatureStats, {
+      props: { creature },
+    })
     const languages = component.find('[data-test-languages]')
 
     expect(languages.exists()).toBeTruthy()
@@ -107,7 +119,9 @@ describe('CreatureStats', () => {
 
   it('should hide speed and sight sections when null (homebrew)', async () => {
     const creature = { ...dndMonsterFixture, speed: null, sight: null }
-    const component = await mountSuspended(CreatureStats, { props: { creature } })
+    const component = await mountSuspended(CreatureStats, {
+      props: { creature },
+    })
 
     expect(component.find('[data-test-speed]').exists()).toBeFalsy()
     expect(component.find('[data-test-senses]').exists()).toBeFalsy()

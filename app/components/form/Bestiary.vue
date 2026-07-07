@@ -4,13 +4,16 @@ import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd'
 import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/queries/open5e'
 
-const props = withDefaults(defineProps<{
-  system?: Open5eGameSystem
-  preSelectedDocuments?: string[]
-}>(), {
-  system: '5e-2024',
-  preSelectedDocuments: () => ['srd-2024'],
-})
+const props = withDefaults(
+  defineProps<{
+    system?: Open5eGameSystem
+    preSelectedDocuments?: string[]
+  }>(),
+  {
+    system: '5e-2024',
+    preSelectedDocuments: () => ['srd-2024'],
+  },
+)
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
@@ -53,14 +56,21 @@ watch(selectedDocuments, () => {
   }
 })
 
-const { data, status: monstersStatus } = useOpen5eMonsterListing(computed(() => ({
-  filters: queryFilters.value,
-})))
+const { data, status: monstersStatus } = useOpen5eMonsterListing(
+  computed(() => ({
+    filters: queryFilters.value,
+  })),
+)
 
 const { data: documents, status: documentsStatus } = useOpen5eDocuments()
 
-const isLoading = computed(() => monstersStatus.value === 'pending' || documentsStatus.value === 'pending')
-const isError = computed(() => monstersStatus.value === 'error' || documentsStatus.value === 'error')
+const isLoading = computed(
+  () =>
+    monstersStatus.value === 'pending' || documentsStatus.value === 'pending',
+)
+const isError = computed(
+  () => monstersStatus.value === 'error' || documentsStatus.value === 'error',
+)
 
 async function addMonster(monster: DndMonster): Promise<void> {
   if (!sheet.value) return
@@ -96,7 +106,9 @@ async function addMonster(monster: DndMonster): Promise<void> {
   await update({ rows: sortedRows })
 
   toast({
-    title: t('components.initiativeTable.bestiary.added', { name: monster.name }),
+    title: t('components.initiativeTable.bestiary.added', {
+      name: monster.name,
+    }),
     description: t('components.initiativeTable.bestiary.addedDescription'),
     variant: 'success',
   })
@@ -118,11 +130,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
             type="search"
           />
           <UiInputGroupAddon align="inline-end">
-            <Icon
-              name="tabler:search"
-              class="size-3"
-              :aria-hidden="true"
-            />
+            <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
           </UiInputGroupAddon>
         </UiInputGroup>
       </div>
@@ -130,19 +138,17 @@ async function addMonster(monster: DndMonster): Promise<void> {
         <UiLabel for="cr">
           {{ $t('components.inputs.challengeLabel') }}
         </UiLabel>
-        <UiSelect
-          id="cr"
-          v-model="cr"
-          name="cr"
-          :disabled="isLoading"
-        >
+        <UiSelect id="cr" v-model="cr" name="cr" :disabled="isLoading">
           <UiSelectTrigger>
             <UiSelectValue />
           </UiSelectTrigger>
           <UiSelectContent>
             <UiSelectGroup>
               <UiSelectItem
-                v-for="option in [{ label: $t('general.all'), value: 'all' }, ...crOptions]"
+                v-for="option in [
+                  { label: $t('general.all'), value: 'all' },
+                  ...crOptions,
+                ]"
                 :key="option.value"
                 :value="option.value"
               >
@@ -169,13 +175,48 @@ async function addMonster(monster: DndMonster): Promise<void> {
             <UiSelectGroup>
               <UiSelectItem
                 v-for="option in [
-                  { label: $t('components.addInitiativeMonster.sort.options.alphabet'), value: 'name' },
-                  { label: $t('components.addInitiativeMonster.sort.options.mostHP'), value: '-hit_points' },
-                  { label: $t('components.addInitiativeMonster.sort.options.leastHP'), value: 'hit_points' },
-                  { label: $t('components.addInitiativeMonster.sort.options.mostAC'), value: '-armor_class' },
-                  { label: $t('components.addInitiativeMonster.sort.options.leastAC'), value: 'armor_class' },
-                  { label: $t('components.addInitiativeMonster.sort.options.mostCR'), value: '-challenge_rating' },
-                  { label: $t('components.addInitiativeMonster.sort.options.leastCR'), value: 'challenge_rating' },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.alphabet',
+                    ),
+                    value: 'name',
+                  },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.mostHP',
+                    ),
+                    value: '-hit_points',
+                  },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.leastHP',
+                    ),
+                    value: 'hit_points',
+                  },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.mostAC',
+                    ),
+                    value: '-armor_class',
+                  },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.leastAC',
+                    ),
+                    value: 'armor_class',
+                  },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.mostCR',
+                    ),
+                    value: '-challenge_rating',
+                  },
+                  {
+                    label: $t(
+                      'components.addInitiativeMonster.sort.options.leastCR',
+                    ),
+                    value: 'challenge_rating',
+                  },
                 ]"
                 :key="option.value"
                 :value="option.value"
@@ -206,10 +247,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
         v-slot="{ column }"
         :data="Array.from({ length: 30 }, () => ({}))"
       >
-        <SkeletonMonsterCard
-          v-for="(_item, i) in column"
-          :key="i"
-        />
+        <SkeletonMonsterCard v-for="(_item, i) in column" :key="i" />
       </MasonryGrid>
       <MasonryGrid
         v-else-if="data?.items?.length"

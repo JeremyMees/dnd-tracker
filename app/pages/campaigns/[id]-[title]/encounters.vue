@@ -13,8 +13,5 @@ defineProps<{
 </script>
 
 <template>
-  <Encounters
-    :campaign-id="campaignId"
-    :fetch-ready="fetchReady"
-  />
+  <Encounters :campaign-id="campaignId" :fetch-ready="fetchReady" />
 </template>

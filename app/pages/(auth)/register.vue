@@ -15,8 +15,16 @@ const localePath = useLocalePath()
 const avatar = ref<Avatar>(defaultAvatar)
 
 const formSchema = z.object({
-  name: z.string().min(3).max(30).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
-  username: z.string().min(5).max(50).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
+  name: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
+  username: z
+    .string()
+    .min(5)
+    .max(50)
+    .regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
   email: z.email().min(5).max(50),
   password: z
     .string()
@@ -36,7 +44,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   if (!avatar.value) return
@@ -55,8 +63,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     })
 
     navigateTo(localePath('/login'))
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred during registration'
 
     toast({
@@ -74,73 +81,45 @@ const onSubmit = form.handleSubmit(async (values) => {
       {{ $t('pages.register.register') }}
     </h1>
 
-    <AvatarPicker
-      v-model="avatar"
-      hide-creator-toggle
-      class="lg:hidden mb-6"
-    />
+    <AvatarPicker v-model="avatar" hide-creator-toggle class="lg:hidden mb-6" />
 
     <UiFormWrapper @submit="onSubmit">
-      <UiFormField
-        v-slot="{ componentField }"
-        name="name"
-      >
+      <UiFormField v-slot="{ componentField }" name="name">
         <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.fullNameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="text"
-              v-bind="componentField"
-            />
+            <UiInput type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiFormField
-        v-slot="{ componentField }"
-        name="username"
-      >
+      <UiFormField v-slot="{ componentField }" name="username">
         <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.usernameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="text"
-              v-bind="componentField"
-            />
+            <UiInput type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiFormField
-        v-slot="{ componentField }"
-        name="email"
-      >
+      <UiFormField v-slot="{ componentField }" name="email">
         <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="email"
-              v-bind="componentField"
-            />
+            <UiInput type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
       <FormPasswordToggle />
-      <UiFormField
-        v-slot="{ value, handleChange }"
-        name="marketing"
-      >
-        <UiFormItem
-          v-auto-animate
-          class="flex items-center gap-2"
-        >
+      <UiFormField v-slot="{ value, handleChange }" name="marketing">
+        <UiFormItem v-auto-animate class="flex items-center gap-2">
           <UiFormControl>
             <UiSwitch
               class="mb-0"
@@ -153,16 +132,10 @@ const onSubmit = form.handleSubmit(async (values) => {
           </UiFormLabel>
         </UiFormItem>
       </UiFormField>
-      <div
-        v-if="formError"
-        class="text-sm text-destructive"
-      >
+      <div v-if="formError" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton
-        type="submit"
-        class="w-full"
-      >
+      <UiButton type="submit" class="w-full">
         {{ $t('pages.register.register') }}
       </UiButton>
     </UiFormWrapper>
@@ -170,30 +143,16 @@ const onSubmit = form.handleSubmit(async (values) => {
       {{ $t('pages.register.consent') }}
     </p>
 
-    <UiSeparator
-      class="mt-6 mb-2"
-      :label="$t('general.or')"
-    />
+    <UiSeparator class="mt-6 mb-2" :label="$t('general.or')" />
 
     <div class="flex flex-wrap gap-2 justify-center">
-      <UiButton
-        as-child
-        variant="link"
-        class="flex-1 grow"
-      >
+      <UiButton as-child variant="link" class="flex-1 grow">
         <NuxtLinkLocale to="/login">
           {{ $t('pages.login.signIn') }}
         </NuxtLinkLocale>
       </UiButton>
-      <UiSeparator
-        orientation="vertical"
-        class="h-8"
-      />
-      <UiButton
-        as-child
-        variant="link"
-        class="flex-1 grow"
-      >
+      <UiSeparator orientation="vertical" class="h-8" />
+      <UiButton as-child variant="link" class="flex-1 grow">
         <NuxtLinkLocale to="/forgot-password">
           {{ $t('pages.login.forgot') }}
         </NuxtLinkLocale>
@@ -201,11 +160,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     </div>
 
     <template #right>
-      <AvatarPicker
-        v-model="avatar"
-        hide-creator-toggle
-        class="max-w-sm"
-      />
+      <AvatarPicker v-model="avatar" hide-creator-toggle class="max-w-sm" />
     </template>
   </NuxtLayout>
 </template>

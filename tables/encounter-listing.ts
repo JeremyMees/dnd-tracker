@@ -1,5 +1,10 @@
 import { createColumnHelper, type InitialTableState } from '@tanstack/vue-table'
-import { iconButton, linkButton, selectButton, permission } from './generate-functions'
+import {
+  iconButton,
+  linkButton,
+  selectButton,
+  permission,
+} from './generate-functions'
 import { NuxtTime } from '#components'
 
 const columnHelper = createColumnHelper<EncounterItem>()
@@ -15,7 +20,12 @@ function isCampaignOwner(user: AuthUser, encounter: EncounterItem) {
   return user.id === encounter.campaign?.createdBy.id
 }
 
-export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: ColumnOptions) {
+export function generateColumns({
+  isCampaign,
+  onUpdate,
+  onShare,
+  onCopy,
+}: ColumnOptions) {
   const { t } = useI18n()
   const user = useAuthenticatedUser()
 
@@ -23,44 +33,52 @@ export function generateColumns({ isCampaign, onUpdate, onShare, onCopy }: Colum
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton({
-        checked: table.getIsAllRowsSelected(),
-        cb: table.getToggleAllPageRowsSelectedHandler(),
-      }),
-      cell: ({ row }) => permission({
-        ability: canUpdateEncounter,
-        args: [row.original, isCampaign],
-        children: selectButton({
-          checked: row.getIsSelected(),
-          cb: row.getToggleSelectedHandler(),
-          disabled: !row.getCanSelect(),
+      header: ({ table }) =>
+        selectButton({
+          checked: table.getIsAllRowsSelected(),
+          cb: table.getToggleAllPageRowsSelectedHandler(),
         }),
-      }),
+      cell: ({ row }) =>
+        permission({
+          ability: canUpdateEncounter,
+          args: [row.original, isCampaign],
+          children: selectButton({
+            checked: row.getIsSelected(),
+            cb: row.getToggleSelectedHandler(),
+            disabled: !row.getCanSelect(),
+          }),
+        }),
     }),
     columnHelper.accessor('title', {
       header: t('general.name'),
-      cell: ({ row }) => linkButton({
-        to: encounterUrl(row.original),
-        content: row.getValue('title'),
-      }),
+      cell: ({ row }) =>
+        linkButton({
+          to: encounterUrl(row.original),
+          content: row.getValue('title'),
+        }),
     }),
     columnHelper.accessor('campaign', {
       enableGlobalFilter: false,
       enableSorting: false,
       header: t('general.campaign'),
-      cell: ({ row }) => row.getValue('campaign')
-        ? linkButton({ to: campaignUrl(row.original.campaign, 'encounters'), content: row.original.campaign.title })
-        : '',
+      cell: ({ row }) =>
+        row.getValue('campaign')
+          ? linkButton({
+              to: campaignUrl(row.original.campaign, 'encounters'),
+              content: row.original.campaign.title,
+            })
+          : '',
     }),
     columnHelper.accessor('createdAt', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
-      cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('createdAt'),
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric',
-      }),
+      cell: ({ row }) =>
+        h(NuxtTime, {
+          datetime: row.getValue<Date>('createdAt'),
+          month: 'numeric',
+          day: 'numeric',
+          year: 'numeric',
+        }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,

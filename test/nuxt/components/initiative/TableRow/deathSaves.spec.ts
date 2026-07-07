@@ -104,7 +104,9 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').classes()).toContain('bg-success/20')
+    expect(component.find('[data-test-container]').classes()).toContain(
+      'bg-success/20',
+    )
   })
 
   it('Should show destructive styling when all saves are failed', async () => {
@@ -122,7 +124,9 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').classes()).toContain('bg-destructive/20')
+    expect(component.find('[data-test-container]').classes()).toContain(
+      'bg-destructive/20',
+    )
   })
 
   it('Should toggle save state when clicking a save button', async () => {
@@ -228,7 +232,9 @@ describe('Initiative table row death saves', async () => {
 
     expect(mockToast).toHaveBeenCalledWith({
       title: expect.stringMatching('components.initiativeTable.stable.title'),
-      description: expect.stringMatching('components.initiativeTable.stable.textDeathSaves'),
+      description: expect.stringMatching(
+        'components.initiativeTable.stable.textDeathSaves',
+      ),
       variant: 'success',
     })
   })
@@ -253,7 +259,9 @@ describe('Initiative table row death saves', async () => {
 
     expect(mockToast).toHaveBeenCalledWith({
       title: expect.stringMatching('components.initiativeTable.died.title'),
-      description: expect.stringMatching('components.initiativeTable.died.textDeathSaves'),
+      description: expect.stringMatching(
+        'components.initiativeTable.died.textDeathSaves',
+      ),
       variant: 'destructive',
     })
   })

@@ -50,7 +50,5 @@ function mapWeaponV2(dto: Open5eWeapon): DndWeapon {
 }
 
 export function toWeapon(dto: Open5eWeapon | Open5eV1Item): DndWeapon {
-  return 'slug' in dto
-    ? mapWeaponV1(dto)
-    : mapWeaponV2(dto)
+  return 'slug' in dto ? mapWeaponV1(dto) : mapWeaponV2(dto)
 }

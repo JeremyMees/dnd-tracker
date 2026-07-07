@@ -5,7 +5,10 @@ import * as z from 'zod'
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (amount: number, type: DndAcType) => Partial<InitiativeSheetRow>
+  handleAcChanges: (
+    amount: number,
+    type: DndAcType,
+  ) => Partial<InitiativeSheetRow>
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
@@ -17,13 +20,15 @@ const formSchema = z.object({
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: formSchema,
   initialValues: {
-    ...(props.item.maxArmorClassOld ? { amount: props.item.maxArmorClass } : { }),
+    ...(props.item.maxArmorClassOld
+      ? { amount: props.item.maxArmorClass }
+      : {}),
   },
 })
 
 const formError = ref<string>('')
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -31,13 +36,16 @@ const onSubmit = handleSubmit(async (values) => {
 
     const { amount, reset } = values
 
-    const row = reset || amount === props.item.maxArmorClassOld
-      ? props.handleAcChanges(props.item.maxArmorClassOld ?? 0, 'override-reset')
-      : props.handleAcChanges(amount, 'override')
+    const row =
+      reset || amount === props.item.maxArmorClassOld
+        ? props.handleAcChanges(
+            props.item.maxArmorClassOld ?? 0,
+            'override-reset',
+          )
+        : props.handleAcChanges(amount, 'override')
 
     await props.updateRow(row)
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred while updating base AC'
   }
 })
@@ -45,27 +53,31 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="amount"
-    >
+    <UiFormField v-slot="{ componentField }" name="amount">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.overrideFieldLabel', { field: 'AC' }) }}
         </UiFormLabel>
         <UiFormControl>
           <UiInputGroup>
-            <UiInputGroupInput
-              type="number"
-              v-bind="componentField"
-            />
+            <UiInputGroupInput type="number" v-bind="componentField" />
             <UiInputGroupAddon align="inline-end">
               <UiInputGroupButton
                 type="submit"
-                :aria-label="item.maxArmorClassOld ? $t('actions.reset') : $t('actions.save')"
+                :aria-label="
+                  item.maxArmorClassOld
+                    ? $t('actions.reset')
+                    : $t('actions.save')
+                "
                 @click="setFieldValue('reset', !!item.maxArmorClassOld)"
               >
-                <Icon :name="item.maxArmorClassOld ? 'tabler:player-skip-back' : 'tabler:device-floppy'" />
+                <Icon
+                  :name="
+                    item.maxArmorClassOld
+                      ? 'tabler:player-skip-back'
+                      : 'tabler:device-floppy'
+                  "
+                />
               </UiInputGroupButton>
             </UiInputGroupAddon>
           </UiInputGroup>
@@ -76,10 +88,7 @@ const onSubmit = handleSubmit(async (values) => {
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
   </UiFormWrapper>

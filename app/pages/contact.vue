@@ -10,7 +10,12 @@ const { toast } = useToast()
 const localePath = useLocalePath()
 
 const formSchema = z.object({
-  name: z.string().min(3).max(30).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }).optional(),
+  name: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(alphaSpaces, { error: () => t('zod.alphaSpaces') })
+    .optional(),
   email: z.email().min(5).max(50),
   question: z.string().min(3).max(1000),
 })
@@ -21,7 +26,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -36,8 +41,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     })
 
     navigateTo(localePath('/'))
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred during contact request'
 
     toast({
@@ -58,44 +62,29 @@ const onSubmit = form.handleSubmit(async (values) => {
     </template>
 
     <UiFormWrapper @submit="onSubmit">
-      <UiFormField
-        v-slot="{ componentField }"
-        name="name"
-      >
+      <UiFormField v-slot="{ componentField }" name="name">
         <UiFormItem v-auto-animate>
           <UiFormLabel>
             {{ $t('components.inputs.nameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="text"
-              v-bind="componentField"
-            />
+            <UiInput type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiFormField
-        v-slot="{ componentField }"
-        name="email"
-      >
+      <UiFormField v-slot="{ componentField }" name="email">
         <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="email"
-              v-bind="componentField"
-            />
+            <UiInput type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiFormField
-        v-slot="{ componentField }"
-        name="question"
-      >
+      <UiFormField v-slot="{ componentField }" name="question">
         <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.questionLabel') }}
@@ -106,16 +95,10 @@ const onSubmit = form.handleSubmit(async (values) => {
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <div
-        v-if="formError"
-        class="text-sm text-destructive"
-      >
+      <div v-if="formError" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton
-        type="submit"
-        class="w-full"
-      >
+      <UiButton type="submit" class="w-full">
         {{ $t('pages.contact.send') }}
       </UiButton>
     </UiFormWrapper>

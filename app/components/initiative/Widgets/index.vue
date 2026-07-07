@@ -21,21 +21,25 @@ const isModified = computed(() => sheet.value?.settings?.modified ?? false)
 
 watch(
   () => sheet.value?.settings,
-  (settings) => {
-    localWidgets.value = settings?.modified ? [...(settings.widgets ?? [])] : [...initiativeWidgets]
+  settings => {
+    localWidgets.value = settings?.modified
+      ? [...(settings.widgets ?? [])]
+      : [...initiativeWidgets]
   },
   { immediate: true },
 )
 
-watch(popoverOpen, (open) => {
+watch(popoverOpen, open => {
   if (!open) return
 
   form.setValues({
-    widgets: isModified.value ? (sheet.value?.settings?.widgets ?? []) : [...initiativeWidgets],
+    widgets: isModified.value
+      ? (sheet.value?.settings?.widgets ?? [])
+      : [...initiativeWidgets],
   })
 })
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
   formError.value = ''
 
@@ -96,18 +100,17 @@ function removeWidget(id: InitiativeWidget) {
           <UiFormWrapper @submit="onSubmit">
             <FormCheckboxGroup
               name="widgets"
-              :options="definitions.map(d => ({ label: $t(widgetLabels[d.id]), value: d.id }))"
+              :options="
+                definitions.map(d => ({
+                  label: $t(widgetLabels[d.id]),
+                  value: d.id,
+                }))
+              "
             />
-            <div
-              v-if="formError"
-              class="text-sm text-destructive"
-            >
+            <div v-if="formError" class="text-sm text-destructive">
               {{ formError }}
             </div>
-            <UiButton
-              type="submit"
-              class="w-full"
-            >
+            <UiButton type="submit" class="w-full">
               {{ $t('actions.save') }}
             </UiButton>
           </UiFormWrapper>
@@ -162,10 +165,7 @@ function removeWidget(id: InitiativeWidget) {
       </div>
     </VueDraggable>
 
-    <p
-      v-else
-      class="text-muted-foreground text-sm"
-    >
+    <p v-else class="text-muted-foreground text-sm">
       {{ $t('components.initiativeSettings.noActiveWidgets') }}
     </p>
   </div>

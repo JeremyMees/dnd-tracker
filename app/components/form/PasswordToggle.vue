@@ -3,10 +3,7 @@ const isShowing = shallowRef(false)
 </script>
 
 <template>
-  <UiFormField
-    v-slot="{ componentField }"
-    name="password"
-  >
+  <UiFormField v-slot="{ componentField }" name="password">
     <UiFormItem v-auto-animate>
       <UiFormLabel required>
         {{ $t('components.inputs.passwordLabel') }}
@@ -19,7 +16,11 @@ const isShowing = shallowRef(false)
           />
           <UiInputGroupAddon align="inline-end">
             <UiInputGroupButton
-              :aria-label="isShowing ? $t('components.inputs.hidePassword') : $t('components.inputs.showPassword')"
+              :aria-label="
+                isShowing
+                  ? $t('components.inputs.hidePassword')
+                  : $t('components.inputs.showPassword')
+              "
               @click="isShowing = !isShowing"
             >
               <Icon :name="isShowing ? 'tabler:eye' : 'tabler:eye-closed'" />

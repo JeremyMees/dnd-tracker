@@ -1,5 +1,12 @@
 import { z } from 'zod'
-import { damageTypes, conditionTypes, attackTypes, diceTypes, distanceUnits, usageTypes } from '~~/constants/dnd'
+import {
+  damageTypes,
+  conditionTypes,
+  attackTypes,
+  diceTypes,
+  distanceUnits,
+  usageTypes,
+} from '~~/constants/dnd'
 import { abilityType, actionType } from '~~/constants/validation'
 
 export const skillBonusesSchema = z.object({
@@ -65,10 +72,16 @@ export const sightSchema = z.object({
 })
 
 const damageTypeEnum = damageTypes as [DndDamageType, ...DndDamageType[]]
-const conditionTypeEnum = conditionTypes as [DndConditionType, ...DndConditionType[]]
+const conditionTypeEnum = conditionTypes as [
+  DndConditionType,
+  ...DndConditionType[],
+]
 const attackTypeEnum = attackTypes as [DndAttackType, ...DndAttackType[]]
 const diceTypeEnum = diceTypes as [DndDice, ...DndDice[]]
-const distanceUnitEnum = distanceUnits as [DndDistanceUnit, ...DndDistanceUnit[]]
+const distanceUnitEnum = distanceUnits as [
+  DndDistanceUnit,
+  ...DndDistanceUnit[],
+]
 const usageTypeEnum = usageTypes as [DndUsageType, ...DndUsageType[]]
 const actionTypeEnum = [...actionType] as [DndActionType, ...DndActionType[]]
 const abilityTypeEnum = [...abilityType] as [DndAbility, ...DndAbility[]]

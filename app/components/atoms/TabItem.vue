@@ -5,7 +5,8 @@ const props = withDefaults(
     icon: string
     label: string
     disabled?: boolean
-  }>(), {
+  }>(),
+  {
     disabled: false,
   },
 )
@@ -29,11 +30,7 @@ const isActive = computed<boolean>(() => route.fullPath.includes(props.link))
       class="text-sm flex gap-2 items-center py-1 px-2 rounded-lg text-foreground hover:bg-tracker hover:foreground"
       active-class="text-foreground"
     >
-      <Icon
-        :name="icon"
-        aria-hidden="true"
-        class="size-4"
-      />
+      <Icon :name="icon" aria-hidden="true" class="size-4" />
       <span>
         {{ label }}
       </span>

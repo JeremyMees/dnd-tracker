@@ -68,16 +68,16 @@ export function usePricingListing() {
         const response = await $fetch<StripeProduct[]>('/api/stripe/products')
         const products = [...productDefaults]
 
-        response.forEach((product) => {
+        response.forEach(product => {
           const { name, price, id } = product
           const index = products.findIndex(p => p.type === name.toLowerCase())
 
-          if (index >= 0 && products[index]) products[index] = { ...products[index], price, id }
+          if (index >= 0 && products[index])
+            products[index] = { ...products[index], price, id }
         })
 
         return products
-      }
-      catch (error: any) {
+      } catch (error: any) {
         toast({
           title: t('general.error.title'),
           description: error.message,

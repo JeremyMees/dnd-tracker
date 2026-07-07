@@ -24,7 +24,7 @@ export const sheet: InitiativeSheet = {
       maxHitPointsOld: 10,
       conditions: [
         {
-          desc: '* A paralyzed creature is incapacitated (see the condition) and can\'t move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.',
+          desc: "* A paralyzed creature is incapacitated (see the condition) and can't move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
           id: 'srd-2024_paralyzed',
           name: 'Paralyzed',
         },
@@ -53,7 +53,7 @@ export const sheet: InitiativeSheet = {
       maxHitPoints: 100,
       conditions: [
         {
-          desc: '* A paralyzed creature is incapacitated (see the condition) and can\'t move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.',
+          desc: "* A paralyzed creature is incapacitated (see the condition) and can't move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
           id: 'srd-2024_paralyzed',
           name: 'Paralyzed',
         },
@@ -81,12 +81,12 @@ export const sheet: InitiativeSheet = {
       maxHitPoints: 100,
       conditions: [
         {
-          desc: '* A paralyzed creature is incapacitated (see the condition) and can\'t move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.',
+          desc: "* A paralyzed creature is incapacitated (see the condition) and can't move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
           id: 'paralyzed',
           name: 'Paralyzed',
         },
         {
-          desc: '* A prone creature\'s only movement option is to crawl, unless it stands up and thereby ends the condition.\n* The creature has disadvantage on attack rolls.\n* An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage.',
+          desc: "* A prone creature's only movement option is to crawl, unless it stands up and thereby ends the condition.\n* The creature has disadvantage on attack rolls.\n* An attack roll against the creature has advantage if the attacker is within 5 feet of the creature. Otherwise, the attack roll has disadvantage.",
           id: 'srd-2024_prone',
           name: 'Prone',
         },
@@ -206,7 +206,7 @@ export const sheet: InitiativeSheet = {
       maxHitPoints: 100,
       conditions: [
         {
-          desc: '* A paralyzed creature is incapacitated (see the condition) and can\'t move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.',
+          desc: "* A paralyzed creature is incapacitated (see the condition) and can't move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
           id: 'srd-2024_paralyzed',
           name: 'Paralyzed',
         },
@@ -256,7 +256,7 @@ export const sheet: InitiativeSheet = {
       maxHitPoints: 100,
       conditions: [
         {
-          desc: '* A paralyzed creature is incapacitated (see the condition) and can\'t move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.',
+          desc: "* A paralyzed creature is incapacitated (see the condition) and can't move or speak.\n* The creature automatically fails Strength and Dexterity saving throws.\n* Attack rolls against the creature have advantage.\n* Any attack that hits the creature is a critical hit if the attacker is within 5 feet of the creature.",
           id: 'srd-2024_paralyzed',
           name: 'Paralyzed',
         },

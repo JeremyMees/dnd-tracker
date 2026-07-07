@@ -21,8 +21,12 @@ export const createInitiativeRow = (
   type: HomebrewType,
   encounterRows: number,
 ): InitiativeSheetRow => {
-  const initiative = 'initiative' in formData ? Number(formData.initiative ?? -1) : -1
-  const initiativeModifier = 'initiativeModifier' in formData ? Number(formData.initiativeModifier) : undefined
+  const initiative =
+    'initiative' in formData ? Number(formData.initiative ?? -1) : -1
+  const initiativeModifier =
+    'initiativeModifier' in formData
+      ? Number(formData.initiativeModifier)
+      : undefined
   const hp = getHP(formData)
   const ac = getAC(formData)
   const baseArray: [boolean, boolean, boolean] = [false, false, false]

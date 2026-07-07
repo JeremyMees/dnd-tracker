@@ -8,7 +8,8 @@ withDefaults(
     variant?: ModalVariant
     header?: string
     subHeader?: string
-  }>(), {
+  }>(),
+  {
     variant: 'default',
     header: '',
     subHeader: '',
@@ -22,7 +23,8 @@ withDefaults(
       :class="{
         'max-w-xl': variant === 'default',
         'max-w-[1000px]': variant === 'big',
-        'inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!': variant === 'fullScreen',
+        'inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!':
+          variant === 'fullScreen',
       }"
       @escape-key-down="$emit('close')"
       @pointer-down-outside="$emit('close')"

@@ -1,6 +1,7 @@
 const title = 'DnD Tracker: Effortless Encounter Management'
 const url = 'https://dnd-tracker.com'
-const description = 'Track your DnD encounters effortlessly with our website. Get real-time updates, manage players & battles, and never miss a beat. Try it now!'
+const description =
+  'Track your DnD encounters effortlessly with our website. Get real-time updates, manage players & battles, and never miss a beat. Try it now!'
 const logo = '/logo.png'
 const socials = '/socials.png'
 const name = 'DnD Tracker'

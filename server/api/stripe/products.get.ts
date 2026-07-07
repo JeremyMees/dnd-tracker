@@ -4,7 +4,7 @@ export default defineEventHandler(async (): Promise<StripeProduct[]> => {
 
   const groupedProducts: StripeProduct[] = []
 
-  products.forEach((product) => {
+  products.forEach(product => {
     const price = prices.find(price => price.product === product.id)
 
     if (price) {

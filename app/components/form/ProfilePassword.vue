@@ -30,14 +30,15 @@ const formData = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = formData.handleSubmit(async (values) => {
+const onSubmit = formData.handleSubmit(async values => {
   formError.value = ''
 
   try {
     await props.update(values)
-  }
-  catch (err: unknown) {
-    formError.value = (err as Error)?.message || 'An error occurred during updating profile password'
+  } catch (err: unknown) {
+    formError.value =
+      (err as Error)?.message ||
+      'An error occurred during updating profile password'
   }
 })
 </script>
@@ -45,10 +46,7 @@ const onSubmit = formData.handleSubmit(async (values) => {
 <template>
   <UiFormWrapper @submit="onSubmit">
     <FormPasswordToggle />
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
     <div class="flex justify-end">

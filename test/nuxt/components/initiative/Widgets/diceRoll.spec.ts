@@ -12,7 +12,9 @@ describe('Initiative dice roll widget', async () => {
   it('Should render the DiceRoller component', async () => {
     const component = await mountSuspended(DiceRollWidget)
 
-    expect(component.findComponent({ name: 'DiceRoller' }).exists()).toBeTruthy()
+    expect(
+      component.findComponent({ name: 'DiceRoller' }).exists(),
+    ).toBeTruthy()
   })
 
   it('Should pass styled false to DiceRoller', async () => {

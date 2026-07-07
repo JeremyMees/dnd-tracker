@@ -4,7 +4,7 @@ import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
 import { authUser } from '~~/test/nuxt/fixtures/auth-user'
 import middleware from '~/middleware/campaign-member'
 
-vi.mock('@tanstack/vue-query', async (importOriginal) => {
+vi.mock('@tanstack/vue-query', async importOriginal => {
   const actual = await importOriginal<typeof import('@tanstack/vue-query')>()
   return { ...actual, useQueryClient: vi.fn(() => mockQueryClient) }
 })
@@ -24,15 +24,19 @@ const mockSupabase = {
   })),
 }
 
-let mockSupabaseResponse: { data: any, error: any }
+let mockSupabaseResponse: { data: any; error: any }
 
-mockNuxtImport('useState', () => vi.fn((key: string, init?: () => any) => {
-  if (key === 'auth-user') return { value: mockUser }
-  return { value: init ? init() : null }
-}))
+mockNuxtImport('useState', () =>
+  vi.fn((key: string, init?: () => any) => {
+    if (key === 'auth-user') return { value: mockUser }
+    return { value: init ? init() : null }
+  }),
+)
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))
-mockNuxtImport('createError', () => vi.fn((error: any) => new Error(error.message)))
+mockNuxtImport('createError', () =>
+  vi.fn((error: any) => new Error(error.message)),
+)
 mockNuxtImport('useLocalePath', () => vi.fn(() => (path: string) => path))
 
 let mockUser: AuthUser | null = null
@@ -65,7 +69,11 @@ describe('Campaign member middleware', () => {
 
   it('should navigate to / when id param is not a number', async () => {
     await middleware(
-      { ...mockTo, params: { title: 'test', id: 'abc' }, fullPath: '/campaigns/test/abc' },
+      {
+        ...mockTo,
+        params: { title: 'test', id: 'abc' },
+        fullPath: '/campaigns/test/abc',
+      },
       mockFrom,
     )
 
@@ -76,7 +84,11 @@ describe('Campaign member middleware', () => {
     mockSupabaseResponse.error = { message: 'Database error' }
 
     await middleware(
-      { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
       mockFrom,
     )
 
@@ -85,10 +97,18 @@ describe('Campaign member middleware', () => {
 
   it('should redirect to encounters when accessing index page', async () => {
     mockUser = { ...authUser, id: '1' }
-    mockQueryClient.getQueryData.mockReturnValue({ createdBy: '1', team: [], join_campaign: [] })
+    mockQueryClient.getQueryData.mockReturnValue({
+      createdBy: '1',
+      team: [],
+      join_campaign: [],
+    })
 
     await middleware(
-      { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1' },
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1',
+      },
       mockFrom,
     )
 
@@ -106,7 +126,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/encounters',
+        },
         mockFrom,
       )
 
@@ -123,7 +147,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/encounters',
+        },
         mockFrom,
       )
 
@@ -132,10 +160,18 @@ describe('Campaign member middleware', () => {
 
     it('should allow owner', async () => {
       mockUser = { ...authUser, id: '1' }
-      mockQueryClient.getQueryData.mockReturnValue({ createdBy: '1', team: [], join_campaign: [] })
+      mockQueryClient.getQueryData.mockReturnValue({
+        createdBy: '1',
+        team: [],
+        join_campaign: [],
+      })
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/encounters',
+        },
         mockFrom,
       )
 
@@ -154,7 +190,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/settings' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/settings',
+        },
         mockFrom,
       )
 
@@ -171,7 +211,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/settings' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/settings',
+        },
         mockFrom,
       )
 
@@ -188,7 +232,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/settings' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/settings',
+        },
         mockFrom,
       )
 
@@ -207,7 +255,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/danger-zone' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/danger-zone',
+        },
         mockFrom,
       )
 
@@ -224,7 +276,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/danger-zone' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/danger-zone',
+        },
         mockFrom,
       )
 
@@ -241,7 +297,11 @@ describe('Campaign member middleware', () => {
       mockQueryClient.getQueryData.mockReturnValue(mockData)
 
       await middleware(
-        { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/danger-zone' },
+        {
+          ...mockTo,
+          params: { title: 'test', id: '1' },
+          fullPath: '/campaigns/test/1/danger-zone',
+        },
         mockFrom,
       )
 
@@ -259,7 +319,11 @@ describe('Campaign member middleware', () => {
     mockQueryClient.getQueryData.mockReturnValue(mockData)
 
     await middleware(
-      { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
       mockFrom,
     )
 
@@ -277,12 +341,19 @@ describe('Campaign member middleware', () => {
     mockSupabaseResponse.data = mockData
 
     await middleware(
-      { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
       mockFrom,
     )
 
     expect(mockSupabase.from).toHaveBeenCalledWith('campaigns')
-    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(['useCampaignMember', 1], mockData)
+    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
+      ['useCampaignMember', 1],
+      mockData,
+    )
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
@@ -297,7 +368,11 @@ describe('Campaign member middleware', () => {
     mockSupabaseResponse.data = mockData
 
     await middleware(
-      { ...mockTo, params: { title: 'test', id: '1' }, fullPath: '/campaigns/test/1/encounters' },
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
       mockFrom,
     )
 

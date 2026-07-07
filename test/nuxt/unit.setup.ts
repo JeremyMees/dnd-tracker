@@ -7,7 +7,9 @@ let nameIndex = 0
 
 beforeEach(() => {
   nameIndex = 0
-  vi.spyOn(dndHelpers, 'randomName').mockImplementation(() => `Test Name ${++nameIndex}`)
+  vi.spyOn(dndHelpers, 'randomName').mockImplementation(
+    () => `Test Name ${++nameIndex}`,
+  )
 })
 
 config.global.mocks = {

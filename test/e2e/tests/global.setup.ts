@@ -18,7 +18,9 @@ setup('Global setup', async ({ loginPage, testHelpers, page }) => {
     await expect(loginPage.errorMessages).not.toBeVisible()
     await expect(loginPage.page).toHaveURL(/\/en/)
 
-    await page.waitForResponse(response => response.url().includes('auth/v1/token'))
+    await page.waitForResponse(response =>
+      response.url().includes('auth/v1/token'),
+    )
   }
 
   await page.context().storageState({ path: authFile })

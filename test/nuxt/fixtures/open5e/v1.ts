@@ -91,7 +91,15 @@ export const open5eV1MonsterFixture = {
   damage_immunities: '',
   condition_immunities: '',
   senses: 'darkvision 60 ft.',
-  actions: [{ name: 'Scimitar', desc: 'Melee Weapon Attack...', attack_bonus: 4, damage_bonus: 2, damage_dice: '1d6' }],
+  actions: [
+    {
+      name: 'Scimitar',
+      desc: 'Melee Weapon Attack...',
+      attack_bonus: 4,
+      damage_bonus: 2,
+      damage_dice: '1d6',
+    },
+  ],
   legendary_actions: [],
   reactions: [],
   special_abilities: [{ name: 'Nimble Escape', desc: 'The goblin can...' }],

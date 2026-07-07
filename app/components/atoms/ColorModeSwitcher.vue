@@ -1,9 +1,6 @@
 <template>
   <div class="flex items-center justify-between gap-2">
-    <Icon
-      name="tabler:palette"
-      class="size-3 min-w-3"
-    />
+    <Icon name="tabler:palette" class="size-3 min-w-3" />
     <UiSelect v-model="$colorMode.preference">
       <UiSelectTrigger>
         <UiSelectValue />

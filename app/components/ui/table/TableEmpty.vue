@@ -5,12 +5,15 @@ import TableCell from './TableCell.vue'
 import TableRow from './TableRow.vue'
 import { cn } from '@/utils/shadcn'
 
-const props = withDefaults(defineProps<{
-  class?: HTMLAttributes['class']
-  colspan?: number
-}>(), {
-  colspan: 1,
-})
+const props = withDefaults(
+  defineProps<{
+    class?: HTMLAttributes['class']
+    colspan?: number
+  }>(),
+  {
+    colspan: 1,
+  },
+)
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

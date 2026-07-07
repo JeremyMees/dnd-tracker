@@ -3,7 +3,9 @@ import type { CheckboxRootEmits, CheckboxRootProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { CheckboxIndicator, CheckboxRoot, useForwardPropsEmits } from 'reka-ui'
 
-const props = defineProps<CheckboxRootProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  CheckboxRootProps & { class?: HTMLAttributes['class'] }
+>()
 const emits = defineEmits<CheckboxRootEmits>()
 
 const delegatedProps = reactiveOmit(props, 'class')
@@ -15,15 +17,15 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
   <CheckboxRoot
     v-bind="forwarded"
     :class="
-      cn('grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
-         props.class)"
+      cn(
+        'grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+        props.class,
+      )
+    "
   >
     <CheckboxIndicator class="grid place-content-center text-current">
       <slot>
-        <Icon
-          name="tabler:check"
-          class="size-4 min-w-4"
-        />
+        <Icon name="tabler:check" class="size-4 min-w-4" />
       </slot>
     </CheckboxIndicator>
   </CheckboxRoot>

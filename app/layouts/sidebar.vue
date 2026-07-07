@@ -18,8 +18,7 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
 async function logoutUser(): Promise<void> {
   try {
     await logout()
-  }
-  catch {
+  } catch {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),
@@ -31,15 +30,9 @@ async function logoutUser(): Promise<void> {
 
 <template>
   <UiSidebarProvider class="min-h-full">
-    <UiSidebar
-      ref="sidebar"
-      collapsible="icon"
-    >
+    <UiSidebar ref="sidebar" collapsible="icon">
       <UiSidebarHeader>
-        <NuxtLinkLocale
-          to="/"
-          class="group-data-[collapsible=icon]:py-0 py-2"
-        >
+        <NuxtLinkLocale to="/" class="group-data-[collapsible=icon]:py-0 py-2">
           <NuxtImg
             src="/logo.svg"
             alt="DnD Tracker logo"
@@ -60,24 +53,14 @@ async function logoutUser(): Promise<void> {
       </UiSidebarHeader>
       <UiSidebarSeparator class="mx-0" />
       <UiSidebarContent>
-        <slot
-          name="sidebar-content"
-          :is-expanded="isExpanded"
-        />
-        <UiSidebarSeparator
-          v-if="$slots['sidebar-content']"
-          class="mx-0"
-        />
+        <slot name="sidebar-content" :is-expanded="isExpanded" />
+        <UiSidebarSeparator v-if="$slots['sidebar-content']" class="mx-0" />
         <template v-if="!onlyProvidedContent">
           <template
             v-for="sidebarItem in [
               {
                 title: 'components.navbar.pages',
-                routes: [
-                  homeRoute,
-                  ...playRoutes,
-                  ...routes,
-                ],
+                routes: [homeRoute, ...playRoutes, ...routes],
               },
             ]"
             :key="sidebarItem.title"
@@ -99,16 +82,22 @@ async function logoutUser(): Promise<void> {
                         onShow: () => !isExpanded,
                       }"
                       :to="item.url"
-                      :data-active="item.url === '/'
-                        ? route.path === '/'
-                        : route.name?.toString().startsWith(item.url.replace('/', ''))"
+                      :data-active="
+                        item.url === '/'
+                          ? route.path === '/'
+                          : route.name
+                              ?.toString()
+                              .startsWith(item.url.replace('/', ''))
+                      "
                     >
                       <Icon
                         v-if="item.icon"
                         :name="item.icon"
                         class="size-4 min-w-4"
                       />
-                      <span class="group-data-[collapsible=icon]:hidden truncate">
+                      <span
+                        class="group-data-[collapsible=icon]:hidden truncate"
+                      >
                         {{ $t(item.label) }}
                       </span>
                     </NuxtLinkLocale>
@@ -131,10 +120,7 @@ async function logoutUser(): Promise<void> {
             to="/pricing"
             class="bg-linear-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 text-sm"
           >
-            <Icon
-              name="tabler:sparkles"
-              class="size-4 min-w-4"
-            />
+            <Icon name="tabler:sparkles" class="size-4 min-w-4" />
             <span class="group-data-[collapsible=icon]:hidden truncate">
               {{ $t('components.navbar.upgrade') }}
             </span>
@@ -151,10 +137,7 @@ async function logoutUser(): Promise<void> {
               <UiDropdownMenu>
                 <UiDropdownMenuTrigger as-child>
                   <UiSidebarMenuButton size="lg">
-                    <UiAvatar
-                      class="border-tertiary border-2"
-                      size="xs"
-                    >
+                    <UiAvatar class="border-tertiary border-2" size="xs">
                       <UiAvatarImage
                         :src="user?.avatar ?? ''"
                         alt="Avatar image"
@@ -170,13 +153,14 @@ async function logoutUser(): Promise<void> {
                       v-if="user"
                       class="grid flex-1 text-left text-sm leading-tight"
                     >
-                      <span class="truncate font-semibold">{{ user.username }}</span>
-                      <span class="truncate text-xs text-muted-foreground">{{ user.name }}</span>
+                      <span class="truncate font-semibold">{{
+                        user.username
+                      }}</span>
+                      <span class="truncate text-xs text-muted-foreground">{{
+                        user.name
+                      }}</span>
                     </div>
-                    <Icon
-                      name="tabler:caret-up-down"
-                      class="ml-auto size-4"
-                    />
+                    <Icon name="tabler:caret-up-down" class="ml-auto size-4" />
                   </UiSidebarMenuButton>
                 </UiDropdownMenuTrigger>
                 <ProfileMenu
@@ -195,13 +179,12 @@ async function logoutUser(): Promise<void> {
       <UiSidebarRail />
     </UiSidebar>
     <UiSidebarInset class="max-w-full max-h-dvh overflow-hidden">
-      <header class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+      <header
+        class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
+      >
         <div class="flex items-center gap-2 px-4">
           <UiSidebarTrigger class="-ml-1" />
-          <UiSeparator
-            orientation="vertical"
-            class="mr-2 h-4"
-          />
+          <UiSeparator orientation="vertical" class="mr-2 h-4" />
           <h1 class="text-2xl font-bold truncate">
             <slot name="header">
               {{ header || '' }}
@@ -209,7 +192,9 @@ async function logoutUser(): Promise<void> {
           </h1>
         </div>
       </header>
-      <div class="w-full h-full pt-1 pb-3 px-7 mx-auto overflow-auto no-scrollbar">
+      <div
+        class="w-full h-full pt-1 pb-3 px-7 mx-auto overflow-auto no-scrollbar"
+      >
         <slot />
       </div>
     </UiSidebarInset>

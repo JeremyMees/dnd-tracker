@@ -37,7 +37,9 @@ describe('transformers/condition', () => {
 
       expect(condition.id).toBe('blinded')
       expect(condition.name).toBe('Blinded')
-      expect(condition.desc).toBe('The creature cannot see and automatically fails any ability check that requires sight.')
+      expect(condition.desc).toBe(
+        'The creature cannot see and automatically fails any ability check that requires sight.',
+      )
     })
 
     it('falls back to effects_desc when desc is empty', () => {

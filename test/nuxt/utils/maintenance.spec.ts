@@ -106,8 +106,7 @@ describe('Maintenance utils', () => {
 
       try {
         throwMaintenanceError()
-      }
-      catch (error: any) {
+      } catch (error: any) {
         expect(error.statusCode).toBe(503)
         expect(error.statusMessage).toBe('Site is under maintenance')
       }

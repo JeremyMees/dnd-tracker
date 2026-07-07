@@ -4,7 +4,8 @@ withDefaults(
     buttonLabel?: string
     buttonLink?: string
     center?: boolean
-  }>(), {
+  }>(),
+  {
     center: false,
     buttonLabel: '',
     buttonLink: '',
@@ -13,10 +14,7 @@ withDefaults(
 </script>
 
 <template>
-  <div
-    class="group"
-    :class="{ 'text-center': center }"
-  >
+  <div class="group" :class="{ 'text-center': center }">
     <h2
       v-if="$slots.default"
       class="pb-4 relative max-w-max"
@@ -43,14 +41,8 @@ withDefaults(
       :class="[center ? 'justify-center' : 'justify-start']"
       class="flex mt-6"
     >
-      <NuxtLinkLocale
-        data-test-link
-        :to="buttonLink"
-      >
-        <UiButton
-          class="w-fit"
-          :aria-label="buttonLabel"
-        >
+      <NuxtLinkLocale data-test-link :to="buttonLink">
+        <UiButton class="w-fit" :aria-label="buttonLabel">
           {{ buttonLabel }}
         </UiButton>
       </NuxtLinkLocale>

@@ -5,10 +5,7 @@ const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
 function setLang(lang: AcceptableValue): void {
-  if (
-    typeof lang !== 'string'
-    || !['nl', 'en'].includes(lang)
-  ) return
+  if (typeof lang !== 'string' || !['nl', 'en'].includes(lang)) return
 
   navigateTo(switchLocalePath(lang as 'nl' | 'en'))
 }
@@ -16,14 +13,8 @@ function setLang(lang: AcceptableValue): void {
 
 <template>
   <div class="flex items-center justify-between gap-2">
-    <Icon
-      name="tabler:world"
-      class="size-3 min-w-3"
-    />
-    <UiSelect
-      :model-value="locale"
-      @update:model-value="setLang($event)"
-    >
+    <Icon name="tabler:world" class="size-3 min-w-3" />
+    <UiSelect :model-value="locale" @update:model-value="setLang($event)">
       <UiSelectTrigger>
         <UiSelectValue />
       </UiSelectTrigger>

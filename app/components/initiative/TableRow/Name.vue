@@ -18,7 +18,7 @@ const form = useForm({
   validationSchema: formSchema,
 })
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -36,8 +36,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     await update({ rows })
     popoverOpen.value = false
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred during name update'
   }
 })
@@ -75,17 +74,11 @@ const onSubmit = form.handleSubmit(async (values) => {
         </UiPopoverTitle>
       </UiPopoverHeader>
       <UiFormWrapper @submit="onSubmit">
-        <UiFormField
-          v-slot="{ componentField }"
-          name="name"
-        >
+        <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem v-auto-animate>
             <UiFormControl>
               <UiInputGroup>
-                <UiInputGroupInput
-                  type="text"
-                  v-bind="componentField"
-                />
+                <UiInputGroupInput type="text" v-bind="componentField" />
                 <UiInputGroupAddon align="inline-end">
                   <UiInputGroupButton
                     :aria-label="$t('actions.save')"
@@ -99,10 +92,7 @@ const onSubmit = form.handleSubmit(async (values) => {
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <div
-          v-if="formError"
-          class="text-sm text-destructive"
-        >
+        <div v-if="formError" class="text-sm text-destructive">
           {{ formError }}
         </div>
       </UiFormWrapper>

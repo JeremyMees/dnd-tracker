@@ -76,7 +76,10 @@ function onRoll(type: RollType) {
     attackTotal: attackRoll + (props.attackBonus ?? 0),
     rolledToHit,
     damageRolled,
-    totalDamage: Object.values(damageRolled).flat().reduce((acc, curr) => acc + curr, 0) + props.damageBonus,
+    totalDamage:
+      Object.values(damageRolled)
+        .flat()
+        .reduce((acc, curr) => acc + curr, 0) + props.damageBonus,
   }
 }
 
@@ -90,7 +93,7 @@ function handleToasts(toasts: ToastItem[]): void {
   })
 }
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -99,11 +102,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     const index = getCurrentRowIndex(sheet.value, values.target)
     const rows = [...sheet.value.rows]
 
-    if (
-      index === -1
-      || !rows[index]
-      || !isDefined(rows[index].hitPoints)
-    ) return
+    if (index === -1 || !rows[index] || !isDefined(rows[index].hitPoints))
+      return
 
     const { row, toasts } = handleHpChanges(
       result.value?.totalDamage ?? 0,
@@ -120,8 +120,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     popoverOpen.value = false
 
     animateTableUpdate(`${values.target}-hp`, 'red')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred during action roll'
   }
 })
@@ -130,9 +129,11 @@ const onSubmit = form.handleSubmit(async (values) => {
 <template>
   <UiPopover
     v-model:open="popoverOpen"
-    @update:open="(open: boolean) => {
-      if (!open) result = undefined
-    }"
+    @update:open="
+      (open: boolean) => {
+        if (!open) result = undefined
+      }
+    "
   >
     <UiPopoverTrigger as-child>
       <UiButton
@@ -155,10 +156,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           {{ $t('actions.roll') }}
         </UiPopoverTitle>
       </UiPopoverHeader>
-      <div
-        v-auto-animate
-        class="flex flex-col gap-y-6"
-      >
+      <div v-auto-animate class="flex flex-col gap-y-6">
         <div class="flex items-center gap-x-2">
           <UiButton
             :aria-label="$t('general.advantage')"
@@ -167,10 +165,7 @@ const onSubmit = form.handleSubmit(async (values) => {
             class="border-2"
             @click="onRoll('advantage')"
           >
-            <Icon
-              name="tabler:hexagon-plus"
-              :aria-hidden="true"
-            />
+            <Icon name="tabler:hexagon-plus" :aria-hidden="true" />
             <abbr :title="$t('general.advantage')">
               {{ $t('general.advantageAbb') }}
             </abbr>
@@ -182,10 +177,7 @@ const onSubmit = form.handleSubmit(async (values) => {
             class="border-2"
             @click="onRoll('straight')"
           >
-            <Icon
-              name="tabler:hexagon"
-              :aria-hidden="true"
-            />
+            <Icon name="tabler:hexagon" :aria-hidden="true" />
             {{ $t('general.straight') }}
           </UiButton>
           <UiButton
@@ -195,20 +187,13 @@ const onSubmit = form.handleSubmit(async (values) => {
             class="border-2"
             @click="onRoll('disadvantage')"
           >
-            <Icon
-              name="tabler:hexagon-minus"
-              :aria-hidden="true"
-            />
+            <Icon name="tabler:hexagon-minus" :aria-hidden="true" />
             <abbr :title="$t('general.disadvantage')">
               {{ $t('general.disadvantageAbb') }}
             </abbr>
           </UiButton>
         </div>
-        <div
-          v-if="result"
-          v-auto-animate
-          class="flex flex-col gap-y-4"
-        >
+        <div v-if="result" v-auto-animate class="flex flex-col gap-y-4">
           <UiSeparator class="bg-muted" />
 
           <div class="flex flex-col gap-y-1">
@@ -226,8 +211,11 @@ const onSubmit = form.handleSubmit(async (values) => {
                     'text-destructive font-semibold': roll === 1,
                   }"
                 >
-                  {{ roll }}{{ index < result.rolledToHit.length - 1 ? ', ' : '' }}
-                </span>)
+                  {{ roll
+                  }}{{
+                    index < result.rolledToHit.length - 1 ? ', ' : ''
+                  }} </span
+                >)
                 <abbr :title="$t(`general.${result.rollType}`)">
                   {{ $t(`general.${result.rollType}Abb`) }}
                 </abbr>
@@ -246,9 +234,12 @@ const onSubmit = form.handleSubmit(async (values) => {
                 :key="index"
                 class="text-muted-foreground text-xs"
               >
-                {{ value.length }}d{{ key }}
-                ({{ value.join(' + ') }})
-                {{ index < Object.keys(result.damageRolled).length - 1 ? ' + ' : '' }}
+                {{ value.length }}d{{ key }} ({{ value.join(' + ') }})
+                {{
+                  index < Object.keys(result.damageRolled).length - 1
+                    ? ' + '
+                    : ''
+                }}
               </span>
               <span
                 v-if="props.damageBonus"
@@ -259,25 +250,20 @@ const onSubmit = form.handleSubmit(async (values) => {
             </div>
           </div>
 
-          <UiSeparator
-            v-if="targets?.length"
-            class="bg-muted"
-          />
+          <UiSeparator v-if="targets?.length" class="bg-muted" />
 
-          <UiFormWrapper
-            v-if="targets?.length"
-            @submit="onSubmit"
-          >
-            <UiFormField
-              v-slot="{ componentField }"
-              name="target"
-            >
+          <UiFormWrapper v-if="targets?.length" @submit="onSubmit">
+            <UiFormField v-slot="{ componentField }" name="target">
               <UiFormItem>
-                <UiFormLabel>{{ $t('components.inputs.targetLabel') }}</UiFormLabel>
+                <UiFormLabel>{{
+                  $t('components.inputs.targetLabel')
+                }}</UiFormLabel>
                 <UiSelect v-bind="componentField">
                   <UiFormControl>
                     <UiSelectTrigger>
-                      <UiSelectValue :placeholder="$t('components.inputs.nothing')" />
+                      <UiSelectValue
+                        :placeholder="$t('components.inputs.nothing')"
+                      />
                     </UiSelectTrigger>
                   </UiFormControl>
                   <UiSelectContent>
@@ -295,16 +281,10 @@ const onSubmit = form.handleSubmit(async (values) => {
                 <UiFormMessage />
               </UiFormItem>
             </UiFormField>
-            <div
-              v-if="formError"
-              class="text-sm text-destructive"
-            >
+            <div v-if="formError" class="text-sm text-destructive">
               {{ formError }}
             </div>
-            <UiButton
-              type="submit"
-              class="w-full"
-            >
+            <UiButton type="submit" class="w-full">
               {{ $t('actions.applyDamage') }}
             </UiButton>
           </UiFormWrapper>

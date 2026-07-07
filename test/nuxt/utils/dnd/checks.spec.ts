@@ -31,23 +31,37 @@ describe('dnd/checks', () => {
     })
 
     it('should return true when damageImmunities is not empty', () => {
-      expect(hasResistances({ ...empty, damageImmunities: ['fire'] })).toBeTruthy()
+      expect(
+        hasResistances({ ...empty, damageImmunities: ['fire'] }),
+      ).toBeTruthy()
     })
 
     it('should return true when damageResistances is not empty', () => {
-      expect(hasResistances({ ...empty, damageResistances: ['cold'] })).toBeTruthy()
+      expect(
+        hasResistances({ ...empty, damageResistances: ['cold'] }),
+      ).toBeTruthy()
     })
 
     it('should return true when damageVulnerabilities is not empty', () => {
-      expect(hasResistances({ ...empty, damageVulnerabilities: ['thunder'] })).toBeTruthy()
+      expect(
+        hasResistances({ ...empty, damageVulnerabilities: ['thunder'] }),
+      ).toBeTruthy()
     })
 
     it('should return true when conditionImmunities is not empty', () => {
-      expect(hasResistances({ ...empty, conditionImmunities: ['charmed'] })).toBeTruthy()
+      expect(
+        hasResistances({ ...empty, conditionImmunities: ['charmed'] }),
+      ).toBeTruthy()
     })
 
     it('should return true when multiple fields are populated', () => {
-      expect(hasResistances({ ...empty, damageImmunities: ['fire'], conditionImmunities: ['charmed'] })).toBeTruthy()
+      expect(
+        hasResistances({
+          ...empty,
+          damageImmunities: ['fire'],
+          conditionImmunities: ['charmed'],
+        }),
+      ).toBeTruthy()
     })
   })
 
@@ -76,45 +90,89 @@ describe('dnd/checks', () => {
     })
 
     it('should return false when abilityScores is an empty object', () => {
-      expect(hasAbilityScores({ ...emptyRow, abilityScores: {} as DndAbilityScores })).toBeFalsy()
+      expect(
+        hasAbilityScores({
+          ...emptyRow,
+          abilityScores: {} as DndAbilityScores,
+        }),
+      ).toBeFalsy()
     })
 
     it('should return true when abilityScores has at least one entry', () => {
-      expect(hasAbilityScores({ ...emptyRow, abilityScores: { strength: 10 } as DndAbilityScores })).toBeTruthy()
+      expect(
+        hasAbilityScores({
+          ...emptyRow,
+          abilityScores: { strength: 10 } as DndAbilityScores,
+        }),
+      ).toBeTruthy()
     })
   })
 
   describe('hasCreatureStats', () => {
     it('should return false when all fields are empty', () => {
-      expect(hasCreatureStats({ ...emptyRow, resistancesAndImmunities: emptyResistances })).toBeFalsy()
+      expect(
+        hasCreatureStats({
+          ...emptyRow,
+          resistancesAndImmunities: emptyResistances,
+        }),
+      ).toBeFalsy()
     })
 
     it('should return true when savingThrows has entries', () => {
-      expect(hasCreatureStats({ ...emptyRow, savingThrows: { strength: 2 } as DndSavingThrowBonuses })).toBeTruthy()
+      expect(
+        hasCreatureStats({
+          ...emptyRow,
+          savingThrows: { strength: 2 } as DndSavingThrowBonuses,
+        }),
+      ).toBeTruthy()
     })
 
     it('should return true when speed has entries', () => {
-      expect(hasCreatureStats({ ...emptyRow, speed: { walk: 30 } as DndSpeed })).toBeTruthy()
+      expect(
+        hasCreatureStats({ ...emptyRow, speed: { walk: 30 } as DndSpeed }),
+      ).toBeTruthy()
     })
 
     it('should return true when sight has entries', () => {
-      expect(hasCreatureStats({ ...emptyRow, sight: { normalSightRange: 60 } })).toBeTruthy()
+      expect(
+        hasCreatureStats({ ...emptyRow, sight: { normalSightRange: 60 } }),
+      ).toBeTruthy()
     })
 
     it('should return true when skillBonuses has entries', () => {
-      expect(hasCreatureStats({ ...emptyRow, skillBonuses: { perception: 4 } as DndSkillBonuses })).toBeTruthy()
+      expect(
+        hasCreatureStats({
+          ...emptyRow,
+          skillBonuses: { perception: 4 } as DndSkillBonuses,
+        }),
+      ).toBeTruthy()
     })
 
     it('should return true when languages is not empty', () => {
-      expect(hasCreatureStats({ ...emptyRow, languages: ['Common'] })).toBeTruthy()
+      expect(
+        hasCreatureStats({ ...emptyRow, languages: ['Common'] }),
+      ).toBeTruthy()
     })
 
     it('should return true when traits is not empty', () => {
-      expect(hasCreatureStats({ ...emptyRow, traits: [{ name: 'Pack Tactics', desc: '...' }] })).toBeTruthy()
+      expect(
+        hasCreatureStats({
+          ...emptyRow,
+          traits: [{ name: 'Pack Tactics', desc: '...' }],
+        }),
+      ).toBeTruthy()
     })
 
     it('should return true when resistancesAndImmunities has entries', () => {
-      expect(hasCreatureStats({ ...emptyRow, resistancesAndImmunities: { ...emptyResistances, damageImmunities: ['fire'] } })).toBeTruthy()
+      expect(
+        hasCreatureStats({
+          ...emptyRow,
+          resistancesAndImmunities: {
+            ...emptyResistances,
+            damageImmunities: ['fire'],
+          },
+        }),
+      ).toBeTruthy()
     })
   })
 

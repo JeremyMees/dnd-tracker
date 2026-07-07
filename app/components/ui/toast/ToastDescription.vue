@@ -3,7 +3,9 @@ import { ToastDescription, type ToastDescriptionProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<ToastDescriptionProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  ToastDescriptionProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

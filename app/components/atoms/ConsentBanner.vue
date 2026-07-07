@@ -23,11 +23,7 @@ const showSettings = ref(false)
     data-test-banner
     class="fixed border-4 border-muted bg-background shadow-lg z-50 md:w-lg overflow-hidden rounded-2xl right-4 left-4 bottom-4 p-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
   >
-    <div
-      v-if="!showSettings"
-      data-test-banner-info
-      class="flex flex-col gap-6"
-    >
+    <div v-if="!showSettings" data-test-banner-info class="flex flex-col gap-6">
       <div class="flex flex-col gap-1">
         <p class="font-bold">
           {{ $t('components.ConsentBanner.banner.title') }}
@@ -65,11 +61,7 @@ const showSettings = ref(false)
       </div>
     </div>
 
-    <div
-      v-else
-      data-test-banner-settings
-      class="flex flex-col gap-6"
-    >
+    <div v-else data-test-banner-settings class="flex flex-col gap-6">
       <div class="flex flex-col gap-1">
         <p class="font-bold">
           {{ $t('components.ConsentBanner.settings.title') }}
@@ -94,9 +86,11 @@ const showSettings = ref(false)
               :checked="consents?.[name] || false"
               :default-value="consents?.[name] || false"
               :disabled="name === 'necessary'"
-              @update:model-value="() => {
-                toggleConsent(name)
-              }"
+              @update:model-value="
+                () => {
+                  toggleConsent(name)
+                }
+              "
             />
           </div>
           <p class="text-sm text-muted-foreground">

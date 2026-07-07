@@ -5,12 +5,15 @@
 
 # D&D Tracker
 
-A modern web application designed to streamline your D&D encounter management experience. Say goodbye to the hassle of manual tracking and hello to smooth, efficient gameplay sessions.
+A modern web application designed to streamline your D&D encounter management
+experience. Say goodbye to the hassle of manual tracking and hello to smooth,
+efficient gameplay sessions.
 
 ## Features
 
 - **Campaign Management**: Organize and track your D&D campaigns with ease
-- **Encounter Management**: Streamline your combat encounters and keep track of initiative, HP, and status effects
+- **Encounter Management**: Streamline your combat encounters and keep track of
+  initiative, HP, and status effects
 - **Homebrew Management**: Create and manage custom content for your campaigns
 
 ## Tech Stack
@@ -18,7 +21,8 @@ A modern web application designed to streamline your D&D encounter management ex
 - [Nuxt 4](https://nuxt.com/) - The Vue Framework
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [Supabase](https://supabase.com/) - Backend as a Service
-- [Tanstack Query](https://tanstack.com/query/latest) - Data fetching and caching
+- [Tanstack Query](https://tanstack.com/query/latest) - Data fetching and
+  caching
 
 ## Getting Started
 
@@ -30,17 +34,20 @@ A modern web application designed to streamline your D&D encounter management ex
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/dnd-tracker.git
 cd dnd-tracker
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -60,11 +67,13 @@ The application will be available at `http://localhost:3000`
 ### Testing
 
 #### Unit Tests
+
 ```bash
 npm run test
 ```
 
 #### End-to-End Tests
+
 ```bash
 npm run e2e
 ```
@@ -74,7 +83,8 @@ npm run e2e
 We welcome contributions to D&D Tracker! Here's how you can help:
 
 1. Fork the repository
-2. Create a new branch for your feature (`git checkout -b feature/amazing-feature`)
+2. Create a new branch for your feature
+   (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Run the test suite to ensure everything works:
    ```bash

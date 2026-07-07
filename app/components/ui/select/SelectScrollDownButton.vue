@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { SelectScrollDownButton, type SelectScrollDownButtonProps, useForwardProps } from 'reka-ui'
+import {
+  SelectScrollDownButton,
+  type SelectScrollDownButtonProps,
+  useForwardProps,
+} from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<SelectScrollDownButtonProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  SelectScrollDownButtonProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props
@@ -17,13 +23,12 @@ const forwardedProps = useForwardProps(delegatedProps)
 <template>
   <SelectScrollDownButton
     v-bind="forwardedProps"
-    :class="cn('flex cursor-default items-center justify-center py-1', props.class)"
+    :class="
+      cn('flex cursor-default items-center justify-center py-1', props.class)
+    "
   >
     <slot>
-      <Icon
-        name="tabler:chevron-down"
-        class="size-4 min-w-4"
-      />
+      <Icon name="tabler:chevron-down" class="size-4 min-w-4" />
     </slot>
   </SelectScrollDownButton>
 </template>

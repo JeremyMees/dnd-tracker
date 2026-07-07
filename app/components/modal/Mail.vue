@@ -18,14 +18,13 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
     props.send(values.mail)
     emit('close')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message
   }
 })
@@ -42,16 +41,10 @@ const onSubmit = form.handleSubmit(async (values) => {
       :max="10"
       :min="1"
     />
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton
-      type="submit"
-      class="w-full"
-    >
+    <UiButton type="submit" class="w-full">
       {{ $t('actions.sendMail') }}
     </UiButton>
   </UiFormWrapper>

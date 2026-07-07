@@ -16,10 +16,7 @@ describe('Authenticated middleware', () => {
   it('should redirect to login when authentication is needed and user is not authenticated', async () => {
     userValue.value = null
 
-    await middleware(
-      { ...mockTo, meta: { auth: true } },
-      mockFrom,
-    )
+    await middleware({ ...mockTo, meta: { auth: true } }, mockFrom)
 
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
@@ -27,10 +24,7 @@ describe('Authenticated middleware', () => {
   it('should not redirect when authentication is not needed', async () => {
     userValue.value = null
 
-    await middleware(
-      { ...mockTo, meta: { auth: false } },
-      mockFrom,
-    )
+    await middleware({ ...mockTo, meta: { auth: false } }, mockFrom)
 
     expect(navigateTo).not.toHaveBeenCalled()
   })
@@ -38,10 +32,7 @@ describe('Authenticated middleware', () => {
   it('should not redirect when authentication is not needed and user is authenticated', async () => {
     userValue.value = { id: '1' }
 
-    await middleware(
-      { ...mockTo, meta: { auth: false } },
-      mockFrom,
-    )
+    await middleware({ ...mockTo, meta: { auth: false } }, mockFrom)
 
     expect(navigateTo).not.toHaveBeenCalled()
   })
@@ -49,10 +40,7 @@ describe('Authenticated middleware', () => {
   it('should not redirect when authentication is needed and user is authenticated', async () => {
     userValue.value = { id: '1' }
 
-    await middleware(
-      { ...mockTo, meta: { auth: true } },
-      mockFrom,
-    )
+    await middleware({ ...mockTo, meta: { auth: true } }, mockFrom)
 
     expect(navigateTo).not.toHaveBeenCalled()
   })

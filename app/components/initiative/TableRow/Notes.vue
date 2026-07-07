@@ -9,26 +9,30 @@ const note = ref<string>(props.item.note || '')
 
 watch(
   () => props.item.note,
-  (newNote) => {
+  newNote => {
     if (newNote !== note.value) note.value = newNote || ''
   },
 )
 
-watchDebounced(note, (newValue) => {
-  if (!sheet.value) return
+watchDebounced(
+  note,
+  newValue => {
+    if (!sheet.value) return
 
-  const index = getCurrentRowIndex(sheet.value, props.item.id)
-  const rows = [...sheet.value.rows]
+    const index = getCurrentRowIndex(sheet.value, props.item.id)
+    const rows = [...sheet.value.rows]
 
-  if (index === -1 || !rows[index]) return
+    if (index === -1 || !rows[index]) return
 
-  rows[index] = {
-    ...rows[index],
-    note: newValue,
-  }
+    rows[index] = {
+      ...rows[index],
+      note: newValue,
+    }
 
-  update({ rows })
-}, { debounce: 500, maxWait: 1000 })
+    update({ rows })
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 </script>
 
 <template>

@@ -122,7 +122,7 @@ function handleMouseDown(e: MouseEvent) {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  imagePositions.value.forEach((icon) => {
+  imagePositions.value.forEach(icon => {
     const cosX = Math.cos(rotation.x)
     const sinX = Math.sin(rotation.x)
     const cosY = Math.cos(rotation.y)
@@ -141,11 +141,16 @@ function handleMouseDown(e: MouseEvent) {
     const dy = y - screenY
 
     if (dx * dx + dy * dy < radius * radius) {
-      const targetX = -Math.atan2(icon.y, Math.sqrt(icon.x * icon.x + icon.z * icon.z))
+      const targetX = -Math.atan2(
+        icon.y,
+        Math.sqrt(icon.x * icon.x + icon.z * icon.z),
+      )
       const targetY = Math.atan2(icon.x, icon.z)
       const currentX = rotation.x
       const currentY = rotation.y
-      const distance = Math.sqrt((targetX - currentX) ** 2 + (targetY - currentY) ** 2)
+      const distance = Math.sqrt(
+        (targetX - currentX) ** 2 + (targetY - currentY) ** 2,
+      )
 
       const duration = Math.min(2000, Math.max(800, distance * 1000))
       targetRotation.value = {
@@ -210,7 +215,14 @@ onMounted(() => {
     const speed = 0.003 + (distance / maxDistance) * 0.01
 
     if (targetRotation.value) {
-      const { startX, startY, x: tx, y: ty, startTime, duration } = targetRotation.value
+      const {
+        startX,
+        startY,
+        x: tx,
+        y: ty,
+        startTime,
+        duration,
+      } = targetRotation.value
       const elapsed = performance.now() - startTime
       const progress = Math.min(1, elapsed / duration)
       const eased = easeOutCubic(progress)
@@ -221,8 +233,7 @@ onMounted(() => {
       if (progress >= 1) {
         targetRotation.value = null
       }
-    }
-    else if (!isDragging.value) {
+    } else if (!isDragging.value) {
       rotation.x += (dy / canvas.height) * speed
       rotation.y += (dx / canvas.width) * speed
     }

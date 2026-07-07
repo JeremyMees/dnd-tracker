@@ -23,40 +23,31 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   await updateCampaign({
     data: values,
     id: props.campaignId,
-    onError: error => formError.value = error,
+    onError: error => (formError.value = error),
   })
 })
 </script>
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="title"
-    >
+    <UiFormField v-slot="{ componentField }" name="title">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
     <div class="flex justify-end">

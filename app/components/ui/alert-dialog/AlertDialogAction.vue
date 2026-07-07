@@ -4,7 +4,9 @@ import { computed, type HTMLAttributes } from 'vue'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<AlertDialogActionProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  AlertDialogActionProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

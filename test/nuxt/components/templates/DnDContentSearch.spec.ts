@@ -10,7 +10,9 @@ import {
 interface Props {
   variant?: 'secondary' | 'background'
   sheet?: InitiativeSheet
-  update?: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
+  update?: (
+    payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
+  ) => Promise<void>
   allowPin?: boolean
 }
 
@@ -84,7 +86,9 @@ describe('DnDContentSearch', async () => {
     const grid = component.find('[data-test-content-grid]')
 
     expect(grid.exists()).toBeTruthy()
-    expect(grid.findAllComponents({ name: 'ContentCard' })).toHaveLength(open5eV2ArmorListingFixture.length)
+    expect(grid.findAllComponents({ name: 'ContentCard' })).toHaveLength(
+      open5eV2ArmorListingFixture.length,
+    )
   })
 
   it('Should show only pinned items', async () => {
@@ -130,8 +134,12 @@ describe('DnDContentSearch', async () => {
     await vi.advanceTimersByTimeAsync(600)
 
     expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching('components.dndContentSearch.toast.maxTitle'),
-      description: expect.stringMatching('components.dndContentSearch.toast.maxText'),
+      title: expect.stringMatching(
+        'components.dndContentSearch.toast.maxTitle',
+      ),
+      description: expect.stringMatching(
+        'components.dndContentSearch.toast.maxText',
+      ),
       variant: 'destructive',
     })
   })

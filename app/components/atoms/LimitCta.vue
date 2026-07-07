@@ -58,22 +58,16 @@ function checkShow(): void {
           size="icon-sm"
           :aria-label="$t('actions.close')"
           class="absolute top-0 right-0 group"
-          @click="isShown=false"
+          @click="isShown = false"
         >
-          <Icon
-            name="tabler:x"
-            aria-hidden="true"
-          />
+          <Icon name="tabler:x" aria-hidden="true" />
         </UiButton>
         <p class="text-sm">
           {{ $t('components.limitCta.text') }}
         </p>
         <div class="flex justify-end">
           <UiButton as-child>
-            <NuxtLinkLocale
-              to="/pricing"
-              class="whitespace-nowrap"
-            >
+            <NuxtLinkLocale to="/pricing" class="whitespace-nowrap">
               {{ $t('components.limitCta.cta') }}
             </NuxtLinkLocale>
           </UiButton>

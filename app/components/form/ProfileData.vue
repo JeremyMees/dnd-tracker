@@ -17,8 +17,16 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const formSchemaData = z.object({
-  name: z.string().min(3).max(30).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
-  username: z.string().min(5).max(50).regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
+  name: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
+  username: z
+    .string()
+    .min(5)
+    .max(50)
+    .regex(alphaSpaces, { error: () => t('zod.alphaSpaces') }),
   email: z.email().min(5).max(50),
   marketing: z.boolean(),
 })
@@ -30,75 +38,55 @@ const formData = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = formData.handleSubmit(async (values) => {
+const onSubmit = formData.handleSubmit(async values => {
   formError.value = ''
 
   try {
     await props.update(values)
-  }
-  catch (err: unknown) {
-    formError.value = (err as Error)?.message || 'An error occurred during updating profile data'
+  } catch (err: unknown) {
+    formError.value =
+      (err as Error)?.message ||
+      'An error occurred during updating profile data'
   }
 })
 </script>
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="name"
-    >
+    <UiFormField v-slot="{ componentField }" name="name">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.fullNameLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="username"
-    >
+    <UiFormField v-slot="{ componentField }" name="username">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.usernameLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="email"
-    >
+    <UiFormField v-slot="{ componentField }" name="email">
       <UiFormItem>
         <UiFormLabel required>
           {{ $t('components.inputs.emailLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="email"
-            v-bind="componentField"
-          />
+          <UiInput type="email" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ value, handleChange }"
-      name="marketing"
-    >
+    <UiFormField v-slot="{ value, handleChange }" name="marketing">
       <UiFormItem class="flex items-center gap-2">
         <UiFormControl>
           <UiSwitch
@@ -112,10 +100,7 @@ const onSubmit = formData.handleSubmit(async (values) => {
         </UiFormLabel>
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
     <div class="flex justify-end">

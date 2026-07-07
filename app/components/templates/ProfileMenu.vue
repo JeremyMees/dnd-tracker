@@ -7,20 +7,10 @@ const { user } = useAuthentication()
 
 <template>
   <UiDropdownMenuContent>
-    <template
-      v-for="route in routes"
-      :key="route.label"
-    >
+    <template v-for="route in routes" :key="route.label">
       <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
-        <NuxtLinkLocale
-          :to="route.url"
-          class="flex items-center gap-2 w-full"
-        >
-          <Icon
-            v-if="route.icon"
-            :name="route.icon"
-            class="size-4 min-w-4"
-          />
+        <NuxtLinkLocale :to="route.url" class="flex items-center gap-2 w-full">
+          <Icon v-if="route.icon" :name="route.icon" class="size-4 min-w-4" />
           {{ $t(route.label) }}
         </NuxtLinkLocale>
       </UiDropdownMenuItem>
@@ -40,10 +30,7 @@ const { user } = useAuthentication()
           class="text-destructive flex items-center gap-2"
           @click="$emit('logout')"
         >
-          <Icon
-            name="tabler:logout"
-            class="size-4 min-w-4"
-          />
+          <Icon name="tabler:logout" class="size-4 min-w-4" />
           {{ $t('components.navbar.logout') }}
         </button>
       </UiDropdownMenuItem>

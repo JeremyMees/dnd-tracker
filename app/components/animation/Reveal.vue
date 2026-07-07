@@ -2,7 +2,8 @@
 withDefaults(
   defineProps<{
     reverse?: boolean
-  }>(), {
+  }>(),
+  {
     reverse: false,
   },
 )

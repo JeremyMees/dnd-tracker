@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
 import middleware from '~/middleware/encounter-share-access'
 
-vi.mock('@tanstack/vue-query', async (importOriginal) => {
+vi.mock('@tanstack/vue-query', async importOriginal => {
   const actual = await importOriginal<typeof import('@tanstack/vue-query')>()
   return { ...actual, useQueryClient: vi.fn(() => mockQueryClient) }
 })

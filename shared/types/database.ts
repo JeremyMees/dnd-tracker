@@ -68,7 +68,4 @@ interface DatabaseOverrides {
 }
 
 // Override the Json type with more specific types that are the same as the json schema
-export type DB = MergeDeep<
-  Database,
-  DatabaseOverrides
->
+export type DB = MergeDeep<Database, DatabaseOverrides>

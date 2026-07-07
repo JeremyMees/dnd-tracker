@@ -10,6 +10,10 @@ import {
 export const dndSpellFixture: DndSpell = toSpell(open5eV2SpellFixture)
 export const dndWeaponFixture: DndWeapon = toWeapon(open5eV2WeaponFixture)
 export const dndArmorFixture: DndArmor = toArmor(open5eV2ArmorFixture)
-export const dndMagicItemFixture: DndMagicItem = toMagicItem(open5eV2MagicItemFixture)
+export const dndMagicItemFixture: DndMagicItem = toMagicItem(
+  open5eV2MagicItemFixture,
+)
 export const dndMonsterFixture: DndMonster = toMonster(open5eV2MonsterFixture)
-export const dndConditionFixture: DndCondition = toCondition(open5eV2ConditionFixture)
+export const dndConditionFixture: DndCondition = toCondition(
+  open5eV2ConditionFixture,
+)

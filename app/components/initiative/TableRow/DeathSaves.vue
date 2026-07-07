@@ -41,8 +41,12 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
     const toastType = saved ? 'stable' : 'died'
 
     toast({
-      title: t(`components.initiativeTable.${toastType}.title`, { name: props.item.name }),
-      description: t(`components.initiativeTable.${toastType}.textDeathSaves`, { name: props.item.name }),
+      title: t(`components.initiativeTable.${toastType}.title`, {
+        name: props.item.name,
+      }),
+      description: t(`components.initiativeTable.${toastType}.textDeathSaves`, {
+        name: props.item.name,
+      }),
       variant: toastType === 'stable' ? 'success' : 'destructive',
     })
   }
@@ -57,8 +61,12 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
     data-test-container
     class="grid gap-1 w-fit mx-auto"
     :class="{
-      'bg-success/20 p-2 rounded-lg': item.deathSaves?.save.every(Boolean) && !item.deathSaves?.fail.every(Boolean),
-      'bg-destructive/20 p-2 rounded-lg': item.deathSaves?.fail.every(Boolean) && !item.deathSaves?.save.every(Boolean),
+      'bg-success/20 p-2 rounded-lg':
+        item.deathSaves?.save.every(Boolean) &&
+        !item.deathSaves?.fail.every(Boolean),
+      'bg-destructive/20 p-2 rounded-lg':
+        item.deathSaves?.fail.every(Boolean) &&
+        !item.deathSaves?.save.every(Boolean),
     }"
   >
     <div

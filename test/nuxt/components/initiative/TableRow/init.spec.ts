@@ -43,7 +43,9 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-initiative]').text()).toBe(initiative.toString())
+    expect(component.get('[data-test-initiative]').text()).toBe(
+      initiative.toString(),
+    )
   })
 
   it('Should show plus icon when initiative is not defined', async () => {
@@ -137,7 +139,9 @@ describe('Initiative table row init', async () => {
 
     expect(mockUpdate).toHaveBeenCalled()
 
-    const payload = mockUpdate.mock.calls[0]?.[0] as { rows: InitiativeSheetRow[] }
+    const payload = mockUpdate.mock.calls[0]?.[0] as {
+      rows: InitiativeSheetRow[]
+    }
     expect(payload).toBeDefined()
 
     const resultRows = payload.rows
@@ -147,7 +151,12 @@ describe('Initiative table row init', async () => {
 
   it('Should move row down when clicking down button', async () => {
     const firstRow = { ...props.item, initiative: 15, index: 0, id: 'row1' }
-    const secondRow = { ...sheet.rows[0]!, initiative: 15, index: 1, id: 'row2' }
+    const secondRow = {
+      ...sheet.rows[0]!,
+      initiative: 15,
+      index: 1,
+      id: 'row2',
+    }
 
     mockSheet.value = {
       ...sheet,
@@ -165,7 +174,9 @@ describe('Initiative table row init', async () => {
 
     expect(mockUpdate).toHaveBeenCalled()
 
-    const payload = mockUpdate.mock.calls[0]?.[0] as { rows: InitiativeSheetRow[] }
+    const payload = mockUpdate.mock.calls[0]?.[0] as {
+      rows: InitiativeSheetRow[]
+    }
     expect(payload).toBeDefined()
 
     const resultRows = payload.rows

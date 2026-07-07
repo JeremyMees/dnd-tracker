@@ -3,7 +3,8 @@ withDefaults(
   defineProps<{
     rows?: number
     amount?: number
-  }>(), {
+  }>(),
+  {
     rows: 2,
     amount: 10,
   },
@@ -19,10 +20,7 @@ withDefaults(
     column-style="flex flex-col gap-1"
     element="ol"
   >
-    <li
-      v-for="j in column"
-      :key="j"
-    >
+    <li v-for="j in column" :key="j">
       <UiSkeleton class="h-6 border-4 rounded-full" />
     </li>
   </MasonryGrid>

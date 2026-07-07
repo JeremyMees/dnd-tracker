@@ -11,10 +11,7 @@ const reversedPercentage = computed<number>(() => {
 </script>
 
 <template>
-  <svg
-    class="size-7 -rotate-90"
-    viewBox="0 0 36 36"
-  >
+  <svg class="size-7 -rotate-90" viewBox="0 0 36 36">
     <circle
       cx="18"
       cy="18"

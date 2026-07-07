@@ -1,4 +1,6 @@
-export function hasResistances(resistances: DndResistancesAndImmunities): boolean {
+export function hasResistances(
+  resistances: DndResistancesAndImmunities,
+): boolean {
   const {
     damageImmunities,
     damageResistances,
@@ -6,25 +8,30 @@ export function hasResistances(resistances: DndResistancesAndImmunities): boolea
     conditionImmunities,
   } = resistances
 
-  return damageImmunities.length > 0
-    || damageResistances.length > 0
-    || damageVulnerabilities.length > 0
-    || conditionImmunities.length > 0
+  return (
+    damageImmunities.length > 0 ||
+    damageResistances.length > 0 ||
+    damageVulnerabilities.length > 0 ||
+    conditionImmunities.length > 0
+  )
 }
 
 export function hasCreatureStats(creature: DndCreatureStats): boolean {
   return (
-    Object.keys(creature.savingThrows ?? {}).length > 0
-    || Object.keys(creature.speed ?? {}).length > 0
-    || Object.keys(creature.sight ?? {}).length > 0
-    || Object.keys(creature.skillBonuses ?? {}).length > 0
-    || (creature.languages?.length ?? 0) > 0
-    || (creature.traits?.length ?? 0) > 0
-    || (creature.resistancesAndImmunities != null && hasResistances(creature.resistancesAndImmunities))
+    Object.keys(creature.savingThrows ?? {}).length > 0 ||
+    Object.keys(creature.speed ?? {}).length > 0 ||
+    Object.keys(creature.sight ?? {}).length > 0 ||
+    Object.keys(creature.skillBonuses ?? {}).length > 0 ||
+    (creature.languages?.length ?? 0) > 0 ||
+    (creature.traits?.length ?? 0) > 0 ||
+    (creature.resistancesAndImmunities != null &&
+      hasResistances(creature.resistancesAndImmunities))
   )
 }
 
-export function hasAbilityScores(creature: { abilityScores?: DndAbilityScores | null }): boolean {
+export function hasAbilityScores(creature: {
+  abilityScores?: DndAbilityScores | null
+}): boolean {
   return Object.keys(creature.abilityScores ?? {}).length > 0
 }
 
@@ -55,12 +62,14 @@ export function isArmor(item: DndItem): item is DndArmor {
 }
 
 export function isCondition(item: DndItem): item is DndCondition {
-  return 'desc' in item
-    && !('castingOptions' in item)
-    && !('isMagicItem' in item)
-    && !('challengeRating' in item)
-    && !('damageDice' in item)
-    && !('acDisplay' in item)
+  return (
+    'desc' in item &&
+    !('castingOptions' in item) &&
+    !('isMagicItem' in item) &&
+    !('challengeRating' in item) &&
+    !('damageDice' in item) &&
+    !('acDisplay' in item)
+  )
 }
 
 export function isMonster(item: DndItem): item is DndMonster {

@@ -1,4 +1,9 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useNoteListing(
@@ -8,13 +13,14 @@ export function useNoteListing(
 ) {
   return useQuery({
     queryKey: ['useNoteListing', data, perPage],
-    queryFn: () => sbQuery<NoteRow>({
-      table: 'notes',
-      filters: data.value,
-      page: data.value.page,
-      perPage,
-      fuzzy: true,
-    }),
+    queryFn: () =>
+      sbQuery<NoteRow>({
+        table: 'notes',
+        filters: data.value,
+        page: data.value.page,
+        perPage,
+        fuzzy: true,
+      }),
     select: ({ data, count, totalPages }) => ({
       amount: count,
       pages: totalPages,
@@ -30,7 +36,11 @@ export function useNoteCount(id: number, enabled: ComputedRef<boolean>) {
 
   return useQuery({
     queryKey: ['useNoteCount', id],
-    queryFn: async () => await supabase.from('notes').select('id', { count: 'exact' }).eq('campaign', id),
+    queryFn: async () =>
+      await supabase
+        .from('notes')
+        .select('id', { count: 'exact' })
+        .eq('campaign', id),
     select: ({ count }) => count || 0,
     enabled,
   })
@@ -85,7 +95,13 @@ export function useNoteUpdate() {
   const type = t('general.note').toLowerCase()
 
   return useMutation({
-    mutationFn: async ({ data, id }: { data: Omit<NoteUpdate, NotUpdatable>, id: number } & QueryDefaults) => {
+    mutationFn: async ({
+      data,
+      id,
+    }: {
+      data: Omit<NoteUpdate, NotUpdatable>
+      id: number
+    } & QueryDefaults) => {
       const { error } = await supabase.from('notes').update(data).eq('id', id)
 
       if (error) throw createError(error)
@@ -128,9 +144,7 @@ export function useNoteRemove() {
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
       let query = supabase.from('notes').delete()
 
-      query = Array.isArray(id)
-        ? query.in('id', id)
-        : query.eq('id', id)
+      query = Array.isArray(id) ? query.in('id', id) : query.eq('id', id)
 
       const { error } = await query
 

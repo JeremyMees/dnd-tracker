@@ -1,6 +1,6 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const supabase = serverSupabaseServiceRole<Database>(event)
   const authHeader = getRequestHeader(event, 'Authorization')
   const { trmnl } = useRuntimeConfig()
@@ -9,12 +9,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ status: 401, statusText: 'Unauthorized' })
   }
 
-  const tables: DatabaseTable[] = ['campaigns', 'homebrew_items', 'initiative_sheets', 'notes', 'profiles', 'team']
+  const tables: DatabaseTable[] = [
+    'campaigns',
+    'homebrew_items',
+    'initiative_sheets',
+    'notes',
+    'profiles',
+    'team',
+  ]
   const counts: Record<string, number> = {}
 
   try {
     await Promise.all(
-      tables.map(async (table) => {
+      tables.map(async table => {
         const { count, error, data } = await supabase
           .from(table)
           .select('*', { count: 'exact' })
@@ -24,16 +31,17 @@ export default defineEventHandler(async (event) => {
         if (error) {
           console.error(`Error fetching count for ${table}:`, error)
           counts[table] = 0
-        }
-        else {
-          counts[table] = data[0] && typeof data[0].id === 'number' ? data[0].id : count ?? 0
+        } else {
+          counts[table] =
+            data[0] && typeof data[0].id === 'number'
+              ? data[0].id
+              : (count ?? 0)
         }
       }),
     )
 
     return counts
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error fetching stats:', error)
   }
 })

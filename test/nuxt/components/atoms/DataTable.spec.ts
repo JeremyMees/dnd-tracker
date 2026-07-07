@@ -23,18 +23,24 @@ const mockColumns: ColumnDef<TestData>[] = [
   columnHelper.display({
     id: 'checkbox',
     header: '',
-    cell: ({ row }) => row.getCanSelect()
-      ? selectButton({ checked: row.getIsSelected(), cb: row.getToggleSelectedHandler(), disabled: false })
-      : null,
+    cell: ({ row }) =>
+      row.getCanSelect()
+        ? selectButton({
+            checked: row.getIsSelected(),
+            cb: row.getToggleSelectedHandler(),
+            disabled: false,
+          })
+        : null,
   }),
   columnHelper.display({
     id: 'expand',
     header: '',
-    cell: ({ row }) => expandButton({
-      content: `actions.${row.getIsExpanded() ? 'hide' : 'show'}`,
-      expanded: row.getIsExpanded(),
-      cb: () => row.toggleExpanded(),
-    }),
+    cell: ({ row }) =>
+      expandButton({
+        content: `actions.${row.getIsExpanded() ? 'hide' : 'show'}`,
+        expanded: row.getIsExpanded(),
+        cb: () => row.toggleExpanded(),
+      }),
   }),
   columnHelper.accessor('id', {
     header: 'ID',
@@ -67,7 +73,8 @@ const props: Props = {
   options: { pageCount: 1 },
   emptyMessage: 'No data available',
   permission: true,
-  expandedMarkup: row => h('div', { class: 'expanded-row' }, `Details for ${row.original.name}`),
+  expandedMarkup: row =>
+    h('div', { class: 'expanded-row' }, `Details for ${row.original.name}`),
 }
 
 describe('DataTable', () => {
@@ -110,7 +117,9 @@ describe('DataTable', () => {
   })
 
   it('Should show empty message when no data', async () => {
-    const component = await mountSuspended(DataTable, { props: { ...props, data: [] } })
+    const component = await mountSuspended(DataTable, {
+      props: { ...props, data: [] },
+    })
 
     const empty = component.find('[data-test-empty]')
     expect(empty.exists()).toBeTruthy()
@@ -169,7 +178,9 @@ describe('DataTable', () => {
       },
     }
 
-    const component = await mountSuspended(DataTable, { props: paginationProps })
+    const component = await mountSuspended(DataTable, {
+      props: paginationProps,
+    })
 
     let paginationText = component.find('[data-test-pagination="1"]')
     expect(paginationText.exists()).toBeTruthy()
@@ -192,7 +203,9 @@ describe('DataTable', () => {
   })
 
   it('Should handle custom permissions correctly', async () => {
-    const permissionFn = vi.fn().mockImplementation(item => Promise.resolve(item.id === 1))
+    const permissionFn = vi
+      .fn()
+      .mockImplementation(item => Promise.resolve(item.id === 1))
 
     const component = await mountSuspended(DataTable, {
       props: {

@@ -3,7 +3,12 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, initialState } from '~~/tables/encounter-listing'
-import { useEncounterCount, useEncounterListing, useEncounterRemove, useEncounterCopy } from '~~/queries/encounters'
+import {
+  useEncounterCount,
+  useEncounterListing,
+  useEncounterRemove,
+  useEncounterCopy,
+} from '~~/queries/encounters'
 
 const props = defineProps<{
   campaignId?: number
@@ -27,27 +32,35 @@ const { data: count } = useEncounterCount(enableDateFetching)
 const { mutateAsync: removeEncounter } = useEncounterRemove()
 const { mutateAsync: copyEncounter } = useEncounterCopy()
 
-const { data, status } = useEncounterListing(computed(() => {
-  const pagination = table.value?.vueTable.getState().pagination
-  const sorting = table.value?.vueTable.getState().sorting
-  const search = table.value?.vueTable.getState().globalFilter
+const { data, status } = useEncounterListing(
+  computed(() => {
+    const pagination = table.value?.vueTable.getState().pagination
+    const sorting = table.value?.vueTable.getState().sorting
+    const search = table.value?.vueTable.getState().globalFilter
 
-  return {
-    search,
-    sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
-    sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
-    page: pagination?.pageIndex ?? 0,
-    eq: props.campaignId ? { field: 'campaign', value: props.campaignId } : undefined,
-  }
-}), enableDateFetching)
+    return {
+      search,
+      sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
+      sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
+      page: pagination?.pageIndex ?? 0,
+      eq: props.campaignId
+        ? { field: 'campaign', value: props.campaignId }
+        : undefined,
+    }
+  }),
+  enableDateFetching,
+)
 
-const max = computed<number>(() => getMax('encounter', user.value.subscriptionType))
+const max = computed<number>(() =>
+  getMax('encounter', user.value.subscriptionType),
+)
 
 const columns = generateColumns({
   isCampaign: !!props.campaignId,
   onShare: async (item: EncounterItem) => await shareEncounter(item),
   onUpdate: (item: EncounterItem) => openModal(item),
-  onCopy: async ({ data }: { data: EncounterItem }) => await copyEncounter({ data }),
+  onCopy: async ({ data }: { data: EncounterItem }) =>
+    await copyEncounter({ data }),
 })
 
 async function shareEncounter(item: EncounterItem): Promise<void> {
@@ -67,8 +80,7 @@ async function shareEncounter(item: EncounterItem): Promise<void> {
       description: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
       variant: 'info',
     })
-  }
-  catch {
+  } catch {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),
@@ -92,11 +104,14 @@ async function removeItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.encounter', amount).toLowerCase()
 
-  ask({
-    title: `${t('actions.delete')} ${amount} ${type}`,
-  }, async (confirmed: boolean) => {
-    if (confirmed) await removeEncounter({ id: ids })
-  })
+  ask(
+    {
+      title: `${t('actions.delete')} ${amount} ${type}`,
+    },
+    async (confirmed: boolean) => {
+      if (confirmed) await removeEncounter({ id: ids })
+    },
+  )
 }
 
 function invalidateQueries(): void {
@@ -108,16 +123,10 @@ function invalidateQueries(): void {
 <template>
   <div>
     <AnimationExpand>
-      <RefreshCard
-        v-if="status === 'error'"
-        @refresh="invalidateQueries"
-      />
+      <RefreshCard v-if="status === 'error'" @refresh="invalidateQueries" />
     </AnimationExpand>
 
-    <LimitCta
-      v-if="count && count >= max"
-      ref="limitCta"
-    />
+    <LimitCta v-if="count && count >= max" ref="limitCta" />
 
     <DataTable
       ref="table"
@@ -129,8 +138,14 @@ function invalidateQueries(): void {
         pageCount: data?.pages ?? -1,
         initialState,
       }"
-      :permission="(item: EncounterItem) => allows(canUpdateEncounter, item, !!campaignId)"
-      :empty-message="$t('components.table.nothing', { item: $t('general.encounter', 2).toLowerCase() })"
+      :permission="
+        (item: EncounterItem) => allows(canUpdateEncounter, item, !!campaignId)
+      "
+      :empty-message="
+        $t('components.table.nothing', {
+          item: $t('general.encounter', 2).toLowerCase(),
+        })
+      "
       @remove="removeItems"
       @invalidate="invalidateQueries"
     >
@@ -152,10 +167,7 @@ function invalidateQueries(): void {
       </template>
 
       <template #loading>
-        <SkeletonEncounterTableRow
-          v-for="i in 10"
-          :key="i"
-        />
+        <SkeletonEncounterTableRow v-for="i in 10" :key="i" />
       </template>
     </DataTable>
   </div>

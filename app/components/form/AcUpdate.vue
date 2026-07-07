@@ -5,7 +5,10 @@ import * as z from 'zod'
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (amount: number, type: DndAcType) => Partial<InitiativeSheetRow>
+  handleAcChanges: (
+    amount: number,
+    type: DndAcType,
+  ) => Partial<InitiativeSheetRow>
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
@@ -21,7 +24,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -35,8 +38,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     if (selected === 'add') animateTableUpdate(`${props.item.id}-ac`, 'green')
     if (selected === 'remove') animateTableUpdate(`${props.item.id}-ac`, 'red')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred while updating AC'
   }
 })
@@ -53,10 +55,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'add'"
       >
-        <Icon
-          name="tabler:arrow-big-up"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:arrow-big-up" aria-hidden="true" />
         {{ $t('actions.increase') }}
       </UiButton>
       <UiButton
@@ -66,10 +65,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'temp'"
       >
-        <Icon
-          name="tabler:plus"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:plus" aria-hidden="true" />
         {{ $t('actions.temp') }}
       </UiButton>
       <UiButton
@@ -79,17 +75,11 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'remove'"
       >
-        <Icon
-          name="tabler:arrow-big-down"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:arrow-big-down" aria-hidden="true" />
         {{ $t('actions.decrease') }}
       </UiButton>
     </div>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
   </UiFormWrapper>

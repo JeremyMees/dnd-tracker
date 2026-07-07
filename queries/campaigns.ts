@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useCampaignDetail(id: number) {
@@ -6,9 +11,11 @@ export function useCampaignDetail(id: number) {
 
   return useQuery({
     queryKey: ['useCampaignDetail', id],
-    queryFn: async () => await supabase
-      .from('campaigns')
-      .select(`
+    queryFn: async () =>
+      await supabase
+        .from('campaigns')
+        .select(
+          `
         *, 
         createdBy(id, username, avatar, name, email), 
         team(
@@ -21,9 +28,10 @@ export function useCampaignDetail(id: number) {
           role,
           user(id, username, avatar, name, email, subscriptionType)
         )
-      `)
-      .eq('id', id)
-      .single(),
+      `,
+        )
+        .eq('id', id)
+        .single(),
     select: ({ data, error }) => {
       if (error) throw createError(error)
       else return data
@@ -34,9 +42,10 @@ export function useCampaignDetail(id: number) {
 export function useCampaignListing(data: ComputedRef<SbFilter>) {
   return useQuery({
     queryKey: ['useCampaignListing', data],
-    queryFn: () => sbQuery<CampaignItem>({
-      table: 'campaigns',
-      select: `
+    queryFn: () =>
+      sbQuery<CampaignItem>({
+        table: 'campaigns',
+        select: `
         *,
         createdBy(id, username, avatar),
         initiative_sheets(count),
@@ -47,11 +56,11 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
           user(id, username, avatar)
         )
       `,
-      filters: data.value,
-      page: data.value.page,
-      perPage: 10,
-      fuzzy: true,
-    }),
+        filters: data.value,
+        page: data.value.page,
+        perPage: 10,
+        fuzzy: true,
+      }),
     select: ({ data, count, totalPages }) => ({
       amount: count,
       pages: totalPages,
@@ -70,9 +79,8 @@ export function useCampaignMinimalListing(id: string) {
 
   return useQuery({
     queryKey: ['useCampaignMinimal'],
-    queryFn: async () => await supabase
-      .from('campaigns')
-      .select(`
+    queryFn: async () =>
+      await supabase.from('campaigns').select(`
         id,
         title,
         createdBy(id, username, avatar),
@@ -84,12 +92,14 @@ export function useCampaignMinimalListing(id: string) {
       `),
     select: ({ data, error }) => {
       if (error) throw createError(error)
-      else return data.filter((campaign) => {
-        if (
-          campaign.createdBy.id === id
-          || campaign.team.find(u => u.user.id === id && u.role !== 'Viewer')
-        ) return true
-      })
+      else
+        return data.filter(campaign => {
+          if (
+            campaign.createdBy.id === id ||
+            campaign.team.find(u => u.user.id === id && u.role !== 'Viewer')
+          )
+            return true
+        })
     },
   })
 }
@@ -101,9 +111,11 @@ export function useCampaignMinimalDetail(id?: number) {
 
   return useQuery({
     queryKey: ['useCampaignMinimalDetail', id],
-    queryFn: async () => await supabase
-      .from('campaigns')
-      .select(`
+    queryFn: async () =>
+      await supabase
+        .from('campaigns')
+        .select(
+          `
         id,
         title,
         createdBy(id, username, avatar),
@@ -112,9 +124,10 @@ export function useCampaignMinimalDetail(id?: number) {
           role,
           user(id, username, avatar)
         )
-      `)
-      .eq('id', id)
-      .single(),
+      `,
+        )
+        .eq('id', id)
+        .single(),
     select: ({ data, error }) => {
       if (error) throw createError(error)
       else return data
@@ -127,7 +140,8 @@ export function useCampaignCount() {
 
   return useQuery({
     queryKey: ['useCampaignCount'],
-    queryFn: async () => await supabase.from('campaigns').select('id', { count: 'exact' }),
+    queryFn: async () =>
+      await supabase.from('campaigns').select('id', { count: 'exact' }),
     select: ({ count }) => count || 0,
   })
 }
@@ -181,8 +195,17 @@ export function useCampaignUpdate() {
   const type = t('general.campaign').toLowerCase()
 
   return useMutation({
-    mutationFn: async ({ data, id }: { data: Omit<CampaignUpdate, NotUpdatable>, id: number } & QueryDefaults) => {
-      const { error } = await supabase.from('campaigns').update(data).eq('id', id)
+    mutationFn: async ({
+      data,
+      id,
+    }: {
+      data: Omit<CampaignUpdate, NotUpdatable>
+      id: number
+    } & QueryDefaults) => {
+      const { error } = await supabase
+        .from('campaigns')
+        .update(data)
+        .eq('id', id)
 
       if (error) throw createError(error)
     },
@@ -225,9 +248,7 @@ export function useCampaignRemove() {
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
       let query = supabase.from('campaigns').delete()
 
-      query = Array.isArray(id)
-        ? query.in('id', id)
-        : query.eq('id', id)
+      query = Array.isArray(id) ? query.in('id', id) : query.eq('id', id)
 
       const { error } = await query
 
@@ -238,8 +259,14 @@ export function useCampaignRemove() {
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
-      if (Array.isArray(id)) id.forEach(id => queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] }))
-      else queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
+      if (Array.isArray(id))
+        id.forEach(id =>
+          queryClient.invalidateQueries({
+            queryKey: ['useCampaignDetail', id],
+          }),
+        )
+      else
+        queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
 
       toast({
         title: t('components.toast.delete.success', { type }),

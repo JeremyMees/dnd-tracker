@@ -14,13 +14,18 @@ import {
   usageTypeMap,
 } from '~~/constants/dnd'
 
-export function mapDamageType(value: string | null | undefined, fallback: DndDamageType = 'bludgeoning'): DndDamageType {
+export function mapDamageType(
+  value: string | null | undefined,
+  fallback: DndDamageType = 'bludgeoning',
+): DndDamageType {
   const normalized = normalizeKey(value)
 
   return damageTypes.find(type => normalized.includes(type)) ?? fallback
 }
 
-export function mapDamageTypes(input: string | null | undefined): DndDamageType[] {
+export function mapDamageTypes(
+  input: string | null | undefined,
+): DndDamageType[] {
   const source = splitList(input).map(item => item.toLowerCase())
   const result = new Set<DndDamageType>()
 
@@ -33,7 +38,9 @@ export function mapDamageTypes(input: string | null | undefined): DndDamageType[
   return [...result]
 }
 
-export function mapConditionTypes(input: string | null | undefined): DndConditionType[] {
+export function mapConditionTypes(
+  input: string | null | undefined,
+): DndConditionType[] {
   const source = splitList(input).map(item => item.toLowerCase())
   const result = new Set<DndConditionType>()
 
@@ -46,7 +53,9 @@ export function mapConditionTypes(input: string | null | undefined): DndConditio
   return [...result]
 }
 
-export function mapMonsterType(value: string | null | undefined): DndMonsterType {
+export function mapMonsterType(
+  value: string | null | undefined,
+): DndMonsterType {
   const key = normalizeKey(value)
 
   return monsterTypeMap[key] ?? 'humanoid'
@@ -74,7 +83,9 @@ export function mapArmorType(value: string | null | undefined): DndArmorType {
   return armorTypeMap[normalized] ?? 'light'
 }
 
-export function mapMagicItemType(value: string | null | undefined): DndMagicItemType {
+export function mapMagicItemType(
+  value: string | null | undefined,
+): DndMagicItemType {
   const normalized = normalizeKey(value)
 
   for (const [key, mapped] of Object.entries(magicItemTypeMap)) {
@@ -84,7 +95,9 @@ export function mapMagicItemType(value: string | null | undefined): DndMagicItem
   return 'wondrousItem'
 }
 
-export function mapSpellSchool(value: string | null | undefined): DndSpellSchool {
+export function mapSpellSchool(
+  value: string | null | undefined,
+): DndSpellSchool {
   return spellSchoolMap[normalizeKey(value)] ?? 'abjuration'
 }
 
@@ -100,11 +113,16 @@ export function mapClasses(value: string | null | undefined): DndClass[] {
   return [...result]
 }
 
-export function mapAbility(value: string | null | undefined, fallback: DndAbility = 'wisdom'): DndAbility {
+export function mapAbility(
+  value: string | null | undefined,
+  fallback: DndAbility = 'wisdom',
+): DndAbility {
   return abilityMap[normalizeKey(value)] ?? fallback
 }
 
-export function mapShapeType(value: string | null | undefined): DndShapeType | undefined {
+export function mapShapeType(
+  value: string | null | undefined,
+): DndShapeType | undefined {
   return shapeTypeMap[normalizeKey(value)]
 }
 
@@ -112,7 +130,9 @@ export function mapLanguagesV1(input: string): DndLanguage[] {
   return splitList(input).map(name => ({ name, desc: '' }))
 }
 
-export function mapDistanceUnit(input: string | null | undefined): DndDistanceUnit {
+export function mapDistanceUnit(
+  input: string | null | undefined,
+): DndDistanceUnit {
   return normalizeKey(input).includes('mile') ? 'miles' : 'feet'
 }
 
@@ -120,12 +140,18 @@ export function mapWeightUnit(input: string | null | undefined): DndWeightUnit {
   return normalizeKey(input).includes('ton') ? 'tons' : 'pounds'
 }
 
-export function parseDiceExpression(value: string | null | undefined, fallback: DndDice = 'd6'): DndDice {
+export function parseDiceExpression(
+  value: string | null | undefined,
+  fallback: DndDice = 'd6',
+): DndDice {
   const match = normalizeKey(value).match(/\d*d(4|6|8|10|12|20|100)/)
   return (match?.[0]?.replace(/^\d+/, '') as DndDice | undefined) ?? fallback
 }
 
-export function formatDiceWithCount(value: string | null | undefined, fallback = 'd6'): string {
+export function formatDiceWithCount(
+  value: string | null | undefined,
+  fallback = 'd6',
+): string {
   const match = normalizeKey(value).match(/(\d*)d(4|6|8|10|12|20|100)/i)
 
   if (!match) return fallback
@@ -143,7 +169,11 @@ export function parseWeight(value: string | number | null | undefined): number {
   return parseNumber(value, 0)
 }
 
-export function parseComponents(value: string | null | undefined): { verbal: boolean, somatic: boolean, material: boolean } {
+export function parseComponents(value: string | null | undefined): {
+  verbal: boolean
+  somatic: boolean
+  material: boolean
+} {
   const normalized = normalizeKey(value)
   const parts = normalized.split(/,|\s+/).filter(Boolean)
 
@@ -154,7 +184,10 @@ export function parseComponents(value: string | null | undefined): { verbal: boo
   }
 }
 
-export function parseSenseRange(senses: string, key: 'darkvision' | 'blindsight' | 'tremorsense' | 'truesight'): number | undefined {
+export function parseSenseRange(
+  senses: string,
+  key: 'darkvision' | 'blindsight' | 'tremorsense' | 'truesight',
+): number | undefined {
   const match = senses.toLowerCase().match(new RegExp(`${key}\\s+(\\d+)`))
 
   if (!match?.[1]) return undefined
@@ -174,18 +207,23 @@ export function mapSightV1(senses: string): DndSight {
   }
 }
 
-export function mapSkillBonusesV2(skills: Record<string, number>): DndSkillBonuses {
+export function mapSkillBonusesV2(
+  skills: Record<string, number>,
+): DndSkillBonuses {
   const mapped = {} as DndSkillBonuses
 
   for (const [key, value] of Object.entries(skills ?? {})) {
-    const mappedKey = skillKeyMap[key] ?? key as DndSkill
+    const mappedKey = skillKeyMap[key] ?? (key as DndSkill)
     mapped[mappedKey] = value
   }
 
   return mapped
 }
 
-export function mapSkillBonusesV1(skills: Record<string, number>, perception: number): DndSkillBonuses {
+export function mapSkillBonusesV1(
+  skills: Record<string, number>,
+  perception: number,
+): DndSkillBonuses {
   const mapped: DndSkillBonuses = {
     acrobatics: 0,
     animalHandling: 0,
@@ -219,9 +257,18 @@ export function mapSkillBonusesV1(skills: Record<string, number>, perception: nu
 export function mapSavingThrowsV1(item: Open5eV1Item): DndSavingThrowBonuses {
   return {
     strength: parseNumber(item.strength_save, modifierFromScore(item.strength)),
-    dexterity: parseNumber(item.dexterity_save, modifierFromScore(item.dexterity)),
-    constitution: parseNumber(item.constitution_save, modifierFromScore(item.constitution)),
-    intelligence: parseNumber(item.intelligence_save, modifierFromScore(item.intelligence)),
+    dexterity: parseNumber(
+      item.dexterity_save,
+      modifierFromScore(item.dexterity),
+    ),
+    constitution: parseNumber(
+      item.constitution_save,
+      modifierFromScore(item.constitution),
+    ),
+    intelligence: parseNumber(
+      item.intelligence_save,
+      modifierFromScore(item.intelligence),
+    ),
     wisdom: parseNumber(item.wisdom_save, modifierFromScore(item.wisdom)),
     charisma: parseNumber(item.charisma_save, modifierFromScore(item.charisma)),
   }
@@ -230,8 +277,10 @@ export function mapSavingThrowsV1(item: Open5eV1Item): DndSavingThrowBonuses {
 export function mapAttackType(type: string): DndAttackType {
   const normalized = normalizeKey(type)
 
-  if (normalized.includes('melee') && normalized.includes('spell')) return 'meleeSpell'
-  if (normalized.includes('ranged') && normalized.includes('spell')) return 'rangedSpell'
+  if (normalized.includes('melee') && normalized.includes('spell'))
+    return 'meleeSpell'
+  if (normalized.includes('ranged') && normalized.includes('spell'))
+    return 'rangedSpell'
   if (normalized.includes('ranged')) return 'ranged'
 
   return 'melee'
@@ -254,7 +303,9 @@ export function mapActionType(type: Open5eActionType): DndActionType {
   }
 }
 
-export function mapUsageLimits(usage: Open5eUsageLimits | null): DndUsageLimits | undefined {
+export function mapUsageLimits(
+  usage: Open5eUsageLimits | null,
+): DndUsageLimits | undefined {
   if (!usage) return undefined
 
   const type = usageTypeMap[normalizeKey(usage.type).replace(/\s+/g, '_')]
@@ -279,14 +330,31 @@ export function mapAttack(attack: Open5eAttack): DndAttack {
     ...(attack.range != null ? { range: attack.range } : {}),
     ...(attack.long_range != null ? { longRange: attack.long_range } : {}),
     ...(attack.target_creature_only ? { targetCreatureOnly: true } : {}),
-    ...(attack.damage_die_count != null ? { damageDieCount: attack.damage_die_count } : {}),
-    ...(attack.damage_die_type ? { damageDieType: attack.damage_die_type.toLowerCase() as DndDice } : {}),
-    ...(attack.damage_bonus != null ? { damageBonus: attack.damage_bonus } : {}),
+    ...(attack.damage_die_count != null
+      ? { damageDieCount: attack.damage_die_count }
+      : {}),
+    ...(attack.damage_die_type
+      ? { damageDieType: attack.damage_die_type.toLowerCase() as DndDice }
+      : {}),
+    ...(attack.damage_bonus != null
+      ? { damageBonus: attack.damage_bonus }
+      : {}),
     ...(damageType ? { damageType: mapDamageType(damageType) } : {}),
-    ...(attack.extra_damage_die_count != null ? { extraDamageDieCount: attack.extra_damage_die_count } : {}),
-    ...(attack.extra_damage_die_type ? { extraDamageDieType: attack.extra_damage_die_type.toLowerCase() as DndDice } : {}),
-    ...(attack.extra_damage_bonus != null ? { extraDamageBonus: attack.extra_damage_bonus } : {}),
-    ...(extraDamageType ? { extraDamageType: mapDamageType(extraDamageType) } : {}),
+    ...(attack.extra_damage_die_count != null
+      ? { extraDamageDieCount: attack.extra_damage_die_count }
+      : {}),
+    ...(attack.extra_damage_die_type
+      ? {
+          extraDamageDieType:
+            attack.extra_damage_die_type.toLowerCase() as DndDice,
+        }
+      : {}),
+    ...(attack.extra_damage_bonus != null
+      ? { extraDamageBonus: attack.extra_damage_bonus }
+      : {}),
+    ...(extraDamageType
+      ? { extraDamageType: mapDamageType(extraDamageType) }
+      : {}),
   }
 }
 
@@ -296,38 +364,60 @@ export function mapActionsV2(actions: Open5eAction[]): DndAction[] {
     desc: action.desc,
     attacks: action.attacks?.map(mapAttack) ?? [],
     actionType: mapActionType(action.action_type),
-    ...(action.legendary_action_cost != null ? { legendaryActionCost: action.legendary_action_cost } : {}),
-    ...(action.limited_to_form ? { limitedToForm: action.limited_to_form } : {}),
-    ...(mapUsageLimits(action.usage_limits) ? { usageLimits: mapUsageLimits(action.usage_limits) } : {}),
+    ...(action.legendary_action_cost != null
+      ? { legendaryActionCost: action.legendary_action_cost }
+      : {}),
+    ...(action.limited_to_form
+      ? { limitedToForm: action.limited_to_form }
+      : {}),
+    ...(mapUsageLimits(action.usage_limits)
+      ? { usageLimits: mapUsageLimits(action.usage_limits) }
+      : {}),
   }))
 }
 
 export function mapActionsV1(item: Open5eV1Item): DndAction[] {
-  const normal = (item.actions ?? []).map(action => ({ ...action, _kind: 'action' as const }))
-  const legendary = (item.legendary_actions ?? []).map(action => ({ ...action, _kind: 'legendaryAction' as const }))
-  const reactions = (item.reactions ?? []).map(action => ({ ...action, _kind: 'reaction' as const }))
+  const normal = (item.actions ?? []).map(action => ({
+    ...action,
+    _kind: 'action' as const,
+  }))
+  const legendary = (item.legendary_actions ?? []).map(action => ({
+    ...action,
+    _kind: 'legendaryAction' as const,
+  }))
+  const reactions = (item.reactions ?? []).map(action => ({
+    ...action,
+    _kind: 'reaction' as const,
+  }))
 
-  return [...normal, ...legendary, ...reactions].map((action) => {
-    const damageDiceMatch = action.damage_dice?.match(/(\d+)d(4|6|8|10|12|20|100)/i)
+  return [...normal, ...legendary, ...reactions].map(action => {
+    const damageDiceMatch = action.damage_dice?.match(
+      /(\d+)d(4|6|8|10|12|20|100)/i,
+    )
 
     return {
       name: action.name,
       desc: action.desc,
-      attacks: (action.attack_bonus != null || damageDiceMatch)
-        ? [{
-            name: action.name,
-            attackType: 'melee',
-            toHitMod: action.attack_bonus ?? 0,
-            distanceUnit: 'feet',
-            ...(action.damage_bonus != null ? { damageBonus: action.damage_bonus } : {}),
-            ...(damageDiceMatch
-              ? {
-                  damageDieCount: Number.parseInt(damageDiceMatch[1]!, 10),
-                  damageDieType: `d${damageDiceMatch[2]}` as DndDice,
-                }
-              : {}),
-          }]
-        : [],
+      attacks:
+        action.attack_bonus != null || damageDiceMatch
+          ? [
+              {
+                name: action.name,
+                attackType: 'melee',
+                toHitMod: action.attack_bonus ?? 0,
+                distanceUnit: 'feet',
+                ...(action.damage_bonus != null
+                  ? { damageBonus: action.damage_bonus }
+                  : {}),
+                ...(damageDiceMatch
+                  ? {
+                      damageDieCount: Number.parseInt(damageDiceMatch[1]!, 10),
+                      damageDieType: `d${damageDiceMatch[2]}` as DndDice,
+                    }
+                  : {}),
+              },
+            ]
+          : [],
       actionType: action._kind,
     }
   })
@@ -355,7 +445,10 @@ export function conditionHasLevels(name: string): boolean {
   return normalizeKey(name) === 'exhaustion'
 }
 
-export function mapConditionDescription(desc: string | null | undefined, effectsDesc: string[] | null | undefined): string {
+export function mapConditionDescription(
+  desc: string | null | undefined,
+  effectsDesc: string[] | null | undefined,
+): string {
   if (desc?.trim()) return desc
 
   return effectsDesc?.join(' * ') ?? ''

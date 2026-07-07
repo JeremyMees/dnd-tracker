@@ -16,10 +16,7 @@ function copyRow(): void {
   if (index === -1) return
 
   update({
-    rows: [
-      ...rows,
-      { ...props.item, id: crypto.randomUUID() },
-    ],
+    rows: [...rows, { ...props.item, id: crypto.randomUUID() }],
   })
 }
 
@@ -39,12 +36,7 @@ function deleteRow(): void {
 
 <template>
   <div class="flex items-center justify-end">
-    <UiButton
-      v-if="item.link"
-      variant="info-ghost"
-      size="icon-sm"
-      as-child
-    >
+    <UiButton v-if="item.link" variant="info-ghost" size="icon-sm" as-child>
       <NuxtLink
         v-tippy="$t('components.actions.link')"
         data-test-link
@@ -52,10 +44,7 @@ function deleteRow(): void {
         target="_blank"
         :to="item.link"
       >
-        <Icon
-          name="tabler:link"
-          :aria-hidden="true"
-        />
+        <Icon name="tabler:link" :aria-hidden="true" />
       </NuxtLink>
     </UiButton>
     <UiButton
@@ -67,10 +56,7 @@ function deleteRow(): void {
       :aria-label="$t('actions.copy')"
       @click="copyRow"
     >
-      <Icon
-        name="tabler:copy"
-        :aria-hidden="true"
-      />
+      <Icon name="tabler:copy" :aria-hidden="true" />
     </UiButton>
     <UiButton
       v-tippy="$t('actions.delete')"
@@ -80,10 +66,7 @@ function deleteRow(): void {
       :aria-label="$t('actions.delete')"
       @click="deleteRow"
     >
-      <Icon
-        name="tabler:trash"
-        :aria-hidden="true"
-      />
+      <Icon name="tabler:trash" :aria-hidden="true" />
     </UiButton>
   </div>
 </template>

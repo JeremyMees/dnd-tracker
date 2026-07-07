@@ -12,7 +12,9 @@ describe('Initiative fantasy name generator widget', async () => {
   it('Should render the FantasyNameGenerator component', async () => {
     const component = await mountSuspended(FantasyNameGeneratorWidget)
 
-    expect(component.findComponent({ name: 'FantasyNameGenerator' }).exists()).toBeTruthy()
+    expect(
+      component.findComponent({ name: 'FantasyNameGenerator' }).exists(),
+    ).toBeTruthy()
   })
 
   it('Should pass amount 10 to FantasyNameGenerator', async () => {

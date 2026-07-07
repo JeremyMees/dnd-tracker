@@ -28,7 +28,10 @@ const data = ref<JoinCampaign>()
 const isLoading = ref<boolean>(true)
 
 onMounted(() => {
-  const cache = queryClient.getQueryData<JoinCampaign>(['useJoinCampaign', route.query.token])
+  const cache = queryClient.getQueryData<JoinCampaign>([
+    'useJoinCampaign',
+    route.query.token,
+  ])
 
   if (cache) data.value = cache
   else navigateTo(localePath('/no-access'))
@@ -53,29 +56,33 @@ async function answerInvite(accept: boolean): Promise<void> {
     if (accept) {
       toast({
         title: t('pages.campaign.join.toast.accept.title'),
-        description: t('pages.campaign.join.toast.accept.text', { campaign: data.value.campaign.title, role: data.value.role }),
+        description: t('pages.campaign.join.toast.accept.text', {
+          campaign: data.value.campaign.title,
+          role: data.value.role,
+        }),
         variant: 'success',
       })
-    }
-    else {
+    } else {
       toast({
         title: t('pages.campaign.join.toast.decline.title'),
-        description: t('pages.campaign.join.toast.decline.text', { campaign: data.value.campaign.title }),
+        description: t('pages.campaign.join.toast.decline.text', {
+          campaign: data.value.campaign.title,
+        }),
         variant: 'destructive',
       })
     }
 
-    queryClient.removeQueries({ queryKey: ['useJoinCampaign', route.query.token] })
+    queryClient.removeQueries({
+      queryKey: ['useJoinCampaign', route.query.token],
+    })
     navigateTo(localePath(url))
-  }
-  catch (err: any) {
+  } catch (err: any) {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),
       variant: 'destructive',
     })
-  }
-  finally {
+  } finally {
     isLoading.value = false
   }
 }
@@ -85,7 +92,9 @@ async function answerInvite(accept: boolean): Promise<void> {
   <NuxtLayout name="centered">
     <template #header>
       <h2>
-        {{ $t('pages.campaign.join.title', { campaign: data?.campaign.title }) }}
+        {{
+          $t('pages.campaign.join.title', { campaign: data?.campaign.title })
+        }}
       </h2>
     </template>
 
@@ -101,10 +110,7 @@ async function answerInvite(accept: boolean): Promise<void> {
         </span>
       </template>
       <template #role>
-        <span
-          v-if="data?.role"
-          class="font-bold"
-        >
+        <span v-if="data?.role" class="font-bold">
           {{ $t(`general.roles.${data.role}.title`) }}
         </span>
       </template>

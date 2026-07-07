@@ -1,7 +1,7 @@
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 import DOMPurify from 'dompurify'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(nuxtApp => {
   nuxtApp.vueApp.use(
     VueDOMPurifyHTML,
     { enableSSRPropsSupport: true },

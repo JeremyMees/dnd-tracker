@@ -11,11 +11,15 @@ const { data: products, isPending } = usePricingListing()
 
 const shownProduct = computed<ProductPricing[]>(() => {
   if (!products.value) return []
-  if (user.value?.subscriptionType === 'medior') return products.value.filter(p => p.type !== 'pro')
+  if (user.value?.subscriptionType === 'medior')
+    return products.value.filter(p => p.type !== 'pro')
   else return products.value.filter(p => p.type !== 'upgrade to pro')
 })
 
-async function subscribe(id: string, type: StripeSubscriptionType): Promise<void> {
+async function subscribe(
+  id: string,
+  type: StripeSubscriptionType,
+): Promise<void> {
   if (!user.value) navigateTo(localePath('/login'))
 
   const { data } = await useFetch('/api/stripe/subscribe', {
@@ -45,10 +49,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
 </script>
 
 <template>
-  <NuxtLayout
-    shadow
-    container
-  >
+  <NuxtLayout shadow container>
     <section class="mb-8 lg:mb-12">
       <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center max-w-3xl mx-auto">
         {{ t('pages.pricing.title') }}
@@ -67,7 +68,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
           src="/gifs/dragon.gif"
           loading="lazy"
           class="size-8 absolute top-0 left-20"
-        >
+        />
         <Motion
           v-for="(product, i) in shownProduct"
           :key="product.title"
@@ -90,10 +91,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 <span>
                   {{ product.title }}
                 </span>
-                <UiBadge
-                  v-if="product.isPopular"
-                  variant="muted"
-                >
+                <UiBadge v-if="product.isPopular" variant="muted">
                   {{ $t('pages.pricing.popular') }}
                 </UiBadge>
               </UiCardTitle>
@@ -112,7 +110,9 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                   </span>
                   <span v-else>€{{ product.price }}</span>
                 </span>
-                <span class="text-muted-foreground"> /{{ $t('general.oneTime') }}</span>
+                <span class="text-muted-foreground">
+                  /{{ $t('general.oneTime') }}</span
+                >
               </div>
             </UiCardHeader>
 
@@ -126,7 +126,11 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                   <Icon
                     v-if="benefit.icon"
                     :name="`tabler:${benefit.icon}`"
-                    :class="benefit.icon === 'check' ? 'text-success' : 'text-destructive'"
+                    :class="
+                      benefit.icon === 'check'
+                        ? 'text-success'
+                        : 'text-destructive'
+                    "
                   />
                   {{ benefit.number }}
                   {{ $t(benefit.label || '', 2) }}
@@ -135,10 +139,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             </UiCardContent>
 
             <UiCardFooter>
-              <UiSkeleton
-                v-if="isPending"
-                class="h-[52px] rounded-lg w-full"
-              />
+              <UiSkeleton v-if="isPending" class="h-[52px] rounded-lg w-full" />
               <UiButton
                 v-else-if="isCurrent(product.type)"
                 variant="success"
@@ -147,7 +148,12 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 {{ t('general.current') }}
               </UiButton>
               <UiButton
-                v-else-if="!user || (product.id && product.price !== 0 && isUpgradeable(product.type))"
+                v-else-if="
+                  !user ||
+                  (product.id &&
+                    product.price !== 0 &&
+                    isUpgradeable(product.type))
+                "
                 :aria-label="t('pages.pricing.cta')"
                 :disabled="isPending"
                 variant="tertiary"
@@ -173,11 +179,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             <span>
               {{ t('actions.buyCoffee') }}
             </span>
-            <Icon
-              name="tabler:coffee"
-              class="size-5"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:coffee" class="size-5" aria-hidden="true" />
           </NuxtLink>
         </UiButton>
       </div>

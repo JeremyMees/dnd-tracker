@@ -35,13 +35,14 @@ export function iconLabelElement(options: {
   color?: string
   size?: string
 }): VNode {
-  return h(Tippy, {
-    class: 'flex items-center gap-2',
-    content: options.tooltip,
-  }, () => [
-    iconElement(options),
-    h('span', options.label),
-  ])
+  return h(
+    Tippy,
+    {
+      class: 'flex items-center gap-2',
+      content: options.tooltip,
+    },
+    () => [iconElement(options), h('span', options.label)],
+  )
 }
 
 export function iconButton(options: {
@@ -51,17 +52,20 @@ export function iconButton(options: {
   cb: () => void
   disabled?: boolean
   iconColor?: string
-},
-): VNode {
-  return h(Tippy, { content: options.content },
-    () => h(UiButton, {
-      tippy: options.content,
-      ariaLabel: options.content,
-      onClick: options.cb,
-      disabled: options.disabled || false,
-      variant: options.variant,
-      size: 'icon-sm',
-    }, () => iconElement({ icon: options.icon })),
+}): VNode {
+  return h(Tippy, { content: options.content }, () =>
+    h(
+      UiButton,
+      {
+        tippy: options.content,
+        ariaLabel: options.content,
+        onClick: options.cb,
+        disabled: options.disabled || false,
+        variant: options.variant,
+        size: 'icon-sm',
+      },
+      () => iconElement({ icon: options.icon }),
+    ),
   )
 }
 
@@ -72,17 +76,25 @@ export function iconLink(options: {
   to: string
   external?: boolean
 }): VNode {
-  return h(Tippy, { content: options.content },
-    () => h(UiButton, {
-      asChild: true,
-      variant: options.variant,
-      size: 'icon-sm',
-    },
-    () => h(NuxtLinkLocale, {
-      to: options.to,
-      ariaLabel: options.content,
-      target: options.external ? '_blank' : undefined,
-    }, () => iconElement({ icon: options.icon }))),
+  return h(Tippy, { content: options.content }, () =>
+    h(
+      UiButton,
+      {
+        asChild: true,
+        variant: options.variant,
+        size: 'icon-sm',
+      },
+      () =>
+        h(
+          NuxtLinkLocale,
+          {
+            to: options.to,
+            ariaLabel: options.content,
+            target: options.external ? '_blank' : undefined,
+          },
+          () => iconElement({ icon: options.icon }),
+        ),
+    ),
   )
 }
 
@@ -92,12 +104,18 @@ export function linkButton(options: {
   external?: boolean
   style?: string
 }): VNode {
-  return h(NuxtLinkLocale, {
-    to: options.to,
-    class: options.style ?? 'underline underline-offset-2 decoration-primary',
-    ariaLabel: typeof options.content === 'string' ? options.content : '',
-    target: options.external ? '_blank' : undefined,
-  }, typeof options.content === 'string' ? () => options.content : options.content)
+  return h(
+    NuxtLinkLocale,
+    {
+      to: options.to,
+      class: options.style ?? 'underline underline-offset-2 decoration-primary',
+      ariaLabel: typeof options.content === 'string' ? options.content : '',
+      target: options.external ? '_blank' : undefined,
+    },
+    typeof options.content === 'string'
+      ? () => options.content
+      : options.content,
+  )
 }
 
 export function selectButton(options: {
@@ -117,31 +135,42 @@ export function expandButton(options: {
   expanded: boolean
   cb: (event: unknown) => void
 }): VNode {
-  return h(Tippy, {
-    allowHTML: true,
-  }, {
-    default: () => h(UiButton, {
-      ariaLabel: options.content,
-      variant: 'default-ghost',
-      size: 'icon-sm',
-      onClick: options.cb,
-    }, () => h(Icon, {
-      name: 'tabler:chevron-right',
-      class: 'transition-transform duration-200 ease-in-out',
-      style: {
-        transform: options.expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-      },
-      ariaHidden: true,
-    })),
-    content: () => h('div', { class: 'flex gap-2' }, [
-      options.content,
-      h(UiKbdGroup, () => [
-        h(UiKbd, () => 'MOD'),
-        h('span', { class: 'text-muted-foreground' }, '+'),
-        h(UiKbd, () => '⏎'),
-      ]),
-    ]),
-  })
+  return h(
+    Tippy,
+    {
+      allowHTML: true,
+    },
+    {
+      default: () =>
+        h(
+          UiButton,
+          {
+            ariaLabel: options.content,
+            variant: 'default-ghost',
+            size: 'icon-sm',
+            onClick: options.cb,
+          },
+          () =>
+            h(Icon, {
+              name: 'tabler:chevron-right',
+              class: 'transition-transform duration-200 ease-in-out',
+              style: {
+                transform: options.expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+              },
+              ariaHidden: true,
+            }),
+        ),
+      content: () =>
+        h('div', { class: 'flex gap-2' }, [
+          options.content,
+          h(UiKbdGroup, () => [
+            h(UiKbd, () => 'MOD'),
+            h('span', { class: 'text-muted-foreground' }, '+'),
+            h(UiKbd, () => '⏎'),
+          ]),
+        ]),
+    },
+  )
 }
 
 export function permission(options: {
@@ -151,12 +180,16 @@ export function permission(options: {
   style?: string
   as?: string
 }): VNode {
-  return h(Can, {
-    ability: options.ability,
-    args: options.args,
-    class: options.style ?? 'flex items-center',
-    as: options.as ?? 'div',
-  }, () => options.children)
+  return h(
+    Can,
+    {
+      ability: options.ability,
+      args: options.args,
+      class: options.style ?? 'flex items-center',
+      as: options.as ?? 'div',
+    },
+    () => options.children,
+  )
 }
 
 export function actionsTable(
@@ -176,12 +209,21 @@ export function actionsTable(
 export function homebrewTag(type: HomebrewType): VNode {
   const { t } = useI18n()
 
-  return h('div', {
-    class: 'text-xs bg-muted py-[2px] px-2 rounded-full w-fit h-fit flex items-center gap-2',
-  }, [
-    iconElement({ icon: homebrewIcon(type), color: homebrewColor(type), size: 'size-4 min-w-4' }),
-    h('span', t(`general.${type}`)),
-  ])
+  return h(
+    'div',
+    {
+      class:
+        'text-xs bg-muted py-[2px] px-2 rounded-full w-fit h-fit flex items-center gap-2',
+    },
+    [
+      iconElement({
+        icon: homebrewIcon(type),
+        color: homebrewColor(type),
+        size: 'size-4 min-w-4',
+      }),
+      h('span', t(`general.${type}`)),
+    ],
+  )
 }
 
 export function abilityScoresElement(options: {
@@ -196,7 +238,10 @@ export function abilityScoresElement(options: {
   })
 }
 
-export function creatureStatsElement(creature: DndCreatureStats, cls?: string): VNode {
+export function creatureStatsElement(
+  creature: DndCreatureStats,
+  cls?: string,
+): VNode {
   return h(CreatureStats, { creature, class: cls })
 }
 
@@ -210,19 +255,31 @@ export function statsBadgesElement(options: {
   const badges = [
     options.proficiencyBonus
       ? h(UiBadge, { variant: 'outline' }, () => [
-          h('span', { class: 'text-muted-foreground mr-2' }, `${t('general.proficiencyBonus')}:`),
+          h(
+            'span',
+            { class: 'text-muted-foreground mr-2' },
+            `${t('general.proficiencyBonus')}:`,
+          ),
           `+${options.proficiencyBonus}`,
         ])
       : null,
     options.initiativeModifier
       ? h(UiBadge, { variant: 'outline' }, () => [
-          h('span', { class: 'text-muted-foreground mr-2' }, `${t('general.initiativeModifier')}:`),
+          h(
+            'span',
+            { class: 'text-muted-foreground mr-2' },
+            `${t('general.initiativeModifier')}:`,
+          ),
           `${options.initiativeModifier}`,
         ])
       : null,
     options.passivePerception
       ? h(UiBadge, { variant: 'outline' }, () => [
-          h('span', { class: 'text-muted-foreground mr-2' }, `${t('general.passivePerception')}:`),
+          h(
+            'span',
+            { class: 'text-muted-foreground mr-2' },
+            `${t('general.passivePerception')}:`,
+          ),
           `${options.passivePerception}`,
         ])
       : null,

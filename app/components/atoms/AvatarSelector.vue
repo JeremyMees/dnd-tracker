@@ -15,25 +15,34 @@ const current = computed<number>(() => {
 
 const icon = computed<string>(() => {
   switch (props.identifier) {
-    case 'backgroundColor': return 'tabler:background'
-    case 'accessories': return 'tabler:eyeglass-2'
-    case 'clothingColor': return 'tabler:shirt'
-    case 'face': return 'tabler:lego'
-    case 'facialHair': return 'tabler:moustache'
-    case 'head': return 'tabler:mood-boy'
-    default: return 'tabler:palette'
+    case 'backgroundColor':
+      return 'tabler:background'
+    case 'accessories':
+      return 'tabler:eyeglass-2'
+    case 'clothingColor':
+      return 'tabler:shirt'
+    case 'face':
+      return 'tabler:lego'
+    case 'facialHair':
+      return 'tabler:moustache'
+    case 'head':
+      return 'tabler:mood-boy'
+    default:
+      return 'tabler:palette'
   }
 })
 
 function prev(): void {
-  const index = current.value === 0 ? props.options.length - 1 : current.value - 1
+  const index =
+    current.value === 0 ? props.options.length - 1 : current.value - 1
   const option = props.options[index]
 
   if (option !== undefined) emit('update', option)
 }
 
 function next(): void {
-  const index = current.value === props.options.length - 1 ? 0 : current.value + 1
+  const index =
+    current.value === props.options.length - 1 ? 0 : current.value + 1
   const option = props.options[index]
 
   if (option !== undefined) emit('update', option)
@@ -41,7 +50,9 @@ function next(): void {
 </script>
 
 <template>
-  <div class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden">
+  <div
+    class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden"
+  >
     <Icon
       v-tippy="$t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
       data-test-icon
@@ -49,10 +60,7 @@ function next(): void {
       class="min-w-6 min-h-6"
       aria-hidden="true"
     />
-    <span
-      data-test-current
-      class="w-8 text-xs text-muted-foreground"
-    >
+    <span data-test-current class="w-8 text-xs text-muted-foreground">
       {{ current + 1 }}/{{ options.length }}
     </span>
     <div class="flex items-center">

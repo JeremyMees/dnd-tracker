@@ -2,7 +2,8 @@
 const props = withDefaults(
   defineProps<{
     position?: Position
-  }>(), {
+  }>(),
+  {
     position: 'top',
   },
 )

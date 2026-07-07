@@ -4,7 +4,7 @@ import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
 import { authUser } from '~~/test/nuxt/fixtures/auth-user'
 import middleware from '~/middleware/encounter-access'
 
-vi.mock('@tanstack/vue-query', async (importOriginal) => {
+vi.mock('@tanstack/vue-query', async importOriginal => {
   const actual = await importOriginal<typeof import('@tanstack/vue-query')>()
   return { ...actual, useQueryClient: vi.fn(() => mockQueryClient) }
 })
@@ -26,15 +26,19 @@ const mockSupabase = {
   })),
 }
 
-let mockSupabaseResponse: { data: any, error: any }
+let mockSupabaseResponse: { data: any; error: any }
 
-mockNuxtImport('useState', () => vi.fn((key: string, init?: () => any) => {
-  if (key === 'auth-user') return { value: mockUser }
-  return { value: init ? init() : null }
-}))
+mockNuxtImport('useState', () =>
+  vi.fn((key: string, init?: () => any) => {
+    if (key === 'auth-user') return { value: mockUser }
+    return { value: init ? init() : null }
+  }),
+)
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))
-mockNuxtImport('createError', () => vi.fn((error: any) => new Error(error.message)))
+mockNuxtImport('createError', () =>
+  vi.fn((error: any) => new Error(error.message)),
+)
 
 let mockUser: AuthUser | null = null
 
@@ -59,7 +63,10 @@ describe('Encounter access middleware', () => {
   })
 
   it('should navigate to / when id param is not a number', async () => {
-    await middleware({ ...mockTo, params: { title: 'test', id: 'abc' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: 'abc' } },
+      mockFrom,
+    )
 
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
@@ -67,7 +74,10 @@ describe('Encounter access middleware', () => {
   it('should navigate to / when getEncounter throws an error', async () => {
     mockSupabaseResponse.error = { message: 'Database error' }
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
@@ -80,7 +90,10 @@ describe('Encounter access middleware', () => {
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).not.toHaveBeenCalled()
   })
@@ -93,7 +106,10 @@ describe('Encounter access middleware', () => {
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).not.toHaveBeenCalled()
   })
@@ -108,7 +124,10 @@ describe('Encounter access middleware', () => {
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).not.toHaveBeenCalled()
   })
@@ -121,7 +140,10 @@ describe('Encounter access middleware', () => {
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).toHaveBeenCalledWith('/no-access')
   })
@@ -136,7 +158,10 @@ describe('Encounter access middleware', () => {
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).toHaveBeenCalledWith('/no-access')
   })
@@ -149,10 +174,16 @@ describe('Encounter access middleware', () => {
     }
     mockSupabaseResponse.data = mockData
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(mockSupabase.from).toHaveBeenCalledWith('initiative_sheets')
-    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(['useInitiativeSheetDetail', 1], mockData)
+    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
+      ['useInitiativeSheetDetail', 1],
+      mockData,
+    )
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
@@ -166,7 +197,10 @@ describe('Encounter access middleware', () => {
     }
     mockSupabaseResponse.data = mockData
 
-    await middleware({ ...mockTo, params: { title: 'test', id: '1' } }, mockFrom)
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
 
     expect(navigateTo).toHaveBeenCalledWith('/no-access')
   })

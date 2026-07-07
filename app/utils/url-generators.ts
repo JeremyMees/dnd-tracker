@@ -1,16 +1,14 @@
 export function generateParams<T extends object>(data: T): string {
   const params = new URLSearchParams()
 
-  Object.keys(data).forEach((key) => {
+  Object.keys(data).forEach(key => {
     const value = data[key as keyof T]
 
     if (value === undefined || value === null) {
       return
-    }
-    else if (Array.isArray(value)) {
+    } else if (Array.isArray(value)) {
       value.forEach(v => params.append(key, String(v)))
-    }
-    else {
+    } else {
       params.append(key, String(value))
     }
   })
@@ -26,7 +24,7 @@ export function slugify(str: string): string {
 }
 
 export function campaignUrl(
-  campaign: Record<string, any> & { id: number, title: string },
+  campaign: Record<string, any> & { id: number; title: string },
   type: 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone',
 ): string {
   const title: string = slugify(campaign.title)

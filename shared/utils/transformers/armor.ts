@@ -24,7 +24,9 @@ function mapArmorV2(dto: Open5eArmor): DndArmor {
     acDisplay: dto.ac_display,
     type: mapArmorType(dto.category),
     grantsStealthDisadvantage: dto.grants_stealth_disadvantage,
-    ...(dto.strength_score_required != null ? { strengthScoreRequired: dto.strength_score_required } : {}),
+    ...(dto.strength_score_required != null
+      ? { strengthScoreRequired: dto.strength_score_required }
+      : {}),
     acBase: dto.ac_base,
     acAddDexMod: dto.ac_add_dexmod,
     ...(dto.ac_cap_dexmod != null ? { acCapDexMod: dto.ac_cap_dexmod } : {}),
@@ -32,7 +34,5 @@ function mapArmorV2(dto: Open5eArmor): DndArmor {
 }
 
 export function toArmor(dto: Open5eArmor | Open5eV1Item): DndArmor {
-  return 'slug' in dto
-    ? mapArmorV1(dto)
-    : mapArmorV2(dto)
+  return 'slug' in dto ? mapArmorV1(dto) : mapArmorV2(dto)
 }

@@ -11,7 +11,7 @@ const popoverOpen = ref<boolean>(false)
 
 const { data: conditions, isPending } = useConditionsListing()
 
-watch(popoverOpen, open => selected.value = open ? props.item.conditions : [])
+watch(popoverOpen, open => (selected.value = open ? props.item.conditions : []))
 
 function removeCondition(name: string): void {
   if (!sheet.value) return
@@ -19,9 +19,10 @@ function removeCondition(name: string): void {
   const rows = sheet.value.rows
 
   update({
-    rows: rows.map(row => row.id === props.item.id
-      ? { ...row, conditions: row.conditions.filter(r => r.name !== name) }
-      : row,
+    rows: rows.map(row =>
+      row.id === props.item.id
+        ? { ...row, conditions: row.conditions.filter(r => r.name !== name) }
+        : row,
     ),
   })
 }
@@ -53,10 +54,7 @@ function toggleSelected(item: DndCondition): void {
 </script>
 
 <template>
-  <div
-    v-if="item.type !== 'lair'"
-    class="flex items-center gap-2"
-  >
+  <div v-if="item.type !== 'lair'" class="flex items-center gap-2">
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
@@ -82,7 +80,11 @@ function toggleSelected(item: DndCondition): void {
           <UiBadge
             v-for="condition in conditions"
             :key="condition.name"
-            :variant="selected.map(s => s.name).includes(condition.name) ? 'default' : 'outline'"
+            :variant="
+              selected.map(s => s.name).includes(condition.name)
+                ? 'default'
+                : 'outline'
+            "
             class="cursor-pointer"
             @click="toggleSelected(condition)"
           >
@@ -105,16 +107,11 @@ function toggleSelected(item: DndCondition): void {
       data-test-conditions
       class="flex flex-wrap justify-center md:justify-start gap-1"
     >
-      <UiPopover
-        v-for="condition in item.conditions"
-        :key="condition.name"
-      >
+      <UiPopover v-for="condition in item.conditions" :key="condition.name">
         <UiPopoverTrigger>
-          <UiBadge
-            data-test-badge
-            class="whitespace-nowrap"
-          >
-            {{ condition.name }} {{ condition.level ? `(${condition.level})` : '' }}
+          <UiBadge data-test-badge class="whitespace-nowrap">
+            {{ condition.name }}
+            {{ condition.level ? `(${condition.level})` : '' }}
           </UiBadge>
         </UiPopoverTrigger>
         <UiPopoverContent>
@@ -132,10 +129,14 @@ function toggleSelected(item: DndCondition): void {
             :min="1"
             :max="6"
             class="w-[100px] mt-4"
-            @update:model-value="(level) => {
-              const updatedConditions = [...item.conditions].map(c => c.name === condition.name ? { ...c, level } : c)
-              updateCondition(updatedConditions)
-            }"
+            @update:model-value="
+              level => {
+                const updatedConditions = [...item.conditions].map(c =>
+                  c.name === condition.name ? { ...c, level } : c,
+                )
+                updateCondition(updatedConditions)
+              }
+            "
           >
             <UiLabel for="level">
               {{ $t('general.level') }}

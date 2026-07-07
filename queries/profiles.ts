@@ -7,7 +7,8 @@ export function useProfileDetail(id: string) {
 
   return useQuery({
     queryKey: ['useProfileDetail', id],
-    queryFn: async () => await supabase.from('profiles').select('*').eq('id', id).single(),
+    queryFn: async () =>
+      await supabase.from('profiles').select('*').eq('id', id).single(),
     select: async ({ data, error }) => {
       if (error?.details.includes('Results contain 0 rows')) {
         await logout()
@@ -28,11 +29,17 @@ export function useProfileUpdate() {
     mutationFn: async ({
       data,
       id,
-    }: { data: ProfileUpdate & { password?: string }, id: string } & QueryDefaults) => {
+    }: {
+      data: ProfileUpdate & { password?: string }
+      id: string
+    } & QueryDefaults) => {
       const { password, ...profileData } = data
 
       if (!data.password) {
-        const { error } = await supabase.from('profiles').update(profileData).eq('id', id)
+        const { error } = await supabase
+          .from('profiles')
+          .update(profileData)
+          .eq('id', id)
 
         if (error) throw createError(error)
       }
@@ -78,10 +85,13 @@ export function useProfileRemove() {
 
       if (error) throw createError(error)
 
-      const { data: prof, error: fetchError } = await useFetch('/api/user/remove', {
-        method: 'POST',
-        body: { id },
-      })
+      const { data: prof, error: fetchError } = await useFetch(
+        '/api/user/remove',
+        {
+          method: 'POST',
+          body: { id },
+        },
+      )
 
       if (prof.value?.error) throw createError(prof.value.error)
       if (fetchError.value) throw createError(fetchError.value)

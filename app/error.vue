@@ -11,7 +11,9 @@ defineProps({
 
 <template>
   <div class="flex flex-col items-center min-h-screen">
-    <div class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center pt-10">
+    <div
+      class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center pt-10"
+    >
       <div class="text-[100px] font-black">
         {{ error!.status }}
       </div>
@@ -23,10 +25,7 @@ defineProps({
       </p>
       <div class="flex flex-wrap gap-x-4">
         <UiButton as-child>
-          <NuxtLinkLocale
-            to="/"
-            class="w-fit"
-          >
+          <NuxtLinkLocale to="/" class="w-fit">
             {{ $t('pages.error.goHome') }}
           </NuxtLinkLocale>
         </UiButton>

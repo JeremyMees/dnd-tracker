@@ -13,8 +13,11 @@ const props = withDefaults(
     item?: HomebrewItemRow
     isEncounter?: boolean
     sheet?: InitiativeSheet
-    update?: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
-  }>(), {
+    update?: (
+      payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
+    ) => Promise<void>
+  }>(),
+  {
     isEncounter: false,
   },
 )
@@ -23,43 +26,55 @@ const { t } = useI18n()
 
 const tabs = ['info', 'stats', 'traits', 'actions'] as const
 
-const activeTab = ref<typeof tabs[number]>('info')
+const activeTab = ref<(typeof tabs)[number]>('info')
 const tabIndex = computed(() => tabs.indexOf(activeTab.value))
 const canGoBack = computed(() => tabIndex.value > 0)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 
-const formSchema = z.object({
-  type: z.enum(homebrewType),
-  amount: z.number().gte(1).lte(15).optional(),
-  summoner: z.string().max(50).optional().or(z.literal('')),
-  name: z.string().min(3).max(30),
-  player: z.string().min(3).max(30).optional().or(z.literal('')),
-  initiative: z.number().gte(1).lte(50).optional(),
-  initiativeModifier: z.number().gte(-20).lte(20).optional(),
-  armorClass: z.number().gte(1).lte(100).optional(),
-  hitPoints: z.number().gte(1).lte(1000).optional(),
-  link: z.string().url().optional().or(z.literal('')),
-  hitDice: z.string().min(3).max(15).regex(hitDiceExpression, { error: () => t('zod.hitDiceExpression') }).optional().or(z.literal('')),
-  armorDetail: z.string().max(100).optional().or(z.literal('')),
-  proficiencyBonus: z.number().gte(0).lte(10).optional(),
-  passivePerception: z.number().gte(0).lte(30).optional(),
-  speed: speedSchema.optional(),
-  sight: sightSchema.optional(),
-  languages: z.array(z.string().min(1).max(50)).max(20),
-  abilityScores: abilityScoresSchema.optional(),
-  modifiers: abilityBonusSchema.optional(),
-  savingThrows: abilityBonusSchema.optional(),
-  skillBonuses: skillBonusesSchema.optional(),
-  resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
-  traits: z.array(traitSchema).max(40),
-  actions: z.array(actionSchema).max(40),
-}).refine(
-  data => !props.isEncounter || !(['monster', 'summon'].includes(data.type) && !data.amount),
-  { error: () => t('zod.required'), path: ['amount'] },
-).refine(
-  data => !props.isEncounter || !(['summon'].includes(data.type) && !data.summoner),
-  { error: () => t('zod.required'), path: ['summoner'] },
-)
+const formSchema = z
+  .object({
+    type: z.enum(homebrewType),
+    amount: z.number().gte(1).lte(15).optional(),
+    summoner: z.string().max(50).optional().or(z.literal('')),
+    name: z.string().min(3).max(30),
+    player: z.string().min(3).max(30).optional().or(z.literal('')),
+    initiative: z.number().gte(1).lte(50).optional(),
+    initiativeModifier: z.number().gte(-20).lte(20).optional(),
+    armorClass: z.number().gte(1).lte(100).optional(),
+    hitPoints: z.number().gte(1).lte(1000).optional(),
+    link: z.string().url().optional().or(z.literal('')),
+    hitDice: z
+      .string()
+      .min(3)
+      .max(15)
+      .regex(hitDiceExpression, { error: () => t('zod.hitDiceExpression') })
+      .optional()
+      .or(z.literal('')),
+    armorDetail: z.string().max(100).optional().or(z.literal('')),
+    proficiencyBonus: z.number().gte(0).lte(10).optional(),
+    passivePerception: z.number().gte(0).lte(30).optional(),
+    speed: speedSchema.optional(),
+    sight: sightSchema.optional(),
+    languages: z.array(z.string().min(1).max(50)).max(20),
+    abilityScores: abilityScoresSchema.optional(),
+    modifiers: abilityBonusSchema.optional(),
+    savingThrows: abilityBonusSchema.optional(),
+    skillBonuses: skillBonusesSchema.optional(),
+    resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
+    traits: z.array(traitSchema).max(40),
+    actions: z.array(actionSchema).max(40),
+  })
+  .refine(
+    data =>
+      !props.isEncounter ||
+      !(['monster', 'summon'].includes(data.type) && !data.amount),
+    { error: () => t('zod.required'), path: ['amount'] },
+  )
+  .refine(
+    data =>
+      !props.isEncounter || !(['summon'].includes(data.type) && !data.summoner),
+    { error: () => t('zod.required'), path: ['summoner'] },
+  )
 
 const form = useForm({
   validationSchema: formSchema,
@@ -69,7 +84,9 @@ const form = useForm({
     player: props.item?.player || '',
     initiative: undefined,
     initiativeModifier: props.item?.initiativeModifier
-      ? isNaN(+props.item.initiativeModifier) ? undefined : +props.item.initiativeModifier
+      ? isNaN(+props.item.initiativeModifier)
+        ? undefined
+        : +props.item.initiativeModifier
       : undefined,
     armorClass: props.item?.armorClass || undefined,
     hitPoints: props.item?.hitPoints || undefined,
@@ -86,12 +103,16 @@ const form = useForm({
     savingThrows: props.item?.savingThrows || undefined,
     skillBonuses: props.item?.skillBonuses || undefined,
     resistancesAndImmunities: {
-      damageImmunities: props.item?.resistancesAndImmunities?.damageImmunities ?? [],
-      damageResistances: props.item?.resistancesAndImmunities?.damageResistances ?? [],
-      damageVulnerabilities: props.item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
-      conditionImmunities: props.item?.resistancesAndImmunities?.conditionImmunities ?? [],
+      damageImmunities:
+        props.item?.resistancesAndImmunities?.damageImmunities ?? [],
+      damageResistances:
+        props.item?.resistancesAndImmunities?.damageResistances ?? [],
+      damageVulnerabilities:
+        props.item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+      conditionImmunities:
+        props.item?.resistancesAndImmunities?.conditionImmunities ?? [],
     },
-    traits: (props.item?.traits ?? []) as { name: string, desc: string }[],
+    traits: (props.item?.traits ?? []) as { name: string; desc: string }[],
     actions: props.item?.actions ?? [],
   },
 })
@@ -102,7 +123,7 @@ const formError = ref<string>('')
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   const { amount, initiative, initiativeModifier, summoner, ...rest } = values
@@ -113,29 +134,33 @@ const onSubmit = form.handleSubmit(async (values) => {
     : {}
 
   const onSuccess = () => emit('close')
-  const onError = (error: string) => formError.value = error
+  const onError = (error: string) => (formError.value = error)
 
   if (props.sheet) {
     addInitiative({
       data: formData as InitiativeSheetRowInsert,
       amount: amount ?? 1,
       initiative,
-      initiativeModifier: isDefined(initiativeModifier) ? initiativeModifier : undefined,
+      initiativeModifier: isDefined(initiativeModifier)
+        ? initiativeModifier
+        : undefined,
       summoner,
     })
 
     if (saveToCampaign.value && props.campaignId) {
       await create({
-        data: { ...formData, ...initMod, campaign: props.campaignId } as HomebrewItemInsert,
+        data: {
+          ...formData,
+          ...initMod,
+          campaign: props.campaignId,
+        } as HomebrewItemInsert,
         onSuccess,
         onError,
       })
-    }
-    else {
+    } else {
       onSuccess()
     }
-  }
-  else {
+  } else {
     if (props.item) {
       await updateHomebrew({
         data: { ...formData, ...initMod } as any,
@@ -143,10 +168,13 @@ const onSubmit = form.handleSubmit(async (values) => {
         onSuccess,
         onError,
       })
-    }
-    else if (props.campaignId) {
+    } else if (props.campaignId) {
       await create({
-        data: { ...formData, ...initMod, campaign: props.campaignId } as HomebrewItemInsert,
+        data: {
+          ...formData,
+          ...initMod,
+          campaign: props.campaignId,
+        } as HomebrewItemInsert,
         onSuccess,
         onError,
       })
@@ -177,10 +205,16 @@ async function addInitiative(options: {
 
   const row: Partial<InitiativeSheetRow> & { name: string } = {
     ...options.data,
-    ...(options.initiative && options.initiativeModifier ? { initiative: +options.initiative + +options.initiativeModifier } : {}),
-    ...(options.initiative && !options.initiativeModifier ? { initiative: +options.initiative } : {}),
+    ...(options.initiative && options.initiativeModifier
+      ? { initiative: +options.initiative + +options.initiativeModifier }
+      : {}),
+    ...(options.initiative && !options.initiativeModifier
+      ? { initiative: +options.initiative }
+      : {}),
     ...(sum ? { summoner: { name: sum.name, id: sum.id } } : {}),
-    ...(isDefined(options.initiativeModifier) ? { initiativeModifier: +options.initiativeModifier } : {}),
+    ...(isDefined(options.initiativeModifier)
+      ? { initiativeModifier: +options.initiativeModifier }
+      : {}),
   }
 
   const rows = [...props.sheet.rows]
@@ -262,10 +296,7 @@ async function addInitiative(options: {
             {{ $t('components.homebrewModal.save') }}
           </UiLabel>
         </div>
-        <span
-          v-if="sheet.rows.length >= 100"
-          class="text-destructive text-sm"
-        >
+        <span v-if="sheet.rows.length >= 100" class="text-destructive text-sm">
           {{ $t('components.homebrewModal.max') }}
         </span>
       </div>
@@ -293,10 +324,7 @@ async function addInitiative(options: {
         >
           <Icon name="tabler:arrow-right" />
         </UiButton>
-        <UiButton
-          type="submit"
-          class="w-full md:w-fit"
-        >
+        <UiButton type="submit" class="w-full md:w-fit">
           {{ $t('actions.save') }}
         </UiButton>
       </div>

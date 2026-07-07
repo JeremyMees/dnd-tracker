@@ -12,20 +12,19 @@ const sheetComputed = {
   },
 } as unknown as ComputedRef<InitiativeSheet | undefined>
 
-const update = async (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => {
+const update = async (
+  payload: Omit<Partial<InitiativeSheet>, NotUpdatable>,
+) => {
   Object.assign(mockSheet.value, payload)
 
   updateFn(payload)
 }
 
 describe('useInitiativeSheet', async () => {
-  beforeEach(() => mockSheet.value = { ...sheet })
+  beforeEach(() => (mockSheet.value = { ...sheet }))
 
   it('Should set the first row as selected and navigate properly', async () => {
-    const { next, previous } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { next, previous } = useInitiativeSheet(sheetComputed, update)
 
     expect(mockSheet.value.activeIndex).toBe(0)
 
@@ -40,10 +39,7 @@ describe('useInitiativeSheet', async () => {
 
   it('Should go to first row when the last row is active and next is called', async () => {
     mockSheet.value.activeIndex = sheet.rows.length - 1
-    const { next } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { next } = useInitiativeSheet(sheetComputed, update)
 
     expect(mockSheet.value.round).toBe(1)
 
@@ -56,10 +52,7 @@ describe('useInitiativeSheet', async () => {
   it('Should go to last row when the first row is active the round is not 1 and previous is called', async () => {
     mockSheet.value.round = 2
 
-    const { previous } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { previous } = useInitiativeSheet(sheetComputed, update)
 
     expect(mockSheet.value.round).toBe(2)
 
@@ -70,10 +63,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should not go to last row when the first row is active and previous is called', async () => {
-    const { previous } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { previous } = useInitiativeSheet(sheetComputed, update)
 
     expect(mockSheet.value.activeIndex).toBe(0)
     expect(mockSheet.value.round).toBe(1)
@@ -88,10 +78,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.activeIndex = mockSheet.value.rows.length - 1
     mockSheet.value.round = 4
 
-    const { reset } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { reset } = useInitiativeSheet(sheetComputed, update)
 
     expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
     expect(mockSheet.value.round).toBe(4)
@@ -112,10 +99,7 @@ describe('useInitiativeSheet', async () => {
     const maxAcOld = firstItem.maxArmorClassOld
     const maxHpOld = firstItem.maxHitPointsOld
 
-    const { reset } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { reset } = useInitiativeSheet(sheetComputed, update)
 
     expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
     expect(mockSheet.value.round).toBe(4)
@@ -124,8 +108,16 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.rows[0]!.tempArmorClass).toBe(5)
     expect(mockSheet.value.rows[0]!.tempHitPoints).toBe(5)
     expect(mockSheet.value.rows[0]!.concentration).toBeTruthy()
-    expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([true, false, false])
-    expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([true, false, false])
+    expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([
+      true,
+      false,
+      false,
+    ])
+    expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([
+      true,
+      false,
+      false,
+    ])
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(1)
 
     reset(true)
@@ -139,16 +131,21 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.rows[0]!.tempArmorClass).toBe(undefined)
     expect(mockSheet.value.rows[0]!.tempHitPoints).toBe(undefined)
     expect(mockSheet.value.rows[0]!.concentration).toBeFalsy()
-    expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([false, false, false])
-    expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([false, false, false])
+    expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([
+      false,
+      false,
+      false,
+    ])
+    expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([
+      false,
+      false,
+      false,
+    ])
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
   })
 
   it('Should show all columns by default', async () => {
-    const { columnVisibility } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { columnVisibility } = useInitiativeSheet(sheetComputed, update)
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -168,10 +165,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.rows = ['armorClass', 'hitPoints']
     mockSheet.value.settings.modified = true
 
-    const { columnVisibility } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { columnVisibility } = useInitiativeSheet(sheetComputed, update)
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -191,10 +185,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.rows = []
     mockSheet.value.settings.modified = true
 
-    const { columnVisibility } = useInitiativeSheet(
-      sheetComputed,
-      update,
-    )
+    const { columnVisibility } = useInitiativeSheet(sheetComputed, update)
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,

@@ -16,14 +16,17 @@ export function randomColor(): string {
   return Math.floor(Math.random() * 16777215).toString(16)
 }
 
-export function sortByNumber(a: number | any[], b: number | any[], acs: boolean): number {
+export function sortByNumber(
+  a: number | any[],
+  b: number | any[],
+  acs: boolean,
+): number {
   a = Array.isArray(a) ? a.length : a
   b = Array.isArray(b) ? b.length : b
 
   if (a == null) {
     return b == null ? 0 : 1
-  }
-  else if (b == null) {
+  } else if (b == null) {
     return -1
   }
 
@@ -51,37 +54,67 @@ export function focusInput({ node }: any): void {
 
 export function homebrewIcon(type: HomebrewType): string {
   switch (type) {
-    case 'summon': return 'tabler:wand'
-    case 'npc': return 'tabler:user'
-    case 'monster': return 'tabler:bat'
-    case 'lair': return 'tabler:building-castle'
-    default: return 'tabler:sword'
+    case 'summon':
+      return 'tabler:wand'
+    case 'npc':
+      return 'tabler:user'
+    case 'monster':
+      return 'tabler:bat'
+    case 'lair':
+      return 'tabler:building-castle'
+    default:
+      return 'tabler:sword'
   }
 }
 
 export function homebrewBgColor(type: HomebrewType): string {
   switch (type) {
-    case 'summon': return 'bg-tertiary'
-    case 'npc': return 'bg-success'
-    case 'monster': return 'bg-destructive'
-    case 'lair': return 'bg-warning'
-    default: return 'bg-primary'
+    case 'summon':
+      return 'bg-tertiary'
+    case 'npc':
+      return 'bg-success'
+    case 'monster':
+      return 'bg-destructive'
+    case 'lair':
+      return 'bg-warning'
+    default:
+      return 'bg-primary'
   }
 }
 
 export function homebrewColor(type: HomebrewType): string {
   switch (type) {
-    case 'summon': return 'text-tertiary'
-    case 'npc': return 'text-success'
-    case 'monster': return 'text-destructive'
-    case 'lair': return 'text-warning'
-    default: return 'text-primary'
+    case 'summon':
+      return 'text-tertiary'
+    case 'npc':
+      return 'text-success'
+    case 'monster':
+      return 'text-destructive'
+    case 'lair':
+      return 'text-warning'
+    default:
+      return 'text-primary'
   }
 }
 
 export function sanitizeHTML(dirty: string): string {
   return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'a', 'ol', 'ul', 'li', 'blockquote', 'hr', 'mark', 'strong', 'em', 's'],
+    ALLOWED_TAGS: [
+      'h1',
+      'h2',
+      'h3',
+      'p',
+      'a',
+      'ol',
+      'ul',
+      'li',
+      'blockquote',
+      'hr',
+      'mark',
+      'strong',
+      'em',
+      's',
+    ],
     ALLOWED_ATTR: ['href', 'name', 'target', 'rel'],
   }).replaceAll('<hr />', '<hr>')
 }
@@ -89,14 +122,11 @@ export function sanitizeHTML(dirty: string): string {
 export function formatDate(date: string | Date): string {
   const { locale } = useI18n()
 
-  const formatter = new Intl.DateTimeFormat(
-    locale.value,
-    {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit',
-    },
-  )
+  const formatter = new Intl.DateTimeFormat(locale.value, {
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit',
+  })
 
   return formatter.format(new Date(date))
 }
@@ -106,11 +136,8 @@ export function isDefined<T>(value: T | null | undefined): value is T {
 }
 
 export function validateParamId(id: string | string[] | undefined): number {
-  if (
-    !id
-    || typeof id !== 'string'
-    || isNaN(+id)
-  ) throw createError({ status: 404, statusText: 'Id is not valid' })
+  if (!id || typeof id !== 'string' || isNaN(+id))
+    throw createError({ status: 404, statusText: 'Id is not valid' })
 
   return +id
 }
@@ -118,7 +145,8 @@ export function validateParamId(id: string | string[] | undefined): number {
 export function validateInject<T>(key: InjectionKey<T>): T {
   const injection = inject(key)
 
-  if (!injection) throw createError({ status: 500, statusText: 'Injection not found' })
+  if (!injection)
+    throw createError({ status: 500, statusText: 'Injection not found' })
 
   return injection
 }

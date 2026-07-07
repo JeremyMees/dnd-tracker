@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { isPro, isMedior, hasCorrectSubscription, getMax } from '~/utils/subscription-helpers'
+import {
+  isPro,
+  isMedior,
+  hasCorrectSubscription,
+  getMax,
+} from '~/utils/subscription-helpers'
 import type { StripeSubscriptionType } from '~~/shared/types/stripe'
 
 describe('subscription-helpers', () => {

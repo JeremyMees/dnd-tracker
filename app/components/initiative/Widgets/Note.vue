@@ -8,7 +8,7 @@ const debouncedText = refDebounced(text, 500, { maxWait: 1000 })
 
 watch(
   () => props.value,
-  (newValue) => {
+  newValue => {
     if (newValue !== text.value) text.value = newValue || ''
   },
 )
@@ -17,9 +17,5 @@ watch(debouncedText, () => emit('update', debouncedText.value))
 </script>
 
 <template>
-  <TextEditor
-    variant="widget"
-    :content="text"
-    @updated="text = $event"
-  />
+  <TextEditor variant="widget" :content="text" @updated="text = $event" />
 </template>

@@ -47,7 +47,9 @@ describe('sanitizeHTML', () => {
     expect(result).toContain('<h2>')
     expect(result).toContain('<h3>')
     expect(result).toContain('<p>')
-    expect(result).toContain('<a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">')
+    expect(result).toContain(
+      '<a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">',
+    )
     expect(result).toContain('<ul>')
     expect(result).toContain('<ol>')
     expect(result).toContain('<li>')

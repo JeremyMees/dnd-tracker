@@ -9,7 +9,15 @@ describe('dnd/generate', () => {
     })
 
     it('should include all provided speed types', () => {
-      const result = generateSpeedEntries({ unit: 'feet', walk: 30, fly: 60, swim: 20, burrow: 10, climb: 15, crawl: 5 })
+      const result = generateSpeedEntries({
+        unit: 'feet',
+        walk: 30,
+        fly: 60,
+        swim: 20,
+        burrow: 10,
+        climb: 15,
+        crawl: 5,
+      })
 
       expect(result).toHaveLength(6)
       expect(result).toContainEqual({ label: 'Walk', val: '30 ft' })
@@ -21,10 +29,16 @@ describe('dnd/generate', () => {
     })
 
     it('should omit undefined optional speeds', () => {
-      const result = generateSpeedEntries({ unit: 'feet', walk: 30, fly: undefined })
+      const result = generateSpeedEntries({
+        unit: 'feet',
+        walk: 30,
+        fly: undefined,
+      })
 
       expect(result).toHaveLength(1)
-      expect(result).not.toContainEqual(expect.objectContaining({ label: 'Fly' }))
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ label: 'Fly' }),
+      )
     })
 
     it('should use the speed unit in the value', () => {
@@ -60,7 +74,9 @@ describe('dnd/generate', () => {
       const result = generateSightEntries({ darkVisionRange: undefined })
 
       expect(result).toHaveLength(0)
-      expect(result).not.toContainEqual(expect.objectContaining({ label: 'Darkvision' }))
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ label: 'Darkvision' }),
+      )
     })
 
     it('should always use ft as the unit', () => {
@@ -74,8 +90,16 @@ describe('dnd/generate', () => {
     it('should map each skill key to its label and value', () => {
       const result = generateSkillEntries({ acrobatics: 3, stealth: -1 } as any)
 
-      expect(result).toContainEqual({ key: 'acrobatics', label: 'Acrobatics', val: 3 })
-      expect(result).toContainEqual({ key: 'stealth', label: 'Stealth', val: -1 })
+      expect(result).toContainEqual({
+        key: 'acrobatics',
+        label: 'Acrobatics',
+        val: 3,
+      })
+      expect(result).toContainEqual({
+        key: 'stealth',
+        label: 'Stealth',
+        val: -1,
+      })
     })
 
     it('should return one entry per key', () => {
@@ -90,7 +114,11 @@ describe('dnd/generate', () => {
     })
 
     it('should return entries sorted alphabetically by label', () => {
-      const result = generateSkillEntries({ stealth: 2, acrobatics: 1, perception: 3 } as any)
+      const result = generateSkillEntries({
+        stealth: 2,
+        acrobatics: 1,
+        perception: 3,
+      } as any)
       const labels = result.map(e => e.label)
 
       expect(labels).toEqual([...labels].sort((a, b) => a.localeCompare(b)))

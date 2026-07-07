@@ -5,7 +5,10 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
 
 interface AcTestMethods {
-  handleAcChanges: (amount: number, type: 'add' | 'remove' | 'temp' | 'override' | 'override-reset') => InitiativeSheetRow
+  handleAcChanges: (
+    amount: number,
+    type: 'add' | 'remove' | 'temp' | 'override' | 'override-reset',
+  ) => InitiativeSheetRow
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }
 
@@ -46,14 +49,24 @@ describe('Initiative table row ac', async () => {
 
     const component = await mountSuspended(Ac, {
       props: {
-        item: { ...props.item, armorClass, maxArmorClass, maxArmorClassOld, tempArmorClass },
+        item: {
+          ...props.item,
+          armorClass,
+          maxArmorClass,
+          maxArmorClassOld,
+          tempArmorClass,
+        },
       },
       provide,
     })
 
     expect(component.get('[data-test-ac]').text()).toBe(armorClass.toString())
-    expect(component.get('[data-test-max]').text()).toContain(maxArmorClass.toString())
-    expect(component.get('[data-test-temp]').text()).toContain(tempArmorClass.toString())
+    expect(component.get('[data-test-max]').text()).toContain(
+      maxArmorClass.toString(),
+    )
+    expect(component.get('[data-test-temp]').text()).toContain(
+      tempArmorClass.toString(),
+    )
   })
 
   it('Should show destructive styling when AC is 0', async () => {
@@ -64,8 +77,12 @@ describe('Initiative table row ac', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-trigger]').classes()).toContain('bg-destructive/20')
-    expect(component.get('[data-test-ac]').classes()).toContain('text-destructive')
+    expect(component.get('[data-test-trigger]').classes()).toContain(
+      'bg-destructive/20',
+    )
+    expect(component.get('[data-test-ac]').classes()).toContain(
+      'text-destructive',
+    )
   })
 
   it('Should show plus icon when AC is not defined', async () => {

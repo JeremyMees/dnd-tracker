@@ -12,11 +12,7 @@
     </UiCardHeader>
     <UiCardContent>
       <div class="flex gap-x-4 gap-y-1 flex-wrap mb-4">
-        <UiSkeleton
-          v-for="i in 6"
-          :key="i"
-          class="rounded-lg w-16 h-20"
-        />
+        <UiSkeleton v-for="i in 6" :key="i" class="rounded-lg w-16 h-20" />
       </div>
       <div class="flex gap-x-2 gap-y-1 flex-wrap mt-2">
         <UiSkeleton class="w-34 h-5.5" />

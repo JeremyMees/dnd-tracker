@@ -2,7 +2,10 @@ function hasDeathSaves(type: HomebrewType): boolean {
   return !['summon', 'lair'].includes(type)
 }
 
-function checkDeathSaves(deathSaves: DndDeathSaves): { failed: boolean, saved: boolean } {
+function checkDeathSaves(deathSaves: DndDeathSaves): {
+  failed: boolean
+  saved: boolean
+} {
   return {
     failed: deathSaves.fail.every(v => v === true) || false,
     saved: deathSaves.save.every(v => v === true) || false,
@@ -10,7 +13,8 @@ function checkDeathSaves(deathSaves: DndDeathSaves): { failed: boolean, saved: b
 }
 
 function applyDeathSave(
-  deathSaves: DndDeathSaves, type: 'fail' | 'save' = 'fail',
+  deathSaves: DndDeathSaves,
+  type: 'fail' | 'save' = 'fail',
   count: number = 1,
 ): DndDeathSaves {
   const updatedSaves = { ...deathSaves }

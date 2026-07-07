@@ -35,7 +35,7 @@ export const initiativeWidgets = [
 export const widgetLabels: Record<InitiativeWidget, string> = {
   'dice-roll': 'general.diceRoll',
   'fantasy-name-generator': 'general.fantasyNameGenerator',
-  'note': 'general.note',
+  note: 'general.note',
   'info-pins': 'general.infoPins',
 }
 
@@ -71,8 +71,4 @@ export const roleType = [
   'Viewer',
 ] as const satisfies readonly UserRole[]
 
-export const campaignTransferRole = [
-  'Admin',
-  'Viewer',
-  'Remove',
-] as const
+export const campaignTransferRole = ['Admin', 'Viewer', 'Remove'] as const

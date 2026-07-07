@@ -3,7 +3,9 @@ import type { RadioGroupItemProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { RadioGroupIndicator, RadioGroupItem, useForwardProps } from 'reka-ui'
 
-const props = defineProps<RadioGroupItemProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  RadioGroupItemProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class')
 
@@ -20,9 +22,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       )
     "
   >
-    <RadioGroupIndicator
-      class="flex items-center justify-center"
-    >
+    <RadioGroupIndicator class="flex items-center justify-center">
       <Icon
         name="tabler:circle-filled"
         class="size-3 min-w-3 text-primary relative bottom-0.25"

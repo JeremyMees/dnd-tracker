@@ -6,11 +6,17 @@ defineProps<{ isExpanded: boolean }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
+type Modals =
+  | 'settings'
+  | 'newHomebrew'
+  | 'addHomebrew'
+  | 'bestiary'
+  | 'content'
+  | undefined
 
 const openModal = ref<Modals>(undefined)
 
-onBeforeUnmount(() => openModal.value = undefined)
+onBeforeUnmount(() => (openModal.value = undefined))
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 </script>
@@ -38,10 +44,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 :aria-label="`${$t('components.navbar.dnd-content')}`"
                 @click="openModal = 'content'"
               >
-                <Icon
-                  name="tabler:book"
-                  class="size-4 min-w-4 text-help"
-                />
+                <Icon name="tabler:book" class="size-4 min-w-4 text-help" />
                 <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('components.navbar.dnd-content') }}
                 </span>
@@ -65,7 +68,9 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem v-if="maxCharacters">
-        <UiSidebarMenuButton class="bg-destructive/10 border border-destructive">
+        <UiSidebarMenuButton
+          class="bg-destructive/10 border border-destructive"
+        >
           <Icon
             v-tippy="{
               content: $t('pages.encounter.maxCharacters'),
@@ -243,10 +248,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 :aria-label="$t('general.setting', 2)"
                 @click="openModal = 'settings'"
               >
-                <Icon
-                  name="tabler:settings"
-                  class="size-4 min-w-4"
-                />
+                <Icon name="tabler:settings" class="size-4 min-w-4" />
                 <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('general.setting', 2) }}
                 </span>
@@ -271,20 +273,13 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>
-          <tippy
-            trigger="mouseenter focus click"
-            placement="right"
-            :delay="0"
-          >
+          <tippy trigger="mouseenter focus click" placement="right" :delay="0">
             <button
               id="tour-8"
               :aria-label="$t('general.hotkey', 2)"
               class="flex items-center gap-x-2"
             >
-              <Icon
-                name="tabler:keyboard"
-                class="size-4 min-w-4"
-              />
+              <Icon name="tabler:keyboard" class="size-4 min-w-4" />
               <span class="group-data-[collapsible=icon]:hidden truncate">
                 {{ $t('general.hotkey', 2) }}
               </span>
@@ -309,9 +304,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                       {{ $t('actions.changeInitiative') }}
                     </p>
                     <UiKbdGroup>
-                      <UiKbd>
-                        MOD
-                      </UiKbd>
+                      <UiKbd> MOD </UiKbd>
                       <span class="text-muted-foreground">+</span>
                       <UiKbdGroup>
                         <UiKbd>←</UiKbd>
@@ -325,9 +318,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                       {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
                     </p>
                     <UiKbdGroup>
-                      <UiKbd>
-                        MOD
-                      </UiKbd>
+                      <UiKbd> MOD </UiKbd>
                       <span class="text-muted-foreground">+</span>
                       <UiKbd>⏎</UiKbd>
                     </UiKbdGroup>

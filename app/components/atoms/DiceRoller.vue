@@ -3,17 +3,28 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 const emit = defineEmits<{ rolled: [amount: number] }>()
 
-withDefaults(defineProps<{
-  styled?: boolean
-}>(), {
-  styled: true,
-})
+withDefaults(
+  defineProps<{
+    styled?: boolean
+  }>(),
+  {
+    styled: true,
+  },
+)
 
 const { toast } = useToast()
 const { t } = useI18n()
 
 const dices: DndDice[] = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
-const toRoll = ref<Record<DndDice, number>>({ d4: 0, d6: 0, d8: 0, d10: 0, d12: 0, d20: 0, d100: 0 })
+const toRoll = ref<Record<DndDice, number>>({
+  d4: 0,
+  d6: 0,
+  d8: 0,
+  d10: 0,
+  d12: 0,
+  d20: 0,
+  d100: 0,
+})
 
 function calculateDndDiceRoll() {
   const rolled: Partial<Record<DndDice, number[]>> = {}
@@ -26,31 +37,51 @@ function calculateDndDiceRoll() {
 
   const keys = Object.keys(rolled)
   const values = Object.values(rolled)
-  const amount = values.reduce((sum, arr) => sum + (arr?.reduce((a, b) => a + b, 0) || 0), 0)
+  const amount = values.reduce(
+    (sum, arr) => sum + (arr?.reduce((a, b) => a + b, 0) || 0),
+    0,
+  )
 
   toast({
-    title: t('components.diceRoll.rolled', { amount: values[0]?.length ?? 0, dice: keys.join(', ') }, keys.length),
+    title: t(
+      'components.diceRoll.rolled',
+      { amount: values[0]?.length ?? 0, dice: keys.join(', ') },
+      keys.length,
+    ),
     description: h('div', { class: 'flex flex-col gap-y-1' }, [
       ...Object.entries(rolled).map(([dice, numbers]) =>
         h('span', [
           h('span', { class: 'font-bold' }, `${dice}: `),
-          h('span',
-            numbers?.map((num, index) => [
-              h('span', {
-                class: {
-                  'text-success': num === +(dice.replace('d', '')),
-                  'text-destructive': num === 1,
-                },
-              }, num),
-              index < numbers.length - 1 ? ', ' : '',
-            ]).flat(),
+          h(
+            'span',
+            numbers
+              ?.map((num, index) => [
+                h(
+                  'span',
+                  {
+                    class: {
+                      'text-success': num === +dice.replace('d', ''),
+                      'text-destructive': num === 1,
+                    },
+                  },
+                  num,
+                ),
+                index < numbers.length - 1 ? ', ' : '',
+              ])
+              .flat(),
           ),
         ]),
       ),
-      Object.values(rolled).flat().length > 1 && h('span', { class: 'flex flex-row' }, [
-        h('span', { class: 'font-bold mr-2' }, `${t('general.total')}:`),
-        h('span', Object.values(rolled).flat().reduce((a, b) => a + b, 0)),
-      ]),
+      Object.values(rolled).flat().length > 1 &&
+        h('span', { class: 'flex flex-row' }, [
+          h('span', { class: 'font-bold mr-2' }, `${t('general.total')}:`),
+          h(
+            'span',
+            Object.values(rolled)
+              .flat()
+              .reduce((a, b) => a + b, 0),
+          ),
+        ]),
     ]),
   })
 
@@ -96,10 +127,7 @@ function calculateDndDiceRoll() {
           :disabled="toRoll[dice] <= 0"
           @click="toRoll[dice] = toRoll[dice] ? toRoll[dice] - 1 : 0"
         >
-          <Icon
-            name="tabler:caret-down"
-            class="size-5"
-          />
+          <Icon name="tabler:caret-down" class="size-5" />
         </UiButton>
         <span class="text-xs">
           {{ toRoll[dice] }}
@@ -108,7 +136,7 @@ function calculateDndDiceRoll() {
     </div>
     <UiButton
       type="button"
-      :disabled="Object.values(toRoll).every((value) => value === 0)"
+      :disabled="Object.values(toRoll).every(value => value === 0)"
       class="mt-4 w-full"
       @click="calculateDndDiceRoll"
     >

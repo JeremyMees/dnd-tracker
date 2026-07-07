@@ -2,7 +2,14 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import AvatarSelector from '~/components/atoms/AvatarSelector.vue'
 
-type Identifier = 'backgroundColor' | 'accessories' | 'clothingColor' | 'face' | 'facialHair' | 'head' | 'color'
+type Identifier =
+  | 'backgroundColor'
+  | 'accessories'
+  | 'clothingColor'
+  | 'face'
+  | 'facialHair'
+  | 'head'
+  | 'color'
 
 interface Props {
   identifier: Identifier
@@ -10,7 +17,7 @@ interface Props {
   selected?: string | number
 }
 
-const identifiers: Record<Identifier, { label: string, icon: string }> = {
+const identifiers: Record<Identifier, { label: string; icon: string }> = {
   backgroundColor: { label: 'backgroundColor', icon: 'tabler:background' },
   accessories: { label: 'accessories', icon: 'tabler:eyeglass-2' },
   clothingColor: { label: 'clothingColor', icon: 'tabler:shirt' },
@@ -36,7 +43,9 @@ describe('AvatarSelector', async () => {
 
     const icon = component.find('[data-test-icon]')
     expect(icon.exists()).toBeTruthy()
-    expect(icon.attributes('class')).toContain(identifiers[props.identifier].icon)
+    expect(icon.attributes('class')).toContain(
+      identifiers[props.identifier].icon,
+    )
 
     const current = component.find('[data-test-current]')
     expect(current.exists()).toBeTruthy()

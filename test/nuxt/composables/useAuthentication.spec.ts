@@ -36,7 +36,8 @@ mockNuxtImport('useSupabaseClient', () => () => ({
 mockNuxtImport(
   'useState',
   () =>
-    <T>(_key: string, init?: () => T) => init ? ref(init()) : ref(null as T),
+    <T>(_key: string, init?: () => T) =>
+      init ? ref(init()) : ref(null as T),
 )
 
 mockNuxtImport('createError', () => (error: any) => {

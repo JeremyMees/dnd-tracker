@@ -2,11 +2,22 @@ export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4'
 
 export type DndDiceSide = 4 | 6 | 8 | 10 | 12 | 20 | 100
 
-export type DndHpType = 'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
+export type DndHpType =
+  'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
 
-export type DndAcType = 'add' | 'remove' | 'temp' | 'override' | 'override-reset'
+export type DndAcType =
+  'add' | 'remove' | 'temp' | 'override' | 'override-reset'
 
-export type DndRace = 'human' | 'elf' | 'dwarf' | 'halfling' | 'dragonborn' | 'gnome' | 'half-elf' | 'half-orc' | 'tiefling'
+export type DndRace =
+  | 'human'
+  | 'elf'
+  | 'dwarf'
+  | 'halfling'
+  | 'dragonborn'
+  | 'gnome'
+  | 'half-elf'
+  | 'half-orc'
+  | 'tiefling'
 
 export type DndGender = 'male' | 'female' | 'nonbinary'
 
@@ -14,101 +25,93 @@ export type DndDistanceUnit = 'feet' | 'miles'
 
 export type DndWeightUnit = 'pounds' | 'tons'
 
-export type DndSkill
-  = | 'acrobatics'
-    | 'animalHandling'
-    | 'arcana'
-    | 'athletics'
-    | 'deception'
-    | 'history'
-    | 'insight'
-    | 'intimidation'
-    | 'investigation'
-    | 'medicine'
-    | 'nature'
-    | 'perception'
-    | 'performance'
-    | 'persuasion'
-    | 'religion'
-    | 'sleightOfHand'
-    | 'stealth'
-    | 'survival'
+export type DndSkill =
+  | 'acrobatics'
+  | 'animalHandling'
+  | 'arcana'
+  | 'athletics'
+  | 'deception'
+  | 'history'
+  | 'insight'
+  | 'intimidation'
+  | 'investigation'
+  | 'medicine'
+  | 'nature'
+  | 'perception'
+  | 'performance'
+  | 'persuasion'
+  | 'religion'
+  | 'sleightOfHand'
+  | 'stealth'
+  | 'survival'
 
-export type DndDamageType
-  = | 'acid'
-    | 'bludgeoning'
-    | 'cold'
-    | 'fire'
-    | 'force'
-    | 'lightning'
-    | 'necrotic'
-    | 'piercing'
-    | 'poison'
-    | 'psychic'
-    | 'radiant'
-    | 'slashing'
-    | 'thunder'
+export type DndDamageType =
+  | 'acid'
+  | 'bludgeoning'
+  | 'cold'
+  | 'fire'
+  | 'force'
+  | 'lightning'
+  | 'necrotic'
+  | 'piercing'
+  | 'poison'
+  | 'psychic'
+  | 'radiant'
+  | 'slashing'
+  | 'thunder'
 
-export type DndArmorType
-  = | 'light'
-    | 'medium'
-    | 'heavy'
+export type DndArmorType = 'light' | 'medium' | 'heavy'
 
-export type DndMagicItemType
-  = | 'armor'
-    | 'potion'
-    | 'ring'
-    | 'rod'
-    | 'scroll'
-    | 'staff'
-    | 'wand'
-    | 'weapon'
-    | 'wondrousItem'
+export type DndMagicItemType =
+  | 'armor'
+  | 'potion'
+  | 'ring'
+  | 'rod'
+  | 'scroll'
+  | 'staff'
+  | 'wand'
+  | 'weapon'
+  | 'wondrousItem'
 
-export type DndMonsterType
-  = | 'aberration'
-    | 'beast'
-    | 'celestial'
-    | 'construct'
-    | 'dragon'
-    | 'elemental'
-    | 'fey'
-    | 'fiend'
-    | 'giant'
-    | 'humanoid'
-    | 'monstrosity'
-    | 'ooze'
-    | 'plant'
-    | 'undead'
+export type DndMonsterType =
+  | 'aberration'
+  | 'beast'
+  | 'celestial'
+  | 'construct'
+  | 'dragon'
+  | 'elemental'
+  | 'fey'
+  | 'fiend'
+  | 'giant'
+  | 'humanoid'
+  | 'monstrosity'
+  | 'ooze'
+  | 'plant'
+  | 'undead'
 
-export type DndSize
-  = | 'tiny'
-    | 'small'
-    | 'medium'
-    | 'large'
-    | 'huge'
-    | 'gargantuan'
+export type DndSize =
+  'tiny' | 'small' | 'medium' | 'large' | 'huge' | 'gargantuan'
 
 export type DndSkillBonuses = Record<DndSkill, number>
 
-export type DndAbility
-  = | 'strength'
-    | 'dexterity'
-    | 'constitution'
-    | 'intelligence'
-    | 'wisdom'
-    | 'charisma'
+export type DndAbility =
+  | 'strength'
+  | 'dexterity'
+  | 'constitution'
+  | 'intelligence'
+  | 'wisdom'
+  | 'charisma'
 
-export type DndAlignment
-  = | 'lawfulGood'
-    | 'neutralGood'
-    | 'chaoticGood'
-    | 'lawfulNeutral'
-    | 'trueNeutral'
-    | 'chaoticNeutral'
-    | 'lawfulEvil'
-    | 'neutralEvil'
-    | 'chaoticEvil'
+export type DndAlignment =
+  | 'lawfulGood'
+  | 'neutralGood'
+  | 'chaoticGood'
+  | 'lawfulNeutral'
+  | 'trueNeutral'
+  | 'chaoticNeutral'
+  | 'lawfulEvil'
+  | 'neutralEvil'
+  | 'chaoticEvil'
 
 export type DndAbilityScores = Record<DndAbility, number>
 
@@ -116,24 +119,25 @@ export type DndModifiers = Record<DndAbility, number>
 
 export type DndSavingThrowBonuses = Record<DndAbility, number>
 
-export type DndConditionType
-  = | 'blinded'
-    | 'charmed'
-    | 'deafened'
-    | 'frightened'
-    | 'grappled'
-    | 'incapacitated'
-    | 'invisible'
-    | 'paralyzed'
-    | 'petrified'
-    | 'poisoned'
-    | 'prone'
-    | 'restrained'
-    | 'stunned'
-    | 'unconscious'
-    | 'exhaustion'
+export type DndConditionType =
+  | 'blinded'
+  | 'charmed'
+  | 'deafened'
+  | 'frightened'
+  | 'grappled'
+  | 'incapacitated'
+  | 'invisible'
+  | 'paralyzed'
+  | 'petrified'
+  | 'poisoned'
+  | 'prone'
+  | 'restrained'
+  | 'stunned'
+  | 'unconscious'
+  | 'exhaustion'
 
-export type DndActionType = 'action'
+export type DndActionType =
+  | 'action'
   | 'bonusAction'
   | 'reaction'
   | 'legendaryAction'
@@ -141,70 +145,51 @@ export type DndActionType = 'action'
   | 'lairAction'
   | 'specialAbility'
 
-export type DndAttackType
-  = | 'melee'
-    | 'ranged'
-    | 'meleeSpell'
-    | 'rangedSpell'
+export type DndAttackType = 'melee' | 'ranged' | 'meleeSpell' | 'rangedSpell'
 
-export type DndSpellSchool
-  = | 'abjuration'
-    | 'conjuration'
-    | 'divination'
-    | 'enchantment'
-    | 'evocation'
-    | 'illusion'
-    | 'necromancy'
-    | 'transmutation'
+export type DndSpellSchool =
+  | 'abjuration'
+  | 'conjuration'
+  | 'divination'
+  | 'enchantment'
+  | 'evocation'
+  | 'illusion'
+  | 'necromancy'
+  | 'transmutation'
 
-export type DndUsageType
-  = | 'perDay'
-    | 'recharge'
-    | 'atWill'
-    | 'perRest'
+export type DndUsageType = 'perDay' | 'recharge' | 'atWill' | 'perRest'
 
-export type DndClass
-  = | 'barbarian'
-    | 'bard'
-    | 'cleric'
-    | 'druid'
-    | 'fighter'
-    | 'monk'
-    | 'paladin'
-    | 'ranger'
-    | 'rogue'
-    | 'sorcerer'
-    | 'warlock'
-    | 'wizard'
+export type DndClass =
+  | 'barbarian'
+  | 'bard'
+  | 'cleric'
+  | 'druid'
+  | 'fighter'
+  | 'monk'
+  | 'paladin'
+  | 'ranger'
+  | 'rogue'
+  | 'sorcerer'
+  | 'warlock'
+  | 'wizard'
 
-export type DndShapeType
-  = | 'cone'
-    | 'cube'
-    | 'cylinder'
-    | 'line'
-    | 'sphere'
+export type DndShapeType = 'cone' | 'cube' | 'cylinder' | 'line' | 'sphere'
 
-export type DndSpeedType
-  = | 'walk'
-    | 'crawl'
-    | 'hover'
-    | 'fly'
-    | 'burrow'
-    | 'climb'
-    | 'swim'
+export type DndSpeedType =
+  'walk' | 'crawl' | 'hover' | 'fly' | 'burrow' | 'climb' | 'swim'
 
-export type DndSightRangeType
-  = | 'normalSightRange'
-    | 'darkVisionRange'
-    | 'blindSightRange'
-    | 'tremorSenseRange'
-    | 'trueSightRange'
+export type DndSightRangeType =
+  | 'normalSightRange'
+  | 'darkVisionRange'
+  | 'blindSightRange'
+  | 'tremorSenseRange'
+  | 'trueSightRange'
 
-export type DndResistanceType
-  = | 'damageImmunities'
-    | 'damageResistances'
-    | 'damageVulnerabilities'
-    | 'conditionImmunities'
+export type DndResistanceType =
+  | 'damageImmunities'
+  | 'damageResistances'
+  | 'damageVulnerabilities'
+  | 'conditionImmunities'
 
 export interface DndSpeed {
   unit: DndDistanceUnit
@@ -435,10 +420,5 @@ export interface DndCondition {
   hasLevels?: boolean
 }
 
-export type DndItem
-  = | DndSpell
-    | DndMagicItem
-    | DndWeapon
-    | DndArmor
-    | DndCondition
-    | DndMonster
+export type DndItem =
+  DndSpell | DndMagicItem | DndWeapon | DndArmor | DndCondition | DndMonster

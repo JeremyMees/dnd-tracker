@@ -3,7 +3,9 @@ import type { NavigationMenuItemProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { NavigationMenuItem } from 'reka-ui'
 
-const props = defineProps<NavigationMenuItemProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  NavigationMenuItemProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class')
 </script>

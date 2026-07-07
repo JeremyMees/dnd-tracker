@@ -12,7 +12,8 @@ const props = withDefaults(
     charLimit?: number
     placeholder?: string
     variant?: 'input' | 'widget'
-  }>(), {
+  }>(),
+  {
     content: '',
     charLimit: 5000,
     placeholder: 'components.tipTapEditor.placeholder',
@@ -28,8 +29,8 @@ const dropdown = ref<HTMLDivElement>()
 const invalidHTML = ref<boolean>(false)
 const isFocused = ref<boolean>(false)
 
-onClickOutside(dropdown, () => isOpen.value = false)
-onKeyStroke('Escape', () => isOpen.value = false)
+onClickOutside(dropdown, () => (isOpen.value = false))
+onKeyStroke('Escape', () => (isOpen.value = false))
 
 type HeadingLevel = 1 | 2 | 3
 
@@ -66,22 +67,30 @@ onMounted(() => {
 
 onBeforeUnmount(() => editor.value?.destroy())
 
-watchDebounced(() => props.content, (v) => {
-  if (isFocused.value) return
-  if (v !== editor.value?.getHTML()) editor.value?.commands.setContent(v)
-}, { debounce: 500, maxWait: 1000 })
+watchDebounced(
+  () => props.content,
+  v => {
+    if (isFocused.value) return
+    if (v !== editor.value?.getHTML()) editor.value?.commands.setContent(v)
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 
-const sanitizeBeforeUpdate = useDebounceFn(() => {
-  if (!editor.value) return
+const sanitizeBeforeUpdate = useDebounceFn(
+  () => {
+    if (!editor.value) return
 
-  invalidHTML.value = false
+    invalidHTML.value = false
 
-  const dirty = editor.value.getHTML()
-  const clean = sanitizeHTML(dirty)
+    const dirty = editor.value.getHTML()
+    const clean = sanitizeHTML(dirty)
 
-  if (dirty === clean) emit('updated', clean)
-  else invalidHTML.value = true
-}, 500, { maxWait: 2500 })
+    if (dirty === clean) emit('updated', clean)
+    else invalidHTML.value = true
+  },
+  500,
+  { maxWait: 2500 },
+)
 
 const buttonStates = computed(() => ({
   isBold: editor.value?.isActive('bold') ?? false,
@@ -117,9 +126,13 @@ function setLink() {
 
   if (url === '') {
     editor.value.chain().focus().extendMarkRange('link').unsetLink().run()
-  }
-  else {
-    editor.value.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+  } else {
+    editor.value
+      .chain()
+      .focus()
+      .extendMarkRange('link')
+      .setLink({ href: url })
+      .run()
   }
 }
 </script>
@@ -132,7 +145,8 @@ function setLink() {
       :class="{
         'border border-input bg-background': variant === 'input',
         'border-4 border-secondary bg-secondary/50': variant === 'widget',
-        'ring-offset-background ring-2 ring-ring': isFocused && variant === 'input',
+        'ring-offset-background ring-2 ring-ring':
+          isFocused && variant === 'input',
         'border-primary!': isFocused && variant === 'widget',
       }"
     >
@@ -168,11 +182,10 @@ function setLink() {
             />
           </button>
           <AnimationExpand>
-            <div
-              v-if="isOpen"
-              class="absolute z-1 block w-max left-0"
-            >
-              <div class="flex flex-col gap-y-1 p-2 relative rounded-b-lg rounded-tr-lg bg-secondary">
+            <div v-if="isOpen" class="absolute z-1 block w-max left-0">
+              <div
+                class="flex flex-col gap-y-1 p-2 relative rounded-b-lg rounded-tr-lg bg-secondary"
+              >
                 <button
                   type="button"
                   :aria-label="$t('general.paragraph')"
@@ -180,10 +193,12 @@ function setLink() {
                     'bg-muted!': editor.isActive('paragraph'),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
-                  @click="() => {
-                    editor?.chain().focus().setParagraph().run()
-                    isOpen = false
-                  }"
+                  @click="
+                    () => {
+                      editor?.chain().focus().setParagraph().run()
+                      isOpen = false
+                    }
+                  "
                 >
                   <Icon
                     name="tabler:pilcrow"
@@ -203,10 +218,16 @@ function setLink() {
                     'bg-muted!': editor.isActive('heading', { level }),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
-                  @click="() => {
-                    editor?.chain().focus().toggleHeading({ level: level as HeadingLevel }).run()
-                    isOpen = false
-                  }"
+                  @click="
+                    () => {
+                      editor
+                        ?.chain()
+                        .focus()
+                        .toggleHeading({ level: level as HeadingLevel })
+                        .run()
+                      isOpen = false
+                    }
+                  "
                 >
                   <Icon
                     :name="`tabler:h-${level}`"
@@ -237,10 +258,7 @@ function setLink() {
             :aria-label="$t('general.link')"
             @click="setLink"
           >
-            <Icon
-              name="tabler:link"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:link" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('actions.unlink')"
@@ -251,10 +269,7 @@ function setLink() {
             :aria-label="$t('actions.unlink')"
             @click="editor.chain().focus().unsetLink().run()"
           >
-            <Icon
-              name="tabler:unlink"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:unlink" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('general.unOrderedList')"
@@ -265,10 +280,7 @@ function setLink() {
             :aria-label="$t('general.unOrderedList')"
             @click="editor.chain().focus().toggleBulletList().run()"
           >
-            <Icon
-              name="tabler:list"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:list" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('general.orderedList')"
@@ -279,10 +291,7 @@ function setLink() {
             :aria-label="$t('general.orderedList')"
             @click="editor.chain().focus().toggleOrderedList().run()"
           >
-            <Icon
-              name="tabler:list-numbers"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:list-numbers" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('general.quote')"
@@ -293,10 +302,7 @@ function setLink() {
             :aria-label="$t('general.quote')"
             @click="editor.chain().focus().toggleBlockquote().run()"
           >
-            <Icon
-              name="tabler:blockquote"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:blockquote" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('general.horizontalRule')"
@@ -306,10 +312,7 @@ function setLink() {
             :aria-label="$t('general.horizontalRule')"
             @click="editor.chain().focus().setHorizontalRule().run()"
           >
-            <Icon
-              name="tabler:separator"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:separator" aria-hidden="true" />
           </UiButton>
         </div>
         <div
@@ -329,10 +332,7 @@ function setLink() {
             :aria-label="$t('general.bold')"
             @click="editor.chain().focus().toggleBold().run()"
           >
-            <Icon
-              name="tabler:bold"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:bold" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('general.italic')"
@@ -344,10 +344,7 @@ function setLink() {
             :aria-label="$t('general.italic')"
             @click="editor.chain().focus().toggleItalic().run()"
           >
-            <Icon
-              name="tabler:italic"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:italic" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('general.strikeThrough')"
@@ -359,10 +356,7 @@ function setLink() {
             :aria-label="$t('general.strikeThrough')"
             @click="editor.chain().focus().toggleStrike().run()"
           >
-            <Icon
-              name="tabler:strikethrough"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:strikethrough" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('actions.highlight')"
@@ -373,10 +367,7 @@ function setLink() {
             :aria-label="$t('actions.highlight')"
             @click="editor.chain().focus().toggleHighlight().run()"
           >
-            <Icon
-              name="tabler:highlight"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:highlight" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('actions.clearFormatting')"
@@ -386,10 +377,7 @@ function setLink() {
             :aria-label="$t('actions.clearFormatting')"
             @click="editor.chain().focus().unsetAllMarks().run()"
           >
-            <Icon
-              name="tabler:clear-formatting"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:clear-formatting" aria-hidden="true" />
           </UiButton>
         </div>
         <div class="flex items-center">
@@ -402,10 +390,7 @@ function setLink() {
             :aria-label="$t('actions.undo')"
             @click="editor.chain().focus().undo().run()"
           >
-            <Icon
-              name="tabler:arrow-back"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:arrow-back" aria-hidden="true" />
           </UiButton>
           <UiButton
             v-tippy="$t('actions.redo')"
@@ -416,10 +401,7 @@ function setLink() {
             :aria-label="$t('actions.redo')"
             @click="editor.chain().focus().redo().run()"
           >
-            <Icon
-              name="tabler:arrow-forward"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:arrow-forward" aria-hidden="true" />
           </UiButton>
         </div>
       </div>
@@ -429,17 +411,17 @@ function setLink() {
         class="html-richtext"
       />
       <div class="flex items-center gap-2 px-2 pt-4">
-        <PercentageDial
-          :limit="charLimit"
-          :value="characterStats.characters"
-        />
-        <div class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors">
+        <PercentageDial :limit="charLimit" :value="characterStats.characters" />
+        <div
+          class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors"
+        >
           <span
             :class="{
               'text-destructive': characterStats.characters === charLimit,
             }"
           >
-            {{ characterStats.characters }} / {{ charLimit }} {{ $t('general.character', 2).toLowerCase() }}
+            {{ characterStats.characters }} / {{ charLimit }}
+            {{ $t('general.character', 2).toLowerCase() }}
           </span>
           <span>
             {{ characterStats.words }} {{ $t('general.word', 2).toLowerCase() }}

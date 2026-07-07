@@ -8,7 +8,9 @@ const { add, remove, temp, override, overrideReset } = acFunctions
 
 const popoverOpen = shallowRef<boolean>(false)
 
-const hasArmorClass = computed(() => isDefined(props.item.armorClass) && isDefined(props.item.maxArmorClass))
+const hasArmorClass = computed(
+  () => isDefined(props.item.armorClass) && isDefined(props.item.maxArmorClass),
+)
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   if (!sheet.value) return
@@ -49,7 +51,8 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           :id="`${item.id}-ac`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 w-fit': isDefined(item.armorClass) && item.armorClass <= 0,
+            'bg-destructive/20 p-2 w-fit':
+              isDefined(item.armorClass) && item.armorClass <= 0,
           }"
           class="flex flex-col gap-y-1 rounded-lg"
         >
@@ -64,7 +67,10 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
             <span
               v-else
               data-test-ac
-              :class="{ 'text-destructive': isDefined(item.armorClass) && item.armorClass <= 0 }"
+              :class="{
+                'text-destructive':
+                  isDefined(item.armorClass) && item.armorClass <= 0,
+              }"
             >
               {{ item.armorClass }}
             </span>
@@ -91,7 +97,9 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           v-if="isDefined(item.armorClass) && isDefined(item.maxArmorClass)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
+          <div
+            class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1"
+          >
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.current') }}
             </p>
@@ -102,14 +110,22 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
               {{ item.armorClass || 0 }}
             </p>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
+          <div
+            class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1"
+          >
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.max') }}
             </p>
             <div class="flex gap-1 items-start justify-center">
               <p
                 class="head-2"
-                :class="[!item.maxArmorClassOld ? undefined : item.maxArmorClassOld < item.maxArmorClass ? 'text-success' : 'text-destructive']"
+                :class="[
+                  !item.maxArmorClassOld
+                    ? undefined
+                    : item.maxArmorClassOld < item.maxArmorClass
+                      ? 'text-success'
+                      : 'text-destructive',
+                ]"
               >
                 {{ item.maxArmorClass || 0 }}
               </p>
@@ -121,7 +137,9 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
               </p>
             </div>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
+          <div
+            class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1"
+          >
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.temp') }}
             </p>
@@ -139,10 +157,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           :update-row="updateRow"
         />
 
-        <UiSeparator
-          v-if="hasArmorClass"
-          class="my-3 bg-muted"
-        />
+        <UiSeparator v-if="hasArmorClass" class="my-3 bg-muted" />
 
         <FormAcUpdateBase
           :item="item"
@@ -151,10 +166,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           :update-row="updateRow"
         />
 
-        <UiSeparator
-          v-if="hasArmorClass"
-          class="my-3 bg-muted"
-        />
+        <UiSeparator v-if="hasArmorClass" class="my-3 bg-muted" />
 
         <FormAcOverride
           v-if="hasArmorClass"

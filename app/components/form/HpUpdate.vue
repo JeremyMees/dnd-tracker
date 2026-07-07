@@ -21,7 +21,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -42,8 +42,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     if (selected === 'heal') animateTableUpdate(`${props.item.id}-hp`, 'green')
     if (selected === 'damage') animateTableUpdate(`${props.item.id}-hp`, 'red')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred while updating HP'
   }
 })
@@ -60,10 +59,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'heal'"
       >
-        <Icon
-          name="tabler:heart"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:heart" aria-hidden="true" />
         {{ $t('actions.heal') }}
       </UiButton>
       <UiButton
@@ -73,10 +69,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'temp'"
       >
-        <Icon
-          name="tabler:plus"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:plus" aria-hidden="true" />
         {{ $t('actions.temp') }}
       </UiButton>
       <UiButton
@@ -86,17 +79,11 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'damage'"
       >
-        <Icon
-          name="tabler:sword"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:sword" aria-hidden="true" />
         {{ $t('actions.damage') }}
       </UiButton>
     </div>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
   </UiFormWrapper>

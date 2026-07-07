@@ -102,7 +102,11 @@ describe('array-utils', () => {
       expect(ascResult.map(item => item.name)).toEqual(['Alice', 'Bob', 'John'])
 
       const descResult = sortArray(array, 'name', false)
-      expect(descResult.map(item => item.name)).toEqual(['John', 'Bob', 'Alice'])
+      expect(descResult.map(item => item.name)).toEqual([
+        'John',
+        'Bob',
+        'Alice',
+      ])
     })
 
     it('should sort array by number property', () => {

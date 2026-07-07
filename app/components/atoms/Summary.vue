@@ -13,10 +13,7 @@ withDefaults(
 
 <template>
   <div class="group relative">
-    <h2
-      v-if="title"
-      class="pb-4 relative max-w-max"
-    >
+    <h2 v-if="title" class="pb-4 relative max-w-max">
       {{ title }}
     </h2>
     <ul>
@@ -29,12 +26,7 @@ withDefaults(
         :transition="{ delay: index * 0.1 }"
         class="flex items-center gap-4"
       >
-        <img
-          src="/art/coin.svg"
-          loading="lazy"
-          alt="Coin"
-          class="w-6 h-6"
-        >
+        <img src="/art/coin.svg" loading="lazy" alt="Coin" class="w-6 h-6" />
         <span class="text-muted-foreground">{{ item }}</span>
       </Motion>
     </ul>

@@ -25,17 +25,21 @@ const noUser = ref<string>()
 const search = ref<string>()
 
 const formSchema = z.object({
-  users: z.array(z.object({
-    id: z.string(),
-    role: z.string(),
-    profile: z.object({
-      id: z.string(),
-      username: z.string(),
-      name: z.string(),
-      avatar: z.string(),
-      email: z.email(),
-    }),
-  })).min(1),
+  users: z
+    .array(
+      z.object({
+        id: z.string(),
+        role: z.string(),
+        profile: z.object({
+          id: z.string(),
+          username: z.string(),
+          name: z.string(),
+          avatar: z.string(),
+          email: z.email(),
+        }),
+      }),
+    )
+    .min(1),
 })
 
 const form = useForm({
@@ -51,7 +55,9 @@ interface FoundUser {
   profile: Profile
 }
 
-watch(foundUsers, newUsers => form.setValues({ users: newUsers }), { deep: true })
+watch(foundUsers, newUsers => form.setValues({ users: newUsers }), {
+  deep: true,
+})
 watchDebounced(search, () => handleSearch(), { debounce: 500, maxWait: 1000 })
 
 async function handleSearch(): Promise<void> {
@@ -90,14 +96,19 @@ async function handleSearch(): Promise<void> {
       })
 
       noUser.value = undefined
-    }
-    else noUser.value = email
-  }
-  catch ({ message }: any) {
-    if (['self', 'alreadyAdded', 'alreadyInvited', 'alreadySelected', 'maxMembers'].includes(message)) {
+    } else noUser.value = email
+  } catch ({ message }: any) {
+    if (
+      [
+        'self',
+        'alreadyAdded',
+        'alreadyInvited',
+        'alreadySelected',
+        'maxMembers',
+      ].includes(message)
+    ) {
       searchFormError.value = t(`components.inviteMember.errors.${message}`)
-    }
-    else {
+    } else {
       searchFormError.value = message
     }
   }
@@ -107,19 +118,28 @@ function validateUser(email: string): string | undefined {
   const { team, join_campaign, createdBy } = props.current
 
   if (email === user.value.email) return 'self'
-  else if (join_campaign.some(({ user }) => user.email === email)) return 'alreadyInvited'
-  else if (foundUsers.value.some(({ profile }) => profile.email === email)) return 'alreadySelected'
-  else if ([...foundUsers.value, ...team, ...join_campaign].length >= 9) return 'maxMembers'
-  else if (createdBy.email === email || team.some(({ user }) => user.email === email)) return 'alreadyAdded'
+  else if (join_campaign.some(({ user }) => user.email === email))
+    return 'alreadyInvited'
+  else if (foundUsers.value.some(({ profile }) => profile.email === email))
+    return 'alreadySelected'
+  else if ([...foundUsers.value, ...team, ...join_campaign].length >= 9)
+    return 'maxMembers'
+  else if (
+    createdBy.email === email ||
+    team.some(({ user }) => user.email === email)
+  )
+    return 'alreadyAdded'
 }
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
     await Promise.all(values.users.map(async user => addTeamMember(user)))
 
-    queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', props.current.id] })
+    queryClient.invalidateQueries({
+      queryKey: ['useCampaignDetail', props.current.id],
+    })
     queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
 
     toast({
@@ -129,8 +149,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     })
 
     emit('close')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || t('general.error.text')
   }
 })
@@ -189,16 +208,10 @@ async function inviteNewUser(email: string): Promise<void> {
         type="search"
       />
       <UiInputGroupAddon align="inline-end">
-        <Icon
-          name="tabler:search"
-          :aria-hidden="true"
-        />
+        <Icon name="tabler:search" :aria-hidden="true" />
       </UiInputGroupAddon>
     </UiInputGroup>
-    <p
-      v-if="searchFormError"
-      class="text-sm text-destructive"
-    >
+    <p v-if="searchFormError" class="text-sm text-destructive">
       {{ searchFormError }}
     </p>
   </div>
@@ -227,10 +240,7 @@ async function inviteNewUser(email: string): Promise<void> {
 
   <!-- Users form -->
   <AnimationExpand>
-    <UiFormWrapper
-      v-if="foundUsers.length"
-      @submit="onSubmit"
-    >
+    <UiFormWrapper v-if="foundUsers.length" @submit="onSubmit">
       <div class="border rounded-lg p-4 my-4">
         <div
           v-for="(foundUser, index) in foundUsers"
@@ -291,10 +301,7 @@ async function inviteNewUser(email: string): Promise<void> {
               :aria-label="$t('actions.delete')"
               @click="foundUsers.splice(index, 1)"
             >
-              <Icon
-                name="tabler:trash"
-                aria-hidden="true"
-              />
+              <Icon name="tabler:trash" aria-hidden="true" />
             </UiButton>
           </div>
 
@@ -302,44 +309,38 @@ async function inviteNewUser(email: string): Promise<void> {
             type="hidden"
             :name="`users.${index}.id`"
             :value="foundUser.id"
-          >
+          />
           <input
             type="hidden"
             :name="`users.${index}.profile.id`"
             :value="foundUser.profile.id"
-          >
+          />
           <input
             type="hidden"
             :name="`users.${index}.profile.username`"
             :value="foundUser.profile.username"
-          >
+          />
           <input
             type="hidden"
             :name="`users.${index}.profile.email`"
             :value="foundUser.profile.email"
-          >
+          />
           <input
             type="hidden"
             :name="`users.${index}.profile.name`"
             :value="foundUser.profile.name"
-          >
+          />
           <input
             type="hidden"
             :name="`users.${index}.profile.avatar`"
             :value="foundUser.profile.avatar"
-          >
+          />
         </div>
       </div>
-      <div
-        v-if="formError"
-        class="text-sm text-destructive"
-      >
+      <div v-if="formError" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton
-        type="submit"
-        class="w-full"
-      >
+      <UiButton type="submit" class="w-full">
         {{ $t('components.inviteMember.invite') }}
       </UiButton>
     </UiFormWrapper>

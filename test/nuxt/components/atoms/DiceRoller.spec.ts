@@ -2,7 +2,9 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import DiceRoller from '~/components/atoms/DiceRoller.vue'
 
-interface Props { styled?: boolean }
+interface Props {
+  styled?: boolean
+}
 
 const props: Props = { styled: true }
 

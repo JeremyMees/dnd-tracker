@@ -9,9 +9,7 @@ interface Props {
 }
 
 type MockFunctions = {
-  onSubmit: (
-    form: { name: string },
-  ) => Promise<void>
+  onSubmit: (form: { name: string }) => Promise<void>
 }
 
 const mockUpdate = vi.fn()
@@ -52,7 +50,9 @@ describe('Initiative table row name', async () => {
     })
 
     expect(component.find('[data-test-name]').text()).toBe(props.item.name)
-    expect(component.find('[data-test-summoner]').text()).toBe('general.summoner: Summoner')
+    expect(component.find('[data-test-summoner]').text()).toBe(
+      'general.summoner: Summoner',
+    )
   })
 
   it('Should not display summoner', async () => {

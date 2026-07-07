@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async to => {
   const user = useSupabaseUser()
   const localePath = useLocalePath()
   const authenticationNeeded = to.meta.auth

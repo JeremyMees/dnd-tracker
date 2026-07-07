@@ -54,14 +54,24 @@ describe('Initiative table row hp', async () => {
 
     const component = await mountSuspended(Hp, {
       props: {
-        item: { ...props.item, hitPoints, maxHitPoints, maxHitPointsOld, tempHitPoints },
+        item: {
+          ...props.item,
+          hitPoints,
+          maxHitPoints,
+          maxHitPointsOld,
+          tempHitPoints,
+        },
       },
       provide,
     })
 
     expect(component.get('[data-test-hp]').text()).toBe(hitPoints.toString())
-    expect(component.get('[data-test-max]').text()).toContain(maxHitPoints.toString())
-    expect(component.get('[data-test-temp]').text()).toContain(tempHitPoints.toString())
+    expect(component.get('[data-test-max]').text()).toContain(
+      maxHitPoints.toString(),
+    )
+    expect(component.get('[data-test-temp]').text()).toContain(
+      tempHitPoints.toString(),
+    )
   })
 
   it('Should show destructive styling when hitPoints is 0', async () => {
@@ -72,8 +82,12 @@ describe('Initiative table row hp', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-trigger]').classes()).toContain('bg-destructive/20')
-    expect(component.get('[data-test-hp]').classes()).toContain('text-destructive')
+    expect(component.get('[data-test-trigger]').classes()).toContain(
+      'bg-destructive/20',
+    )
+    expect(component.get('[data-test-hp]').classes()).toContain(
+      'text-destructive',
+    )
   })
 
   it('Should show plus icon when hitPoints is not defined', async () => {
@@ -94,7 +108,9 @@ describe('Initiative table row hp', async () => {
     await vm.updateRow({ hitPoints: 15 })
 
     expect(mockUpdate).toHaveBeenCalled()
-    const payload = mockUpdate.mock.calls[0]?.[0] as { rows: InitiativeSheetRow[] }
+    const payload = mockUpdate.mock.calls[0]?.[0] as {
+      rows: InitiativeSheetRow[]
+    }
     expect(payload).toBeDefined()
     const resultRow = payload.rows[0]
     expect(resultRow?.hitPoints).toBe(15)

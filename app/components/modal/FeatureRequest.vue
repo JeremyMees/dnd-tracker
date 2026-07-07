@@ -19,7 +19,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   await create({
@@ -36,11 +36,13 @@ const onSubmit = form.handleSubmit(async (values) => {
 
       emit('close')
     },
-    onError: error => formError.value = error,
+    onError: error => (formError.value = error),
   })
 })
 
-async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void> {
+async function sendFeatureEmail(
+  form: z.infer<typeof baseSchema>,
+): Promise<void> {
   if (!user.value) return
 
   await $fetch('/api/emails/feature-request', {
@@ -56,27 +58,18 @@ async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void>
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="title"
-    >
+    <UiFormField v-slot="{ componentField }" name="title">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            v-bind="componentField"
-            type="text"
-          />
+          <UiInput v-bind="componentField" type="text" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="text"
-    >
+    <UiFormField v-slot="{ componentField }" name="text">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.descriptionLabel') }}
@@ -87,16 +80,10 @@ async function sendFeatureEmail(form: z.infer<typeof baseSchema>): Promise<void>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton
-      type="submit"
-      class="w-full"
-    >
+    <UiButton type="submit" class="w-full">
       {{ $t('actions.create') }}
     </UiButton>
   </UiFormWrapper>

@@ -28,16 +28,13 @@ const dragon = ref<InstanceType<typeof Dragon>>()
           </template>
         </LazyTitleText>
       </div>
-      <LazyDragon
-        ref="dragon"
-        hydrate-on-visible
-      />
+      <LazyDragon ref="dragon" hydrate-on-visible />
       <div class="dnd-container pt-20 md:pt-[200px] flex items-center gap-4">
         <img
           src="/art/flame.svg"
           alt="Hearth"
           class="size-40 hidden md:block"
-        >
+        />
         <LazySummary
           hydrate-on-visible
           :title="$t('pages.home.summary.title')"

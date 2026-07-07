@@ -4,9 +4,7 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   const { table, select, page, perPage, filters, fuzzy, fields } = options
   const { eq, search, sortBy, sortDesc } = filters || {}
 
-  let query = supabase
-    .from(table)
-    .select(select || '*', { count: 'estimated' })
+  let query = supabase.from(table).select(select || '*', { count: 'estimated' })
 
   if (typeof page === 'number' && typeof perPage === 'number') {
     const { from, to } = sbRange(page, perPage)

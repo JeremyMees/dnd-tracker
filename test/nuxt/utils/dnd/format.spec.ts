@@ -2,14 +2,20 @@ import { describe, expect, it } from 'vitest'
 
 describe('dnd/format', () => {
   describe('formatRange', () => {
-    const base: DndAttack = { name: 'Strike', attackType: 'melee', distanceUnit: 'feet' }
+    const base: DndAttack = {
+      name: 'Strike',
+      attackType: 'melee',
+      distanceUnit: 'feet',
+    }
 
     it('Should return reach in feet', () => {
       expect(formatRange({ ...base, reach: 5 })).toBe('5 ft')
     })
 
     it('Should return reach in miles', () => {
-      expect(formatRange({ ...base, distanceUnit: 'miles', reach: 1 })).toBe('1 mi')
+      expect(formatRange({ ...base, distanceUnit: 'miles', reach: 1 })).toBe(
+        '1 mi',
+      )
     })
 
     it('Should return range without long range', () => {
@@ -17,7 +23,9 @@ describe('dnd/format', () => {
     })
 
     it('Should return range/longRange when both are set', () => {
-      expect(formatRange({ ...base, range: 80, longRange: 320 })).toBe('80/320 ft')
+      expect(formatRange({ ...base, range: 80, longRange: 320 })).toBe(
+        '80/320 ft',
+      )
     })
 
     it('Should prioritise reach over range when both are present', () => {
@@ -35,8 +43,12 @@ describe('dnd/format', () => {
     })
 
     it('Should format recharge with param as lower bound', () => {
-      expect(formatUsageLimits({ type: 'recharge', param: 5 })).toBe('Recharge 5-6')
-      expect(formatUsageLimits({ type: 'recharge', param: 3 })).toBe('Recharge 3-6')
+      expect(formatUsageLimits({ type: 'recharge', param: 5 })).toBe(
+        'Recharge 5-6',
+      )
+      expect(formatUsageLimits({ type: 'recharge', param: 3 })).toBe(
+        'Recharge 3-6',
+      )
     })
 
     it('Should format atWill as "At will" regardless of param', () => {

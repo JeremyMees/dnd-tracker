@@ -16,7 +16,7 @@ interface RollResult {
 }
 
 interface ActionRollVM {
-  targets: { label: string, value: string }[]
+  targets: { label: string; value: string }[]
   result: RollResult | undefined
   popoverOpen: boolean
   onRoll: (type: RollType) => void
@@ -116,10 +116,14 @@ describe('ActionRoll component', () => {
       vm.onRoll('straight')
       await nextTick()
 
-      const baseDamage = Object.values(vm.result!.damageRolled).flat().reduce((acc, curr) => acc + curr, 0)
+      const baseDamage = Object.values(vm.result!.damageRolled)
+        .flat()
+        .reduce((acc, curr) => acc + curr, 0)
 
       expect(vm.result).toBeDefined()
-      expect(vm.result?.attackTotal).toBe(vm.result!.attackRoll + props.attackBonus!)
+      expect(vm.result?.attackTotal).toBe(
+        vm.result!.attackRoll + props.attackBonus!,
+      )
       expect(vm.result?.totalDamage).toBe(baseDamage + props.damageBonus)
     })
 
@@ -161,7 +165,9 @@ describe('ActionRoll component', () => {
       vm.onRoll('straight')
       await nextTick()
 
-      const baseDamage = Object.values(vm.result!.damageRolled).flat().reduce((acc, curr) => acc + curr, 0)
+      const baseDamage = Object.values(vm.result!.damageRolled)
+        .flat()
+        .reduce((acc, curr) => acc + curr, 0)
 
       expect(vm.result).toBeDefined()
       expect(vm.result?.totalDamage).toBe(baseDamage)
@@ -179,7 +185,7 @@ describe('ActionRoll component', () => {
       expect(targets.length).toBe(sheet.rows.length - 1)
 
       const otherRows = sheet.rows.filter(row => row.id !== props.id)
-      otherRows.forEach((row) => {
+      otherRows.forEach(row => {
         expect(targets.find(t => t.value === row.id)).toBeDefined()
         expect(targets.find(t => t.label === row.name)).toBeDefined()
       })

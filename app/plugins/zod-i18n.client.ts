@@ -11,10 +11,6 @@ export default defineNuxtPlugin({
   setup(nuxtApp) {
     const { locale } = nuxtApp.$i18n as Composer
 
-    watch(
-      locale,
-      code => z.config(localeConfig(code)),
-      { immediate: true },
-    )
+    watch(locale, code => z.config(localeConfig(code)), { immediate: true })
   },
 })

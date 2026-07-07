@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
 import middleware from '~/middleware/valid-token'
 
-vi.mock('@tanstack/vue-query', async (importOriginal) => {
+vi.mock('@tanstack/vue-query', async importOriginal => {
   const actual = await importOriginal<typeof import('@tanstack/vue-query')>()
   return { ...actual, useQueryClient: vi.fn(() => mockQueryClient) }
 })
@@ -54,15 +54,22 @@ describe('Valid Token middleware', () => {
     // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
     global.$fetch = vi.fn().mockRejectedValue(new Error('Invalid token'))
 
-    await expect(middleware({ ...mockTo, query }, mockFrom)).rejects.toThrow('Invalid token')
+    await expect(middleware({ ...mockTo, query }, mockFrom)).rejects.toThrow(
+      'Invalid token',
+    )
   })
 
   it('should redirect to no-access when supabase query fails', async () => {
     const query = { token: 'valid' }
 
     // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi.fn().mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
-    singleMock.mockResolvedValue({ data: null, error: { message: 'Not found' } })
+    global.$fetch = vi
+      .fn()
+      .mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
+    singleMock.mockResolvedValue({
+      data: null,
+      error: { message: 'Not found' },
+    })
 
     await middleware({ ...mockTo, query }, mockFrom)
 
@@ -71,15 +78,25 @@ describe('Valid Token middleware', () => {
 
   it('should set query data on success', async () => {
     const query = { token: 'valid' }
-    const mockData = { id: 1, role: 'member', user: 2, campaign: { id: 1, title: 'Test' } }
+    const mockData = {
+      id: 1,
+      role: 'member',
+      user: 2,
+      campaign: { id: 1, title: 'Test' },
+    }
 
     // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi.fn().mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
+    global.$fetch = vi
+      .fn()
+      .mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
     singleMock.mockResolvedValue({ data: mockData, error: null })
 
     await middleware({ ...mockTo, query }, mockFrom)
 
-    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(['useJoinCampaign', 'valid'], mockData)
+    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
+      ['useJoinCampaign', 'valid'],
+      mockData,
+    )
     expect(navigateTo).not.toHaveBeenCalled()
   })
 })

@@ -5,7 +5,7 @@ export class LoginPage {
   readonly page: Page
   readonly errorMessages: Locator
 
-  constructor (page: Page) {
+  constructor(page: Page) {
     this.page = page
 
     this.errorMessages = page.locator('[data-message-type="error"]')

@@ -1,6 +1,6 @@
 import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const supabase = serverSupabaseServiceRole<DB>(event)
   const user = await serverSupabaseUser(event)
   const { token } = await readBody(event)

@@ -27,8 +27,7 @@ function toggleVote(vote: FeatureVote): void {
 
   if (hasVoted.value === vote) {
     votes[vote] = votes[vote].filter(id => id !== userId)
-  }
-  else {
+  } else {
     const oppositeVote: FeatureVote = vote === 'like' ? 'dislike' : 'like'
     if (!votes[vote].includes(userId)) votes[vote].push(userId)
     votes[oppositeVote] = votes[oppositeVote].filter(id => id !== userId)
@@ -82,14 +81,8 @@ function toggleVote(vote: FeatureVote): void {
             }"
             @click="user ? toggleVote('like') : emit('login')"
           >
-            <Icon
-              name="tabler:thumb-up"
-              aria-hidden="true"
-            />
-            <span
-              data-test-like-count
-              class="font-bold text-xs"
-            >
+            <Icon name="tabler:thumb-up" aria-hidden="true" />
+            <span data-test-like-count class="font-bold text-xs">
               {{ feature.voted.like.length }}
             </span>
           </UiButton>
@@ -103,16 +96,10 @@ function toggleVote(vote: FeatureVote): void {
             }"
             @click="user ? toggleVote('dislike') : emit('login')"
           >
-            <span
-              data-test-dislike-count
-              class="font-bold text-xs"
-            >
+            <span data-test-dislike-count class="font-bold text-xs">
               {{ feature.voted.dislike.length }}
             </span>
-            <Icon
-              name="tabler:thumb-down"
-              aria-hidden="true"
-            />
+            <Icon name="tabler:thumb-down" aria-hidden="true" />
           </UiButton>
         </div>
 
@@ -129,10 +116,7 @@ function toggleVote(vote: FeatureVote): void {
           >
             {{ t(`pages.featureRequest.status.${feature.status}`) }}
           </div>
-          <p
-            data-test-text
-            class="text-sm"
-          >
+          <p data-test-text class="text-sm">
             {{ feature.text }}
           </p>
         </div>

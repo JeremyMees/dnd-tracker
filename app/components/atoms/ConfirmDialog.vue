@@ -13,7 +13,8 @@ withDefaults(
     declineText: string
     loading?: boolean
     callback: (confirmed: boolean) => any
-  }>(), {
+  }>(),
+  {
     type: 'danger',
     loading: false,
   },

@@ -8,7 +8,13 @@ import { mockSheetCampaign } from '~~/test/nuxt/fixtures/campaign'
 interface EncounterSidebarVM {
   diceRollerOpen: boolean
   fantasyNameGeneratorOpen: boolean
-  openModal: 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
+  openModal:
+    | 'settings'
+    | 'newHomebrew'
+    | 'addHomebrew'
+    | 'bestiary'
+    | 'content'
+    | undefined
   maxCharacters: boolean
 }
 
@@ -82,7 +88,9 @@ describe('EncounterSidebar', () => {
 
     const component = await mountSuspended(EncounterSidebar, { props, provide })
 
-    expect(component.find('[data-test-campaign-homebrew]').exists()).toBeTruthy()
+    expect(
+      component.find('[data-test-campaign-homebrew]').exists(),
+    ).toBeTruthy()
   })
 
   it('Should not render campaign homebrew button when no campaign', async () => {
@@ -98,7 +106,10 @@ describe('EncounterSidebar', () => {
 
   describe('maxCharacters computed', () => {
     it('Should be false when sheet has less than 50 rows', async () => {
-      const component = await mountSuspended(EncounterSidebar, { props, provide })
+      const component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+      })
       const vm = component.vm as unknown as EncounterSidebarVM
 
       expect(vm.maxCharacters).toBeFalsy()
@@ -112,7 +123,10 @@ describe('EncounterSidebar', () => {
 
       mockSheet.value = { ...sheet, rows }
 
-      const component = await mountSuspended(EncounterSidebar, { props, provide })
+      const component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+      })
       const vm = component.vm as unknown as EncounterSidebarVM
 
       expect(vm.maxCharacters).toBeTruthy()
@@ -127,10 +141,15 @@ describe('EncounterSidebar', () => {
       mockSheet.value = { ...sheet, rows }
       await nextTick()
 
-      const component = await mountSuspended(EncounterSidebar, { props, provide })
+      const component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+      })
 
       expect(component.find('[data-test-bestiary]').exists()).toBeFalsy()
-      expect(component.find('[data-test-campaign-homebrew]').exists()).toBeFalsy()
+      expect(
+        component.find('[data-test-campaign-homebrew]').exists(),
+      ).toBeFalsy()
       expect(component.find('[data-test-new-homebrew]').exists()).toBeFalsy()
     })
 
@@ -143,7 +162,10 @@ describe('EncounterSidebar', () => {
       mockSheet.value = { ...sheet, rows }
       await nextTick()
 
-      const component = await mountSuspended(EncounterSidebar, { props, provide })
+      const component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+      })
 
       expect(component.find('[data-test-max-characters]').exists()).toBeTruthy()
     })

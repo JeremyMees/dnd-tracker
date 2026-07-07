@@ -9,9 +9,11 @@ export function randomName(race?: DndRace, gender?: DndGender): string {
   if (!raceData) return 'Unknown'
 
   const first = randomArrayItem(raceData.first)
-  const last = randomArrayItem(raceData.last.prefixes) + randomArrayItem(raceData.last.suffixes)
+  const last =
+    randomArrayItem(raceData.last.prefixes) +
+    randomArrayItem(raceData.last.suffixes)
 
-  if (Math.random() <= 0.10 && raceData.middle.length > 0) {
+  if (Math.random() <= 0.1 && raceData.middle.length > 0) {
     return `${first} ${randomArrayItem(raceData.middle)} ${last}`
   }
 

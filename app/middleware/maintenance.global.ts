@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(to => {
   const localePath = useLocalePath()
 
   if (!isMaintenanceEnabled()) {

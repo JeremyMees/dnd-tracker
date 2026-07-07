@@ -1,6 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const raw = (await readRawBody(event)) as string
   const client = await serverSupabaseClient<DB>(event)
   const signature = event.headers.get('stripe-signature') || ''
@@ -18,7 +18,8 @@ export default defineEventHandler(async (event) => {
 
     try {
       if (subscription.customer === null) throw createError('No customer')
-      if (typeof subscription.customer !== 'string') throw createError('Invalid customer')
+      if (typeof subscription.customer !== 'string')
+        throw createError('Invalid customer')
 
       const { data } = await client
         .from('profiles')
@@ -32,14 +33,12 @@ export default defineEventHandler(async (event) => {
           .update({ subscriptionType: data.tempSubscription })
           .eq('stripeId', subscription.customer)
       }
-    }
-    catch (error) {
+    } catch (error) {
       return 'Error fetching or updating user'
     }
 
     return `handled ${event.type}`
-  }
-  catch (err) {
+  } catch (err) {
     return 'Webhook error'
   }
 })

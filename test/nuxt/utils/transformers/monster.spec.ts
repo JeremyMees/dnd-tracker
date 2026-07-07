@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { open5eV2MonsterFixture, open5eV1MonsterFixture } from '~~/test/nuxt/fixtures/open5e'
+import {
+  open5eV2MonsterFixture,
+  open5eV1MonsterFixture,
+} from '~~/test/nuxt/fixtures/open5e'
 
 describe('transformers/monster', () => {
   describe('toMonster (V2)', () => {
@@ -53,7 +56,9 @@ describe('transformers/monster', () => {
     it('maps legendary actions', () => {
       const monster = toMonster(open5eV2MonsterFixture)
 
-      const legendaryActions = monster.actions.filter(a => a.actionType === 'legendaryAction')
+      const legendaryActions = monster.actions.filter(
+        a => a.actionType === 'legendaryAction',
+      )
       expect(legendaryActions.length).toBeGreaterThan(0)
     })
 

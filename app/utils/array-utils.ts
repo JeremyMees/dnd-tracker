@@ -19,11 +19,11 @@ export function randomArrayItems<T>(arr: T[], number = 1): T[] {
 }
 
 export function searchArray<T>(arr: T[], key: keyof T, search: string): T[] {
-  return arr
-    .filter(item => (item[key] as string)
+  return arr.filter(item =>
+    (item[key] as string)
       .toLowerCase()
       .includes(search.toLowerCase().trim() || ''),
-    )
+  )
 }
 
 export function shuffleArray<T>(arr: T[]): T[] {
@@ -47,7 +47,11 @@ export function splitArray<T>(arr: T[], size: number): T[][] {
   return result
 }
 
-export function sortArray<T extends Record<string, any>>(arr: T[], key: string, acs = true): T[] {
+export function sortArray<T extends Record<string, any>>(
+  arr: T[],
+  key: string,
+  acs = true,
+): T[] {
   return [...arr].sort((a: T, b: T) => {
     const aValue = getValueFromNestedKeys<T>(a, key)
     const bValue = getValueFromNestedKeys<T>(b, key)
@@ -58,7 +62,10 @@ export function sortArray<T extends Record<string, any>>(arr: T[], key: string, 
   })
 }
 
-export function toggleArray<T extends { id: number }>(item: T, selected: T[]): T[] {
+export function toggleArray<T extends { id: number }>(
+  item: T,
+  selected: T[],
+): T[] {
   const arr = [...selected]
   const index: number = arr.findIndex(s => s.id === item.id)
 

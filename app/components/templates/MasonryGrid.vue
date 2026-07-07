@@ -6,7 +6,8 @@ const props = withDefaults(
     wrapperStyle?: string
     columnStyle?: string
     maxColumns?: number
-  }>(), {
+  }>(),
+  {
     element: 'div',
     wrapperStyle: 'grid gap-4 overflow-y-auto',
     columnStyle: 'flex flex-col gap-4',
@@ -23,7 +24,9 @@ const columnCount = computed<number>(() => {
   return Math.min(2, props.maxColumns)
 })
 
-const columns = computed<any[][]>(() => splitArray(props.data, columnCount.value))
+const columns = computed<any[][]>(() =>
+  splitArray(props.data, columnCount.value),
+)
 </script>
 
 <template>
@@ -34,11 +37,7 @@ const columns = computed<any[][]>(() => splitArray(props.data, columnCount.value
       gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
     }"
   >
-    <div
-      v-for="(column, i) in columns"
-      :key="i"
-      :class="columnStyle"
-    >
+    <div v-for="(column, i) in columns" :key="i" :class="columnStyle">
       <slot :column="column" />
     </div>
   </component>

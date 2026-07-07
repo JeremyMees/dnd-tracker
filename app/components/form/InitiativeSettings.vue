@@ -20,7 +20,10 @@ const formSchema = z.object({
   spacing: z.enum(initiativeSpacingOptions),
   rows: z.array(z.enum(initiativeDefaultRows)),
   widgets: z.array(z.enum(initiativeWidgets)),
-  pet: z.union([z.enum(initiativePets), z.literal('none')]).optional().transform(val => val === 'none' ? undefined : val),
+  pet: z
+    .union([z.enum(initiativePets), z.literal('none')])
+    .optional()
+    .transform(val => (val === 'none' ? undefined : val)),
   negative: z.boolean(),
 })
 
@@ -29,10 +32,10 @@ const form = useForm({
   initialValues: {
     spacing: sheet.value?.settings?.spacing || 'normal',
     rows: isModified.value
-      ? (sheet.value?.settings?.rows || [])
+      ? sheet.value?.settings?.rows || []
       : [...initiativeDefaultRows],
     widgets: isModified.value
-      ? (sheet.value?.settings?.widgets || [])
+      ? sheet.value?.settings?.widgets || []
       : [...initiativeWidgets],
     pet: sheet.value?.settings?.pet || undefined,
     negative: sheet.value?.settings?.negative || false,
@@ -41,7 +44,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
 
   formError.value = ''
@@ -55,9 +58,9 @@ const onSubmit = form.handleSubmit(async (values) => {
     })
 
     emit('close')
-  }
-  catch (err: any) {
-    formError.value = err.message || 'An error occurred during updating initiative settings'
+  } catch (err: any) {
+    formError.value =
+      err.message || 'An error occurred during updating initiative settings'
   }
 })
 </script>
@@ -65,13 +68,11 @@ const onSubmit = form.handleSubmit(async (values) => {
 <template>
   <div class="overflow-y-hidden">
     <UiFormWrapper @submit="onSubmit">
-      <UiFormField
-        v-slot="{ componentField }"
-        type="radio"
-        name="spacing"
-      >
+      <UiFormField v-slot="{ componentField }" type="radio" name="spacing">
         <UiFormItem v-auto-animate>
-          <UiFormLabel>{{ $t('components.initiativeSettings.spacing') }}</UiFormLabel>
+          <UiFormLabel>{{
+            $t('components.initiativeSettings.spacing')
+          }}</UiFormLabel>
           <UiFormControl>
             <UiRadioGroup
               class="sm:grid-cols-3 rounded-md border border-input bg-background px-3 py-2"
@@ -115,15 +116,19 @@ const onSubmit = form.handleSubmit(async (values) => {
       <FormCheckboxGroup
         name="widgets"
         :label="$t('components.initiativeSettings.widgets')"
-        :options="initiativeWidgets.map(id => ({ label: $t(widgetLabels[id]), value: id }))"
+        :options="
+          initiativeWidgets.map(id => ({
+            label: $t(widgetLabels[id]),
+            value: id,
+          }))
+        "
         list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
       />
-      <UiFormField
-        v-slot="{ componentField }"
-        name="pet"
-      >
+      <UiFormField v-slot="{ componentField }" name="pet">
         <UiFormItem>
-          <UiFormLabel>{{ $t('components.initiativeSettings.pets.label') }}</UiFormLabel>
+          <UiFormLabel>{{
+            $t('components.initiativeSettings.pets.label')
+          }}</UiFormLabel>
           <UiSelect v-bind="componentField">
             <UiFormControl>
               <UiSelectTrigger>
@@ -135,14 +140,40 @@ const onSubmit = form.handleSubmit(async (values) => {
                 <UiSelectItem
                   v-for="option in [
                     { label: $t('general.none'), value: 'none' },
-                    { label: $t('components.initiativeSettings.pets.cat'), value: 'cat' },
-                    { label: $t('components.initiativeSettings.pets.chicken'), value: 'chicken' },
-                    { label: $t('components.initiativeSettings.pets.barmaid'), value: 'barmaid' },
-                    { label: $t('components.initiativeSettings.pets.crawler'), value: 'crawler' },
-                    { label: $t('components.initiativeSettings.pets.dragon'), value: 'dragon' },
-                    { label: $t('components.initiativeSettings.pets.fairy'), value: 'fairy' },
-                    { label: $t('components.initiativeSettings.pets.redcap'), value: 'redcap' },
-                    { label: $t('components.initiativeSettings.pets.wolf-rider'), value: 'wolf-rider' },
+                    {
+                      label: $t('components.initiativeSettings.pets.cat'),
+                      value: 'cat',
+                    },
+                    {
+                      label: $t('components.initiativeSettings.pets.chicken'),
+                      value: 'chicken',
+                    },
+                    {
+                      label: $t('components.initiativeSettings.pets.barmaid'),
+                      value: 'barmaid',
+                    },
+                    {
+                      label: $t('components.initiativeSettings.pets.crawler'),
+                      value: 'crawler',
+                    },
+                    {
+                      label: $t('components.initiativeSettings.pets.dragon'),
+                      value: 'dragon',
+                    },
+                    {
+                      label: $t('components.initiativeSettings.pets.fairy'),
+                      value: 'fairy',
+                    },
+                    {
+                      label: $t('components.initiativeSettings.pets.redcap'),
+                      value: 'redcap',
+                    },
+                    {
+                      label: $t(
+                        'components.initiativeSettings.pets.wolf-rider',
+                      ),
+                      value: 'wolf-rider',
+                    },
                   ]"
                   :key="option.value"
                   :value="option.value"
@@ -155,10 +186,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <UiFormField
-        v-slot="{ value, handleChange }"
-        name="negative"
-      >
+      <UiFormField v-slot="{ value, handleChange }" name="negative">
         <UiFormItem class="flex items-center gap-2">
           <UiFormControl>
             <UiSwitch
@@ -172,16 +200,10 @@ const onSubmit = form.handleSubmit(async (values) => {
           </UiFormLabel>
         </UiFormItem>
       </UiFormField>
-      <div
-        v-if="formError"
-        class="text-sm text-destructive"
-      >
+      <div v-if="formError" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton
-        type="submit"
-        class="w-full"
-      >
+      <UiButton type="submit" class="w-full">
         {{ $t('actions.save') }}
       </UiButton>
     </UiFormWrapper>

@@ -18,7 +18,8 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
 
   const { data, error } = await supabase
     .from('join_campaign')
-    .select(`
+    .select(
+      `
       id,
       role,
       user,
@@ -26,7 +27,8 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
         id,
         title
       )
-    `)
+    `,
+    )
     .match({ token, user, campaign, role })
     .single()
 

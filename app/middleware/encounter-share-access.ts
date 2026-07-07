@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/vue-query'
 
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async to => {
   const localePath = useLocalePath()
   const queryClient = useQueryClient()
 
@@ -13,10 +13,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     if (!encounter) throw createError('No encounter found')
 
-    queryClient.setQueryData(['useInitiativeSheetPlayground', to.query.token], encounter)
-  }
-  catch (error) {
-    queryClient.removeQueries({ queryKey: ['useInitiativeSheetPlayground', to.query.token] })
+    queryClient.setQueryData(
+      ['useInitiativeSheetPlayground', to.query.token],
+      encounter,
+    )
+  } catch (error) {
+    queryClient.removeQueries({
+      queryKey: ['useInitiativeSheetPlayground', to.query.token],
+    })
     return navigateTo(localePath('/'))
   }
 })
