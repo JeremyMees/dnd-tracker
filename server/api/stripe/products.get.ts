@@ -1,8 +1,4 @@
-import { useServerStripe } from '#stripe/server'
-
-export default defineEventHandler(async (event): Promise<StripeProduct[]> => {
-  const stripe = await useServerStripe(event)
-
+export default defineEventHandler(async (): Promise<StripeProduct[]> => {
   const { data: products } = await stripe.products.list({ active: true })
   const { data: prices } = await stripe.prices.list({ active: true })
 

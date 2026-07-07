@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
-    '@unlok-co/nuxt-stripe',
     'shadcn-nuxt',
     'nuxt-authorization',
     'motion-v/nuxt',
@@ -52,6 +51,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
+    stripeSk: process.env.STRIPE_SK,
     plunkApiKey: process.env.PLUNK_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,
@@ -168,11 +168,6 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: 'ui',
     componentDir: '~/components/ui',
-  },
-
-  stripe: {
-    server: { key: process.env.STRIPE_SK },
-    client: { key: process.env.STRIPE_PK },
   },
 
   supabase: {
