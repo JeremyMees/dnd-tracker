@@ -98,9 +98,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
         '@dicebear/collection',
@@ -132,8 +130,6 @@ export default defineNuxtConfig({
       ],
     },
   },
-
-  eslint: { config: { stylistic: true } },
 
   i18n: {
     defaultLocale: 'nl',
@@ -175,7 +171,13 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/',
-      include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
+      include: [
+        '/campaigns/*',
+        '/encounters/*',
+        '/no-member',
+        '/profile',
+        '/subscribe-success',
+      ],
       saveRedirectToCookie: true,
     },
   },

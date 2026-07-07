@@ -9,6 +9,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "format": "prettier . --check",
+    "format:fix": "prettier . --write",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
@@ -96,6 +98,7 @@
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "lint-staged": "^16.4.0",
+    "prettier": "^3.9.4",
     "typescript": "^5.9.3",
     "vitest": "^4.1.6",
     "vue-tsc": "^3.2.9"
@@ -105,8 +108,5 @@
     "@tiptap/core": "3.26.1",
     "parse5": "^6.0.1",
     "vue": "latest"
-  },
-  "lint-staged": {
-    "*.{js,ts,vue}": "eslint --fix"
   }
 }
