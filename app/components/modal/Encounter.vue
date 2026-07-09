@@ -16,19 +16,26 @@ const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t } = useI18n()
 
-const formSchema = z.object({
-  title: z.string().min(3).max(30),
-  campaign: z
-    .union([z.number(), z.literal('none')])
-    .optional()
-    .transform(val => (val === 'none' ? null : val)),
-})
+const formSchema = z
+  .object({
+    title: z.string().min(3).max(30),
+    campaign: z
+      .union([z.number(), z.literal('none')])
+      .optional()
+      .transform(val => (val === 'none' ? null : val)),
+  })
+  .extend(initiativeSettingsSchema.shape)
+
+const existingSettings = props.encounter?.settings
+const isModified = existingSettings?.modified ?? false
+const showSettings = ref(isModified)
 
 const form = useForm({
   validationSchema: formSchema,
   initialValues: {
     title: props.encounter?.title || '',
     campaign: props.encounter?.campaign?.id || undefined,
+    ...initiativeSettingsInitialValues(existingSettings),
   },
 })
 
@@ -56,18 +63,27 @@ const onSubmit = form.handleSubmit(async values => {
   const onSuccess = () => emit('close')
   const onError = (error: string) => (formError.value = error)
 
-  if (props.campaignId) values.campaign = props.campaignId
+  const { title, campaign, ...settingsValues } = values
+
+  const data = {
+    title,
+    campaign: props.campaignId ?? campaign,
+    settings: {
+      ...settingsValues,
+      modified: true,
+    } satisfies InitiativeSettings,
+  }
 
   if (props.encounter) {
     await updateEncounter({
-      data: values,
+      data,
       id: props.encounter.id,
       onSuccess,
       onError,
     })
   } else {
     await addEncounter({
-      data: { ...values, rows: [] },
+      data: { ...data, rows: [] },
       onSuccess,
       onError,
     })
@@ -116,6 +132,26 @@ const onSubmit = form.handleSubmit(async values => {
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
+    <UiButton
+      type="button"
+      variant="secondary"
+      class="w-full justify-between"
+      :aria-expanded="showSettings"
+      @click="showSettings = !showSettings"
+    >
+      {{ $t('general.setting', 2) }}
+      <Icon
+        name="tabler:chevron-down"
+        class="transition-transform duration-200"
+        :class="{ 'rotate-180': showSettings }"
+        aria-hidden="true"
+      />
+    </UiButton>
+    <AnimationExpand>
+      <div v-show="showSettings" class="space-y-4 border rounded-lg p-4">
+        <FormInitiativeSettingsFields />
+      </div>
+    </AnimationExpand>
     <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
