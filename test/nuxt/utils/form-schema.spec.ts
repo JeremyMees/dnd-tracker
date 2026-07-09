@@ -1,4 +1,10 @@
 import { describe, expect, it } from 'vitest'
+import {
+  initiativeSpacingOptions,
+  initiativeDefaultRows,
+  initiativePets,
+  initiativeWidgets,
+} from '~~/constants/validation'
 
 describe('form-schema', () => {
   describe('skillBonusesSchema', () => {
@@ -647,6 +653,124 @@ describe('form-schema', () => {
           conditionImmunities: allConditions,
         }).success,
       ).toBeTruthy()
+    })
+  })
+
+  describe('initiativeSettingsSchema', () => {
+    const valid = {
+      spacing: initiativeSpacingOptions[0],
+      rows: [...initiativeDefaultRows],
+      widgets: [...initiativeWidgets],
+      pet: initiativePets[0],
+      negative: false,
+    }
+
+    it('Should accept a valid settings object', () => {
+      expect(initiativeSettingsSchema.safeParse(valid).success).toBeTruthy()
+    })
+
+    it('Should accept all spacing options', () => {
+      for (const spacing of initiativeSpacingOptions) {
+        expect(
+          initiativeSettingsSchema.safeParse({ ...valid, spacing }).success,
+        ).toBeTruthy()
+      }
+    })
+
+    it('Should reject an invalid spacing option', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({ ...valid, spacing: 'roomy' })
+          .success,
+      ).toBeFalsy()
+    })
+
+    it('Should require spacing, rows, widgets and negative', () => {
+      const { spacing: _, ...noSpacing } = valid
+      expect(initiativeSettingsSchema.safeParse(noSpacing).success).toBeFalsy()
+
+      const { rows: __, ...noRows } = valid
+      expect(initiativeSettingsSchema.safeParse(noRows).success).toBeFalsy()
+
+      const { widgets: ___, ...noWidgets } = valid
+      expect(initiativeSettingsSchema.safeParse(noWidgets).success).toBeFalsy()
+
+      const { negative: ____, ...noNegative } = valid
+      expect(initiativeSettingsSchema.safeParse(noNegative).success).toBeFalsy()
+    })
+
+    it('Should accept empty rows and widgets arrays', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({ ...valid, rows: [], widgets: [] })
+          .success,
+      ).toBeTruthy()
+    })
+
+    it('Should accept all valid row fields', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({
+          ...valid,
+          rows: [...initiativeDefaultRows],
+        }).success,
+      ).toBeTruthy()
+    })
+
+    it('Should reject an invalid row field', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({ ...valid, rows: ['speed'] })
+          .success,
+      ).toBeFalsy()
+    })
+
+    it('Should accept all valid widgets', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({
+          ...valid,
+          widgets: [...initiativeWidgets],
+        }).success,
+      ).toBeTruthy()
+    })
+
+    it('Should reject an invalid widget', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({ ...valid, widgets: ['calendar'] })
+          .success,
+      ).toBeFalsy()
+    })
+
+    it('Should accept all valid pets', () => {
+      for (const pet of initiativePets) {
+        expect(
+          initiativeSettingsSchema.safeParse({ ...valid, pet }).success,
+        ).toBeTruthy()
+      }
+    })
+
+    it('Should reject an invalid pet', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({ ...valid, pet: 'unicorn' })
+          .success,
+      ).toBeFalsy()
+    })
+
+    it('Should treat pet as optional', () => {
+      const { pet: _, ...noPet } = valid
+      expect(initiativeSettingsSchema.safeParse(noPet).success).toBeTruthy()
+    })
+
+    it("Should transform pet 'none' into undefined", () => {
+      const result = initiativeSettingsSchema.safeParse({
+        ...valid,
+        pet: 'none',
+      })
+      expect(result.success).toBeTruthy()
+      if (result.success) expect(result.data.pet).toBeUndefined()
+    })
+
+    it('Should reject a non-boolean negative', () => {
+      expect(
+        initiativeSettingsSchema.safeParse({ ...valid, negative: 'yes' })
+          .success,
+      ).toBeFalsy()
     })
   })
 })

@@ -7,7 +7,14 @@ import {
   distanceUnits,
   usageTypes,
 } from '~~/constants/dnd'
-import { abilityType, actionType } from '~~/constants/validation'
+import {
+  abilityType,
+  actionType,
+  initiativeSpacingOptions,
+  initiativeDefaultRows,
+  initiativePets,
+  initiativeWidgets,
+} from '~~/constants/validation'
 
 export const skillBonusesSchema = z.object({
   acrobatics: z.number().gte(-10).lte(20).optional(),
@@ -127,4 +134,15 @@ export const resistancesAndImmunitiesSchema = z.object({
   damageResistances: z.array(z.enum(damageTypeEnum)).default([]),
   damageVulnerabilities: z.array(z.enum(damageTypeEnum)).default([]),
   conditionImmunities: z.array(z.enum(conditionTypeEnum)).default([]),
+})
+
+export const initiativeSettingsSchema = z.object({
+  spacing: z.enum(initiativeSpacingOptions),
+  rows: z.array(z.enum(initiativeDefaultRows)),
+  widgets: z.array(z.enum(initiativeWidgets)),
+  pet: z
+    .union([z.enum(initiativePets), z.literal('none')])
+    .optional()
+    .transform(val => (val === 'none' ? undefined : val)),
+  negative: z.boolean(),
 })
