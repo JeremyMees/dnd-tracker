@@ -146,3 +146,15 @@ export const initiativeSettingsSchema = z.object({
     .transform(val => (val === 'none' ? undefined : val)),
   negative: z.boolean(),
 })
+
+export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
+  const isModified = settings?.modified ?? false
+
+  return {
+    spacing: settings?.spacing || 'normal',
+    rows: isModified ? settings?.rows || [] : [...initiativeDefaultRows],
+    widgets: isModified ? settings?.widgets || [] : [...initiativeWidgets],
+    pet: settings?.pet || undefined,
+    negative: settings?.negative || false,
+  }
+}

@@ -773,4 +773,76 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
   })
+
+  describe('initiativeSettingsInitialValues', () => {
+    it('Should default all rows and widgets when no settings are given', () => {
+      const values = initiativeSettingsInitialValues()
+
+      expect(values.rows).toEqual([...initiativeDefaultRows])
+      expect(values.widgets).toEqual([...initiativeWidgets])
+      expect(values.spacing).toBe('normal')
+      expect(values.pet).toBeUndefined()
+      expect(values.negative).toBe(false)
+    })
+
+    it('Should check all rows and widgets when settings are not modified', () => {
+      const values = initiativeSettingsInitialValues({
+        spacing: 'compact',
+        modified: false,
+        rows: [],
+        widgets: [],
+      })
+
+      expect(values.rows).toEqual([...initiativeDefaultRows])
+      expect(values.widgets).toEqual([...initiativeWidgets])
+    })
+
+    it('Should keep the saved selection when settings are modified', () => {
+      const values = initiativeSettingsInitialValues({
+        spacing: 'cozy',
+        modified: true,
+        rows: ['armorClass', 'hitPoints'],
+        widgets: ['note'],
+        pet: initiativePets[0],
+        negative: true,
+      })
+
+      expect(values.rows).toEqual(['armorClass', 'hitPoints'])
+      expect(values.widgets).toEqual(['note'])
+      expect(values.spacing).toBe('cozy')
+      expect(values.pet).toBe(initiativePets[0])
+      expect(values.negative).toBe(true)
+    })
+
+    it('Should respect an empty selection when modified (nothing checked)', () => {
+      const values = initiativeSettingsInitialValues({
+        spacing: 'normal',
+        modified: true,
+        rows: [],
+        widgets: [],
+      })
+
+      expect(values.rows).toEqual([])
+      expect(values.widgets).toEqual([])
+    })
+
+    it('Should fall back to defaults for missing optional fields', () => {
+      const values = initiativeSettingsInitialValues({
+        spacing: 'normal',
+        modified: true,
+      })
+
+      expect(values.rows).toEqual([])
+      expect(values.widgets).toEqual([])
+      expect(values.pet).toBeUndefined()
+      expect(values.negative).toBe(false)
+    })
+
+    it('Should produce values that satisfy the settings schema', () => {
+      expect(
+        initiativeSettingsSchema.safeParse(initiativeSettingsInitialValues())
+          .success,
+      ).toBeTruthy()
+    })
+  })
 })

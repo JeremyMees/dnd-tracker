@@ -1,30 +1,14 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import {
-  initiativeDefaultRows,
-  initiativeWidgets,
-} from '~~/constants/validation'
 import { useForm } from 'vee-validate'
 
 const emit = defineEmits<{ close: [] }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const isModified = computed(() => sheet.value?.settings?.modified ?? false)
-
 const form = useForm({
   validationSchema: initiativeSettingsSchema,
-  initialValues: {
-    spacing: sheet.value?.settings?.spacing || 'normal',
-    rows: isModified.value
-      ? sheet.value?.settings?.rows || []
-      : [...initiativeDefaultRows],
-    widgets: isModified.value
-      ? sheet.value?.settings?.widgets || []
-      : [...initiativeWidgets],
-    pet: sheet.value?.settings?.pet || undefined,
-    negative: sheet.value?.settings?.negative || false,
-  },
+  initialValues: initiativeSettingsInitialValues(sheet.value?.settings),
 })
 
 const formError = ref<string>('')
