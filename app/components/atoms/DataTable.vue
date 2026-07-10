@@ -18,6 +18,8 @@ const emit = defineEmits<{
   invalidate: []
 }>()
 
+type PermissionFunc = (item: any) => Promise<boolean>
+
 const props = withDefaults(
   defineProps<{
     columns: ColumnDef<any, any>[]
@@ -25,7 +27,7 @@ const props = withDefaults(
     loading: boolean
     options?: Partial<TableOptions<any>>
     emptyMessage?: string
-    permission?: boolean | ((item: any) => Promise<boolean>)
+    permission?: boolean | PermissionFunc
     expandedMarkup?: (row: Row<any>) => VNode
     pageSize?: number
   }>(),
@@ -46,6 +48,7 @@ const pagination = ref<PaginationState>({
 })
 const rowSelectionPermissions = ref<Record<string, boolean>>({})
 const permissionFetchVersion = ref(0)
+const nuxtApp = useNuxtApp()
 
 // Convert 0-based to 1-based for Radix
 const internalPage = computed({
@@ -121,7 +124,9 @@ async function fetchPermissions() {
     if (typeof props.permission === 'boolean')
       permissions[item.id] = props.permission
     else if (typeof props.permission === 'function')
-      permissions[item.id] = await props.permission(item)
+      permissions[item.id] = await nuxtApp.runWithContext(() =>
+        (props.permission as PermissionFunc)(item),
+      )
     else permissions[item.id] = true
   }
 
