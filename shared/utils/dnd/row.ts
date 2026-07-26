@@ -16,6 +16,36 @@ export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
   return sheet.rows.findIndex(row => row.id === id)
 }
 
+const INTEGER_ROW_FIELDS = [
+  'index',
+  'initiative',
+  'initiativeModifier',
+  'armorClass',
+  'maxArmorClass',
+  'maxArmorClassOld',
+  'tempArmorClass',
+  'hitPoints',
+  'maxHitPoints',
+  'maxHitPointsOld',
+  'tempHitPoints',
+  'proficiencyBonus',
+  'passivePerception',
+] as const satisfies readonly (keyof InitiativeSheetRow)[]
+
+export function sanitizeRowNumbers(
+  row: InitiativeSheetRow,
+): InitiativeSheetRow {
+  const sanitized = { ...row }
+
+  for (const field of INTEGER_ROW_FIELDS) {
+    if (field in sanitized) {
+      sanitized[field] = toIntegerOrUndefined(sanitized[field]) as never
+    }
+  }
+
+  return sanitized
+}
+
 export const createInitiativeRow = (
   formData: Partial<InitiativeSheetRow> & { name: string },
   type: HomebrewType,
