@@ -46,6 +46,25 @@ export function parseNumber(
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
+export function parseInteger(
+  value: string | number | null | undefined,
+  fallback = 0,
+): number {
+  const parsed = parseNumber(value, NaN)
+
+  return Number.isFinite(parsed) ? Math.round(parsed) : fallback
+}
+
+export function toIntegerOrUndefined(
+  value: string | number | null | undefined,
+): number | undefined {
+  if (value === null || value === undefined) return undefined
+
+  const parsed = parseNumber(value, NaN)
+
+  return Number.isFinite(parsed) ? parseInteger(parsed) : undefined
+}
+
 export function parseIntegerFromText(
   value: string | number | null | undefined,
   fallback = 0,
