@@ -15,7 +15,7 @@ const props = defineProps<{
 const selectedType = ref<DndAcType>('remove')
 
 const formSchema = z.object({
-  amount: z.number().min(0).max(1000),
+  amount: z.int().min(0).max(1000),
 })
 
 const form = useForm({
@@ -32,7 +32,8 @@ const onSubmit = form.handleSubmit(async values => {
 
     if (!props.sheet || !selected) return
 
-    const row = props.handleAcChanges(values.amount, selected || 'remove')
+    const amount = parseInteger(values.amount)
+    const row = props.handleAcChanges(amount, selected || 'remove')
 
     await props.updateRow(row)
 

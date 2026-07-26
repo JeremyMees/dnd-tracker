@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const formSchema = z.object({
-  amount: z.number().min(0).max(1000),
+  amount: z.int().min(0).max(1000),
 })
 
 const form = useForm({
@@ -28,11 +28,13 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     if (!props.sheet) return
 
+    const amount = parseInteger(values.amount)
+
     const row = {
       ...props.item,
-      maxAc: values.amount,
-      maxAcOld: undefined,
-      ac: values.amount,
+      maxArmorClass: amount,
+      maxArmorClassOld: undefined,
+      armorClass: amount,
     }
 
     await props.updateRow(row)

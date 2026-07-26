@@ -167,7 +167,7 @@ const emptyAttack: DndAttack = {
         <UiInput
           type="number"
           :model-value="usageLimits?.param"
-          @update:model-value="v => handleUsageParamChange(+v)"
+          @update:model-value="v => handleUsageParamChange(parseInteger(v))"
         />
       </UiFormItem>
     </div>

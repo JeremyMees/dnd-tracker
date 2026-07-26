@@ -11,8 +11,8 @@ const popoverOpen = shallowRef<boolean>(false)
 const formError = ref<string>('')
 
 const formSchema = z.object({
-  initiative: z.number().min(0).max(50),
-  modifier: z.number().min(-20).max(20).nullable().optional(),
+  initiative: z.int().min(0).max(50),
+  modifier: z.int().min(-20).max(20).nullable().optional(),
 })
 
 const form = useForm({

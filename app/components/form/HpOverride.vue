@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const formSchema = z.object({
-  amount: z.number().min(0).max(1000),
+  amount: z.int().min(0).max(1000),
   reset: z.boolean().optional(),
 })
 
@@ -29,7 +29,8 @@ const onSubmit = handleSubmit(async values => {
   try {
     if (!props.sheet) return
 
-    const { amount, reset } = values
+    const { reset } = values
+    const amount = parseInteger(values.amount)
 
     const { row, toasts } =
       reset || amount === props.item.maxHitPointsOld

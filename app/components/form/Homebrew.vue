@@ -34,14 +34,14 @@ const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 const formSchema = z
   .object({
     type: z.enum(homebrewType),
-    amount: z.number().gte(1).lte(15).optional(),
+    amount: z.int().gte(1).lte(15).optional(),
     summoner: z.string().max(50).optional().or(z.literal('')),
     name: z.string().min(3).max(30),
     player: z.string().min(3).max(30).optional().or(z.literal('')),
-    initiative: z.number().gte(1).lte(50).optional(),
-    initiativeModifier: z.number().gte(-20).lte(20).optional(),
-    armorClass: z.number().gte(1).lte(100).optional(),
-    hitPoints: z.number().gte(1).lte(1000).optional(),
+    initiative: z.int().gte(1).lte(50).optional(),
+    initiativeModifier: z.int().gte(-20).lte(20).optional(),
+    armorClass: z.int().gte(1).lte(100).optional(),
+    hitPoints: z.int().gte(1).lte(1000).optional(),
     link: z.string().url().optional().or(z.literal('')),
     hitDice: z
       .string()
@@ -51,8 +51,8 @@ const formSchema = z
       .optional()
       .or(z.literal('')),
     armorDetail: z.string().max(100).optional().or(z.literal('')),
-    proficiencyBonus: z.number().gte(0).lte(10).optional(),
-    passivePerception: z.number().gte(0).lte(30).optional(),
+    proficiencyBonus: z.int().gte(0).lte(10).optional(),
+    passivePerception: z.int().gte(0).lte(30).optional(),
     speed: speedSchema.optional(),
     sight: sightSchema.optional(),
     languages: z.array(z.string().min(1).max(50)).max(20),

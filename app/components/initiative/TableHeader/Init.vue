@@ -20,8 +20,8 @@ const formSchema = z.object({
   selectedCreatures: z.array(
     z.object({
       id: z.string(),
-      amount: z.number().min(0).max(50).nullable().optional(),
-      initiative: z.number().min(-20).max(20).nullable().optional(),
+      amount: z.int().min(0).max(50).nullable().optional(),
+      initiative: z.int().min(-20).max(20).nullable().optional(),
     }),
   ),
 })
