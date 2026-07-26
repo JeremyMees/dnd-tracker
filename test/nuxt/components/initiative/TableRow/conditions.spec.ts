@@ -68,10 +68,7 @@ describe('Initiative table row conditions', async () => {
       props: {
         item: {
           ...props.item,
-          conditions: [
-            conditions[0] as Condition,
-            conditions[1] as Condition,
-          ],
+          conditions: [conditions[0] as Condition, conditions[1] as Condition],
         },
       },
       provide,
@@ -105,15 +102,19 @@ describe('Initiative table row conditions', async () => {
       props: {
         item: {
           ...props.item,
-          conditions: [{
-            ...conditions[0] as Condition,
-            level: 2,
-          }],
+          conditions: [
+            {
+              ...(conditions[0] as Condition),
+              level: 2,
+            },
+          ],
         },
       },
       provide,
     })
 
-    expect(component.find('[data-test-badge]').text()).toBe(`${conditions[0]!.name} (2)`)
+    expect(component.find('[data-test-badge]').text()).toBe(
+      `${conditions[0]!.name} (2)`,
+    )
   })
 })

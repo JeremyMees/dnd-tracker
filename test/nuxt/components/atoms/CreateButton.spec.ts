@@ -30,7 +30,9 @@ describe('CreateButton', async () => {
   })
 
   it('Should render disabled when disabled prop is true', async () => {
-    const component = await mountSuspended(CreateButton, { props: { ...props, disabled: true } })
+    const component = await mountSuspended(CreateButton, {
+      props: { ...props, disabled: true },
+    })
     const button = component.find('button')
 
     await button.trigger('click')
@@ -41,7 +43,9 @@ describe('CreateButton', async () => {
   })
 
   it('Should render a loading state', async () => {
-    const component = await mountSuspended(CreateButton, { props: { ...props, loading: true } })
+    const component = await mountSuspended(CreateButton, {
+      props: { ...props, loading: true },
+    })
 
     expect(component.find('[data-test-skeleton]').exists()).toBeTruthy()
     expect(component.find('button').exists()).toBeFalsy()
@@ -58,7 +62,9 @@ describe('CreateButton', async () => {
   })
 
   it('Should emit hitLimit event when clicked but not allowed', async () => {
-    const component = await mountSuspended(CreateButton, { props: { allowCreate: false } })
+    const component = await mountSuspended(CreateButton, {
+      props: { allowCreate: false },
+    })
 
     await component.find('button').trigger('click')
     await nextTick()

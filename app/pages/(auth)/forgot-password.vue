@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -13,9 +12,9 @@ const { toast } = useToast()
 const localePath = useLocalePath()
 const supabase = useSupabaseClient<DB>()
 
-const formSchema = toTypedSchema(z.object({
-  email: z.string().min(5).max(50).email(),
-}))
+const formSchema = z.object({
+  email: z.email().min(5).max(50),
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -23,7 +22,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -40,8 +39,7 @@ const onSubmit = form.handleSubmit(async (values) => {
     })
 
     navigateTo(localePath('/login'))
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred during password reset'
 
     toast({
@@ -60,61 +58,35 @@ const onSubmit = form.handleSubmit(async (values) => {
     </h1>
 
     <UiFormWrapper @submit="onSubmit">
-      <UiFormField
-        v-slot="{ componentField }"
-        name="email"
-      >
+      <UiFormField v-slot="{ componentField }" name="email">
         <UiFormItem v-auto-animate>
           <UiFormLabel required>
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="email"
-              v-bind="componentField"
-            />
+            <UiInput type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <div
-        v-if="formError"
-        class="text-sm text-destructive"
-      >
+      <div v-if="formError" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton
-        type="submit"
-        class="w-full"
-      >
+      <UiButton type="submit" class="w-full">
         {{ $t('pages.forgotPassword.reset') }}
       </UiButton>
     </UiFormWrapper>
 
-    <UiSeparator
-      class="mt-6 mb-2"
-      :label="$t('general.or')"
-    />
+    <UiSeparator class="mt-6 mb-2" :label="$t('general.or')" />
 
     <div class="flex flex-wrap gap-2 justify-center">
-      <UiButton
-        as-child
-        variant="link"
-        class="flex-1 grow"
-      >
+      <UiButton as-child variant="link" class="flex-1 grow">
         <NuxtLinkLocale to="/register">
           {{ $t('pages.login.new') }}
         </NuxtLinkLocale>
       </UiButton>
-      <UiSeparator
-        orientation="vertical"
-        class="h-8"
-      />
-      <UiButton
-        as-child
-        variant="link"
-        class="flex-1 grow"
-      >
+      <UiSeparator orientation="vertical" class="h-8" />
+      <UiButton as-child variant="link" class="flex-1 grow">
         <NuxtLinkLocale to="/forgot-password">
           {{ $t('pages.login.forgot') }}
         </NuxtLinkLocale>

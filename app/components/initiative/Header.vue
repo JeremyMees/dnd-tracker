@@ -11,7 +11,9 @@ const resetOpen = ref<boolean>(false)
 </script>
 
 <template>
-  <div class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full">
+  <div
+    class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"
+  >
     <InitiativePet
       v-if="data?.settings?.pet"
       data-test-pet
@@ -21,10 +23,7 @@ const resetOpen = ref<boolean>(false)
     <div class="flex gap-2 items-center">
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
-        <span
-          data-test-round
-          class="font-bold text-foreground"
-        >
+        <span data-test-round class="font-bold text-foreground">
           {{ data?.round || 1 }}
         </span>
       </span>
@@ -51,7 +50,7 @@ const resetOpen = ref<boolean>(false)
           <button
             :aria-label="$t('components.encounterTable.reset.soft.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
-            @click="$emit('reset', false), resetOpen = false"
+            @click="($emit('reset', false), (resetOpen = false))"
           >
             <span class="font-bold">
               {{ $t('components.encounterTable.reset.soft.title') }}
@@ -64,7 +63,7 @@ const resetOpen = ref<boolean>(false)
           <button
             :aria-label="$t('components.encounterTable.reset.hard.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
-            @click="$emit('reset', true), resetOpen = false"
+            @click="($emit('reset', true), (resetOpen = false))"
           >
             <span class="font-bold">
               {{ $t('components.encounterTable.reset.hard.title') }}
@@ -83,7 +82,9 @@ const resetOpen = ref<boolean>(false)
       <button
         v-tippy="{ content: $t('actions.prev') }"
         data-test-previous
-        :disabled="!data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)"
+        :disabled="
+          !data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)
+        "
         :aria-label="$t('actions.prev')"
         class="group disabled:cursor-not-allowed duration-300 ease-in-out p-1 border-r-4 border-primary flex flex-col items-center"
         @click="$emit('previous')"

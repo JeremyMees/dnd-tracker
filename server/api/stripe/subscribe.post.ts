@@ -1,9 +1,7 @@
-import { useServerStripe } from '#stripe/server'
 import { serverSupabaseClient } from '#supabase/server'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   const config = useRuntimeConfig()
-  const stripe = await useServerStripe(event)
   const client = await serverSupabaseClient(event)
   const body = await readBody(event)
 
@@ -30,7 +28,8 @@ export default defineEventHandler(async (event) => {
     customer: body.customer || customer?.id,
   })
 
-  await client.from('profiles')
+  await client
+    .from('profiles')
     .update({
       ...update,
       stripeSessionId: session.id,

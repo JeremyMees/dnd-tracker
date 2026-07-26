@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useCampaignCreate, useCampaignUpdate } from '~~/queries/campaigns'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -12,9 +11,9 @@ const user = useAuthenticatedUser()
 const { mutateAsync: createCampaign } = useCampaignCreate()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   title: z.string().min(3).max(30),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -25,11 +24,11 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   const onSuccess = () => emit('close')
-  const onError = (error: string) => formError.value = error
+  const onError = (error: string) => (formError.value = error)
 
   if (props.campaign) {
     await updateCampaign({
@@ -38,8 +37,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       onError,
       onSuccess,
     })
-  }
-  else {
+  } else {
     await createCampaign({
       data: { ...values, createdBy: user.value.id },
       onError,
@@ -51,33 +49,21 @@ const onSubmit = form.handleSubmit(async (values) => {
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="title"
-    >
+    <UiFormField v-slot="{ componentField }" name="title">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton
-      type="submit"
-      class="w-full"
-    >
+    <UiButton type="submit" class="w-full">
       {{ campaign ? $t('pages.campaigns.update') : $t('pages.campaigns.add') }}
     </UiButton>
   </UiFormWrapper>

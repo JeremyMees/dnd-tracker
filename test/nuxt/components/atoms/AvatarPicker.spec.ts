@@ -32,7 +32,10 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should render avatar with default props correctly', async () => {
-    const component = await mountSuspended(AvatarPicker, { props, modalValue: defaultAvatar })
+    const component = await mountSuspended(AvatarPicker, {
+      props,
+      modalValue: defaultAvatar,
+    })
 
     const avatar = component.find('[data-test-avatar]')
     expect(avatar.exists()).toBeTruthy()
@@ -41,7 +44,9 @@ describe('AvatarPicker', async () => {
     const randomButton = component.find('button[aria-label="actions.random"]')
     expect(randomButton.exists()).toBeTruthy()
 
-    const optionsButton = component.find('button[aria-label="components.avatarPicker.options"]')
+    const optionsButton = component.find(
+      'button[aria-label="components.avatarPicker.options"]',
+    )
     expect(optionsButton.exists()).toBeTruthy()
 
     expect(component.find('[data-test-deprecated]').exists()).toBeFalsy()
@@ -55,7 +60,9 @@ describe('AvatarPicker', async () => {
 
     const deprecatedMessage = component.find('[data-test-deprecated]')
     expect(deprecatedMessage.exists()).toBeTruthy()
-    expect(deprecatedMessage.text()).toContain('components.avatarPicker.deprecated')
+    expect(deprecatedMessage.text()).toContain(
+      'components.avatarPicker.deprecated',
+    )
   })
 
   it('Should have creator open by default', async () => {
@@ -63,7 +70,9 @@ describe('AvatarPicker', async () => {
       props: { ...props, hideCreatorToggle: true },
     })
 
-    const optionsButton = component.find('button[aria-label="components.avatarPicker.options"]')
+    const optionsButton = component.find(
+      'button[aria-label="components.avatarPicker.options"]',
+    )
     expect(optionsButton.exists()).toBeFalsy()
 
     expect(component.find('[data-test-creator]').exists()).toBeTruthy()
@@ -74,14 +83,20 @@ describe('AvatarPicker', async () => {
       props: { ...props, size: 'xs' },
     })
 
-    expect(component.find('[data-test-avatar]').attributes('class')).toContain(avatarSizes.xs)
+    expect(component.find('[data-test-avatar]').attributes('class')).toContain(
+      avatarSizes.xs,
+    )
 
     component.setProps({ size: 'sm' })
     await nextTick()
-    expect(component.find('[data-test-avatar]').attributes('class')).toContain(avatarSizes.sm)
+    expect(component.find('[data-test-avatar]').attributes('class')).toContain(
+      avatarSizes.sm,
+    )
 
     component.setProps({ size: 'base' })
     await nextTick()
-    expect(component.find('[data-test-avatar]').attributes('class')).toContain(avatarSizes.base)
+    expect(component.find('[data-test-avatar]').attributes('class')).toContain(
+      avatarSizes.base,
+    )
   })
 })

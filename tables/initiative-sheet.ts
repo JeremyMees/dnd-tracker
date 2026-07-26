@@ -1,4 +1,8 @@
-import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
+import {
+  createColumnHelper,
+  type InitialTableState,
+  type Row,
+} from '@tanstack/vue-table'
 import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   abilityScoresElement,
@@ -30,100 +34,119 @@ export function generateColumns() {
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'index',
-      cell: ({ row }) => h('div', {
-        class: 'flex items-center gap-x-2',
-      }, [
-        h('span', { class: 'text-muted-foreground ml-1' }, row.index + 1),
-        expandButton({
-          content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
-          expanded: row.getIsExpanded(),
-          cb: () => row.toggleExpanded(),
-        }),
-      ]),
+      cell: ({ row }) =>
+        h(
+          'div',
+          {
+            class: 'flex items-center gap-x-2',
+          },
+          [
+            h('span', { class: 'text-muted-foreground ml-1' }, row.index + 1),
+            expandButton({
+              content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
+              expanded: row.getIsExpanded(),
+              cb: () => row.toggleExpanded(),
+            }),
+          ],
+        ),
     }),
     columnHelper.accessor('name', {
       header: t('components.encounterTable.headers.name'),
-      cell: ({ row }) => h(InitiativeTableRowName, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowName, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('initiative', {
-      header: () => h(InitiativeTableHeaderInit, {
-        label: t('components.encounterTable.headers.init'),
-      }),
-      cell: ({ row }) => h(InitiativeTableRowInit, {
-        item: row.original,
-      }),
+      header: () =>
+        h(InitiativeTableHeaderInit, {
+          label: t('components.encounterTable.headers.init'),
+        }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowInit, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('hitPoints', {
       header: t('components.encounterTable.headers.hp'),
-      cell: ({ row }) => h(InitiativeTableRowHp, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowHp, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('armorClass', {
       header: t('components.encounterTable.headers.ac'),
-      cell: ({ row }) => h(InitiativeTableRowAc, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowAc, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('conditions', {
       header: t('components.encounterTable.headers.conditions'),
-      cell: ({ row }) => h(InitiativeTableRowConditions, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowConditions, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('note', {
       header: t('components.encounterTable.headers.note'),
-      cell: ({ row }) => h(InitiativeTableRowNotes, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowNotes, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('deathSaves', {
       header: t('components.encounterTable.headers.deathSaves'),
-      cell: ({ row }) => h(InitiativeTableRowDeathSaves, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowDeathSaves, {
+          item: row.original,
+        }),
     }),
     columnHelper.accessor('concentration', {
       header: t('components.encounterTable.headers.concentration'),
-      cell: ({ row }) => h(InitiativeTableRowConcentration, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowConcentration, {
+          item: row.original,
+        }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,
       enableSorting: false,
       id: 'modify',
-      cell: ({ row }) => h(InitiativeTableRowModify, {
-        item: row.original,
-      }),
+      cell: ({ row }) =>
+        h(InitiativeTableRowModify, {
+          item: row.original,
+        }),
     }),
   ]
 }
 
 export function expandedMarkup(row: Row<InitiativeSheetRow>) {
-  return h('div', {
-    class: 'flex flex-col gap-4',
-  }, [
-    statsBadgesElement({
-      proficiencyBonus: row.original.proficiencyBonus,
-      initiativeModifier: row.original.initiativeModifier,
-      passivePerception: row.original.passivePerception,
-    }),
-    ...(
-      hasAbilityScores(row.original)
+  return h(
+    'div',
+    {
+      class: 'flex flex-col gap-4',
+    },
+    [
+      statsBadgesElement({
+        proficiencyBonus: row.original.proficiencyBonus,
+        initiativeModifier: row.original.initiativeModifier,
+        passivePerception: row.original.passivePerception,
+      }),
+      ...(hasAbilityScores(row.original)
         ? [
             abilityScoresElement({
               abilityScores: row.original.abilityScores!,
               modifiers: row.original.modifiers!,
             }),
           ]
-        : []
-    ),
-    ...(hasCreatureStats(row.original) ? [creatureStatsElement(row.original)] : []),
-    actionsTable(row.original, 'initiative'),
-  ])
+        : []),
+      ...(hasCreatureStats(row.original)
+        ? [creatureStatsElement(row.original)]
+        : []),
+      actionsTable(row.original, 'initiative'),
+    ],
+  )
 }
 
 export const initialState: InitialTableState = {}

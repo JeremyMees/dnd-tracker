@@ -2,7 +2,8 @@
 withDefaults(
   defineProps<{
     variant?: 'secondary' | 'background'
-  }>(), {
+  }>(),
+  {
     variant: 'secondary',
   },
 )

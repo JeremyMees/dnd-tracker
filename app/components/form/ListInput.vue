@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { useFieldArray } from 'vee-validate'
 
-const props = withDefaults(defineProps<{
-  name: string
-  type: HTMLInputElement['type']
-  empty: string | number | undefined | null
-  label?: string
-  max?: number
-  min?: number
-  required?: boolean
-}>(), {
-  max: 10,
-  min: 0,
-  required: false,
-})
+const props = withDefaults(
+  defineProps<{
+    name: string
+    type: HTMLInputElement['type']
+    empty: string | number | undefined | null
+    label?: string
+    max?: number
+    min?: number
+    required?: boolean
+  }>(),
+  {
+    max: 10,
+    min: 0,
+    required: false,
+  },
+)
 
 const { fields, push, remove } = useFieldArray(props.name)
 
@@ -30,11 +33,7 @@ function removeItem(index: number) {
 
 <template>
   <div class="space-y-2">
-    <UiLabel
-      v-if="label"
-      data-test-label
-      :required="required"
-    >
+    <UiLabel v-if="label" data-test-label :required="required">
       {{ label }}
     </UiLabel>
 
@@ -49,13 +48,10 @@ function removeItem(index: number) {
         <UiFormItem v-auto-animate>
           <UiFormControl>
             <UiInputGroup>
-              <UiInputGroupInput
-                type="text"
-                v-bind="componentField"
-              />
+              <UiInputGroupInput type="text" v-bind="componentField" />
               <UiInputGroupAddon
                 align="inline-end"
-                class=" has-[>button]:mr-0 pr-1"
+                class="has-[>button]:mr-0 pr-1"
               >
                 <UiInputGroupButton
                   data-test-remove
@@ -85,11 +81,7 @@ function removeItem(index: number) {
       <Icon name="tabler:plus" />
       {{ $t('actions.addAnother') }}
     </UiButton>
-    <span
-      v-else
-      data-test-max
-      class="text-destructive"
-    >
+    <span v-else data-test-max class="text-destructive">
       {{ $t('general.max') }} 10
     </span>
   </div>

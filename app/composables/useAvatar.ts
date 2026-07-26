@@ -3,14 +3,46 @@ import { createAvatar } from '@dicebear/core'
 import { openPeeps } from '@dicebear/collection'
 
 const colors = [
-  'fee2e2', 'fecaca', 'fca5a5', 'f87171', 'ef4444', // red
-  'ffedd5', 'fed7aa', 'fdba74', 'fb923c', 'f97316', // orange
-  'fef9c3', 'fef08a', 'fde047', 'facc15', 'eab308', // yellow
-  'd1fae5', 'a7f3d0', '6ee7b7', '34d399', '10b981', // green
-  'e0f2fe', 'bae6fd', '7dd3fc', '38bdf8', '0ea5e9', // blue
-  'ede9fe', 'ddd6fe', 'c4b5fd', 'a78bfa', '8b5cf6', // purple
-  'fce7f3', 'fbcfe8', 'f9a8d4', 'f472b6', 'ec4899', // pink
-  'f3f4f6', 'e5e7eb', 'd1d5db', '9ca3af', '6b7280', // gray
+  'fee2e2',
+  'fecaca',
+  'fca5a5',
+  'f87171',
+  'ef4444', // red
+  'ffedd5',
+  'fed7aa',
+  'fdba74',
+  'fb923c',
+  'f97316', // orange
+  'fef9c3',
+  'fef08a',
+  'fde047',
+  'facc15',
+  'eab308', // yellow
+  'd1fae5',
+  'a7f3d0',
+  '6ee7b7',
+  '34d399',
+  '10b981', // green
+  'e0f2fe',
+  'bae6fd',
+  '7dd3fc',
+  '38bdf8',
+  '0ea5e9', // blue
+  'ede9fe',
+  'ddd6fe',
+  'c4b5fd',
+  'a78bfa',
+  '8b5cf6', // purple
+  'fce7f3',
+  'fbcfe8',
+  'f9a8d4',
+  'f472b6',
+  'ec4899', // pink
+  'f3f4f6',
+  'e5e7eb',
+  'd1d5db',
+  '9ca3af',
+  '6b7280', // gray
 ]
 
 const blackListedKeys = [
@@ -24,7 +56,7 @@ const blackListedKeys = [
 
 export type SelectedStyleOptions = Record<string, string | number>
 export type ConfigStyleOptions = Record<string, ConfigStyleOption>
-export type Avatar = { url: string, extra: Record<string, unknown> }
+export type Avatar = { url: string; extra: Record<string, unknown> }
 
 type ConfigStyleOption = {
   hasProbability?: boolean
@@ -37,13 +69,17 @@ type ConfigStyleOption = {
 export function useAvatarCreator() {
   const avatar = ref<Avatar>()
   const options = ref<SelectedStyleOptions>({})
-  const configStyleOptions: ConfigStyleOptions = getSchemaOptions(openPeeps.schema)
+  const configStyleOptions: ConfigStyleOptions = getSchemaOptions(
+    openPeeps.schema,
+  )
 
   function update(selectedOptions: SelectedStyleOptions): void {
     for (const key in selectedOptions) {
-      if (blackListedKeys.includes(key) || selectedOptions[key] === undefined) continue
+      if (blackListedKeys.includes(key) || selectedOptions[key] === undefined)
+        continue
 
-      if (key === 'primaryBackgroundColor') options.value.backgroundColor = selectedOptions[key]
+      if (key === 'primaryBackgroundColor')
+        options.value.backgroundColor = selectedOptions[key]
       else options.value[key] = selectedOptions[key]
     }
 
@@ -104,11 +140,11 @@ export function useAvatarCreator() {
         result[key] = avatarOption
           ? [avatarOption.toString().replace('#', '')]
           : []
-      }
-      else result[key] = avatarOption
+      } else result[key] = avatarOption
 
       if (styleOption.hasProbability) {
-        result[`${key}Probability`] = avatarOption !== undefined ? 100 : random ? 50 : 0
+        result[`${key}Probability`] =
+          avatarOption !== undefined ? 100 : random ? 50 : 0
       }
     }
 
@@ -164,9 +200,9 @@ export function useAvatarCreator() {
       }
 
       if (
-        typeof property.items === 'object'
-        && !Array.isArray(property.items)
-        && property.items.enum
+        typeof property.items === 'object' &&
+        !Array.isArray(property.items) &&
+        property.items.enum
       ) {
         for (const value of property.items.enum) {
           if (typeof value === 'string') {

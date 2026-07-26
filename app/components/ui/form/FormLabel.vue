@@ -5,10 +5,12 @@ import { Label } from '~/components/ui/label'
 import { useFormField } from './useFormField'
 
 const props = withDefaults(
-  defineProps<LabelProps & {
-    class?: HTMLAttributes['class']
-    required?: boolean
-  }>(),
+  defineProps<
+    LabelProps & {
+      class?: HTMLAttributes['class']
+      required?: boolean
+    }
+  >(),
   {
     required: false,
   },
@@ -19,16 +21,10 @@ const { error, formItemId } = useFormField()
 
 <template>
   <Label
-    :class="cn(
-      error && 'text-destructive',
-      props.class,
-    )"
+    :class="cn(error && 'text-destructive', props.class)"
     :for="formItemId"
   >
     <slot />
-    <span
-      v-if="props.required"
-      class="text-destructive"
-    >*</span>
+    <span v-if="props.required" class="text-destructive">*</span>
   </Label>
 </template>

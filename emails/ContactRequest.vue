@@ -14,22 +14,13 @@ defineProps<{
     :email="email"
     title="New question/contact"
     heading="New question/contact"
-    :preview="name
-      ? `Contact/question mail from ${name}`
-      : 'Contact/question mail'
+    :preview="
+      name ? `Contact/question mail from ${name}` : 'Contact/question mail'
     "
   >
-    <Text>
-      DATE: {{ new Date().toLocaleDateString('nl-NL') }},
-    </Text>
-    <Text>
-      EMAIL: {{ email }},
-    </Text>
-    <Text v-if="name">
-      NAME: {{ name }},
-    </Text>
-    <Text>
-      QUESTION: {{ question }}
-    </Text>
+    <Text> DATE: {{ new Date().toLocaleDateString('nl-NL') }}, </Text>
+    <Text> EMAIL: {{ email }}, </Text>
+    <Text v-if="name"> NAME: {{ name }}, </Text>
+    <Text> QUESTION: {{ question }} </Text>
   </DefaultEmail>
 </template>

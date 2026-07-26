@@ -109,7 +109,8 @@ export const open5eV2SpellFixture: Open5eSpell = {
   name: 'Acid Arrow',
   desc: 'A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 Acid damage and 2d4 Acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage only.',
   level: 2,
-  higher_level: 'The damage (both initial and later) increases by 1d4 for each spell slot level above 2.',
+  higher_level:
+    'The damage (both initial and later) increases by 1d4 for each spell slot level above 2.',
   target_type: 'creature',
   range_text: '90 feet',
   range: 90,
@@ -126,9 +127,7 @@ export const open5eV2SpellFixture: Open5eSpell = {
   saving_throw_ability: '',
   attack_roll: true,
   damage_roll: '4d4',
-  damage_types: [
-    'acid',
-  ],
+  damage_types: ['acid'],
   duration: 'instantaneous',
   shape_type: null,
   shape_size: null,
@@ -139,7 +138,7 @@ export const open5eV2MagicItemFixture: Open5eMagicItem = {
   url: 'https://api.open5e.com/v2/items/srd-2024_adamantine-armor-breastplate/',
   key: 'srd-2024_adamantine-armor-breastplate',
   name: 'Adamantine Armor (Breastplate)',
-  desc: 'This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you\'re wearing it, any Critical Hit against you becomes a normal hit.',
+  desc: "This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any Critical Hit against you becomes a normal hit.",
   category: {
     name: 'Armor',
     key: 'armor',
@@ -421,7 +420,8 @@ export const open5eV2MonsterFixture: Open5eMonster = {
       key: 'a5e',
       url: 'https://api.open5e.com/v2/gamesystems/a5e/',
     },
-    permalink: 'https://enpublishingrpg.com/collections/level-up-advanced-5th-edition-a5e/products/level-up-monstrous-menagerie-a5e',
+    permalink:
+      'https://enpublishingrpg.com/collections/level-up-advanced-5th-edition-a5e/products/level-up-monstrous-menagerie-a5e',
   },
   type: {
     name: 'Aberration',
@@ -669,8 +669,16 @@ export const open5eV2ConditionFixture: Open5eCondition = {
   name: 'Blinded',
   url: 'https://api.open5e.com/v2/conditions/blinded/',
   descriptions: [
-    { desc: 'The 2014 blinded desc.', document: 'srd-2014', gamesystem: '5e-2014' },
-    { desc: 'A Blinded creature cannot see.', document: 'srd-2024', gamesystem: '5e-2024' },
+    {
+      desc: 'The 2014 blinded desc.',
+      document: 'srd-2014',
+      gamesystem: '5e-2014',
+    },
+    {
+      desc: 'A Blinded creature cannot see.',
+      document: 'srd-2024',
+      gamesystem: '5e-2024',
+    },
   ],
   document: open5eDocumentFixture,
 }
@@ -680,8 +688,16 @@ export const open5eV2ExhaustionFixture: Open5eCondition = {
   name: 'Exhaustion',
   url: 'https://api.open5e.com/v2/conditions/exhaustion/',
   descriptions: [
-    { desc: 'The 2014 exhaustion desc.', document: 'srd-2014', gamesystem: '5e-2014' },
-    { desc: 'Exhaustion drains your body.', document: 'srd-2024', gamesystem: '5e-2024' },
+    {
+      desc: 'The 2014 exhaustion desc.',
+      document: 'srd-2014',
+      gamesystem: '5e-2014',
+    },
+    {
+      desc: 'Exhaustion drains your body.',
+      document: 'srd-2024',
+      gamesystem: '5e-2024',
+    },
   ],
   document: open5eDocumentFixture,
 }

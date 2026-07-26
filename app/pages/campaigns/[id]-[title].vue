@@ -14,10 +14,16 @@ const id = validateParamId(route.params.id)
 const { data, isPending, isError, isSuccess } = useCampaignDetail(id)
 
 const fetchReady = ref(false)
-onNuxtReady(() => fetchReady.value = true)
+onNuxtReady(() => (fetchReady.value = true))
 
-const isAdmin = computedAsync(async () => data.value ? await allows(isCampaignAdmin, data.value) : false, false)
-const isOwner = computedAsync(async () => data.value ? await allows(isCampaignOwner, data.value) : false, false)
+const isAdmin = computedAsync(
+  async () => (data.value ? await allows(isCampaignAdmin, data.value) : false),
+  false,
+)
+const isOwner = computedAsync(
+  async () => (data.value ? await allows(isCampaignOwner, data.value) : false),
+  false,
+)
 
 const tabs = computed<Tab[]>(() => {
   const url = route.fullPath.split('/').slice(0, -1).join('/')
@@ -39,18 +45,22 @@ const tabs = computed<Tab[]>(() => {
       icon: 'tabler:notes',
     },
     ...(isAdmin.value
-      ? [{
-          link: `${url}/settings`,
-          label: t('general.setting', 2),
-          icon: 'tabler:settings',
-        }]
+      ? [
+          {
+            link: `${url}/settings`,
+            label: t('general.setting', 2),
+            icon: 'tabler:settings',
+          },
+        ]
       : []),
     ...(isOwner.value
-      ? [{
-          link: `${url}/danger-zone`,
-          label: t('general.dangerZone'),
-          icon: 'tabler:alert-triangle',
-        }]
+      ? [
+          {
+            link: `${url}/danger-zone`,
+            label: t('general.dangerZone'),
+            icon: 'tabler:alert-triangle',
+          },
+        ]
       : []),
   ]
 })
@@ -60,36 +70,18 @@ const tabs = computed<Tab[]>(() => {
   <NuxtLayout name="sidebar">
     <template #header>
       <div class="flex gap-x-4 gap-y-2 items-center">
-        <UiButton
-          as-child
-          variant="foreground-ghost"
-          size="icon-sm"
-        >
-          <NuxtLinkLocale
-            v-tippy="$t('actions.back')"
-            to="/campaigns"
-          >
-            <Icon
-              name="tabler:arrow-left"
-              :aria-hidden="true"
-            />
+        <UiButton as-child variant="foreground-ghost" size="icon-sm">
+          <NuxtLinkLocale v-tippy="$t('actions.back')" to="/campaigns">
+            <Icon name="tabler:arrow-left" :aria-hidden="true" />
           </NuxtLinkLocale>
         </UiButton>
         <h2 class="text-muted-foreground flex gap-2">
-          <span class="hidden md:block">
-            {{ $t('general.campaign') }}:
-          </span>
+          <span class="hidden md:block"> {{ $t('general.campaign') }}: </span>
           <ClientOnly>
-            <span
-              v-if="isSuccess && data?.title"
-              class="text-foreground"
-            >
+            <span v-if="isSuccess && data?.title" class="text-foreground">
               {{ data.title }}
             </span>
-            <UiSkeleton
-              v-else
-              class="w-[150px] h-9 rounded-full"
-            />
+            <UiSkeleton v-else class="w-[150px] h-9 rounded-full" />
             <template #fallback>
               <UiSkeleton class="w-[150px] h-9 rounded-full" />
             </template>
@@ -130,10 +122,7 @@ const tabs = computed<Tab[]>(() => {
         color="danger"
         class="h-[40vh] flex flex-col items-center justify-center gap-2"
       >
-        <Icon
-          name="tabler:alert-triangle"
-          class="size-10"
-        />
+        <Icon name="tabler:alert-triangle" class="size-10" />
         <p class="head-3">
           {{ $t('general.error.text') }}
         </p>

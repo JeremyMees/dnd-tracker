@@ -26,10 +26,7 @@ defineProps<{ campaign?: boolean }>()
           {{ $t('components.initiativeTable.emptyState.bestiary') }}
         </p>
       </div>
-      <div
-        v-if="campaign"
-        data-test-campaign
-      >
+      <div v-if="campaign" data-test-campaign>
         <div class="flex items-center gap-2">
           <Icon
             name="tabler:meeple"

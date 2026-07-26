@@ -1,4 +1,4 @@
-export default defineEventHandler((event) => {
+export default defineEventHandler(event => {
   if (!isMaintenanceEnabled()) return
 
   if (isUnderMaintenance(event.path, ['/maintenance'])) {

@@ -21,13 +21,17 @@ const baseAction: DndAction = {
 
 describe('ActionsTable', async () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(ActionsTable, { props: { actions: [baseAction] } })
+    const component = await mountSuspended(ActionsTable, {
+      props: { actions: [baseAction] },
+    })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render actions correctly', async () => {
-    const component = await mountSuspended(ActionsTable, { props: { actions: [baseAction] } })
+    const component = await mountSuspended(ActionsTable, {
+      props: { actions: [baseAction] },
+    })
 
     expect(component.html()).toContain('Test Action')
     expect(component.html()).toContain('Test Description')
@@ -38,7 +42,9 @@ describe('ActionsTable', async () => {
   })
 
   it('Should not show attack name label when there is only one attack', async () => {
-    const component = await mountSuspended(ActionsTable, { props: { actions: [baseAction] } })
+    const component = await mountSuspended(ActionsTable, {
+      props: { actions: [baseAction] },
+    })
 
     expect(component.text()).not.toContain('Test Attack')
   })
@@ -46,13 +52,15 @@ describe('ActionsTable', async () => {
   it('Should show attack name when action has multiple attacks', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{
-          ...baseAction,
-          attacks: [
-            { ...baseAttack, name: 'Claw' },
-            { ...baseAttack, name: 'Bite' },
-          ],
-        }],
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              { ...baseAttack, name: 'Claw' },
+              { ...baseAttack, name: 'Bite' },
+            ],
+          },
+        ],
       },
     })
 
@@ -64,13 +72,15 @@ describe('ActionsTable', async () => {
   it('Should fall back to Attack N when attack has no name', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{
-          ...baseAction,
-          attacks: [
-            { ...baseAttack, name: '' },
-            { ...baseAttack, name: '' },
-          ],
-        }],
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              { ...baseAttack, name: '' },
+              { ...baseAttack, name: '' },
+            ],
+          },
+        ],
       },
     })
 
@@ -92,10 +102,19 @@ describe('ActionsTable', async () => {
   it('Should show range with long range for ranged attacks', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{
-          ...baseAction,
-          attacks: [{ ...baseAttack, attackType: 'ranged', range: 80, longRange: 320 }],
-        }],
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              {
+                ...baseAttack,
+                attackType: 'ranged',
+                range: 80,
+                longRange: 320,
+              },
+            ],
+          },
+        ],
       },
     })
 
@@ -106,10 +125,14 @@ describe('ActionsTable', async () => {
   it('Should show spell save DC and ability', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{
-          ...baseAction,
-          attacks: [{ ...baseAttack, spellSave: 15, spellSaveType: 'wisdom' }],
-        }],
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              { ...baseAttack, spellSave: 15, spellSaveType: 'wisdom' },
+            ],
+          },
+        ],
       },
     })
 
@@ -121,7 +144,12 @@ describe('ActionsTable', async () => {
   it('Should show target creature only label', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{ ...baseAction, attacks: [{ ...baseAttack, targetCreatureOnly: true }] }],
+        actions: [
+          {
+            ...baseAction,
+            attacks: [{ ...baseAttack, targetCreatureOnly: true }],
+          },
+        ],
       },
     })
 
@@ -131,15 +159,19 @@ describe('ActionsTable', async () => {
   it('Should show extra damage', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{
-          ...baseAction,
-          attacks: [{
-            ...baseAttack,
-            extraDamageDieCount: 2,
-            extraDamageDieType: 'd6',
-            extraDamageType: 'fire',
-          }],
-        }],
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              {
+                ...baseAttack,
+                extraDamageDieCount: 2,
+                extraDamageDieType: 'd6',
+                extraDamageType: 'fire',
+              },
+            ],
+          },
+        ],
       },
     })
 
@@ -150,11 +182,13 @@ describe('ActionsTable', async () => {
   it('Should show legendary action cost', async () => {
     const component = await mountSuspended(ActionsTable, {
       props: {
-        actions: [{
-          ...baseAction,
-          actionType: 'legendaryAction',
-          legendaryActionCost: 2,
-        }],
+        actions: [
+          {
+            ...baseAction,
+            actionType: 'legendaryAction',
+            legendaryActionCost: 2,
+          },
+        ],
       },
     })
 
@@ -164,28 +198,42 @@ describe('ActionsTable', async () => {
 
   it('Should show usage limits', async () => {
     const perDay = await mountSuspended(ActionsTable, {
-      props: { actions: [{ ...baseAction, usageLimits: { type: 'perDay', param: 3 } }] },
+      props: {
+        actions: [{ ...baseAction, usageLimits: { type: 'perDay', param: 3 } }],
+      },
     })
     expect(perDay.text()).toContain('3/day')
 
     const recharge = await mountSuspended(ActionsTable, {
-      props: { actions: [{ ...baseAction, usageLimits: { type: 'recharge', param: 5 } }] },
+      props: {
+        actions: [
+          { ...baseAction, usageLimits: { type: 'recharge', param: 5 } },
+        ],
+      },
     })
     expect(recharge.text()).toContain('Recharge 5-6')
 
     const atWill = await mountSuspended(ActionsTable, {
-      props: { actions: [{ ...baseAction, usageLimits: { type: 'atWill', param: 1 } }] },
+      props: {
+        actions: [{ ...baseAction, usageLimits: { type: 'atWill', param: 1 } }],
+      },
     })
     expect(atWill.text()).toContain('At will')
 
     const perRest = await mountSuspended(ActionsTable, {
-      props: { actions: [{ ...baseAction, usageLimits: { type: 'perRest', param: 2 } }] },
+      props: {
+        actions: [
+          { ...baseAction, usageLimits: { type: 'perRest', param: 2 } },
+        ],
+      },
     })
     expect(perRest.text()).toContain('2/rest')
   })
 
   it('Should show no actions message when actions array is empty', async () => {
-    const component = await mountSuspended(ActionsTable, { props: { actions: [] } })
+    const component = await mountSuspended(ActionsTable, {
+      props: { actions: [] },
+    })
 
     expect(component.text()).toContain('components.encounterTable.noActions')
   })

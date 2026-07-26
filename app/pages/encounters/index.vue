@@ -4,10 +4,7 @@ useSeo('Encounters')
 </script>
 
 <template>
-  <NuxtLayout
-    name="sidebar"
-    :header="$t('general.encounter', 2)"
-  >
+  <NuxtLayout name="sidebar" :header="$t('general.encounter', 2)">
     <Encounters fetch-ready />
   </NuxtLayout>
 </template>

@@ -5,46 +5,56 @@ const props = defineProps<{
 }>()
 
 const selectedDocuments = defineModel<string[]>('document', { required: true })
-const selectedSystem = defineModel<Open5eGameSystem>('system', { required: true })
+const selectedSystem = defineModel<Open5eGameSystem>('system', {
+  required: true,
+})
 const popoverOpen = shallowRef<boolean>(false)
 
-watch(selectedSystem, (value, oldValue) => {
-  if (oldValue && value === oldValue) return
+watch(
+  selectedSystem,
+  (value, oldValue) => {
+    if (oldValue && value === oldValue) return
 
-  const systemSrd = value.replace('5e', 'srd')
+    const systemSrd = value.replace('5e', 'srd')
 
-  if (oldValue === undefined) {
-    if (!selectedDocuments.value.length) {
+    if (oldValue === undefined) {
+      if (!selectedDocuments.value.length) {
+        selectedDocuments.value = [systemSrd]
+      }
+    } else {
       selectedDocuments.value = [systemSrd]
     }
-  }
-  else {
-    selectedDocuments.value = [systemSrd]
-  }
-}, { immediate: true })
+  },
+  { immediate: true },
+)
 
-const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(() => {
-  const acc = props.documents.reduce((acc, document) => {
-    const key = document.gamesystem.key
-    if (!acc[key]) acc[key] = []
-    acc[key].push(document)
-    return acc
-  }, {} as Record<Open5eGameSystem, Open5eDocument[]>)
+const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
+  () => {
+    const acc = props.documents.reduce(
+      (acc, document) => {
+        const key = document.gamesystem.key
+        if (!acc[key]) acc[key] = []
+        acc[key].push(document)
+        return acc
+      },
+      {} as Record<Open5eGameSystem, Open5eDocument[]>,
+    )
 
-  Object.keys(acc).forEach((key: string) => {
-    const documents = acc[key as Open5eGameSystem]
-    documents.sort((a: Open5eDocument, b: Open5eDocument) => {
-      const aIsWotC = a.publisher.key === 'wizards-of-the-coast'
-      const bIsWotC = b.publisher.key === 'wizards-of-the-coast'
+    Object.keys(acc).forEach((key: string) => {
+      const documents = acc[key as Open5eGameSystem]
+      documents.sort((a: Open5eDocument, b: Open5eDocument) => {
+        const aIsWotC = a.publisher.key === 'wizards-of-the-coast'
+        const bIsWotC = b.publisher.key === 'wizards-of-the-coast'
 
-      if (aIsWotC && !bIsWotC) return -1
-      if (!aIsWotC && bIsWotC) return 1
-      return a.publisher.name.localeCompare(b.publisher.name)
+        if (aIsWotC && !bIsWotC) return -1
+        if (!aIsWotC && bIsWotC) return 1
+        return a.publisher.name.localeCompare(b.publisher.name)
+      })
     })
-  })
 
-  return acc
-})
+    return acc
+  },
+)
 </script>
 
 <template>
@@ -99,18 +109,22 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(() 
               <div class="flex flex-row items-center space-x-2">
                 <UiCheckbox
                   :model-value="(selectedDocuments ?? []).includes(option.key)"
-                  @update:model-value="(val: boolean | 'indeterminate') => {
-                    let updated = selectedDocuments ? [...selectedDocuments] : []
+                  @update:model-value="
+                    (val: boolean | 'indeterminate') => {
+                      let updated = selectedDocuments
+                        ? [...selectedDocuments]
+                        : []
 
-                    if (val) {
-                      if (!updated.includes(option.key)) updated.push(option.key)
-                    }
-                    else {
-                      updated = updated.filter((k) => k !== option.key)
-                    }
+                      if (val) {
+                        if (!updated.includes(option.key))
+                          updated.push(option.key)
+                      } else {
+                        updated = updated.filter(k => k !== option.key)
+                      }
 
-                    selectedDocuments = updated
-                  }"
+                      selectedDocuments = updated
+                    }
+                  "
                 />
                 <UiLabel>
                   {{ option.display_name }}

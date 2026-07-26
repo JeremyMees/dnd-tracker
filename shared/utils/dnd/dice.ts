@@ -30,7 +30,9 @@ export function validateDiceExpression(diceExpr: string): boolean {
   return true
 }
 
-export function parseDamageDice(damageDice?: string): { count: number, sides: number }[] {
+export function parseDamageDice(
+  damageDice?: string,
+): { count: number; sides: number }[] {
   if (!damageDice) return []
 
   return damageDice
@@ -38,18 +40,23 @@ export function parseDamageDice(damageDice?: string): { count: number, sides: nu
     .map(dice => dice.trim())
     .filter(dice => dice.length > 0)
     .filter(validateDiceExpression)
-    .map((dice) => {
+    .map(dice => {
       const [count, sides] = dice.split('d')
       return { count: parseInt(count!), sides: parseInt(sides!) }
     })
 }
 
-export function formatAttackDice(count?: number, type?: DndDice): string | undefined {
+export function formatAttackDice(
+  count?: number,
+  type?: DndDice,
+): string | undefined {
   if (!count || !type) return undefined
   return `${count}${type}`
 }
 
-export function parseAttackDice(expr?: string | null): { damageDieCount: number, damageDieType: DndDice } | undefined {
+export function parseAttackDice(
+  expr?: string | null,
+): { damageDieCount: number; damageDieType: DndDice } | undefined {
   if (!expr) return undefined
 
   const match = expr.match(/^(\d+)(d4|d6|d8|d10|d12|d20|d100)$/i)
@@ -82,7 +89,11 @@ export function parseHitDice(hitDice: string): DndHitDice {
 
 export function parseDndDiceToString(hitDice: DndHitDice): string {
   const { hitDiceCount, hitDiceType, hitDiceBonus } = hitDice
-  const bonusStr = hitDiceBonus ? (hitDiceBonus > 0 ? `+${hitDiceBonus}` : `${hitDiceBonus}`) : ''
+  const bonusStr = hitDiceBonus
+    ? hitDiceBonus > 0
+      ? `+${hitDiceBonus}`
+      : `${hitDiceBonus}`
+    : ''
 
   return `${hitDiceCount}${hitDiceType}${bonusStr}`
 }

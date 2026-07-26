@@ -11,7 +11,9 @@ describe('dnd/hp-ac', () => {
       mockRow.tempHitPoints = 5
       mockRow.maxHitPointsOld = 10
       mockRow.concentration = true
-      mockRow.conditions = [{ desc: 'Paralyzed', name: 'Paralyzed', id: 'paralyzed' }]
+      mockRow.conditions = [
+        { desc: 'Paralyzed', name: 'Paralyzed', id: 'paralyzed' },
+      ]
       mockRow.deathSaves = {
         fail: [true, false, false],
         save: [true, false, false],
@@ -43,7 +45,10 @@ describe('dnd/hp-ac', () => {
       const result = handleHpChanges(10, 'temp', row, false)
 
       expect(result.toasts).toHaveLength(1)
-      expect(result.toasts[0]?.title).toEqual(['components.initiativeTable.stable.title', { name: 'Sister Iarnă' }])
+      expect(result.toasts[0]?.title).toEqual([
+        'components.initiativeTable.stable.title',
+        { name: 'Sister Iarnă' },
+      ])
     })
 
     it('should clamp to zero when negative hp is not allowed', () => {
@@ -106,7 +111,10 @@ describe('dnd/hp-ac', () => {
 
   describe('getHP/getAC', () => {
     it('should read hitPoints from row shape', () => {
-      const row = { name: 'Test', hitPoints: 20 } as Partial<InitiativeSheetRow> & { name: string }
+      const row = {
+        name: 'Test',
+        hitPoints: 20,
+      } as Partial<InitiativeSheetRow> & { name: string }
       expect(getHP(row)).toBe(20)
     })
 
@@ -116,7 +124,10 @@ describe('dnd/hp-ac', () => {
     })
 
     it('should read armorClass from row and DndMonster shapes', () => {
-      const row = { name: 'Test', armorClass: 15 } as Partial<InitiativeSheetRow> & { name: string }
+      const row = {
+        name: 'Test',
+        armorClass: 15,
+      } as Partial<InitiativeSheetRow> & { name: string }
       const monster = { name: 'Test', armorClass: 18 } as unknown as DndMonster
 
       expect(getAC(row)).toBe(15)

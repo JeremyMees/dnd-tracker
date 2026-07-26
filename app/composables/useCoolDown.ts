@@ -1,4 +1,4 @@
-type CoolDown = { seconds: number, interval: NodeJS.Timeout }
+type CoolDown = { seconds: number; interval: NodeJS.Timeout }
 type CoolDowns = Record<string, CoolDown>
 
 export function useCoolDown() {
@@ -9,8 +9,7 @@ export function useCoolDown() {
       const interval = setInterval(() => {
         if (coolDowns[id] && coolDowns[id].seconds > 0) {
           coolDowns[id].seconds -= 1
-        }
-        else if (coolDowns[id]) {
+        } else if (coolDowns[id]) {
           clearInterval(coolDowns[id].interval)
           delete coolDowns[id]
         }
@@ -29,7 +28,8 @@ export function useCoolDown() {
     onBeforeUnmount(() => clearAllCoolDowns())
   }
 
-  const isInCoolDown = (id: number): boolean => !!coolDowns[id] && coolDowns[id].seconds > 0
+  const isInCoolDown = (id: number): boolean =>
+    !!coolDowns[id] && coolDowns[id].seconds > 0
   const getRemainingTime = (id: number) => coolDowns[id]?.seconds || 0
 
   return {

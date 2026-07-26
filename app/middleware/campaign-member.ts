@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/vue-query'
 
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async to => {
   const localePath = useLocalePath()
   const user = useState<AuthUser | null>('auth-user')
 
@@ -33,8 +33,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         ? to.fullPath.replace('/settings', '/encounters')
         : to.fullPath.replace('/danger-zone', '/encounters'),
     )
-  }
-  catch (error) {
+  } catch (error) {
     return navigateTo(localePath('/'))
   }
 })
@@ -54,10 +53,11 @@ type CampaignMember = {
 
 function hasPermission(userRole: UserRole, expected: UserRole): boolean {
   if (
-    userRole === 'Owner'
-    || userRole === expected
-    || (userRole === 'Admin' && expected === 'Viewer')
-  ) return true
+    userRole === 'Owner' ||
+    userRole === expected ||
+    (userRole === 'Admin' && expected === 'Viewer')
+  )
+    return true
   else return false
 }
 
@@ -79,7 +79,8 @@ function determinePageType(fullPath: string): string {
 
 function getExpectedRole(page: string): UserRole {
   if (page === 'settings') return 'Admin'
-  if (['encounters', 'index', 'homebrews', 'notes'].includes(page)) return 'Viewer'
+  if (['encounters', 'index', 'homebrews', 'notes'].includes(page))
+    return 'Viewer'
   return 'Owner'
 }
 
@@ -87,13 +88,17 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
-  const cachedData = queryClient.getQueryData<CampaignMember>(['useCampaignMember', id])
+  const cachedData = queryClient.getQueryData<CampaignMember>([
+    'useCampaignMember',
+    id,
+  ])
 
   if (cachedData) return { data: cachedData }
 
   const { data, error } = await supabase
     .from('campaigns')
-    .select(`
+    .select(
+      `
       id,
       createdBy,
       team(
@@ -104,7 +109,8 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
         role,
         user
       )
-    `)
+    `,
+    )
     .eq('id', id)
     .single()
 

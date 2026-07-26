@@ -7,7 +7,7 @@ import {
   slugify,
 } from '~/utils/url-generators'
 
-vi.mock('#app', async (importOriginal) => {
+vi.mock('#app', async importOriginal => {
   const actual = await importOriginal<Record<string, unknown>>()
   return {
     ...actual,

@@ -4,9 +4,10 @@ const route = useRoute()
 
 useHealthCheck()
 
-const pageName = computed<string>(() => !route.name || typeof route.name !== 'string'
-  ? ''
-  : route.name.split('___')[0] ?? '',
+const pageName = computed<string>(() =>
+  !route.name || typeof route.name !== 'string'
+    ? ''
+    : (route.name.split('___')[0] ?? ''),
 )
 </script>
 
@@ -32,7 +33,11 @@ const pageName = computed<string>(() => !route.name || typeof route.name !== 'st
 
     <div
       :class="{
-        'bg-primary/10': ['profile', 'pricing', 'updates-feature-request'].includes(pageName),
+        'bg-primary/10': [
+          'profile',
+          'pricing',
+          'updates-feature-request',
+        ].includes(pageName),
       }"
       class="flex flex-col min-h-screen"
     >

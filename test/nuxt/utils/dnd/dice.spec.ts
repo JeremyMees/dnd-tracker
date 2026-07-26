@@ -19,7 +19,7 @@ describe('dnd/dice', () => {
 
       expect(rolls).toHaveLength(amount)
 
-      rolls.forEach((roll) => {
+      rolls.forEach(roll => {
         expect(roll).toBeGreaterThanOrEqual(1)
         expect(roll).toBeLessThanOrEqual(dice)
       })

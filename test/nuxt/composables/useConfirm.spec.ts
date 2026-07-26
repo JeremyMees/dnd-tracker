@@ -51,11 +51,14 @@ describe('useConfirm', async () => {
     const uuid = confirmDialogs.dialogs.value[0]?.uuid
     if (!uuid) throw new Error('Dialog was not created')
 
-    let resolveCallback: (value: unknown) => void = () => { }
+    let resolveCallback: (value: unknown) => void = () => {}
 
-    mockCallback.mockImplementation(() => new Promise((resolve) => {
-      resolveCallback = resolve
-    }))
+    mockCallback.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          resolveCallback = resolve
+        }),
+    )
 
     const confirmPromise = confirmDialogs.handlers.confirm(uuid)
 

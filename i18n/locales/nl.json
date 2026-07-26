@@ -196,6 +196,7 @@
     "height": "Hoogte",
     "infoPins": "Info pins",
     "fantasyNameGenerator": "Fantasy name generator",
+    "diceRoll": "Dobbelsteen roller",
     "globally": "Globaal",
     "synced": "Gesynchroniseerd",
     "syncing": "Synchroniseren",
@@ -387,7 +388,10 @@
       "options": "Encounter opties",
       "maxCharacters": "Maximum aantal personages",
       "pinnedContent": {
-        "empty": "Je hebt momenteel geen items gepinned"
+        "empty": {
+          "title": "Nog geen vastgepinde inhoud",
+          "text": "Je hebt momenteel geen items gepinned. Begin met het toevoegen van wat gepinde inhoud via"
+        }
       },
       "override": {
         "ac": "AC overschrijven",

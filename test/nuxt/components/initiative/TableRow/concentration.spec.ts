@@ -54,7 +54,9 @@ describe('Initiative table row concentration', async () => {
   it('Should show filled circle when concentration is true', async () => {
     const component = await mountSuspended(Concentration, { props, provide })
 
-    expect(component.find('[data-test-concentration="true"]').exists()).toBeTruthy()
+    expect(
+      component.find('[data-test-concentration="true"]').exists(),
+    ).toBeTruthy()
   })
 
   it('Should show dotted circle when concentration is false', async () => {
@@ -65,7 +67,9 @@ describe('Initiative table row concentration', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-concentration="false"]').exists()).toBeTruthy()
+    expect(
+      component.find('[data-test-concentration="false"]').exists(),
+    ).toBeTruthy()
   })
 
   it('Should call update with toggled concentration', async () => {

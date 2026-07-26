@@ -3,7 +3,11 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, initialState } from '~~/tables/campaign-listing'
-import { useCampaignCount, useCampaignListing, useCampaignRemove } from '~~/queries/campaigns'
+import {
+  useCampaignCount,
+  useCampaignListing,
+  useCampaignRemove,
+} from '~~/queries/campaigns'
 import { useTeamMemberRemove } from '~~/queries/team-members'
 
 definePageMeta({ auth: true })
@@ -23,20 +27,24 @@ const { data: count } = useCampaignCount()
 const { mutateAsync: removeCampaign } = useCampaignRemove()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 
-const { data, status } = useCampaignListing(computed(() => {
-  const pagination = table.value?.vueTable.getState().pagination
-  const sorting = table.value?.vueTable.getState().sorting
-  const search = table.value?.vueTable.getState().globalFilter
+const { data, status } = useCampaignListing(
+  computed(() => {
+    const pagination = table.value?.vueTable.getState().pagination
+    const sorting = table.value?.vueTable.getState().sorting
+    const search = table.value?.vueTable.getState().globalFilter
 
-  return {
-    search,
-    sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
-    sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
-    page: pagination?.pageIndex ?? 0,
-  }
-}))
+    return {
+      search,
+      sortBy: sorting?.[0]?.id ?? initialState.sorting?.[0]?.id,
+      sortDesc: sorting?.[0]?.desc ?? initialState.sorting?.[0]?.desc,
+      page: pagination?.pageIndex ?? 0,
+    }
+  }),
+)
 
-const max = computed<number>(() => getMax('campaign', user.value.subscriptionType || 'free'))
+const max = computed<number>(() =>
+  getMax('campaign', user.value.subscriptionType || 'free'),
+)
 
 const columns = generateColumns({
   onUpdate: (item: CampaignItem) => openModal(item),
@@ -45,23 +53,25 @@ const columns = generateColumns({
 
     if (!member) return
 
-    ask({
-      title: t('pages.campaigns.dialog.leave.title'),
-      description: t('pages.campaigns.dialog.leave.text'),
-    }, async (confirmed: boolean) => {
-      if (!confirmed) return
+    ask(
+      {
+        title: t('pages.campaigns.dialog.leave.title'),
+        description: t('pages.campaigns.dialog.leave.text'),
+      },
+      async (confirmed: boolean) => {
+        if (!confirmed) return
 
-      try {
-        await removeTeamMember({ member: member.id, campaign: item.id })
-      }
-      catch (err) {
-        toast({
-          title: t('general.error.title'),
-          description: t('general.error.text'),
-          variant: 'destructive',
-        })
-      }
-    })
+        try {
+          await removeTeamMember({ member: member.id, campaign: item.id })
+        } catch (err) {
+          toast({
+            title: t('general.error.title'),
+            description: t('general.error.text'),
+            variant: 'destructive',
+          })
+        }
+      },
+    )
   },
 })
 
@@ -78,13 +88,16 @@ async function removeItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.campaign', amount).toLowerCase()
 
-  ask({
-    title: `${t('actions.delete')} ${amount} ${type}`,
-  }, async (confirmed: boolean) => {
-    if (confirmed) {
-      await removeCampaign({ id: ids })
-    }
-  })
+  ask(
+    {
+      title: `${t('actions.delete')} ${amount} ${type}`,
+    },
+    async (confirmed: boolean) => {
+      if (confirmed) {
+        await removeCampaign({ id: ids })
+      }
+    },
+  )
 }
 
 function invalidateQueries(): void {
@@ -94,21 +107,12 @@ function invalidateQueries(): void {
 </script>
 
 <template>
-  <NuxtLayout
-    name="sidebar"
-    :header="$t('general.campaign', 2)"
-  >
-    <LimitCta
-      v-if="count && count >= max"
-      ref="limitCta"
-    />
+  <NuxtLayout name="sidebar" :header="$t('general.campaign', 2)">
+    <LimitCta v-if="count && count >= max" ref="limitCta" />
 
     <ClientOnly>
       <AnimationExpand>
-        <RefreshCard
-          v-if="status === 'error'"
-          @refresh="invalidateQueries"
-        />
+        <RefreshCard v-if="status === 'error'" @refresh="invalidateQueries" />
       </AnimationExpand>
     </ClientOnly>
 
@@ -122,7 +126,11 @@ function invalidateQueries(): void {
         initialState,
       }"
       :permission="(item: CampaignItem) => allows(isCampaignOwner, item)"
-      :empty-message="$t('components.table.nothing', { item: $t('general.campaign', 2).toLowerCase() })"
+      :empty-message="
+        $t('components.table.nothing', {
+          item: $t('general.campaign', 2).toLowerCase(),
+        })
+      "
       @remove="removeItems"
       @invalidate="invalidateQueries"
     >
@@ -144,10 +152,7 @@ function invalidateQueries(): void {
       </template>
 
       <template #loading>
-        <SkeletonCampaignTableRow
-          v-for="i in 10"
-          :key="i"
-        />
+        <SkeletonCampaignTableRow v-for="i in 10" :key="i" />
       </template>
     </DataTable>
   </NuxtLayout>

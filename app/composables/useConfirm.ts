@@ -12,7 +12,7 @@ export interface PopulatedConfirmConfig extends Required<ConfirmConfig> {
 }
 
 export function useConfirmDialogs() {
-  const dialogs = useState<PopulatedConfirmConfig[]>('confirmDialogs', () => ([]))
+  const dialogs = useState<PopulatedConfirmConfig[]>('confirmDialogs', () => [])
 
   const handlers = {
     confirm: async (uuid: string) => {
@@ -23,8 +23,7 @@ export function useConfirmDialogs() {
           await dialogs.value[foundIndex].callback(true)
 
           dialogs.value.splice(foundIndex, 1)
-        }
-        catch (error) {
+        } catch (error) {
           dialogs.value[foundIndex].loading = false
         }
       }

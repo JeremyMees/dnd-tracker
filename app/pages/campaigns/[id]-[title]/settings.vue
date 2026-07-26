@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useTeamMemberRemove, useJoinTokenRemove } from '~~/queries/team-members'
+import {
+  useTeamMemberRemove,
+  useJoinTokenRemove,
+} from '~~/queries/team-members'
 
 useSeo('Campaign settings')
 
@@ -41,53 +44,65 @@ function invite(): void {
 
   modal.open({
     component: 'InviteMember',
-    header: t(`components.inviteMember.title`, { campaign: props.current.title }),
+    header: t(`components.inviteMember.title`, {
+      campaign: props.current.title,
+    }),
     props: { current: props.current },
   })
 }
 
-async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<void> {
+async function remove(
+  member: TeamMemberFull & { invite?: boolean },
+): Promise<void> {
   const id = member.id
   const self = member.user.id === user.value.id
   const campaign = props.campaignId
 
-  ask({
-    title: self
-      ? t('pages.campaign.settings.dialog.leave.title')
-      : t('pages.campaign.settings.dialog.remove.title', { user: member.user.username }),
-    description: self
-      ? t('pages.campaign.settings.dialog.leave.text')
-      : t('pages.campaign.settings.dialog.remove.text', { user: member.user.username }),
-  }, async (confirmed: boolean) => {
-    if (!confirmed) return
+  ask(
+    {
+      title: self
+        ? t('pages.campaign.settings.dialog.leave.title')
+        : t('pages.campaign.settings.dialog.remove.title', {
+            user: member.user.username,
+          }),
+      description: self
+        ? t('pages.campaign.settings.dialog.leave.text')
+        : t('pages.campaign.settings.dialog.remove.text', {
+            user: member.user.username,
+          }),
+    },
+    async (confirmed: boolean) => {
+      if (!confirmed) return
 
-    const onSuccess = () => {
-      if (self) navigateTo(localePath('/campaigns'))
-    }
+      const onSuccess = () => {
+        if (self) navigateTo(localePath('/campaigns'))
+      }
 
-    const onError = () => {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
-    }
+      const onError = () => {
+        toast({
+          title: t('general.error.title'),
+          description: t('general.error.text'),
+          variant: 'destructive',
+        })
+      }
 
-    if (member.invite) await removeJoinCampaignToken({ id, campaign, onSuccess, onError })
-    else await removeTeamMember({ member: id, campaign, onSuccess, onError })
-  })
+      if (member.invite)
+        await removeJoinCampaignToken({ id, campaign, onSuccess, onError })
+      else await removeTeamMember({ member: id, campaign, onSuccess, onError })
+    },
+  )
 }
 </script>
 
 <template>
   <section class="space-y-2">
-    <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-secondary">
+    <div
+      class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 py-6 border-b-2 border-secondary"
+    >
       <div class="lg:min-w-[300px] lg:max-w-[300px]">
         <h2>
           {{ $t('pages.campaign.settings.access') }}
-          <span class="text-[12px]">
-            (max 10)
-          </span>
+          <span class="text-[12px]"> (max 10) </span>
         </h2>
       </div>
       <div class="grow max-w-4xl">
@@ -104,7 +119,9 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
               >
                 <div class="flex items-center gap-2">
                   <UiAvatar
-                    v-tippy="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
+                    v-tippy="
+                      `${member.user.username} ${member.role ? `(${member.role})` : ''}`
+                    "
                     class="border-2 border-background"
                   >
                     <UiAvatarImage
@@ -127,10 +144,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
                     </span>
                   </div>
                 </div>
-                <div
-                  v-if="member?.invite"
-                  class="flex items-center gap-2"
-                >
+                <div v-if="member?.invite" class="flex items-center gap-2">
                   <Icon
                     name="tabler:send"
                     :aria-hidden="true"
@@ -157,26 +171,17 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
                     :aria-label="$t('actions.delete')"
                     @click="remove(member)"
                   >
-                    <Icon
-                      name="tabler:trash"
-                      aria-hidden="true"
-                    />
+                    <Icon name="tabler:trash" aria-hidden="true" />
                   </UiButton>
                 </div>
               </div>
             </template>
             <template v-else>
-              <SkeletonMemberRow
-                v-for="i in 3"
-                :key="i"
-              />
+              <SkeletonMemberRow v-for="i in 3" :key="i" />
             </template>
 
             <template #fallback>
-              <SkeletonMemberRow
-                v-for="i in 3"
-                :key="i"
-              />
+              <SkeletonMemberRow v-for="i in 3" :key="i" />
             </template>
           </ClientOnly>
         </Card>
@@ -184,7 +189,10 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
           <ClientOnly>
             <UiButton
               :aria-label="$t('pages.campaign.settings.add')"
-              :disabled="[...(current?.team || []), ...(current?.join_campaign || [])].length >= 9"
+              :disabled="
+                [...(current?.team || []), ...(current?.join_campaign || [])]
+                  .length >= 9
+              "
               @click="invite"
             >
               {{ $t('pages.campaign.settings.add') }}
@@ -197,7 +205,9 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
       </div>
     </div>
 
-    <div class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 pt-6">
+    <div
+      class="flex flex-col lg:flex-row justify-between gap-x-10 gap-y-4 pt-6"
+    >
       <div class="lg:min-w-[300px] lg:max-w-[300px]">
         <h2>
           {{ $t('pages.campaign.settings.campaign') }}
@@ -210,10 +220,7 @@ async function remove(member: TeamMemberFull & { invite?: boolean }): Promise<vo
             :current="current"
             :campaign-id="current.id"
           />
-          <div
-            v-else
-            class="flex flex-col gap-y-4"
-          >
+          <div v-else class="flex flex-col gap-y-4">
             <SkeletonInput />
             <UiSkeleton class="w-40 h-10 rounded-lg" />
           </div>

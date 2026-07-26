@@ -39,11 +39,15 @@ describe('useUi', async () => {
 
     expect(ui.routes.value.length).toBe(routes)
     expect(ui.playRoutes.value.length).toBe(playRoutes + loggedInPlayRoutes)
-    expect(ui.profileRoutes.value.length).toBe(profileRoutes + updateProfileRoutes)
+    expect(ui.profileRoutes.value.length).toBe(
+      profileRoutes + updateProfileRoutes,
+    )
   })
 
   it('Should not show the upgrade cta when the user is a pro', async () => {
-    vi.mocked(useAuthentication).mockReturnValue(createAuthMock({ ...user, subscriptionType: 'pro' }))
+    vi.mocked(useAuthentication).mockReturnValue(
+      createAuthMock({ ...user, subscriptionType: 'pro' }),
+    )
 
     const ui = useUi()
 

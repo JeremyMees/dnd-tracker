@@ -41,10 +41,13 @@ async function transferOwnership(): Promise<void> {
 
   modal.open({
     component: 'TransferOwnership',
-    header: t('components.transferOwnershipModal.title', { campaign: props.current.title }),
+    header: t('components.transferOwnershipModal.title', {
+      campaign: props.current.title,
+    }),
     props: { current: props.current },
     events: {
-      finished: () => navigateTo(route.fullPath.replace('danger-zone', 'encounters')),
+      finished: () =>
+        navigateTo(route.fullPath.replace('danger-zone', 'encounters')),
     },
   })
 }
@@ -57,12 +60,11 @@ async function transferOwnership(): Promise<void> {
         v-if="current"
         class="grow max-w-4xl border-4 border-destructive bg-destructive/50 rounded-lg"
       >
-        <Bouncer
-          :ability="isCampaignOwner"
-          :args="[current]"
-        >
+        <Bouncer :ability="isCampaignOwner" :args="[current]">
           <template #can>
-            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
+            <div
+              class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6"
+            >
               <div class="space-y-2">
                 <h3>
                   {{ $t('pages.campaign.danger.transfer.title') }}
@@ -83,7 +85,9 @@ async function transferOwnership(): Promise<void> {
               </div>
             </div>
             <div class="w-full border-2 border-destructive" />
-            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6">
+            <div
+              class="flex flex-col md:flex-row md:justify-between md:items-center gap-x-8 gap-y-4 p-6"
+            >
               <div class="space-y-2">
                 <h3>
                   {{ $t('pages.campaign.danger.delete.title') }}
@@ -113,10 +117,7 @@ async function transferOwnership(): Promise<void> {
           </template>
         </Bouncer>
       </div>
-      <UiSkeleton
-        v-else
-        class="w-full h-[220px]"
-      />
+      <UiSkeleton v-else class="w-full h-[220px]" />
 
       <template #fallback>
         <UiSkeleton class="w-full h-[220px]" />

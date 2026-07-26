@@ -60,7 +60,11 @@ function mapMagicItemV1(dto: Open5eV1Item): DndMagicItem {
     id: dto.slug,
     name: dto.name,
     desc: dto.desc,
-    type: weapon ? 'weapon' : armor ? 'armor' : mapMagicItemType(dto.category || dto.rarity),
+    type: weapon
+      ? 'weapon'
+      : armor
+        ? 'armor'
+        : mapMagicItemType(dto.category || dto.rarity),
     rarity: {
       name: dto.rarity || 'Common',
       rank: 0,
@@ -73,7 +77,9 @@ function mapMagicItemV1(dto: Open5eV1Item): DndMagicItem {
     weightUnit: mapWeightUnit(dto.weight),
     cost: dto.cost || '',
     requiresAttunement: parseBoolean(dto.requires_attunement),
-    ...(dto.requires_attunement ? { attunementDetail: dto.requires_attunement } : {}),
+    ...(dto.requires_attunement
+      ? { attunementDetail: dto.requires_attunement }
+      : {}),
   }
 }
 
@@ -82,7 +88,11 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
     id: dto.key,
     name: dto.name,
     desc: dto.desc,
-    type: dto.weapon ? 'weapon' : dto.armor ? 'armor' : mapMagicItemType(dto.category.name),
+    type: dto.weapon
+      ? 'weapon'
+      : dto.armor
+        ? 'armor'
+        : mapMagicItemType(dto.category.name),
     rarity: {
       name: dto.rarity.name,
       rank: dto.rarity.rank,
@@ -96,7 +106,9 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
             properties: dto.weapon.properties.map(property => ({
               property: {
                 name: property.property.name,
-                ...(property.property.type ? { type: property.property.type } : {}),
+                ...(property.property.type
+                  ? { type: property.property.type }
+                  : {}),
                 desc: property.property.desc,
               },
               ...(property.detail ? { detail: property.detail } : {}),
@@ -119,10 +131,14 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
             acDisplay: dto.armor.ac_display,
             type: mapArmorType(dto.armor.category),
             grantsStealthDisadvantage: dto.armor.grants_stealth_disadvantage,
-            ...(dto.armor.strength_score_required != null ? { strengthScoreRequired: dto.armor.strength_score_required } : {}),
+            ...(dto.armor.strength_score_required != null
+              ? { strengthScoreRequired: dto.armor.strength_score_required }
+              : {}),
             acBase: dto.armor.ac_base,
             acAddDexMod: dto.armor.ac_add_dexmod,
-            ...(dto.armor.ac_cap_dexmod != null ? { acCapDexMod: dto.armor.ac_cap_dexmod } : {}),
+            ...(dto.armor.ac_cap_dexmod != null
+              ? { acCapDexMod: dto.armor.ac_cap_dexmod }
+              : {}),
           },
         }
       : {}),
@@ -131,12 +147,12 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
     weightUnit: mapWeightUnit(dto.weight_unit),
     cost: dto.cost,
     requiresAttunement: dto.requires_attunement,
-    ...(dto.attunement_detail ? { attunementDetail: dto.attunement_detail } : {}),
+    ...(dto.attunement_detail
+      ? { attunementDetail: dto.attunement_detail }
+      : {}),
   }
 }
 
 export function toMagicItem(dto: Open5eMagicItem | Open5eV1Item): DndMagicItem {
-  return 'slug' in dto
-    ? mapMagicItemV1(dto)
-    : mapMagicItemV2(dto)
+  return 'slug' in dto ? mapMagicItemV1(dto) : mapMagicItemV2(dto)
 }

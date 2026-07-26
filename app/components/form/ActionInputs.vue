@@ -6,25 +6,27 @@ import { actionType } from '~~/constants/validation'
 
 const props = defineProps<{ fieldName: string }>()
 
-const actionTypeValue = useFieldValue<DndActionType>(`${props.fieldName}.actionType`)
-
-const {
-  value: usageLimits,
-  handleChange: handleUsageLimitsChange,
-} = useField<DndUsageLimits | undefined>(`${props.fieldName}.usageLimits`)
-
-const showLegendaryCost = computed(() =>
-  actionTypeValue.value === 'legendaryAction' || actionTypeValue.value === 'mythicAction',
+const actionTypeValue = useFieldValue<DndActionType>(
+  `${props.fieldName}.actionType`,
 )
-const showUsageParam = computed(() =>
-  isDefined(usageLimits.value) && usageLimits.value.type !== 'atWill',
+
+const { value: usageLimits, handleChange: handleUsageLimitsChange } = useField<
+  DndUsageLimits | undefined
+>(`${props.fieldName}.usageLimits`)
+
+const showLegendaryCost = computed(
+  () =>
+    actionTypeValue.value === 'legendaryAction' ||
+    actionTypeValue.value === 'mythicAction',
+)
+const showUsageParam = computed(
+  () => isDefined(usageLimits.value) && usageLimits.value.type !== 'atWill',
 )
 
 function handleUsageTypeChange(value: AcceptableValue) {
   if (!value || value === 'none') {
     handleUsageLimitsChange(undefined)
-  }
-  else {
+  } else {
     handleUsageLimitsChange({
       type: value as DndUsageType,
       param: usageLimits.value?.param ?? 1,
@@ -47,10 +49,7 @@ const emptyAttack: DndAttack = {
 
 <template>
   <div class="flex flex-col gap-2">
-    <UiFormField
-      v-slot="{ componentField }"
-      :name="`${fieldName}.actionType`"
-    >
+    <UiFormField v-slot="{ componentField }" :name="`${fieldName}.actionType`">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.actionTypeLabel') }}
@@ -77,28 +76,19 @@ const emptyAttack: DndAttack = {
       </UiFormItem>
     </UiFormField>
 
-    <UiFormField
-      v-slot="{ componentField }"
-      :name="`${fieldName}.name`"
-    >
+    <UiFormField v-slot="{ componentField }" :name="`${fieldName}.name`">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.nameLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
 
-    <UiFormField
-      v-slot="{ componentField }"
-      :name="`${fieldName}.desc`"
-    >
+    <UiFormField v-slot="{ componentField }" :name="`${fieldName}.desc`">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.descriptionLabel') }}
@@ -120,10 +110,7 @@ const emptyAttack: DndAttack = {
           {{ $t('components.inputs.legendaryActionCostLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -138,10 +125,7 @@ const emptyAttack: DndAttack = {
           {{ $t('components.inputs.limitedToFormLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -176,17 +160,14 @@ const emptyAttack: DndAttack = {
         </UiSelect>
       </UiFormItem>
 
-      <UiFormItem
-        v-if="showUsageParam"
-        v-auto-animate
-      >
+      <UiFormItem v-if="showUsageParam" v-auto-animate>
         <UiFormLabel>
           {{ $t('components.inputs.usageParamLabel') }}
         </UiFormLabel>
         <UiInput
           type="number"
           :model-value="usageLimits?.param"
-          @update:model-value="v => handleUsageParamChange(+v)"
+          @update:model-value="v => handleUsageParamChange(parseInteger(v))"
         />
       </UiFormItem>
     </div>

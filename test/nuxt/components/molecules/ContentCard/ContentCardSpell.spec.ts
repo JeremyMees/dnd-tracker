@@ -29,7 +29,9 @@ describe('ContentCardSpell', async () => {
   })
 
   it('Should render expanded when isOpen is true', async () => {
-    const component = await mountSuspended(ContentCardSpell, { props: { ...props, isOpen: true } })
+    const component = await mountSuspended(ContentCardSpell, {
+      props: { ...props, isOpen: true },
+    })
 
     expect(component.find('[data-test-separator]').exists()).toBeTruthy()
     expect(component.text()).toContain('Level: 2')

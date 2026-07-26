@@ -6,7 +6,9 @@ const props = withDefaults(
   defineProps<{
     variant?: 'secondary' | 'background'
     sheet?: InitiativeSheet
-    update?: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>) => Promise<void>
+    update?: (
+      payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
+    ) => Promise<void>
     allowPin?: boolean
     system?: Open5eGameSystem
     preSelectedDocuments?: string[]
@@ -66,13 +68,17 @@ const { data, status: listingStatus } = useOpen5eListing(
 const { data: documents, status: documentsStatus } = useOpen5eDocuments()
 
 const isLoading = computed(
-  () => listingStatus.value === 'pending' || documentsStatus.value === 'pending',
+  () =>
+    listingStatus.value === 'pending' || documentsStatus.value === 'pending',
 )
 const isError = computed(
   () => listingStatus.value === 'error' || documentsStatus.value === 'error',
 )
 
-async function handlePinToggle(content: DndItem, remove: boolean): Promise<void> {
+async function handlePinToggle(
+  content: DndItem,
+  remove: boolean,
+): Promise<void> {
   if (!props.sheet || !props.update) return
 
   let cards = [...props.sheet.infoCards]
@@ -84,8 +90,7 @@ async function handlePinToggle(content: DndItem, remove: boolean): Promise<void>
       description: t('components.dndContentSearch.toast.maxText'),
       variant: 'destructive',
     })
-  }
-  else cards.push(content)
+  } else cards.push(content)
 
   await props.update({ infoCards: cards })
 }
@@ -105,7 +110,7 @@ async function removePins(): Promise<void> {
       <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
         <div class="space-y-2 w-full sm:w-auto sm:flex-1">
           <UiLabel for="search">
-            {{ $t("components.inputs.nameLabel") }}
+            {{ $t('components.inputs.nameLabel') }}
           </UiLabel>
           <UiInputGroup>
             <UiInputGroupInput
@@ -117,17 +122,13 @@ async function removePins(): Promise<void> {
               type="search"
             />
             <UiInputGroupAddon align="inline-end">
-              <Icon
-                name="tabler:search"
-                class="size-3"
-                :aria-hidden="true"
-              />
+              <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
             </UiInputGroupAddon>
           </UiInputGroup>
         </div>
         <div class="space-y-2 w-full sm:w-auto sm:flex-1">
           <UiLabel for="type">
-            {{ $t("components.inputs.typeLabel") }}
+            {{ $t('components.inputs.typeLabel') }}
           </UiLabel>
           <UiSelect
             id="type"
@@ -160,7 +161,7 @@ async function removePins(): Promise<void> {
         </div>
         <div class="space-y-2 w-full sm:w-auto sm:flex-1">
           <UiLabel for="system">
-            {{ $t("components.inputs.gameSystemLabel") }}
+            {{ $t('components.inputs.gameSystemLabel') }}
           </UiLabel>
           <GameSystemFilter
             id="system"
@@ -172,18 +173,19 @@ async function removePins(): Promise<void> {
         </div>
       </div>
       <AnimationReveal>
-        <div
-          v-if="sheet?.infoCards?.length"
-          class="flex gap-2"
-        >
+        <div v-if="sheet?.infoCards?.length" class="flex gap-2">
           <UiButton
             data-test-pin-toggle
-            :aria-label="$t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)"
+            :aria-label="
+              $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)
+            "
             variant="foreground-ghost"
             @click="showPinned = !showPinned"
           >
             <Icon name="tabler:pin" />
-            {{ $t(`components.dndContentSearch.${showPinned ? "hide" : "show"}`) }}
+            {{
+              $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)
+            }}
           </UiButton>
           <UiButton
             data-test-remove-pins
@@ -192,7 +194,7 @@ async function removePins(): Promise<void> {
             @click="removePins"
           >
             <Icon name="tabler:trash" />
-            {{ $t("components.dndContentSearch.remove") }}
+            {{ $t('components.dndContentSearch.remove') }}
           </UiButton>
         </div>
       </AnimationReveal>
@@ -212,10 +214,14 @@ async function removePins(): Promise<void> {
         />
       </MasonryGrid>
       <MasonryGrid
-        v-else-if="data?.items?.length || (showPinned && sheet?.infoCards?.length)"
+        v-else-if="
+          data?.items?.length || (showPinned && sheet?.infoCards?.length)
+        "
         v-slot="{ column }"
         data-test-content-grid
-        :data="showPinned && sheet ? (sheet?.infoCards ?? []) : (data?.items ?? [])"
+        :data="
+          showPinned && sheet ? (sheet?.infoCards ?? []) : (data?.items ?? [])
+        "
       >
         <ContentCard
           v-for="(hit, j) in column"
@@ -225,7 +231,7 @@ async function removePins(): Promise<void> {
           :hit="hit"
           :variant="variant"
           :allow-pin="allowPin"
-          :pinned="sheet?.infoCards?.some((i) => i.id === hit.id) ?? false"
+          :pinned="sheet?.infoCards?.some(i => i.id === hit.id) ?? false"
           @pin="handlePinToggle(hit, false)"
           @unpin="handlePinToggle(hit, true)"
         />
@@ -233,7 +239,13 @@ async function removePins(): Promise<void> {
     </div>
 
     <Pagination
-      v-if="data?.pages && data.pages > 1 && !isLoading && data?.items?.length && !showPinned"
+      v-if="
+        data?.pages &&
+        data.pages > 1 &&
+        !isLoading &&
+        data?.items?.length &&
+        !showPinned
+      "
       v-model:page="queryFilters.page"
       data-test-pagination
       :pages="data.pages"
@@ -251,14 +263,14 @@ async function removePins(): Promise<void> {
       data-test-error
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
-      {{ $t("components.dndContentSearch.error") }}
+      {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
       v-if="!isLoading && !data?.items?.length && search !== ''"
       data-test-not-found
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
-      {{ $t("components.dndContentSearch.notFound") }}
+      {{ $t('components.dndContentSearch.notFound') }}
     </p>
   </div>
 </template>

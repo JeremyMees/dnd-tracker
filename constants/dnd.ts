@@ -32,14 +32,15 @@ export const crOptions = [
 
 export const abilityTypes = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
 
-export const abilityTypeMap: Record<typeof abilityTypes[number], DndAbility> = {
-  STR: 'strength',
-  DEX: 'dexterity',
-  CON: 'constitution',
-  INT: 'intelligence',
-  WIS: 'wisdom',
-  CHA: 'charisma',
-}
+export const abilityTypeMap: Record<(typeof abilityTypes)[number], DndAbility> =
+  {
+    STR: 'strength',
+    DEX: 'dexterity',
+    CON: 'constitution',
+    INT: 'intelligence',
+    WIS: 'wisdom',
+    CHA: 'charisma',
+  }
 
 export const dices: DndDiceSide[] = [4, 6, 8, 10, 12, 20, 100]
 
@@ -82,7 +83,7 @@ export const alignmentMap: Record<string, DndAlignment> = {
   'neutral good': 'neutralGood',
   'chaotic good': 'chaoticGood',
   'lawful neutral': 'lawfulNeutral',
-  'neutral': 'trueNeutral',
+  neutral: 'trueNeutral',
   'true neutral': 'trueNeutral',
   'chaotic neutral': 'chaoticNeutral',
   'lawful evil': 'lawfulEvil',
@@ -175,16 +176,16 @@ export const armorTypeMap: Record<string, DndArmorType> = {
 }
 
 export const magicItemTypeMap: Record<string, DndMagicItemType> = {
-  'armor': 'armor',
-  'potion': 'potion',
-  'ring': 'ring',
-  'rod': 'rod',
-  'scroll': 'scroll',
-  'staff': 'staff',
-  'wand': 'wand',
-  'weapon': 'weapon',
+  armor: 'armor',
+  potion: 'potion',
+  ring: 'ring',
+  rod: 'rod',
+  scroll: 'scroll',
+  staff: 'staff',
+  wand: 'wand',
+  weapon: 'weapon',
   'wondrous item': 'wondrousItem',
-  'wondrousitem': 'wondrousItem',
+  wondrousitem: 'wondrousItem',
 }
 
 export const spellSchoolMap: Record<string, DndSpellSchool> = {

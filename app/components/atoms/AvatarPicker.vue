@@ -9,7 +9,8 @@ const props = withDefaults(
     deprecatedAvatar?: boolean
     hideCreatorToggle?: boolean
     size?: AvatarVariants['size']
-  }>(), {
+  }>(),
+  {
     size: 'lg',
   },
 )
@@ -44,27 +45,37 @@ const isChanged = computed<boolean>(() => {
     }
   }
 
-  return JSON.stringify(initialAvatar.value) !== JSON.stringify(avatarCreator.avatar.value)
+  return (
+    JSON.stringify(initialAvatar.value) !==
+    JSON.stringify(avatarCreator.avatar.value)
+  )
 })
 
-watch(avatar, (v) => {
-  if (v && JSON.stringify(v) !== JSON.stringify(avatarCreator.avatar.value)) {
-    avatarCreator.avatar.value = v
-  }
-}, { deep: true })
+watch(
+  avatar,
+  v => {
+    if (v && JSON.stringify(v) !== JSON.stringify(avatarCreator.avatar.value)) {
+      avatarCreator.avatar.value = v
+    }
+  },
+  { deep: true },
+)
 
-watch(() => avatarCreator.avatar.value, (v) => {
-  if (v && JSON.stringify(v) !== JSON.stringify(avatar.value)) {
-    avatar.value = v
-  }
-}, { deep: true })
+watch(
+  () => avatarCreator.avatar.value,
+  v => {
+    if (v && JSON.stringify(v) !== JSON.stringify(avatar.value)) {
+      avatar.value = v
+    }
+  },
+  { deep: true },
+)
 
 onMounted(() => {
   if (avatar.value) {
     avatarCreator.avatar.value = avatar.value
     initialAvatar.value = JSON.parse(JSON.stringify(avatar.value))
-  }
-  else {
+  } else {
     avatarCreator.random()
   }
 
@@ -74,7 +85,9 @@ onMounted(() => {
   }
 })
 
-function filterUnwantedKeys(selected: SelectedStyleOptions): SelectedStyleOptions {
+function filterUnwantedKeys(
+  selected: SelectedStyleOptions,
+): SelectedStyleOptions {
   const values: SelectedStyleOptions = {}
 
   for (const key in selected) {
@@ -90,8 +103,7 @@ function filterUnwantedKeys(selected: SelectedStyleOptions): SelectedStyleOption
 
     if (key === 'primaryBackgroundColor') {
       values.backgroundColor = value
-    }
-    else values[key] = value
+    } else values[key] = value
   }
 
   return values
@@ -131,11 +143,7 @@ function reset(): void {
       'max-w-prose': profile,
     }"
   >
-    <UiAvatar
-      data-test-avatar
-      :size="size"
-      class="border-4 border-primary"
-    >
+    <UiAvatar data-test-avatar :size="size" class="border-4 border-primary">
       <UiAvatarImage
         :src="avatarCreator.avatar?.value?.url || ''"
         alt="Avatar image"
@@ -152,7 +160,9 @@ function reset(): void {
         />
       </UiAvatarFallback>
     </UiAvatar>
-    <div class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur">
+    <div
+      class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur"
+    >
       <button
         v-tippy="$t('actions.random')"
         class="size-7 flex flex-col items-center justify-center outline-none text-white"
@@ -174,11 +184,7 @@ function reset(): void {
         :class="{ 'border-r-2 border-primary': profile && isChanged }"
         @click="creatorOpen = !creatorOpen"
       >
-        <Icon
-          name="tabler:shirt"
-          aria-hidden="true"
-          class="size-5"
-        />
+        <Icon name="tabler:shirt" aria-hidden="true" class="size-5" />
       </button>
       <template v-if="profile && isChanged && avatarCreator.avatar.value">
         <button
@@ -188,11 +194,7 @@ function reset(): void {
           :aria-label="$t('actions.reset')"
           @click="reset"
         >
-          <Icon
-            name="tabler:refresh"
-            aria-hidden="true"
-            class="size-5"
-          />
+          <Icon name="tabler:refresh" aria-hidden="true" class="size-5" />
         </button>
         <button
           v-tippy="$t('actions.save')"
@@ -200,11 +202,7 @@ function reset(): void {
           :aria-label="$t('actions.save')"
           @click="save"
         >
-          <Icon
-            name="tabler:device-floppy"
-            aria-hidden="true"
-            class="size-5"
-          />
+          <Icon name="tabler:device-floppy" aria-hidden="true" class="size-5" />
         </button>
       </template>
     </div>
@@ -222,11 +220,15 @@ function reset(): void {
         class="flex flex-wrap items-center justify-center gap-1 pt-2"
       >
         <AvatarSelector
-          v-for="[key, option] in Object.entries(avatarCreator.configStyleOptions)"
+          v-for="[key, option] in Object.entries(
+            avatarCreator.configStyleOptions,
+          )"
           :key="key"
           :identifier="key"
           :options="option.values"
-          :selected="avatarCreator.options.value[key]?.toString().replace('#', '')"
+          :selected="
+            avatarCreator.options.value[key]?.toString().replace('#', '')
+          "
           @update="updateAvatar(key, $event)"
         />
       </div>

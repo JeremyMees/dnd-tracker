@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineEmits<{ pin: [], unpin: [] }>()
+defineEmits<{ pin: []; unpin: [] }>()
 
 const props = withDefaults(
   defineProps<{
@@ -7,7 +7,8 @@ const props = withDefaults(
     pinned?: boolean
     allowPin?: boolean
     variant?: 'secondary' | 'background'
-  }>(), {
+  }>(),
+  {
     pinned: false,
     allowPin: false,
     variant: 'secondary',
@@ -47,10 +48,7 @@ const isOpen = ref<boolean>(false)
           aria-hidden="true"
         />
       </UiButton>
-      <UiCardTitle
-        data-test-title
-        class="overflow-hidden text-ellipsis"
-      >
+      <UiCardTitle data-test-title class="overflow-hidden text-ellipsis">
         {{ hit.name }}
       </UiCardTitle>
     </UiCardHeader>
@@ -73,17 +71,10 @@ const isOpen = ref<boolean>(false)
         :content="hit"
         :is-open="isOpen"
       />
-      <ContentCardArmor
-        v-if="isArmor(hit)"
-        data-test-armor
-        :content="hit"
-      />
+      <ContentCardArmor v-if="isArmor(hit)" data-test-armor :content="hit" />
     </UiCardContent>
     <UiCardFooter class="pl-4 pr-0 pb-0 pt-2">
-      <div
-        v-if="!isArmor(hit)"
-        class="flex justify-end w-full"
-      >
+      <div v-if="!isArmor(hit)" class="flex justify-end w-full">
         <UiButton
           variant="secondary-ghost"
           class="flex gap-2 text-foreground"

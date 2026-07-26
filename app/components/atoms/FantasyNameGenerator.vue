@@ -6,7 +6,8 @@ const props = withDefaults(
   defineProps<{
     amount: number
     compact?: boolean
-  }>(), {
+  }>(),
+  {
     compact: false,
   },
 )
@@ -25,7 +26,8 @@ function generate(): void {
   names.value = []
 
   const race = selectedRace.value === 'random' ? undefined : selectedRace.value
-  const gender = selectedDndGender.value === 'random' ? undefined : selectedDndGender.value
+  const gender =
+    selectedDndGender.value === 'random' ? undefined : selectedDndGender.value
 
   for (let i = 0; i < props.amount; i++) {
     names.value.push(randomName(race, gender))
@@ -50,11 +52,7 @@ watch([selectedRace, selectedDndGender], () => {
   <div class="flex flex-col gap-4">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-2">
-        <label
-          v-if="!compact"
-          data-test-label
-          class="text-sm font-medium"
-        >
+        <label v-if="!compact" data-test-label class="text-sm font-medium">
           Race
         </label>
         <UiSelect v-model="selectedRace">
@@ -74,11 +72,7 @@ watch([selectedRace, selectedDndGender], () => {
       </div>
 
       <div class="flex flex-col gap-2">
-        <label
-          v-if="!compact"
-          data-test-label
-          class="text-sm font-medium"
-        >
+        <label v-if="!compact" data-test-label class="text-sm font-medium">
           DndGender
         </label>
         <UiSelect v-model="selectedDndGender">
@@ -117,10 +111,7 @@ watch([selectedRace, selectedDndGender], () => {
         {{ name }}
       </li>
     </MasonryGrid>
-    <SkeletonList
-      v-else
-      :amount="amount"
-    />
+    <SkeletonList v-else :amount="amount" />
 
     <div
       data-test-actions
@@ -128,10 +119,7 @@ watch([selectedRace, selectedDndGender], () => {
       :class="compact ? '' : 'flex-col mt-4'"
     >
       <div class="text-muted-foreground flex gap-2 items-center">
-        <Icon
-          name="tabler:info-circle"
-          class="text-info w-4 min-w-4"
-        />
+        <Icon name="tabler:info-circle" class="text-info w-4 min-w-4" />
         <p class="text-xs">
           {{ $t('pages.fantasyNameGenerator.tip') }}
         </p>

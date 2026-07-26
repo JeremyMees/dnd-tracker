@@ -1,4 +1,8 @@
-import { PaginationList, PaginationListItem, PaginationRoot as Pagination } from 'reka-ui'
+import {
+  PaginationList,
+  PaginationListItem,
+  PaginationRoot as Pagination,
+} from 'reka-ui'
 
 export { default as PaginationEllipsis } from './PaginationEllipsis.vue'
 export { default as PaginationFirst } from './PaginationFirst.vue'

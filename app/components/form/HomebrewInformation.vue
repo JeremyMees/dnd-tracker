@@ -11,17 +11,18 @@ const summonersOptions = computed<Option<string>[]>(() => {
     return props.sheet.rows
       .filter(r => r.type !== 'summon')
       .map(o => ({ label: o.name, value: o.id }))
-  }
-  else return []
+  } else return []
 })
 </script>
 
 <template>
-  <div :class="{ 'grid sm:grid-cols-2 gap-x-3': (type === 'monster' || type === 'summon') && sheet }">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="type"
-    >
+  <div
+    :class="{
+      'grid sm:grid-cols-2 gap-x-3':
+        (type === 'monster' || type === 'summon') && sheet,
+    }"
+  >
+    <UiFormField v-slot="{ componentField }" name="type">
       <UiFormItem>
         <UiFormLabel required>
           {{ $t('components.inputs.typeLabel') }}
@@ -63,10 +64,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
           {{ $t('components.inputs.amountLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -103,20 +101,14 @@ const summonersOptions = computed<Option<string>[]>(() => {
     </UiFormItem>
   </UiFormField>
   <div :class="{ 'grid sm:grid-cols-2 gap-x-3': type === 'player' && !sheet }">
-    <UiFormField
-      v-slot="{ componentField, setValue }"
-      name="name"
-    >
+    <UiFormField v-slot="{ componentField, setValue }" name="name">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.nameLabel') }}
         </UiFormLabel>
         <UiFormControl>
           <UiInputGroup>
-            <UiInputGroupInput
-              type="text"
-              v-bind="componentField"
-            />
+            <UiInputGroupInput type="text" v-bind="componentField" />
             <UiInputGroupAddon
               align="inline-end"
               class="has-[>button]:mr-0 pr-2"
@@ -143,10 +135,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
           {{ $t('components.inputs.playerLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -164,10 +153,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
         </UiFormLabel>
         <UiFormControl>
           <UiInputGroup>
-            <UiInputGroupInput
-              type="number"
-              v-bind="componentField"
-            />
+            <UiInputGroupInput type="number" v-bind="componentField" />
             <UiInputGroupAddon
               align="inline-end"
               class="has-[>button]:mr-0 pr-2"
@@ -184,139 +170,87 @@ const summonersOptions = computed<Option<string>[]>(() => {
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="initiativeModifier"
-    >
+    <UiFormField v-slot="{ componentField }" name="initiativeModifier">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ `${$t('components.inputs.initiativeLabel')} (MODIFIER)` }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
   </div>
-  <div
-    v-if="type !== 'lair'"
-    class="grid sm:grid-cols-2 gap-x-3"
-  >
-    <UiFormField
-      v-slot="{ componentField }"
-      name="armorClass"
-    >
+  <div v-if="type !== 'lair'" class="grid sm:grid-cols-2 gap-x-3">
+    <UiFormField v-slot="{ componentField }" name="armorClass">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ $t('components.inputs.acLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="hitPoints"
-    >
+    <UiFormField v-slot="{ componentField }" name="hitPoints">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ $t('components.inputs.hpLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
   </div>
 
-  <div
-    v-if="type !== 'lair'"
-    class="grid sm:grid-cols-2 gap-x-3"
-  >
-    <UiFormField
-      v-slot="{ componentField }"
-      name="hitDice"
-    >
+  <div v-if="type !== 'lair'" class="grid sm:grid-cols-2 gap-x-3">
+    <UiFormField v-slot="{ componentField }" name="hitDice">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ $t('components.inputs.hitDiceLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            placeholder="2d6"
-            v-bind="componentField"
-          />
+          <UiInput type="text" placeholder="2d6" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="armorDetail"
-    >
+    <UiFormField v-slot="{ componentField }" name="armorDetail">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ $t('components.inputs.armorDetailLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
   </div>
 
-  <div
-    v-if="type !== 'lair'"
-    class="grid sm:grid-cols-2 gap-x-3"
-  >
-    <UiFormField
-      v-slot="{ componentField }"
-      name="proficiencyBonus"
-    >
+  <div v-if="type !== 'lair'" class="grid sm:grid-cols-2 gap-x-3">
+    <UiFormField v-slot="{ componentField }" name="proficiencyBonus">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ $t('general.proficiencyBonus') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="passivePerception"
-    >
+    <UiFormField v-slot="{ componentField }" name="passivePerception">
       <UiFormItem v-auto-animate>
         <UiFormLabel>
           {{ $t('general.passivePerception') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="number"
-            v-bind="componentField"
-          />
+          <UiInput type="number" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -327,7 +261,9 @@ const summonersOptions = computed<Option<string>[]>(() => {
     <UiLabel>
       {{ $t('general.speed') }}
     </UiLabel>
-    <div class="rounded-md border p-3 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-2">
+    <div
+      class="rounded-md border p-3 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-2"
+    >
       <UiFormField
         v-for="key in speedTypes.filter(k => k !== 'hover')"
         :key="key"
@@ -337,10 +273,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
         <UiFormItem v-auto-animate>
           <UiFormLabel>{{ speedMap[key] }}</UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="number"
-              v-bind="componentField"
-            />
+            <UiInput type="number" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -379,10 +312,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
         <UiFormItem v-auto-animate>
           <UiFormLabel>{{ label }}</UiFormLabel>
           <UiFormControl>
-            <UiInput
-              type="number"
-              v-bind="componentField"
-            />
+            <UiInput type="number" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -400,19 +330,13 @@ const summonersOptions = computed<Option<string>[]>(() => {
     />
   </div>
 
-  <UiFormField
-    v-slot="{ componentField }"
-    name="link"
-  >
+  <UiFormField v-slot="{ componentField }" name="link">
     <UiFormItem v-auto-animate>
       <UiFormLabel>
         {{ $t('components.inputs.linkLabel') }}
       </UiFormLabel>
       <UiFormControl>
-        <UiInput
-          type="text"
-          v-bind="componentField"
-        />
+        <UiInput type="text" v-bind="componentField" />
       </UiFormControl>
       <UiFormMessage />
     </UiFormItem>

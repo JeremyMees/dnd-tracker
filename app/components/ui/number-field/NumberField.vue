@@ -4,7 +4,9 @@ import { NumberFieldRoot, useForwardPropsEmits } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<NumberFieldRootProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  NumberFieldRootProps & { class?: HTMLAttributes['class'] }
+>()
 const emits = defineEmits<NumberFieldRootEmits>()
 
 const delegatedProps = computed(() => {
@@ -17,10 +19,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
-  <NumberFieldRoot
-    v-bind="forwarded"
-    :class="cn('grid gap-1.5', props.class)"
-  >
+  <NumberFieldRoot v-bind="forwarded" :class="cn('grid gap-1.5', props.class)">
     <slot />
   </NumberFieldRoot>
 </template>

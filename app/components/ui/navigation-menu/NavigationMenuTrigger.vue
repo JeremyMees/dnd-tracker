@@ -5,11 +5,13 @@ import { NavigationMenuTrigger, useForwardProps } from 'reka-ui'
 import { navigationMenuTriggerStyle } from '.'
 
 const props = withDefaults(
-  defineProps<NavigationMenuTriggerProps & {
-    class?: HTMLAttributes['class']
-    icon?: boolean
-    styled?: boolean
-  }>(),
+  defineProps<
+    NavigationMenuTriggerProps & {
+      class?: HTMLAttributes['class']
+      icon?: boolean
+      styled?: boolean
+    }
+  >(),
   {
     icon: true,
     styled: true,
@@ -24,7 +26,11 @@ const forwardedProps = useForwardProps(delegatedProps)
   <NavigationMenuTrigger
     data-slot="navigation-menu-trigger"
     v-bind="forwardedProps"
-    :class="styled ? cn(navigationMenuTriggerStyle(), 'group', props.class) : props.class"
+    :class="
+      styled
+        ? cn(navigationMenuTriggerStyle(), 'group', props.class)
+        : props.class
+    "
   >
     <slot />
     <Icon

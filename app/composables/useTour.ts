@@ -11,7 +11,10 @@ export function useTour() {
   const { mutateAsync: updateProfile } = useProfileUpdate()
 
   const isTourActive = useState<boolean>('tour-active', () => false)
-  const isTourWithCampaign = useState<boolean>('tour-with-campaign', () => false)
+  const isTourWithCampaign = useState<boolean>(
+    'tour-with-campaign',
+    () => false,
+  )
   const isTourCompleted = useCookie<boolean>('tour-completed')
   const tourData = ref<InitiativeSheet>()
   const driverObj = ref<Driver>()
@@ -29,9 +32,10 @@ export function useTour() {
         element: `#tour-${i}`,
         popover: {
           title: t(`tour.${i}.title`),
-          description: i === (tourSteps - 1)
-            ? '<div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/xT8qBepJQzUjXpeWU8" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/olympics-shaun-the-sheep-aardman-xT8qBepJQzUjXpeWU8">via GIPHY</a></p>'
-            : t(`tour.${i}.description`),
+          description:
+            i === tourSteps - 1
+              ? '<div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/xT8qBepJQzUjXpeWU8" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/olympics-shaun-the-sheep-aardman-xT8qBepJQzUjXpeWU8">via GIPHY</a></p>'
+              : t(`tour.${i}.description`),
         },
       })
     }
@@ -63,7 +67,8 @@ export function useTour() {
   }
 
   async function close(): Promise<void> {
-    if (user.value) await updateProfile({ data: { completedTour: true }, id: user.value.id })
+    if (user.value)
+      await updateProfile({ data: { completedTour: true }, id: user.value.id })
     else isTourCompleted.value = true
 
     isTourActive.value = false

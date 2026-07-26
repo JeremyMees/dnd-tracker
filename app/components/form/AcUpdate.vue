@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (amount: number, type: DndAcType) => Partial<InitiativeSheetRow>
+  handleAcChanges: (
+    amount: number,
+    type: DndAcType,
+  ) => Partial<InitiativeSheetRow>
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
 }>()
 
 const selectedType = ref<DndAcType>('remove')
 
-const formSchema = toTypedSchema(z.object({
-  amount: z.number().min(0).max(1000),
-}))
+const formSchema = z.object({
+  amount: z.int().min(0).max(1000),
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -22,7 +24,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -30,14 +32,14 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     if (!props.sheet || !selected) return
 
-    const row = props.handleAcChanges(values.amount, selected || 'remove')
+    const amount = parseInteger(values.amount)
+    const row = props.handleAcChanges(amount, selected || 'remove')
 
     await props.updateRow(row)
 
     if (selected === 'add') animateTableUpdate(`${props.item.id}-ac`, 'green')
     if (selected === 'remove') animateTableUpdate(`${props.item.id}-ac`, 'red')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred while updating AC'
   }
 })
@@ -54,10 +56,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'add'"
       >
-        <Icon
-          name="tabler:arrow-big-up"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:arrow-big-up" aria-hidden="true" />
         {{ $t('actions.increase') }}
       </UiButton>
       <UiButton
@@ -67,10 +66,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'temp'"
       >
-        <Icon
-          name="tabler:plus"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:plus" aria-hidden="true" />
         {{ $t('actions.temp') }}
       </UiButton>
       <UiButton
@@ -80,17 +76,11 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'remove'"
       >
-        <Icon
-          name="tabler:arrow-big-down"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:arrow-big-down" aria-hidden="true" />
         {{ $t('actions.decrease') }}
       </UiButton>
     </div>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
   </UiFormWrapper>

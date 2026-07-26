@@ -1,4 +1,4 @@
-export interface AuthUser extends ProfileRow { }
+export interface AuthUser extends ProfileRow {}
 
 interface Credentials {
   email: string
@@ -21,7 +21,7 @@ export function useAuthentication() {
   const supabase = useSupabaseClient<DB>()
   const localePath = useLocalePath()
 
-  supabase.auth.onAuthStateChange((event) => {
+  supabase.auth.onAuthStateChange(event => {
     if (['USER_UPDATED', 'SIGNED_IN'].includes(event)) fetch()
     else if (event === 'INITIAL_SESSION' && !user.value) fetch()
   })
@@ -36,7 +36,10 @@ export function useAuthentication() {
     if (data?.user) {
       const profile: ProfileInsert = {
         ...userData,
-        avatarOptions: userData.avatarOptions as Record<string, string | number>,
+        avatarOptions: userData.avatarOptions as Record<
+          string,
+          string | number
+        >,
         email,
         id: data.user.id,
       }
@@ -77,11 +80,12 @@ export function useAuthentication() {
 
     if (userId) {
       if (
-        user.value
-        && gc.value
-        && new Date().getTime() - gc.value < 1000 * 60 * 5
-        && !forceRefresh
-      ) return
+        user.value &&
+        gc.value &&
+        new Date().getTime() - gc.value < 1000 * 60 * 5 &&
+        !forceRefresh
+      )
+        return
 
       const { data, error } = await supabase
         .from('profiles')
@@ -122,7 +126,10 @@ export const useAuthenticatedUser = () => {
   return computed(() => {
     const userValue: AuthUser | null = unref(user)
 
-    if (!userValue) throw createError('useAuthenticatedUser() can only be used in protected pages')
+    if (!userValue)
+      throw createError(
+        'useAuthenticatedUser() can only be used in protected pages',
+      )
 
     return userValue
   })

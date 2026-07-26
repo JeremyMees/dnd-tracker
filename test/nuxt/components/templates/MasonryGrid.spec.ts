@@ -52,7 +52,9 @@ describe('MasonryGrid', async () => {
     const div = component.find('div')
 
     expect(div.attributes('class')).toBe(props.wrapperStyle)
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(2, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr))',
+    )
   })
 
   it('Should render with custom element', async () => {
@@ -73,7 +75,9 @@ describe('MasonryGrid', async () => {
     const component = await mountSuspended(MasonryGrid, { props })
     const div = component.find('div')
 
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(1, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(1, minmax(0, 1fr))',
+    )
   })
 
   it('Should render with two columns on medium screens', async () => {
@@ -83,7 +87,9 @@ describe('MasonryGrid', async () => {
     const component = await mountSuspended(MasonryGrid, { props })
     const div = component.find('div')
 
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(2, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr))',
+    )
   })
 
   it('Should render with three columns on large screens', async () => {
@@ -93,21 +99,31 @@ describe('MasonryGrid', async () => {
     const component = await mountSuspended(MasonryGrid, { props })
     const div = component.find('div')
 
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(3, minmax(0, 1fr))',
+    )
   })
 
   it('Should handle maxColumns prop correctly', async () => {
-    const component = await mountSuspended(MasonryGrid, { props: { ...props, maxColumns: 1 } })
+    const component = await mountSuspended(MasonryGrid, {
+      props: { ...props, maxColumns: 1 },
+    })
     const div = component.find('div')
 
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(1, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(1, minmax(0, 1fr))',
+    )
   })
 
   it('Should handle empty data array', async () => {
-    const component = await mountSuspended(MasonryGrid, { props: { ...props, data: [] } })
+    const component = await mountSuspended(MasonryGrid, {
+      props: { ...props, data: [] },
+    })
     const div = component.find('div')
 
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(2, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr))',
+    )
   })
 
   it('Should update columns when screen is resized', async () => {
@@ -117,16 +133,22 @@ describe('MasonryGrid', async () => {
     mockIsSmall.value = false
     mockIsLarge.value = true
     await nextTick()
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(3, minmax(0, 1fr))',
+    )
 
     mockIsSmall.value = false
     mockIsLarge.value = false
     await nextTick()
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(2, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(2, minmax(0, 1fr))',
+    )
 
     mockIsSmall.value = true
     mockIsLarge.value = false
     await nextTick()
-    expect(div.attributes('style')).toContain('grid-template-columns: repeat(1, minmax(0, 1fr))')
+    expect(div.attributes('style')).toContain(
+      'grid-template-columns: repeat(1, minmax(0, 1fr))',
+    )
   })
 })

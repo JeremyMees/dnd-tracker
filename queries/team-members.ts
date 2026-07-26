@@ -15,8 +15,7 @@ export function useJoinTokenCreate() {
 
       const { error } = await supabase
         .from('join_campaign')
-        .insert([{ ...data, token: jwt }])
-        .select(`
+        .insert([{ ...data, token: jwt }]).select(`
           *,
           user(id, username, avatar)
         `)
@@ -41,15 +40,22 @@ export function useJoinTokenRemove() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id }: { id: number, campaign: number } & QueryDefaults) => {
-      const { error } = await supabase.from('join_campaign').delete().eq('id', id)
+    mutationFn: async ({
+      id,
+    }: { id: number; campaign: number } & QueryDefaults) => {
+      const { error } = await supabase
+        .from('join_campaign')
+        .delete()
+        .eq('id', id)
 
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign, onSuccess }) => {
       if (onSuccess) onSuccess()
 
-      queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', campaign] })
+      queryClient.invalidateQueries({
+        queryKey: ['useCampaignDetail', campaign],
+      })
     },
     onError: (error, { onError }) => {
       if (onError) onError(error.message)
@@ -65,7 +71,10 @@ export function useTeamMemberCreate() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ data, id }: { data: TeamInsert, id?: number } & QueryDefaults) => {
+    mutationFn: async ({
+      data,
+      id,
+    }: { data: TeamInsert; id?: number } & QueryDefaults) => {
       const { error } = await supabase.from('team').insert([data])
 
       if (error) throw createError(error)
@@ -73,7 +82,9 @@ export function useTeamMemberCreate() {
       if (id) await supabase.from('join_campaign').delete().eq('id', id)
     },
     onSuccess: (_data, { data, onSuccess }) => {
-      queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', data.campaign] })
+      queryClient.invalidateQueries({
+        queryKey: ['useCampaignDetail', data.campaign],
+      })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
 
       if (onSuccess) onSuccess()
@@ -92,13 +103,22 @@ export function useTeamMemberUpdate() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ data, id }: { data: Omit<TeamUpdate, NotUpdatable>, id: number, campaign: number } & QueryDefaults) => {
+    mutationFn: async ({
+      data,
+      id,
+    }: {
+      data: Omit<TeamUpdate, NotUpdatable>
+      id: number
+      campaign: number
+    } & QueryDefaults) => {
       const { error } = await supabase.from('team').update(data).eq('id', id)
 
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign, onSuccess }) => {
-      queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', campaign] })
+      queryClient.invalidateQueries({
+        queryKey: ['useCampaignDetail', campaign],
+      })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
 
       if (onSuccess) onSuccess()
@@ -119,13 +139,17 @@ export function useTeamMemberRemove() {
   const { t } = useI18n()
 
   return useMutation({
-    mutationFn: async ({ member }: { member: number, campaign: number } & QueryDefaults) => {
+    mutationFn: async ({
+      member,
+    }: { member: number; campaign: number } & QueryDefaults) => {
       const { error } = await supabase.from('team').delete().eq('id', member)
 
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign, onSuccess }) => {
-      queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', campaign] })
+      queryClient.invalidateQueries({
+        queryKey: ['useCampaignDetail', campaign],
+      })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
 
       if (onSuccess) onSuccess()

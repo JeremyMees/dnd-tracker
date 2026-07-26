@@ -61,7 +61,9 @@ describe('validation utils', () => {
 
   describe('allowedChars', () => {
     it('should match strings with only allowed characters', () => {
-      expect(allowedChars.test('@#$%^&*(),.?":{}|<>[]\\/~`_+=\';-')).toBeTruthy()
+      expect(
+        allowedChars.test('@#$%^&*(),.?":{}|<>[]\\/~`_+=\';-'),
+      ).toBeTruthy()
       expect(allowedChars.test('0123456789')).toBeTruthy()
       expect(allowedChars.test('abcdefghijklmnopqrstuvwxyz')).toBeTruthy()
       expect(allowedChars.test('ABCDEFGHIJKLMNOPQRSTUVWXYZ')).toBeTruthy()

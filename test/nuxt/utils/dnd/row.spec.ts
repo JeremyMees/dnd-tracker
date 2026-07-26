@@ -21,6 +21,64 @@ describe('dnd/row', () => {
     })
   })
 
+  describe('sanitizeRowNumbers', () => {
+    it('should coerce string integer fields to numbers', () => {
+      const row = {
+        id: '1',
+        armorClass: '15',
+        hitPoints: '20',
+        tempArmorClass: '2',
+      } as unknown as InitiativeSheetRow
+
+      const result = sanitizeRowNumbers(row)
+
+      expect(result.armorClass).toBe(15)
+      expect(result.hitPoints).toBe(20)
+      expect(result.tempArmorClass).toBe(2)
+    })
+
+    it('should round float values to integers', () => {
+      const row = {
+        id: '1',
+        armorClass: 15.6,
+        maxHitPoints: 20.2,
+      } as unknown as InitiativeSheetRow
+
+      const result = sanitizeRowNumbers(row)
+
+      expect(result.armorClass).toBe(16)
+      expect(result.maxHitPoints).toBe(20)
+    })
+
+    it('should turn invalid values into undefined', () => {
+      const row = {
+        id: '1',
+        armorClass: '',
+        hitPoints: 'abc',
+      } as unknown as InitiativeSheetRow
+
+      const result = sanitizeRowNumbers(row)
+
+      expect(result.armorClass).toBeUndefined()
+      expect(result.hitPoints).toBeUndefined()
+    })
+
+    it('should leave non-numeric fields untouched', () => {
+      const row = {
+        id: '1',
+        name: 'Goblin',
+        armorClass: 15,
+        conditions: [],
+      } as unknown as InitiativeSheetRow
+
+      const result = sanitizeRowNumbers(row)
+
+      expect(result.name).toBe('Goblin')
+      expect(result.id).toBe('1')
+      expect(result.conditions).toEqual([])
+    })
+  })
+
   describe('getCurrentRowIndex', () => {
     it('should return correct index for existing id', () => {
       const index = getCurrentRowIndex(sheet, sheet.rows[0]?.id ?? '')
@@ -56,8 +114,17 @@ describe('dnd/row', () => {
     })
 
     it('should preserve extended homebrew fields from formData', () => {
-      const abilityScores = { strength: 10, dexterity: 14, constitution: 12, intelligence: 8, wisdom: 10, charisma: 16 } as DndAbilityScores
-      const traits = [{ name: 'Brave', desc: 'Advantage on saves vs fear' }] as DndTrait[]
+      const abilityScores = {
+        strength: 10,
+        dexterity: 14,
+        constitution: 12,
+        intelligence: 8,
+        wisdom: 10,
+        charisma: 16,
+      } as DndAbilityScores
+      const traits = [
+        { name: 'Brave', desc: 'Advantage on saves vs fear' },
+      ] as DndTrait[]
       const formData = {
         name: 'Homebrew Monster',
         hitPoints: 30,

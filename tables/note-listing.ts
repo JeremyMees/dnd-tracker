@@ -1,10 +1,10 @@
-import { createColumnHelper, type InitialTableState, type Row } from '@tanstack/vue-table'
-
 import {
-  expandButton,
-  iconButton,
-  selectButton,
-} from './generate-functions'
+  createColumnHelper,
+  type InitialTableState,
+  type Row,
+} from '@tanstack/vue-table'
+
+import { expandButton, iconButton, selectButton } from './generate-functions'
 import { NuxtTime } from '#components'
 
 const columnHelper = createColumnHelper<NoteRow>()
@@ -17,30 +17,43 @@ interface ColumnOptions {
   getRemainingTime: (id: number) => number
 }
 
-export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown, getRemainingTime }: ColumnOptions) {
+export function generateColumns({
+  onUpdate,
+  onSendMail,
+  hasRights,
+  isInCoolDown,
+  getRemainingTime,
+}: ColumnOptions) {
   const { t } = useI18n()
 
   return [
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton({
-        checked: table.getIsAllRowsSelected(),
-        cb: table.getToggleAllPageRowsSelectedHandler(),
-      }),
-      cell: ({ row }) => hasRights
-        ? selectButton({ checked: row.getIsSelected(), cb: row.getToggleSelectedHandler(), disabled: !row.getCanSelect() })
-        : '',
+      header: ({ table }) =>
+        selectButton({
+          checked: table.getIsAllRowsSelected(),
+          cb: table.getToggleAllPageRowsSelectedHandler(),
+        }),
+      cell: ({ row }) =>
+        hasRights
+          ? selectButton({
+              checked: row.getIsSelected(),
+              cb: row.getToggleSelectedHandler(),
+              disabled: !row.getCanSelect(),
+            })
+          : '',
     }),
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'expand',
       header: '',
-      cell: ({ row }) => expandButton({
-        content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
-        expanded: row.getIsExpanded(),
-        cb: () => row.toggleExpanded(),
-      }),
+      cell: ({ row }) =>
+        expandButton({
+          content: t(`actions.${row.getIsExpanded() ? 'hide' : 'show'}`),
+          expanded: row.getIsExpanded(),
+          cb: () => row.toggleExpanded(),
+        }),
     }),
     columnHelper.accessor('title', {
       header: t('general.title'),
@@ -48,12 +61,13 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
     }),
     columnHelper.accessor('createdAt', {
       header: t('general.createdAt'),
-      cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('createdAt'),
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric',
-      }),
+      cell: ({ row }) =>
+        h(NuxtTime, {
+          datetime: row.getValue<Date>('createdAt'),
+          month: 'numeric',
+          day: 'numeric',
+          year: 'numeric',
+        }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,
@@ -61,11 +75,14 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
       id: 'actions',
       cell: ({ row }) => {
         return h('div', { class: 'flex justify-end' }, [
-          isInCoolDown(row.original.id) && h('div', {
-            class: 'mt-auto text-muted-foreground text-sm w-7',
-          }, [
-            `${getRemainingTime(row.original.id)}s`,
-          ]),
+          isInCoolDown(row.original.id) &&
+            h(
+              'div',
+              {
+                class: 'mt-auto text-muted-foreground text-sm w-7',
+              },
+              [`${getRemainingTime(row.original.id)}s`],
+            ),
           iconButton({
             icon: 'tabler:send',
             content: t('actions.sendMail'),
@@ -74,7 +91,12 @@ export function generateColumns({ onUpdate, onSendMail, hasRights, isInCoolDown,
             disabled: isInCoolDown(row.original.id),
           }),
           hasRights
-            ? iconButton({ icon: 'tabler:edit', content: t('actions.update'), variant: 'info-ghost', cb: () => onUpdate(row.original) })
+            ? iconButton({
+                icon: 'tabler:edit',
+                content: t('actions.update'),
+                variant: 'info-ghost',
+                cb: () => onUpdate(row.original),
+              })
             : '',
         ])
       },

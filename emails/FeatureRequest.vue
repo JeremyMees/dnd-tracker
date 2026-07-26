@@ -17,20 +17,10 @@ defineProps<{
     heading="New feature request"
     :preview="`feature request from ${name}`"
   >
-    <Text>
-      DATE: {{ new Date().toLocaleDateString('nl-NL') }},
-    </Text>
-    <Text>
-      EMAIL: {{ email }},
-    </Text>
-    <Text>
-      NAME: {{ name }},
-    </Text>
-    <Text>
-      TITLE: {{ title }}
-    </Text>
-    <Text>
-      TEXT: {{ text }}
-    </Text>
+    <Text> DATE: {{ new Date().toLocaleDateString('nl-NL') }}, </Text>
+    <Text> EMAIL: {{ email }}, </Text>
+    <Text> NAME: {{ name }}, </Text>
+    <Text> TITLE: {{ title }} </Text>
+    <Text> TEXT: {{ text }} </Text>
   </DefaultEmail>
 </template>

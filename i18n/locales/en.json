@@ -196,6 +196,7 @@
     "height": "Height",
     "infoPins": "Info pins",
     "fantasyNameGenerator": "Fantasy name generator",
+    "diceRoll": "Dice roller",
     "globally": "Globally",
     "synced": "Synced",
     "syncing": "Syncing",
@@ -387,7 +388,10 @@
       "options": "Encounter options",
       "maxCharacters": "Max characters amount",
       "pinnedContent": {
-        "empty": "You currently have no pinned items"
+        "empty": {
+          "title": "No pinned content yet",
+          "text": "You currently have no pinned items. Start by adding some pinned content from"
+        }
       },
       "override": {
         "ac": "Override AC",

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -13,17 +12,17 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const formSchemaData = toTypedSchema(z.object({
+const formSchemaData = z.object({
   password: z
     .string()
     .min(6)
     .max(50)
-    .regex(containsLowercase, t('zod.containsLowercase'))
-    .regex(containsUppercase, t('zod.containsUppercase'))
-    .regex(containsNumber, t('zod.containsNumber'))
-    .regex(containsSymbol, t('zod.containsSymbol'))
-    .regex(allowedChars, t('zod.allowedChars')),
-}))
+    .regex(containsLowercase, { error: () => t('zod.containsLowercase') })
+    .regex(containsUppercase, { error: () => t('zod.containsUppercase') })
+    .regex(containsNumber, { error: () => t('zod.containsNumber') })
+    .regex(containsSymbol, { error: () => t('zod.containsSymbol') })
+    .regex(allowedChars, { error: () => t('zod.allowedChars') }),
+})
 
 const formData = useForm({
   validationSchema: formSchemaData,
@@ -31,14 +30,15 @@ const formData = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = formData.handleSubmit(async (values) => {
+const onSubmit = formData.handleSubmit(async values => {
   formError.value = ''
 
   try {
     await props.update(values)
-  }
-  catch (err: unknown) {
-    formError.value = (err as Error)?.message || 'An error occurred during updating profile password'
+  } catch (err: unknown) {
+    formError.value =
+      (err as Error)?.message ||
+      'An error occurred during updating profile password'
   }
 })
 </script>
@@ -46,10 +46,7 @@ const onSubmit = formData.handleSubmit(async (values) => {
 <template>
   <UiFormWrapper @submit="onSubmit">
     <FormPasswordToggle />
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
     <div class="flex justify-end">

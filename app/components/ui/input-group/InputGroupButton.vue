@@ -4,9 +4,11 @@ import { Button } from '~/components/ui/button'
 import { inputGroupButtonVariants } from '.'
 
 const props = withDefaults(
-  defineProps<InputGroupButtonProps & {
-    type?: 'button' | 'submit' | 'reset'
-  }>(),
+  defineProps<
+    InputGroupButtonProps & {
+      type?: 'button' | 'submit' | 'reset'
+    }
+  >(),
   {
     size: 'icon-xs',
     variant: 'secondary-ghost',

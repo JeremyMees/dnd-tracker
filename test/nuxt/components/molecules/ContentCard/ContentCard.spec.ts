@@ -30,18 +30,24 @@ describe('ContentCard', async () => {
     const component = await mountSuspended(ContentCard, { props })
 
     expect(component.find('[data-test-pin]').exists()).toBeFalsy()
-    expect(component.find('[data-test-title]').text()).toBe(dndSpellFixture.name)
+    expect(component.find('[data-test-title]').text()).toBe(
+      dndSpellFixture.name,
+    )
   })
 
   it('Should show pin button when allowPin is true', async () => {
-    const component = await mountSuspended(ContentCard, { props: { ...props, allowPin: true } })
+    const component = await mountSuspended(ContentCard, {
+      props: { ...props, allowPin: true },
+    })
     const pin = component.find('[data-test-pin]')
 
     expect(pin.exists()).toBeTruthy()
   })
 
   it('Should be possible to pin and unpin', async () => {
-    const component = await mountSuspended(ContentCard, { props: { ...props, allowPin: true } })
+    const component = await mountSuspended(ContentCard, {
+      props: { ...props, allowPin: true },
+    })
     const pin = component.find('[data-test-pin]')
 
     expect(pin.exists()).toBeTruthy()

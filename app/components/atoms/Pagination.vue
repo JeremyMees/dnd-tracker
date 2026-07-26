@@ -7,7 +7,8 @@ withDefaults(
     perPage?: number
     styles?: string
     loading?: boolean
-  }>(), {
+  }>(),
+  {
     perPage: 10,
     styles: '',
     loading: false,
@@ -19,14 +20,14 @@ const page = defineModel<number>('page', { required: true })
 // Convert 0-based to 1-based for Radix
 const internalPage = computed({
   get: () => page.value + 1,
-  set: (value: number) => page.value = value - 1,
+  set: (value: number) => (page.value = value - 1),
 })
 </script>
 
 <template>
   <UiPagination
     v-model:page="internalPage"
-    :total="Math.max(1, (pages * perPage) - 2)"
+    :total="Math.max(1, pages * perPage - 2)"
     :items-per-page="perPage"
     :disabled="loading"
     class="flex items-center gap-6 w-fit"

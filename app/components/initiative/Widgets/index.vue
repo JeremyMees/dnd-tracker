@@ -1,49 +1,51 @@
 <script setup lang="ts">
+import { VueDraggable } from 'vue-draggable-plus'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { initiativeWidgets } from '~~/constants/validation'
-import { toTypedSchema } from '@vee-validate/zod'
+import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const popoverOpen = shallowRef(false)
+const definitions = initiativeWidgets.map(id => ({ id }))
 
-const isModified = computed(() => sheet.value?.settings?.modified ?? false)
-
-const widgets = computed(() => {
-  const data = sheet.value?.settings?.widgets ?? []
-  return initiativeWidgets.filter(widget => data.includes(widget))
+const formSchema = z.object({
+  widgets: z.array(z.enum(initiativeWidgets)),
 })
 
-watch(popoverOpen, (open) => {
+const form = useForm({ validationSchema: formSchema })
+const formError = ref<string>('')
+const popoverOpen = shallowRef(false)
+const localWidgets = ref<InitiativeWidget[]>([])
+const isModified = computed(() => sheet.value?.settings?.modified ?? false)
+
+watch(
+  () => sheet.value?.settings,
+  settings => {
+    localWidgets.value = settings?.modified
+      ? [...(settings.widgets ?? [])]
+      : [...initiativeWidgets]
+  },
+  { immediate: true },
+)
+
+watch(popoverOpen, open => {
   if (!open) return
 
   form.setValues({
     widgets: isModified.value
-      ? (sheet.value?.settings?.widgets || [])
+      ? (sheet.value?.settings?.widgets ?? [])
       : [...initiativeWidgets],
   })
 })
 
-const formSchema = toTypedSchema(z.object({
-  widgets: z.array(z.enum(initiativeWidgets)),
-}))
-
-const form = useForm({
-  validationSchema: formSchema,
-})
-
-const formError = ref<string>('')
-
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
-
   formError.value = ''
 
   await update({
     settings: {
-      ...sheet.value?.settings,
+      ...sheet.value.settings,
       ...values,
       modified: true,
     },
@@ -51,6 +53,27 @@ const onSubmit = form.handleSubmit(async (values) => {
 
   popoverOpen.value = false
 })
+
+function saveWidgets(widgets: InitiativeWidget[]) {
+  if (!sheet.value) return
+  update({
+    settings: {
+      ...sheet.value.settings,
+      widgets,
+      modified: true,
+    },
+  })
+}
+
+function onDragEnd() {
+  saveWidgets(localWidgets.value)
+}
+
+function removeWidget(id: InitiativeWidget) {
+  const updated = localWidgets.value.filter(w => w !== id)
+  localWidgets.value = updated
+  saveWidgets(updated)
+}
 </script>
 
 <template>
@@ -77,21 +100,17 @@ const onSubmit = form.handleSubmit(async (values) => {
           <UiFormWrapper @submit="onSubmit">
             <FormCheckboxGroup
               name="widgets"
-              :options="[
-                { label: $t('general.note'), value: 'note' },
-                { label: $t('general.infoPins'), value: 'info-pins' },
-              ]"
+              :options="
+                definitions.map(d => ({
+                  label: $t(widgetLabels[d.id]),
+                  value: d.id,
+                }))
+              "
             />
-            <div
-              v-if="formError"
-              class="text-sm text-destructive"
-            >
+            <div v-if="formError" class="text-sm text-destructive">
               {{ formError }}
             </div>
-            <UiButton
-              type="submit"
-              class="w-full"
-            >
+            <UiButton type="submit" class="w-full">
               {{ $t('actions.save') }}
             </UiButton>
           </UiFormWrapper>
@@ -99,27 +118,54 @@ const onSubmit = form.handleSubmit(async (values) => {
       </UiPopover>
     </div>
 
-    <div
-      v-if="widgets.length || !isModified"
+    <VueDraggable
+      v-if="localWidgets.length"
+      v-model="localWidgets"
+      handle=".drag-handle"
+      :animation="150"
       class="grid xl:grid-cols-2 gap-2 items-start"
+      @end="onDragEnd"
     >
-      <LazyInitiativeWidgetsNote
-        v-if="widgets.includes('note') || !isModified"
-        hydrate-on-idle
-        :value="sheet?.info ?? ''"
-        @update="update({ info: $event })"
-      />
-      <LazyInitiativeWidgetsPinnedContent
-        v-if="widgets.includes('info-pins') || !isModified"
-        hydrate-on-idle
-        :value="sheet?.infoCards ?? []"
-        @update="update({ infoCards: $event })"
-      />
-    </div>
-    <p
-      v-else
-      class="text-muted-foreground text-sm"
-    >
+      <div
+        v-for="widget in localWidgets"
+        :key="widget"
+        class="flex flex-col gap-1"
+      >
+        <DragAndDropHeader :title="$t(widgetLabels[widget])">
+          <UiButton
+            variant="destructive-ghost"
+            size="icon-sm"
+            :aria-label="$t('actions.remove')"
+            @click="removeWidget(widget)"
+          >
+            <Icon name="tabler:x" />
+          </UiButton>
+        </DragAndDropHeader>
+
+        <LazyInitiativeWidgetsNote
+          v-if="widget === 'note'"
+          hydrate-on-idle
+          :value="sheet?.info ?? ''"
+          @update="update({ info: $event })"
+        />
+        <LazyInitiativeWidgetsPinnedContent
+          v-if="widget === 'info-pins'"
+          hydrate-on-idle
+          :value="sheet?.infoCards ?? []"
+          @update="update({ infoCards: $event })"
+        />
+        <LazyInitiativeWidgetsFantasyNameGenerator
+          v-if="widget === 'fantasy-name-generator'"
+          hydrate-on-idle
+        />
+        <LazyInitiativeWidgetsDiceRoll
+          v-if="widget === 'dice-roll'"
+          hydrate-on-idle
+        />
+      </div>
+    </VueDraggable>
+
+    <p v-else class="text-muted-foreground text-sm">
       {{ $t('components.initiativeSettings.noActiveWidgets') }}
     </p>
   </div>

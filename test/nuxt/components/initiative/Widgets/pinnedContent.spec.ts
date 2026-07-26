@@ -3,13 +3,12 @@ import { describe, expect, it } from 'vitest'
 import PinnedContent from '~/components/initiative/Widgets/PinnedContent.vue'
 import { dndSpellFixture, dndArmorFixture } from '~~/test/nuxt/fixtures/open5e'
 
-interface Props { value: DndItem[] }
+interface Props {
+  value: DndItem[]
+}
 
 const props: Props = {
-  value: [
-    dndSpellFixture,
-    dndArmorFixture,
-  ],
+  value: [dndSpellFixture, dndArmorFixture],
 }
 
 describe('Initiative pinned content widget', async () => {
@@ -20,9 +19,17 @@ describe('Initiative pinned content widget', async () => {
   })
 
   it('Should show empty state when no items', async () => {
-    const component = await mountSuspended(PinnedContent, { props: { value: [] } })
+    const component = await mountSuspended(PinnedContent, {
+      props: { value: [] },
+    })
 
-    expect(component.text()).toContain('pages.encounter.pinnedContent.empty')
+    expect(component.html()).toMatchSnapshot()
+    expect(component.text()).toContain(
+      'pages.encounter.pinnedContent.empty.title',
+    )
+    expect(component.text()).toContain(
+      'pages.encounter.pinnedContent.empty.text',
+    )
   })
 
   it('Should show accordion when items are present', async () => {

@@ -3,28 +3,28 @@ import { changelogs } from '~~/constants/changelogs'
 
 useSeo('Changelogs')
 
-const majors = [...new Set(
-  changelogs.map(changelog => getMajor(changelog.version)),
-)].sort((a, b) => b - a)
+const majors = [
+  ...new Set(changelogs.map(changelog => getMajor(changelog.version))),
+].sort((a, b) => b - a)
 
 const selectedMajor = ref<number>(majors[0] ?? 0)
 
-const sortedChangelogs = computed(() => changelogs
-  .filter(changelog => changelog.version.startsWith(`v${selectedMajor.value}.`))
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+const sortedChangelogs = computed(() =>
+  changelogs
+    .filter(changelog =>
+      changelog.version.startsWith(`v${selectedMajor.value}.`),
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
 )
 
-function getMajor (version: string) {
+function getMajor(version: string) {
   const [major] = String(version).replace('v', '').split('.').map(parseInt)
   return major ?? 0
 }
 </script>
 
 <template>
-  <NuxtLayout
-    no-padding
-    shadow
-  >
+  <NuxtLayout no-padding shadow>
     <div class="dnd-container pt-25 mb-6 flex flex-col gap-4 max-w-4xl">
       <h1 class="text-3xl font-bold tracking-tight md:text-5xl">
         {{ $t('pages.changelog.title') }}
@@ -38,11 +38,7 @@ function getMajor (version: string) {
         </UiSelectTrigger>
         <UiSelectContent>
           <UiSelectGroup>
-            <UiSelectItem
-              v-for="major in majors"
-              :key="major"
-              :value="major"
-            >
+            <UiSelectItem v-for="major in majors" :key="major" :value="major">
               {{ $t('general.version') }} {{ major }}
             </UiSelectItem>
           </UiSelectGroup>
@@ -56,7 +52,9 @@ function getMajor (version: string) {
         :key="index"
         class="relative flex flex-col gap-4 md:flex-row md:gap-16"
       >
-        <div class="top-30 flex h-min w-64 shrink-0 items-center gap-4 md:sticky">
+        <div
+          class="top-30 flex h-min w-64 shrink-0 items-center gap-4 md:sticky"
+        >
           <UiBadge>
             {{ entry.version }}
           </UiBadge>
@@ -68,11 +66,13 @@ function getMajor (version: string) {
             year="numeric"
           />
         </div>
-        <div class="flex flex-col gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-5">
+        <div
+          class="flex flex-col gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-5"
+        >
           <div
             v-for="(feature, i) in entry.features"
             :key="i"
-            class="flex flex-col gap-1.5 "
+            class="flex flex-col gap-1.5"
           >
             <h4
               class="border rounded-full w-fit px-2 py-[2px] text-foreground text-sm font-normal"
@@ -85,11 +85,10 @@ function getMajor (version: string) {
               {{ feature.title }}
             </h4>
 
-            <ul class="pl-6 space-y-1.5 list-disc text-sm marker:text-foreground">
-              <template
-                v-for="(element, k) in feature.items"
-                :key="k"
-              >
+            <ul
+              class="pl-6 space-y-1.5 list-disc text-sm marker:text-foreground"
+            >
+              <template v-for="(element, k) in feature.items" :key="k">
                 <li>
                   {{ element.text }}
                 </li>

@@ -1,6 +1,16 @@
 import { config } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import * as dndHelpers from '~~/shared/utils/dnd/names'
+
+let nameIndex = 0
+
+beforeEach(() => {
+  nameIndex = 0
+  vi.spyOn(dndHelpers, 'randomName').mockImplementation(
+    () => `Test Name ${++nameIndex}`,
+  )
+})
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,
@@ -29,7 +39,11 @@ config.global.stubs = {
 }
 
 // Disable payload extraction in tests
-vi.mock('#app/plugins/payload.client', () => ({
+vi.mock('~/plugins/payload.client', () => ({
+  default: () => {},
+}))
+
+vi.mock('~/plugins/session.client', () => ({
   default: () => {},
 }))
 
@@ -37,8 +51,8 @@ mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
   locale: { value: 'en' },
   locales: [
-    { code: 'nl', iso: 'nl-BE', name: 'Nederlands' },
-    { code: 'en', iso: 'en-US', name: 'English' },
+    { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
+    { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
   ],
 }))
 

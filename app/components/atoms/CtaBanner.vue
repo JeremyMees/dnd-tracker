@@ -10,7 +10,9 @@ const { user } = useAuthentication()
 
 <template>
   <div class="dnd-container max-w-[1600px] relative">
-    <div class="grid lg:grid-cols-2 gap-8 p-6 md:p-12 bg-primary/20 backdrop-blur-lg rounded-[32px] overflow-hidden transition-colors duration-300">
+    <div
+      class="grid lg:grid-cols-2 gap-8 p-6 md:p-12 bg-primary/20 backdrop-blur-lg rounded-[32px] overflow-hidden transition-colors duration-300"
+    >
       <div class="max-w-prose relative z-1">
         <p class="head-1 mb-4 text-foreground">
           {{ title }}
@@ -18,10 +20,7 @@ const { user } = useAuthentication()
         <p class="pb-8 text-muted-foreground">
           {{ subtitle }}
         </p>
-        <UiButton
-          variant="tertiary"
-          as-child
-        >
+        <UiButton variant="tertiary" as-child>
           <NuxtLinkLocale
             data-test-link
             :to="user ? '/pricing' : '/login'"
@@ -42,7 +41,9 @@ const { user } = useAuthentication()
           loading="lazy"
         />
       </div>
-      <div class="absolute inset-0 tracker-shadow-inset border-4 border-primary rounded-[32px]" />
+      <div
+        class="absolute inset-0 tracker-shadow-inset border-4 border-primary rounded-[32px]"
+      />
     </div>
   </div>
 </template>

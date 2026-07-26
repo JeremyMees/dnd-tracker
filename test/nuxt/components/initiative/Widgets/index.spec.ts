@@ -44,7 +44,9 @@ describe('Initiative widgets wrapper', async () => {
 
     component = await mountSuspended(Widgets, { provide })
 
-    expect(component.findComponent({ name: 'InitiativeWidgetsNote' }).exists()).toBeTruthy()
+    expect(
+      component.findComponent({ name: 'InitiativeWidgetsNote' }).exists(),
+    ).toBeTruthy()
   })
 
   it('Should render pinned content widget when enabled', async () => {
@@ -59,7 +61,11 @@ describe('Initiative widgets wrapper', async () => {
 
     component = await mountSuspended(Widgets, { provide })
 
-    expect(component.findComponent({ name: 'InitiativeWidgetsPinnedContent' }).exists()).toBeTruthy()
+    expect(
+      component
+        .findComponent({ name: 'InitiativeWidgetsPinnedContent' })
+        .exists(),
+    ).toBeTruthy()
   })
 
   it('Should render all widgets when not modified', async () => {
@@ -73,13 +79,21 @@ describe('Initiative widgets wrapper', async () => {
 
     component = await mountSuspended(Widgets, { provide })
 
-    expect(component.findComponent({ name: 'InitiativeWidgetsNote' }).exists()).toBeTruthy()
-    expect(component.findComponent({ name: 'InitiativeWidgetsPinnedContent' }).exists()).toBeTruthy()
+    expect(
+      component.findComponent({ name: 'InitiativeWidgetsNote' }).exists(),
+    ).toBeTruthy()
+    expect(
+      component
+        .findComponent({ name: 'InitiativeWidgetsPinnedContent' })
+        .exists(),
+    ).toBeTruthy()
   })
 
   it('Should call update when note content changes', async () => {
     component = await mountSuspended(Widgets, { provide })
-    const noteWidget = component.findComponent({ name: 'InitiativeWidgetsNote' })
+    const noteWidget = component.findComponent({
+      name: 'InitiativeWidgetsNote',
+    })
 
     await noteWidget.vm.$emit('update', 'New note content')
 
@@ -88,7 +102,9 @@ describe('Initiative widgets wrapper', async () => {
 
   it('Should call update when pinned content changes', async () => {
     component = await mountSuspended(Widgets, { provide })
-    const pinnedContentWidget = component.findComponent({ name: 'InitiativeWidgetsPinnedContent' })
+    const pinnedContentWidget = component.findComponent({
+      name: 'InitiativeWidgetsPinnedContent',
+    })
 
     await pinnedContentWidget.vm.$emit('update', [])
 

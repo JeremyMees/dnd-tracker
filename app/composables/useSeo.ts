@@ -39,11 +39,9 @@ export function useSeo(title?: string): void {
       email: seo.email,
       contactPoint: {
         '@type': 'ContactPoint',
-        'email': seo.email,
+        email: seo.email,
       },
-      sameAs: [
-        'https://www.instagram.com/dnd.tracker/',
-      ],
+      sameAs: ['https://www.instagram.com/dnd.tracker/'],
     }),
     defineWebPage({
       name: title || 'DnD Tracker',

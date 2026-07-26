@@ -28,7 +28,9 @@ describe('ContentCardMagicItem', async () => {
   })
 
   it('Should render expanded when isOpen is true', async () => {
-    const component = await mountSuspended(ContentCardMagicItem, { props: { ...props, isOpen: true } })
+    const component = await mountSuspended(ContentCardMagicItem, {
+      props: { ...props, isOpen: true },
+    })
 
     expect(component.find('[data-test-separator]').exists()).toBeTruthy()
     expect(component.text()).toContain('Rarity: Uncommon')

@@ -52,10 +52,14 @@ function mapSpellV2(dto: Open5eSpell): DndSpell {
     castingOptions: dto.casting_options.map(option => ({
       type: option.type,
       ...(option.damage_roll ? { damageRoll: option.damage_roll } : {}),
-      ...(option.target_count != null ? { targetCount: option.target_count } : {}),
+      ...(option.target_count != null
+        ? { targetCount: option.target_count }
+        : {}),
       ...(option.duration ? { duration: option.duration } : {}),
       ...(option.range != null ? { range: option.range } : {}),
-      ...(option.concentration != null ? { concentration: option.concentration } : {}),
+      ...(option.concentration != null
+        ? { concentration: option.concentration }
+        : {}),
       ...(option.shape_size != null ? { shapeSize: option.shape_size } : {}),
       ...(option.desc ? { desc: option.desc } : {}),
     })),
@@ -71,7 +75,9 @@ function mapSpellV2(dto: Open5eSpell): DndSpell {
     range: dto.range,
     ritual: dto.ritual,
     castingTime: dto.casting_time,
-    ...(dto.reaction_condition ? { reactionCondition: dto.reaction_condition } : {}),
+    ...(dto.reaction_condition
+      ? { reactionCondition: dto.reaction_condition }
+      : {}),
     verbal: dto.verbal,
     somatic: dto.somatic,
     material: dto.material,

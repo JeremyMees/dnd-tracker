@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { DialogDescription, type DialogDescriptionProps, useForwardProps } from 'reka-ui'
+import {
+  DialogDescription,
+  type DialogDescriptionProps,
+  useForwardProps,
+} from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<DialogDescriptionProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  DialogDescriptionProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

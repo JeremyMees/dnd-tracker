@@ -11,20 +11,26 @@ export function useHealthCheck() {
 
   useInterval(300000, { callback: checkOpen5e })
 
-  watch(() => isOnline.value, () => {
-    toast({
-      title: t(`components.healthCheck.${isOnline.value ? 'online' : 'offline'}.title`),
-      description: t(`components.healthCheck.${isOnline.value ? 'online' : 'offline'}.text`),
-      variant: isOnline.value ? 'success' : 'destructive',
-    })
-  })
+  watch(
+    () => isOnline.value,
+    () => {
+      toast({
+        title: t(
+          `components.healthCheck.${isOnline.value ? 'online' : 'offline'}.title`,
+        ),
+        description: t(
+          `components.healthCheck.${isOnline.value ? 'online' : 'offline'}.text`,
+        ),
+        variant: isOnline.value ? 'success' : 'destructive',
+      })
+    },
+  )
 
   async function checkOpen5e() {
     try {
       const res = await $fetch('https://api.open5e.com/v2')
       isOpen5eOnline.value = !!res
-    }
-    catch {
+    } catch {
       isOpen5eOnline.value = false
     }
 

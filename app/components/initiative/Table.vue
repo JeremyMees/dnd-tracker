@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { FlexRender, getCoreRowModel, getExpandedRowModel, useVueTable } from '@tanstack/vue-table'
+import {
+  FlexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  useVueTable,
+} from '@tanstack/vue-table'
 import { generateColumns, expandedMarkup } from '~~/tables/initiative-sheet'
 import { prefetchConditionsListing } from '~~/queries/open5e'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
@@ -8,15 +13,11 @@ defineProps<{ loading: boolean }>()
 
 const { activeRow, sheet, update } = validateInject(INITIATIVE_SHEET)
 
-const {
-  previous,
-  next,
-  reset,
-  active,
-  expanded,
-  selected,
-  columnVisibility,
-} = useInitiativeSheet(computed(() => sheet.value), update)
+const { previous, next, reset, active, expanded, selected, columnVisibility } =
+  useInitiativeSheet(
+    computed(() => sheet.value),
+    update,
+  )
 
 syncRef(activeRow, active, { direction: 'rtl' })
 
@@ -32,9 +33,13 @@ const tablePadding = computed(() => {
 const columns = generateColumns()
 const tableData = shallowRef<InitiativeSheetRow[]>([])
 
-watch(() => sheet.value?.rows, (newRows) => {
-  tableData.value = newRows || []
-}, { immediate: true })
+watch(
+  () => sheet.value?.rows,
+  newRows => {
+    tableData.value = newRows || []
+  },
+  { immediate: true },
+)
 
 const table = useVueTable({
   data: tableData,
@@ -43,11 +48,18 @@ const table = useVueTable({
   getExpandedRowModel: getExpandedRowModel(),
   getRowId: row => row.id.toString(),
   onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
-  onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, selected),
+  onRowSelectionChange: updaterOrValue =>
+    valueUpdater(updaterOrValue, selected),
   state: {
-    get expanded() { return expanded.value },
-    get rowSelection() { return selected.value },
-    get columnVisibility() { return columnVisibility.value },
+    get expanded() {
+      return expanded.value
+    },
+    get rowSelection() {
+      return selected.value
+    },
+    get columnVisibility() {
+      return columnVisibility.value
+    },
   },
 })
 </script>
@@ -107,10 +119,7 @@ const table = useVueTable({
                   />
                 </UiTableCell>
               </UiTableRow>
-              <UiTableRow
-                v-if="row.getIsExpanded()"
-                data-test-expanded
-              >
+              <UiTableRow v-if="row.getIsExpanded()" data-test-expanded>
                 <UiTableCell :colspan="row.getAllCells().length">
                   <FlexRender :render="expandedMarkup(row)" />
                 </UiTableCell>
@@ -127,14 +136,8 @@ const table = useVueTable({
             />
           </template>
 
-          <UiTableRow
-            v-else
-            data-test-empty-state
-          >
-            <UiTableCell
-              :colspan="columns.length"
-              class="md:p-10"
-            >
+          <UiTableRow v-else data-test-empty-state>
+            <UiTableCell :colspan="columns.length" class="md:p-10">
               <InitiativeTableEmptyState :campaign="!!sheet?.campaign" />
             </UiTableCell>
           </UiTableRow>

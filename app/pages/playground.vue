@@ -25,17 +25,21 @@ function getQueryData(): void {
   const token = route.query.token as string
 
   if (token) {
-    const encounter = queryClient.getQueryData<InitiativeSheet>(['useInitiativeSheetPlayground', token])
+    const encounter = queryClient.getQueryData<InitiativeSheet>([
+      'useInitiativeSheetPlayground',
+      token,
+    ])
 
     if (encounter) data.value = encounter
     else isError.value = true
-  }
-  else data.value = playgroundSheet
+  } else data.value = playgroundSheet
 
   isPending.value = false
 }
 
-async function handleUpdate(payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>): Promise<void> {
+async function handleUpdate(
+  payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
+): Promise<void> {
   if (!data.value) return
 
   data.value = {
@@ -53,23 +57,14 @@ provide(INITIATIVE_SHEET, {
 </script>
 
 <template>
-  <NuxtLayout
-    name="sidebar"
-    :header="$t('components.navbar.playground')"
-  >
-    <InitiativeTable
-      v-if="!isError"
-      :loading="isPending"
-    />
+  <NuxtLayout name="sidebar" :header="$t('components.navbar.playground')">
+    <InitiativeTable v-if="!isError" :loading="isPending" />
     <Card
       v-else
       color="danger"
       class="h-[40vh] flex flex-col items-center justify-center gap-2"
     >
-      <Icon
-        name="tabler:alert-triangle"
-        class="size-10"
-      />
+      <Icon name="tabler:alert-triangle" class="size-10" />
       <p class="head-3">
         {{ $t('general.error.text') }}
       </p>

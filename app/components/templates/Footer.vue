@@ -1,11 +1,12 @@
 <template>
-  <div class="bg-muted/50 backdrop-blur-lg border-4 border-muted m-4 rounded-lg pt-10 pb-2">
+  <div
+    class="bg-muted/50 backdrop-blur-lg border-4 border-muted m-4 rounded-lg pt-10 pb-2"
+  >
     <div class="container-max px-4 flex flex-col gap-20">
-      <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20">
-        <NuxtLinkLocale
-          to="/"
-          class="mt-2"
-        >
+      <div
+        class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20"
+      >
+        <NuxtLinkLocale to="/" class="mt-2">
           <NuxtImg
             src="/text-logo.svg"
             alt="DnD Tracker logo"
@@ -29,10 +30,7 @@
               />
               Email
             </NuxtLink>
-            <NuxtLinkLocale
-              to="/contact"
-              class="flex items-center"
-            >
+            <NuxtLinkLocale to="/contact" class="flex items-center">
               <Icon
                 name="tabler:forms"
                 class="min-w-6 min-h-6 mr-2"
@@ -101,10 +99,7 @@
               />
               {{ $t('components.navbar.featureRequest') }}
             </NuxtLinkLocale>
-            <NuxtLinkLocale
-              to="/updates/changelog"
-              class="flex items-center"
-            >
+            <NuxtLinkLocale to="/updates/changelog" class="flex items-center">
               <Icon
                 name="tabler:bolt"
                 class="min-w-6 min-h-6 mr-2"
@@ -120,10 +115,7 @@
             {{ $t('components.navbar.policies') }}
           </p>
           <div class="flex flex-col gap-4">
-            <NuxtLinkLocale
-              to="/policies/cookie"
-              class="flex items-center"
-            >
+            <NuxtLinkLocale to="/policies/cookie" class="flex items-center">
               <Icon
                 name="tabler:cookie"
                 class="min-w-6 min-h-6 mr-2"
@@ -131,10 +123,7 @@
               />
               {{ $t('components.navbar.cookie') }}
             </NuxtLinkLocale>
-            <NuxtLinkLocale
-              to="/policies/privacy"
-              class="flex items-center"
-            >
+            <NuxtLinkLocale to="/policies/privacy" class="flex items-center">
               <Icon
                 name="tabler:spy"
                 class="min-w-6 min-h-6 mr-2"
@@ -142,10 +131,7 @@
               />
               {{ $t('components.navbar.privacy') }}
             </NuxtLinkLocale>
-            <NuxtLinkLocale
-              to="/policies/legal"
-              class="flex items-center"
-            >
+            <NuxtLinkLocale to="/policies/legal" class="flex items-center">
               <Icon
                 name="tabler:gavel"
                 class="min-w-6 min-h-6 mr-2"

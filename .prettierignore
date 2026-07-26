@@ -1,0 +1,7 @@
+# Add files here to ignore them from prettier formatting
+/node_modules
+/.github
+/.husky
+/.vscode
+pnpm-lock.yaml
+/server/generated

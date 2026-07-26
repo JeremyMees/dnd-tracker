@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useNoteCreate, useNoteUpdate } from '~~/queries/notes'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -14,10 +13,10 @@ const props = defineProps<{
 const { mutateAsync: createNote } = useNoteCreate()
 const { mutateAsync: updateNote } = useNoteUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   title: z.string().min(5).max(50),
   text: z.string().min(10).max(5000),
-}))
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -29,7 +28,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   const formData = {
@@ -42,14 +41,13 @@ const onSubmit = form.handleSubmit(async (values) => {
       data: formData,
       id: props.note.id,
       onSuccess: () => emit('close'),
-      onError: (err: string) => formError.value = err,
+      onError: (err: string) => (formError.value = err),
     })
-  }
-  else {
+  } else {
     await createNote({
       data: formData,
       onSuccess: () => emit('close'),
-      onError: (err: string) => formError.value = err,
+      onError: (err: string) => (formError.value = err),
     })
   }
 })
@@ -57,49 +55,31 @@ const onSubmit = form.handleSubmit(async (values) => {
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="title"
-    >
+    <UiFormField v-slot="{ componentField }" name="title">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput
-            type="text"
-            v-bind="componentField"
-          />
+          <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ value, setValue, errorMessage }"
-      name="text"
-    >
+    <UiFormField v-slot="{ value, setValue, errorMessage }" name="text">
       <UiFormItem v-auto-animate>
         <UiFormControl>
-          <TextEditor
-            :content="value"
-            @updated="setValue($event)"
-          />
+          <TextEditor :content="value" @updated="setValue($event)" />
         </UiFormControl>
         <UiFormMessage v-if="errorMessage">
           {{ errorMessage }}
         </UiFormMessage>
       </UiFormItem>
     </UiFormField>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton
-      type="submit"
-      class="w-full"
-    >
+    <UiButton type="submit" class="w-full">
       {{ $t(`components.noteModal.${note ? 'update' : 'add'}`) }}
     </UiButton>
   </UiFormWrapper>

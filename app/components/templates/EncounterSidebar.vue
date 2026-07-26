@@ -6,17 +6,17 @@ defineProps<{ isExpanded: boolean }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
-type Modals = 'settings' | 'newHomebrew' | 'addHomebrew' | 'bestiary' | 'content' | undefined
+type Modals =
+  | 'settings'
+  | 'newHomebrew'
+  | 'addHomebrew'
+  | 'bestiary'
+  | 'content'
+  | undefined
 
-const diceRollerOpen = ref(false)
-const fantasyNameGeneratorOpen = ref(false)
 const openModal = ref<Modals>(undefined)
 
-onBeforeUnmount(() => {
-  openModal.value = undefined
-  diceRollerOpen.value = false
-  fantasyNameGeneratorOpen.value = false
-})
+onBeforeUnmount(() => (openModal.value = undefined))
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 </script>
@@ -27,42 +27,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       {{ $t('pages.encounter.options') }}
     </UiSidebarGroupLabel>
     <UiSidebarMenu>
-      <UiSidebarMenuItem>
-        <UiPopover v-model:open="diceRollerOpen">
-          <UiPopoverTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                id="tour-2"
-                v-tippy="{
-                  content: $t('actions.roll'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('actions.roll')"
-                class="flex items-center gap-x-2 p-2 w-full text-sm"
-              >
-                <Icon
-                  name="tabler:hexagon"
-                  class="size-4 min-w-4 text-tertiary"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('actions.roll') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiPopoverTrigger>
-          <UiPopoverContent
-            align="center"
-            side="right"
-            prioritize-position
-          >
-            <DiceRoller
-              :styled="false"
-              @rolled="diceRollerOpen = false"
-            />
-          </UiPopoverContent>
-        </UiPopover>
-      </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiDialog
           :open="openModal === 'content'"
@@ -80,10 +44,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 :aria-label="`${$t('components.navbar.dnd-content')}`"
                 @click="openModal = 'content'"
               >
-                <Icon
-                  name="tabler:book"
-                  class="size-4 min-w-4 text-help"
-                />
+                <Icon name="tabler:book" class="size-4 min-w-4 text-help" />
                 <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('components.navbar.dnd-content') }}
                 </span>
@@ -107,7 +68,9 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem v-if="maxCharacters">
-        <UiSidebarMenuButton class="bg-destructive/10 border border-destructive">
+        <UiSidebarMenuButton
+          class="bg-destructive/10 border border-destructive"
+        >
           <Icon
             v-tippy="{
               content: $t('pages.encounter.maxCharacters'),
@@ -269,41 +232,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiSidebarMenuItem>
       </template>
       <UiSidebarMenuItem>
-        <UiPopover v-model:open="fantasyNameGeneratorOpen">
-          <UiPopoverTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                v-tippy="{
-                  content: $t('components.navbar.fantasy'),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                :aria-label="$t('components.navbar.fantasy')"
-                class="flex items-center gap-x-2 p-2 w-full text-sm"
-              >
-                <Icon
-                  name="tabler:signature"
-                  class="size-4 min-w-4 text-success"
-                />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('components.navbar.fantasy') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiPopoverTrigger>
-          <UiPopoverContent
-            align="center"
-            side="right"
-            prioritize-position
-          >
-            <FantasyNameGenerator
-              :amount="10"
-              compact
-            />
-          </UiPopoverContent>
-        </UiPopover>
-      </UiSidebarMenuItem>
-      <UiSidebarMenuItem>
         <UiDialog
           :open="openModal === 'settings'"
           @close="openModal = undefined"
@@ -320,10 +248,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 :aria-label="$t('general.setting', 2)"
                 @click="openModal = 'settings'"
               >
-                <Icon
-                  name="tabler:settings"
-                  class="size-4 min-w-4"
-                />
+                <Icon name="tabler:settings" class="size-4 min-w-4" />
                 <span class="group-data-[collapsible=icon]:hidden truncate">
                   {{ $t('general.setting', 2) }}
                 </span>
@@ -348,20 +273,13 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
         <UiSidebarMenuButton as-child>
-          <tippy
-            trigger="mouseenter focus click"
-            placement="right"
-            :delay="0"
-          >
+          <tippy trigger="mouseenter focus click" placement="right" :delay="0">
             <button
               id="tour-8"
               :aria-label="$t('general.hotkey', 2)"
               class="flex items-center gap-x-2"
             >
-              <Icon
-                name="tabler:keyboard"
-                class="size-4 min-w-4"
-              />
+              <Icon name="tabler:keyboard" class="size-4 min-w-4" />
               <span class="group-data-[collapsible=icon]:hidden truncate">
                 {{ $t('general.hotkey', 2) }}
               </span>
@@ -386,9 +304,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                       {{ $t('actions.changeInitiative') }}
                     </p>
                     <UiKbdGroup>
-                      <UiKbd>
-                        MOD
-                      </UiKbd>
+                      <UiKbd> MOD </UiKbd>
                       <span class="text-muted-foreground">+</span>
                       <UiKbdGroup>
                         <UiKbd>←</UiKbd>
@@ -402,9 +318,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                       {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
                     </p>
                     <UiKbdGroup>
-                      <UiKbd>
-                        MOD
-                      </UiKbd>
+                      <UiKbd> MOD </UiKbd>
                       <span class="text-muted-foreground">+</span>
                       <UiKbd>⏎</UiKbd>
                     </UiKbdGroup>

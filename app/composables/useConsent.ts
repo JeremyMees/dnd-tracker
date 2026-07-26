@@ -43,7 +43,7 @@ export function useConsent() {
   }
 
   function rejectAll() {
-    consentTypes.forEach((type) => {
+    consentTypes.forEach(type => {
       if (type.name !== 'necessary') setConsent(type.name, false)
     })
     consentStore.getState().setActiveUI('none')

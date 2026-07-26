@@ -28,7 +28,9 @@ describe('ContentCardWeapon', async () => {
   })
 
   it('Should render properties when isOpen is true', async () => {
-    const component = await mountSuspended(ContentCardWeapon, { props: { ...props, isOpen: true } })
+    const component = await mountSuspended(ContentCardWeapon, {
+      props: { ...props, isOpen: true },
+    })
 
     expect(component.text()).toContain('Topple')
     expect(component.text()).toContain('Versatile')

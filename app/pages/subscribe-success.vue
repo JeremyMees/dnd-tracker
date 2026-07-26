@@ -40,10 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <NuxtLayout
-    name="centered"
-    shadow
-  >
+  <NuxtLayout name="centered" shadow>
     <template #header>
       <h1>
         {{ $t('pages.subscribeSuccess.title') }}

@@ -98,7 +98,9 @@ describe('Initiative table row modify', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-copy]').attributes('disabled')).toBeDefined()
+    expect(
+      component.find('[data-test-copy]').attributes('disabled'),
+    ).toBeDefined()
   })
 
   it('Should not call update when sheet is undefined', async () => {

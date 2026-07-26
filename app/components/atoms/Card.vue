@@ -6,7 +6,8 @@ withDefaults(
     noPadding?: boolean
     noStyling?: boolean
     as?: string
-  }>(), {
+  }>(),
+  {
     color: 'black',
     round: false,
     noPadding: false,
@@ -33,7 +34,8 @@ withDefaults(
       'border-warning bg-warning/50': color === 'warning' && !noStyling,
       'border-destructive bg-destructive/50': color === 'danger' && !noStyling,
       'border-help bg-help/50': color === 'help' && !noStyling,
-      'border-background bg-foreground/50': color === 'background' && !noStyling,
+      'border-background bg-foreground/50':
+        color === 'background' && !noStyling,
       'border-secondary bg-secondary/50': color === 'secondary' && !noStyling,
     }"
   >

@@ -24,7 +24,9 @@ describe('MonsterCard', async () => {
     const component = await mountSuspended(MonsterCard, { props })
 
     expect(component.find('[data-test-title]').text()).toBe(props.monster.name)
-    expect(component.find('[data-test-add-button]').exists()).toBe(props.addable)
+    expect(component.find('[data-test-add-button]').exists()).toBe(
+      props.addable,
+    )
     expect(component.find('[data-test-actions-table]').exists()).toBeFalsy()
     expect(component.find('[data-test-expand-button]').exists()).toBeTruthy()
   })
@@ -42,7 +44,9 @@ describe('MonsterCard', async () => {
   })
 
   it('Should be able to add the monster', async () => {
-    const component = await mountSuspended(MonsterCard, { props: { ...props, addable: true } })
+    const component = await mountSuspended(MonsterCard, {
+      props: { ...props, addable: true },
+    })
     const button = component.find('[data-test-add-button]')
 
     expect(button.exists()).toBeTruthy()

@@ -1,4 +1,8 @@
-import { mockNuxtImport, mountSuspended, mockComponent } from '@nuxt/test-utils/runtime'
+import {
+  mockNuxtImport,
+  mountSuspended,
+  mockComponent,
+} from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import TabItem from '~/components/atoms/TabItem.vue'
 
@@ -32,20 +36,30 @@ describe('TabItem', async () => {
   })
 
   it('Should show inactive state', async () => {
-    const component = await mountSuspended(TabItem, { props: { ...props, link: '/other-path' } })
+    const component = await mountSuspended(TabItem, {
+      props: { ...props, link: '/other-path' },
+    })
 
-    expect(component.attributes('class')).toContain('bg-secondary/50 lg:border-transparent')
+    expect(component.attributes('class')).toContain(
+      'bg-secondary/50 lg:border-transparent',
+    )
   })
 
   it('Should show active state', async () => {
     const component = await mountSuspended(TabItem, { props })
 
-    expect(component.attributes('class')).toContain('bg-primary/50 lg:border-primary')
+    expect(component.attributes('class')).toContain(
+      'bg-primary/50 lg:border-primary',
+    )
   })
 
   it('Should show disabled state', async () => {
-    const component = await mountSuspended(TabItem, { props: { ...props, disabled: true } })
+    const component = await mountSuspended(TabItem, {
+      props: { ...props, disabled: true },
+    })
 
-    expect(component.attributes('class')).toContain('pointer-events-none opacity-50')
+    expect(component.attributes('class')).toContain(
+      'pointer-events-none opacity-50',
+    )
   })
 })

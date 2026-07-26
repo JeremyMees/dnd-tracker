@@ -37,7 +37,9 @@ describe('AbilityScores', () => {
 
   it('should display each ability abbreviation', async () => {
     const component = await mountSuspended(AbilityScores, { props })
-    const labels = component.findAll('[data-test-ability-label]').map(el => el.text())
+    const labels = component
+      .findAll('[data-test-ability-label]')
+      .map(el => el.text())
 
     expect(labels).toContain('STR')
     expect(labels).toContain('DEX')
@@ -49,7 +51,9 @@ describe('AbilityScores', () => {
 
   it('should display formatted modifiers with + prefix for positive values', async () => {
     const component = await mountSuspended(AbilityScores, { props })
-    const modifierTexts = component.findAll('[data-test-ability-modifier]').map(el => el.text())
+    const modifierTexts = component
+      .findAll('[data-test-ability-modifier]')
+      .map(el => el.text())
 
     expect(modifierTexts).toContain('+4')
     expect(modifierTexts).toContain('+2')
@@ -60,14 +64,18 @@ describe('AbilityScores', () => {
 
   it('should display formatted modifier with - prefix for negative values', async () => {
     const component = await mountSuspended(AbilityScores, { props })
-    const modifierTexts = component.findAll('[data-test-ability-modifier]').map(el => el.text())
+    const modifierTexts = component
+      .findAll('[data-test-ability-modifier]')
+      .map(el => el.text())
 
     expect(modifierTexts).toContain('-1')
   })
 
   it('should display raw ability scores', async () => {
     const component = await mountSuspended(AbilityScores, { props })
-    const scoreTexts = component.findAll('[data-test-ability-score]').map(el => el.text())
+    const scoreTexts = component
+      .findAll('[data-test-ability-score]')
+      .map(el => el.text())
 
     expect(scoreTexts).toContain('18')
     expect(scoreTexts).toContain('14')
@@ -83,8 +91,12 @@ describe('AbilityScores', () => {
       dexterity: 2,
     } as DndModifiers
 
-    const component = await mountSuspended(AbilityScores, { props: { abilityScores, modifiers: partialModifiers } })
-    const modifierTexts = component.findAll('[data-test-ability-modifier]').map(el => el.text())
+    const component = await mountSuspended(AbilityScores, {
+      props: { abilityScores, modifiers: partialModifiers },
+    })
+    const modifierTexts = component
+      .findAll('[data-test-ability-modifier]')
+      .map(el => el.text())
 
     expect(modifierTexts).toContain('+4')
     expect(modifierTexts).toContain('+2')
@@ -96,8 +108,12 @@ describe('AbilityScores', () => {
       strength: 0,
     } as DndModifiers
 
-    const component = await mountSuspended(AbilityScores, { props: { abilityScores, modifiers: partialModifiers } })
-    const modifierTexts = component.findAll('[data-test-ability-modifier]').map(el => el.text())
+    const component = await mountSuspended(AbilityScores, {
+      props: { abilityScores, modifiers: partialModifiers },
+    })
+    const modifierTexts = component
+      .findAll('[data-test-ability-modifier]')
+      .map(el => el.text())
 
     expect(modifierTexts).toContain('+0')
     expect(modifierTexts.filter(t => t === '_')).toHaveLength(5)

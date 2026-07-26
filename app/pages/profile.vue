@@ -26,58 +26,65 @@ async function updateAvatar(avatar: Avatar): Promise<void> {
   })
 }
 
-const handleUpdateProfile = useThrottleFn(async (data: ProfileUpdate & { password?: string }): Promise<void> => {
-  await updateProfile({
-    data,
-    id: user.value.id,
-    onSuccess: () => {
-      toast({
-        description: t('pages.profile.toast.success.text'),
-        variant: 'success',
-      })
-    },
-    onError: (error) => {
-      const message = error === 'New password should be different from the old password.'
-        ? t('pages.profile.password.same')
-        : error
-
-      toast({
-        title: t('general.error.title'),
-        description: error || t('general.error.text'),
-        variant: 'destructive',
-      })
-
-      throw new Error(message)
-    },
-  })
-}, 1000)
-
-async function handleRemoveUser(): Promise<void> {
-  ask({
-    title: t('pages.profile.dialog.delete.title'),
-    description: t('pages.profile.dialog.delete.text'),
-  }, async (confirmed: boolean) => {
-    if (!confirmed) return
-
-    await removeProfile({
+const handleUpdateProfile = useThrottleFn(
+  async (data: ProfileUpdate & { password?: string }): Promise<void> => {
+    await updateProfile({
+      data,
       id: user.value.id,
       onSuccess: () => {
-        navigateTo(localePath('/'))
-
         toast({
-          description: t('pages.profile.toast.delete.text'),
+          description: t('pages.profile.toast.success.text'),
           variant: 'success',
         })
       },
-      onError: () => {
+      onError: error => {
+        const message =
+          error === 'New password should be different from the old password.'
+            ? t('pages.profile.password.same')
+            : error
+
         toast({
           title: t('general.error.title'),
-          description: t('general.error.text'),
+          description: error || t('general.error.text'),
           variant: 'destructive',
         })
+
+        throw new Error(message)
       },
     })
-  })
+  },
+  1000,
+)
+
+async function handleRemoveUser(): Promise<void> {
+  ask(
+    {
+      title: t('pages.profile.dialog.delete.title'),
+      description: t('pages.profile.dialog.delete.text'),
+    },
+    async (confirmed: boolean) => {
+      if (!confirmed) return
+
+      await removeProfile({
+        id: user.value.id,
+        onSuccess: () => {
+          navigateTo(localePath('/'))
+
+          toast({
+            description: t('pages.profile.toast.delete.text'),
+            variant: 'success',
+          })
+        },
+        onError: () => {
+          toast({
+            title: t('general.error.title'),
+            description: t('general.error.text'),
+            variant: 'destructive',
+          })
+        },
+      })
+    },
+  )
 }
 </script>
 
@@ -102,7 +109,9 @@ async function handleRemoveUser(): Promise<void> {
         </div>
       </div>
       <UiSeparator />
-      <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
+      <div
+        class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6"
+      >
         <div class="md:min-w-[300px] flex-1">
           <h2>
             {{ $t('pages.profile.data.title') }}
@@ -124,7 +133,9 @@ async function handleRemoveUser(): Promise<void> {
         </div>
       </div>
       <UiSeparator />
-      <div class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6">
+      <div
+        class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6"
+      >
         <div class="md:min-w-[300px] flex-1">
           <h2>
             {{ $t('pages.profile.password.title') }}

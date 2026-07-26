@@ -13,9 +13,7 @@ defineProps<{
       <UiFormLabel v-if="label">
         {{ label }}
       </UiFormLabel>
-      <div
-        :class="cn('grid gap-1', listClass)"
-      >
+      <div :class="cn('grid gap-1', listClass)">
         <UiFormField
           v-for="option in options"
           v-slot="{ value, handleChange }"

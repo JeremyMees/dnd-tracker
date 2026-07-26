@@ -30,14 +30,17 @@ describe('Card', () => {
       ['help', 'border-help', 'bg-help/50'],
       ['background', 'border-background', 'bg-foreground/50'],
       ['secondary', 'border-secondary', 'bg-secondary/50'],
-    ])('Should apply correct classes for color "%s"', async (color, borderClass, bgClass) => {
-      const component = await mountSuspended(Card, {
-        props: { color: color as any },
-      })
+    ])(
+      'Should apply correct classes for color "%s"',
+      async (color, borderClass, bgClass) => {
+        const component = await mountSuspended(Card, {
+          props: { color: color as any },
+        })
 
-      expect(component.classes()).toContain(borderClass)
-      expect(component.classes()).toContain(bgClass)
-    })
+        expect(component.classes()).toContain(borderClass)
+        expect(component.classes()).toContain(bgClass)
+      },
+    )
   })
 
   describe('Round prop', () => {

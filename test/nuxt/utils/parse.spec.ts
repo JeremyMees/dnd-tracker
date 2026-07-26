@@ -75,6 +75,87 @@ describe('parse', () => {
     })
   })
 
+  describe('parseInteger', () => {
+    it('returns integer numbers as-is', () => {
+      expect(parseInteger(5)).toBe(5)
+      expect(parseInteger(0)).toBe(0)
+      expect(parseInteger(-7)).toBe(-7)
+    })
+
+    it('rounds float numbers to the nearest integer', () => {
+      expect(parseInteger(5.6)).toBe(6)
+      expect(parseInteger(5.4)).toBe(5)
+      expect(parseInteger(-3.5)).toBe(-3)
+    })
+
+    it('parses and rounds integer and float strings', () => {
+      expect(parseInteger('15')).toBe(15)
+      expect(parseInteger('3.14')).toBe(3)
+      expect(parseInteger('9.8')).toBe(10)
+      expect(parseInteger('-7')).toBe(-7)
+    })
+
+    it('rounds parsed fraction strings', () => {
+      expect(parseInteger('1/2')).toBe(1)
+      expect(parseInteger('1/4')).toBe(0)
+      expect(parseInteger('3/4')).toBe(1)
+    })
+
+    it('returns fallback for invalid strings', () => {
+      expect(parseInteger('abc')).toBe(0)
+      expect(parseInteger('')).toBe(0)
+      expect(parseInteger('   ')).toBe(0)
+      expect(parseInteger('abc', 99)).toBe(99)
+    })
+
+    it('returns fallback for null and undefined', () => {
+      expect(parseInteger(null)).toBe(0)
+      expect(parseInteger(undefined)).toBe(0)
+      expect(parseInteger(null, 42)).toBe(42)
+    })
+
+    it('returns fallback for non-finite numbers', () => {
+      expect(parseInteger(Number.NaN)).toBe(0)
+      expect(parseInteger(Infinity)).toBe(0)
+      expect(parseInteger(-Infinity, 3)).toBe(3)
+    })
+  })
+
+  describe('toIntegerOrUndefined', () => {
+    it('returns undefined for null and undefined', () => {
+      expect(toIntegerOrUndefined(null)).toBeUndefined()
+      expect(toIntegerOrUndefined(undefined)).toBeUndefined()
+    })
+
+    it('returns integer numbers as-is', () => {
+      expect(toIntegerOrUndefined(15)).toBe(15)
+      expect(toIntegerOrUndefined(0)).toBe(0)
+      expect(toIntegerOrUndefined(-3)).toBe(-3)
+    })
+
+    it('rounds float numbers to the nearest integer', () => {
+      expect(toIntegerOrUndefined(15.6)).toBe(16)
+      expect(toIntegerOrUndefined(15.2)).toBe(15)
+    })
+
+    it('parses and rounds numeric strings', () => {
+      expect(toIntegerOrUndefined('20')).toBe(20)
+      expect(toIntegerOrUndefined('3.7')).toBe(4)
+      expect(toIntegerOrUndefined('1/2')).toBe(1)
+    })
+
+    it('returns undefined for empty or invalid strings', () => {
+      expect(toIntegerOrUndefined('')).toBeUndefined()
+      expect(toIntegerOrUndefined('   ')).toBeUndefined()
+      expect(toIntegerOrUndefined('abc')).toBeUndefined()
+    })
+
+    it('returns undefined for non-finite numbers', () => {
+      expect(toIntegerOrUndefined(Number.NaN)).toBeUndefined()
+      expect(toIntegerOrUndefined(Infinity)).toBeUndefined()
+    })
+  })
+
   describe('parseIntegerFromText', () => {
     it('returns truncated numeric values', () => {
       expect(parseIntegerFromText(5)).toBe(5)

@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { damageTypes, conditionTypes, resistanceTypeMap } from '~~/constants/dnd'
+import {
+  damageTypes,
+  conditionTypes,
+  resistanceTypeMap,
+} from '~~/constants/dnd'
 
 const emptyTrait = {
   name: '',
@@ -26,27 +30,18 @@ const conditionOptions = conditionTypes.map(c => ({
     >
       <template #item="{ fieldName }">
         <div class="flex flex-col gap-2">
-          <UiFormField
-            v-slot="{ componentField }"
-            :name="`${fieldName}.name`"
-          >
+          <UiFormField v-slot="{ componentField }" :name="`${fieldName}.name`">
             <UiFormItem v-auto-animate>
               <UiFormLabel required>
                 {{ $t('components.inputs.nameLabel') }}
               </UiFormLabel>
               <UiFormControl>
-                <UiInput
-                  type="text"
-                  v-bind="componentField"
-                />
+                <UiInput type="text" v-bind="componentField" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
-          <UiFormField
-            v-slot="{ componentField }"
-            :name="`${fieldName}.desc`"
-          >
+          <UiFormField v-slot="{ componentField }" :name="`${fieldName}.desc`">
             <UiFormItem v-auto-animate>
               <UiFormLabel required>
                 {{ $t('components.inputs.descriptionLabel') }}

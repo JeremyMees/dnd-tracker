@@ -221,25 +221,53 @@ describe('transformers/utils', () => {
 
   describe('parseComponents', () => {
     it('detects verbal, somatic and material components', () => {
-      expect(parseComponents('V, S, M')).toEqual({ verbal: true, somatic: true, material: true })
-      expect(parseComponents('V, S')).toEqual({ verbal: true, somatic: true, material: false })
-      expect(parseComponents('M')).toEqual({ verbal: false, somatic: false, material: true })
+      expect(parseComponents('V, S, M')).toEqual({
+        verbal: true,
+        somatic: true,
+        material: true,
+      })
+      expect(parseComponents('V, S')).toEqual({
+        verbal: true,
+        somatic: true,
+        material: false,
+      })
+      expect(parseComponents('M')).toEqual({
+        verbal: false,
+        somatic: false,
+        material: true,
+      })
     })
 
     it('handles lowercase and extra spaces', () => {
-      expect(parseComponents('v, s, m')).toEqual({ verbal: true, somatic: true, material: true })
+      expect(parseComponents('v, s, m')).toEqual({
+        verbal: true,
+        somatic: true,
+        material: true,
+      })
     })
 
     it('returns all false for empty input', () => {
-      expect(parseComponents(null)).toEqual({ verbal: false, somatic: false, material: false })
-      expect(parseComponents('')).toEqual({ verbal: false, somatic: false, material: false })
+      expect(parseComponents(null)).toEqual({
+        verbal: false,
+        somatic: false,
+        material: false,
+      })
+      expect(parseComponents('')).toEqual({
+        verbal: false,
+        somatic: false,
+        material: false,
+      })
     })
   })
 
   describe('parseSenseRange', () => {
     it('extracts range for each sense keyword', () => {
-      expect(parseSenseRange('darkvision 60 ft., blindsight 30 ft.', 'darkvision')).toBe(60)
-      expect(parseSenseRange('darkvision 60 ft., blindsight 30 ft.', 'blindsight')).toBe(30)
+      expect(
+        parseSenseRange('darkvision 60 ft., blindsight 30 ft.', 'darkvision'),
+      ).toBe(60)
+      expect(
+        parseSenseRange('darkvision 60 ft., blindsight 30 ft.', 'blindsight'),
+      ).toBe(30)
     })
 
     it('returns undefined when sense is not present', () => {
@@ -304,11 +332,15 @@ describe('transformers/utils', () => {
 
   describe('mapConditionDescription', () => {
     it('returns desc when it has content', () => {
-      expect(mapConditionDescription('main desc', ['effect 1'])).toBe('main desc')
+      expect(mapConditionDescription('main desc', ['effect 1'])).toBe(
+        'main desc',
+      )
     })
 
     it('joins effectsDesc when desc is empty', () => {
-      expect(mapConditionDescription('', ['effect 1', 'effect 2'])).toBe('effect 1 * effect 2')
+      expect(mapConditionDescription('', ['effect 1', 'effect 2'])).toBe(
+        'effect 1 * effect 2',
+      )
       expect(mapConditionDescription(null, ['only effect'])).toBe('only effect')
     })
 

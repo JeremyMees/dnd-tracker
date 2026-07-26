@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useTeamMemberCreate, useTeamMemberRemove } from '~~/queries/team-members'
+import {
+  useTeamMemberCreate,
+  useTeamMemberRemove,
+} from '~~/queries/team-members'
 import { useCampaignUpdate } from '~~/queries/campaigns'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { campaignTransferRole } from '~~/constants/validation'
@@ -21,13 +23,17 @@ const { mutateAsync: createTeamMember } = useTeamMemberCreate()
 const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
 const { mutateAsync: updateCampaign } = useCampaignUpdate()
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   role: z.enum(campaignTransferRole),
   user: z.string(),
-  title: z.string().min(1).max(100).refine(val => val === props.current.title, {
-    message: t('zod.match', { field: props.current.title }),
-  }),
-}))
+  title: z
+    .string()
+    .min(1)
+    .max(100)
+    .refine(val => val === props.current.title, {
+      error: () => t('zod.match', { field: props.current.title }),
+    }),
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -35,12 +41,14 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const currentTeamMemberSubscription = computed<SubscriptionType | undefined>(() => {
-  const member = props.current.team?.find(t => t.user.id === form.values.user)
-  return member?.user.subscriptionType
-})
+const currentTeamMemberSubscription = computed<SubscriptionType | undefined>(
+  () => {
+    const member = props.current.team?.find(t => t.user.id === form.values.user)
+    return member?.user.subscriptionType
+  },
+)
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   const oldOwner = props.current.createdBy
@@ -50,8 +58,8 @@ const onSubmit = form.handleSubmit(async (values) => {
   if (!newOwner) return
 
   if (
-    currentTeamMemberSubscription.value === 'pro'
-    && values.role !== 'Remove'
+    currentTeamMemberSubscription.value === 'pro' &&
+    values.role !== 'Remove'
   ) {
     await createTeamMember({
       data: {
@@ -59,24 +67,26 @@ const onSubmit = form.handleSubmit(async (values) => {
         user: oldOwner.id,
         campaign: campaignId,
       },
-      onError: (err: string) => formError.value = err,
+      onError: (err: string) => (formError.value = err),
     })
   }
 
   await removeTeamMember({
     member: newOwner.id,
     campaign: campaignId,
-    onError: (err: string) => formError.value = err,
+    onError: (err: string) => (formError.value = err),
   })
 
   await updateCampaign({
     data: { createdBy: newOwner.user.id },
     id: campaignId,
-    onError: (err: string) => formError.value = err,
+    onError: (err: string) => (formError.value = err),
   })
 
   toast({
-    description: t('components.transferOwnershipModal.toast.success.title', { username: newOwner.user.username }),
+    description: t('components.transferOwnershipModal.toast.success.title', {
+      username: newOwner.user.username,
+    }),
     variant: 'success',
   })
 
@@ -87,10 +97,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
 <template>
   <UiFormWrapper @submit="onSubmit">
-    <UiFormField
-      v-slot="{ componentField }"
-      name="role"
-    >
+    <UiFormField v-slot="{ componentField }" name="role">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.newRoleLabel') }}
@@ -107,7 +114,10 @@ const onSubmit = form.handleSubmit(async (values) => {
                 v-for="option in [
                   { label: $t('general.roles.Admin.title'), value: 'Admin' },
                   { label: $t('general.roles.Viewer.title'), value: 'Viewer' },
-                  { label: $t('components.transferOwnershipModal.removed'), value: 'Remove' },
+                  {
+                    label: $t('components.transferOwnershipModal.removed'),
+                    value: 'Remove',
+                  },
                 ]"
                 :key="option.value"
                 :value="option.value"
@@ -120,10 +130,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <UiFormField
-      v-slot="{ componentField }"
-      name="user"
-    >
+    <UiFormField v-slot="{ componentField }" name="user">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.newOwnerLabel') }}
@@ -154,7 +161,9 @@ const onSubmit = form.handleSubmit(async (values) => {
     </UiFormField>
 
     <div
-      v-if="currentTeamMemberSubscription && currentTeamMemberSubscription !== 'pro'"
+      v-if="
+        currentTeamMemberSubscription && currentTeamMemberSubscription !== 'pro'
+      "
       class="text-sm text-destructive-foreground bg-destructive/50 border-2 border-destructive rounded-md p-2"
     >
       {{ $t('components.transferOwnershipModal.free') }}
@@ -173,10 +182,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       </template>
     </I18nT>
 
-    <UiFormField
-      v-slot="{ componentField }"
-      name="title"
-    >
+    <UiFormField v-slot="{ componentField }" name="title">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
           {{ $t('components.inputs.titleLabel') }}
@@ -192,18 +198,11 @@ const onSubmit = form.handleSubmit(async (values) => {
       </UiFormItem>
     </UiFormField>
 
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
 
-    <UiButton
-      type="submit"
-      variant="destructive"
-      class="w-full"
-    >
+    <UiButton type="submit" variant="destructive" class="w-full">
       {{ $t('actions.transfer') }}
     </UiButton>
   </UiFormWrapper>

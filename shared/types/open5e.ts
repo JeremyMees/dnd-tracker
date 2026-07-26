@@ -1,20 +1,20 @@
-export type Open5eType
-  = | 'spells'
-    | 'monsters'
-    | 'conditions'
-    | 'magicitems'
-    | 'weapons'
-    | 'armor'
-    | 'documents'
+export type Open5eType =
+  | 'spells'
+  | 'monsters'
+  | 'conditions'
+  | 'magicitems'
+  | 'weapons'
+  | 'armor'
+  | 'documents'
 
-export type Open5eSortBy
-  = | 'name'
-    | 'hit_points'
-    | '-hit_points'
-    | 'armor_class'
-    | '-armor_class'
-    | 'challenge_rating'
-    | '-challenge_rating'
+export type Open5eSortBy =
+  | 'name'
+  | 'hit_points'
+  | '-hit_points'
+  | 'armor_class'
+  | '-armor_class'
+  | 'challenge_rating'
+  | '-challenge_rating'
 
 export interface Open5eFilters {
   page: number
@@ -38,13 +38,13 @@ export interface Open5eResponse<T> {
   results: T[]
 }
 
-export type Open5eItem
-  = | Open5eSpell
-    | Open5eMagicItem
-    | Open5eWeapon
-    | Open5eArmor
-    | Open5eCondition
-    | Open5eMonster
+export type Open5eItem =
+  | Open5eSpell
+  | Open5eMagicItem
+  | Open5eWeapon
+  | Open5eArmor
+  | Open5eCondition
+  | Open5eMonster
 
 export interface Open5eMinimalDocument {
   name: string
@@ -95,7 +95,8 @@ export interface Open5eResistancesAndImmunities {
   condition_immunities: Open5eInfoObject[]
 }
 
-export type Open5eActionType = 'ACTION'
+export type Open5eActionType =
+  | 'ACTION'
   | 'BONUS_ACTION'
   | 'REACTION'
   | 'LEGENDARY_ACTION'
@@ -397,10 +398,10 @@ export interface Open5eV1Item {
   effects_desc?: string[]
 }
 
-export type Open5eListingResult
-  = | { type: 'spells', items: DndSpell[], pages: number }
-    | { type: 'monsters', items: DndMonster[], pages: number }
-    | { type: 'conditions', items: DndCondition[], pages: number }
-    | { type: 'magicitems', items: DndMagicItem[], pages: number }
-    | { type: 'weapons', items: DndWeapon[], pages: number }
-    | { type: 'armor', items: DndArmor[], pages: number }
+export type Open5eListingResult =
+  | { type: 'spells'; items: DndSpell[]; pages: number }
+  | { type: 'monsters'; items: DndMonster[]; pages: number }
+  | { type: 'conditions'; items: DndCondition[]; pages: number }
+  | { type: 'magicitems'; items: DndMagicItem[]; pages: number }
+  | { type: 'weapons'; items: DndWeapon[]; pages: number }
+  | { type: 'armor'; items: DndArmor[]; pages: number }

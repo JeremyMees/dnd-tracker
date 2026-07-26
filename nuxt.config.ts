@@ -15,8 +15,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
-    'nuxt-zod-i18n',
-    '@unlok-co/nuxt-stripe',
     'shadcn-nuxt',
     'nuxt-authorization',
     'motion-v/nuxt',
@@ -53,6 +51,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
+    stripeSk: process.env.STRIPE_SK,
     plunkApiKey: process.env.PLUNK_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,
@@ -99,40 +98,38 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
-        'vue-dompurify-html',
-        'markdown-it',
-        'ybug-vue',
-        'vue-tippy',
-        '@unhead/schema-org/vue',
+        '@dicebear/collection',
+        '@dicebear/core',
         '@tanstack/vue-query',
-        'class-variance-authority',
-        'c15t',
-        '@c15t/scripts/google-tag',
-        'reka-ui',
-        'clsx',
-        'tailwind-merge',
-        '@vee-validate/zod',
-        'vee-validate',
-        'zod',
-        'dompurify',
         '@tanstack/vue-table',
-        'driver.js',
-        '@tiptap/vue-3',
-        '@tiptap/starter-kit',
         '@tiptap/extension-highlight',
         '@tiptap/extensions',
+        '@tiptap/starter-kit',
+        '@tiptap/vue-3',
+        '@unhead/schema-org/vue',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'c15t',
+        '@c15t/scripts/google-tag',
+        'class-variance-authority',
+        'clsx',
+        'dompurify',
+        'driver.js',
+        'markdown-it',
+        'reka-ui',
+        'tailwind-merge',
+        'vee-validate',
+        'vue-dompurify-html',
+        'vue-draggable-plus',
+        'vue-tippy',
+        'ybug-vue',
+        'zod',
       ],
     },
   },
-
-  eslint: { config: { stylistic: true } },
 
   i18n: {
     defaultLocale: 'nl',
@@ -169,25 +166,19 @@ export default defineNuxtConfig({
     componentDir: '~/components/ui',
   },
 
-  stripe: {
-    server: { key: process.env.STRIPE_SK },
-    client: { key: process.env.STRIPE_PK },
-  },
-
   supabase: {
     types: '~~/shared/types/database-generated.ts',
     redirectOptions: {
       login: '/login',
       callback: '/',
-      include: ['/campaigns/*', '/encounters/*', '/no-member', '/profile', '/subscribe-success'],
+      include: [
+        '/campaigns/*',
+        '/encounters/*',
+        '/no-member',
+        '/profile',
+        '/subscribe-success',
+      ],
       saveRedirectToCookie: true,
-    },
-  },
-
-  zodI18n: {
-    localeCodesMapping: {
-      'en-GB': 'en',
-      'nl-NL': 'nl',
     },
   },
 })

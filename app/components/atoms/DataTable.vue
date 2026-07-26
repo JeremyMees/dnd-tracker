@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import type { ColumnDef, PaginationState, Row, SortingState, TableOptions } from '@tanstack/vue-table'
-import { FlexRender, getCoreRowModel, getExpandedRowModel, useVueTable } from '@tanstack/vue-table'
+import type {
+  ColumnDef,
+  PaginationState,
+  Row,
+  SortingState,
+  TableOptions,
+} from '@tanstack/vue-table'
+import {
+  FlexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  useVueTable,
+} from '@tanstack/vue-table'
 
 const emit = defineEmits<{
   remove: [number[]]
   invalidate: []
 }>()
+
+type PermissionFunc = (item: any) => Promise<boolean>
 
 const props = withDefaults(
   defineProps<{
@@ -14,28 +27,38 @@ const props = withDefaults(
     loading: boolean
     options?: Partial<TableOptions<any>>
     emptyMessage?: string
-    permission?: boolean | ((item: any) => Promise<boolean>)
+    permission?: boolean | PermissionFunc
     expandedMarkup?: (row: Row<any>) => VNode
     pageSize?: number
   }>(),
   {
     pageSize: 10,
+    options: undefined,
+    emptyMessage: undefined,
+    permission: undefined,
+    expandedMarkup: undefined,
   },
 )
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(props.options?.initialState?.sorting || [])
-const pagination = ref<PaginationState>({ pageIndex: 0, pageSize: props.pageSize })
+const pagination = ref<PaginationState>({
+  pageIndex: 0,
+  pageSize: props.pageSize,
+})
 const rowSelectionPermissions = ref<Record<string, boolean>>({})
 const permissionFetchVersion = ref(0)
+const nuxtApp = useNuxtApp()
 
 // Convert 0-based to 1-based for Radix
 const internalPage = computed({
   get: () => pagination.value.pageIndex + 1,
-  set: (value: number) => pagination.value.pageIndex = value - 1,
+  set: (value: number) => (pagination.value.pageIndex = value - 1),
 })
 
-const selectedRowLength = computed(() => table.getSelectedRowModel().rows.length)
+const selectedRowLength = computed(
+  () => table.getSelectedRowModel().rows.length,
+)
 
 watch(
   () => ({
@@ -60,24 +83,31 @@ const table = useVueTable({
   manualPagination: true,
   manualSorting: true,
   manualFiltering: true,
-  enableRowSelection: (row: Row<any>) => rowSelectionPermissions.value[row.original.id] ?? false,
+  enableRowSelection: (row: Row<any>) =>
+    rowSelectionPermissions.value[row.original.id] ?? false,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
   getRowId: row => row.id,
-  onSortingChange: (updaterOrValue) => {
+  onSortingChange: updaterOrValue => {
     valueUpdater(updaterOrValue, sorting)
     pagination.value.pageIndex = 0
     emit('invalidate')
   },
-  onGlobalFilterChange: (updaterOrValue) => {
+  onGlobalFilterChange: updaterOrValue => {
     valueUpdater(updaterOrValue, globalFilter)
     pagination.value.pageIndex = 0
     emit('invalidate')
   },
   state: {
-    get globalFilter() { return globalFilter.value },
-    get pagination() { return pagination.value },
-    get sorting() { return sorting.value },
+    get globalFilter() {
+      return globalFilter.value
+    },
+    get pagination() {
+      return pagination.value
+    },
+    get sorting() {
+      return sorting.value
+    },
   },
 })
 
@@ -91,8 +121,12 @@ async function fetchPermissions() {
   const permissions: Record<string, boolean> = {}
 
   for (const item of props.data) {
-    if (typeof props.permission === 'boolean') permissions[item.id] = props.permission
-    else if (typeof props.permission === 'function') permissions[item.id] = await props.permission(item)
+    if (typeof props.permission === 'boolean')
+      permissions[item.id] = props.permission
+    else if (typeof props.permission === 'function')
+      permissions[item.id] = await nuxtApp.runWithContext(() =>
+        (props.permission as PermissionFunc)(item),
+      )
     else permissions[item.id] = true
   }
 
@@ -106,32 +140,39 @@ async function fetchPermissions() {
   <div class="flex flex-col gap-2">
     <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
       <UiInputGroup class="max-w-xs">
-        <UiInputGroupInput
-          v-model="search"
-          type="search"
-        />
+        <UiInputGroupInput v-model="search" type="search" />
         <UiInputGroupAddon align="inline-end">
-          <Icon
-            name="tabler:search"
-            class="size-3"
-            :aria-hidden="true"
-          />
+          <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
         </UiInputGroupAddon>
       </UiInputGroup>
-      <div
-        v-auto-animate
-        class="flex gap-x-4 justify-end items-center"
-      >
+      <div v-auto-animate class="flex gap-x-4 justify-end items-center">
         <slot name="top" />
         <UiButton
           v-if="selectedRowLength"
           data-test-remove
           variant="destructive"
           size="sm"
-          :aria-label="$t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength)"
-          @click="$emit('remove', table.getSelectedRowModel().rows.map(row => row.original.id))"
+          :aria-label="
+            $t(
+              'actions.bulkRemove',
+              { number: selectedRowLength },
+              selectedRowLength,
+            )
+          "
+          @click="
+            $emit(
+              'remove',
+              table.getSelectedRowModel().rows.map(row => row.original.id),
+            )
+          "
         >
-          {{ $t('actions.bulkRemove', { number: selectedRowLength }, selectedRowLength) }}
+          {{
+            $t(
+              'actions.bulkRemove',
+              { number: selectedRowLength },
+              selectedRowLength,
+            )
+          }}
         </UiButton>
       </div>
     </div>
@@ -147,18 +188,23 @@ async function fetchPermissions() {
               v-for="header in headerGroup.headers"
               :key="header.id"
               :data-pinned="header.column.getIsPinned()"
-              :class="cn(
-                { 'sticky bg-background/95': header.column.getIsPinned() },
-                header.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
-                header.column.getCanSort() ? 'cursor-pointer select-none' : '',
-              )"
+              :class="
+                cn(
+                  { 'sticky bg-background/95': header.column.getIsPinned() },
+                  header.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
+                  header.column.getCanSort()
+                    ? 'cursor-pointer select-none'
+                    : '',
+                )
+              "
               @click="header.column.getToggleSortingHandler()?.($event)"
             >
               <ClientOnly>
                 <div
                   class="flex items-center gap-2 w-fit"
                   :class="{
-                    'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
+                    'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground':
+                      header.column.getIsSorted(),
                   }"
                 >
                   <FlexRender
@@ -188,19 +234,22 @@ async function fetchPermissions() {
         <ClientOnly>
           <UiTableBody>
             <template v-if="table.getRowModel().rows?.length">
-              <template
-                v-for="row in table.getRowModel().rows"
-                :key="row.id"
-              >
+              <template v-for="row in table.getRowModel().rows" :key="row.id">
                 <UiTableRow :data-state="row.getIsSelected() && 'selected'">
                   <UiTableCell
                     v-for="cell in row.getVisibleCells()"
                     :key="cell.id"
                     :data-pinned="cell.column.getIsPinned()"
-                    :class="cn(
-                      { 'sticky bg-background/95': cell.column.getIsPinned() },
-                      cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
-                    )"
+                    :class="
+                      cn(
+                        {
+                          'sticky bg-background/95': cell.column.getIsPinned(),
+                        },
+                        cell.column.getIsPinned() === 'left'
+                          ? 'left-0'
+                          : 'right-0',
+                      )
+                    "
                   >
                     <FlexRender
                       :render="cell.column.columnDef.cell"
@@ -216,10 +265,7 @@ async function fetchPermissions() {
               </template>
             </template>
 
-            <slot
-              v-else-if="loading"
-              name="loading"
-            />
+            <slot v-else-if="loading" name="loading" />
 
             <UiTableRow v-else>
               <UiTableCell
@@ -241,13 +287,14 @@ async function fetchPermissions() {
       </UiTable>
 
       <div
-        :class="[selectedRowLength ? 'flex-col md:flex-row justify-between' : 'justify-end']"
+        :class="[
+          selectedRowLength
+            ? 'flex-col md:flex-row justify-between'
+            : 'justify-end',
+        ]"
         class="p-4 border-t border-secondary flex items-center gap-2"
       >
-        <div
-          v-if="selectedRowLength"
-          class="text-sm text-muted-foreground"
-        >
+        <div v-if="selectedRowLength" class="text-sm text-muted-foreground">
           {{
             $t('components.pagination.selected', {
               selected: selectedRowLength,
@@ -260,7 +307,9 @@ async function fetchPermissions() {
           <UiPagination
             v-model:page="internalPage"
             :data-test-pagination="internalPage"
-            :total="Math.max(1, (options?.pageCount || 0) * pagination.pageSize)"
+            :total="
+              Math.max(1, (options?.pageCount || 0) * pagination.pageSize)
+            "
             :items-per-page="pagination.pageSize"
             :disabled="loading"
             class="flex items-center gap-6 w-fit"
@@ -273,7 +322,9 @@ async function fetchPermissions() {
                 })
               }}
             </div>
-            <div class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background">
+            <div
+              class="flex items-center border-4 border-foreground bg-foreground/50 rounded-lg text-background"
+            >
               <UiPaginationFirst
                 :disabled="!table.getCanPreviousPage()"
                 class="border-0 border-r rounded-r-none border-r-foreground"
@@ -285,11 +336,17 @@ async function fetchPermissions() {
               />
               <UiPaginationNext
                 data-test-pagination-next
-                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                :disabled="
+                  !table.getCanNextPage() ||
+                  (options?.pageCount && options.pageCount <= 1)
+                "
                 class="border-0 border-r rounded-r-none border-r-foreground"
               />
               <UiPaginationLast
-                :disabled="!table.getCanNextPage() || (options?.pageCount && options.pageCount <= 1)"
+                :disabled="
+                  !table.getCanNextPage() ||
+                  (options?.pageCount && options.pageCount <= 1)
+                "
                 class="border-0"
               />
             </div>

@@ -11,7 +11,9 @@ const { toast } = useToast()
 
 const popoverOpen = shallowRef<boolean>(false)
 
-const hasHp = computed(() => isDefined(props.item.hitPoints) && isDefined(props.item.maxHitPoints))
+const hasHp = computed(
+  () => isDefined(props.item.hitPoints) && isDefined(props.item.maxHitPoints),
+)
 
 function handleToasts(toasts: ToastItem[]): void {
   toasts.forEach(({ title, description, variant }) => {
@@ -46,7 +48,8 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           :id="`${item.id}-hp`"
           data-test-trigger
           :class="{
-            'bg-destructive/20 p-2 w-fit': isDefined(item.hitPoints) && item.hitPoints <= 0,
+            'bg-destructive/20 p-2 w-fit':
+              isDefined(item.hitPoints) && item.hitPoints <= 0,
           }"
           class="flex flex-col gap-y-1 rounded-lg"
         >
@@ -61,7 +64,10 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
             <span
               v-else
               data-test-hp
-              :class="{ 'text-destructive': isDefined(item.hitPoints) && item.hitPoints <= 0 }"
+              :class="{
+                'text-destructive':
+                  isDefined(item.hitPoints) && item.hitPoints <= 0,
+              }"
             >
               {{ item.hitPoints }}
             </span>
@@ -88,7 +94,9 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           v-if="isDefined(item.hitPoints) && isDefined(item.maxHitPoints)"
           class="flex flex-wrap gap-x-1 gap-y-2 pb-6 items-start justify-center"
         >
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
+          <div
+            class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1"
+          >
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.current') }}
             </p>
@@ -99,26 +107,33 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
               {{ item.hitPoints || 0 }}
             </p>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
+          <div
+            class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1"
+          >
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.max') }}
             </p>
             <div class="flex gap-1 items-start justify-center">
               <p
                 class="head-2"
-                :class="[!item.maxHitPointsOld ? undefined : item.maxHitPointsOld < item.maxHitPoints ? 'text-success' : 'text-destructive']"
+                :class="[
+                  !item.maxHitPointsOld
+                    ? undefined
+                    : item.maxHitPointsOld < item.maxHitPoints
+                      ? 'text-success'
+                      : 'text-destructive',
+                ]"
               >
                 {{ item.maxHitPoints || 0 }}
               </p>
-              <p
-                v-if="isDefined(item.maxHitPointsOld)"
-                class="text-sm"
-              >
+              <p v-if="isDefined(item.maxHitPointsOld)" class="text-sm">
                 ({{ item.maxHitPointsOld }})
               </p>
             </div>
           </div>
-          <div class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1">
+          <div
+            class="p-2 rounded-lg space-y-4 min-w-[75px] bg-secondary text-center flex-1"
+          >
             <p class="font-bold text-muted-foreground text-xs">
               {{ $t('general.temp') }}
             </p>
@@ -136,10 +151,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           :update-row="updateRow"
         />
 
-        <UiSeparator
-          v-if="hasHp"
-          class="my-3 bg-muted"
-        />
+        <UiSeparator v-if="hasHp" class="my-3 bg-muted" />
 
         <FormHpUpdateBase
           :sheet="sheet"
@@ -148,10 +160,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           :update-row="updateRow"
         />
 
-        <UiSeparator
-          v-if="hasHp"
-          class="my-3 bg-muted"
-        />
+        <UiSeparator v-if="hasHp" class="my-3 bg-muted" />
 
         <FormHpOverride
           v-if="hasHp"

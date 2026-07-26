@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -12,9 +11,9 @@ const props = defineProps<{
 
 const selectedType = ref<DndHpType>('heal')
 
-const formSchema = toTypedSchema(z.object({
-  amount: z.number().min(0).max(1000),
-}))
+const formSchema = z.object({
+  amount: z.int().min(0).max(1000),
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -22,7 +21,7 @@ const form = useForm({
 
 const formError = ref<string>('')
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -30,8 +29,10 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     if (!props.sheet || !selected) return
 
+    const amount = parseInteger(values.amount)
+
     const { row, toasts } = handleHpChanges(
-      values.amount,
+      amount,
       selected,
       props.item,
       props.sheet?.settings?.negative ?? false,
@@ -43,8 +44,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     if (selected === 'heal') animateTableUpdate(`${props.item.id}-hp`, 'green')
     if (selected === 'damage') animateTableUpdate(`${props.item.id}-hp`, 'red')
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred while updating HP'
   }
 })
@@ -61,10 +61,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'heal'"
       >
-        <Icon
-          name="tabler:heart"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:heart" aria-hidden="true" />
         {{ $t('actions.heal') }}
       </UiButton>
       <UiButton
@@ -74,10 +71,7 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'temp'"
       >
-        <Icon
-          name="tabler:plus"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:plus" aria-hidden="true" />
         {{ $t('actions.temp') }}
       </UiButton>
       <UiButton
@@ -87,17 +81,11 @@ const onSubmit = form.handleSubmit(async (values) => {
         class="border-2"
         @click="selectedType = 'damage'"
       >
-        <Icon
-          name="tabler:sword"
-          aria-hidden="true"
-        />
+        <Icon name="tabler:sword" aria-hidden="true" />
         {{ $t('actions.damage') }}
       </UiButton>
     </div>
-    <div
-      v-if="formError"
-      class="text-sm text-destructive"
-    >
+    <div v-if="formError" class="text-sm text-destructive">
       {{ formError }}
     </div>
   </UiFormWrapper>

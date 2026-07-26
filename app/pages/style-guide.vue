@@ -44,41 +44,19 @@ const buttonSizes: ButtonVariants['size'][] = [
   <NuxtLayout container>
     <div class="flex flex-wrap gap-x-20 gap-y-10">
       <div class="flex flex-col gap-2">
-        <p class="text-6xl pb-4">
-          Typography
-        </p>
-        <h1>
-          Heading 1
-        </h1>
-        <h2>
-          Heading 2
-        </h2>
-        <h3>
-          Heading 3
-        </h3>
-        <h4>
-          Heading 4
-        </h4>
-        <h5>
-          Heading 5
-        </h5>
-        <h6>
-          Heading 6
-        </h6>
-        <p class="text-base">
-          Normal text
-        </p>
-        <p class="text-sm">
-          Small text
-        </p>
-        <p class="text-2xs">
-          Extra small text
-        </p>
+        <p class="text-6xl pb-4">Typography</p>
+        <h1>Heading 1</h1>
+        <h2>Heading 2</h2>
+        <h3>Heading 3</h3>
+        <h4>Heading 4</h4>
+        <h5>Heading 5</h5>
+        <h6>Heading 6</h6>
+        <p class="text-base">Normal text</p>
+        <p class="text-sm">Small text</p>
+        <p class="text-2xs">Extra small text</p>
       </div>
       <div class="flex flex-col gap-2">
-        <p class="text-6xl pb-4">
-          Colors
-        </p>
+        <p class="text-6xl pb-4">Colors</p>
         <div class="flex gap-2 items-center">
           <div class="size-8 bg-foreground rounded border" />
           <span>Foreground</span>
@@ -133,9 +111,7 @@ const buttonSizes: ButtonVariants['size'][] = [
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <p class="text-6xl pb-4">
-          Buttons
-        </p>
+        <p class="text-6xl pb-4">Buttons</p>
         <div
           v-for="(variant, i) in buttonVariants"
           :key="i"
@@ -147,10 +123,7 @@ const buttonSizes: ButtonVariants['size'][] = [
             :variant="variant"
             :size="size"
           >
-            <Icon
-              v-if="size?.includes('icon')"
-              name="tabler:sword"
-            />
+            <Icon v-if="size?.includes('icon')" name="tabler:sword" />
             <span v-else>
               {{ variant }}
             </span>

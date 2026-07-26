@@ -53,16 +53,10 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
     class="dragon"
     @mousemove="calculateEyes"
   >
-    <div
-      ref="eyeLeft"
-      class="absolute top-[55%] left-[54%] pt-2"
-    >
+    <div ref="eyeLeft" class="absolute top-[55%] left-[54%] pt-2">
       <div class="rounded-full bg-black h-4 w-4" />
     </div>
-    <div
-      ref="eyeRight"
-      class="absolute top-[55%] right-[61%] pt-2"
-    >
+    <div ref="eyeRight" class="absolute top-[55%] right-[61%] pt-2">
       <div class="rounded-full bg-black h-4 w-4" />
     </div>
     <div ref="anchor">

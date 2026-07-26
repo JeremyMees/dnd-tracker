@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -11,17 +10,21 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const popoverOpen = shallowRef(false)
 const formError = ref<string>('')
 
-const usedTypes = computed(() => [...new Set(sheet.value?.rows.map(({ type }) => type))])
+const usedTypes = computed(() => [
+  ...new Set(sheet.value?.rows.map(({ type }) => type)),
+])
 
-const formSchema = toTypedSchema(z.object({
+const formSchema = z.object({
   selectedTypes: z.array(z.string()),
   ignore: z.boolean(),
-  selectedCreatures: z.array(z.object({
-    id: z.string(),
-    amount: z.number().min(0).max(50).nullable().optional(),
-    initiative: z.number().min(-20).max(20).nullable().optional(),
-  })),
-}))
+  selectedCreatures: z.array(
+    z.object({
+      id: z.string(),
+      amount: z.int().min(0).max(50).nullable().optional(),
+      initiative: z.int().min(-20).max(20).nullable().optional(),
+    }),
+  ),
+})
 
 const form = useForm({
   validationSchema: formSchema,
@@ -32,19 +35,21 @@ const form = useForm({
   },
 })
 
-watch(popoverOpen, (open) => {
+watch(popoverOpen, open => {
   if (!open) return
 
   form.setValues({
     selectedTypes: usedTypes.value,
     ignore: false,
-    selectedCreatures: sheet.value?.rows.map(row => ({
-      id: row.id,
-      amount: isDefined(row.initiative) && row.initiative > -1
-        ? row.initiative
-        : undefined,
-      initiative: row.initiativeModifier,
-    })) ?? [],
+    selectedCreatures:
+      sheet.value?.rows.map(row => ({
+        id: row.id,
+        amount:
+          isDefined(row.initiative) && row.initiative > -1
+            ? row.initiative
+            : undefined,
+        initiative: row.initiativeModifier,
+      })) ?? [],
   })
 })
 
@@ -61,7 +66,7 @@ function rollAllInitiatives() {
   })
 }
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -78,22 +83,20 @@ const onSubmit = form.handleSubmit(async (values) => {
         if (index >= 0) {
           let init = amount ?? 0
 
-          if (
-            !ignore
-            && isDefined(initiative)
-            && !isNaN(initiative)
-          ) init += initiative
+          if (!ignore && isDefined(initiative) && !isNaN(initiative))
+            init += initiative
 
-          if (rows[index]) rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
+          if (rows[index])
+            rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
         }
       }
     })
 
     await update({ rows })
     popoverOpen.value = false
-  }
-  catch (err: any) {
-    formError.value = err.message || 'An error occurred during quick initiative roll'
+  } catch (err: any) {
+    formError.value =
+      err.message || 'An error occurred during quick initiative roll'
   }
 })
 </script>
@@ -107,10 +110,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           class="flex items-center gap-x-1 w-fit rounded-lg hover:bg-warning/50 hover:text-foreground hover:-mx-2 hover:-my-1 hover:px-2 hover:py-1 transition-all duration-300"
         >
           {{ label }}
-          <Icon
-            name="tabler:bolt-filled"
-            class="text-warning"
-          />
+          <Icon name="tabler:bolt-filled" class="text-warning" />
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent class="max-w-[800px] max-h-[600px]">
@@ -130,14 +130,8 @@ const onSubmit = form.handleSubmit(async (values) => {
                 v-slot="{ componentField, setValue }"
                 :name="`selectedCreatures.${index}.amount`"
               >
-                <UiFormItem
-                  v-auto-animate
-                  class="w-30"
-                >
-                  <UiFormLabel
-                    :for="row.id"
-                    class="text-ellipsis line-clamp-1"
-                  >
+                <UiFormItem v-auto-animate class="w-30">
+                  <UiFormLabel :for="row.id" class="text-ellipsis line-clamp-1">
                     {{ row.name }}
                   </UiFormLabel>
                   <UiFormControl>
@@ -165,10 +159,7 @@ const onSubmit = form.handleSubmit(async (values) => {
                 v-slot="{ componentField }"
                 :name="`selectedCreatures.${index}.initiative`"
               >
-                <UiFormItem
-                  v-auto-animate
-                  class="w-20"
-                >
+                <UiFormItem v-auto-animate class="w-20">
                   <UiFormLabel
                     :for="`${row.id}-mod`"
                     class="text-ellipsis line-clamp-1"
@@ -191,29 +182,22 @@ const onSubmit = form.handleSubmit(async (values) => {
           <FormCheckboxGroup
             name="selectedTypes"
             :label="$t('components.initiativeTableHeader.initiative.select')"
-            :options="usedTypes.map((type) => ({
-              label: $t(`general.${type}`),
-              value: type,
-            }))"
+            :options="
+              usedTypes.map(type => ({
+                label: $t(`general.${type}`),
+                value: type,
+              }))
+            "
             list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
           />
 
-          <div
-            v-if="formError"
-            class="text-sm text-destructive"
-          >
+          <div v-if="formError" class="text-sm text-destructive">
             {{ formError }}
           </div>
 
           <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <UiFormField
-              v-slot="{ value, handleChange }"
-              name="ignore"
-            >
-              <UiFormItem
-                v-auto-animate
-                class="flex items-center gap-2"
-              >
+            <UiFormField v-slot="{ value, handleChange }" name="ignore">
+              <UiFormItem v-auto-animate class="flex items-center gap-2">
                 <UiFormControl>
                   <UiSwitch
                     class="mb-0"
@@ -230,15 +214,14 @@ const onSubmit = form.handleSubmit(async (values) => {
               type="button"
               variant="foreground"
               :disabled="!(form.values.selectedTypes ?? []).length"
-              :aria-label="$t('components.initiativeTableHeader.initiative.roll')"
+              :aria-label="
+                $t('components.initiativeTableHeader.initiative.roll')
+              "
               @click="rollAllInitiatives"
             >
               {{ $t('components.initiativeTableHeader.initiative.roll') }}
             </UiButton>
-            <UiButton
-              type="submit"
-              :aria-label="$t('actions.update')"
-            >
+            <UiButton type="submit" :aria-label="$t('actions.update')">
               {{ $t('actions.update') }}
             </UiButton>
           </div>

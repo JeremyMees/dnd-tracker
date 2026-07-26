@@ -20,10 +20,7 @@ const { toggleSidebar } = useSidebar()
     :class="cn('h-7 w-7', props.class)"
     @click="toggleSidebar"
   >
-    <Icon
-      name="tabler:layout-sidebar"
-      class="size-4"
-    />
+    <Icon name="tabler:layout-sidebar" class="size-4" />
     <span class="sr-only">{{ $t('actions.toggleSidebar') }}</span>
   </Button>
 </template>

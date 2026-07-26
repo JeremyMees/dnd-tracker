@@ -1,5 +1,10 @@
 import { createColumnHelper, type InitialTableState } from '@tanstack/vue-table'
-import { iconButton, linkButton, selectButton, permission } from './generate-functions'
+import {
+  iconButton,
+  linkButton,
+  selectButton,
+  permission,
+} from './generate-functions'
 import { NuxtTime } from '#components'
 
 const columnHelper = createColumnHelper<CampaignItem>()
@@ -16,26 +21,29 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
-      header: ({ table }) => selectButton({
-        checked: table.getIsAllRowsSelected(),
-        cb: table.getToggleAllPageRowsSelectedHandler(),
-      }),
-      cell: ({ row }) => permission({
-        ability: isCampaignOwner,
-        args: [row.original],
-        children: selectButton({
-          checked: row.getIsSelected(),
-          cb: row.getToggleSelectedHandler(),
-          disabled: !row.getCanSelect(),
+      header: ({ table }) =>
+        selectButton({
+          checked: table.getIsAllRowsSelected(),
+          cb: table.getToggleAllPageRowsSelectedHandler(),
         }),
-      }),
+      cell: ({ row }) =>
+        permission({
+          ability: isCampaignOwner,
+          args: [row.original],
+          children: selectButton({
+            checked: row.getIsSelected(),
+            cb: row.getToggleSelectedHandler(),
+            disabled: !row.getCanSelect(),
+          }),
+        }),
     }),
     columnHelper.accessor('title', {
       header: t('general.name'),
-      cell: ({ row }) => linkButton({
-        to: campaignUrl(row.original, 'encounters'),
-        content: row.getValue('title'),
-      }),
+      cell: ({ row }) =>
+        linkButton({
+          to: campaignUrl(row.original, 'encounters'),
+          content: row.getValue('title'),
+        }),
     }),
     columnHelper.accessor('initiative_sheets', {
       enableGlobalFilter: false,
@@ -58,12 +66,13 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
     columnHelper.accessor('createdAt', {
       enableGlobalFilter: false,
       header: t('general.createdAt'),
-      cell: ({ row }) => h(NuxtTime, {
-        datetime: row.getValue<Date>('createdAt'),
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric',
-      }),
+      cell: ({ row }) =>
+        h(NuxtTime, {
+          datetime: row.getValue<Date>('createdAt'),
+          month: 'numeric',
+          day: 'numeric',
+          year: 'numeric',
+        }),
     }),
     columnHelper.display({
       enableGlobalFilter: false,
@@ -84,33 +93,34 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       enableGlobalFilter: false,
       enableSorting: false,
       id: 'actions',
-      cell: ({ row }) => h('div', { class: 'flex justify-end' }, [
-        permission({
-          ability: isCampaignMember,
-          args: [row.original],
-          children: [
-            iconButton({
-              icon: 'tabler:door-exit',
-              content: t('actions.leave'),
-              variant: 'warning-ghost',
-              cb: () => onLeave(row.original),
-              disabled: isOwner(row.original, user.value.id),
-            }),
-          ],
-        }),
-        permission({
-          ability: isCampaignAdmin,
-          args: [row.original],
-          children: [
-            iconButton({
-              icon: 'tabler:edit',
-              content: t('actions.update'),
-              variant: 'info-ghost',
-              cb: () => onUpdate(row.original),
-            }),
-          ],
-        }),
-      ]),
+      cell: ({ row }) =>
+        h('div', { class: 'flex justify-end' }, [
+          permission({
+            ability: isCampaignMember,
+            args: [row.original],
+            children: [
+              iconButton({
+                icon: 'tabler:door-exit',
+                content: t('actions.leave'),
+                variant: 'warning-ghost',
+                cb: () => onLeave(row.original),
+                disabled: isOwner(row.original, user.value.id),
+              }),
+            ],
+          }),
+          permission({
+            ability: isCampaignAdmin,
+            args: [row.original],
+            children: [
+              iconButton({
+                icon: 'tabler:edit',
+                content: t('actions.update'),
+                variant: 'info-ghost',
+                cb: () => onUpdate(row.original),
+              }),
+            ],
+          }),
+        ]),
     }),
   ]
 }

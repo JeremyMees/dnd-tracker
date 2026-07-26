@@ -1,17 +1,23 @@
-import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useFeatureListing(data: ComputedRef<SbFilter>) {
   return useQuery({
     queryKey: ['useFeatureListing', data],
-    queryFn: () => sbQuery<FeatureRequest>({
-      table: 'features',
-      select: '*, createdBy(id, avatar, username)',
-      filters: data.value,
-      page: data.value.page,
-      perPage: 10,
-      fuzzy: true,
-    }),
+    queryFn: () =>
+      sbQuery<FeatureRequest>({
+        table: 'features',
+        select: '*, createdBy(id, avatar, username)',
+        filters: data.value,
+        page: data.value.page,
+        perPage: 10,
+        fuzzy: true,
+      }),
     select: ({ data, count, totalPages }) => ({
       amount: count,
       pages: totalPages,
@@ -26,7 +32,8 @@ export function useFeatureCount() {
 
   return useQuery({
     queryKey: ['useFeatureCount'],
-    queryFn: async () => await supabase.from('features').select('id', { count: 'exact' }),
+    queryFn: async () =>
+      await supabase.from('features').select('id', { count: 'exact' }),
     select: ({ count }) => count || 0,
   })
 }
@@ -78,8 +85,14 @@ export function useFeatureVote() {
   const { t } = useI18n()
 
   return useMutation({
-    mutationFn: async ({ id, votes }: { id: number, votes: FeatureVotes } & QueryDefaults) => {
-      const { error } = await supabase.from('features').update({ voted: votes } as never).eq('id', id)
+    mutationFn: async ({
+      id,
+      votes,
+    }: { id: number; votes: FeatureVotes } & QueryDefaults) => {
+      const { error } = await supabase
+        .from('features')
+        .update({ voted: votes } as never)
+        .eq('id', id)
 
       if (error) throw createError(error)
     },

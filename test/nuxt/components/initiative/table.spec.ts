@@ -42,13 +42,23 @@ vi.mock('~~/composables/initiative-sheet', () => ({
     const expanded = ref({})
     const selected = ref<Record<string, boolean>>({})
     const active = computed(() => {
-      const selectedRowId = Object.keys(selected.value).find(key => selected.value[key] === true)
+      const selectedRowId = Object.keys(selected.value).find(
+        key => selected.value[key] === true,
+      )
       return data.value?.rows.find((row: any) => row.id === selectedRowId)
     })
     const columnVisibility = computed(() => {
       const rows = data.value?.settings?.modified
-        ? (data.value.settings.rows || [])
-        : ['armorClass', 'hitPoints', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+        ? data.value.settings.rows || []
+        : [
+            'armorClass',
+            'hitPoints',
+            'conditions',
+            'note',
+            'deathSaves',
+            'concentration',
+            'modify',
+          ]
 
       return {
         index: true,

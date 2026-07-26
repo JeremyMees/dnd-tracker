@@ -3,7 +3,9 @@ import type { NavigationMenuListProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { NavigationMenuList, useForwardProps } from 'reka-ui'
 
-const props = defineProps<NavigationMenuListProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  NavigationMenuListProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = reactiveOmit(props, 'class')
 const forwardedProps = useForwardProps(delegatedProps)

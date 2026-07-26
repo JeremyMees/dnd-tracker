@@ -60,19 +60,27 @@ describe('abilities', () => {
 
   describe('isAdmin', () => {
     it('should return true if the user is an admin in the team', () => {
-      expect(isAdmin(mockCampaign.team as TeamMember[], 'admin-789')).toBeTruthy()
+      expect(
+        isAdmin(mockCampaign.team as TeamMember[], 'admin-789'),
+      ).toBeTruthy()
     })
 
     it('should return false if the user is not an admin in the team', () => {
-      expect(isAdmin(mockCampaign.team as TeamMember[], 'member-101')).toBeFalsy()
+      expect(
+        isAdmin(mockCampaign.team as TeamMember[], 'member-101'),
+      ).toBeFalsy()
       expect(isAdmin(mockCampaign.team as TeamMember[], userId)).toBeFalsy()
     })
   })
 
   describe('isMember', () => {
     it('should return true if the user is a member in the team', () => {
-      expect(isMember(mockCampaign.team as TeamMember[], 'admin-789')).toBeTruthy()
-      expect(isMember(mockCampaign.team as TeamMember[], 'member-101')).toBeTruthy()
+      expect(
+        isMember(mockCampaign.team as TeamMember[], 'admin-789'),
+      ).toBeTruthy()
+      expect(
+        isMember(mockCampaign.team as TeamMember[], 'member-101'),
+      ).toBeTruthy()
     })
 
     it('should return false if the user is not a member in the team', () => {

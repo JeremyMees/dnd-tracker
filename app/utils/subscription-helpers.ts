@@ -3,7 +3,9 @@ export function isPro(profile: ProfileRow): boolean {
 }
 
 export function isMedior(profile: ProfileRow): boolean {
-  return profile.subscriptionType === 'pro' || profile.subscriptionType === 'medior'
+  return (
+    profile.subscriptionType === 'pro' || profile.subscriptionType === 'medior'
+  )
 }
 
 export function hasCorrectSubscription(
@@ -11,10 +13,11 @@ export function hasCorrectSubscription(
   expected: StripeSubscriptionType,
 ): boolean {
   if (
-    subscription === 'pro'
-    || (subscription === expected)
-    || (subscription === 'medior' && expected === 'free')
-  ) return true
+    subscription === 'pro' ||
+    subscription === expected ||
+    (subscription === 'medior' && expected === 'free')
+  )
+    return true
   else return false
 }
 
@@ -25,23 +28,32 @@ export function getMax(
   switch (subscription) {
     case 'medior':
       switch (type) {
-        case 'encounter': return 50
-        case 'campaign': return 10
-        case 'team': return 3
+        case 'encounter':
+          return 50
+        case 'campaign':
+          return 10
+        case 'team':
+          return 3
       }
       break
     case 'pro':
       switch (type) {
-        case 'encounter': return 250
-        case 'campaign': return 25
-        case 'team': return 15
+        case 'encounter':
+          return 250
+        case 'campaign':
+          return 25
+        case 'team':
+          return 15
       }
       break
     default:
       switch (type) {
-        case 'encounter': return 10
-        case 'campaign': return 3
-        case 'team': return 1
+        case 'encounter':
+          return 10
+        case 'campaign':
+          return 3
+        case 'team':
+          return 1
       }
   }
 }

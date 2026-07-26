@@ -10,7 +10,9 @@ import {
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<AlertDialogContentProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  AlertDialogContentProps & { class?: HTMLAttributes['class'] }
+>()
 const emits = defineEmits<AlertDialogContentEmits>()
 
 const delegatedProps = computed(() => {

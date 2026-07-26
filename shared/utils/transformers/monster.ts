@@ -100,17 +100,25 @@ function mapMonsterV2(dto: Open5eMonster): DndMonster {
     modifiers: dto.modifiers,
     initiativeBonus: dto.initiative_bonus,
     savingThrows: dto.saving_throws_all,
-    skillBonuses: mapSkillBonusesV2(dto.skill_bonuses_all as unknown as Record<string, number>),
+    skillBonuses: mapSkillBonusesV2(
+      dto.skill_bonuses_all as unknown as Record<string, number>,
+    ),
     passivePerception: dto.passive_perception,
     resistancesAndImmunities: {
-      damageImmunities: dto.resistances_and_immunities.damage_immunities
-        .map(entry => mapDamageType(entry.name)),
-      damageResistances: dto.resistances_and_immunities.damage_resistances
-        .map(entry => mapDamageType(entry.name)),
-      damageVulnerabilities: dto.resistances_and_immunities.damage_vulnerabilities
-        .map(entry => mapDamageType(entry.name)),
-      conditionImmunities: dto.resistances_and_immunities.condition_immunities
-        .flatMap(entry => mapConditionTypes(entry.name)),
+      damageImmunities: dto.resistances_and_immunities.damage_immunities.map(
+        entry => mapDamageType(entry.name),
+      ),
+      damageResistances: dto.resistances_and_immunities.damage_resistances.map(
+        entry => mapDamageType(entry.name),
+      ),
+      damageVulnerabilities:
+        dto.resistances_and_immunities.damage_vulnerabilities.map(entry =>
+          mapDamageType(entry.name),
+        ),
+      conditionImmunities:
+        dto.resistances_and_immunities.condition_immunities.flatMap(entry =>
+          mapConditionTypes(entry.name),
+        ),
     },
     sight: {
       normalSightRange: dto.normal_sight_range ?? 0,
@@ -128,7 +136,5 @@ function mapMonsterV2(dto: Open5eMonster): DndMonster {
 }
 
 export function toMonster(dto: Open5eMonster | Open5eV1Item): DndMonster {
-  return 'slug' in dto
-    ? mapMonsterV1(dto)
-    : mapMonsterV2(dto)
+  return 'slug' in dto ? mapMonsterV1(dto) : mapMonsterV2(dto)
 }

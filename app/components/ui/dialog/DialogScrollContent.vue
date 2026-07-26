@@ -11,7 +11,9 @@ import {
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
-const props = defineProps<DialogContentProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  DialogContentProps & { class?: HTMLAttributes['class'] }
+>()
 const emits = defineEmits<DialogContentEmits & { close: [] }>()
 
 const delegatedProps = computed(() => {
@@ -26,7 +28,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 <template>
   <DialogPortal>
     <DialogOverlay
-      class="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+      class="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     >
       <DialogContent
         :class="
@@ -36,13 +38,18 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
           )
         "
         v-bind="forwarded"
-        @pointer-down-outside="(event) => {
-          const originalEvent = event.detail.originalEvent;
-          const target = originalEvent.target as HTMLElement;
-          if (originalEvent.offsetX > target.clientWidth || originalEvent.offsetY > target.clientHeight) {
-            event.preventDefault();
+        @pointer-down-outside="
+          event => {
+            const originalEvent = event.detail.originalEvent
+            const target = originalEvent.target as HTMLElement
+            if (
+              originalEvent.offsetX > target.clientWidth ||
+              originalEvent.offsetY > target.clientHeight
+            ) {
+              event.preventDefault()
+            }
           }
-        }"
+        "
       >
         <slot />
 
@@ -50,10 +57,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
           class="absolute size-4 right-3 top-3 p-0.5 transition-colors rounded-md hover:bg-secondary"
           @click="emits('close')"
         >
-          <Icon
-            name="tabler:x"
-            class="size-4 min-w-4"
-          />
+          <Icon name="tabler:x" class="size-4 min-w-4" />
           <span class="sr-only">Close</span>
         </DialogClose>
       </DialogContent>

@@ -2,7 +2,11 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable } from '#components'
-import { generateColumns, expandedMarkup, initialState } from '~~/tables/note-listing'
+import {
+  generateColumns,
+  expandedMarkup,
+  initialState,
+} from '~~/tables/note-listing'
 import { useNoteCount, useNoteListing, useNoteRemove } from '~~/queries/notes'
 
 useSeo('Campaign notes')
@@ -73,7 +77,9 @@ function openModal(item?: NoteRow): void {
 function openMailModal(item: NoteRow): void {
   modal.open({
     component: 'Mail',
-    header: t('components.mailModal.title', { type: t('general.note').toLowerCase() }),
+    header: t('components.mailModal.title', {
+      type: t('general.note').toLowerCase(),
+    }),
     subHeader: item.title,
     props: {
       send: (addresses: string[]) => sendNoteAsMail(item, addresses),
@@ -92,22 +98,27 @@ function invalidateQueries(): void {
   queryClient.invalidateQueries({ queryKey: ['useNoteCount'] })
 }
 
-async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void> {
+async function sendNoteAsMail(
+  note: NoteRow,
+  addresses: string[],
+): Promise<void> {
   try {
-    await Promise.all(addresses.map(async (email) => {
-      if (!props.current) return
+    await Promise.all(
+      addresses.map(async email => {
+        if (!props.current) return
 
-      await $fetch('/api/emails/share-note', {
-        method: 'POST',
-        body: {
-          email,
-          noteContent: note.text,
-          noteTitle: note.title,
-          campaign: props.current.title,
-          sharedBy: user.value.username,
-        },
-      })
-    }))
+        await $fetch('/api/emails/share-note', {
+          method: 'POST',
+          body: {
+            email,
+            noteContent: note.text,
+            noteTitle: note.title,
+            campaign: props.current.title,
+            sharedBy: user.value.username,
+          },
+        })
+      }),
+    )
 
     startCoolDown(note.id, 15)
 
@@ -115,8 +126,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
       description: t('general.mail.success.title'),
       variant: 'success',
     })
-  }
-  catch (err) {
+  } catch (err) {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),
@@ -129,10 +139,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
 <template>
   <div>
     <AnimationExpand>
-      <RefreshCard
-        v-if="status === 'error'"
-        @refresh="invalidateQueries"
-      />
+      <RefreshCard v-if="status === 'error'" @refresh="invalidateQueries" />
     </AnimationExpand>
 
     <DataTable
@@ -148,7 +155,11 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
       }"
       :permission="hasRights"
       :expanded-markup="expandedMarkup"
-      :empty-message="$t('components.table.nothing', { item: $t('general.note', 2).toLowerCase() })"
+      :empty-message="
+        $t('components.table.nothing', {
+          item: $t('general.note', 2).toLowerCase(),
+        })
+      "
       @remove="removeItems"
       @invalidate="invalidateQueries"
     >
@@ -169,10 +180,7 @@ async function sendNoteAsMail(note: NoteRow, addresses: string[]): Promise<void>
       </template>
 
       <template #loading>
-        <SkeletonNoteTableRow
-          v-for="i in 10"
-          :key="i"
-        />
+        <SkeletonNoteTableRow v-for="i in 10" :key="i" />
       </template>
     </DataTable>
   </div>

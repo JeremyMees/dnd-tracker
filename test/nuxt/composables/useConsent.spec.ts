@@ -35,7 +35,7 @@ vi.mock('c15t', () => {
   }
 })
 
-vi.mock('#app', async (importOriginal) => {
+vi.mock('#app', async importOriginal => {
   const actual = await importOriginal<Record<string, unknown>>()
   return {
     ...actual,

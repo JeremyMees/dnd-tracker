@@ -26,9 +26,18 @@ export const initiativePets = [
 ] as const satisfies readonly InitiativePet[]
 
 export const initiativeWidgets = [
+  'dice-roll',
+  'fantasy-name-generator',
   'note',
   'info-pins',
 ] as const satisfies readonly InitiativeWidget[]
+
+export const widgetLabels: Record<InitiativeWidget, string> = {
+  'dice-roll': 'general.diceRoll',
+  'fantasy-name-generator': 'general.fantasyNameGenerator',
+  note: 'general.note',
+  'info-pins': 'general.infoPins',
+}
 
 export const homebrewType = [
   'player',
@@ -62,8 +71,4 @@ export const roleType = [
   'Viewer',
 ] as const satisfies readonly UserRole[]
 
-export const campaignTransferRole = [
-  'Admin',
-  'Viewer',
-  'Remove',
-] as const
+export const campaignTransferRole = ['Admin', 'Viewer', 'Remove'] as const

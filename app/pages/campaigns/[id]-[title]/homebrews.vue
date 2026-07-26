@@ -1,8 +1,16 @@
 <script lang="ts" setup>
 import { useQueryClient } from '@tanstack/vue-query'
 import type { DataTable, LimitCta } from '#components'
-import { generateColumns, expandedMarkup, initialState } from '~~/tables/homebrew-listing'
-import { useHomebrewCount, useHomebrewListing, useHomebrewRemove } from '~~/queries/homebrews'
+import {
+  generateColumns,
+  expandedMarkup,
+  initialState,
+} from '~~/tables/homebrew-listing'
+import {
+  useHomebrewCount,
+  useHomebrewListing,
+  useHomebrewRemove,
+} from '~~/queries/homebrews'
 
 useSeo('Campaign homebrews')
 
@@ -70,11 +78,14 @@ async function removeItems(ids: number[]): Promise<void> {
   const amount = ids.length
   const type = t('general.homebrew', amount).toLowerCase()
 
-  ask({
-    title: `${t('actions.delete')} ${amount} ${type}`,
-  }, async (confirmed: boolean) => {
-    if (confirmed) await removeHomebrew({ id: ids })
-  })
+  ask(
+    {
+      title: `${t('actions.delete')} ${amount} ${type}`,
+    },
+    async (confirmed: boolean) => {
+      if (confirmed) await removeHomebrew({ id: ids })
+    },
+  )
 }
 
 function invalidateQueries(): void {
@@ -86,16 +97,10 @@ function invalidateQueries(): void {
 <template>
   <div>
     <AnimationExpand>
-      <RefreshCard
-        v-if="status === 'error'"
-        @refresh="invalidateQueries"
-      />
+      <RefreshCard v-if="status === 'error'" @refresh="invalidateQueries" />
     </AnimationExpand>
 
-    <LimitCta
-      v-if="count && count >= max"
-      ref="limitCta"
-    />
+    <LimitCta v-if="count && count >= max" ref="limitCta" />
 
     <DataTable
       ref="table"
@@ -110,7 +115,11 @@ function invalidateQueries(): void {
       }"
       :permission="hasRights"
       :expanded-markup="expandedMarkup"
-      :empty-message="$t('components.table.nothing', { item: $t('general.homebrew', 2).toLowerCase() })"
+      :empty-message="
+        $t('components.table.nothing', {
+          item: $t('general.homebrew', 2).toLowerCase(),
+        })
+      "
       @remove="removeItems"
       @invalidate="invalidateQueries"
     >
@@ -132,10 +141,7 @@ function invalidateQueries(): void {
       </template>
 
       <template #loading>
-        <SkeletonHomebrewTableRow
-          v-for="i in 10"
-          :key="i"
-        />
+        <SkeletonHomebrewTableRow v-for="i in 10" :key="i" />
       </template>
     </DataTable>
   </div>

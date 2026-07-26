@@ -8,28 +8,41 @@ import halfElf from './half-elf.json'
 import halfOrc from './half-orc.json'
 import tiefling from './tiefling.json'
 
-type Content = Record<DndGender, {
-  first: string[]
-  middle: string[]
-  last: {
-    prefixes: string[]
-    suffixes: string[]
+type Content = Record<
+  DndGender,
+  {
+    first: string[]
+    middle: string[]
+    last: {
+      prefixes: string[]
+      suffixes: string[]
+    }
   }
-}>
+>
 
 const names: Record<DndRace, Content> = {
-  'human': human,
-  'elf': elf,
-  'dwarf': dwarf,
-  'halfling': halfling,
-  'dragonborn': dragonborn,
-  'gnome': gnome,
+  human: human,
+  elf: elf,
+  dwarf: dwarf,
+  halfling: halfling,
+  dragonborn: dragonborn,
+  gnome: gnome,
   'half-elf': halfElf,
   'half-orc': halfOrc,
-  'tiefling': tiefling,
+  tiefling: tiefling,
 } as const
 
-const races: DndRace[] = ['human', 'elf', 'dwarf', 'halfling', 'dragonborn', 'gnome', 'half-elf', 'half-orc', 'tiefling']
+const races: DndRace[] = [
+  'human',
+  'elf',
+  'dwarf',
+  'halfling',
+  'dragonborn',
+  'gnome',
+  'half-elf',
+  'half-orc',
+  'tiefling',
+]
 
 const raceOptions: Option<DndRace | 'random'>[] = [
   { label: 'Random race', value: 'random' },
@@ -53,10 +66,4 @@ const genderOptions: Option<DndGender | 'random'>[] = [
   { label: 'Non-binary', value: 'nonbinary' },
 ]
 
-export {
-  names,
-  races,
-  raceOptions,
-  genders,
-  genderOptions,
-}
+export { names, races, raceOptions, genders, genderOptions }

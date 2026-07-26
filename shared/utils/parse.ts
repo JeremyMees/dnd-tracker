@@ -18,8 +18,12 @@ export function splitList(input: string | null | undefined): string[] {
     .filter(Boolean)
 }
 
-export function parseNumber(value: string | number | null | undefined, fallback = 0): number {
-  if (typeof value === 'number') return Number.isFinite(value) ? value : fallback
+export function parseNumber(
+  value: string | number | null | undefined,
+  fallback = 0,
+): number {
+  if (typeof value === 'number')
+    return Number.isFinite(value) ? value : fallback
   if (typeof value !== 'string') return fallback
 
   const trimmed = value.trim()
@@ -42,8 +46,31 @@ export function parseNumber(value: string | number | null | undefined, fallback 
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
-export function parseIntegerFromText(value: string | number | null | undefined, fallback = 0): number {
-  if (typeof value === 'number') return Number.isFinite(value) ? Math.trunc(value) : fallback
+export function parseInteger(
+  value: string | number | null | undefined,
+  fallback = 0,
+): number {
+  const parsed = parseNumber(value, NaN)
+
+  return Number.isFinite(parsed) ? Math.round(parsed) : fallback
+}
+
+export function toIntegerOrUndefined(
+  value: string | number | null | undefined,
+): number | undefined {
+  if (value === null || value === undefined) return undefined
+
+  const parsed = parseNumber(value, NaN)
+
+  return Number.isFinite(parsed) ? parseInteger(parsed) : undefined
+}
+
+export function parseIntegerFromText(
+  value: string | number | null | undefined,
+  fallback = 0,
+): number {
+  if (typeof value === 'number')
+    return Number.isFinite(value) ? Math.trunc(value) : fallback
   if (typeof value !== 'string') return fallback
 
   const match = value.match(/-?\d+/)
@@ -55,7 +82,9 @@ export function parseIntegerFromText(value: string | number | null | undefined, 
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
-export function parseBoolean(value: string | boolean | number | null | undefined): boolean {
+export function parseBoolean(
+  value: string | boolean | number | null | undefined,
+): boolean {
   if (typeof value === 'boolean') return value
   if (typeof value === 'number') return value === 1
   if (typeof value !== 'string') return false

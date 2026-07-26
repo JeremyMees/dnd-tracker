@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -11,16 +10,16 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const popoverOpen = shallowRef<boolean>(false)
 const formError = ref<string>('')
 
-const formSchema = toTypedSchema(z.object({
-  initiative: z.number().min(0).max(50),
-  modifier: z.number().min(-20).max(20).nullable().optional(),
-}))
+const formSchema = z.object({
+  initiative: z.int().min(0).max(50),
+  modifier: z.int().min(-20).max(20).nullable().optional(),
+})
 
 const form = useForm({
   validationSchema: formSchema,
 })
 
-watch(popoverOpen, (open) => {
+watch(popoverOpen, open => {
   if (!open) return
 
   form.setValues({
@@ -29,7 +28,7 @@ watch(popoverOpen, (open) => {
   })
 })
 
-const onSubmit = form.handleSubmit(async (values) => {
+const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
   try {
@@ -49,8 +48,7 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     await update({ rows })
     popoverOpen.value = false
-  }
-  catch (err: any) {
+  } catch (err: any) {
     formError.value = err.message || 'An error occurred during name update'
   }
 })
@@ -61,7 +59,9 @@ const canGoUp = computed(() => {
   if (!sheet.value) return false
 
   const isNotFirst = currentIndex.value > 0
-  const isSameInitiative = sheet.value.rows[currentIndex.value - 1]?.initiative === props.item.initiative
+  const isSameInitiative =
+    sheet.value.rows[currentIndex.value - 1]?.initiative ===
+    props.item.initiative
 
   return isNotFirst && isSameInitiative
 })
@@ -70,7 +70,9 @@ const canGoDown = computed(() => {
   if (!sheet.value) return false
 
   const isNotLast = currentIndex.value < sheet.value.rows.length - 1
-  const isSameInitiative = sheet.value.rows[currentIndex.value + 1]?.initiative === props.item.initiative
+  const isSameInitiative =
+    sheet.value.rows[currentIndex.value + 1]?.initiative ===
+    props.item.initiative
 
   return isNotLast && isSameInitiative
 })
@@ -83,11 +85,12 @@ async function moveRow(up: boolean): Promise<void> {
   const targetIndex = up ? index - 1 : index + 1
 
   if (
-    (up && index <= 0)
-    || (!up && index >= rows.length - 1)
-    || !rows[index]
-    || !rows[targetIndex]
-  ) return
+    (up && index <= 0) ||
+    (!up && index >= rows.length - 1) ||
+    !rows[index] ||
+    !rows[targetIndex]
+  )
+    return
 
   // Just change the index properties without swapping the array positions
   rows[index] = { ...rows[index], index: targetIndex }
@@ -108,10 +111,7 @@ async function moveRow(up: boolean): Promise<void> {
   <div class="flex gap-2 items-center text-left">
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
-        <button
-          data-test-trigger
-          class="flex flex-col justify-center"
-        >
+        <button data-test-trigger class="flex flex-col justify-center">
           <Icon
             v-if="item.initiative < 0"
             data-test-empty
@@ -119,10 +119,7 @@ async function moveRow(up: boolean): Promise<void> {
             class="size-5 min-w-5 text-foreground/10"
             aria-hidden="true"
           />
-          <span
-            v-else
-            data-test-initiative
-          >
+          <span v-else data-test-initiative>
             {{ item.initiative }}
           </span>
         </button>
@@ -134,20 +131,14 @@ async function moveRow(up: boolean): Promise<void> {
           </UiPopoverTitle>
         </UiPopoverHeader>
         <UiFormWrapper @submit="onSubmit">
-          <UiFormField
-            v-slot="{ componentField, setValue }"
-            name="initiative"
-          >
+          <UiFormField v-slot="{ componentField, setValue }" name="initiative">
             <UiFormItem v-auto-animate>
               <UiFormLabel required>
                 {{ $t('components.inputs.amountLabel') }}
               </UiFormLabel>
               <UiFormControl>
                 <UiInputGroup>
-                  <UiInputGroupInput
-                    type="number"
-                    v-bind="componentField"
-                  />
+                  <UiInputGroupInput type="number" v-bind="componentField" />
                   <UiInputGroupAddon align="inline-end">
                     <UiInputGroupButton
                       :aria-label="$t('actions.roll')"
@@ -161,33 +152,21 @@ async function moveRow(up: boolean): Promise<void> {
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
-          <UiFormField
-            v-slot="{ componentField }"
-            name="modifier"
-          >
+          <UiFormField v-slot="{ componentField }" name="modifier">
             <UiFormItem v-auto-animate>
               <UiFormLabel>
                 {{ `${$t('components.inputs.initiativeLabel')} (MODIFIER)` }}
               </UiFormLabel>
               <UiFormControl>
-                <UiInput
-                  type="number"
-                  v-bind="componentField"
-                />
+                <UiInput type="number" v-bind="componentField" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
-          <div
-            v-if="formError"
-            class="text-sm text-destructive"
-          >
+          <div v-if="formError" class="text-sm text-destructive">
             {{ formError }}
           </div>
-          <UiButton
-            type="submit"
-            class="w-full"
-          >
+          <UiButton type="submit" class="w-full">
             {{ $t('actions.save') }}
           </UiButton>
         </UiFormWrapper>

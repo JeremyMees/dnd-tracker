@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import type { Row, SortingState } from '@tanstack/vue-table'
-import { FlexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table'
-import { generateColumns, initialState } from '~~/tables/homebrew-select-listing'
+import {
+  FlexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useVueTable,
+} from '@tanstack/vue-table'
+import {
+  generateColumns,
+  initialState,
+} from '~~/tables/homebrew-select-listing'
 import { useHomebrewListing } from '~~/queries/homebrews'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
@@ -12,10 +21,14 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
 const rowSelection = ref<Record<string, boolean>>({})
-const summoner = ref<{ name: string, id: string }>()
+const summoner = ref<{ name: string; id: string }>()
 
-const selected = computed<HomebrewItemRow[]>(() => data.value?.homebrews.filter(({ id }) => rowSelection.value[id]) || [])
-const summons = computed<HomebrewItemRow[]>(() => selected.value?.filter(s => s.type === 'summon') || [])
+const selected = computed<HomebrewItemRow[]>(
+  () => data.value?.homebrews.filter(({ id }) => rowSelection.value[id]) || [],
+)
+const summons = computed<HomebrewItemRow[]>(
+  () => selected.value?.filter(s => s.type === 'summon') || [],
+)
 
 const { data, isPending } = useHomebrewListing(
   computed(() => {
@@ -36,8 +49,7 @@ const summonersOptions = computed<Option<string>[]>(() => {
     return sheet.value.rows
       .filter(r => r.type !== 'summon')
       .map(o => ({ label: o.name, value: o.id }))
-  }
-  else return []
+  } else return []
 })
 
 const columns = generateColumns()
@@ -45,17 +57,20 @@ const columns = generateColumns()
 const table = useVueTable({
   data: computed(() => data.value?.homebrews || []),
   columns,
-  enableRowSelection: (row: Row<HomebrewItemRow>) => summons.value.length ? row.original.type === 'summon' : true,
+  enableRowSelection: (row: Row<HomebrewItemRow>) =>
+    summons.value.length ? row.original.type === 'summon' : true,
   getCoreRowModel: getCoreRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
   getSortedRowModel: getSortedRowModel(),
   getRowId: row => row.id.toString(),
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
-  onGlobalFilterChange: updaterOrValue => valueUpdater(updaterOrValue, globalFilter),
-  onRowSelectionChange: (updaterOrValue) => {
-    const value = typeof updaterOrValue === 'function'
-      ? updaterOrValue(rowSelection.value)
-      : updaterOrValue
+  onGlobalFilterChange: updaterOrValue =>
+    valueUpdater(updaterOrValue, globalFilter),
+  onRowSelectionChange: updaterOrValue => {
+    const value =
+      typeof updaterOrValue === 'function'
+        ? updaterOrValue(rowSelection.value)
+        : updaterOrValue
 
     const selection = data.value?.homebrews.filter(({ id }) => value[id]) || []
     const summons = selection.filter(s => s.type === 'summon')
@@ -65,9 +80,15 @@ const table = useVueTable({
       : value
   },
   state: {
-    get globalFilter() { return globalFilter.value },
-    get sorting() { return sorting.value },
-    get rowSelection() { return rowSelection.value },
+    get globalFilter() {
+      return globalFilter.value
+    },
+    get sorting() {
+      return sorting.value
+    },
+    get rowSelection() {
+      return rowSelection.value
+    },
   },
   globalFilterFn: (row, _columnId, filterValue) => {
     const searchValue = filterValue.toLowerCase()
@@ -91,8 +112,12 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 
     const row: Partial<InitiativeSheetRow> & { name: string } = {
       ...nullsToUndefined(rest),
-      initiativeModifier: hb.initiativeModifier ? Number(hb.initiativeModifier) : undefined,
-      ...(hb.type === 'summon' && summoner.value ? { summoner: summoner.value } : {}),
+      initiativeModifier: hb.initiativeModifier
+        ? Number(hb.initiativeModifier)
+        : undefined,
+      ...(hb.type === 'summon' && summoner.value
+        ? { summoner: summoner.value }
+        : {}),
     }
 
     rows.push(createInitiativeRow(row, hb.type, rows.length))
@@ -109,17 +134,9 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 <template>
   <div class="max-h-full flex flex-col gap-4">
     <UiInputGroup>
-      <UiInputGroupInput
-        v-model="globalFilter"
-        name="search"
-        type="search"
-      />
+      <UiInputGroupInput v-model="globalFilter" name="search" type="search" />
       <UiInputGroupAddon align="inline-end">
-        <Icon
-          name="tabler:search"
-          class="size-3"
-          :aria-hidden="true"
-        />
+        <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
       </UiInputGroupAddon>
     </UiInputGroup>
 
@@ -134,15 +151,16 @@ async function addHomebrews(addAll: boolean): Promise<void> {
             v-for="header in headerGroup.headers"
             :key="header.id"
             class="px-2"
-            :class="cn(
-              header.column.getCanSort() ? 'cursor-pointer select-none' : '',
-            )"
+            :class="
+              cn(header.column.getCanSort() ? 'cursor-pointer select-none' : '')
+            "
             @click="header.column.getToggleSortingHandler()?.($event)"
           >
             <div
               class="flex items-center gap-2 w-fit"
               :class="{
-                'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground': header.column.getIsSorted(),
+                'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground':
+                  header.column.getIsSorted(),
               }"
             >
               <FlexRender
@@ -162,10 +180,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 
       <UiTableBody>
         <template v-if="table.getRowModel().rows?.length">
-          <template
-            v-for="row in table.getRowModel().rows"
-            :key="row.id"
-          >
+          <template v-for="row in table.getRowModel().rows" :key="row.id">
             <UiTableRow
               :data-state="row.getIsSelected() && 'selected'"
               class="border-b border-muted"
@@ -185,45 +200,43 @@ async function addHomebrews(addAll: boolean): Promise<void> {
         </template>
 
         <template v-else-if="isPending">
-          <SkeletonHomebrewSelectTableRow
-            v-for="i in 10"
-            :key="i"
-          />
+          <SkeletonHomebrewSelectTableRow v-for="i in 10" :key="i" />
         </template>
 
         <UiTableRow v-else>
-          <UiTableCell
-            :colspan="columns.length"
-            class="h-24 text-center"
-          >
-            {{ $t('components.table.nothing', { item: $t('general.homebrew', 2).toLowerCase() }) }}
+          <UiTableCell :colspan="columns.length" class="h-24 text-center">
+            {{
+              $t('components.table.nothing', {
+                item: $t('general.homebrew', 2).toLowerCase(),
+              })
+            }}
           </UiTableCell>
         </UiTableRow>
       </UiTableBody>
     </UiTable>
 
-    <div
-      v-if="!!summons.length"
-      class="space-y-2"
-    >
-      <UiLabel
-        for="summoner"
-        required
-      >
+    <div v-if="!!summons.length" class="space-y-2">
+      <UiLabel for="summoner" required>
         {{ $t('components.inputs.summonerLabel') }}
       </UiLabel>
       <UiSelect
         id="summoner"
         name="summoner"
-        @update:model-value="(value) => {
-          if (value) {
-            const filtered = sheet?.rows.find(s => s.id === value)
-            summoner = filtered ? { name: filtered.name, id: filtered.id } : undefined
+        @update:model-value="
+          value => {
+            if (value) {
+              const filtered = sheet?.rows.find(s => s.id === value)
+              summoner = filtered
+                ? { name: filtered.name, id: filtered.id }
+                : undefined
+            }
           }
-        }"
+        "
       >
         <UiSelectTrigger>
-          <UiSelectValue :placeholder="$t('components.campaignHomebrew.initiative.select')" />
+          <UiSelectValue
+            :placeholder="$t('components.campaignHomebrew.initiative.select')"
+          />
         </UiSelectTrigger>
         <UiSelectContent>
           <UiSelectGroup>
@@ -265,7 +278,9 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       <UiButton
         v-else
         variant="foreground"
-        :aria-label="$t('components.campaignHomebrew.initiative.add', summons.length)"
+        :aria-label="
+          $t('components.campaignHomebrew.initiative.add', summons.length)
+        "
         :disabled="isPending || !summoner"
         class="flex-1"
         @click="addHomebrews(false)"

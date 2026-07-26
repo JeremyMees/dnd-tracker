@@ -6,7 +6,7 @@ export class TestHelpers {
   readonly profileDropdown: Locator
   readonly logoutButton: Locator
 
-  constructor (page: Page) {
+  constructor(page: Page) {
     this.page = page
 
     this.cookieAcceptButton = page.getByRole('button', { name: 'OK' })

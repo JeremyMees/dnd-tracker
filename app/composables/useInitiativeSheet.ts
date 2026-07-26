@@ -1,31 +1,49 @@
 export function useInitiativeSheet(
   sheet: ComputedRef<InitiativeSheet | undefined>,
-  update: (payload: Omit<Partial<InitiativeSheet>, NotUpdatable>) => Promise<void>,
+  update: (
+    payload: Omit<Partial<InitiativeSheet>, NotUpdatable>,
+  ) => Promise<void>,
 ) {
   const defaultColumns = ['index', 'name', 'initiative']
-  const hidableColumns = ['armorClass', 'hitPoints', 'conditions', 'note', 'deathSaves', 'concentration', 'modify']
+  const hidableColumns = [
+    'armorClass',
+    'hitPoints',
+    'conditions',
+    'note',
+    'deathSaves',
+    'concentration',
+    'modify',
+  ]
 
   const expanded = ref<Record<string, boolean>>({})
   const selected = ref<Record<string, boolean>>({})
 
   const active = computed(() => {
-    const selectedRowId = Object.keys(selected.value).find(key => selected.value[key] === true)
+    const selectedRowId = Object.keys(selected.value).find(
+      key => selected.value[key] === true,
+    )
     return sheet.value?.rows.find(row => row.id === selectedRowId)
   })
 
   const columnVisibility = computed(() => {
     const rows = sheet.value?.settings
-      ? sheet.value.settings.modified ? (sheet.value.settings.rows || []) : hidableColumns
+      ? sheet.value.settings.modified
+        ? sheet.value.settings.rows || []
+        : hidableColumns
       : hidableColumns
 
-    return [...defaultColumns, ...hidableColumns].reduce((acc, column) => {
-      const defaultColumn = defaultColumns.includes(column)
-      acc[column] = defaultColumn || !sheet.value ? true : rows.includes(column)
-      return acc
-    }, {} as Record<string, boolean>)
+    return [...defaultColumns, ...hidableColumns].reduce(
+      (acc, column) => {
+        const defaultColumn = defaultColumns.includes(column)
+        acc[column] =
+          defaultColumn || !sheet.value ? true : rows.includes(column)
+        return acc
+      },
+      {} as Record<string, boolean>,
+    )
   })
 
-  onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], (e) => {
+  onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], e => {
     if ((!e.shiftKey && !e.metaKey) || !sheet.value) return
 
     e.preventDefault()
@@ -37,42 +55,49 @@ export function useInitiativeSheet(
     if (e.key === 'Enter') {
       if (current in expanded.value) delete expanded.value[current]
       else expanded.value[current] = true
-    }
-    else if (e.key === 'ArrowLeft') previous()
+    } else if (e.key === 'ArrowLeft') previous()
     else if (e.key === 'ArrowRight') next()
   })
 
-  watch(() => sheet.value?.activeIndex, () => {
-    if (sheet.value?.rows.length) {
+  watch(
+    () => sheet.value?.activeIndex,
+    () => {
+      if (sheet.value?.rows.length) {
+        const active = sheet.value.activeIndex
+        const row = sheet.value.rows[active] ? active : 0
+
+        if (!sheet.value.rows[row]) return
+
+        selected.value = { [sheet.value.rows[row].id]: true }
+      }
+    },
+    { immediate: true },
+  )
+
+  watch(
+    () => sheet.value?.rows,
+    () => {
+      expanded.value = {} // this is a hack otherwise the table doesn't update when the data changes
+
+      if (!sheet.value?.rows?.length) return
+
       const active = sheet.value.activeIndex
-      const row = sheet.value.rows[active] ? active : 0
+      const row = sheet.value.rows[active]
 
-      if (!sheet.value.rows[row]) return
+      if (!row) return
 
-      selected.value = { [sheet.value.rows[row].id]: true }
-    }
-  }, { immediate: true })
+      const current = row.id
+      const currentSelected = Object.keys(selected.value).includes(current)
+      const index = sheet.value.rows[active] ? active : 0
 
-  watch(() => sheet.value?.rows, () => {
-    expanded.value = {} // this is a hack otherwise the table doesn't update when the data changes
+      if (!sheet.value.rows[index]) return
 
-    if (!sheet.value?.rows?.length) return
-
-    const active = sheet.value.activeIndex
-    const row = sheet.value.rows[active]
-
-    if (!row) return
-
-    const current = row.id
-    const currentSelected = Object.keys(selected.value).includes(current)
-    const index = sheet.value.rows[active] ? active : 0
-
-    if (!sheet.value.rows[index]) return
-
-    if (!currentSelected) {
-      selected.value = { [sheet.value.rows[index].id]: true }
-    }
-  }, { immediate: true })
+      if (!currentSelected) {
+        selected.value = { [sheet.value.rows[index].id]: true }
+      }
+    },
+    { immediate: true },
+  )
 
   function previous(): void {
     if (!sheet.value) return
@@ -81,7 +106,9 @@ export function useInitiativeSheet(
 
     if (isAtStart && sheet.value.round <= 1) return
 
-    const activeIndex = isAtStart ? sheet.value.rows.length - 1 : sheet.value.activeIndex - 1
+    const activeIndex = isAtStart
+      ? sheet.value.rows.length - 1
+      : sheet.value.activeIndex - 1
     const round = isAtStart ? sheet.value.round - 1 : sheet.value.round
 
     update({ activeIndex, round })
@@ -112,7 +139,10 @@ export function useInitiativeSheet(
   function reset(hard: boolean): void {
     if (!sheet.value) return
 
-    let updatePayload: Omit<Partial<InitiativeSheet>, NotUpdatable> = { activeIndex: 0, round: 1 }
+    let updatePayload: Omit<Partial<InitiativeSheet>, NotUpdatable> = {
+      activeIndex: 0,
+      round: 1,
+    }
 
     if (hard) {
       updatePayload = {
@@ -128,10 +158,18 @@ export function useInitiativeSheet(
               save: [false, false, false],
             },
           }),
-          ...(row.armorClass !== undefined && { armorClass: row.maxArmorClassOld || row.maxArmorClass }),
-          ...(row.hitPoints !== undefined && { hitPoints: row.maxHitPointsOld || row.maxHitPoints }),
-          ...(row.maxArmorClassOld !== undefined && { maxArmorClass: row.maxArmorClassOld }),
-          ...(row.maxHitPointsOld !== undefined && { maxHitPoints: row.maxHitPointsOld }),
+          ...(row.armorClass !== undefined && {
+            armorClass: row.maxArmorClassOld || row.maxArmorClass,
+          }),
+          ...(row.hitPoints !== undefined && {
+            hitPoints: row.maxHitPointsOld || row.maxHitPoints,
+          }),
+          ...(row.maxArmorClassOld !== undefined && {
+            maxArmorClass: row.maxArmorClassOld,
+          }),
+          ...(row.maxHitPointsOld !== undefined && {
+            maxHitPoints: row.maxHitPointsOld,
+          }),
           maxArmorClassOld: undefined,
           maxHitPointsOld: undefined,
           tempHitPoints: undefined,

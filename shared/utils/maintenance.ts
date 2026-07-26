@@ -10,19 +10,22 @@ export function isMaintenanceEnabled(): boolean {
   const { maintenanceMode } = useRuntimeConfig().public
   const type = typeof maintenanceMode
 
-  const strValue = type === 'string'
-    ? maintenanceMode.replace(/^"|"$/g, '')
-    : maintenanceMode
+  const strValue =
+    type === 'string' ? maintenanceMode.replace(/^"|"$/g, '') : maintenanceMode
 
   if (
-    (type === 'string' && (strValue === 'true' || strValue === '1'))
-    || (type === 'boolean' && maintenanceMode)
-    || (type === 'number' && Number(maintenanceMode) === 1)
-  ) return true
+    (type === 'string' && (strValue === 'true' || strValue === '1')) ||
+    (type === 'boolean' && maintenanceMode) ||
+    (type === 'number' && Number(maintenanceMode) === 1)
+  )
+    return true
   else return false
 }
 
-export function isUnderMaintenance(path: string, exclude: string[] | null): boolean {
+export function isUnderMaintenance(
+  path: string,
+  exclude: string[] | null,
+): boolean {
   if (exclude && urlMatches(path, exclude)) return false
   return true
 }

@@ -24,10 +24,14 @@ vi.mock('~/composables/useUi', () => ({
   }),
 }))
 
-vi.mock('~/components/ui/toast/use-toast', () => ({ useToast: () => ({ toast: toastMock }) }))
+vi.mock('~/components/ui/toast/use-toast', () => ({
+  useToast: () => ({ toast: toastMock }),
+}))
 
 const isSmallMock = ref(false)
-vi.mock('~/composables/useMediaQuery', () => ({ useMediaQuery: () => isSmallMock }))
+vi.mock('~/composables/useMediaQuery', () => ({
+  useMediaQuery: () => isSmallMock,
+}))
 
 describe('Navbar', async () => {
   beforeEach(() => {

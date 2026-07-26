@@ -7,10 +7,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <form
-    v-auto-animate
-    :class="cn('space-y-4', props.class)"
-  >
+  <form v-auto-animate :class="cn('space-y-4', props.class)">
     <slot />
   </form>
 </template>

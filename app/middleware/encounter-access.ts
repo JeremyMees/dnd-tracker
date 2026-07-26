@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/vue-query'
 
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async to => {
   const localePath = useLocalePath()
   const user = useState<AuthUser | null>('auth-user')
 
@@ -17,14 +17,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
       data.campaign
         ? data.campaign.createdBy.id === user.value?.id
         : data.createdBy === user.value?.id
-    ) return
+    )
+      return
 
     // If no campaign is associated or user is not a team member, deny access
-    if (!data.campaign || !data.campaign.team.some(member => member.user.id === user.value?.id)) {
+    if (
+      !data.campaign ||
+      !data.campaign.team.some(member => member.user.id === user.value?.id)
+    ) {
       return navigateTo(localePath('/no-access'))
     }
-  }
-  catch (error) {
+  } catch (error) {
     return navigateTo(localePath('/'))
   }
 })
@@ -33,13 +36,17 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
-  const cachedData = queryClient.getQueryData<InitiativeSheet>(['useInitiativeSheetDetail', id])
+  const cachedData = queryClient.getQueryData<InitiativeSheet>([
+    'useInitiativeSheetDetail',
+    id,
+  ])
 
   if (cachedData) return { data: cachedData }
 
   const { data, error } = await supabase
     .from('initiative_sheets')
-    .select(`
+    .select(
+      `
       *, 
       campaign(
         id,
@@ -51,7 +58,8 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
           user(id, username, avatar)
         )
       )
-    `)
+    `,
+    )
     .eq('id', id)
     .single()
     .overrideTypes<InitiativeSheet, { merge: false }>()
