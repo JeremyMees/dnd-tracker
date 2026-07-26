@@ -12,7 +12,7 @@ exports[`ActionInputs > Should match snapshot 1`] = `
   </div>
   <div class="space-y-2"><label for="reka-v-0-0-2-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.nameLabel<span class="text-destructive">*</span>
       <!--v-if-->
-    </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-2-form-item" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" type="text" name="action.name">
+    </label><input id="reka-v-0-0-2-form-item" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" name="action.name" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
     <!---->
   </div>
   <div class="space-y-2"><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.descriptionLabel<span class="text-destructive">*</span>
@@ -24,7 +24,7 @@ exports[`ActionInputs > Should match snapshot 1`] = `
   <div class="space-y-2"><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.limitedToFormLabel
       <!--v-if-->
       <!--v-if-->
-    </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-4-form-item" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" type="text" name="action.limitedToForm">
+    </label><input id="reka-v-0-0-4-form-item" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" name="action.limitedToForm" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
     <!---->
   </div>
   <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2">

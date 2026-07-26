@@ -6,7 +6,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.nameLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" type="text" name="attack.name">
+      </label><input id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" name="attack.name" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <div class="space-y-2"><label for="reka-v-0-0-1-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.attackTypeLabel<span class="text-destructive">*</span>
@@ -22,7 +22,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.toHitModLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-3-form-item" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" type="number" name="attack.toHitMod">
+      </label><input id="reka-v-0-0-3-form-item" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" name="attack.toHitMod" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <div class="space-y-2"><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.distanceUnitLabel<span class="text-destructive">*</span>
@@ -38,7 +38,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-6-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.reachLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-6-form-item" aria-describedby="reka-v-0-0-6-form-item-description" aria-invalid="false" type="number" name="attack.reach">
+      </label><input id="reka-v-0-0-6-form-item" aria-describedby="reka-v-0-0-6-form-item-description" aria-invalid="false" name="attack.reach" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <!--v-if-->
@@ -57,7 +57,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-8-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageDieCountLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-8-form-item" aria-describedby="reka-v-0-0-8-form-item-description" aria-invalid="false" type="number" name="attack.damageDieCount">
+      </label><input id="reka-v-0-0-8-form-item" aria-describedby="reka-v-0-0-8-form-item-description" aria-invalid="false" name="attack.damageDieCount" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <div class="space-y-2"><label for="reka-v-0-0-9-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageDieTypeLabel
@@ -72,7 +72,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-11-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageBonusLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-11-form-item" aria-describedby="reka-v-0-0-11-form-item-description" aria-invalid="false" type="number" name="attack.damageBonus">
+      </label><input id="reka-v-0-0-11-form-item" aria-describedby="reka-v-0-0-11-form-item-description" aria-invalid="false" name="attack.damageBonus" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <div class="space-y-2"><label for="reka-v-0-0-12-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageTypeLabel
@@ -89,7 +89,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-14-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageDieCountLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-14-form-item" aria-describedby="reka-v-0-0-14-form-item-description" aria-invalid="false" type="number" name="attack.extraDamageDieCount">
+      </label><input id="reka-v-0-0-14-form-item" aria-describedby="reka-v-0-0-14-form-item-description" aria-invalid="false" name="attack.extraDamageDieCount" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <div class="space-y-2"><label for="reka-v-0-0-15-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageDieTypeLabel
@@ -104,7 +104,7 @@ exports[`AttackInputs > Should match snapshot 1`] = `
     <div class="space-y-2"><label for="reka-v-0-0-17-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageBonusLabel
         <!--v-if-->
         <!--v-if-->
-      </label><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reka-v-0-0-17-form-item" aria-describedby="reka-v-0-0-17-form-item-description" aria-invalid="false" type="number" name="attack.extraDamageBonus">
+      </label><input id="reka-v-0-0-17-form-item" aria-describedby="reka-v-0-0-17-form-item-description" aria-invalid="false" name="attack.extraDamageBonus" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
       <!---->
     </div>
     <div class="space-y-2"><label for="reka-v-0-0-18-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.extraDamageTypeLabel
