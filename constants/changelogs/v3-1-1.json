@@ -1,0 +1,45 @@
+{
+  "version": "v3.1.1",
+  "date": "2026-07-26",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Select active widgets when creating a new encounter"
+        },
+        {
+          "text": "New dice roll widget"
+        },
+        {
+          "text": "New fantasy name generator widget"
+        },
+        {
+          "text": "Drag and drop reordering of widgets"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Updated form validation to newer version"
+        },
+        {
+          "text": "Updated Stripe to newer version"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Number input fields returning string values instead of numbers"
+        },
+        {
+          "text": "Updating a number in a form violated the database constraints"
+        }
+      ]
+    }
+  ]
+}
