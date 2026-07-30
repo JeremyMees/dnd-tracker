@@ -1,19 +1,51 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
+import * as z from 'zod'
+
+const bodySchema = z.object({
+  lookup: z.string().min(1).max(255),
+  locale: z.enum(['nl', 'en']),
+})
 
 export default defineEventHandler(async event => {
   const config = useRuntimeConfig()
-  const client = await serverSupabaseClient(event)
-  const body = await readBody(event)
+  const user = await requireUser(event)
+  const body = await readValidatedBody(event, bodySchema.parse)
 
-  const price = await stripe.prices.retrieve(body.lookup)
+  const supabase = serverSupabaseServiceRole<DB>(event)
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, email, stripeId, subscriptionType')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile) {
+    throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
+  }
+
+  const price = await stripe.prices.retrieve(body.lookup, {
+    expand: ['product'],
+  })
+
+  if (!price.active) {
+    throw createError({ statusCode: 400, statusMessage: 'Inactive price' })
+  }
+
+  const product = resolveProduct(price.product)
+
+  resolveTier(product.name)
+
+  if (isUpgradeProduct(product.name) && profile.subscriptionType !== 'medior') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Upgrade price not available for this account',
+    })
+  }
 
   let customer
-  let update = {}
 
-  if (!body.customer) {
-    customer = await stripe.customers.create({ email: body.user.email })
-
-    update = { stripeId: customer.id }
+  if (!profile.stripeId) {
+    customer = await stripe.customers.create({ email: profile.email })
   }
 
   const lang = body.locale === 'nl' ? '' : `/${body.locale}`
@@ -25,17 +57,18 @@ export default defineEventHandler(async event => {
     mode: 'payment',
     success_url: `${config.public.appDomain}${lang}/subscribe-success`,
     cancel_url: `${config.public.appDomain}${lang}/pricing`,
-    customer: body.customer || customer?.id,
+    customer: profile.stripeId || customer?.id,
   })
 
-  await client
+  const { error } = await supabase
     .from('profiles')
     .update({
-      ...update,
+      ...(customer && { stripeId: customer.id }),
       stripeSessionId: session.id,
-      tempSubscription: body.type === 'upgrade to pro' ? 'pro' : body.type,
-    } as never)
-    .eq('id', body.user.id)
+    })
+    .eq('id', profile.id)
+
+  if (error) throw createError('Failed to start checkout.')
 
   return {
     url: session.url,

@@ -21,7 +21,6 @@ const props = defineProps<{
 
 const { toast } = useToast()
 const modal = useModal()
-const user = useAuthenticatedUser()
 const { ask } = useConfirm()
 const { t } = useI18n()
 const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
@@ -110,11 +109,8 @@ async function sendNoteAsMail(
         await $fetch('/api/emails/share-note', {
           method: 'POST',
           body: {
+            noteId: note.id,
             email,
-            noteContent: note.text,
-            noteTitle: note.title,
-            campaign: props.current.title,
-            sharedBy: user.value.username,
           },
         })
       }),

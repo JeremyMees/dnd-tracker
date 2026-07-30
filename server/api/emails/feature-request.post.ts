@@ -1,18 +1,36 @@
 import { render } from '@vue-email/render'
+import { serverSupabaseServiceRole } from '#supabase/server'
+import * as z from 'zod'
 import FeatureRequest from '~~/emails/FeatureRequest.vue'
 
+const bodySchema = z.object({
+  title: z.string().min(3).max(50),
+  text: z.string().min(10).max(500),
+})
+
 export default defineEventHandler(async event => {
-  const body = await readBody(event)
+  const caller = await requireUser(event)
+  const body = await readValidatedBody(event, bodySchema.parse)
   const { plunkApiKey } = useRuntimeConfig()
 
-  try {
-    const html = await render(FeatureRequest, body, {
-      pretty: true,
-    })
+  const supabase = serverSupabaseServiceRole<DB>(event)
 
-    const text = await render(FeatureRequest, body, {
-      plainText: true,
-    })
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username, email')
+    .eq('id', caller.id)
+    .single()
+
+  const props = {
+    email: profile?.email ?? caller.email ?? '',
+    name: profile?.username ?? 'Unknown',
+    title: body.title,
+    text: body.text,
+  }
+
+  try {
+    const html = await render(FeatureRequest, props, { pretty: true })
+    const text = await render(FeatureRequest, props, { plainText: true })
 
     return await $fetch('https://next-api.useplunk.com/v1/send', {
       method: 'POST',

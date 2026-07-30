@@ -171,10 +171,8 @@ async function addTeamMember(member: FoundUser): Promise<void> {
   await $fetch('/api/emails/campaign-invite', {
     method: 'POST',
     body: {
-      email: member.profile.email,
-      username: member.profile.username,
-      campaign: props.current.title,
-      invitedBy: user.value.username || 'Owner',
+      campaignId: props.current.id,
+      userId: member.id,
       inviteLink: `https://dnd-tracker.com${localePath('/campaigns/join')}?token=${token}`,
     },
   })
@@ -184,9 +182,8 @@ async function inviteNewUser(email: string): Promise<void> {
   await $fetch('/api/emails/campaign-invite-no-user', {
     method: 'POST',
     body: {
+      campaignId: props.current.id,
       email,
-      campaign: props.current.title,
-      invitedBy: user.value.username || 'Owner',
     },
   })
 

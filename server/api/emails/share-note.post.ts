@@ -1,10 +1,10 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import CampaignInviteNoUser from '~~/emails/CampaignInviteNoUser.vue'
+import ShareNote from '~~/emails/ShareNote.vue'
 
 const bodySchema = z.object({
-  campaignId: z.number().int().positive(),
+  noteId: z.number().int().positive(),
   email: z.email().max(254),
 })
 
@@ -13,16 +13,21 @@ export default defineEventHandler(async event => {
   const body = await readValidatedBody(event, bodySchema.parse)
   const { plunkApiKey } = useRuntimeConfig()
 
-  const campaign = await requireCampaignAccess(
-    event,
-    body.campaignId,
-    caller.id,
-    ['Owner', 'Admin'],
-  )
-
   const supabase = serverSupabaseServiceRole<DB>(event)
 
-  const { data: inviter } = await supabase
+  const { data: note } = await supabase
+    .from('notes')
+    .select('id, title, text, campaign')
+    .eq('id', body.noteId)
+    .single()
+
+  if (!note) {
+    throw createError({ statusCode: 404, statusMessage: 'Note not found' })
+  }
+
+  const campaign = await requireCampaignAccess(event, note.campaign, caller.id)
+
+  const { data: sender } = await supabase
     .from('profiles')
     .select('username')
     .eq('id', caller.id)
@@ -30,13 +35,15 @@ export default defineEventHandler(async event => {
 
   const props = {
     email: body.email,
+    noteContent: note.text ?? '',
+    noteTitle: note.title,
     campaign: campaign.title,
-    invitedBy: inviter?.username || 'Owner',
+    sharedBy: sender?.username || 'A campaign member',
   }
 
   try {
-    const html = await render(CampaignInviteNoUser, props, { pretty: true })
-    const text = await render(CampaignInviteNoUser, props, { plainText: true })
+    const html = await render(ShareNote, props, { pretty: true })
+    const text = await render(ShareNote, props, { plainText: true })
 
     return await $fetch('https://next-api.useplunk.com/v1/send', {
       method: 'POST',
@@ -47,7 +54,7 @@ export default defineEventHandler(async event => {
       body: {
         from: 'jeremy@dnd-tracker.com',
         to: body.email,
-        subject: 'Added to a campaign on DnD Tracker',
+        subject: `New Note Shared from ${campaign.title}!`,
         body: html,
         text,
       },

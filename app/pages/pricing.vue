@@ -16,20 +16,14 @@ const shownProduct = computed<ProductPricing[]>(() => {
   else return products.value.filter(p => p.type !== 'upgrade to pro')
 })
 
-async function subscribe(
-  id: string,
-  type: StripeSubscriptionType,
-): Promise<void> {
+async function subscribe(id: string): Promise<void> {
   if (!user.value) navigateTo(localePath('/login'))
 
   const { data } = await useFetch('/api/stripe/subscribe', {
     method: 'POST',
     body: {
-      user: user.value,
       lookup: id,
       locale: locale.value,
-      type,
-      ...(user.value?.stripeId && { customer: user.value.stripeId }),
     },
   })
 
@@ -158,7 +152,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 :disabled="isPending"
                 variant="tertiary"
                 class="w-full"
-                @click="subscribe(product?.id || '', product.type)"
+                @click="subscribe(product?.id || '')"
               >
                 {{ t('pages.pricing.cta') }}
               </UiButton>
