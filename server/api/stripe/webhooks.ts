@@ -1,44 +1,65 @@
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async event => {
   const raw = (await readRawBody(event)) as string
-  const client = await serverSupabaseClient<DB>(event)
-  const signature = event.headers.get('stripe-signature') || ''
+  const signature = getHeader(event, 'stripe-signature') || ''
   const config = useRuntimeConfig()
+  const supabase = serverSupabaseServiceRole<DB>(event)
+
+  let stripeEvent
 
   try {
-    const webhookSecret = config.stripeWebhook
-    const event = stripe.webhooks.constructEvent(raw, signature, webhookSecret)
-
-    if (event.type !== 'checkout.session.completed') {
-      return `Unhandled event type: ${event.type}`
-    }
-
-    const subscription = event.data.object
-
-    try {
-      if (subscription.customer === null) throw createError('No customer')
-      if (typeof subscription.customer !== 'string')
-        throw createError('Invalid customer')
-
-      const { data } = await client
-        .from('profiles')
-        .select('tempSubscription')
-        .eq('stripeId', subscription.customer)
-        .single()
-
-      if (data?.tempSubscription) {
-        await client
-          .from('profiles')
-          .update({ subscriptionType: data.tempSubscription })
-          .eq('stripeId', subscription.customer)
-      }
-    } catch (error) {
-      return 'Error fetching or updating user'
-    }
-
-    return `handled ${event.type}`
-  } catch (err) {
-    return 'Webhook error'
+    stripeEvent = stripe.webhooks.constructEvent(
+      raw,
+      signature,
+      config.stripeWebhook,
+    )
+  } catch {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid signature' })
   }
+
+  if (stripeEvent.type !== 'checkout.session.completed') {
+    return `Unhandled event type: ${stripeEvent.type}`
+  }
+
+  const session = stripeEvent.data.object
+  const customer = session.customer
+
+  if (typeof customer !== 'string') {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid customer' })
+  }
+
+  if (session.payment_status !== 'paid') {
+    return `Ignoring session with payment_status ${session.payment_status}`
+  }
+
+  const items = await stripe.checkout.sessions.listLineItems(session.id, {
+    limit: 1,
+    expand: ['data.price.product'],
+  })
+
+  const tier = resolveTier(resolveProduct(items.data[0]?.price?.product).name)
+
+  const { data: profile, error: fetchError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('stripeId', customer)
+    .maybeSingle()
+
+  if (fetchError) {
+    throw createError({ statusCode: 500, statusMessage: 'Lookup failed' })
+  }
+
+  if (!profile) return 'No profile for this customer'
+
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ subscriptionType: tier })
+    .eq('id', profile.id)
+
+  if (updateError) {
+    throw createError({ statusCode: 500, statusMessage: 'Update failed' })
+  }
+
+  return `handled ${stripeEvent.type}`
 })

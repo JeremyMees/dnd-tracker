@@ -1,13 +1,15 @@
-import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
+import * as z from 'zod'
+
+const bodySchema = z.object({
+  token: z.string().min(1).max(2048),
+})
 
 export default defineEventHandler(async event => {
   const supabase = serverSupabaseServiceRole<DB>(event)
-  const user = await serverSupabaseUser(event)
-  const { token } = await readBody(event)
+  const user = await requireUser(event)
+  const { token } = await readValidatedBody(event, bodySchema.parse)
 
-  if (!token || !user) throw createError('Invalid request')
-
-  // Validate that the join_campaign token exists
   const { data: joinCampaign, error: joinError } = await supabase
     .from('join_campaign')
     .select('id, campaign, role, user')
@@ -17,7 +19,6 @@ export default defineEventHandler(async event => {
   if (joinError || !joinCampaign)
     throw createError('Join campaign token not found')
 
-  // Insert the new user into the team
   const { data: member, error: teamError } = await supabase
     .from('team')
     .insert({
@@ -29,7 +30,6 @@ export default defineEventHandler(async event => {
 
   if (teamError) throw createError(teamError)
 
-  // Delete the join_campaign token
   const { error: deleteError } = await supabase
     .from('join_campaign')
     .delete()

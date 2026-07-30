@@ -314,7 +314,6 @@ export type Database = {
           stripeId: string | null
           stripeSessionId: string | null
           subscriptionType: Database['public']['Enums']['subscription_type']
-          tempSubscription: Database['public']['Enums']['subscription_type']
           username: string
         }
         Insert: {
@@ -329,7 +328,6 @@ export type Database = {
           stripeId?: string | null
           stripeSessionId?: string | null
           subscriptionType?: Database['public']['Enums']['subscription_type']
-          tempSubscription?: Database['public']['Enums']['subscription_type']
           username: string
         }
         Update: {
@@ -344,7 +342,6 @@ export type Database = {
           stripeId?: string | null
           stripeSessionId?: string | null
           subscriptionType?: Database['public']['Enums']['subscription_type']
-          tempSubscription?: Database['public']['Enums']['subscription_type']
           username?: string
         }
         Relationships: []

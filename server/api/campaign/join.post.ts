@@ -1,21 +1,28 @@
 import { TimeSpan } from 'oslo'
 import { createJWT } from 'oslo/jwt'
-import { serverSupabaseUser } from '#supabase/server'
+import * as z from 'zod'
+
+const bodySchema = z.object({
+  campaign: z.number().int().positive(),
+  user: z.uuid(),
+  role: z.enum(['Admin', 'Player', 'Viewer']),
+})
 
 export default defineEventHandler(async event => {
-  const body = await readBody(event)
-  const user = await serverSupabaseUser(event)
+  const caller = await requireUser(event)
+  const body = await readValidatedBody(event, bodySchema.parse)
   const secret = useRuntimeConfig().jwtSecret
 
-  if (!user) throw createError('User not found')
-  if (!body.campaign || !body.user || !body.role)
-    throw createError('Correct data not provided')
+  await requireCampaignAccess(event, body.campaign, caller.id, [
+    'Owner',
+    'Admin',
+  ])
 
-  const jwt = await createJWT(
+  return await createJWT(
     'HS256',
     new TextEncoder().encode(secret),
     {
-      user: user.id,
+      user: caller.id,
       data: body,
     },
     {
@@ -23,6 +30,4 @@ export default defineEventHandler(async event => {
       includeIssuedTimestamp: true,
     },
   )
-
-  return jwt
 })

@@ -79,22 +79,18 @@ export function useProfileRemove() {
 
   return useMutation({
     mutationFn: async ({ id }: { id: string } & QueryDefaults) => {
-      await logout()
-
       const { error } = await supabase.from('profiles').delete().eq('id', id)
 
       if (error) throw createError(error)
 
-      const { data: prof, error: fetchError } = await useFetch(
-        '/api/user/remove',
-        {
-          method: 'POST',
-          body: { id },
-        },
-      )
+      const { error: removeError } = await $fetch('/api/user/remove', {
+        method: 'POST',
+        body: { id },
+      })
 
-      if (prof.value?.error) throw createError(prof.value.error)
-      if (fetchError.value) throw createError(fetchError.value)
+      if (removeError) throw createError(removeError.message)
+
+      await logout()
     },
     onSuccess: (_data, { id, onSuccess }) => {
       if (onSuccess) onSuccess()
