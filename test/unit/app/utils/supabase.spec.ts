@@ -1,5 +1,4 @@
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { sbRange, sbPages, sbCount, sbQuery, sbOrQuery } from '~/utils/supabase'
 import type { SbFetchOptions } from '~~/shared/types/supabase'
 
@@ -9,16 +8,16 @@ let mockQueryResult: any = {
   count: 2,
 }
 
-mockNuxtImport('createError', () => (error: any) => {
-  return new Error(
-    typeof error === 'string'
-      ? error
-      : error.message || error.details || 'Unknown error',
-  )
-})
-
-mockNuxtImport('useSupabaseClient', () => {
-  return () => ({
+vi.mock('#app', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  createError: (error: any) => {
+    return new Error(
+      typeof error === 'string'
+        ? error
+        : error.message || error.details || 'Unknown error',
+    )
+  },
+  useSupabaseClient: () => ({
     from: () => ({
       select: () => {
         const query = {
@@ -55,8 +54,8 @@ mockNuxtImport('useSupabaseClient', () => {
         return { ...query, ...mockQueryResult }
       },
     }),
-  })
-})
+  }),
+}))
 
 describe('supabase', () => {
   describe('sbRange', () => {

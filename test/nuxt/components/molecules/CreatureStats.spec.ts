@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import CreatureStats from '~/components/molecules/CreatureStats.vue'
-import { dndMonsterFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 const props = { creature: dndMonsterFixture }
 

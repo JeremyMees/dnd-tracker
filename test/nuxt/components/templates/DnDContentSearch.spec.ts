@@ -1,11 +1,11 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 import {
   dndArmorFixture,
   open5eV2ArmorListingFixture,
-} from '~~/test/nuxt/fixtures/open5e'
+} from '~~/test/fixtures/open5e'
 
 interface Props {
   variant?: 'secondary' | 'background'

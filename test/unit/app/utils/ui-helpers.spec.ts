@@ -1,4 +1,3 @@
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import {
   sortByNumber,
@@ -20,13 +19,16 @@ beforeEach(() => {
   } as any
 })
 
-mockNuxtImport('createError', () => (error: any) => {
-  throw new Error(
-    typeof error === 'string'
-      ? error
-      : error.message || error.details || 'Unknown error',
-  )
-})
+vi.mock('#app', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  createError: (error: any) => {
+    throw new Error(
+      typeof error === 'string'
+        ? error
+        : error.message || error.details || 'Unknown error',
+    )
+  },
+}))
 
 describe('ui-helpers', () => {
   describe('sortByNumber', () => {

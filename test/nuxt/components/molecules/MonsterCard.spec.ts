@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import MonsterCard from '~/components/molecules/MonsterCard.vue'
-import { dndMonsterFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 interface Props {
   monster: DndMonster

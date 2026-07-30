@@ -3,7 +3,7 @@ import {
   open5eV2MagicItemFixture,
   open5eV1MagicItemFixture,
   open5eV1MagicItemWeaponFixture,
-} from '~~/test/nuxt/fixtures/open5e'
+} from '~~/test/fixtures/open5e'
 
 describe('transformers/magic-item', () => {
   describe('toMagicItem (V2)', () => {

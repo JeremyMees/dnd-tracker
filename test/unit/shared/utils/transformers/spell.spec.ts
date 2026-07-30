@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   open5eV2SpellFixture,
   open5eV1SpellFixture,
-} from '~~/test/nuxt/fixtures/open5e'
+} from '~~/test/fixtures/open5e'
 
 describe('transformers/spell', () => {
   describe('toSpell (V2)', () => {

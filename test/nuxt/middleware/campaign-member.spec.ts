@@ -1,7 +1,7 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
-import { authUser } from '~~/test/nuxt/fixtures/auth-user'
+import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
+import { authUser } from '~~/test/fixtures/auth-user'
 import middleware from '~/middleware/campaign-member'
 
 vi.mock('@tanstack/vue-query', async importOriginal => {

@@ -4,7 +4,7 @@ import {
   open5eV2ExhaustionFixture,
   open5eV1ConditionFixture,
   open5eV1ExhaustionFixture,
-} from '~~/test/nuxt/fixtures/open5e'
+} from '~~/test/fixtures/open5e'
 
 describe('transformers/condition', () => {
   describe('toCondition (V2)', () => {

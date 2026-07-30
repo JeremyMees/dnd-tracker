@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   open5eV2MonsterFixture,
   open5eV1MonsterFixture,
-} from '~~/test/nuxt/fixtures/open5e'
+} from '~~/test/fixtures/open5e'
 
 describe('transformers/monster', () => {
   describe('toMonster (V2)', () => {

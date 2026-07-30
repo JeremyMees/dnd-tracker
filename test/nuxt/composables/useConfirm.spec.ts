@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import mockConfirm from '../fixtures/confirm.json'
+import mockConfirm from '../../fixtures/confirm.json'
 import { useConfirmDialogs, useConfirm } from '~/composables/useConfirm'
 
 describe('useConfirm', async () => {

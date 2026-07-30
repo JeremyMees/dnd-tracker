@@ -2,8 +2,8 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
-import { mockSheetCampaign } from '~~/test/nuxt/fixtures/campaign'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 
 interface EncounterSidebarVM {
   diceRollerOpen: boolean

@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import FeatureRequestCard from '~/components/molecules/FeatureRequestCard.vue'
-import SocialProfile from '~~/test/nuxt/fixtures/social-profile.json'
+import SocialProfile from '~~/test/fixtures/social-profile.json'
 
 vi.mock('~/composables/useAuthentication', () => ({
   useAuthentication: () => ({

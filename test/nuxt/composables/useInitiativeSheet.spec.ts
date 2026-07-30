@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { sheet } from '../fixtures/initiative-sheet'
+import { sheet } from '../../fixtures/initiative-sheet'
 import { useInitiativeSheet } from '~/composables/useInitiativeSheet'
 
 const updateFn = vi.fn()

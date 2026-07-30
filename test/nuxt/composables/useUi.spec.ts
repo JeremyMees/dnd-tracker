@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import user from '../fixtures/user.json'
+import user from '../../fixtures/user.json'
 import { useAuthentication } from '~/composables/useAuthentication'
 import { useUi } from '~/composables/useUi'
 

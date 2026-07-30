@@ -33,6 +33,12 @@ export default defineNuxtConfig({
 
   imports: { dirs: ['@@/types/*.ts', 'types/*.ts'] },
 
+  typescript: {
+    tsConfig: {
+      include: ['../test/unit/**/*'],
+    },
+  },
+
   devtools: { enabled: true },
 
   css: [

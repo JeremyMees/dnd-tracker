@@ -1,4 +1,3 @@
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   urlMatches,
@@ -13,10 +12,10 @@ const { mockUseRuntimeConfig } = vi.hoisted(() => ({
   mockUseRuntimeConfig: vi.fn(),
 }))
 
-mockNuxtImport('useRuntimeConfig', (original: any) => {
-  mockUseRuntimeConfig.mockImplementation(original)
-  return mockUseRuntimeConfig
-})
+vi.mock('#app', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useRuntimeConfig: mockUseRuntimeConfig,
+}))
 
 describe('Maintenance utils', () => {
   beforeEach(() => {

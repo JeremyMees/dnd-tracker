@@ -11,7 +11,9 @@ vi.mock('#app', async importOriginal => {
   const actual = await importOriginal<Record<string, unknown>>()
   return {
     ...actual,
-    useRuntimeConfig: () => ({ public: { appDomain: 'https://example.com' } }),
+    useRuntimeConfig: () => ({
+      public: { appDomain: 'https://dnd-tracker.com' },
+    }),
   }
 })
 
@@ -82,13 +84,13 @@ describe('url-generators', () => {
     it('should generate a share URL with English locale', () => {
       const url = shareEncounterUrl('abc123', 'en')
 
-      expect(url).toBe('/en/playground?token=abc123')
+      expect(url).toBe('https://dnd-tracker.com/en/playground?token=abc123')
     })
 
     it('should generate a share URL with Dutch locale', () => {
       const url = shareEncounterUrl('xyz789', 'nl')
 
-      expect(url).toBe('/playground?token=xyz789')
+      expect(url).toBe('https://dnd-tracker.com/playground?token=xyz789')
     })
   })
 

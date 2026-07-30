@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCardMagicItem from '~/components/molecules/ContentCard/ContentCardMagicItem.vue'
-import { dndMagicItemFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndMagicItemFixture } from '~~/test/fixtures/open5e'
 
 interface Props {
   content: DndMagicItem

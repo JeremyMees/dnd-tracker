@@ -1,13 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import {
-  randomArrayItem,
-  randomArrayItems,
-  searchArray,
-  shuffleArray,
-  splitArray,
-  sortArray,
-  toggleArray,
-} from '~/utils/array-utils'
 
 describe('array-utils', () => {
   describe('randomArrayItem', () => {

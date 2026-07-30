@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   data: InitiativeSheet | undefined

@@ -1,6 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
+import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
 import middleware from '~/middleware/abort-authenticated'
 
 const userValue = ref<Partial<ProfileRow> | null>({ id: '1' })

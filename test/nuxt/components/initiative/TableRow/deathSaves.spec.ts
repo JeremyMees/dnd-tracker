@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import DeathSaves from '~/components/initiative/TableRow/DeathSaves.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow

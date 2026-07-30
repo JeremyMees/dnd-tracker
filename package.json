@@ -100,6 +100,7 @@
     "lint-staged": "^16.4.0",
     "prettier": "^3.9.4",
     "typescript": "^5.9.3",
+    "unimport": "^6.4.0",
     "vitest": "^4.1.6",
     "vue-tsc": "^3.2.9"
   },

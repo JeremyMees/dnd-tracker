@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 const emptyRow: InitiativeSheetRow = {
   id: 'test',

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { mockModal } from '../fixtures/modal'
+import { mockModal } from '../../fixtures/modal'
 import { useModal } from '~/composables/useModal'
 
 describe('useModal', async () => {
