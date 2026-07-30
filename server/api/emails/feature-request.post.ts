@@ -32,20 +32,23 @@ export default defineEventHandler(async event => {
     const html = await render(FeatureRequest, props, { pretty: true })
     const text = await render(FeatureRequest, props, { plainText: true })
 
-    return await $fetch('https://next-api.useplunk.com/v1/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${plunkApiKey}`,
+    return await $fetch<PlunkSendResponse, string>(
+      'https://next-api.useplunk.com/v1/send',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${plunkApiKey}`,
+        },
+        body: {
+          from: 'jeremy@dnd-tracker.com',
+          to: 'jeremy@dnd-tracker.com',
+          subject: 'New feature request',
+          body: html,
+          text,
+        },
       },
-      body: {
-        from: 'jeremy@dnd-tracker.com',
-        to: 'jeremy@dnd-tracker.com',
-        subject: 'New feature request',
-        body: html,
-        text,
-      },
-    })
+    )
   } catch (err) {
     throw createError('Failed to send email.')
   }

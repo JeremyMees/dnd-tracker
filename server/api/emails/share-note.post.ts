@@ -45,20 +45,23 @@ export default defineEventHandler(async event => {
     const html = await render(ShareNote, props, { pretty: true })
     const text = await render(ShareNote, props, { plainText: true })
 
-    return await $fetch('https://next-api.useplunk.com/v1/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${plunkApiKey}`,
+    return await $fetch<PlunkSendResponse, string>(
+      'https://next-api.useplunk.com/v1/send',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${plunkApiKey}`,
+        },
+        body: {
+          from: 'jeremy@dnd-tracker.com',
+          to: body.email,
+          subject: `New Note Shared from ${campaign.title}!`,
+          body: html,
+          text,
+        },
       },
-      body: {
-        from: 'jeremy@dnd-tracker.com',
-        to: body.email,
-        subject: `New Note Shared from ${campaign.title}!`,
-        body: html,
-        text,
-      },
-    })
+    )
   } catch (err) {
     throw createError('Failed to send email.')
   }

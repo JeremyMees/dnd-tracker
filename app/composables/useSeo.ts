@@ -19,6 +19,12 @@ export function useSeo(title?: string): void {
         href: '/favicon.ico',
       },
     ],
+    meta: [
+      {
+        name: 'keywords',
+        content: seo.keywords,
+      },
+    ],
   })
 
   useSeoMeta({
@@ -27,7 +33,6 @@ export function useSeo(title?: string): void {
     twitterImage: seo.socials,
     twitterTitle: seo.title,
     twitterDescription: seo.description,
-    keywords: seo.keywords,
   })
 
   useSchemaOrg([
