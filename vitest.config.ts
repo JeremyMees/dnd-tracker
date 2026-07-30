@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
-import { resolve } from 'node:path'
-import Unimport from 'unimport/unplugin'
+import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env'
 
 const ignoredLogs = [
   /^<Suspense>/,
@@ -12,27 +11,8 @@ export default defineConfig({
   test: {
     projects: [
       {
-        plugins: [
-          Unimport.vite({
-            dirs: ['app/utils/**', 'shared/utils/**', 'server/utils/**'],
-            imports: [
-              'createError',
-              'defineAbility',
-              'useRuntimeConfig',
-              'useI18n',
-              'useSupabaseClient',
-            ].map(name => ({ name, from: '#app' })),
-            presets: ['vue'],
-            dts: false,
-          }),
-        ],
-        resolve: {
-          alias: {
-            '~': resolve(__dirname, 'app'),
-            '~~': resolve(__dirname, '.'),
-            '#app': resolve(__dirname, 'test/unit/stubs/nuxt.ts'),
-          },
-        },
+        plugins: [nuxtAutoImports()],
+        resolve: { alias: nuxtAliases },
         test: {
           name: 'unit',
           include: ['test/unit/**/*.{test,spec}.ts'],
