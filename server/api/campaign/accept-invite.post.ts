@@ -28,14 +28,14 @@ export default defineEventHandler(async event => {
     })
     .select('id, role, user')
 
-  if (teamError) throw createError(teamError)
+  if (teamError) throw createError(postgresErrorToH3Error(teamError))
 
   const { error: deleteError } = await supabase
     .from('join_campaign')
     .delete()
     .eq('id', joinCampaign.id)
 
-  if (deleteError) throw createError(deleteError)
+  if (deleteError) throw createError(postgresErrorToH3Error(deleteError))
 
   return member
 })

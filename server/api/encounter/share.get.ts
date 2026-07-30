@@ -6,19 +6,28 @@ export default defineEventHandler(async event => {
   const { token } = getQuery(event)
   const secret = useRuntimeConfig().jwtSecret
 
-  if (!token || typeof token !== 'string')
-    throw createError('Token not provided')
+  if (!token || typeof token !== 'string') {
+    throw createError({ statusCode: 400, statusMessage: 'Token not provided' })
+  }
 
-  const jwt = await validateJWT(
-    'HS256',
-    new TextEncoder().encode(secret),
-    token,
-  )
+  let payload: { encounter: number; user: string }
 
-  if (!jwt || !('encounter' in jwt.payload) || !('user' in jwt.payload))
-    throw createError('Invalid JWT')
+  try {
+    const jwt = await validateJWT(
+      'HS256',
+      new TextEncoder().encode(secret),
+      token,
+    )
 
-  const { encounter, user } = jwt.payload as { encounter: number; user: string }
+    if (!('encounter' in jwt.payload) || !('user' in jwt.payload))
+      throw new Error('Missing encounter or user claim')
+
+    payload = jwt.payload as { encounter: number; user: string }
+  } catch (cause) {
+    throw createError({ statusCode: 401, statusMessage: 'Invalid JWT', cause })
+  }
+
+  const { encounter, user } = payload
 
   const { data, error } = await supabase
     .from('initiative_sheets')
@@ -40,14 +49,16 @@ export default defineEventHandler(async event => {
     .match({ id: encounter })
     .single()
 
-  if (error) throw createError(error)
+  if (error) throw createError(postgresErrorToH3Error(error))
 
   const isOwner = data.createdBy === user
   const isTeamMember = data.campaign?.team.some(
     member => member.user.id === user,
   )
 
-  if (!isOwner && !isTeamMember) throw createError('Unauthorized')
+  if (!isOwner && !isTeamMember) {
+    throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+  }
 
   return data
 })
