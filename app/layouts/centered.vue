@@ -3,6 +3,8 @@
     <NuxtLinkLocale
       class="absolute inset-0 bg-transparent cursor-pointer"
       to="/"
+      tabindex="-1"
+      aria-hidden="true"
     />
     <div
       class="sm:dnd-container absolute w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
@@ -18,6 +20,7 @@
         />
         <NuxtLinkLocale
           to="/"
+          :aria-label="$t('actions.close')"
           class="absolute size-4 right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         >
           <Icon name="tabler:x" class="size-4 min-w-4" aria-hidden="true" />

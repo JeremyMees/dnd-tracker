@@ -6,7 +6,11 @@
       <div
         class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20"
       >
-        <NuxtLinkLocale to="/" class="mt-2">
+        <NuxtLinkLocale
+          to="/"
+          class="mt-2"
+          :aria-label="$t('components.navbar.home')"
+        >
           <NuxtImg
             src="/text-logo.svg"
             alt="DnD Tracker logo"
