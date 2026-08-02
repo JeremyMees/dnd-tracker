@@ -29,8 +29,12 @@ const isChanged = computed<boolean>(() => {
     const currentOptions = avatarCreator.avatar.value.extra
 
     if (initialOptions && currentOptions) {
-      const initial = filterUnwantedKeys(initialOptions as SelectedStyleOptions)
-      const current = filterUnwantedKeys(currentOptions as SelectedStyleOptions)
+      const initial = normalizeStyleOptions(
+        initialOptions as SelectedStyleOptions,
+      )
+      const current = normalizeStyleOptions(
+        currentOptions as SelectedStyleOptions,
+      )
 
       return Object.entries(current).some(([key, value]) => {
         if (!initial[key]) return true
@@ -84,30 +88,6 @@ onMounted(() => {
     initialAvatar.value = JSON.parse(JSON.stringify(avatarCreator.avatar.value))
   }
 })
-
-function filterUnwantedKeys(
-  selected: SelectedStyleOptions,
-): SelectedStyleOptions {
-  const values: SelectedStyleOptions = {}
-
-  for (const key in selected) {
-    if (avatarCreator.blackListedKeys.includes(key)) continue
-
-    let value = selected[key]
-
-    if (value === undefined) continue
-
-    if (typeof value === 'string' && value.includes('#')) {
-      value = value.replace('#', '')
-    }
-
-    if (key === 'primaryBackgroundColor') {
-      values.backgroundColor = value
-    } else values[key] = value
-  }
-
-  return values
-}
 
 function updateAvatar(key: string, value: string): void {
   avatarCreator.update({ [key]: value })

@@ -4,11 +4,11 @@ import AvatarSelector from '~/components/atoms/AvatarSelector.vue'
 
 type Identifier =
   | 'backgroundColor'
-  | 'accessories'
+  | 'accessoriesVariant'
   | 'clothingColor'
-  | 'face'
-  | 'facialHair'
-  | 'head'
+  | 'expressionVariant'
+  | 'facialHairVariant'
+  | 'headVariant'
   | 'color'
 
 interface Props {
@@ -19,11 +19,11 @@ interface Props {
 
 const identifiers: Record<Identifier, { label: string; icon: string }> = {
   backgroundColor: { label: 'backgroundColor', icon: 'tabler:background' },
-  accessories: { label: 'accessories', icon: 'tabler:eyeglass-2' },
+  accessoriesVariant: { label: 'accessories', icon: 'tabler:eyeglass-2' },
   clothingColor: { label: 'clothingColor', icon: 'tabler:shirt' },
-  face: { label: 'face', icon: 'tabler:lego' },
-  facialHair: { label: 'facialHair', icon: 'tabler:moustache' },
-  head: { label: 'head', icon: 'tabler:mood-boy' },
+  expressionVariant: { label: 'face', icon: 'tabler:lego' },
+  facialHairVariant: { label: 'facialHair', icon: 'tabler:moustache' },
+  headVariant: { label: 'hair', icon: 'tabler:mood-boy' },
   color: { label: 'color', icon: 'tabler:palette' },
 }
 

@@ -1,16 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createAvatar } from '@dicebear/core'
 import { useAvatarCreator } from '~/composables/useAvatar'
 
 vi.mock('~/utils/array-utils', () => ({
   randomArrayItem: vi.fn(arr => arr[0]),
-}))
-
-vi.mock('@dicebear/core', () => ({
-  createAvatar: vi.fn(() => ({
-    toDataUri: () => 'data:image/svg+xml;base64,mock-data-uri',
-    toJson: () => ({ extra: { test: 'value' } }),
-  })),
 }))
 
 describe('useAvatar', () => {
@@ -27,69 +19,59 @@ describe('useAvatar', () => {
   })
 
   it('should update options and generate avatar when update is called', () => {
-    const selectedOptions = { face: 'happy', hair: 'short' }
-    avatar.update(selectedOptions)
+    avatar.update({ expressionVariant: 'smile', headVariant: 'pomp' })
 
-    expect(avatar.options.value).toEqual(selectedOptions)
-    expect(createAvatar).toHaveBeenCalled()
-    expect(avatar.avatar.value).toEqual({
-      url: 'data:image/svg+xml;base64,mock-data-uri',
-      extra: { test: 'value' },
+    expect(avatar.options.value).toEqual({
+      expressionVariant: 'smile',
+      headVariant: 'pomp',
+    })
+    expect(avatar.avatar.value?.url).toContain('data:image/svg+xml')
+    expect(avatar.avatar.value?.extra).toMatchObject({
+      expressionVariant: 'smile',
+      headVariant: 'pomp',
     })
   })
 
-  it('should handle primaryBackgroundColor special case', () => {
-    avatar.update({ primaryBackgroundColor: '#ffffff' })
+  it('should normalize the options it is updated with', () => {
+    avatar.update({ face: 'smile', head: 'pomp', style: 'open-peeps' })
 
-    expect(avatar.options.value).toEqual({ backgroundColor: '#ffffff' })
+    expect(avatar.options.value).toEqual({
+      expressionVariant: 'smile',
+      headVariant: 'pomp',
+    })
   })
 
-  it('should skip blacklisted keys when updating', () => {
-    avatar.update({ style: 'test', face: 'happy' })
+  it('should merge updates into the options that were already picked', () => {
+    avatar.update({ headVariant: 'pomp' })
+    avatar.update({ expressionVariant: 'smile' })
 
-    expect(avatar.options.value).toEqual({ face: 'happy' })
-    expect(avatar.options.value.style).toBeUndefined()
+    expect(avatar.options.value).toEqual({
+      headVariant: 'pomp',
+      expressionVariant: 'smile',
+    })
   })
 
   it('should generate random avatar when random is called', () => {
     avatar.random()
 
     expect(randomArrayItem).toHaveBeenCalled()
-    expect(createAvatar).toHaveBeenCalled()
-    expect(avatar.avatar.value).toEqual({
-      url: 'data:image/svg+xml;base64,mock-data-uri',
-      extra: { test: 'value' },
+    expect(avatar.avatar.value?.url).toContain('data:image/svg+xml')
+    // randomArrayItem is mocked to pick the first value of every option
+    expect(avatar.options.value).toEqual({
+      accessoriesVariant: '',
+      expressionVariant: 'angryWithFang',
+      facialHairVariant: '',
+      headVariant: 'afro',
+      clothingColor: '8fa7df',
+      skinColor: 'ffdbb4',
+      backgroundColor: 'fee2e2',
     })
   })
 
-  it('should create correct avatar options with getAvatarOptions', () => {
-    avatar.options.value = { face: 'happy', head: 'long' }
+  it('should replace the previously picked options when random is called', () => {
+    avatar.update({ headVariant: 'pomp' })
+    avatar.random()
 
-    const options = avatar.getAvatarOptions()
-
-    expect(options).toMatchObject({
-      size: 100,
-      scale: 75,
-      seed: 'dnd',
-      face: ['happy'],
-      head: ['long'],
-    })
-  })
-
-  it('should handle array type options correctly', () => {
-    vi.spyOn(avatar, 'configStyleOptions', 'get').mockReturnValue({
-      head: {
-        values: ['long', 'short'],
-        isColor: false,
-        isArray: true,
-        hasProbability: false,
-        probability: 100,
-      },
-    })
-
-    avatar.options.value = { head: 'long' }
-    const options = avatar.getAvatarOptions()
-
-    expect(options.head).toEqual(['long'])
+    expect(avatar.options.value.headVariant).toBe('afro')
   })
 })
