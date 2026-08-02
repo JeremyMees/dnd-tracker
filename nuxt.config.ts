@@ -115,7 +115,6 @@ export default defineNuxtConfig({
         '@tiptap/extensions',
         '@tiptap/starter-kit',
         '@tiptap/vue-3',
-        '@unhead/schema-org/vue',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'c15t',
