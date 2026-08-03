@@ -53,8 +53,12 @@ export function useInitiativeSheet(
     if (!current) return
 
     if (e.key === 'Enter') {
-      if (current in expanded.value) delete expanded.value[current]
-      else expanded.value[current] = true
+      if (current in expanded.value) {
+        const { [current]: _collapsed, ...rest } = expanded.value
+        expanded.value = rest
+      } else {
+        expanded.value = { ...expanded.value, [current]: true }
+      }
     } else if (e.key === 'ArrowLeft') previous()
     else if (e.key === 'ArrowRight') next()
   })

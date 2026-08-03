@@ -12,7 +12,7 @@ describe('useCoolDown', () => {
   it('should start a cool down', () => {
     coolDown.startCoolDown(1, 10)
 
-    expect(Object.keys(coolDown.coolDowns).length).toBe(1)
+    expect(coolDown.coolDowns.size).toBe(1)
     expect(coolDown.getRemainingTime(1)).toBe(10)
   })
 
@@ -21,14 +21,14 @@ describe('useCoolDown', () => {
     coolDown.startCoolDown(2, 10)
     coolDown.startCoolDown(3, 10)
 
-    expect(Object.keys(coolDown.coolDowns).length).toBe(3)
+    expect(coolDown.coolDowns.size).toBe(3)
   })
 
   it('should not start a cool down if it is already in progress', () => {
     coolDown.startCoolDown(1, 10)
     coolDown.startCoolDown(1, 10)
 
-    expect(Object.keys(coolDown.coolDowns).length).toBe(1)
+    expect(coolDown.coolDowns.size).toBe(1)
   })
 
   it('should remove a cool down when it is finished', () => {
@@ -36,7 +36,7 @@ describe('useCoolDown', () => {
 
     vi.advanceTimersByTime(4000)
 
-    expect(Object.keys(coolDown.coolDowns).length).toBe(0)
+    expect(coolDown.coolDowns.size).toBe(0)
   })
 
   it('should return the remaining time of a cool down', () => {
