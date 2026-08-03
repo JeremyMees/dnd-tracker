@@ -1,6 +1,6 @@
 import { render } from '@vue-email/render'
 import * as z from 'zod'
-import ContactRequest from '~~/emails/ContactRequest.vue'
+import ContactRequest from '~~/server/emails/ContactRequest.vue'
 
 const bodySchema = z.object({
   name: z.string().min(3).max(30).optional(),

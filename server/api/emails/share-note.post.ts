@@ -1,7 +1,7 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import ShareNote from '~~/emails/ShareNote.vue'
+import ShareNote from '~~/server/emails/ShareNote.vue'
 
 const bodySchema = z.object({
   noteId: z.number().int().positive(),

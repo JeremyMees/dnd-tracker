@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Text, Link } from '@vue-email/components'
+import { Text } from '@vue-email/text'
+import { Link } from '@vue-email/link'
 import DefaultEmail from './Layout/Default.vue'
+import { colors } from './theme'
 
 defineProps<{
   email: string
@@ -29,7 +31,7 @@ defineProps<{
       👉
       <Link
         href="https://dnd-tracker.com/register"
-        class="text-primary underline"
+        :style="`color: ${colors.primary}; text-decoration: underline`"
       >
         Create an Account & Join the Campaign
       </Link>

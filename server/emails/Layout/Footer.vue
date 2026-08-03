@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
+import { Section } from '@vue-email/section'
+import { Text } from '@vue-email/text'
+import { Row } from '@vue-email/row'
+import { Column } from '@vue-email/column'
+import { Link } from '@vue-email/link'
+import { Hr } from '@vue-email/hr'
+import { colors } from '../theme'
 </script>
 
 <template>
-  <Section class="text-center my-[26px]">
-    <Hr class="border-t-secondary" />
-    <table class="w-full">
-      <tbody class="w-full">
-        <tr class="w-full">
-          <td align="center" class="pt-[26px]">
+  <Section style="text-align: center; margin: 26px 0">
+    <Hr :style="`border-top: 1px solid ${colors.secondary}`" />
+    <table style="width: 100%">
+      <tbody style="width: 100%">
+        <tr style="width: 100%">
+          <td align="center" style="padding-top: 26px">
             <svg height="40" viewBox="0 0 146.8 124.76">
               <g transform="translate(-23.93276,-75.886952)">
                 <path
@@ -27,26 +33,33 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
             </svg>
           </td>
         </tr>
-        <tr class="w-full">
-          <td align="center" class="pt-[8px]">
+        <tr style="width: 100%">
+          <td align="center" style="padding-top: 8px">
             <Link
               href="https://dnd-tracker.com"
-              class="text-[16px] font-semibold leading-[24px]"
+              :style="`color: ${colors.primary}; font-size: 16px; font-weight: 600; line-height: 24px`"
             >
               DnD Tracker
             </Link>
-            <Text class="mb-0 mt-[12px] text-[16px] leading-[24px]">
+            <Text style="margin: 12px 0 0; font-size: 16px; line-height: 24px">
               Keep adventuring
             </Text>
           </td>
         </tr>
         <tr>
           <td align="center">
-            <Row class="table-cell h-[44px] w-[56px] align-bottom">
-              <Column class="pr-[8px]">
+            <Row
+              style="
+                display: table-cell;
+                height: 44px;
+                width: 56px;
+                vertical-align: bottom;
+              "
+            >
+              <Column style="padding-right: 8px">
                 <Link
                   href="https://www.instagram.com/dnd.tracker/"
-                  class="text-primary"
+                  :style="`color: ${colors.primary}`"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -67,10 +80,10 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
                   </svg>
                 </Link>
               </Column>
-              <Column class="pr-[8px]">
+              <Column style="padding-right: 8px">
                 <Link
                   href="https://bsky.app/profile/lilmees.bsky.social"
-                  class="text-primary"
+                  :style="`color: ${colors.primary}`"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +103,10 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
                 </Link>
               </Column>
               <Column>
-                <Link href="https://ko-fi.com/jeremymees" class="text-primary">
+                <Link
+                  href="https://ko-fi.com/jeremymees"
+                  :style="`color: ${colors.primary}`"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="36"
@@ -121,7 +137,7 @@ import { Section, Text, Row, Column, Link, Hr } from '@vue-email/components'
           <td align="center">
             <Link
               href="mailto:jeremy@dnd-tracker.com"
-              class="my-[8px] text-[16px] font-semibold leading-[24px]"
+              :style="`color: ${colors.primary}; margin: 8px 0; font-size: 16px; font-weight: 600; line-height: 24px`"
             >
               jeremy@dnd-tracker.com
             </Link>

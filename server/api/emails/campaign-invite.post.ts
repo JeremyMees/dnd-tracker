@@ -1,7 +1,7 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import CampaignInvite from '~~/emails/CampaignInvite.vue'
+import CampaignInvite from '~~/server/emails/CampaignInvite.vue'
 
 const bodySchema = z.object({
   campaignId: z.number().int().positive(),

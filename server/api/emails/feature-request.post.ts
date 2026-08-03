@@ -1,7 +1,7 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import FeatureRequest from '~~/emails/FeatureRequest.vue'
+import FeatureRequest from '~~/server/emails/FeatureRequest.vue'
 
 const bodySchema = z.object({
   title: z.string().min(3).max(50),

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Text, Link } from '@vue-email/components'
+import { Text } from '@vue-email/text'
+import { Link } from '@vue-email/link'
 import DefaultEmail from './Layout/Default.vue'
+import { colors } from './theme'
 
 defineProps<{
   email: string
@@ -28,7 +30,10 @@ defineProps<{
     <Text> Ready to start your next adventure? </Text>
     <Text>
       👉
-      <Link :href="inviteLink" class="text-primary underline">
+      <Link
+        :href="inviteLink"
+        :style="`color: ${colors.primary}; text-decoration: underline`"
+      >
         Join the campaign
       </Link>
     </Text>

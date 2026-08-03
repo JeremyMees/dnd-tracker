@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
+import vue from '@vitejs/plugin-vue'
 import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
 
 const ignoredLogs = [
@@ -11,7 +12,7 @@ export default defineConfig({
   test: {
     projects: [
       {
-        plugins: [nuxtAutoImports()],
+        plugins: [vue(), nuxtAutoImports()],
         resolve: { alias: nuxtAliases },
         test: {
           name: 'unit',

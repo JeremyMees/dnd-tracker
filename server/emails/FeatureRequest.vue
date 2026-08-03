@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Text } from '@vue-email/components'
+import { Text } from '@vue-email/text'
 import DefaultEmail from './Layout/Default.vue'
 
 defineProps<{
