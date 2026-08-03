@@ -53,6 +53,8 @@ export default defineNuxtConfig({
     description: seo.description,
   },
 
+  sitemap: { zeroRuntime: true },
+
   colorMode: { fallback: 'dark' },
 
   runtimeConfig: {
