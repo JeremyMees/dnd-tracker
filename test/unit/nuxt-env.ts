@@ -2,13 +2,13 @@ import { resolve } from 'node:path'
 import Unimport from 'unimport/unplugin'
 import type { Plugin } from 'vite'
 
-const root = resolve(__dirname, '../..')
+const root = resolve(import.meta.dirname, '../..')
 
 export const nuxtAliases = {
   '~': resolve(root, 'app'),
   '~~': root,
-  '#app': resolve(__dirname, 'stubs/nuxt.ts'),
-  '#supabase/server': resolve(__dirname, 'stubs/supabase-server.ts'),
+  '#app': resolve(import.meta.dirname, 'stubs/nuxt.ts'),
+  '#supabase/server': resolve(import.meta.dirname, 'stubs/supabase-server.ts'),
 }
 
 export function nuxtAutoImports(): Plugin {

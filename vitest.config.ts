@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
-import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env'
+import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
 
 const ignoredLogs = [
   /^<Suspense>/,
