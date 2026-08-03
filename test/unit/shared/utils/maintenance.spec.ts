@@ -6,7 +6,9 @@ import {
   throwMaintenanceError,
 } from '~~/shared/utils/maintenance'
 
-const mockConfig = { public: { maintenanceMode: false as any } }
+const mockConfig = {
+  public: { maintenanceMode: false as boolean | string | number | undefined },
+}
 
 const { mockUseRuntimeConfig } = vi.hoisted(() => ({
   mockUseRuntimeConfig: vi.fn(),
@@ -105,9 +107,14 @@ describe('Maintenance utils', () => {
 
       try {
         throwMaintenanceError()
-      } catch (error: any) {
-        expect(error.statusCode).toBe(503)
-        expect(error.statusMessage).toBe('Site is under maintenance')
+      } catch (error) {
+        const h3Error = error as {
+          statusCode?: number
+          statusMessage?: string
+        }
+
+        expect(h3Error.statusCode).toBe(503)
+        expect(h3Error.statusMessage).toBe('Site is under maintenance')
       }
     })
   })

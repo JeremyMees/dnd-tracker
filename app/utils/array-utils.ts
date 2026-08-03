@@ -47,14 +47,14 @@ export function splitArray<T>(arr: T[], size: number): T[][] {
   return result
 }
 
-export function sortArray<T extends Record<string, any>>(
+export function sortArray<T extends Record<string, unknown>>(
   arr: T[],
   key: string,
   acs = true,
 ): T[] {
   return [...arr].sort((a: T, b: T) => {
-    const aValue = getValueFromNestedKeys<T>(a, key)
-    const bValue = getValueFromNestedKeys<T>(b, key)
+    const aValue = getValueFromNestedKeys(a, key)
+    const bValue = getValueFromNestedKeys(b, key)
 
     return typeof aValue === 'number' || Array.isArray(aValue)
       ? sortByNumber(aValue, bValue, acs)

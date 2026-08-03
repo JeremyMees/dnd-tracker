@@ -19,7 +19,7 @@ describe('Card', () => {
   })
 
   describe('Color variants', () => {
-    it.each([
+    it.each<[Color | 'background' | 'secondary', string, string]>([
       ['black', 'border-black', 'bg-black/50'],
       ['primary', 'border-primary', 'bg-primary/50'],
       ['tertiary', 'border-tertiary', 'bg-tertiary/50'],
@@ -34,7 +34,7 @@ describe('Card', () => {
       'Should apply correct classes for color "%s"',
       async (color, borderClass, bgClass) => {
         const component = await mountSuspended(Card, {
-          props: { color: color as any },
+          props: { color },
         })
 
         expect(component.classes()).toContain(borderClass)

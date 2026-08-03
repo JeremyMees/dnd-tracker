@@ -9,7 +9,7 @@ interface Props {
 }
 
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -77,7 +77,7 @@ describe('Initiative table row modify', async () => {
 
     expect(mockUpdate).toHaveBeenCalledWith({
       rows: expect.arrayContaining(
-        mockSheet.value.rows.filter(row => row.id !== props.item.id),
+        mockSheet.value!.rows.filter(row => row.id !== props.item.id),
       ),
     })
   })
@@ -104,7 +104,7 @@ describe('Initiative table row modify', async () => {
   })
 
   it('Should not call update when sheet is undefined', async () => {
-    mockSheet.value = undefined as any
+    mockSheet.value = undefined
 
     const component = await mountSuspended(Modify, {
       props,

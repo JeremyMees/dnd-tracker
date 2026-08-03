@@ -13,7 +13,7 @@ type MockFunctions = {
 }
 
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -62,7 +62,7 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should not update if sheet is undefined', async () => {
-    mockSheet.value = undefined as any
+    mockSheet.value = undefined
 
     const component = await mountSuspended(Name, {
       props,

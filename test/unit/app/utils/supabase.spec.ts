@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { sbRange, sbPages, sbCount, sbQuery, sbOrQuery } from '~/utils/supabase'
 import type { SbFetchOptions } from '~~/shared/types/supabase'
 
-let mockQueryResult: any = {
+let mockQueryResult: Record<string, unknown> = {
   data: [{ id: 1 }, { id: 2 }],
   error: null,
   count: 2,
@@ -10,7 +10,7 @@ let mockQueryResult: any = {
 
 vi.mock('#app', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  createError: (error: any) => {
+  createError: (error: string | { message?: string; details?: string }) => {
     return new Error(
       typeof error === 'string'
         ? error
@@ -137,6 +137,17 @@ describe('supabase', () => {
       const obj = { items: [] }
 
       expect(sbCount('items', obj)).toBe(0)
+    })
+
+    it('should return 0 when the first entry has no numeric count', () => {
+      expect(sbCount('items', { items: [{}] })).toBe(0)
+      expect(sbCount('items', { items: [{ count: undefined }] })).toBe(0)
+      expect(sbCount('items', { items: [{ count: '5' }] })).toBe(0)
+    })
+
+    it('should return 0 when the value is not an array', () => {
+      expect(sbCount('items', { items: 5 })).toBe(0)
+      expect(sbCount('items', { items: null })).toBe(0)
     })
 
     it('should return 0 for non-existent key', () => {

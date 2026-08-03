@@ -38,14 +38,16 @@ vi.mock('~~/queries/open5e', () => ({
 }))
 
 vi.mock('~~/composables/initiative-sheet', () => ({
-  useInitiativeSheet: (data: any) => {
+  useInitiativeSheet: (data: ComputedRef<InitiativeSheet | undefined>) => {
     const expanded = ref({})
     const selected = ref<Record<string, boolean>>({})
     const active = computed(() => {
       const selectedRowId = Object.keys(selected.value).find(
         key => selected.value[key] === true,
       )
-      return data.value?.rows.find((row: any) => row.id === selectedRowId)
+      return data.value?.rows.find(
+        (row: InitiativeSheetRow) => row.id === selectedRowId,
+      )
     })
     const columnVisibility = computed(() => {
       const rows = data.value?.settings?.modified

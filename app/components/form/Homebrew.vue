@@ -167,7 +167,10 @@ const onSubmit = form.handleSubmit(async values => {
   } else {
     if (props.item) {
       await updateHomebrew({
-        data: { ...formData, ...initMod } as any,
+        data: { ...formData, ...initMod } as Omit<
+          HomebrewItemUpdate,
+          NotUpdatable
+        >,
         id: props.item.id,
         onSuccess,
         onError,

@@ -4,7 +4,7 @@ import { useInitiativeSheet } from '~/composables/useInitiativeSheet'
 
 const updateFn = vi.fn()
 
-const mockSheet = ref<any>({ ...sheet })
+const mockSheet = shallowRef<InitiativeSheet>({ ...sheet })
 
 const sheetComputed = {
   get value() {

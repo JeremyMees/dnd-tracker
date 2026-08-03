@@ -87,8 +87,16 @@ describe('dnd/generate', () => {
   })
 
   describe('generateSkillEntries', () => {
+    it('should fall back to 0 for a present key with no value', () => {
+      expect(generateSkillEntries({ acrobatics: undefined })).toContainEqual({
+        key: 'acrobatics',
+        label: 'Acrobatics',
+        val: 0,
+      })
+    })
+
     it('should map each skill key to its label and value', () => {
-      const result = generateSkillEntries({ acrobatics: 3, stealth: -1 } as any)
+      const result = generateSkillEntries({ acrobatics: 3, stealth: -1 })
 
       expect(result).toContainEqual({
         key: 'acrobatics',
@@ -103,14 +111,14 @@ describe('dnd/generate', () => {
     })
 
     it('should return one entry per key', () => {
-      const bonuses = { acrobatics: 0, sleightOfHand: 2 } as any
+      const bonuses = { acrobatics: 0, sleightOfHand: 2 }
       const result = generateSkillEntries(bonuses)
 
       expect(result).toHaveLength(2)
     })
 
     it('should return an empty array for empty skill bonuses', () => {
-      expect(generateSkillEntries({} as any)).toEqual([])
+      expect(generateSkillEntries({})).toEqual([])
     })
 
     it('should return entries sorted alphabetically by label', () => {
@@ -118,7 +126,7 @@ describe('dnd/generate', () => {
         stealth: 2,
         acrobatics: 1,
         perception: 3,
-      } as any)
+      })
       const labels = result.map(e => e.label)
 
       expect(labels).toEqual([...labels].sort((a, b) => a.localeCompare(b)))

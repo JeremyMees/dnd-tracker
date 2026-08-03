@@ -1,7 +1,7 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 const props = withDefaults(
   defineProps<{
-    data: any[]
+    data: T[]
     element?: 'div' | 'ul' | 'ol'
     wrapperStyle?: string
     columnStyle?: string
@@ -24,9 +24,7 @@ const columnCount = computed<number>(() => {
   return Math.min(2, props.maxColumns)
 })
 
-const columns = computed<any[][]>(() =>
-  splitArray(props.data, columnCount.value),
-)
+const columns = computed<T[][]>(() => splitArray(props.data, columnCount.value))
 </script>
 
 <template>

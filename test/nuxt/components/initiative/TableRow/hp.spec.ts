@@ -6,7 +6,7 @@ import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface HpTestMethods {
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
-  updateBase: (form: { amount: number }, node: any) => Promise<void>
+  updateBase: (form: { amount: number }, node: unknown) => Promise<void>
 }
 
 interface Props {

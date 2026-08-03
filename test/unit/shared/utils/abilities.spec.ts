@@ -5,7 +5,7 @@ describe('abilities', () => {
   const userId = 'user-123'
   const otherUserId = 'other-456'
 
-  const mockCampaign = {
+  const mockCampaign: CampaignMinimal = {
     id: 1,
     title: 'Test Campaign',
     createdBy: {
@@ -48,13 +48,17 @@ describe('abilities', () => {
 
   describe('isOwner', () => {
     it('should return true if the user is the owner of the item', () => {
-      expect(isOwner(mockCampaign as any, userId)).toBeTruthy()
-      expect(isOwner(mockEncounter as any, userId)).toBeTruthy()
+      expect(isOwner(mockCampaign, userId)).toBeTruthy()
+      expect(
+        isOwner(mockEncounter as unknown as EncounterItem, userId),
+      ).toBeTruthy()
     })
 
     it('should return false if the user is not the owner of the item', () => {
-      expect(isOwner(mockCampaign as any, otherUserId)).toBeFalsy()
-      expect(isOwner(mockEncounter as any, otherUserId)).toBeFalsy()
+      expect(isOwner(mockCampaign, otherUserId)).toBeFalsy()
+      expect(
+        isOwner(mockEncounter as unknown as EncounterItem, otherUserId),
+      ).toBeFalsy()
     })
   })
 

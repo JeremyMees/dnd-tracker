@@ -15,8 +15,8 @@ describe('useUi', async () => {
 
   afterEach(() => vi.clearAllMocks())
 
-  const createAuthMock = (userData: any) => ({
-    user: ref(userData),
+  const createAuthMock = (userData: unknown) => ({
+    user: ref(userData as AuthUser | null),
     register: vi.fn(),
     login: vi.fn(),
     logout: vi.fn(),

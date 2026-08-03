@@ -1,11 +1,11 @@
-export function serverSupabaseUser(): any {
+export function serverSupabaseUser(): never {
   throw new Error('serverSupabaseUser is not mocked in this test')
 }
 
-export function serverSupabaseServiceRole(): any {
+export function serverSupabaseServiceRole(): never {
   throw new Error('serverSupabaseServiceRole is not mocked in this test')
 }
 
-export function serverSupabaseClient(): any {
+export function serverSupabaseClient(): never {
   throw new Error('serverSupabaseClient is not mocked in this test')
 }

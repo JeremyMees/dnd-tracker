@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="TData extends { id: number }">
 import type {
   ColumnDef,
   PaginationState,
@@ -18,17 +18,22 @@ const emit = defineEmits<{
   invalidate: []
 }>()
 
-type PermissionFunc = (item: any) => Promise<boolean>
+type PermissionFunc = (item: TData) => Promise<boolean>
 
 const props = withDefaults(
   defineProps<{
-    columns: ColumnDef<any, any>[]
-    data: any[]
+    // Each column carries a different cell value type, and TanStack's ColumnDef
+    // is invariant in that second parameter — so a heterogeneous column array
+    // cannot be typed with `unknown`. TanStack's own docs and shadcn-vue use
+    // `any` here for the same reason. TData below is fully typed.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    columns: ColumnDef<TData, any>[]
+    data: TData[]
     loading: boolean
-    options?: Partial<TableOptions<any>>
+    options?: Partial<TableOptions<TData>>
     emptyMessage?: string
     permission?: boolean | PermissionFunc
-    expandedMarkup?: (row: Row<any>) => VNode
+    expandedMarkup?: (row: Row<TData>) => VNode
     pageSize?: number
   }>(),
   {
@@ -83,11 +88,11 @@ const table = useVueTable({
   manualPagination: true,
   manualSorting: true,
   manualFiltering: true,
-  enableRowSelection: (row: Row<any>) =>
+  enableRowSelection: (row: Row<TData>) =>
     rowSelectionPermissions.value[row.original.id] ?? false,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
-  getRowId: row => row.id,
+  getRowId: row => String(row.id),
   onSortingChange: updaterOrValue => {
     valueUpdater(updaterOrValue, sorting)
     pagination.value.pageIndex = 0

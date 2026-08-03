@@ -7,16 +7,21 @@ import {
 } from '~/utils/subscription-helpers'
 import type { StripeSubscriptionType } from '~~/shared/types/stripe'
 
+// These helpers only read subscriptionType, so a partial row is enough; the cast
+// lives here once rather than at every call site.
+const profileWith = (subscriptionType: StripeSubscriptionType) =>
+  ({ subscriptionType }) as unknown as ProfileRow
+
 describe('subscription-helpers', () => {
   describe('isPro', () => {
     it('returns true for pro subscription', () => {
-      const profile = { subscriptionType: 'pro' } as any
+      const profile = profileWith('pro')
       expect(isPro(profile)).toBeTruthy()
     })
 
     it('returns false for non-pro subscription', () => {
-      const mediorProfile = { subscriptionType: 'medior' } as any
-      const freeProfile = { subscriptionType: 'free' } as any
+      const mediorProfile = profileWith('medior')
+      const freeProfile = profileWith('free')
 
       expect(isPro(mediorProfile)).toBeFalsy()
       expect(isPro(freeProfile)).toBeFalsy()
@@ -25,17 +30,17 @@ describe('subscription-helpers', () => {
 
   describe('isMedior', () => {
     it('returns true for medior subscription', () => {
-      const profile = { subscriptionType: 'medior' } as any
+      const profile = profileWith('medior')
       expect(isMedior(profile)).toBeTruthy()
     })
 
     it('returns true for pro subscription', () => {
-      const profile = { subscriptionType: 'pro' } as any
+      const profile = profileWith('pro')
       expect(isMedior(profile)).toBeTruthy()
     })
 
     it('returns false for free subscription', () => {
-      const profile = { subscriptionType: 'free' } as any
+      const profile = profileWith('free')
       expect(isMedior(profile)).toBeFalsy()
     })
   })

@@ -12,7 +12,7 @@ import {
 
 const { modals, close } = useModal()
 
-const modalComponents: Record<ModalComponent, any> = {
+const modalComponents: Record<ModalComponent, Component> = {
   FeatureRequest: LazyModalFeatureRequest,
   Campaign: LazyModalCampaign,
   Encounter: LazyModalEncounter,

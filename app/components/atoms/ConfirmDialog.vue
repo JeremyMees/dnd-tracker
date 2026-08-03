@@ -12,7 +12,7 @@ withDefaults(
     confirmText: string
     declineText: string
     loading?: boolean
-    callback: (confirmed: boolean) => any
+    callback: ConfirmCallback
   }>(),
   {
     type: 'danger',

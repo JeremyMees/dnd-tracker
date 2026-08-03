@@ -8,7 +8,7 @@ export interface ConfirmConfig {
 export interface PopulatedConfirmConfig extends Required<ConfirmConfig> {
   uuid: string
   loading: boolean
-  callback: (confirmed: boolean) => any
+  callback: ConfirmCallback
 }
 
 export function useConfirmDialogs() {
@@ -48,7 +48,7 @@ export function useConfirm() {
   const { dialogs } = useConfirmDialogs()
   const { t } = useI18n()
 
-  function ask(config: ConfirmConfig, callback: (confirmed: boolean) => any) {
+  function ask(config: ConfirmConfig, callback: ConfirmCallback) {
     dialogs.value.push(
       Object.assign(
         {

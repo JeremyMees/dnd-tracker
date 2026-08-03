@@ -94,9 +94,9 @@ const onSubmit = form.handleSubmit(async values => {
 
     await update({ rows })
     popoverOpen.value = false
-  } catch (err: any) {
+  } catch (err) {
     formError.value =
-      err.message || 'An error occurred during quick initiative roll'
+      getErrorMessage(err) || 'An error occurred during quick initiative roll'
   }
 })
 </script>

@@ -17,6 +17,8 @@ const mockData: TestData[] = [
   { id: 3, name: 'Bob Johnson', age: 40 },
 ]
 
+const TypedDataTable = DataTable<TestData>
+
 const columnHelper = createColumnHelper<TestData>()
 
 const mockColumns: ColumnDef<TestData>[] = [
@@ -56,14 +58,14 @@ const mockColumns: ColumnDef<TestData>[] = [
   }) as ColumnDef<TestData>,
 ]
 
-interface Props {
-  columns: ColumnDef<any, any>[]
-  data: any[]
+type Props = {
+  columns: ColumnDef<TestData>[]
+  data: TestData[]
   loading: boolean
-  options?: Partial<TableOptions<any>>
+  options?: Partial<TableOptions<TestData>>
   emptyMessage?: string
-  permission?: boolean | ((item: any) => Promise<boolean>)
-  expandedMarkup?: (row: Row<any>) => VNode
+  permission?: boolean | ((item: TestData) => Promise<boolean>)
+  expandedMarkup?: (row: Row<TestData>) => VNode
 }
 
 const props: Props = {
@@ -79,12 +81,12 @@ const props: Props = {
 
 describe('DataTable', () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render table with correct data', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
 
     const headers = component.findAll('th')
     expect(headers.length).toBe(5)
@@ -106,7 +108,7 @@ describe('DataTable', () => {
   })
 
   it('Should show loading state correctly', async () => {
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: { ...props, loading: true, data: [] },
       slots: {
         loading: () => h('div', 'Loading'),
@@ -117,7 +119,7 @@ describe('DataTable', () => {
   })
 
   it('Should show empty message when no data', async () => {
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: { ...props, data: [] },
     })
 
@@ -127,7 +129,7 @@ describe('DataTable', () => {
   })
 
   it('Should emit remove event when bulk remove button is clicked', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
 
     const checkbox = component.find('button[role="checkbox"]')
     expect(checkbox.exists()).toBeTruthy()
@@ -144,7 +146,7 @@ describe('DataTable', () => {
   })
 
   it('Should handle row expansion correctly', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
 
     let expansionButton = component.find('button[arialabel="actions.show"]')
     expect(expansionButton.exists()).toBeTruthy()
@@ -178,7 +180,7 @@ describe('DataTable', () => {
       },
     }
 
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: paginationProps,
     })
 
@@ -207,7 +209,7 @@ describe('DataTable', () => {
       .fn()
       .mockImplementation(item => Promise.resolve(item.id === 1))
 
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: {
         ...props,
         permission: permissionFn,

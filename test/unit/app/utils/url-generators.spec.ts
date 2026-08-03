@@ -48,7 +48,7 @@ describe('url-generators', () => {
         title: 'Dragon Battle',
         createdBy: 'user1',
       }
-      const url = encounterUrl(encounter as any)
+      const url = encounterUrl(encounter)
 
       expect(url).toBe('/encounters/1-dragon-battle')
     })
@@ -59,7 +59,7 @@ describe('url-generators', () => {
         title: 'Goblins & Trolls!',
         createdBy: 'user1',
       }
-      const url = encounterUrl(encounter as any)
+      const url = encounterUrl(encounter)
 
       expect(url).toBe('/encounters/2-goblins-trolls')
     })
@@ -70,7 +70,7 @@ describe('url-generators', () => {
         title: '',
         createdBy: 'user1',
       }
-      const url = encounterUrl(encounter as any)
+      const url = encounterUrl(encounter)
 
       expect(url).toBe('/encounters/3-encounter')
     })
@@ -118,14 +118,14 @@ describe('url-generators', () => {
 
     it('should skip null values', () => {
       const params = { limit: 10, filter: null }
-      const result = generateParams(params as any)
+      const result = generateParams(params)
 
       expect(result).toBe('limit=10')
     })
 
     it('should skip undefined values', () => {
       const params = { limit: 10, filter: undefined }
-      const result = generateParams(params as any)
+      const result = generateParams(params)
 
       expect(result).toBe('limit=10')
     })

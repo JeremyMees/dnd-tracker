@@ -302,7 +302,9 @@ describe('transformers/utils', () => {
 
     it('defaults to action for ACTION and unknown', () => {
       expect(mapActionType('ACTION')).toBe('action')
-      expect(mapActionType('UNKNOWN' as any)).toBe('action')
+      expect(mapActionType('UNKNOWN' as unknown as Open5eActionType)).toBe(
+        'action',
+      )
     })
   })
 

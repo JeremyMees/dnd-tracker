@@ -17,10 +17,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const slots = useSlots()
 
-const children = ref<any>([])
+const children = shallowRef<VNode[]>([])
 
 onMounted(() => {
-  // This will reactively capture all content provided in the default slot
   watchEffect(() => {
     children.value = slots.default ? slots.default() : []
   })

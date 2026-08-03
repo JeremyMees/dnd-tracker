@@ -10,7 +10,7 @@ interface Props {
 
 const mockUpdate = vi.fn()
 const mockToast = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({
@@ -190,7 +190,7 @@ describe('Initiative table row death saves', async () => {
   })
 
   it('Should not call update when sheet is undefined', async () => {
-    mockSheet.value = undefined as any
+    mockSheet.value = undefined
 
     const component = await mountSuspended(DeathSaves, {
       props: {

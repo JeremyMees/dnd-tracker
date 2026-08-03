@@ -24,10 +24,10 @@ const mockSupabase = {
   })),
 }
 
-let mockSupabaseResponse: { data: any; error: any }
+let mockSupabaseResponse: { data: unknown; error: { message: string } | null }
 
 mockNuxtImport('useState', () =>
-  vi.fn((key: string, init?: () => any) => {
+  vi.fn((key: string, init?: () => unknown) => {
     if (key === 'auth-user') return { value: mockUser }
     return { value: init ? init() : null }
   }),
@@ -35,7 +35,7 @@ mockNuxtImport('useState', () =>
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))
 mockNuxtImport('createError', () =>
-  vi.fn((error: any) => new Error(error.message)),
+  vi.fn((error: { message: string }) => new Error(error.message)),
 )
 mockNuxtImport('useLocalePath', () => vi.fn(() => (path: string) => path))
 

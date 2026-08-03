@@ -41,8 +41,9 @@ const onSubmit = form.handleSubmit(async values => {
     })
 
     navigateTo(localePath('/'))
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred during contact request'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred during contact request'
 
     toast({
       description: t('general.mail.fail.text'),

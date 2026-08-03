@@ -20,7 +20,7 @@ const { t } = useI18n()
 const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
 
-const table = ref<InstanceType<typeof DataTable>>()
+const table = ref<DataTableExposed>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { data: count } = useCampaignCount()

@@ -16,12 +16,12 @@ import {
 beforeEach(() => {
   global.document = {
     getElementById: vi.fn(),
-  } as any
+  } as unknown as Document
 })
 
 vi.mock('#app', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  createError: (error: any) => {
+  createError: (error: string | { message?: string; details?: string }) => {
     throw new Error(
       typeof error === 'string'
         ? error
@@ -45,9 +45,15 @@ describe('ui-helpers', () => {
     })
 
     it('should handle null values', () => {
-      expect(sortByNumber(null as any, 5, true)).toBeGreaterThan(0)
-      expect(sortByNumber(5, null as any, true)).toBeLessThan(0)
-      expect(sortByNumber(null as any, null as any, true)).toBe(0)
+      expect(sortByNumber(null, 5, true)).toBeGreaterThan(0)
+      expect(sortByNumber(5, null, true)).toBeLessThan(0)
+      expect(sortByNumber(null, null, true)).toBe(0)
+    })
+
+    it('should sort non-numeric values last rather than producing NaN', () => {
+      expect(sortByNumber('abc', 5, true)).toBeGreaterThan(0)
+      expect(sortByNumber(5, {}, true)).toBeLessThan(0)
+      expect(sortByNumber(true, undefined, true)).toBe(0)
     })
   })
 
@@ -61,8 +67,14 @@ describe('ui-helpers', () => {
     })
 
     it('should handle null or undefined values', () => {
-      expect(sortByString(null as any, 'test', true)).toBeLessThan(0)
-      expect(sortByString('test', undefined as any, true)).toBeGreaterThan(0)
+      expect(sortByString(null, 'test', true)).toBeLessThan(0)
+      expect(sortByString('test', undefined, true)).toBeGreaterThan(0)
+    })
+
+    it('should treat non-string values as empty instead of throwing', () => {
+      expect(() => sortByString(5, 'test', true)).not.toThrow()
+      expect(sortByString(5, 'test', true)).toBeLessThan(0)
+      expect(sortByString('test', {}, true)).toBeGreaterThan(0)
     })
   })
 
@@ -111,7 +123,9 @@ describe('ui-helpers', () => {
       expect(homebrewIcon('npc')).toBe('tabler:user')
       expect(homebrewIcon('monster')).toBe('tabler:bat')
       expect(homebrewIcon('lair')).toBe('tabler:building-castle')
-      expect(homebrewIcon('default' as any)).toBe('tabler:sword')
+      expect(homebrewIcon('default' as unknown as HomebrewType)).toBe(
+        'tabler:sword',
+      )
     })
   })
 
@@ -121,7 +135,9 @@ describe('ui-helpers', () => {
       expect(homebrewBgColor('npc')).toBe('bg-success')
       expect(homebrewBgColor('monster')).toBe('bg-destructive')
       expect(homebrewBgColor('lair')).toBe('bg-warning')
-      expect(homebrewBgColor('default' as any)).toBe('bg-primary')
+      expect(homebrewBgColor('default' as unknown as HomebrewType)).toBe(
+        'bg-primary',
+      )
     })
   })
 
@@ -131,7 +147,9 @@ describe('ui-helpers', () => {
       expect(homebrewColor('npc')).toBe('text-success')
       expect(homebrewColor('monster')).toBe('text-destructive')
       expect(homebrewColor('lair')).toBe('text-warning')
-      expect(homebrewColor('default' as any)).toBe('text-primary')
+      expect(homebrewColor('default' as unknown as HomebrewType)).toBe(
+        'text-primary',
+      )
     })
   })
 
@@ -171,7 +189,7 @@ describe('ui-helpers', () => {
     it('applies and clears table update animation', () => {
       vi.useFakeTimers()
 
-      const el: any = { style: {}, offsetHeight: 0 }
+      const el = { style: {} as CSSStyleDeclaration, offsetHeight: 0 }
       document.getElementById = vi.fn().mockReturnValue(el)
 
       animateTableUpdate('row-1', 'green')

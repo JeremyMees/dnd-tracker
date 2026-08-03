@@ -63,8 +63,9 @@ const onSubmit = form.handleSubmit(async values => {
     })
 
     navigateTo(localePath('/login'))
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred during registration'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred during registration'
 
     toast({
       title: t('general.error.title'),

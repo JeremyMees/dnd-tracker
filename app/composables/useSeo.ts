@@ -6,7 +6,8 @@ export function useSeo(title?: string): void {
   useHead({
     ...(title ? { title } : {}),
     titleTemplate: (title?: string) => {
-      const isHome = availableLocales.includes(title?.toLowerCase() as any)
+      const lowered = title?.toLowerCase()
+      const isHome = availableLocales.some(locale => locale === lowered)
       return title && !isHome ? `${title} | ${seo.name}` : seo.name
     },
     htmlAttrs: {

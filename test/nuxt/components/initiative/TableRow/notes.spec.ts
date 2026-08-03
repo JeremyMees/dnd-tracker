@@ -9,7 +9,7 @@ interface Props {
 }
 
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -84,7 +84,7 @@ describe('Initiative table row notes', async () => {
 
   it('Should not update when sheet is undefined', async () => {
     vi.useFakeTimers()
-    mockSheet.value = undefined as any
+    mockSheet.value = undefined
 
     const component = await mountSuspended(Notes, {
       props,

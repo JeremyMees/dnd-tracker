@@ -131,6 +131,18 @@ describe('object-utils', () => {
 
       expect(getValueFromNestedKeys(obj, 'user.name')).toBeUndefined()
     })
+
+    it('should return undefined when a primitive sits mid-path', () => {
+      const obj = { user: { name: 'John' } }
+
+      expect(getValueFromNestedKeys(obj, 'user.name.first')).toBeUndefined()
+    })
+
+    it('should index into arrays along the path', () => {
+      const obj = { user: { tags: ['a', 'b'] } }
+
+      expect(getValueFromNestedKeys(obj, 'user.tags.1')).toBe('b')
+    })
   })
 
   describe('flattenObject', () => {

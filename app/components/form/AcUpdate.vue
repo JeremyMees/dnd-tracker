@@ -39,8 +39,9 @@ const onSubmit = form.handleSubmit(async values => {
 
     if (selected === 'add') animateTableUpdate(`${props.item.id}-ac`, 'green')
     if (selected === 'remove') animateTableUpdate(`${props.item.id}-ac`, 'red')
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred while updating AC'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred while updating AC'
   }
 })
 </script>

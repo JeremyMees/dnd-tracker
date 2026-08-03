@@ -33,8 +33,8 @@ const onSubmit = form.handleSubmit(async values => {
 
       navigateTo(localePath(route))
     }, 100)
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred during login'
+  } catch (err) {
+    formError.value = getErrorMessage(err) || 'An error occurred during login'
   }
 })
 </script>

@@ -26,7 +26,7 @@ const { t } = useI18n()
 const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
 const queryClient = useQueryClient()
 
-const table = ref<InstanceType<typeof DataTable>>()
+const table = ref<DataTableExposed>()
 const pageSize = 20
 const max = 100
 

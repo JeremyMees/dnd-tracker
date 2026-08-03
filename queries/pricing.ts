@@ -77,10 +77,10 @@ export function usePricingListing() {
         })
 
         return products
-      } catch (error: any) {
+      } catch (error) {
         toast({
           title: t('general.error.title'),
-          description: error.message,
+          description: getErrorMessage(error),
           variant: 'destructive',
         })
       }

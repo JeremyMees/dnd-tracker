@@ -24,8 +24,8 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     props.send(values.mail)
     emit('close')
-  } catch (err: any) {
-    formError.value = err.message
+  } catch (err) {
+    formError.value = getErrorMessage(err) ?? ''
   }
 })
 </script>

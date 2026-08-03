@@ -84,10 +84,10 @@ export function useOpen5eListing(
         return await $fetch<Open5eResponse<Open5eItem>>(
           `${urlMap.get(data.value.type)}/?${query}`,
         )
-      } catch (error: any) {
+      } catch (error) {
         toast({
           title: t('general.error.title'),
-          description: error.message,
+          description: getErrorMessage(error),
           variant: 'destructive',
         })
       }
@@ -125,10 +125,10 @@ export function useOpen5eDocuments() {
         return results.filter(doc =>
           ['5e-2014', '5e-2024'].includes(doc.gamesystem.key),
         )
-      } catch (error: any) {
+      } catch (error) {
         toast({
           title: t('general.error.title'),
-          description: error.message,
+          description: getErrorMessage(error),
           variant: 'destructive',
         })
       }
@@ -177,10 +177,10 @@ export function useConditionsListing() {
         )
 
         return results.map(c => toCondition(c, ['srd-2024']))
-      } catch (error: any) {
+      } catch (error) {
         toast({
           title: t('general.error.title'),
-          description: error.message,
+          description: getErrorMessage(error),
           variant: 'destructive',
         })
       }
@@ -216,10 +216,10 @@ export function useOpen5eMonsterListing(
         return await $fetch<Open5eResponse<Open5eMonster>>(
           `${urlMap.get('monsters')}/?${query}`,
         )
-      } catch (error: any) {
+      } catch (error) {
         toast({
           title: t('general.error.title'),
-          description: error.message,
+          description: getErrorMessage(error),
           variant: 'destructive',
         })
       }

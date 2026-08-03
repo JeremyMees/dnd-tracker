@@ -24,7 +24,7 @@ export function slugify(str: string): string {
 }
 
 export function campaignUrl(
-  campaign: Record<string, any> & { id: number; title: string },
+  campaign: { id: number; title: string },
   type: 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone',
 ): string {
   const title: string = slugify(campaign.title)
@@ -32,7 +32,7 @@ export function campaignUrl(
   return `/campaigns/${campaign.id}${title === '' ? '-campaign' : `-${title}`}/${type}`
 }
 
-export function encounterUrl(encounter: InitiativeRow | EncounterItem): string {
+export function encounterUrl(encounter: { id: number; title: string }): string {
   const title: string = slugify(encounter.title)
 
   return `/encounters/${encounter.id}${title === '' ? '-encounter' : `-${title}`}`

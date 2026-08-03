@@ -40,13 +40,16 @@ mockNuxtImport(
       init ? ref(init()) : ref(null as T),
 )
 
-mockNuxtImport('createError', () => (error: any) => {
-  return new Error(
-    typeof error === 'string'
-      ? error
-      : error.message || error.details || 'Unknown error',
-  )
-})
+mockNuxtImport(
+  'createError',
+  () => (error: string | { message?: string; details?: string }) => {
+    return new Error(
+      typeof error === 'string'
+        ? error
+        : error.message || error.details || 'Unknown error',
+    )
+  },
+)
 
 const email = 'test@example.com'
 const password = 'password123'
