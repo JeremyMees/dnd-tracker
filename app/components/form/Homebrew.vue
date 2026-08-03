@@ -19,6 +19,10 @@ const props = withDefaults(
   }>(),
   {
     isEncounter: false,
+    campaignId: undefined,
+    item: undefined,
+    sheet: undefined,
+    update: undefined,
   },
 )
 

@@ -20,5 +20,17 @@ export default withNuxt(...pluginQuery.configs['flat/recommended'], {
         allow: ['info', 'warn', 'trace', 'error'],
       },
     ],
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'always',
+          normal: 'always',
+          component: 'always',
+        },
+        svg: 'always',
+        math: 'always',
+      },
+    ],
   },
 })

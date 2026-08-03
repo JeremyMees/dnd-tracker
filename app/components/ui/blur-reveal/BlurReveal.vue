@@ -1,27 +1,4 @@
-<template>
-  <div ref="container" :class="props.class">
-    <Motion
-      v-for="(child, index) in children"
-      :key="index"
-      ref="childElements"
-      as="div"
-      :initial="getInitial()"
-      :while-in-view="getAnimate()"
-      :transition="{
-        duration: props.duration,
-        ease: 'easeInOut',
-        delay: props.delay * Number(index),
-      }"
-    >
-      <component :is="child" />
-    </Motion>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { Motion } from 'motion-v'
-import { ref, onMounted, watchEffect, useSlots } from 'vue'
-
 interface Props {
   duration?: number
   delay?: number
@@ -35,10 +12,9 @@ const props = withDefaults(defineProps<Props>(), {
   delay: 2,
   blur: '20px',
   yOffset: 20,
+  class: '',
 })
 
-const container = ref(null)
-const childElements = ref([])
 const slots = useSlots()
 
 const children = ref<any>([])
@@ -66,3 +42,23 @@ function getAnimate() {
   }
 }
 </script>
+
+<template>
+  <div ref="container" :class="props.class">
+    <Motion
+      v-for="(child, index) in children"
+      :key="index"
+      ref="childElements"
+      as="div"
+      :initial="getInitial()"
+      :while-in-view="getAnimate()"
+      :transition="{
+        duration: props.duration,
+        ease: 'easeInOut',
+        delay: props.delay * Number(index),
+      }"
+    >
+      <component :is="child" />
+    </Motion>
+  </div>
+</template>

@@ -17,6 +17,7 @@ const props = withDefaults(
     min: 0,
     required: false,
     class: '',
+    label: undefined,
   },
 )
 

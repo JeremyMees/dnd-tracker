@@ -18,6 +18,9 @@ const props = withDefaults(
     allowPin: false,
     system: '5e-2024',
     preSelectedDocuments: () => ['srd-2024'],
+    class: '',
+    sheet: undefined,
+    update: undefined,
   },
 )
 

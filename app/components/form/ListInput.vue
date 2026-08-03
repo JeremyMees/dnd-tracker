@@ -15,6 +15,7 @@ const props = withDefaults(
     max: 10,
     min: 0,
     required: false,
+    label: undefined,
   },
 )
 
