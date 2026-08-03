@@ -1,4 +1,4 @@
-export interface AuthUser extends ProfileRow {}
+export type AuthUser = ProfileRow
 
 interface Credentials {
   email: string

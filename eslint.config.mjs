@@ -5,7 +5,6 @@ export default withNuxt(...pluginQuery.configs['flat/recommended'], {
   files: ['**/*.js', '**/*.ts', '**/*.vue'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-empty-object-type': 'off',
     camelcase: 0,
     'vue/no-side-effects-in-computed-properties': 'off',
     'vue/multi-word-component-names': 'off',

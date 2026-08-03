@@ -101,7 +101,7 @@ export interface InitiativeSheetRow {
   resistancesAndImmunities?: DndResistancesAndImmunities
 }
 
-export interface InitiativeSheetRowInsert extends Omit<
+export type InitiativeSheetRowInsert = Omit<
   InitiativeSheetRow,
   | 'campaign'
   | 'amount'
@@ -111,7 +111,7 @@ export interface InitiativeSheetRowInsert extends Omit<
   | 'conditions'
   | 'index'
   | NotUpdatable
-> {}
+>
 
 export interface InitiativeSettings {
   spacing: TableSpacing
