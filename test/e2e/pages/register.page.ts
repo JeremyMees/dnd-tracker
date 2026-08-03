@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test'
 
 export class RegisterPage {
-  public url = '/en/register'
+  public url = '/register'
   readonly page: Page
   readonly errorMessages: Locator
 

@@ -38,12 +38,8 @@ export function encounterUrl(encounter: { id: number; title: string }): string {
   return `/encounters/${encounter.id}${title === '' ? '-encounter' : `-${title}`}`
 }
 
-function localeParam(locale: string): string {
-  return locale === 'nl' ? '' : `${locale}/`
-}
-
 export function shareEncounterUrl(token: string, locale: string): string {
   const { appDomain } = useRuntimeConfig().public
 
-  return `${appDomain}/${localeParam(locale)}playground?token=${token}`
+  return `${appDomain}${localeParam(locale)}/playground?token=${token}`
 }

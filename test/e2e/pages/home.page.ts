@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 
 export class HomePage {
-  public url = '/en/'
+  public url = '/'
   readonly page: Page
 
   constructor(page: Page) {

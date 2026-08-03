@@ -84,13 +84,13 @@ describe('url-generators', () => {
     it('should generate a share URL with English locale', () => {
       const url = shareEncounterUrl('abc123', 'en')
 
-      expect(url).toBe('https://dnd-tracker.com/en/playground?token=abc123')
+      expect(url).toBe('https://dnd-tracker.com/playground?token=abc123')
     })
 
     it('should generate a share URL with Dutch locale', () => {
       const url = shareEncounterUrl('xyz789', 'nl')
 
-      expect(url).toBe('https://dnd-tracker.com/playground?token=xyz789')
+      expect(url).toBe('https://dnd-tracker.com/nl/playground?token=xyz789')
     })
   })
 

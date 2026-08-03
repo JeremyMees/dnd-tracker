@@ -8,7 +8,7 @@ test('Login succeeds', async ({ loginPage, testHelpers }) => {
   await loginPage.login('jeremymees123+e2e@gmail.com', 'Tester-123')
 
   await expect(loginPage.errorMessages).not.toBeVisible()
-  await expect(loginPage.page).toHaveURL(/\/en/)
+  await expect(loginPage.page).toHaveURL(/\/$/)
 })
 
 test('Login fails', async ({ loginPage, testHelpers }) => {

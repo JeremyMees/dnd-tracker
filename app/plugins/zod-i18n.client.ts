@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { Composer } from 'vue-i18n'
 
 function localeConfig(code: string): z.core.$ZodConfig {
-  return code === 'en' ? z.locales.en() : z.locales.nl()
+  return code === 'nl' ? z.locales.nl() : z.locales.en()
 }
 
 export default defineNuxtPlugin({
