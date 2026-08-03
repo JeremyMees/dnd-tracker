@@ -2,8 +2,8 @@ import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 import packageJSON from './package.json'
 import tailwindcss from '@tailwindcss/vite'
+import { defaultLocale, locales, localized } from './shared/utils/locale'
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -73,7 +73,7 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
+  routeRules: localized({
     '/': { prerender: true },
     '/contact': { prerender: true },
     '/policies/**': { prerender: true },
@@ -83,7 +83,7 @@ export default defineNuxtConfig({
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
     '/maintenance': { robots: false },
-  },
+  }),
 
   sourcemap: {
     client: 'hidden',
@@ -136,16 +136,13 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    defaultLocale: 'nl',
+    defaultLocale,
+    locales,
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_redirected',
       redirectOn: 'root',
     },
-    locales: [
-      { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
-      { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
-    ],
   },
 
   image: {

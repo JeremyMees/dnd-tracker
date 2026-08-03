@@ -573,7 +573,7 @@
         "ignore": "Ignore modifier"
       }
     },
-    "diceRollInput": {
+    "diceRoll": {
       "rolled": "Rolled {amount} {dice}|Rolled multiple dice"
     },
     "initiativeTableModals": {
