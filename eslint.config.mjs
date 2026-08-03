@@ -9,7 +9,6 @@ export default withNuxt(...pluginQuery.configs['flat/recommended'], {
     'vue/no-side-effects-in-computed-properties': 'off',
     'vue/multi-word-component-names': 'off',
     'vue/no-mutating-props': 'off',
-    'vue/no-v-html': 'off',
     'no-console': [
       'error',
       {

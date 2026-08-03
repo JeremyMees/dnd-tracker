@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify'
+import { allowedHTMLAttr, allowedHTMLTags } from '~~/constants/html-policy'
 
 export function scrollToId(id: string): void {
   const el = document.getElementById(id)
@@ -97,25 +98,10 @@ export function homebrewColor(type: HomebrewType): string {
   }
 }
 
-export function sanitizeHTML(dirty: string): string {
+export function sanitizeClientHTML(dirty: string): string {
   return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: [
-      'h1',
-      'h2',
-      'h3',
-      'p',
-      'a',
-      'ol',
-      'ul',
-      'li',
-      'blockquote',
-      'hr',
-      'mark',
-      'strong',
-      'em',
-      's',
-    ],
-    ALLOWED_ATTR: ['href', 'name', 'target', 'rel'],
+    ALLOWED_TAGS: allowedHTMLTags,
+    ALLOWED_ATTR: allowedHTMLAttr,
   }).replaceAll('<hr />', '<hr>')
 }
 

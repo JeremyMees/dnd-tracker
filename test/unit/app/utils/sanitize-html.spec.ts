@@ -4,67 +4,91 @@
 // disallowed tags/siblings in place) — see happy-dom#1810 and DOMPurify#876.
 // jsdom is spec-compliant and matches real browser behavior.
 import { describe, expect, it } from 'vitest'
-import { sanitizeHTML } from '~/utils/ui-helpers'
+import { sanitizeClientHTML } from '~/utils/ui-helpers'
 
-describe('sanitizeHTML', () => {
-  it('should sanitize HTML by removing disallowed tags', () => {
-    const dirtyHtml = `
-      <script>alert("xss")</script>
-      <img src="https://example.com/image.jpg" alt="Image">
-      <iframe src="https://example.com/iframe"></iframe>
-      <video src="https://example.com/video.mp4"></video>
-      <audio src="https://example.com/audio.mp3"></audio>
-      <object data="https://example.com/object.pdf"></object>
-    `
-    const result = sanitizeHTML(dirtyHtml)
+const allowedMarkup = [
+  '<h1>Title</h1>',
+  '<h2>Subtitle</h2>',
+  '<h3>Subsubtitle</h3>',
+  '<p>Paragraph</p>',
+  '<a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">Link</a>',
+  '<ul><li>Item</li></ul>',
+  '<ol><li>Item</li></ol>',
+  '<blockquote>Quote</blockquote>',
+  '<mark>Highlight</mark>',
+  '<strong>Bold</strong>',
+  '<em>Italic</em>',
+  '<s>Strikethrough</s>',
+].join('')
 
-    expect(result).not.toContain('<script>')
-    expect(result).not.toContain('<img>')
-    expect(result).not.toContain('<iframe>')
-    expect(result).not.toContain('<video>')
-    expect(result).not.toContain('<audio>')
-    expect(result).not.toContain('<object>')
+describe('sanitizeClientHTML', () => {
+  it('strips disallowed tags entirely, including their content', () => {
+    expect(sanitizeClientHTML('<script>alert("xss")</script>')).toBe('')
+    expect(sanitizeClientHTML('<script src="evil.js"></script>')).toBe('')
+    expect(sanitizeClientHTML('<style>body{display:none}</style>')).toBe('')
+    expect(sanitizeClientHTML('<iframe src="https://evil.com"></iframe>')).toBe(
+      '',
+    )
+    expect(
+      sanitizeClientHTML('<img src="https://example.com/i.jpg" alt="Image">'),
+    ).toBe('')
+    expect(sanitizeClientHTML('<img src=x onerror="alert(1)">')).toBe('')
+    expect(sanitizeClientHTML('<svg onload="alert(1)"></svg>')).toBe('')
+    expect(sanitizeClientHTML('<video src="v.mp4"></video>')).toBe('')
+    expect(sanitizeClientHTML('<audio src="a.mp3"></audio>')).toBe('')
+    expect(sanitizeClientHTML('<object data="o.pdf"></object>')).toBe('')
   })
 
-  it('Should allow all allowed tags and attributes', () => {
-    const dirtyHtml = `
-      <h1>Title</h1>
-      <h2>Subtitle</h2>
-      <h3>Subsubtitle</h3>
-      <p>Paragraph</p>
-      <a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">Link</a>
-      <ul><li>Item 1</li></ul>
-      <ol><li>Item 1</li></ol>
-      <blockquote>Quote</blockquote>
-      <mark>Highlight</mark>
-      <strong>Bold</strong>
-      <em>Italic</em>
-      <s>Strikethrough</s>
-    `
-    const result = sanitizeHTML(dirtyHtml)
-
-    expect(result).toContain('<h1>')
-    expect(result).toContain('<h2>')
-    expect(result).toContain('<h3>')
-    expect(result).toContain('<p>')
-    expect(result).toContain(
-      '<a href="https://example.com" name="link" target="_blank" rel="noopener noreferrer">',
+  it('strips a phishing form but keeps surrounding prose', () => {
+    const result = sanitizeClientHTML(
+      '<p>Hi</p><form action="https://evil.com"><input name="pw"></form>',
     )
-    expect(result).toContain('<ul>')
-    expect(result).toContain('<ol>')
-    expect(result).toContain('<li>')
-    expect(result).toContain('<blockquote>')
-    expect(result).toContain('<mark>')
-    expect(result).toContain('<strong>')
-    expect(result).toContain('<em>')
-    expect(result).toContain('<s>')
+
+    expect(result).toBe('<p>Hi</p>')
+  })
+
+  it('strips inline event handlers from otherwise allowed tags', () => {
+    const result = sanitizeClientHTML(
+      '<a href="https://ok.com" onclick="alert(1)">x</a>',
+    )
+
+    expect(result).toBe('<a href="https://ok.com">x</a>')
+    expect(result).not.toContain('onclick')
+  })
+
+  it('strips dangerous href schemes but keeps the element', () => {
+    expect(sanitizeClientHTML('<a href="javascript:alert(1)">c</a>')).toBe(
+      '<a>c</a>',
+    )
+    expect(
+      sanitizeClientHTML(
+        '<a href="data:text/html,<script>alert(1)</script>">x</a>',
+      ),
+    ).toBe('<a>x</a>')
+  })
+
+  it('does not reassemble a script tag from nested obfuscation', () => {
+    const result = sanitizeClientHTML(
+      '<p><scr<script>ipt>alert(1)</scr</script>ipt></p>',
+    )
+
+    expect(result).not.toContain('<script')
+    expect(result).not.toContain('<scr<')
+  })
+
+  it('leaves markup built only from allowed tags and attributes untouched', () => {
+    expect(sanitizeClientHTML(allowedMarkup)).toBe(allowedMarkup)
   })
 
   it('should replace <hr /> with <hr>', () => {
     const html = '<p>Text</p><hr /><p>More text</p>'
-    const result = sanitizeHTML(html)
+    const result = sanitizeClientHTML(html)
 
     expect(result).toContain('<hr>')
     expect(result).not.toContain('<hr />')
+  })
+
+  it('returns an empty string for empty input', () => {
+    expect(sanitizeClientHTML('')).toBe('')
   })
 })

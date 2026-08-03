@@ -27,6 +27,11 @@ defineProps<{
       >".
     </Text>
     <Hr class="border-t-secondary" />
+    <!-- v-dompurify-html is unavailable here: this component is rendered by
+         @vue-email/render in its own Vue app, so the Nuxt plugin that registers
+         the directive never runs, and DOMPurify needs a DOM Nitro doesn't have.
+         noteContent is sanitized server-side in server/api/emails/share-note.post.ts. -->
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <div class="pt-[26px]" v-html="noteContent" />
   </DefaultEmail>
 </template>

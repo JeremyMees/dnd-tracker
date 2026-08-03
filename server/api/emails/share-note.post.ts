@@ -35,7 +35,7 @@ export default defineEventHandler(async event => {
 
   const props = {
     email: body.email,
-    noteContent: note.text ?? '',
+    noteContent: sanitizeServerHTML(note.text ?? ''),
     noteTitle: note.title,
     campaign: campaign.title,
     sharedBy: sender?.username || 'A campaign member',
