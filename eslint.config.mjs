@@ -4,7 +4,6 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 export default withNuxt(...pluginQuery.configs['flat/recommended'], {
   files: ['**/*.js', '**/*.ts', '**/*.vue'],
   rules: {
-    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-dynamic-delete': 'off',
     '@typescript-eslint/no-empty-object-type': 'off',

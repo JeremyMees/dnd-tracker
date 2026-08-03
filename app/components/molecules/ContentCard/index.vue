@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineEmits<{ pin: []; unpin: [] }>()
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     hit: DndItem
     pinned?: boolean

@@ -33,7 +33,7 @@ export default defineNuxtRouteMiddleware(async to => {
         ? to.fullPath.replace('/settings', '/encounters')
         : to.fullPath.replace('/danger-zone', '/encounters'),
     )
-  } catch (error) {
+  } catch {
     return navigateTo(localePath('/'))
   }
 })

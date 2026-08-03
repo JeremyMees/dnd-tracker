@@ -62,7 +62,8 @@ export default defineEventHandler(async event => {
         },
       },
     )
-  } catch (err) {
+  } catch (error) {
+    console.error('Error sending share note email:', error)
     throw createError('Failed to send email.')
   }
 })

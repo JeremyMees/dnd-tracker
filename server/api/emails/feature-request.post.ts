@@ -49,7 +49,8 @@ export default defineEventHandler(async event => {
         },
       },
     )
-  } catch (err) {
+  } catch (error) {
+    console.error('Error sending feature request email:', error)
     throw createError('Failed to send email.')
   }
 })

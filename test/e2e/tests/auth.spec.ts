@@ -19,7 +19,7 @@ test('Login fails', async ({ loginPage, testHelpers }) => {
   await expect(loginPage.errorMessages).toBeVisible()
 })
 
-test('Register succeeds', async ({ registerPage, testHelpers }) => {
+test('Register succeeds', async () => {
   // await registerPage.goto()
   // await testHelpers.acceptCookies()
   // await registerPage.register('Playwright Test', 'endToEnd', 'jeremymees123+test-e2e@gmail.com', 'Tester-123')
@@ -28,7 +28,7 @@ test('Register succeeds', async ({ registerPage, testHelpers }) => {
   // await expect(loginPage.page).toHaveURL(/\/en/)
 })
 
-test('Register fails', async ({ loginPage, testHelpers }) => {
+test('Register fails', async () => {
   // await loginPage.goto()
   // await testHelpers.acceptCookies()
   // await loginPage.login('test@test.com', 'testing error')

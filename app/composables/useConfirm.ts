@@ -23,7 +23,7 @@ export function useConfirmDialogs() {
           await dialogs.value[foundIndex].callback(true)
 
           dialogs.value.splice(foundIndex, 1)
-        } catch (error) {
+        } catch {
           dialogs.value[foundIndex].loading = false
         }
       }

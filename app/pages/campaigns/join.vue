@@ -76,7 +76,7 @@ async function answerInvite(accept: boolean): Promise<void> {
       queryKey: ['useJoinCampaign', route.query.token],
     })
     navigateTo(localePath(url))
-  } catch (err: any) {
+  } catch {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),

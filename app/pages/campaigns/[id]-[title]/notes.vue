@@ -122,7 +122,7 @@ async function sendNoteAsMail(
       description: t('general.mail.success.title'),
       variant: 'success',
     })
-  } catch (err) {
+  } catch {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),

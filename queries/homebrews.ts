@@ -112,7 +112,7 @@ export function useHomebrewUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { id, onSuccess }) => {
+    onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
 
       queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
@@ -156,7 +156,7 @@ export function useHomebrewRemove() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { id, onSuccess }) => {
+    onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
 
       queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })

@@ -3,7 +3,7 @@ import type { DndMonster } from '#shared/types/dnd'
 
 defineEmits<{ add: [monster: DndMonster] }>()
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     monster: DndMonster
     addable?: boolean

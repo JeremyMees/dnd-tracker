@@ -38,7 +38,7 @@ vi.mock('~~/queries/open5e', () => ({
 }))
 
 vi.mock('~~/composables/initiative-sheet', () => ({
-  useInitiativeSheet: (data: any, update: any) => {
+  useInitiativeSheet: (data: any) => {
     const expanded = ref({})
     const selected = ref<Record<string, boolean>>({})
     const active = computed(() => {

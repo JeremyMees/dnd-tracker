@@ -83,7 +83,8 @@ export default defineEventHandler(async event => {
         },
       },
     )
-  } catch (err) {
+  } catch (error) {
+    console.error('Error sending campaign invite email:', error)
     throw createError('Failed to send email.')
   }
 })

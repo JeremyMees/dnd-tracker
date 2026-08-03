@@ -55,7 +55,8 @@ export default defineEventHandler(async event => {
         },
       },
     )
-  } catch (err) {
+  } catch (error) {
+    console.error('Error sending campaign invite email to new user:', error)
     throw createError('Failed to send email.')
   }
 })

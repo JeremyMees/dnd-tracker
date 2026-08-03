@@ -126,7 +126,7 @@ export function useEncounterUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { id, onSuccess }) => {
+    onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
 
       queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })

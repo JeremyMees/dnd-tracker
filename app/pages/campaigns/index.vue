@@ -63,7 +63,7 @@ const columns = generateColumns({
 
         try {
           await removeTeamMember({ member: member.id, campaign: item.id })
-        } catch (err) {
+        } catch {
           toast({
             title: t('general.error.title'),
             description: t('general.error.text'),
