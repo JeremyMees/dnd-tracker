@@ -91,7 +91,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
               </UiCardTitle>
 
               <UiCardDescription class="pb-4">
-                {{ product.description }}
+                {{ $t(product.description) }}
               </UiCardDescription>
 
               <div class="flex items-end gap-1">
