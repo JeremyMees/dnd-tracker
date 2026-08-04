@@ -78,7 +78,7 @@ export function useCampaignMinimalListing(id: string) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignMinimal'],
+    queryKey: ['useCampaignMinimal', id],
     queryFn: async () =>
       await supabase.from('campaigns').select(`
         id,
@@ -165,6 +165,7 @@ export function useCampaignCreate() {
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
 
       toast({
         description: t('components.toast.create.success', { type }),
@@ -214,6 +215,7 @@ export function useCampaignUpdate() {
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
 
       toast({
@@ -259,6 +261,7 @@ export function useCampaignRemove() {
 
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
       if (Array.isArray(id))
         id.forEach(id =>
           queryClient.invalidateQueries({

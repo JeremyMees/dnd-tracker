@@ -86,6 +86,7 @@ export function useTeamMemberCreate() {
         queryKey: ['useCampaignDetail', data.campaign],
       })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
 
       if (onSuccess) onSuccess()
     },
@@ -120,6 +121,7 @@ export function useTeamMemberUpdate() {
         queryKey: ['useCampaignDetail', campaign],
       })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
 
       if (onSuccess) onSuccess()
     },
@@ -151,6 +153,7 @@ export function useTeamMemberRemove() {
         queryKey: ['useCampaignDetail', campaign],
       })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
 
       if (onSuccess) onSuccess()
     },
