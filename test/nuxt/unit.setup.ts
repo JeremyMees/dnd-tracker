@@ -14,9 +14,6 @@ beforeEach(() => {
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,
-  $md: {
-    render: (mdText: string) => mdText,
-  },
 }
 
 config.global.directives = {
@@ -57,3 +54,7 @@ mockNuxtImport('useI18n', () => () => ({
 }))
 
 mockNuxtImport('useLocalePath', () => () => (path: string) => path)
+
+mockNuxtImport('useMarkdown', () => () => ({
+  renderMarkdown: (mdText: string) => mdText,
+}))

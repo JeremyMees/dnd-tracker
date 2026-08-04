@@ -5,6 +5,7 @@ import { useConditionsListing } from '~~/queries/open5e'
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { renderMarkdown } = useMarkdown()
 
 const selected = ref<DndCondition[]>([])
 const popoverOpen = ref<boolean>(false)
@@ -119,7 +120,7 @@ function toggleSelected(item: DndCondition): void {
             <UiPopoverTitle>{{ condition.name }}</UiPopoverTitle>
           </UiPopoverHeader>
           <div
-            v-dompurify-html="$md.render(condition.desc)"
+            v-dompurify-html="renderMarkdown(condition.desc)"
             class="text-sm text-muted-foreground"
           />
           <UiNumberField
