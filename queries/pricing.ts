@@ -85,6 +85,6 @@ export function usePricingListing() {
         })
       }
     },
-    initialData: () => productDefaults,
+    placeholderData: () => productDefaults,
   })
 }
