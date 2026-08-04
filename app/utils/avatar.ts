@@ -2,8 +2,6 @@ import type { Avatar as DiceBearAvatar, StyleOptions } from '@dicebear/core'
 import { OptionsDescriptor, Style } from '@dicebear/core'
 import openPeeps from '@dicebear/styles/open-peeps.json' with { type: 'json' }
 
-export const avatarStyle = new Style(openPeeps)
-
 const backgroundColors = [
   'fee2e2',
   'fecaca',
@@ -69,7 +67,19 @@ type ConfigStyleOption = {
   values: string[]
 }
 
+let style: Style<typeof openPeeps> | undefined
+let styleOptions: ConfigStyleOptions | undefined
+
+export function getAvatarStyle(): Style<typeof openPeeps> {
+  return (style ??= new Style(openPeeps))
+}
+
 export function getStyleOptions(): ConfigStyleOptions {
+  return (styleOptions ??= buildStyleOptions())
+}
+
+function buildStyleOptions(): ConfigStyleOptions {
+  const avatarStyle = getAvatarStyle()
   const descriptor = new OptionsDescriptor(avatarStyle).toJSON()
   const colors = avatarStyle.colors()
   const result: ConfigStyleOptions = {}
@@ -108,11 +118,10 @@ export function getStyleOptions(): ConfigStyleOptions {
   return result
 }
 
-export const configStyleOptions: ConfigStyleOptions = getStyleOptions()
-
 export function normalizeStyleOptions(
   selected: SelectedStyleOptions,
 ): SelectedStyleOptions {
+  const configStyleOptions = getStyleOptions()
   const result: SelectedStyleOptions = {}
 
   for (const rawKey in selected) {
@@ -130,6 +139,7 @@ export function normalizeStyleOptions(
 export function getAvatarOptions(
   selected: SelectedStyleOptions,
 ): StyleOptions<typeof openPeeps> {
+  const configStyleOptions = getStyleOptions()
   const result: Record<string, unknown> = {
     size: 100,
     scale: 0.75,
@@ -165,6 +175,7 @@ export function getAvatarOptions(
 export function getAvatarExtra(
   generatedAvatar: DiceBearAvatar,
 ): SelectedStyleOptions {
+  const configStyleOptions = getStyleOptions()
   const resolved = generatedAvatar.toJSON().options as Record<string, unknown>
   const extra: SelectedStyleOptions = {}
 

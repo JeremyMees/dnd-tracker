@@ -82,7 +82,12 @@ const onSubmit = form.handleSubmit(async values => {
       {{ $t('pages.register.register') }}
     </h1>
 
-    <AvatarPicker v-model="avatar" hide-creator-toggle class="lg:hidden mb-6" />
+    <LazyAvatarPicker
+      hydrate-on-visible
+      v-model="avatar"
+      hide-creator-toggle
+      class="lg:hidden mb-6"
+    />
 
     <UiFormWrapper @submit="onSubmit">
       <UiFormField v-slot="{ componentField }" name="name">
@@ -161,7 +166,12 @@ const onSubmit = form.handleSubmit(async values => {
     </div>
 
     <template #right>
-      <AvatarPicker v-model="avatar" hide-creator-toggle class="max-w-sm" />
+      <LazyAvatarPicker
+        hydrate-on-visible
+        v-model="avatar"
+        hide-creator-toggle
+        class="max-w-sm"
+      />
     </template>
   </NuxtLayout>
 </template>

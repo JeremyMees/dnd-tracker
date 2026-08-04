@@ -1,8 +1,63 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Avatar as DiceBearAvatar } from '@dicebear/core'
 
 describe('avatar', () => {
+  describe('getAvatarStyle', () => {
+    it('should reuse the same style instance', () => {
+      expect(getAvatarStyle()).toBe(getAvatarStyle())
+    })
+
+    it('should return a style that can render an avatar', () => {
+      expect(getAvatarStyle().colors().get('skin')?.values()).toContain(
+        '#edb98a',
+      )
+    })
+
+    it('should not build the style before something asks for it', async () => {
+      vi.resetModules()
+
+      let built = 0
+
+      vi.doMock('@dicebear/core', async importOriginal => {
+        const core = await importOriginal<typeof import('@dicebear/core')>()
+
+        return {
+          ...core,
+          Style: class extends core.Style {
+            constructor(data: unknown) {
+              super(data)
+              built++
+            }
+          },
+        }
+      })
+
+      try {
+        const avatar = await import('~/utils/avatar')
+
+        expect(built).toBe(0)
+
+        avatar.getAvatarStyle()
+
+        expect(built).toBe(1)
+
+        // Both accessors share the one instance and never rebuild it.
+        avatar.getStyleOptions()
+        avatar.getAvatarStyle()
+
+        expect(built).toBe(1)
+      } finally {
+        vi.doUnmock('@dicebear/core')
+        vi.resetModules()
+      }
+    })
+  })
+
   describe('getStyleOptions', () => {
+    it('should reuse the same options object', () => {
+      expect(getStyleOptions()).toBe(getStyleOptions())
+    })
+
     it('should only expose the selectable open peeps options', () => {
       expect(Object.keys(getStyleOptions())).toEqual([
         'accessoriesVariant',
@@ -141,16 +196,16 @@ describe('avatar', () => {
         backgroundColor: '7dd3fc',
       })
 
-      expect(new DiceBearAvatar(avatarStyle, options).toDataUri()).toContain(
-        'data:image/svg+xml',
-      )
+      expect(
+        new DiceBearAvatar(getAvatarStyle(), options).toDataUri(),
+      ).toContain('data:image/svg+xml')
     })
   })
 
   describe('getAvatarExtra', () => {
     it('should return the options DiceBear resolved', () => {
       const generated = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions({ headVariant: 'pomp', skinColor: 'edb98a' }),
       )
 
@@ -164,12 +219,12 @@ describe('avatar', () => {
 
     it('should be able to rebuild the same avatar', () => {
       const generated = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions({ headVariant: 'pomp' }),
       )
 
       const rebuilt = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions(normalizeStyleOptions(getAvatarExtra(generated))),
       )
 
@@ -178,7 +233,7 @@ describe('avatar', () => {
 
     it('should leave out options that cannot be picked', () => {
       const generated = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions({ headVariant: 'pomp' }),
       )
 
@@ -188,7 +243,7 @@ describe('avatar', () => {
 
     it('should remember a component the style did not draw as "none"', () => {
       const generated = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions({ accessoriesVariant: '', headVariant: 'pomp' }),
       )
 
@@ -198,12 +253,12 @@ describe('avatar', () => {
     it('should rebuild an avatar without the components that were left out', () => {
       const options = { accessoriesVariant: '', facialHairVariant: 'chin' }
       const generated = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions(options),
       )
 
       const rebuilt = new DiceBearAvatar(
-        avatarStyle,
+        getAvatarStyle(),
         getAvatarOptions(normalizeStyleOptions(getAvatarExtra(generated))),
       )
 

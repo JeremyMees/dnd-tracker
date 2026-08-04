@@ -5,6 +5,7 @@ export type Avatar = { url: string; extra: Record<string, unknown> }
 export function useAvatarCreator() {
   const avatar = ref<Avatar>()
   const options = ref<SelectedStyleOptions>({})
+  const configStyleOptions = getStyleOptions()
 
   function update(selectedOptions: SelectedStyleOptions): void {
     Object.assign(options.value, normalizeStyleOptions(selectedOptions))
@@ -25,7 +26,7 @@ export function useAvatarCreator() {
 
   function generate(): void {
     const generatedAvatar = new DiceBearAvatar(
-      avatarStyle,
+      getAvatarStyle(),
       getAvatarOptions(options.value),
     )
 
