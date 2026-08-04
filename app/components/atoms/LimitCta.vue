@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { ONE_DAY } from '~~/constants/time'
+
 const isShown = ref<boolean>(false)
 const cookie = useCookie<number>('limit_cta')
 const removeTimer = ref()
 const showTimer = ref()
-const day = 24 * 60 * 60 * 1000
 
 defineExpose({ show })
 
@@ -36,7 +37,7 @@ function checkShow(): void {
   if (!cookie.value || isNaN(cookie.value)) show()
   else {
     const now = Date.now()
-    if (now - cookie.value > day) show()
+    if (now - cookie.value > ONE_DAY) show()
   }
 }
 </script>

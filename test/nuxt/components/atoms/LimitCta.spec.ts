@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import LimitCta from '~/components/atoms/LimitCta.vue'
+import { ONE_SECOND, ONE_HOUR, ONE_DAY } from '~~/constants/time'
 
 const stubs = {
   AnimationExpand: {
@@ -35,7 +36,7 @@ describe('LimitCta', async () => {
 
   it('Should show component if cookie is expired', async () => {
     const now = Date.now()
-    const dayAgo = now - 24 * 60 * 60 * 1000 - 1000
+    const dayAgo = now - ONE_DAY - ONE_SECOND
     const mockUseCookie = vi.fn().mockReturnValue({ value: dayAgo })
 
     vi.stubGlobal('useCookie', mockUseCookie)
@@ -52,7 +53,7 @@ describe('LimitCta', async () => {
 
   it('Should not show component if cookie is not expired', async () => {
     const now = Date.now()
-    const recentTime = now - 1000 * 60 * 60
+    const recentTime = now - ONE_HOUR
     const mockUseCookie = vi.fn().mockReturnValue({ value: recentTime })
 
     vi.stubGlobal('useCookie', mockUseCookie)
