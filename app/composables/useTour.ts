@@ -1,8 +1,4 @@
-import { driver } from 'driver.js'
-import type { DriveStep, Driver } from 'driver.js'
-import 'driver.js/dist/driver.css'
-
-import playground from '~~/constants/initiative-examples.json'
+import type { Config, DriveStep, Driver } from 'driver.js'
 import { useProfileUpdate } from '~~/queries/profiles'
 
 export function useTour() {
@@ -43,7 +39,7 @@ export function useTour() {
     return steps
   })
 
-  function initializeTour(): void {
+  function initializeTour(driver: (config?: Config) => Driver): void {
     driverObj.value?.destroy()
 
     driverObj.value = driver({
@@ -84,11 +80,19 @@ export function useTour() {
 
     if (user.value?.completedTour || isTourCompleted.value) return
 
+    const [{ driver }, { default: playground }] = await Promise.all([
+      import('driver.js'),
+      import('~~/constants/initiative-examples.json'),
+      import('driver.js/dist/driver.css'),
+    ])
+
     isTourActive.value = true
     isTourWithCampaign.value = campaign
     tourData.value = playground as unknown as InitiativeSheet
 
-    initializeTour()
+    await nextTick()
+
+    initializeTour(driver)
   }
 
   return {
