@@ -72,10 +72,17 @@ const isOpen = ref<boolean>(false)
         :is-open="isOpen"
       />
       <ContentCardArmor v-if="isArmor(hit)" data-test-armor :content="hit" />
+      <ContentCardCondition
+        v-if="isCondition(hit)"
+        data-test-condition
+        :content="hit"
+        :is-open="isOpen"
+      />
     </UiCardContent>
     <UiCardFooter class="pl-4 pr-0 pb-0 pt-2">
       <div v-if="!isArmor(hit)" class="flex justify-end w-full">
         <UiButton
+          data-test-toggle
           variant="secondary-ghost"
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"
