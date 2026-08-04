@@ -31,7 +31,9 @@ function updateConcentration(): void {
     @click="updateConcentration"
   >
     <Icon
-      :name="`tabler:${item.concentration ? 'circle-filled' : 'circle-dotted'}`"
+      :name="
+        item.concentration ? 'tabler:circle-filled' : 'tabler:circle-dotted'
+      "
       :aria-hidden="true"
     />
   </UiButton>

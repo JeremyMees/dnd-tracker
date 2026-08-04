@@ -57,6 +57,16 @@ export default defineNuxtConfig({
 
   colorMode: { fallback: 'dark' },
 
+  icon: {
+    serverBundle: false,
+    clientBundle: {
+      scan: {
+        globInclude: ['{app,tables,queries,constants,shared}/**/*.{vue,ts}'],
+      },
+      icons: ['tabler:h-1', 'tabler:h-2', 'tabler:h-3'],
+    },
+  },
+
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
     stripeSk: process.env.STRIPE_SK,

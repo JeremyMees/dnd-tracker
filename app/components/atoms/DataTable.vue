@@ -219,7 +219,11 @@ async function fetchPermissions() {
                   />
                   <Icon
                     v-if="header.column.getIsSorted()"
-                    :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
+                    :name="
+                      header.column.getIsSorted() === 'asc'
+                        ? 'tabler:sort-ascending'
+                        : 'tabler:sort-descending'
+                    "
                     class="size-4"
                   />
                 </div>

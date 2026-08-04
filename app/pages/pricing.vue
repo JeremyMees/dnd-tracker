@@ -119,7 +119,9 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 >
                   <Icon
                     v-if="benefit.icon"
-                    :name="`tabler:${benefit.icon}`"
+                    :name="
+                      benefit.icon === 'check' ? 'tabler:check' : 'tabler:x'
+                    "
                     :class="
                       benefit.icon === 'check'
                         ? 'text-success'
