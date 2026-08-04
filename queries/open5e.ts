@@ -1,5 +1,6 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
+import { TEN_MINUTES, ONE_DAY } from '~~/constants/time'
 
 const urlMap = new Map<Open5eType, string>([
   ['monsters', 'https://api.open5e.com/v2/creatures'],
@@ -102,6 +103,8 @@ export function useOpen5eListing(
 
       return narrowListing(type, items, Math.ceil(response.count / 20))
     },
+    staleTime: TEN_MINUTES,
+    gcTime: TEN_MINUTES,
   })
 }
 
@@ -134,6 +137,8 @@ export function useOpen5eDocuments() {
       }
     },
     placeholderData: keepPreviousData,
+    staleTime: ONE_DAY,
+    gcTime: ONE_DAY,
   })
 }
 
@@ -154,7 +159,8 @@ export async function prefetchConditionsListing() {
       )
       return results.map(c => toCondition(c, ['srd-2024']))
     },
-    staleTime: 1000 * 60 * 60 * 24,
+    staleTime: ONE_DAY,
+    gcTime: ONE_DAY,
   })
 }
 
@@ -185,6 +191,8 @@ export function useConditionsListing() {
         })
       }
     },
+    staleTime: ONE_DAY,
+    gcTime: ONE_DAY,
   })
 }
 
@@ -232,5 +240,7 @@ export function useOpen5eMonsterListing(
         }
       }
     },
+    staleTime: TEN_MINUTES,
+    gcTime: TEN_MINUTES,
   })
 }

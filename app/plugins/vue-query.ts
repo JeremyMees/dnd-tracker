@@ -8,6 +8,7 @@ import {
   hydrate,
   dehydrate,
 } from '@tanstack/vue-query'
+import { FIVE_MINUTES, ONE_MINUTE } from '~~/constants/time'
 
 export default defineNuxtPlugin({
   name: 'vue-query',
@@ -17,7 +18,10 @@ export default defineNuxtPlugin({
 
     const queryClient = new QueryClient({
       defaultOptions: {
-        queries: {},
+        queries: {
+          staleTime: ONE_MINUTE,
+          gcTime: FIVE_MINUTES,
+        },
       },
     })
 
