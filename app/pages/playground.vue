@@ -40,17 +40,19 @@ function getQueryData(): void {
 async function handleUpdate(
   payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
 ): Promise<void> {
-  if (!data.value) return
+  const target = isTourActive.value ? tourData : data
 
-  data.value = {
-    ...data.value,
+  if (!target.value) return
+
+  target.value = {
+    ...target.value,
     ...payload,
     ...(payload.rows && { rows: indexCorrect(payload.rows) }),
   }
 }
 
 provide(INITIATIVE_SHEET, {
-  sheet: isTourActive.value ? tourData : data,
+  sheet: computed(() => (isTourActive.value ? tourData.value : data.value)),
   update: handleUpdate,
   activeRow,
 })
