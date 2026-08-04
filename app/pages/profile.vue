@@ -104,7 +104,7 @@ async function handleRemoveUser(): Promise<void> {
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
         <div class="flex gap-4">
           {{ $t('pages.profile.subscription.current') }}:
-          <span class="font-bold capitalize">
+          <span data-test-subscription class="font-bold capitalize">
             {{ user.subscriptionType }}
           </span>
         </div>
@@ -152,6 +152,7 @@ async function handleRemoveUser(): Promise<void> {
       <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <UiButton
+          data-test-delete
           variant="destructive"
           :aria-label="$t('pages.profile.delete')"
           @click="handleRemoveUser"
