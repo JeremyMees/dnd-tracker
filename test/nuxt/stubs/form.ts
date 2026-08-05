@@ -1,4 +1,5 @@
 import { flushPromises } from '@vue/test-utils'
+import { vi } from 'vitest'
 
 interface FormWrapper {
   get: (selector: string) => {
@@ -9,7 +10,9 @@ interface FormWrapper {
 
 async function settle(ticks = 6): Promise<void> {
   for (let tick = 0; tick < ticks; tick++) {
-    await new Promise(resolve => setTimeout(resolve))
+    if (vi.isFakeTimers()) await vi.advanceTimersByTimeAsync(1)
+    else await new Promise(resolve => setTimeout(resolve))
+
     await flushPromises()
   }
 }

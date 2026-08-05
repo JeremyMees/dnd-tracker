@@ -54,7 +54,7 @@ const onSubmit = form.handleSubmit(async values => {
 
 <template>
   <NuxtLayout name="auth">
-    <h1 class="text-center head-3 mb-6">
+    <h1 data-test-title class="text-center head-3 mb-6">
       {{ $t('pages.forgotPassword.title') }}
     </h1>
 
@@ -65,15 +65,15 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput type="email" v-bind="componentField" />
+            <UiInput data-test-email type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <div v-if="formError" class="text-sm text-destructive">
+      <div v-if="formError" data-test-error class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton type="submit" class="w-full">
+      <UiButton data-test-submit type="submit" class="w-full">
         {{ $t('pages.forgotPassword.reset') }}
       </UiButton>
     </UiFormWrapper>
@@ -82,13 +82,13 @@ const onSubmit = form.handleSubmit(async values => {
 
     <div class="flex flex-wrap gap-2 justify-center">
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale to="/register">
+        <NuxtLinkLocale data-test-register to="/register">
           {{ $t('pages.login.new') }}
         </NuxtLinkLocale>
       </UiButton>
       <UiSeparator orientation="vertical" class="h-8" />
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale to="/forgot-password">
+        <NuxtLinkLocale data-test-forgot to="/forgot-password">
           {{ $t('pages.login.forgot') }}
         </NuxtLinkLocale>
       </UiButton>
@@ -97,6 +97,7 @@ const onSubmit = form.handleSubmit(async values => {
     <template #right>
       <ClientOnly>
         <UiIconCloud
+          data-test-icon-cloud
           :images="[
             'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
             'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',

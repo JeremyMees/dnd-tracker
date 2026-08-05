@@ -93,8 +93,8 @@ async function handleRemoveUser(): Promise<void> {
     <section class="space-y-2 relative">
       <div class="flex flex-wrap justify-center gap-y-2 gap-x-4 pb-6">
         <LazyAvatarPicker
-          hydrate-on-visible
           v-model="avatar"
+          hydrate-on-visible
           profile
           :deprecated-avatar="!user.avatarOptions"
           @save="updateAvatar"
