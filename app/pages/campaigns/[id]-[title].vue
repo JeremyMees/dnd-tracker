@@ -71,19 +71,34 @@ const tabs = computed<Tab[]>(() => {
     <template #header>
       <div class="flex gap-x-4 gap-y-2 items-center">
         <UiButton as-child variant="foreground-ghost" size="icon-sm">
-          <NuxtLinkLocale v-tippy="$t('actions.back')" to="/campaigns">
+          <NuxtLinkLocale
+            v-tippy="$t('actions.back')"
+            data-test-back
+            to="/campaigns"
+          >
             <Icon name="tabler:arrow-left" :aria-hidden="true" />
           </NuxtLinkLocale>
         </UiButton>
         <h2 class="text-muted-foreground flex gap-2">
           <span class="hidden md:block"> {{ $t('general.campaign') }}: </span>
           <ClientOnly>
-            <span v-if="isSuccess && data?.title" class="text-foreground">
+            <span
+              v-if="isSuccess && data?.title"
+              data-test-title
+              class="text-foreground"
+            >
               {{ data.title }}
             </span>
-            <UiSkeleton v-else class="w-[150px] h-9 rounded-full" />
+            <UiSkeleton
+              v-else
+              data-test-title-loader
+              class="w-[150px] h-9 rounded-full"
+            />
             <template #fallback>
-              <UiSkeleton class="w-[150px] h-9 rounded-full" />
+              <UiSkeleton
+                data-test-title-loader
+                class="w-[150px] h-9 rounded-full"
+              />
             </template>
           </ClientOnly>
         </h2>
@@ -119,6 +134,7 @@ const tabs = computed<Tab[]>(() => {
       />
       <Card
         v-else
+        data-test-error
         color="danger"
         class="h-[40vh] flex flex-col items-center justify-center gap-2"
       >
