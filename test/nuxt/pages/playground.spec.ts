@@ -5,6 +5,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { playgroundSheet } from '~~/constants/initiative-playground'
 import examples from '~~/constants/initiative-examples.json'
 import { sheet as sharedSheet } from '~~/test/fixtures/initiative-sheet'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const tourSheet = examples as unknown as InitiativeSheet
 
@@ -34,15 +35,7 @@ const SheetProbe = defineComponent({
 const stubs = {
   InitiativeTable: SheetProbe,
   EncounterSidebar: true,
-  NuxtLayout: {
-    setup: () => ({ toggleSidebar: () => {} }),
-    template: `
-      <div>
-        <slot />
-        <slot name="sidebar-content" :is-expanded="true" :toggle-sidebar="toggleSidebar" />
-      </div>
-    `,
-  },
+  NuxtLayout: nuxtLayoutStub,
 }
 
 interface Probe {

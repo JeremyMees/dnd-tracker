@@ -3,6 +3,7 @@ import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Pricing from '~/pages/pricing.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { navigateTo, useFetch, useSeo } = vi.hoisted(() => ({
   navigateTo: vi.fn(),
@@ -68,7 +69,7 @@ const upgrade: ProductPricing = {
 
 const stubs = {
   Motion: { template: '<div><slot /></div>' },
-  NuxtLayout: { template: '<div><slot /></div>' },
+  NuxtLayout: nuxtLayoutStub,
 }
 
 async function mountPage() {

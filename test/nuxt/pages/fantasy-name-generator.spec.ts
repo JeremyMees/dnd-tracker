@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import FantasyNameGeneratorPage from '~/pages/fantasy-name-generator.vue'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { useSeo } = vi.hoisted(() => ({ useSeo: vi.fn() }))
 
@@ -13,11 +14,7 @@ const GeneratorStub = defineComponent({
 
 const stubs = {
   FantasyNameGenerator: GeneratorStub,
-  NuxtLayout: {
-    props: ['name', 'header'],
-    template:
-      '<div :data-test-layout="name" :data-test-layout-header="header"><slot /></div>',
-  },
+  NuxtLayout: nuxtLayoutStub,
 }
 
 function mountPage() {

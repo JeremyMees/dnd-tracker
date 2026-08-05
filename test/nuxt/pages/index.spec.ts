@@ -2,6 +2,7 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Index from '~/pages/index.vue'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { useSeo } = vi.hoisted(() => ({
   useSeo: vi.fn(),
@@ -9,9 +10,7 @@ const { useSeo } = vi.hoisted(() => ({
 
 mockNuxtImport('useSeo', () => useSeo)
 
-const stubs = {
-  NuxtLayout: { template: '<div><slot /></div>' },
-}
+const stubs = { NuxtLayout: nuxtLayoutStub }
 
 async function mountPage() {
   const component = await mountSuspended(Index, { global: { stubs } })

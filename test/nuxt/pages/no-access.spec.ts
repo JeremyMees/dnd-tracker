@@ -1,18 +1,13 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import NoAccess from '~/pages/no-access.vue'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { useSeo } = vi.hoisted(() => ({ useSeo: vi.fn() }))
 
 mockNuxtImport('useSeo', () => useSeo)
 
-const stubs = {
-  NuxtLayout: {
-    props: ['name'],
-    template:
-      '<div :data-test-layout="name"><slot name="header" /><slot /></div>',
-  },
-}
+const stubs = { NuxtLayout: nuxtLayoutStub }
 
 function mountPage() {
   return mountSuspended(NoAccess, { global: { stubs } })

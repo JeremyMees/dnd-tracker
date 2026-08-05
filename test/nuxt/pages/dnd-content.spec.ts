@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import DnDContentPage from '~/pages/dnd-content.vue'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { useSeo } = vi.hoisted(() => ({ useSeo: vi.fn() }))
 
@@ -10,11 +11,7 @@ const stubs = {
   DnDContentSearch: {
     template: '<div data-test-search />',
   },
-  NuxtLayout: {
-    props: ['name', 'header'],
-    template:
-      '<div :data-test-layout="name" :data-test-layout-header="header"><slot /></div>',
-  },
+  NuxtLayout: nuxtLayoutStub,
 }
 
 function mountPage() {

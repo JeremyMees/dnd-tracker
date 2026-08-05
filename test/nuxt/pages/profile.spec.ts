@@ -3,6 +3,7 @@ import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Profile from '~/pages/profile.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { ask, navigateTo, removeProfile, toast, updateProfile, useSeo } =
   vi.hoisted(() => ({
@@ -57,7 +58,7 @@ const PasswordFormStub = defineComponent({
 const stubs = {
   FormProfileData: DataFormStub,
   FormProfilePassword: PasswordFormStub,
-  NuxtLayout: { template: '<div><slot /></div>' },
+  NuxtLayout: nuxtLayoutStub,
 }
 
 type Update = (data: ProfileUpdate & { password?: string }) => Promise<void>

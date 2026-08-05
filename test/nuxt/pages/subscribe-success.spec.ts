@@ -2,6 +2,7 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import confetti from 'canvas-confetti'
 import SubscribeSuccess from '~/pages/subscribe-success.vue'
+import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 vi.mock('canvas-confetti', () => ({ default: vi.fn() }))
 
@@ -11,11 +12,7 @@ mockNuxtImport('useSeo', () => useSeo)
 
 const confettiMock = vi.mocked(confetti)
 
-const stubs = {
-  NuxtLayout: {
-    template: '<div><slot name="header" /><slot /></div>',
-  },
-}
+const stubs = { NuxtLayout: nuxtLayoutStub }
 
 function mountPage() {
   return mountSuspended(SubscribeSuccess, { global: { stubs } })
