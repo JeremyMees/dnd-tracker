@@ -132,6 +132,7 @@ provide(INITIATIVE_SHEET, {
           <NuxtLinkLocale
             v-if="!data?.campaign"
             v-tippy="$t('actions.back')"
+            data-test-back
             to="/encounters"
           >
             <Icon name="tabler:arrow-left" :aria-hidden="true" />
@@ -150,6 +151,7 @@ provide(INITIATIVE_SHEET, {
           <UiDropdownMenuContent align="start">
             <UiDropdownMenuItem>
               <NuxtLinkLocale
+                data-test-back-campaign
                 :to="campaignUrl(data.campaign, 'encounters')"
                 class="flex items-center gap-2"
               >
@@ -162,7 +164,11 @@ provide(INITIATIVE_SHEET, {
               </NuxtLinkLocale>
             </UiDropdownMenuItem>
             <UiDropdownMenuItem>
-              <NuxtLinkLocale to="/encounters" class="flex items-center gap-2">
+              <NuxtLinkLocale
+                data-test-back-encounters
+                to="/encounters"
+                class="flex items-center gap-2"
+              >
                 <Icon name="tabler:list-details" class="size-4 min-w-4" />
                 {{ $t('pages.encounter.back.encounters') }}
               </NuxtLinkLocale>
@@ -172,12 +178,19 @@ provide(INITIATIVE_SHEET, {
         <h2 class="text-muted-foreground flex gap-2">
           <span class="hidden md:block"> {{ $t('general.encounter') }}: </span>
           <ClientOnly>
-            <span v-if="data?.title" class="text-foreground">
+            <span v-if="data?.title" data-test-title class="text-foreground">
               {{ data.title }}
             </span>
-            <UiSkeleton v-else class="w-[150px] h-9 rounded-full" />
+            <UiSkeleton
+              v-else
+              data-test-title-loader
+              class="w-[150px] h-9 rounded-full"
+            />
             <template #fallback>
-              <UiSkeleton class="w-[150px] h-9 rounded-full" />
+              <UiSkeleton
+                data-test-title-loader
+                class="w-[150px] h-9 rounded-full"
+              />
             </template>
           </ClientOnly>
         </h2>
@@ -187,6 +200,7 @@ provide(INITIATIVE_SHEET, {
     <InitiativeTable v-if="!isError" :loading="isPending" />
     <Card
       v-else
+      data-test-error
       color="danger"
       class="h-[40vh] flex flex-col items-center justify-center gap-2"
     >
