@@ -36,13 +36,7 @@ useSeo('Cookie policy')
         disabling cookies will affect the functionality of this and many other
         websites that you visit. Disabling cookies will usually result in also
         disabling certain functionality and features of the this site. Therefore
-        it is recommended that you do not disable cookies. This Cookies Policy
-        was created with the help of the
-        <a
-          href="https://www.termsfeed.com/cookies-policy-generator/"
-          target="_blank"
-          >Cookies Policy Generator</a
-        >.
+        it is recommended that you do not disable cookies.
       </p>
       <h2>The Cookies We Set</h2>
       <ul>
@@ -89,14 +83,6 @@ useSeo('Cookie policy')
         mentioned if there is something that you aren't sure whether you need or
         not it's usually safer to leave cookies enabled in case it does interact
         with one of the features you use on our site.
-      </p>
-      <p>
-        For more general information on cookies, please read
-        <a
-          href="https://www.cookiepolicygenerator.com/sample-cookies-policy/"
-          target="_blank"
-          >the Cookies Policy article</a
-        >.
       </p>
       <p>
         However if you are still looking for more information then you can
