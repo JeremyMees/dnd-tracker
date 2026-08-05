@@ -1,20 +1,23 @@
-export default defineEventHandler(async (): Promise<StripeProduct[]> => {
-  const { data: products } = await stripe.products.list({ active: true })
-  const { data: prices } = await stripe.prices.list({ active: true })
+export default defineCachedEventHandler(
+  async (): Promise<StripeProduct[]> => {
+    const { data: products } = await stripe.products.list({ active: true })
+    const { data: prices } = await stripe.prices.list({ active: true })
 
-  const groupedProducts: StripeProduct[] = []
+    const groupedProducts: StripeProduct[] = []
 
-  products.forEach(product => {
-    const price = prices.find(price => price.product === product.id)
+    products.forEach(product => {
+      const price = prices.find(price => price.product === product.id)
 
-    if (price) {
-      groupedProducts.push({
-        name: product.name,
-        price: (price.unit_amount || 0) / 100,
-        id: price.id,
-      })
-    }
-  })
+      if (price) {
+        groupedProducts.push({
+          name: product.name,
+          price: (price.unit_amount || 0) / 100,
+          id: price.id,
+        })
+      }
+    })
 
-  return groupedProducts
-})
+    return groupedProducts
+  },
+  { maxAge: 3600 },
+)
