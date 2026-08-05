@@ -43,6 +43,7 @@ const { data, status } = useFeatureListing(
             <UiInputGroupInput
               id="search"
               v-model="search"
+              data-test-search
               name="search"
               type="search"
               :disabled="status === 'pending'"
@@ -83,6 +84,7 @@ const { data, status } = useFeatureListing(
           </UiSelect>
         </div>
         <UiButton
+          data-test-request
           :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
           class="mt-5"
@@ -106,54 +108,52 @@ const { data, status } = useFeatureListing(
       >
         <SkeletonFeatureRequestCard v-for="i in 2" :key="i" />
       </div>
-      <template v-else-if="data?.features?.length">
-        <!-- Feature requests -->
-        <div v-if="data?.features?.length" class="flex flex-col gap-4">
-          <template v-for="feature in data.features" :key="feature.id">
-            <FeatureRequestCard
-              v-if="
-                feature.status !== 'review' ||
-                (feature.status === 'review' &&
-                  feature.createdBy.id === user?.id)
-              "
-              :feature="feature"
-              @update="vote({ id: feature.id, votes: $event })"
-              @login="navigateTo(localePath('/login'))"
-            />
-          </template>
-
-          <Pagination
-            v-if="data?.pages > 1"
-            v-model:page="page"
-            :pages="data.pages"
-            :per-page="10"
-            styles="bg-secondary/50 border-4 border-secondary px-4 py-2 rounded-lg"
-            class="mt-2 mx-auto"
-            @paginate="
-              newPage => {
-                page = newPage
-                scrollToId('el')
-              }
+      <div v-if="data?.features?.length" class="flex flex-col gap-4">
+        <template v-for="feature in data.features" :key="feature.id">
+          <FeatureRequestCard
+            v-if="
+              feature.status !== 'review' ||
+              (feature.status === 'review' && feature.createdBy.id === user?.id)
             "
+            :feature="feature"
+            @update="vote({ id: feature.id, votes: $event })"
+            @login="navigateTo(localePath('/login'))"
           />
-        </div>
-        <!-- Nothing found while sorting -->
-        <div
-          v-else-if="
-            data?.features?.length === 0 && (search || createdBy === 'my')
+        </template>
+
+        <Pagination
+          v-if="data?.pages > 1"
+          v-model:page="page"
+          :pages="data.pages"
+          :per-page="10"
+          styles="bg-secondary/50 border-4 border-secondary px-4 py-2 rounded-lg"
+          class="mt-2 mx-auto"
+          @paginate="
+            newPage => {
+              page = newPage
+              scrollToId('el')
+            }
           "
-          class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
-        >
-          <p>
-            {{ $t('pages.featureRequest.nothing') }}
-          </p>
-        </div>
-      </template>
+        />
+      </div>
+      <!-- Nothing found while sorting -->
+      <div
+        v-else-if="
+          data?.features?.length === 0 && (search || createdBy === 'my')
+        "
+        data-test-nothing
+        class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
+      >
+        <p>
+          {{ $t('pages.featureRequest.nothing') }}
+        </p>
+      </div>
       <!-- No feature request found -->
       <div
         v-else-if="
           data?.features?.length === 0 && (!search || createdBy === 'all')
         "
+        data-test-cta
         class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
       >
         <h3 class="pb-2">
