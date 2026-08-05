@@ -40,7 +40,7 @@ export function useHomebrewCount(id: number, enabled: ComputedRef<boolean>) {
     queryFn: async () =>
       await supabase
         .from('homebrew_items')
-        .select('id', { count: 'exact' })
+        .select('*', { count: 'exact', head: true })
         .eq('campaign', id),
     select: ({ count }) => count || 0,
     enabled,

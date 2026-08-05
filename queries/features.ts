@@ -33,7 +33,9 @@ export function useFeatureCount() {
   return useQuery({
     queryKey: ['useFeatureCount'],
     queryFn: async () =>
-      await supabase.from('features').select('id', { count: 'exact' }),
+      await supabase
+        .from('features')
+        .select('*', { count: 'exact', head: true }),
     select: ({ count }) => count || 0,
   })
 }

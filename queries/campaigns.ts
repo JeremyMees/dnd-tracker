@@ -141,7 +141,9 @@ export function useCampaignCount() {
   return useQuery({
     queryKey: ['useCampaignCount'],
     queryFn: async () =>
-      await supabase.from('campaigns').select('id', { count: 'exact' }),
+      await supabase
+        .from('campaigns')
+        .select('*', { count: 'exact', head: true }),
     select: ({ count }) => count || 0,
   })
 }

@@ -55,7 +55,9 @@ export function useEncounterCount(enabled: ComputedRef<boolean>) {
   return useQuery({
     queryKey: ['useEncounterCount'],
     queryFn: async () =>
-      await supabase.from('initiative_sheets').select('id', { count: 'exact' }),
+      await supabase
+        .from('initiative_sheets')
+        .select('*', { count: 'exact', head: true }),
     select: ({ count }) => count || 0,
     enabled,
   })
