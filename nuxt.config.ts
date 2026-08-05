@@ -101,7 +101,7 @@ export default defineNuxtConfig({
     client: 'hidden',
   },
 
-  compatibilityDate: '2024-04-03',
+  compatibilityDate: '2026-08-03',
 
   nitro: {
     rollupConfig: {
