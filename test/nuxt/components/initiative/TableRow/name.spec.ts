@@ -49,8 +49,8 @@ describe('Initiative table row name', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-name]').text()).toBe(props.item.name)
-    expect(component.find('[data-test-summoner]').text()).toBe(
+    expect(component.find('[test-id="name"]').text()).toBe(props.item.name)
+    expect(component.find('[test-id="summoner"]').text()).toBe(
       'general.summoner: Summoner',
     )
   })
@@ -58,7 +58,7 @@ describe('Initiative table row name', async () => {
   it('Should not display summoner', async () => {
     const component = await mountSuspended(Name, { props, provide })
 
-    expect(component.find('[data-test-summoner]').exists()).toBeFalsy()
+    expect(component.find('[test-id="summoner"]').exists()).toBeFalsy()
   })
 
   it('Should not update if sheet is undefined', async () => {

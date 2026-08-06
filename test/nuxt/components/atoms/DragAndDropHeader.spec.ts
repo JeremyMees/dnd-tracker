@@ -22,13 +22,13 @@ describe('DragAndDropHeader', () => {
   it('Should render the title text', async () => {
     const component = await mountSuspended(DragAndDropHeader, { props })
 
-    expect(component.find('[data-test-title]').text()).toBe('My Widget')
+    expect(component.find('[test-id="title"]').text()).toBe('My Widget')
   })
 
   it('Should not render the slot container when no slot is provided', async () => {
     const component = await mountSuspended(DragAndDropHeader, { props })
 
-    expect(component.find('[data-test-actions]').exists()).toBeFalsy()
+    expect(component.find('[test-id="actions"]').exists()).toBeFalsy()
   })
 
   it('Should render slot content when provided', async () => {
@@ -39,7 +39,7 @@ describe('DragAndDropHeader', () => {
       },
     })
 
-    expect(component.find('[data-test-actions]').exists()).toBeTruthy()
-    expect(component.find('[data-test-actions]').text()).toContain('Action')
+    expect(component.find('[test-id="actions"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="actions"]').text()).toContain('Action')
   })
 })

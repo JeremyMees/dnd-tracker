@@ -31,10 +31,10 @@ describe('Subscribe success page', () => {
   it('Should render the title and description', async () => {
     const component = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.subscribeSuccess.title',
     )
-    expect(component.get('[data-test-description]').text()).toBe(
+    expect(component.get('[test-id="description"]').text()).toBe(
       'pages.subscribeSuccess.description',
     )
   })

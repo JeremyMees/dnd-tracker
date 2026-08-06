@@ -23,31 +23,31 @@ describe('MonsterCard', async () => {
   it('Should render correct with default props', async () => {
     const component = await mountSuspended(MonsterCard, { props })
 
-    expect(component.find('[data-test-title]').text()).toBe(props.monster.name)
-    expect(component.find('[data-test-add-button]').exists()).toBe(
+    expect(component.find('[test-id="title"]').text()).toBe(props.monster.name)
+    expect(component.find('[test-id="add-button"]').exists()).toBe(
       props.addable,
     )
-    expect(component.find('[data-test-actions-table]').exists()).toBeFalsy()
-    expect(component.find('[data-test-expand-button]').exists()).toBeTruthy()
+    expect(component.find('[test-id="actions-table"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="expand-button"]').exists()).toBeTruthy()
   })
 
   it('Should be able to expand the card', async () => {
     const component = await mountSuspended(MonsterCard, { props })
-    const button = component.find('[data-test-expand-button]')
+    const button = component.find('[test-id="expand-button"]')
 
-    expect(component.find('[data-test-actions-table]').exists()).toBeFalsy()
+    expect(component.find('[test-id="actions-table"]').exists()).toBeFalsy()
 
     await button.trigger('click')
     await nextTick()
 
-    expect(component.find('[data-test-actions-table]').exists()).toBeTruthy()
+    expect(component.find('[test-id="actions-table"]').exists()).toBeTruthy()
   })
 
   it('Should be able to add the monster', async () => {
     const component = await mountSuspended(MonsterCard, {
       props: { ...props, addable: true },
     })
-    const button = component.find('[data-test-add-button]')
+    const button = component.find('[test-id="add-button"]')
 
     expect(button.exists()).toBeTruthy()
 

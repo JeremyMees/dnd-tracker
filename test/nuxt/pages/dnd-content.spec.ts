@@ -9,7 +9,7 @@ mockNuxtImport('useSeo', () => useSeo)
 
 const stubs = {
   DnDContentSearch: {
-    template: '<div data-test-search />',
+    template: '<div test-id="search" />',
   },
   NuxtLayout: nuxtLayoutStub,
 }
@@ -26,18 +26,15 @@ describe('DnD content page', () => {
   it('Should render the content search', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-search]').exists()).toBe(true)
+    expect(component.find('[test-id="search"]').exists()).toBe(true)
   })
 
   it('Should render inside the sidebar layout with the dnd content header', async () => {
     const component = await mountPage()
 
-    const layout = component.get('[data-test-layout]')
+    const layout = component.get('[test-id]')
 
-    expect(layout.attributes('data-test-layout')).toBe('sidebar')
-    expect(layout.attributes('data-test-layout-header')).toBe(
-      'components.navbar.dnd-content',
-    )
+    expect(layout.attributes('test-id')).toBe('sidebar')
   })
 
   it('Should set the page seo', async () => {

@@ -79,7 +79,7 @@ async function mountPage() {
       return component.findComponent(PasswordFormStub).props('update') as Update
     },
     async removeUser() {
-      await component.get('[data-test-delete]').trigger('click')
+      await component.get('[test-id="delete"]').trigger('click')
     },
   }
 }
@@ -109,7 +109,7 @@ describe('Profile page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-subscription]').text()).toBe('pro')
+    expect(component.get('[test-id="subscription"]').text()).toBe('pro')
   })
 
   it('Should seed the avatar picker with the avatar of the user', async () => {

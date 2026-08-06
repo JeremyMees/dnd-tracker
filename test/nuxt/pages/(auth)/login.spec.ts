@@ -57,18 +57,16 @@ describe('Login page', () => {
   it('Should render inside the auth layout with the title', async () => {
     const component = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('auth')
-    expect(component.get('[data-test-title]').text()).toBe('pages.login.title')
+    expect(component.get('[test-id]').attributes('test-id')).toBe('auth')
+    expect(component.get('[test-id="title"]').text()).toBe('pages.login.title')
   })
 
   it('Should render the form fields and the submit button', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-email]').exists()).toBe(true)
-    expect(component.find('[data-test-password]').exists()).toBe(true)
-    expect(component.get('[data-test-submit]').text()).toBe(
+    expect(component.find('[test-id="email"]').exists()).toBe(true)
+    expect(component.find('[test-id="password"]').exists()).toBe(true)
+    expect(component.get('[test-id="submit"]').text()).toBe(
       'pages.login.signIn',
     )
   })
@@ -76,10 +74,10 @@ describe('Login page', () => {
   it('Should link to the register and forgot password pages', async () => {
     const component = await mountPage()
 
-    expect(component.get('[data-test-register]').attributes('href')).toBe(
+    expect(component.get('[test-id="register"]').attributes('href')).toBe(
       '/register',
     )
-    expect(component.get('[data-test-forgot]').attributes('href')).toBe(
+    expect(component.get('[test-id="forgot"]').attributes('href')).toBe(
       '/forgot-password',
     )
   })
@@ -124,7 +122,7 @@ describe('Login page', () => {
     await fillForm(component, credentials)
     await submitForm(component)
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'Invalid credentials',
     )
     expect(navigateTo).not.toHaveBeenCalled()
@@ -138,7 +136,7 @@ describe('Login page', () => {
     await fillForm(component, credentials)
     await submitForm(component)
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'An error occurred during login',
     )
   })
@@ -151,11 +149,11 @@ describe('Login page', () => {
     await fillForm(component, credentials)
     await submitForm(component)
 
-    expect(component.find('[data-test-error]').exists()).toBe(true)
+    expect(component.find('[test-id="error"]').exists()).toBe(true)
 
     await submitForm(component)
 
-    expect(component.find('[data-test-error]').exists()).toBe(false)
+    expect(component.find('[test-id="error"]').exists()).toBe(false)
   })
 
   it('Should not log in without the required fields', async () => {

@@ -17,7 +17,7 @@ const { renderMarkdown } = useMarkdown()
         'line-clamp-3': !isOpen,
       }"
     />
-    <UiSeparator v-if="isOpen" data-test-separator class="my-2" />
+    <UiSeparator v-if="isOpen" test-id="separator" class="my-2" />
     <template v-if="isOpen">
       <p v-if="content.level" class="mt-1 text-muted-foreground">
         <span class="font-bold text-foreground">Level:</span>

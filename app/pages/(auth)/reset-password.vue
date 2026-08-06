@@ -76,22 +76,22 @@ const onSubmit = form.handleSubmit(async values => {
 
 <template>
   <NuxtLayout name="auth">
-    <h1 data-test-title class="text-center mb-6 head-3">
+    <h1 test-id="title" class="text-center mb-6 head-3">
       {{ $t('pages.resetPassword.title') }}
     </h1>
 
     <UiFormWrapper @submit="onSubmit">
       <FormPasswordToggle />
-      <div v-if="formError" data-test-error class="text-sm text-destructive">
+      <div v-if="formError" test-id="error" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton data-test-submit type="submit" class="w-full">
+      <UiButton test-id="submit" type="submit" class="w-full">
         {{ $t('pages.resetPassword.reset') }}
       </UiButton>
     </UiFormWrapper>
 
     <UiButton variant="destructive-ghost" as-child class="w-full mt-2">
-      <NuxtLinkLocale data-test-cancel to="/">
+      <NuxtLinkLocale test-id="cancel" to="/">
         {{ $t('actions.cancel') }}
       </NuxtLinkLocale>
     </UiButton>
@@ -99,7 +99,7 @@ const onSubmit = form.handleSubmit(async values => {
     <template #right>
       <ClientOnly>
         <UiIconCloud
-          data-test-icon-cloud
+          test-id="icon-cloud"
           :images="[
             'https://ik.imagekit.io/c2es1qasw/pixel-d4.png',
             'https://ik.imagekit.io/c2es1qasw/pixel-d6.png',

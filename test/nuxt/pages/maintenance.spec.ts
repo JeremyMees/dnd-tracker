@@ -10,10 +10,10 @@ describe('Maintenance page', () => {
   it('Should render the title and text', async () => {
     const component = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.maintenance.title',
     )
-    expect(component.get('[data-test-text]').text()).toBe(
+    expect(component.get('[test-id="text"]').text()).toBe(
       'pages.maintenance.text',
     )
   })

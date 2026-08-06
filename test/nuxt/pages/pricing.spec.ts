@@ -81,13 +81,13 @@ async function mountPage() {
     component,
     get titles() {
       return component
-        .findAll('[data-test-product-title]')
+        .findAll('[test-id="product-title"]')
         .map(title => title.text())
     },
     card(title: string) {
       const card = component
-        .findAll('[data-test-product]')
-        .find(item => item.get('[data-test-product-title]').text() === title)
+        .findAll('[test-id="product"]')
+        .find(item => item.get('[test-id="product-title"]').text() === title)
 
       if (!card) throw new Error(`No pricing card found for "${title}"`)
 
@@ -118,19 +118,19 @@ describe('Pricing page', () => {
   it('Should render the page copy', async () => {
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.pricing.title',
     )
-    expect(component.get('[data-test-description]').text()).toBe(
+    expect(component.get('[test-id="description"]').text()).toBe(
       'pages.pricing.description',
     )
-    expect(component.get('[data-test-text]').text()).toBe('pages.pricing.text')
+    expect(component.get('[test-id="text"]').text()).toBe('pages.pricing.text')
   })
 
   it('Should link to ko-fi to buy a coffee', async () => {
     const { component } = await mountPage()
 
-    const link = component.get('[data-test-coffee]')
+    const link = component.get('[test-id="coffee"]')
 
     expect(link.attributes('href')).toBe('https://ko-fi.com/B0B2SSBBQ')
     expect(link.attributes('target')).toBe('_blank')
@@ -142,7 +142,7 @@ describe('Pricing page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.findAll('[data-test-product]')).toHaveLength(0)
+    expect(component.findAll('[test-id="product"]')).toHaveLength(0)
   })
 
   it('Should hide the upgrade product for users without a medior subscription', async () => {
@@ -164,10 +164,10 @@ describe('Pricing page', () => {
 
     const product = card('Medior')
 
-    expect(product.get('[data-test-product-description]').text()).toBe(
+    expect(product.get('[test-id="product-description"]').text()).toBe(
       'pages.pricing.medior',
     )
-    expect(product.get('[data-test-price]').text()).toBe('€5')
+    expect(product.get('[test-id="price"]').text()).toBe('€5')
     expect(product.text()).toContain('general.oneTime')
   })
 
@@ -178,15 +178,15 @@ describe('Pricing page', () => {
 
     const product = card('Medior')
 
-    expect(product.find('[data-test-price]').exists()).toBe(false)
-    expect(product.get('[data-test-price-loading]').text()).toBe('€')
+    expect(product.find('[test-id="price"]').exists()).toBe(false)
+    expect(product.get('[test-id="price-loading"]').text()).toBe('€')
   })
 
   it('Should mark only the popular product with a badge', async () => {
     const { card, component } = await mountPage()
 
-    expect(component.findAll('[data-test-popular]')).toHaveLength(1)
-    expect(card('Medior').get('[data-test-popular]').text()).toBe(
+    expect(component.findAll('[test-id="popular"]')).toHaveLength(1)
+    expect(card('Medior').get('[test-id="popular"]').text()).toBe(
       'pages.pricing.popular',
     )
   })
@@ -194,7 +194,7 @@ describe('Pricing page', () => {
   it('Should render the benefits of a product with their icons', async () => {
     const { card } = await mountPage()
 
-    const benefits = card('Starter').findAll('[data-test-benefit]')
+    const benefits = card('Starter').findAll('[test-id="benefit"]')
 
     expect(benefits).toHaveLength(3)
     expect(benefits[0]!.text()).toBe('pages.pricing.update')
@@ -214,17 +214,17 @@ describe('Pricing page', () => {
 
     const product = card('Medior')
 
-    expect(product.find('[data-test-cta-loading]').exists()).toBe(true)
-    expect(product.find('[data-test-subscribe]').exists()).toBe(false)
-    expect(product.find('[data-test-current]').exists()).toBe(false)
+    expect(product.find('[test-id="cta-loading"]').exists()).toBe(true)
+    expect(product.find('[test-id="subscribe"]').exists()).toBe(false)
+    expect(product.find('[test-id="current"]').exists()).toBe(false)
   })
 
   it('Should offer every product to a visitor without an account', async () => {
     const { component } = await mountPage()
 
-    expect(component.findAll('[data-test-subscribe]')).toHaveLength(3)
-    expect(component.findAll('[data-test-current]')).toHaveLength(0)
-    expect(component.get('[data-test-subscribe]').text()).toBe(
+    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(3)
+    expect(component.findAll('[test-id="current"]')).toHaveLength(0)
+    expect(component.get('[test-id="subscribe"]').text()).toBe(
       'pages.pricing.cta',
     )
   })
@@ -237,11 +237,11 @@ describe('Pricing page', () => {
 
     const { card } = await mountPage()
 
-    expect(card('Starter').get('[data-test-current]').text()).toBe(
+    expect(card('Starter').get('[test-id="current"]').text()).toBe(
       'general.current',
     )
-    expect(card('Medior').find('[data-test-subscribe]').exists()).toBe(true)
-    expect(card('Pro').find('[data-test-subscribe]').exists()).toBe(true)
+    expect(card('Medior').find('[test-id="subscribe"]').exists()).toBe(true)
+    expect(card('Pro').find('[test-id="subscribe"]').exists()).toBe(true)
   })
 
   it('Should only offer the upgrade product to a medior user', async () => {
@@ -249,10 +249,10 @@ describe('Pricing page', () => {
 
     const { card, component } = await mountPage()
 
-    expect(card('Medior').find('[data-test-current]').exists()).toBe(true)
-    expect(card('Starter').find('[data-test-subscribe]').exists()).toBe(false)
-    expect(component.findAll('[data-test-subscribe]')).toHaveLength(1)
-    expect(card('Upgrade to Pro').find('[data-test-subscribe]').exists()).toBe(
+    expect(card('Medior').find('[test-id="current"]').exists()).toBe(true)
+    expect(card('Starter').find('[test-id="subscribe"]').exists()).toBe(false)
+    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(1)
+    expect(card('Upgrade to Pro').find('[test-id="subscribe"]').exists()).toBe(
       true,
     )
   })
@@ -262,8 +262,8 @@ describe('Pricing page', () => {
 
     const { card, component } = await mountPage()
 
-    expect(card('Pro').find('[data-test-current]').exists()).toBe(true)
-    expect(component.findAll('[data-test-subscribe]')).toHaveLength(0)
+    expect(card('Pro').find('[test-id="current"]').exists()).toBe(true)
+    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(0)
   })
 
   it('Should not offer a product that has no stripe id', async () => {
@@ -272,7 +272,7 @@ describe('Pricing page', () => {
 
     const { card } = await mountPage()
 
-    expect(card('Medior').find('[data-test-subscribe]').exists()).toBe(false)
+    expect(card('Medior').find('[test-id="subscribe"]').exists()).toBe(false)
   })
 
   it('Should start a stripe checkout for the clicked product', async () => {
@@ -280,7 +280,7 @@ describe('Pricing page', () => {
 
     const { card } = await mountPage()
 
-    await card('Pro').get('[data-test-subscribe]').trigger('click')
+    await card('Pro').get('[test-id="subscribe"]').trigger('click')
     await flushPromises()
 
     expect(useFetch).toHaveBeenCalledWith(
@@ -300,7 +300,7 @@ describe('Pricing page', () => {
 
     const { card } = await mountPage()
 
-    await card('Pro').get('[data-test-subscribe]').trigger('click')
+    await card('Pro').get('[test-id="subscribe"]').trigger('click')
     await flushPromises()
 
     expect(navigateTo).not.toHaveBeenCalled()
@@ -309,7 +309,7 @@ describe('Pricing page', () => {
   it('Should send the visitor to the login page when they are not signed in', async () => {
     const { card } = await mountPage()
 
-    await card('Pro').get('[data-test-subscribe]').trigger('click')
+    await card('Pro').get('[test-id="subscribe"]').trigger('click')
     await flushPromises()
 
     expect(navigateTo).toHaveBeenCalledWith('/login')

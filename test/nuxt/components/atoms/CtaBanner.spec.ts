@@ -50,7 +50,7 @@ describe('CtaBanner', async () => {
   it('Should link to /login when user is not logged in', async () => {
     const component = await mountSuspended(CtaBanner, { props })
 
-    const link = component.find('[data-test-link]')
+    const link = component.find('[test-id="link"]')
     expect(link.attributes('href')).toBe('/login')
   })
 
@@ -59,7 +59,7 @@ describe('CtaBanner', async () => {
 
     const component = await mountSuspended(CtaBanner, { props })
 
-    const link = component.find('[data-test-link]')
+    const link = component.find('[test-id="link"]')
     expect(link.attributes('href')).toBe('/pricing')
   })
 })

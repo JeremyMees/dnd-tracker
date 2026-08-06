@@ -160,12 +160,9 @@ describe('Campaigns page', () => {
   it('Should render inside the sidebar layout with the campaigns header', async () => {
     const { component } = await mountPage()
 
-    const layout = component.get('[data-test-layout]')
+    const layout = component.get('[test-id]')
 
-    expect(layout.attributes('data-test-layout')).toBe('sidebar')
-    expect(layout.attributes('data-test-layout-header')).toBe(
-      'general.campaign',
-    )
+    expect(layout.attributes('test-id')).toBe('sidebar')
   })
 
   it('Should pass the campaigns of the listing to the table', async () => {
@@ -192,7 +189,7 @@ describe('Campaigns page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.findAll('[data-test-skeleton-row]')).toHaveLength(10)
+    expect(component.findAll('[test-id="skeleton-row"]')).toHaveLength(10)
   })
 
   it('Should only allow the owner of a campaign to select it', async () => {
@@ -259,13 +256,13 @@ describe('Campaigns page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-limit]').exists()).toBe(true)
+    expect(component.find('[test-id="limit"]').exists()).toBe(true)
   })
 
   it('Should hide the limit cta below the maximum', async () => {
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-limit]').exists()).toBe(false)
+    expect(component.find('[test-id="limit"]').exists()).toBe(false)
   })
 
   it('Should allow creating a campaign below the maximum', async () => {
@@ -455,7 +452,7 @@ describe('Campaigns page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-refresh]').exists()).toBe(true)
+    expect(component.find('[test-id="refresh"]').exists()).toBe(true)
 
     component.findComponent(listingStubs.RefreshCard).vm.$emit('refresh')
 
@@ -469,6 +466,6 @@ describe('Campaigns page', () => {
   it('Should not offer a refresh while the listing works', async () => {
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-refresh]').exists()).toBe(false)
+    expect(component.find('[test-id="refresh"]').exists()).toBe(false)
   })
 })

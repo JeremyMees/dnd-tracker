@@ -21,7 +21,7 @@ describe('Initiative header', () => {
   it('Should display pet when its active in the settings', async () => {
     const component = await mountSuspended(Header, { props })
 
-    expect(component.find('[data-test-pet]').exists()).toBeTruthy()
+    expect(component.find('[test-id="pet"]').exists()).toBeTruthy()
   })
 
   it('Should not display pet when its not active in the settings', async () => {
@@ -37,7 +37,7 @@ describe('Initiative header', () => {
       },
     })
 
-    expect(component.find('[data-test-pet]').exists()).toBeFalsy()
+    expect(component.find('[test-id="pet"]').exists()).toBeFalsy()
   })
 
   it('Should display correct round number', async () => {
@@ -50,7 +50,7 @@ describe('Initiative header', () => {
       },
     })
 
-    expect(component.find('[data-test-round]').text()).toBe('5')
+    expect(component.find('[test-id="round"]').text()).toBe('5')
   })
 
   it('Should display default round number when not provided', async () => {
@@ -63,7 +63,7 @@ describe('Initiative header', () => {
       },
     })
 
-    expect(component.find('[data-test-round]').text()).toBe('1')
+    expect(component.find('[test-id="round"]').text()).toBe('1')
   })
 
   it('Should disable previous button when round is 1 and activeIndex is 0', async () => {
@@ -78,7 +78,7 @@ describe('Initiative header', () => {
     })
 
     expect(
-      component.find('[data-test-previous]').attributes('disabled'),
+      component.find('[test-id="previous"]').attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -93,20 +93,20 @@ describe('Initiative header', () => {
     })
 
     expect(
-      component.find('[data-test-next]').attributes('disabled'),
+      component.find('[test-id="next"]').attributes('disabled'),
     ).toBeDefined()
     expect(
-      component.find('[data-test-previous]').attributes('disabled'),
+      component.find('[test-id="previous"]').attributes('disabled'),
     ).toBeDefined()
     expect(
-      component.find('[data-test-reset]').attributes('disabled'),
+      component.find('[test-id="reset"]').attributes('disabled'),
     ).toBeDefined()
   })
 
   it('Should emit next event when next button is clicked', async () => {
     const component = await mountSuspended(Header, { props })
 
-    await component.find('[data-test-next]').trigger('click')
+    await component.find('[test-id="next"]').trigger('click')
 
     expect(component.emitted('next')).toBeTruthy()
   })
@@ -121,7 +121,7 @@ describe('Initiative header', () => {
       },
     })
 
-    await component.find('[data-test-previous]').trigger('click')
+    await component.find('[test-id="previous"]').trigger('click')
 
     expect(component.emitted('previous')).toBeDefined()
   })

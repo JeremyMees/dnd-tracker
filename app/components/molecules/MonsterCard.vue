@@ -37,14 +37,14 @@ const stats: { key: keyof DndMonster; label: string }[] = [
         }"
         variant="success-ghost"
         size="icon-sm"
-        data-test-add-button
+        test-id="add-button"
         :aria-label="$t('actions.add')"
         class="absolute right-4 top-4"
         @click="$emit('add', monster)"
       >
         <Icon name="tabler:plus" class="size-4 min-w-4" aria-hidden="true" />
       </UiButton>
-      <UiCardTitle data-test-title>
+      <UiCardTitle test-id="title">
         {{ monster.name }}
       </UiCardTitle>
       <div class="flex gap-4">
@@ -123,11 +123,11 @@ const stats: { key: keyof DndMonster; label: string }[] = [
       </div>
 
       <div v-if="isOpen" class="space-y-4 pt-2">
-        <CreatureStats data-test-stats :creature="monster" />
+        <CreatureStats test-id="stats" :creature="monster" />
 
         <ActionsTable
           v-if="monster.actions?.length"
-          data-test-actions-table
+          test-id="actions-table"
           :actions="monster.actions"
         />
       </div>
@@ -136,7 +136,7 @@ const stats: { key: keyof DndMonster; label: string }[] = [
     <UiCardFooter>
       <div class="flex justify-end w-full">
         <UiButton
-          data-test-expand-button
+          test-id="expand-button"
           variant="secondary-ghost"
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"

@@ -39,7 +39,7 @@ describe('FantasyNameGenerator', async () => {
 
     const initialName = component.find('li').text()
 
-    const generateButton = component.find('[data-test-generate]')
+    const generateButton = component.find('[test-id="generate"]')
     await generateButton.trigger('click')
     await nextTick()
 
@@ -62,8 +62,8 @@ describe('FantasyNameGenerator', async () => {
   it('Should show everything when not in compact mode', async () => {
     const component = await mountSuspended(FantasyNameGenerator, { props })
 
-    const labels = component.findAll('[data-test-label]')
-    const actions = component.find('[data-test-actions]')
+    const labels = component.findAll('[test-id="label"]')
+    const actions = component.find('[test-id="actions"]')
     const name = component.find('li')
     const columns = component.findAll('.flex.flex-col.gap-1')
 
@@ -81,8 +81,8 @@ describe('FantasyNameGenerator', async () => {
       },
     })
 
-    const labels = component.findAll('[data-test-label]')
-    const actions = component.find('[data-test-actions]')
+    const labels = component.findAll('[test-id="label"]')
+    const actions = component.find('[test-id="actions"]')
     const name = component.find('li')
     const columns = component.findAll('.flex.flex-col.gap-1')
 

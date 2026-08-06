@@ -46,7 +46,7 @@ function checkShow(): void {
   <AnimationExpand>
     <div
       v-if="isShown"
-      data-test-cta
+      test-id="cta"
       class="fixed bottom-2 left-1/2 -translate-x-1/2 z-10 w-full max-w-prose"
     >
       <Card
@@ -54,7 +54,7 @@ function checkShow(): void {
         class="flex flex-col md:flex-row md:items-center gap-4 backdrop-blur-xl px-6"
       >
         <UiButton
-          data-test-close
+          test-id="close"
           variant="secondary-ghost"
           size="icon-sm"
           :aria-label="$t('actions.close')"

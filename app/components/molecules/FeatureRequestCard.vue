@@ -55,7 +55,7 @@ function toggleVote(vote: FeatureVote): void {
               />
             </UiAvatarFallback>
           </UiAvatar>
-          <h3 data-test-title>
+          <h3 test-id="title">
             {{ feature.title }}
             <NuxtTime
               class="text-xs ml-2 text-muted-foreground font-normal"
@@ -72,7 +72,7 @@ function toggleVote(vote: FeatureVote): void {
       <div class="flex gap-x-4 flex-1">
         <div class="flex flex-col gap-y-1">
           <UiButton
-            data-test-like-button
+            test-id="like-button"
             variant="background"
             :disabled="feature.status === 'added'"
             class="h-auto flex flex-col gap-1"
@@ -82,12 +82,12 @@ function toggleVote(vote: FeatureVote): void {
             @click="user ? toggleVote('like') : emit('login')"
           >
             <Icon name="tabler:thumb-up" aria-hidden="true" />
-            <span data-test-like-count class="font-bold text-xs">
+            <span test-id="like-count" class="font-bold text-xs">
               {{ feature.voted.like.length }}
             </span>
           </UiButton>
           <UiButton
-            data-test-dislike-button
+            test-id="dislike-button"
             variant="background"
             :disabled="feature.status === 'added'"
             class="h-auto flex flex-col gap-1"
@@ -96,7 +96,7 @@ function toggleVote(vote: FeatureVote): void {
             }"
             @click="user ? toggleVote('dislike') : emit('login')"
           >
-            <span data-test-dislike-count class="font-bold text-xs">
+            <span test-id="dislike-count" class="font-bold text-xs">
               {{ feature.voted.dislike.length }}
             </span>
             <Icon name="tabler:thumb-down" aria-hidden="true" />
@@ -106,7 +106,7 @@ function toggleVote(vote: FeatureVote): void {
         <div class="flex flex-col flex-1 items-start justify-start gap-y-4">
           <div
             v-if="feature.status !== 'accepted'"
-            data-test-status
+            test-id="status"
             class="text-sm px-2 py-1 rounded-lg w-fit border-2"
             :class="{
               'bg-info/50 border-info': feature.status === 'review',
@@ -116,7 +116,7 @@ function toggleVote(vote: FeatureVote): void {
           >
             {{ t(`pages.featureRequest.status.${feature.status}`) }}
           </div>
-          <p data-test-text class="text-sm">
+          <p test-id="text" class="text-sm">
             {{ feature.text }}
           </p>
         </div>

@@ -33,7 +33,7 @@ withDefaults(
     </Motion>
     <Motion
       v-if="buttonLink && buttonLabel"
-      data-test-button
+      test-id="button"
       as="div"
       :initial="{ transform: 'translateX(-50px)', opacity: 0 }"
       :while-in-view="{ transform: 'translateX(0px)', opacity: 1 }"
@@ -41,7 +41,7 @@ withDefaults(
       :class="[center ? 'justify-center' : 'justify-start']"
       class="flex mt-6"
     >
-      <NuxtLinkLocale data-test-link :to="buttonLink">
+      <NuxtLinkLocale test-id="link" :to="buttonLink">
         <UiButton class="w-fit" :aria-label="buttonLabel">
           {{ buttonLabel }}
         </UiButton>

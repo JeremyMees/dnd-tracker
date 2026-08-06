@@ -38,7 +38,7 @@ describe('ConsentBanner', async () => {
   it('Should show banner when showPopup is true', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    expect(component.find('[data-test-banner]').exists()).toBeTruthy()
+    expect(component.find('[test-id="banner"]').exists()).toBeTruthy()
   })
 
   it('Should hide banner when showPopup is false', async () => {
@@ -62,13 +62,13 @@ describe('ConsentBanner', async () => {
 
     const component = await mountSuspended(ConsentBanner)
 
-    expect(component.find('[data-test-banner]').exists()).toBeFalsy()
+    expect(component.find('[test-id="banner"]').exists()).toBeFalsy()
   })
 
   it('Should call acceptAll when accept all button is clicked', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    const acceptButton = component.find('[data-test-accept-all]')
+    const acceptButton = component.find('[test-id="accept-all"]')
     await acceptButton?.trigger('click')
 
     expect(mockUseConsent().acceptAll).toHaveBeenCalled()
@@ -77,7 +77,7 @@ describe('ConsentBanner', async () => {
   it('Should call rejectAll when reject all button is clicked', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    const rejectButton = component.find('[data-test-reject-all]')
+    const rejectButton = component.find('[test-id="reject-all"]')
     await rejectButton?.trigger('click')
 
     expect(mockUseConsent().rejectAll).toHaveBeenCalled()
@@ -86,17 +86,17 @@ describe('ConsentBanner', async () => {
   it('Should show settings view when customize button is clicked', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    const customizeButton = component.find('[data-test-customize]')
+    const customizeButton = component.find('[test-id="customize"]')
     await customizeButton?.trigger('click')
 
-    const settingsView = component.find('[data-test-banner-settings]')
+    const settingsView = component.find('[test-id="banner-settings"]')
     expect(settingsView.exists()).toBeTruthy()
   })
 
   it('Should display all consent types in settings view', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    const customizeButton = component.find('[data-test-customize]')
+    const customizeButton = component.find('[test-id="customize"]')
     await customizeButton?.trigger('click')
 
     const consentLabels = component.findAll('[role="switch"]')
@@ -106,10 +106,10 @@ describe('ConsentBanner', async () => {
   it('Should call savePreferences when save settings button is clicked in settings view', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    const customizeButton = component.find('[data-test-customize]')
+    const customizeButton = component.find('[test-id="customize"]')
     await customizeButton?.trigger('click')
 
-    const saveButton = component.find('[data-test-save-preferences]')
+    const saveButton = component.find('[test-id="save-preferences"]')
     await saveButton?.trigger('click')
 
     expect(mockUseConsent().savePreferences).toHaveBeenCalled()
@@ -118,7 +118,7 @@ describe('ConsentBanner', async () => {
   it('Should disable necessary consent toggle', async () => {
     const component = await mountSuspended(ConsentBanner)
 
-    const customizeButton = component.find('[data-test-customize]')
+    const customizeButton = component.find('[test-id="customize"]')
     await customizeButton?.trigger('click')
 
     const necessarySwitch = component.find('[id="necessary"]')

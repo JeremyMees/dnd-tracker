@@ -75,7 +75,7 @@ async function transferOwnership(): Promise<void> {
               </div>
               <div class="flex justify-end">
                 <UiButton
-                  data-test-transfer
+                  test-id="transfer"
                   variant="foreground"
                   :aria-label="$t('actions.transfer')"
                   :disabled="!current?.team?.length || !current"
@@ -99,7 +99,7 @@ async function transferOwnership(): Promise<void> {
               </div>
               <div class="flex justify-end">
                 <UiButton
-                  data-test-delete
+                  test-id="delete"
                   variant="foreground"
                   :aria-label="$t('actions.delete')"
                   :disabled="!current"
@@ -112,17 +112,17 @@ async function transferOwnership(): Promise<void> {
           </template>
           <template #cannot>
             <div class="flex flex-col items-center justify-center h-full">
-              <p data-test-no-permission class="p-6">
+              <p test-id="no-permission" class="p-6">
                 {{ $t('pages.campaign.danger.noPermission') }}
               </p>
             </div>
           </template>
         </Bouncer>
       </div>
-      <UiSkeleton v-else data-test-loader class="w-full h-[220px]" />
+      <UiSkeleton v-else test-id="loader" class="w-full h-[220px]" />
 
       <template #fallback>
-        <UiSkeleton data-test-loader class="w-full h-[220px]" />
+        <UiSkeleton test-id="loader" class="w-full h-[220px]" />
       </template>
     </ClientOnly>
   </section>

@@ -49,7 +49,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
       <UiPopoverTrigger as-child>
         <button
           :id="`${item.id}-ac`"
-          data-test-trigger
+          test-id="trigger"
           :class="{
             'bg-destructive/20 p-2 w-fit':
               isDefined(item.armorClass) && item.armorClass <= 0,
@@ -59,14 +59,14 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           <div class="flex items-center gap-x-1">
             <Icon
               v-if="!isDefined(item.armorClass) && item.type !== 'lair'"
-              data-test-empty
+              test-id="empty"
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
               aria-hidden="true"
             />
             <span
               v-else
-              data-test-ac
+              test-id="ac"
               :class="{
                 'text-destructive':
                   isDefined(item.armorClass) && item.armorClass <= 0,
@@ -77,7 +77,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
             <span
               v-if="isDefined(item.armorClass) && item.tempArmorClass"
               v-tippy="$t('general.temp')"
-              data-test-temp
+              test-id="temp"
               class="text-warning text-xs"
             >
               +{{ item.tempArmorClass }}
@@ -85,7 +85,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           </div>
           <span
             v-if="item.maxArmorClass !== item.armorClass"
-            data-test-max
+            test-id="max"
             class="text-2xs text-muted-foreground whitespace-nowrap"
           >
             {{ $t('general.max') }}: {{ item.maxArmorClass }}

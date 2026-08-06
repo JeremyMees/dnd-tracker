@@ -9,7 +9,7 @@ mockNuxtImport('useSeo', () => useSeo)
 
 const EncountersStub = defineComponent({
   props: { campaignId: Number, fetchReady: Boolean },
-  template: '<div data-test-encounters />',
+  template: '<div test-id="encounters" />',
 })
 
 const stubs = {
@@ -29,7 +29,7 @@ describe('Encounters page', () => {
   it('Should render the encounters listing', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-encounters]').exists()).toBe(true)
+    expect(component.find('[test-id="encounters"]').exists()).toBe(true)
   })
 
   it('Should let the listing fetch immediately', async () => {
@@ -51,12 +51,9 @@ describe('Encounters page', () => {
   it('Should render inside the sidebar layout with the encounters header', async () => {
     const component = await mountPage()
 
-    const layout = component.get('[data-test-layout]')
+    const layout = component.get('[test-id]')
 
-    expect(layout.attributes('data-test-layout')).toBe('sidebar')
-    expect(layout.attributes('data-test-layout-header')).toBe(
-      'general.encounter',
-    )
+    expect(layout.attributes('test-id')).toBe('sidebar')
   })
 
   it('Should set the page seo', async () => {

@@ -42,11 +42,11 @@ onMounted(() => {
 <template>
   <NuxtLayout name="centered" shadow>
     <template #header>
-      <h1 data-test-title>
+      <h1 test-id="title">
         {{ $t('pages.subscribeSuccess.title') }}
       </h1>
     </template>
-    <p data-test-description class="text-muted-foreground">
+    <p test-id="description" class="text-muted-foreground">
       {{ $t('pages.subscribeSuccess.description') }}
     </p>
   </NuxtLayout>

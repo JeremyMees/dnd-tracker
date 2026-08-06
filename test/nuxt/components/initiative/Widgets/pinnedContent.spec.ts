@@ -35,6 +35,6 @@ describe('Initiative pinned content widget', async () => {
   it('Should show accordion when items are present', async () => {
     const component = await mountSuspended(PinnedContent, { props })
 
-    expect(component.find('[data-test-accordion]').exists()).toBeTruthy()
+    expect(component.find('[test-id="accordion"]').exists()).toBeTruthy()
   })
 })

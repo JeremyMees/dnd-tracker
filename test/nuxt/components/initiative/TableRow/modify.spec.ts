@@ -41,7 +41,7 @@ describe('Initiative table row modify', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-link]').exists()).toBeTruthy()
+    expect(component.find('[test-id="link"]').exists()).toBeTruthy()
   })
 
   it('Should not display link button when item has no link', async () => {
@@ -52,13 +52,13 @@ describe('Initiative table row modify', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-link]').exists()).toBeFalsy()
+    expect(component.find('[test-id="link"]').exists()).toBeFalsy()
   })
 
   it('Should call update with new row when copy button is clicked', async () => {
     const component = await mountSuspended(Modify, { props, provide })
 
-    await component.find('[data-test-copy]').trigger('click')
+    await component.find('[test-id="copy"]').trigger('click')
 
     expect(mockUpdate).toHaveBeenCalledWith({
       rows: expect.arrayContaining([
@@ -73,7 +73,7 @@ describe('Initiative table row modify', async () => {
   it('Should call update with filtered rows when delete button is clicked', async () => {
     const component = await mountSuspended(Modify, { props, provide })
 
-    await component.find('[data-test-delete]').trigger('click')
+    await component.find('[test-id="delete"]').trigger('click')
 
     expect(mockUpdate).toHaveBeenCalledWith({
       rows: expect.arrayContaining(
@@ -99,7 +99,7 @@ describe('Initiative table row modify', async () => {
     })
 
     expect(
-      component.find('[data-test-copy]').attributes('disabled'),
+      component.find('[test-id="copy"]').attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -111,8 +111,8 @@ describe('Initiative table row modify', async () => {
       provide,
     })
 
-    await component.find('[data-test-copy]').trigger('click')
-    await component.find('[data-test-delete]').trigger('click')
+    await component.find('[test-id="copy"]').trigger('click')
+    await component.find('[test-id="delete"]').trigger('click')
 
     expect(mockUpdate).not.toHaveBeenCalled()
   })

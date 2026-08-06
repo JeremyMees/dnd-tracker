@@ -47,10 +47,8 @@ describe('Contact page', () => {
   it('Should render inside the centered layout with the title', async () => {
     const component = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('centered')
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id]').attributes('test-id')).toBe('centered')
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.contact.title',
     )
   })
@@ -58,10 +56,10 @@ describe('Contact page', () => {
   it('Should render the form fields and the submit button', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-name]').exists()).toBe(true)
-    expect(component.find('[data-test-email]').exists()).toBe(true)
-    expect(component.find('[data-test-question]').exists()).toBe(true)
-    expect(component.get('[data-test-submit]').text()).toBe(
+    expect(component.find('[test-id="name"]').exists()).toBe(true)
+    expect(component.find('[test-id="email"]').exists()).toBe(true)
+    expect(component.find('[test-id="question"]').exists()).toBe(true)
+    expect(component.get('[test-id="submit"]').text()).toBe(
       'pages.contact.send',
     )
   })
@@ -160,7 +158,7 @@ describe('Contact page', () => {
     await fillForm(component, question)
     await submitForm(component)
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'Mail server exploded',
     )
     expect(toast).toHaveBeenCalledWith({
@@ -179,7 +177,7 @@ describe('Contact page', () => {
     await fillForm(component, question)
     await submitForm(component)
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'An error occurred during contact request',
     )
   })
@@ -192,10 +190,10 @@ describe('Contact page', () => {
     await fillForm(component, question)
     await submitForm(component)
 
-    expect(component.find('[data-test-error]').exists()).toBe(true)
+    expect(component.find('[test-id="error"]').exists()).toBe(true)
 
     await submitForm(component)
 
-    expect(component.find('[data-test-error]').exists()).toBe(false)
+    expect(component.find('[test-id="error"]').exists()).toBe(false)
   })
 })

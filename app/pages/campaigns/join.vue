@@ -91,7 +91,7 @@ async function answerInvite(accept: boolean): Promise<void> {
 <template>
   <NuxtLayout name="centered">
     <template #header>
-      <h2 data-test-title>
+      <h2 test-id="title">
         {{
           $t('pages.campaign.join.title', { campaign: data?.campaign.title })
         }}
@@ -99,7 +99,7 @@ async function answerInvite(accept: boolean): Promise<void> {
     </template>
 
     <I18nT
-      data-test-text
+      test-id="text"
       keypath="pages.campaign.join.text"
       tag="p"
       scope="global"
@@ -120,7 +120,7 @@ async function answerInvite(accept: boolean): Promise<void> {
     <template #footer>
       <div class="flex flex-col sm:flex-row gap-2">
         <UiButton
-          data-test-decline
+          test-id="decline"
           :disabled="isLoading"
           variant="destructive"
           class="w-full"
@@ -129,7 +129,7 @@ async function answerInvite(accept: boolean): Promise<void> {
           {{ $t('actions.decline') }}
         </UiButton>
         <UiButton
-          data-test-join
+          test-id="join"
           :disabled="isLoading"
           variant="foreground"
           class="w-full"

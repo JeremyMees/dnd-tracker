@@ -57,8 +57,8 @@ describe.each(contentTypes)('ContentCard - $name', ({ hit, type, body }) => {
       props: { ...props, hit, type },
     })
 
-    expect(component.find(`[data-test-${body}]`).exists()).toBeTruthy()
-    expect(component.find('[data-test-title]').text()).toBe(hit.name)
+    expect(component.find(`[test-id="${body}"]`).exists()).toBeTruthy()
+    expect(component.find('[test-id="title"]').text()).toBe(hit.name)
   })
 
   it('Should render exactly one body component', async () => {
@@ -66,7 +66,7 @@ describe.each(contentTypes)('ContentCard - $name', ({ hit, type, body }) => {
       props: { ...props, hit, type },
     })
     const bodies = contentTypes.filter(c =>
-      component.find(`[data-test-${c.body}]`).exists(),
+      component.find(`[test-id="${c.body}"]`).exists(),
     )
 
     expect(bodies.map(c => c.body)).toEqual([body])
@@ -81,7 +81,7 @@ describe.each(contentTypes.filter(c => c.body !== 'armor'))(
         props: { ...props, hit, type },
       })
 
-      await component.find('[data-test-toggle]').trigger('click')
+      await component.find('[test-id="toggle"]').trigger('click')
       await nextTick()
 
       expect(component.html()).toMatchSnapshot()
@@ -91,7 +91,7 @@ describe.each(contentTypes.filter(c => c.body !== 'armor'))(
       const component = await mountSuspended(ContentCard, {
         props: { ...props, hit, type },
       })
-      const toggle = component.find('[data-test-toggle]')
+      const toggle = component.find('[test-id="toggle"]')
 
       expect(toggle.attributes('aria-label')).toBe('actions.readMore')
 
@@ -114,7 +114,7 @@ describe("ContentCard - 'armor'", async () => {
       props: { ...props, hit: dndArmorFixture, type: 'armor' },
     })
 
-    expect(component.find('[data-test-toggle]').exists()).toBeFalsy()
+    expect(component.find('[test-id="toggle"]').exists()).toBeFalsy()
   })
 })
 
@@ -122,8 +122,8 @@ describe('ContentCard', async () => {
   it('Should render correct with default props', async () => {
     const component = await mountSuspended(ContentCard, { props })
 
-    expect(component.find('[data-test-pin]').exists()).toBeFalsy()
-    expect(component.find('[data-test-title]').text()).toBe(
+    expect(component.find('[test-id="pin"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="title"]').text()).toBe(
       dndSpellFixture.name,
     )
   })
@@ -132,7 +132,7 @@ describe('ContentCard', async () => {
     const component = await mountSuspended(ContentCard, {
       props: { ...props, allowPin: true },
     })
-    const pin = component.find('[data-test-pin]')
+    const pin = component.find('[test-id="pin"]')
 
     expect(pin.exists()).toBeTruthy()
   })
@@ -141,7 +141,7 @@ describe('ContentCard', async () => {
     const component = await mountSuspended(ContentCard, {
       props: { ...props, allowPin: true },
     })
-    const pin = component.find('[data-test-pin]')
+    const pin = component.find('[test-id="pin"]')
 
     expect(pin.exists()).toBeTruthy()
     expect(pin.attributes('aria-label')).toBe('components.infoCard.add')

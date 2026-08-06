@@ -59,10 +59,10 @@ describe('DnDContentSearch', async () => {
   it('Should render with default props', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
-    expect(component.find('[data-test-search]').exists()).toBeTruthy()
-    expect(component.find('[data-test-type]').exists()).toBeTruthy()
-    expect(component.find('[data-test-pin-toggle]').exists()).toBeTruthy()
-    expect(component.find('[data-test-remove-pins]').exists()).toBeTruthy()
+    expect(component.find('[test-id="search"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="type"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="pin-toggle"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="remove-pins"]').exists()).toBeTruthy()
   })
 
   it('Should not show pin controls when sheet has no info cards', async () => {
@@ -76,14 +76,14 @@ describe('DnDContentSearch', async () => {
       },
     })
 
-    expect(component.find('[data-test-pin-toggle]').exists()).toBeFalsy()
-    expect(component.find('[data-test-remove-pins]').exists()).toBeFalsy()
+    expect(component.find('[test-id="pin-toggle"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="remove-pins"]').exists()).toBeFalsy()
   })
 
   it('Should show all items', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
-    const grid = component.find('[data-test-content-grid]')
+    const grid = component.find('[test-id="content-grid"]')
 
     expect(grid.exists()).toBeTruthy()
     expect(grid.findAllComponents({ name: 'ContentCard' })).toHaveLength(
@@ -95,10 +95,10 @@ describe('DnDContentSearch', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
     vi.useFakeTimers()
-    await component.find('[data-test-pin-toggle]').trigger('click')
+    await component.find('[test-id="pin-toggle"]').trigger('click')
     await vi.advanceTimersByTimeAsync(600)
 
-    const grid = component.find('[data-test-content-grid]')
+    const grid = component.find('[test-id="content-grid"]')
 
     expect(grid.exists()).toBeTruthy()
     expect(grid.findAllComponents({ name: 'ContentCard' })).toHaveLength(1)
@@ -108,7 +108,7 @@ describe('DnDContentSearch', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
     vi.useFakeTimers()
-    await component.find('[data-test-remove-pins]').trigger('click')
+    await component.find('[test-id="remove-pins"]').trigger('click')
     await vi.advanceTimersByTimeAsync(600)
 
     expect(mockUpdate).toHaveBeenCalledWith({
@@ -149,9 +149,9 @@ describe('DnDContentSearch', async () => {
 
     const component = await mountSuspended(DnDContentSearch, { props })
 
-    expect(component.find('[data-test-loading]').exists()).toBeTruthy()
-    expect(component.find('[data-test-not-found]').exists()).toBeFalsy()
-    expect(component.find('[data-test-error]').exists()).toBeFalsy()
+    expect(component.find('[test-id="loading"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="not-found"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="error"]').exists()).toBeFalsy()
   })
 
   it('Should show error state', async () => {
@@ -160,9 +160,9 @@ describe('DnDContentSearch', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
     expect(component.text()).toContain('components.dndContentSearch.error')
-    expect(component.find('[data-test-error]').exists()).toBeTruthy()
-    expect(component.find('[data-test-loading]').exists()).toBeFalsy()
-    expect(component.find('[data-test-not-found]').exists()).toBeFalsy()
+    expect(component.find('[test-id="error"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="loading"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="not-found"]').exists()).toBeFalsy()
   })
 
   it('Should show pagination when there are more than 1 page', async () => {
@@ -170,7 +170,7 @@ describe('DnDContentSearch', async () => {
 
     const component = await mountSuspended(DnDContentSearch, { props })
 
-    expect(component.find('[data-test-pagination]').exists()).toBeTruthy()
+    expect(component.find('[test-id="pagination"]').exists()).toBeTruthy()
   })
 
   it('Should not show pagination when there are no pages', async () => {
@@ -178,6 +178,6 @@ describe('DnDContentSearch', async () => {
 
     const component = await mountSuspended(DnDContentSearch, { props })
 
-    expect(component.find('[data-test-pagination]').exists()).toBeFalsy()
+    expect(component.find('[test-id="pagination"]').exists()).toBeFalsy()
   })
 })

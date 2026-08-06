@@ -38,30 +38,30 @@ describe('FeatureRequestCard', async () => {
   it('Should render correct with default props', async () => {
     const component = await mountSuspended(FeatureRequestCard, { props })
 
-    expect(component.find('[data-test-title]').text()).toContain(
+    expect(component.find('[test-id="title"]').text()).toContain(
       props.feature.title,
     )
-    expect(component.find('[data-test-status]').text()).toBe(
+    expect(component.find('[test-id="status"]').text()).toBe(
       `pages.featureRequest.status.${props.feature.status}`,
     )
-    expect(component.find('[data-test-like-button]').exists()).toBeTruthy()
+    expect(component.find('[test-id="like-button"]').exists()).toBeTruthy()
     expect(
-      component.find('[data-test-like-button]').attributes('class'),
+      component.find('[test-id="like-button"]').attributes('class'),
     ).not.toContain('bg-primary/50!')
     expect(
-      component.find('[data-test-like-button]').attributes('class'),
+      component.find('[test-id="like-button"]').attributes('class'),
     ).not.toContain('border-primary!')
-    expect(component.find('[data-test-like-count]').text()).toBe(
+    expect(component.find('[test-id="like-count"]').text()).toBe(
       props.feature.voted.like.length.toString(),
     )
-    expect(component.find('[data-test-dislike-button]').exists()).toBeTruthy()
+    expect(component.find('[test-id="dislike-button"]').exists()).toBeTruthy()
     expect(
-      component.find('[data-test-dislike-button]').attributes('class'),
+      component.find('[test-id="dislike-button"]').attributes('class'),
     ).not.toContain('!bg-background/50 !border-background')
-    expect(component.find('[data-test-dislike-count]').text()).toBe(
+    expect(component.find('[test-id="dislike-count"]').text()).toBe(
       props.feature.voted.dislike.length.toString(),
     )
-    expect(component.find('[data-test-text]').text()).toBe(props.feature.text)
+    expect(component.find('[test-id="text"]').text()).toBe(props.feature.text)
   })
 
   it('Should not render label when status is accepted', async () => {
@@ -69,15 +69,15 @@ describe('FeatureRequestCard', async () => {
       props: { ...props, feature: { ...props.feature, status: 'accepted' } },
     })
 
-    expect(component.find('[data-test-status]').exists()).toBeFalsy()
+    expect(component.find('[test-id="status"]').exists()).toBeFalsy()
   })
 
   it('Should disable vote buttons when status is added', async () => {
     const component = await mountSuspended(FeatureRequestCard, {
       props: { ...props, feature: { ...props.feature, status: 'added' } },
     })
-    const likeButton = component.find('[data-test-like-button]')
-    const dislikeButton = component.find('[data-test-dislike-button]')
+    const likeButton = component.find('[test-id="like-button"]')
+    const dislikeButton = component.find('[test-id="dislike-button"]')
 
     expect(likeButton.attributes().disabled).toBeDefined()
     expect(dislikeButton.attributes().disabled).toBeDefined()
@@ -85,7 +85,7 @@ describe('FeatureRequestCard', async () => {
 
   it('Should be able to toggle vote', async () => {
     const component = await mountSuspended(FeatureRequestCard, { props })
-    const likeButton = component.find('[data-test-like-button]')
+    const likeButton = component.find('[test-id="like-button"]')
 
     await likeButton.trigger('click')
     await nextTick()

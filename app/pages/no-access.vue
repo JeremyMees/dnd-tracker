@@ -5,12 +5,12 @@ useSeo('No access')
 <template>
   <NuxtLayout name="centered">
     <template #header>
-      <h2 data-test-title>
+      <h2 test-id="title">
         {{ $t('pages.noAccess.title') }}
       </h2>
     </template>
 
-    <p data-test-text class="text-muted-foreground">
+    <p test-id="text" class="text-muted-foreground">
       {{ $t('pages.noAccess.text') }}
     </p>
   </NuxtLayout>

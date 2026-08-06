@@ -26,11 +26,11 @@ function getMajor(version: string) {
 <template>
   <NuxtLayout no-padding shadow>
     <div class="dnd-container pt-25 mb-6 flex flex-col gap-4 max-w-4xl">
-      <h1 data-test-title class="text-3xl font-bold tracking-tight md:text-5xl">
+      <h1 test-id="title" class="text-3xl font-bold tracking-tight md:text-5xl">
         {{ $t('pages.changelog.title') }}
       </h1>
       <p
-        data-test-description
+        test-id="description"
         class="text-muted-foreground text-base max-w-prose"
       >
         {{ $t('pages.changelog.description') }}
@@ -53,17 +53,17 @@ function getMajor(version: string) {
       <div
         v-for="(entry, index) in sortedChangelogs"
         :key="index"
-        data-test-entry
+        test-id="entry"
         class="relative flex flex-col gap-4 md:flex-row md:gap-16"
       >
         <div
           class="top-30 flex h-min w-64 shrink-0 items-center gap-4 md:sticky"
         >
-          <UiBadge data-test-version>
+          <UiBadge test-id="version">
             {{ entry.version }}
           </UiBadge>
           <NuxtTime
-            data-test-date
+            test-id="date"
             class="text-muted-foreground text-xs font-medium"
             :datetime="entry.date"
             month="numeric"
@@ -77,11 +77,11 @@ function getMajor(version: string) {
           <div
             v-for="(feature, i) in entry.features"
             :key="i"
-            data-test-feature-group
+            test-id="feature-group"
             class="flex flex-col gap-1.5"
           >
             <h4
-              data-test-feature-title
+              test-id="feature-title"
               class="border rounded-full w-fit px-2 py-[2px] text-foreground text-sm font-normal"
               :class="{
                 'border-primary bg-primary/50': feature.title === 'New',
@@ -96,7 +96,7 @@ function getMajor(version: string) {
               class="pl-6 space-y-1.5 list-disc text-sm marker:text-foreground"
             >
               <template v-for="(element, k) in feature.items" :key="k">
-                <li data-test-feature-item>
+                <li test-id="feature-item">
                   {{ element.text }}
                 </li>
               </template>

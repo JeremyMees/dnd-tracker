@@ -7,7 +7,7 @@ defineProps<{ value: DndItem[] }>()
   <Card color="secondary">
     <UiAccordion
       v-if="value.length"
-      data-test-accordion
+      test-id="accordion"
       type="single"
       collapsible
     >

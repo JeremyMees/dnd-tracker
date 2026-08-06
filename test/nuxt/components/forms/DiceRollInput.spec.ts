@@ -20,13 +20,13 @@ describe('DiceRollInput', async () => {
     const component = await mountSuspended(DiceRollInput)
     const button = component.find('button')
 
-    expect(component.find('[data-test-roller]').exists()).toBeFalsy()
+    expect(component.find('[test-id="roller"]').exists()).toBeFalsy()
     await button.trigger('click')
 
-    expect(component.find('[data-test-roller]').exists()).toBeTruthy()
+    expect(component.find('[test-id="roller"]').exists()).toBeTruthy()
     await button.trigger('click')
 
-    expect(component.find('[data-test-roller]').exists()).toBeFalsy()
+    expect(component.find('[test-id="roller"]').exists()).toBeFalsy()
   })
 
   it('Should set input value and close roller when DiceRoller emits', async () => {

@@ -21,18 +21,16 @@ describe('No access page', () => {
   it('Should render the title and text', async () => {
     const component = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.noAccess.title',
     )
-    expect(component.get('[data-test-text]').text()).toBe('pages.noAccess.text')
+    expect(component.get('[test-id="text"]').text()).toBe('pages.noAccess.text')
   })
 
   it('Should render inside the centered layout', async () => {
     const component = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('centered')
+    expect(component.get('[test-id]').attributes('test-id')).toBe('centered')
   })
 
   it('Should set the page seo', async () => {

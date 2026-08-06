@@ -205,7 +205,7 @@ describe('Campaign notes page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.findAll('[data-test-skeleton-row]')).toHaveLength(10)
+    expect(component.findAll('[test-id="skeleton-row"]')).toHaveLength(10)
   })
 
   it('Should scope the listing and the count to the campaign', async () => {
@@ -446,7 +446,7 @@ describe('Campaign notes page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-refresh]').exists()).toBe(true)
+    expect(component.find('[test-id="refresh"]').exists()).toBe(true)
 
     component.findComponent(listingStubs.RefreshCard).vm.$emit('refresh')
 
@@ -460,6 +460,6 @@ describe('Campaign notes page', () => {
   it('Should not offer a refresh while the listing works', async () => {
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-refresh]').exists()).toBe(false)
+    expect(component.find('[test-id="refresh"]').exists()).toBe(false)
   })
 })

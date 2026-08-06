@@ -11,7 +11,7 @@ vi.mock('~/components/templates/Encounters.vue', () => ({
   default: {
     name: 'EncountersStub',
     props: { campaignId: Number, fetchReady: Boolean },
-    template: '<div data-test-encounters />',
+    template: '<div test-id="encounters" />',
   },
 }))
 
@@ -45,7 +45,7 @@ describe('Campaign encounters page', () => {
   it('Should render the encounters listing', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-encounters]').exists()).toBe(true)
+    expect(component.find('[test-id="encounters"]').exists()).toBe(true)
   })
 
   it('Should scope the listing to the campaign', async () => {

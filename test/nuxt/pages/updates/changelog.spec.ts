@@ -40,11 +40,11 @@ async function mountPage() {
   return {
     component,
     get entries() {
-      return component.findAll('[data-test-entry]')
+      return component.findAll('[test-id="entry"]')
     },
     get versions() {
       return component
-        .findAll('[data-test-version]')
+        .findAll('[test-id="version"]')
         .map(version => version.text())
     },
     async selectMajor(major: number) {
@@ -67,10 +67,10 @@ describe('Changelog page', () => {
   it('Should render the page copy', async () => {
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.changelog.title',
     )
-    expect(component.get('[data-test-description]').text()).toBe(
+    expect(component.get('[test-id="description"]').text()).toBe(
       'pages.changelog.description',
     )
   })
@@ -100,7 +100,7 @@ describe('Changelog page', () => {
   it('Should render the date of an entry', async () => {
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-date]').attributes('datetime')).toBe(
+    expect(component.get('[test-id="date"]').attributes('datetime')).toBe(
       new Date(changelogs[1]!.date).toISOString(),
     )
   })
@@ -108,9 +108,9 @@ describe('Changelog page', () => {
   it('Should render the feature group titles and items of an entry', async () => {
     const { component } = await mountPage()
 
-    const group = component.get('[data-test-feature-group]')
+    const group = component.get('[test-id="feature-group"]')
 
-    expect(group.get('[data-test-feature-title]').text()).toBe('Bug fixes')
-    expect(group.get('[data-test-feature-item]').text()).toBe('Fix B')
+    expect(group.get('[test-id="feature-title"]').text()).toBe('Bug fixes')
+    expect(group.get('[test-id="feature-item"]').text()).toBe('Fix B')
   })
 })

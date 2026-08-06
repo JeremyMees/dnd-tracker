@@ -22,7 +22,7 @@ const { user } = useAuthentication()
         </p>
         <UiButton variant="tertiary" as-child>
           <NuxtLinkLocale
-            data-test-link
+            test-id="link"
             :to="user ? '/pricing' : '/login'"
             :style="false"
           >

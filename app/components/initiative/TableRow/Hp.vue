@@ -46,7 +46,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
       <UiPopoverTrigger as-child>
         <button
           :id="`${item.id}-hp`"
-          data-test-trigger
+          test-id="trigger"
           :class="{
             'bg-destructive/20 p-2 w-fit':
               isDefined(item.hitPoints) && item.hitPoints <= 0,
@@ -56,14 +56,14 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           <div class="flex items-center gap-x-1">
             <Icon
               v-if="!isDefined(item.hitPoints) && item.type !== 'lair'"
-              data-test-empty
+              test-id="empty"
               name="tabler:plus"
               class="size-5 min-w-5 text-foreground/10"
               aria-hidden="true"
             />
             <span
               v-else
-              data-test-hp
+              test-id="hp"
               :class="{
                 'text-destructive':
                   isDefined(item.hitPoints) && item.hitPoints <= 0,
@@ -74,7 +74,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
             <span
               v-if="isDefined(item.hitPoints) && item.tempHitPoints"
               v-tippy="$t('general.temp')"
-              data-test-temp
+              test-id="temp"
               class="text-warning text-xs"
             >
               +{{ item.tempHitPoints }}
@@ -82,7 +82,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           </div>
           <span
             v-if="item.maxHitPoints !== item.hitPoints"
-            data-test-max
+            test-id="max"
             class="text-2xs text-muted-foreground whitespace-nowrap"
           >
             {{ $t('general.max') }}: {{ item.maxHitPoints }}

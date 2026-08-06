@@ -53,17 +53,17 @@ function next(): void {
   >
     <Icon
       v-tippy="$t(`general.${label}`)"
-      data-test-icon
+      test-id="icon"
       :name="icon"
       class="min-w-6 min-h-6"
       aria-hidden="true"
     />
-    <span data-test-current class="w-8 text-xs text-muted-foreground">
+    <span test-id="current" class="w-8 text-xs text-muted-foreground">
       {{ current + 1 }}/{{ options.length }}
     </span>
     <div class="flex items-center">
       <button
-        data-test-prev
+        test-id="prev"
         :aria-label="$t('actions.prev')"
         class="w-5 flex items-center justify-center focus:outline-primary"
         @click="prev"
@@ -75,7 +75,7 @@ function next(): void {
         />
       </button>
       <button
-        data-test-next
+        test-id="next"
         :aria-label="$t('actions.next')"
         class="w-5 flex items-center justify-center focus:outline-primary"
         @click="next"

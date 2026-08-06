@@ -57,7 +57,7 @@ const onSubmit = form.handleSubmit(async values => {
 <template>
   <NuxtLayout name="centered">
     <template #header>
-      <h1 data-test-title class="head-3">
+      <h1 test-id="title" class="head-3">
         {{ $t('pages.contact.title') }}
       </h1>
     </template>
@@ -69,7 +69,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.nameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput data-test-name type="text" v-bind="componentField" />
+            <UiInput test-id="name" type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -80,7 +80,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput data-test-email type="email" v-bind="componentField" />
+            <UiInput test-id="email" type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -91,15 +91,15 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.questionLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiTextarea data-test-question v-bind="componentField" />
+            <UiTextarea test-id="question" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <div v-if="formError" data-test-error class="text-sm text-destructive">
+      <div v-if="formError" test-id="error" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton data-test-submit type="submit" class="w-full">
+      <UiButton test-id="submit" type="submit" class="w-full">
         {{ $t('pages.contact.send') }}
       </UiButton>
     </UiFormWrapper>

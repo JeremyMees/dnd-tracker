@@ -123,7 +123,7 @@ function reset(): void {
       'max-w-prose': profile,
     }"
   >
-    <UiAvatar data-test-avatar :size="size" class="border-4 border-primary">
+    <UiAvatar test-id="avatar" :size="size" class="border-4 border-primary">
       <UiAvatarImage
         :src="avatarCreator.avatar?.value?.url || ''"
         alt="Avatar image"
@@ -188,7 +188,7 @@ function reset(): void {
     </div>
     <div
       v-if="deprecatedAvatar"
-      data-test-deprecated
+      test-id="deprecated"
       class="text-foreground text-xs mt-1 bg-destructive/50 rounded-lg py-1 px-2"
     >
       {{ $t('components.avatarPicker.deprecated') }}
@@ -196,7 +196,7 @@ function reset(): void {
     <AnimationExpand>
       <div
         v-if="creatorOpen"
-        data-test-creator
+        test-id="creator"
         class="flex flex-wrap items-center justify-center gap-1 pt-2"
       >
         <AvatarSelector

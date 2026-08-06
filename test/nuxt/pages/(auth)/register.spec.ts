@@ -22,7 +22,7 @@ vi.mock('~/components/atoms/AvatarPicker.vue', () => ({
     name: 'AvatarPickerStub',
     props: { modelValue: { type: Object }, hideCreatorToggle: Boolean },
     emits: ['update:modelValue'],
-    template: '<div data-test-avatar-picker />',
+    template: '<div test-id="avatar-picker" />',
   },
 }))
 
@@ -50,7 +50,7 @@ async function mountPage() {
     component,
     async fillAccount(values: Record<string, string> = account) {
       await fillForm(component, values)
-      await component.get('[data-test-marketing]').trigger('click')
+      await component.get('[test-id="marketing"]').trigger('click')
       await flushPromises()
     },
     async submit() {
@@ -75,10 +75,8 @@ describe('Register page', () => {
   it('Should render inside the auth layout with the title', async () => {
     const { component } = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('auth')
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id]').attributes('test-id')).toBe('auth')
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.register.register',
     )
   })
@@ -86,12 +84,12 @@ describe('Register page', () => {
   it('Should render the form fields and the submit button', async () => {
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-name]').exists()).toBe(true)
-    expect(component.find('[data-test-username]').exists()).toBe(true)
-    expect(component.find('[data-test-email]').exists()).toBe(true)
-    expect(component.find('[data-test-password]').exists()).toBe(true)
-    expect(component.find('[data-test-marketing]').exists()).toBe(true)
-    expect(component.get('[data-test-submit]').text()).toBe(
+    expect(component.find('[test-id="name"]').exists()).toBe(true)
+    expect(component.find('[test-id="username"]').exists()).toBe(true)
+    expect(component.find('[test-id="email"]').exists()).toBe(true)
+    expect(component.find('[test-id="password"]').exists()).toBe(true)
+    expect(component.find('[test-id="marketing"]').exists()).toBe(true)
+    expect(component.get('[test-id="submit"]').text()).toBe(
       'pages.register.register',
     )
   })
@@ -109,8 +107,8 @@ describe('Register page', () => {
   it('Should link to the login and forgot password pages', async () => {
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-login]').attributes('href')).toBe('/login')
-    expect(component.get('[data-test-forgot]').attributes('href')).toBe(
+    expect(component.get('[test-id="login"]').attributes('href')).toBe('/login')
+    expect(component.get('[test-id="forgot"]').attributes('href')).toBe(
       '/forgot-password',
     )
   })
@@ -169,7 +167,7 @@ describe('Register page', () => {
     await fillAccount()
     await submit()
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'Email already in use',
     )
     expect(toast).toHaveBeenCalledWith({
@@ -188,7 +186,7 @@ describe('Register page', () => {
     await fillAccount()
     await submit()
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'An error occurred during registration',
     )
   })

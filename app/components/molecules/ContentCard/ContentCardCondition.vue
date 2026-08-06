@@ -12,7 +12,7 @@ const { renderMarkdown } = useMarkdown()
     <div
       v-if="content.desc"
       v-dompurify-html="renderMarkdown(content.desc)"
-      data-test-desc
+      test-id="desc"
       class="md-richtext text-muted-foreground"
       :class="{
         'line-clamp-3': !isOpen,

@@ -11,7 +11,7 @@ const isShowing = shallowRef(false)
       <UiFormControl>
         <UiInputGroup>
           <UiInputGroupInput
-            data-test-password
+            test-id="password"
             :type="isShowing ? 'text' : 'password'"
             v-bind="componentField"
           />

@@ -78,7 +78,7 @@ const onSubmit = form.handleSubmit(async values => {
 
 <template>
   <NuxtLayout name="auth">
-    <h1 data-test-title class="text-center head-3 pb-4">
+    <h1 test-id="title" class="text-center head-3 pb-4">
       {{ $t('pages.register.register') }}
     </h1>
 
@@ -96,7 +96,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.fullNameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput data-test-name type="text" v-bind="componentField" />
+            <UiInput test-id="name" type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -107,7 +107,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.usernameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput data-test-username type="text" v-bind="componentField" />
+            <UiInput test-id="username" type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -118,7 +118,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput data-test-email type="email" v-bind="componentField" />
+            <UiInput test-id="email" type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -128,7 +128,7 @@ const onSubmit = form.handleSubmit(async values => {
         <UiFormItem v-auto-animate class="flex items-center gap-2">
           <UiFormControl>
             <UiSwitch
-              data-test-marketing
+              test-id="marketing"
               class="mb-0"
               :model-value="value"
               @update:model-value="handleChange"
@@ -139,10 +139,10 @@ const onSubmit = form.handleSubmit(async values => {
           </UiFormLabel>
         </UiFormItem>
       </UiFormField>
-      <div v-if="formError" data-test-error class="text-sm text-destructive">
+      <div v-if="formError" test-id="error" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton data-test-submit type="submit" class="w-full">
+      <UiButton test-id="submit" type="submit" class="w-full">
         {{ $t('pages.register.register') }}
       </UiButton>
     </UiFormWrapper>
@@ -154,13 +154,13 @@ const onSubmit = form.handleSubmit(async values => {
 
     <div class="flex flex-wrap gap-2 justify-center">
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale data-test-login to="/login">
+        <NuxtLinkLocale test-id="login" to="/login">
           {{ $t('pages.login.signIn') }}
         </NuxtLinkLocale>
       </UiButton>
       <UiSeparator orientation="vertical" class="h-8" />
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale data-test-forgot to="/forgot-password">
+        <NuxtLinkLocale test-id="forgot" to="/forgot-password">
           {{ $t('pages.login.forgot') }}
         </NuxtLinkLocale>
       </UiButton>

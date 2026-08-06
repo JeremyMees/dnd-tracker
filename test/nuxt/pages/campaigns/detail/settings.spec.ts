@@ -47,19 +47,19 @@ mockNuxtImport('useConfirm', () => () => ({ ask }))
 
 const RoleFormStub = defineComponent({
   props: ['member', 'campaignId'],
-  template: '<div data-test-role />',
+  template: '<div test-id="role" />',
 })
 
 const CampaignFormStub = defineComponent({
   props: ['current', 'campaignId'],
-  template: '<div data-test-campaign-form />',
+  template: '<div test-id="campaign-form" />',
 })
 
 const stubs = {
   FormRoleUpdate: RoleFormStub,
   FormUpdateCampaignSettings: CampaignFormStub,
-  SkeletonMemberRow: { template: '<div data-test-member-loader />' },
-  SkeletonInput: { template: '<div data-test-input-loader />' },
+  SkeletonMemberRow: { template: '<div test-id="member-loader" />' },
+  SkeletonInput: { template: '<div test-id="input-loader" />' },
 }
 
 const self = {
@@ -83,13 +83,13 @@ async function mountPage(overrides: { current?: CampaignFull } = {}) {
   return {
     component,
     get members() {
-      return component.findAll('[data-test-member]')
+      return component.findAll('[test-id="member"]')
     },
     async removeMember(index: number) {
-      await component.findAll('[data-test-remove]')[index]!.trigger('click')
+      await component.findAll('[test-id="remove"]')[index]!.trigger('click')
     },
     async invite() {
-      await component.get('[data-test-invite]').trigger('click')
+      await component.get('[test-id="invite"]').trigger('click')
     },
   }
 }
@@ -129,11 +129,11 @@ describe('Campaign settings page', () => {
 
     expect(members).toHaveLength(3)
     expect(members[0]!.text()).toContain(mockCampaignFull.createdBy.username)
-    expect(members[0]!.get('[data-test-owner]').text()).toBe(
+    expect(members[0]!.get('[test-id="owner"]').text()).toBe(
       'general.roles.Owner.title',
     )
     expect(members[1]!.text()).toContain(mockTeamMember.user.username)
-    expect(members[2]!.get('[data-test-invited]').text()).toContain(
+    expect(members[2]!.get('[test-id="invited"]').text()).toContain(
       'general.invited',
     )
     expect(component.findAllComponents(RoleFormStub)).toHaveLength(1)
@@ -157,7 +157,7 @@ describe('Campaign settings page', () => {
     const { component } = await mountPage()
 
     expect(
-      component.get('[data-test-remove]').attributes('disabled'),
+      component.get('[test-id="remove"]').attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -165,8 +165,8 @@ describe('Campaign settings page', () => {
     const { component, members } = await mountPage({ current: undefined })
 
     expect(members).toHaveLength(0)
-    expect(component.findAll('[data-test-member-loader]')).toHaveLength(3)
-    expect(component.findAll('[data-test-input-loader]')).toHaveLength(1)
+    expect(component.findAll('[test-id="member-loader"]')).toHaveLength(3)
+    expect(component.findAll('[test-id="input-loader"]')).toHaveLength(1)
   })
 
   it('Should render the campaign form with the campaign', async () => {
@@ -202,7 +202,7 @@ describe('Campaign settings page', () => {
     })
 
     expect(
-      component.get('[data-test-invite]').attributes('disabled'),
+      component.get('[test-id="invite"]').attributes('disabled'),
     ).toBeDefined()
   })
 

@@ -119,7 +119,7 @@ async function removePins(): Promise<void> {
             <UiInputGroupInput
               id="search"
               v-model="search"
-              data-test-search
+              test-id="search"
               :disabled="showPinned"
               name="search"
               type="search"
@@ -140,7 +140,7 @@ async function removePins(): Promise<void> {
             :disabled="showPinned || isLoading"
             @update:model-value="search = ''"
           >
-            <UiSelectTrigger data-test-type>
+            <UiSelectTrigger test-id="type">
               <UiSelectValue />
             </UiSelectTrigger>
             <UiSelectContent>
@@ -178,7 +178,7 @@ async function removePins(): Promise<void> {
       <AnimationReveal>
         <div v-if="sheet?.infoCards?.length" class="flex gap-2">
           <UiButton
-            data-test-pin-toggle
+            test-id="pin-toggle"
             :aria-label="
               $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)
             "
@@ -191,7 +191,7 @@ async function removePins(): Promise<void> {
             }}
           </UiButton>
           <UiButton
-            data-test-remove-pins
+            test-id="remove-pins"
             :aria-label="$t('components.dndContentSearch.remove')"
             variant="destructive-ghost"
             @click="removePins"
@@ -207,7 +207,7 @@ async function removePins(): Promise<void> {
       <MasonryGrid
         v-if="isLoading"
         v-slot="{ column }"
-        data-test-loading
+        test-id="loading"
         :data="Array.from({ length: 30 }, () => ({}))"
       >
         <SkeletonContentCard
@@ -221,7 +221,7 @@ async function removePins(): Promise<void> {
           data?.items?.length || (showPinned && sheet?.infoCards?.length)
         "
         v-slot="{ column }"
-        data-test-content-grid
+        test-id="content-grid"
         :data="
           showPinned && sheet ? (sheet?.infoCards ?? []) : (data?.items ?? [])
         "
@@ -250,7 +250,7 @@ async function removePins(): Promise<void> {
         !showPinned
       "
       v-model:page="queryFilters.page"
-      data-test-pagination
+      test-id="pagination"
       :pages="data.pages"
       :per-page="limit"
       :styles="
@@ -263,14 +263,14 @@ async function removePins(): Promise<void> {
     />
     <p
       v-if="isError"
-      data-test-error
+      test-id="error"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
       v-if="!isLoading && !data?.items?.length && search !== ''"
-      data-test-not-found
+      test-id="not-found"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.notFound') }}

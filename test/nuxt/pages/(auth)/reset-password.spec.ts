@@ -56,10 +56,8 @@ describe('Reset password page', () => {
   it('Should render inside the auth layout with the title', async () => {
     const component = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('auth')
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id]').attributes('test-id')).toBe('auth')
+    expect(component.get('[test-id="title"]').text()).toBe(
       'pages.resetPassword.title',
     )
   })
@@ -67,11 +65,11 @@ describe('Reset password page', () => {
   it('Should render the password field, the submit button and a way out', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-password]').exists()).toBe(true)
-    expect(component.get('[data-test-submit]').text()).toBe(
+    expect(component.find('[test-id="password"]').exists()).toBe(true)
+    expect(component.get('[test-id="submit"]').text()).toBe(
       'pages.resetPassword.reset',
     )
-    expect(component.get('[data-test-cancel]').attributes('href')).toBe('/')
+    expect(component.get('[test-id="cancel"]').attributes('href')).toBe('/')
   })
 
   it('Should send the user back when the link carries an error', async () => {
@@ -124,7 +122,7 @@ describe('Reset password page', () => {
     await fillForm(component, password)
     await submitForm(component)
 
-    expect(component.get('[data-test-error]').text()).toBe('Same password')
+    expect(component.get('[test-id="error"]').text()).toBe('Same password')
     expect(toast).toHaveBeenCalledWith({
       title: 'general.error.title',
       description: 'general.error.text',
@@ -141,7 +139,7 @@ describe('Reset password page', () => {
     await fillForm(component, password)
     await submitForm(component)
 
-    expect(component.get('[data-test-error]').text()).toBe(
+    expect(component.get('[test-id="error"]').text()).toBe(
       'An error occurred during password reset',
     )
   })

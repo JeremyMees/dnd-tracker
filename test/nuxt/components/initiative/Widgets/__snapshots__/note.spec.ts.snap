@@ -17,7 +17,7 @@ exports[`Initiative note widget > Should match snapshot 1`] = `
   </div>
   <div class="flex items-center gap-2 px-2 pt-4"><svg class="size-7 -rotate-90" viewBox="0 0 36 36">
       <circle cx="18" cy="18" r="16" fill="none" stroke-width="4" class="stroke-current text-secondary"></circle>
-      <circle data-test-dial="" cx="18" cy="18" r="16" fill="none" stroke-width="4" stroke-dasharray="100" stroke-dashoffset="-100" stroke-linecap="round" class="text-primary stroke-current duration-300 transition-all"></circle>
+      <circle test-id="dial" cx="18" cy="18" r="16" fill="none" stroke-width="4" stroke-dasharray="100" stroke-dashoffset="-100" stroke-linecap="round" class="text-primary stroke-current duration-300 transition-all"></circle>
     </svg>
     <div class="flex flex-col text-xs text-muted-foreground duration-300 transition-colors"><span class="">9 / 5000 general.character</span><span>2 general.word</span></div>
   </div>

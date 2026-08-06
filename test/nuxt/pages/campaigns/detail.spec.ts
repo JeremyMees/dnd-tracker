@@ -28,7 +28,7 @@ mockNuxtImport('useRoute', () => () => ({
 
 const TabStub = defineComponent({
   props: { link: String, label: String, icon: String, disabled: Boolean },
-  template: '<div data-test-tab />',
+  template: '<div test-id="tab" />',
 })
 
 const PageStub = defineComponent({
@@ -39,7 +39,7 @@ const PageStub = defineComponent({
     fetchReady: Boolean,
     campaignId: Number,
   },
-  template: '<div data-test-page />',
+  template: '<div test-id="page" />',
 })
 
 const stubs = {
@@ -99,10 +99,8 @@ describe('Campaign detail page', () => {
   it('Should render inside the sidebar layout with a link back to the campaigns', async () => {
     const { component } = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('sidebar')
-    expect(component.get('[data-test-back]').attributes('href')).toBe(
+    expect(component.get('[test-id]').attributes('test-id')).toBe('sidebar')
+    expect(component.get('[test-id="back"]').attributes('href')).toBe(
       '/campaigns',
     )
   })
@@ -110,10 +108,10 @@ describe('Campaign detail page', () => {
   it('Should render the title of the campaign', async () => {
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(
+    expect(component.get('[test-id="title"]').text()).toBe(
       mockCampaignFull.title,
     )
-    expect(component.find('[data-test-title-loader]').exists()).toBe(false)
+    expect(component.find('[test-id="title-loader"]').exists()).toBe(false)
   })
 
   it('Should render a loader while the campaign is not loaded', async () => {
@@ -121,8 +119,8 @@ describe('Campaign detail page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-title]').exists()).toBe(false)
-    expect(component.find('[data-test-title-loader]').exists()).toBe(true)
+    expect(component.find('[test-id="title"]').exists()).toBe(false)
+    expect(component.find('[test-id="title-loader"]').exists()).toBe(true)
   })
 
   it('Should render the tabs a member is allowed to see', async () => {
@@ -216,8 +214,8 @@ describe('Campaign detail page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-page]').exists()).toBe(false)
-    expect(component.get('[data-test-error]').text()).toContain(
+    expect(component.find('[test-id="page"]').exists()).toBe(false)
+    expect(component.get('[test-id="error"]').text()).toContain(
       'general.error.text',
     )
   })

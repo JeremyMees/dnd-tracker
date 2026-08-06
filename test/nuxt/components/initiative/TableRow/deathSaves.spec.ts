@@ -50,7 +50,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').exists()).toBeFalsy()
+    expect(component.find('[test-id="container"]').exists()).toBeFalsy()
   })
 
   it('Should not render for summon type', async () => {
@@ -61,7 +61,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').exists()).toBeFalsy()
+    expect(component.find('[test-id="container"]').exists()).toBeFalsy()
   })
 
   it('Should render for player type', async () => {
@@ -79,14 +79,14 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').exists()).toBeTruthy()
+    expect(component.find('[test-id="container"]').exists()).toBeTruthy()
   })
 
   it('Should render 3 save and 3 fail buttons', async () => {
     const component = await mountSuspended(DeathSaves, { props, provide })
 
-    expect(component.findAll('[data-test-button="save"]').length).toBe(3)
-    expect(component.findAll('[data-test-button="fail"]').length).toBe(3)
+    expect(component.findAll('[test-id="save"]').length).toBe(3)
+    expect(component.findAll('[test-id="fail"]').length).toBe(3)
   })
 
   it('Should show success styling when all saves are successful', async () => {
@@ -104,7 +104,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').classes()).toContain(
+    expect(component.find('[test-id="container"]').classes()).toContain(
       'bg-success/20',
     )
   })
@@ -124,7 +124,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-container]').classes()).toContain(
+    expect(component.find('[test-id="container"]').classes()).toContain(
       'bg-destructive/20',
     )
   })
@@ -144,7 +144,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[data-test-button="save"]')
+    const buttons = component.findAll('[test-id="save"]')
     await buttons[0]!.trigger('click')
 
     expect(mockUpdate).toHaveBeenCalledWith({
@@ -174,7 +174,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[data-test-button="fail"]')
+    const buttons = component.findAll('[test-id="fail"]')
     await buttons[0]!.trigger('click')
 
     expect(mockUpdate).toHaveBeenCalledWith({
@@ -206,7 +206,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[data-test-button]')
+    const buttons = component.findAll('[test-id]')
     await buttons[0]!.trigger('click')
 
     expect(mockUpdate).not.toHaveBeenCalled()
@@ -227,7 +227,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[data-test-button="save"]')
+    const buttons = component.findAll('[test-id="save"]')
     await buttons[2]!.trigger('click')
 
     expect(mockToast).toHaveBeenCalledWith({
@@ -254,7 +254,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[data-test-button="fail"]')
+    const buttons = component.findAll('[test-id="fail"]')
     await buttons[2]!.trigger('click')
 
     expect(mockToast).toHaveBeenCalledWith({
@@ -281,7 +281,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[data-test-button="save"]')
+    const buttons = component.findAll('[test-id="save"]')
     await buttons[1]!.trigger('click')
 
     expect(mockToast).not.toHaveBeenCalled()

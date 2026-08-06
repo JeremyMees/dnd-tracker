@@ -104,7 +104,7 @@ describe('DataTable', () => {
     expect(firstRowCells[3]!.text()).toContain('John Doe')
     expect(firstRowCells[4]!.text()).toContain('30')
 
-    expect(component.find('[data-test-empty]').exists()).toBeFalsy()
+    expect(component.find('[test-id="empty"]').exists()).toBeFalsy()
   })
 
   it('Should show loading state correctly', async () => {
@@ -123,7 +123,7 @@ describe('DataTable', () => {
       props: { ...props, data: [] },
     })
 
-    const empty = component.find('[data-test-empty]')
+    const empty = component.find('[test-id="empty"]')
     expect(empty.exists()).toBeTruthy()
     expect(empty.text()).toBe(props.emptyMessage)
   })
@@ -136,7 +136,7 @@ describe('DataTable', () => {
     await checkbox.trigger('click')
     await nextTick()
 
-    const removeButton = component.find('[data-test-remove]')
+    const removeButton = component.find('[test-id="remove"]')
     expect(removeButton.exists()).toBeTruthy()
     await removeButton.trigger('click')
 
@@ -184,23 +184,23 @@ describe('DataTable', () => {
       props: paginationProps,
     })
 
-    let paginationText = component.find('[data-test-pagination="1"]')
+    let paginationText = component.find('[test-id="1"]')
     expect(paginationText.exists()).toBeTruthy()
 
-    const nextButton = component.find('button[data-test-pagination-next]')
+    const nextButton = component.find('button[test-id="pagination-next"]')
     expect(nextButton.exists()).toBeTruthy()
     await nextButton.trigger('click')
     await nextTick()
 
-    paginationText = component.find('[data-test-pagination="2"]')
+    paginationText = component.find('[test-id="2"]')
     expect(paginationText.exists()).toBeTruthy()
 
-    const prevButton = component.find('button[data-test-pagination-prev]')
+    const prevButton = component.find('button[test-id="pagination-prev"]')
     expect(prevButton.exists()).toBeTruthy()
     await prevButton.trigger('click')
     await nextTick()
 
-    paginationText = component.find('[data-test-pagination="1"]')
+    paginationText = component.find('[test-id="1"]')
     expect(paginationText.exists()).toBeTruthy()
   })
 

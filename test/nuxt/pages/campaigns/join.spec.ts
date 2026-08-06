@@ -49,11 +49,11 @@ async function mountPage() {
   return {
     component,
     async join() {
-      await component.get('[data-test-join]').trigger('click')
+      await component.get('[test-id="join"]').trigger('click')
       await flushPromises()
     },
     async decline() {
-      await component.get('[data-test-decline]').trigger('click')
+      await component.get('[test-id="decline"]').trigger('click')
       await flushPromises()
     },
   }
@@ -76,9 +76,7 @@ describe('Campaign join page', () => {
   it('Should render inside the centered layout', async () => {
     const { component } = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('centered')
+    expect(component.get('[test-id]').attributes('test-id')).toBe('centered')
   })
 
   it('Should read the invite from the cache of the token', async () => {
@@ -88,10 +86,10 @@ describe('Campaign join page', () => {
       'useJoinCampaign',
       'invite-token',
     ])
-    expect(component.get('[data-test-text]').text()).toContain(
+    expect(component.get('[test-id="text"]').text()).toContain(
       invite.campaign.title,
     )
-    expect(component.get('[data-test-text]').text()).toContain(
+    expect(component.get('[test-id="text"]').text()).toContain(
       'general.roles.Admin.title',
     )
     expect(navigateTo).not.toHaveBeenCalled()
@@ -103,7 +101,7 @@ describe('Campaign join page', () => {
     const { component } = await mountPage()
 
     expect(navigateTo).toHaveBeenCalledWith('/no-access')
-    expect(component.get('[data-test-text]').text()).not.toContain(
+    expect(component.get('[test-id="text"]').text()).not.toContain(
       invite.campaign.title,
     )
   })
@@ -112,10 +110,10 @@ describe('Campaign join page', () => {
     const { component } = await mountPage()
 
     expect(
-      component.get('[data-test-join]').attributes('disabled'),
+      component.get('[test-id="join"]').attributes('disabled'),
     ).toBeUndefined()
     expect(
-      component.get('[data-test-decline]').attributes('disabled'),
+      component.get('[test-id="decline"]').attributes('disabled'),
     ).toBeUndefined()
   })
 
@@ -201,7 +199,7 @@ describe('Campaign join page', () => {
     await join()
 
     expect(
-      component.get('[data-test-join]').attributes('disabled'),
+      component.get('[test-id="join"]').attributes('disabled'),
     ).toBeUndefined()
 
     await join()

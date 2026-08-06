@@ -77,7 +77,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               placement: 'right',
               onShow: () => !isExpanded,
             }"
-            data-test-max-characters
+            test-id="max-characters"
             name="tabler:alert-triangle"
             :aria-hidden="true"
             :class="{ 'relative right-px': !isExpanded }"
@@ -103,7 +103,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                     placement: 'right',
                     onShow: () => !isExpanded,
                   }"
-                  data-test-bestiary
+                  test-id="bestiary"
                   :aria-label="$t('general.bestiary')"
                   @click="openModal = 'bestiary'"
                 >
@@ -147,7 +147,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                     placement: 'right',
                     onShow: () => !isExpanded,
                   }"
-                  data-test-campaign-homebrew
+                  test-id="campaign-homebrew"
                   :aria-label="$t('general.campaignHomebrew')"
                   @click="openModal = 'addHomebrew'"
                 >
@@ -191,7 +191,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                     placement: 'right',
                     onShow: () => !isExpanded,
                   }"
-                  data-test-new-homebrew
+                  test-id="new-homebrew"
                   :aria-label="$t('general.newHomebrew')"
                   @click="openModal = 'newHomebrew'"
                 >

@@ -65,11 +65,11 @@ describe('Initiative table row hp', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-hp]').text()).toBe(hitPoints.toString())
-    expect(component.get('[data-test-max]').text()).toContain(
+    expect(component.get('[test-id="hp"]').text()).toBe(hitPoints.toString())
+    expect(component.get('[test-id="max"]').text()).toContain(
       maxHitPoints.toString(),
     )
-    expect(component.get('[data-test-temp]').text()).toContain(
+    expect(component.get('[test-id="temp"]').text()).toContain(
       tempHitPoints.toString(),
     )
   })
@@ -82,10 +82,10 @@ describe('Initiative table row hp', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-trigger]').classes()).toContain(
+    expect(component.get('[test-id="trigger"]').classes()).toContain(
       'bg-destructive/20',
     )
-    expect(component.get('[data-test-hp]').classes()).toContain(
+    expect(component.get('[test-id="hp"]').classes()).toContain(
       'text-destructive',
     )
   })
@@ -98,7 +98,7 @@ describe('Initiative table row hp', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
+    expect(component.get('[test-id="empty"]').isVisible()).toBeTruthy()
   })
 
   it('Should call updateRow when hitPoints changes are made', async () => {

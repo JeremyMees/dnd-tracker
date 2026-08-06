@@ -22,7 +22,7 @@ describe('ContentCardCondition', async () => {
 
   it('Should render the description clamped when collapsed', async () => {
     const component = await mountSuspended(ContentCardCondition, { props })
-    const desc = component.find('[data-test-desc]')
+    const desc = component.find('[test-id="desc"]')
 
     expect(desc.exists()).toBeTruthy()
     expect(desc.text()).toContain('A Blinded creature cannot see.')
@@ -33,7 +33,7 @@ describe('ContentCardCondition', async () => {
     const component = await mountSuspended(ContentCardCondition, {
       props: { ...props, isOpen: true },
     })
-    const desc = component.find('[data-test-desc]')
+    const desc = component.find('[test-id="desc"]')
 
     expect(desc.text()).toContain('A Blinded creature cannot see.')
     expect(desc.classes()).not.toContain('line-clamp-3')
@@ -44,6 +44,6 @@ describe('ContentCardCondition', async () => {
       props: { ...props, content: { ...dndConditionFixture, desc: '' } },
     })
 
-    expect(component.find('[data-test-desc]').exists()).toBeFalsy()
+    expect(component.find('[test-id="desc"]').exists()).toBeFalsy()
   })
 })

@@ -77,7 +77,7 @@ describe('EncounterSidebar', () => {
   it('Should render bestiary button when not at max characters', async () => {
     const component = await mountSuspended(EncounterSidebar, { props, provide })
 
-    expect(component.find('[data-test-bestiary]').exists()).toBeTruthy()
+    expect(component.find('[test-id="bestiary"]').exists()).toBeTruthy()
   })
 
   it('Should render campaign homebrew button when campaign exists', async () => {
@@ -89,7 +89,7 @@ describe('EncounterSidebar', () => {
     const component = await mountSuspended(EncounterSidebar, { props, provide })
 
     expect(
-      component.find('[data-test-campaign-homebrew]').exists(),
+      component.find('[test-id="campaign-homebrew"]').exists(),
     ).toBeTruthy()
   })
 
@@ -101,7 +101,7 @@ describe('EncounterSidebar', () => {
 
     const component = await mountSuspended(EncounterSidebar, { props, provide })
 
-    expect(component.find('[data-test-campaign-homebrew]').exists()).toBeFalsy()
+    expect(component.find('[test-id="campaign-homebrew"]').exists()).toBeFalsy()
   })
 
   describe('maxCharacters computed', () => {
@@ -146,11 +146,11 @@ describe('EncounterSidebar', () => {
         provide,
       })
 
-      expect(component.find('[data-test-bestiary]').exists()).toBeFalsy()
+      expect(component.find('[test-id="bestiary"]').exists()).toBeFalsy()
       expect(
-        component.find('[data-test-campaign-homebrew]').exists(),
+        component.find('[test-id="campaign-homebrew"]').exists(),
       ).toBeFalsy()
-      expect(component.find('[data-test-new-homebrew]').exists()).toBeFalsy()
+      expect(component.find('[test-id="new-homebrew"]').exists()).toBeFalsy()
     })
 
     it('Should show max characters warning when at max', async () => {
@@ -167,7 +167,7 @@ describe('EncounterSidebar', () => {
         provide,
       })
 
-      expect(component.find('[data-test-max-characters]').exists()).toBeTruthy()
+      expect(component.find('[test-id="max-characters"]').exists()).toBeTruthy()
     })
   })
 

@@ -49,13 +49,13 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
   <NuxtLayout shadow container>
     <section class="mb-8 lg:mb-12">
       <h1
-        data-test-title
+        test-id="title"
         class="mb-4 sm:text-4xl xl:text-5xl text-center max-w-3xl mx-auto"
       >
         {{ t('pages.pricing.title') }}
       </h1>
       <p
-        data-test-description
+        test-id="description"
         class="mb-16 max-w-xl mx-auto text-center text-muted-foreground"
       >
         {{ t('pages.pricing.description') }}
@@ -88,22 +88,22 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             y: 50,
           }"
         >
-          <UiCard data-test-product>
+          <UiCard test-id="product">
             <UiCardHeader>
               <UiCardTitle class="pb-2 flex items-center justify-between">
-                <span data-test-product-title>
+                <span test-id="product-title">
                   {{ product.title }}
                 </span>
                 <UiBadge
                   v-if="product.isPopular"
-                  data-test-popular
+                  test-id="popular"
                   variant="muted"
                 >
                   {{ $t('pages.pricing.popular') }}
                 </UiBadge>
               </UiCardTitle>
 
-              <UiCardDescription data-test-product-description class="pb-4">
+              <UiCardDescription test-id="product-description" class="pb-4">
                 {{ $t(product.description) }}
               </UiCardDescription>
 
@@ -111,12 +111,12 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 <span class="text-3xl font-bold">
                   <span
                     v-if="!isDefined(product.price)"
-                    data-test-price-loading
+                    test-id="price-loading"
                     class="flex items-center"
                   >
                     €<UiSkeleton class="w-[30px] h-[34px]" />
                   </span>
-                  <span v-else data-test-price>€{{ product.price }}</span>
+                  <span v-else test-id="price">€{{ product.price }}</span>
                 </span>
                 <span class="text-muted-foreground">
                   /{{ $t('general.oneTime') }}</span
@@ -129,7 +129,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 <span
                   v-for="(benefit, j) in product.items"
                   :key="j"
-                  data-test-benefit
+                  test-id="benefit"
                   class="flex items-center gap-2 text-sm dark:text-muted-foreground"
                 >
                   <Icon
@@ -152,12 +152,12 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             <UiCardFooter>
               <UiSkeleton
                 v-if="isPending"
-                data-test-cta-loading
+                test-id="cta-loading"
                 class="h-[52px] rounded-lg w-full"
               />
               <UiButton
                 v-else-if="isCurrent(product.type)"
-                data-test-current
+                test-id="current"
                 variant="success"
                 class="w-full"
               >
@@ -170,7 +170,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                     product.price !== 0 &&
                     isUpgradeable(product.type))
                 "
-                data-test-subscribe
+                test-id="subscribe"
                 :aria-label="t('pages.pricing.cta')"
                 :disabled="isPending"
                 variant="tertiary"
@@ -184,7 +184,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
         </Motion>
       </Motion>
       <p
-        data-test-text
+        test-id="text"
         class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground"
       >
         {{ t('pages.pricing.text') }}
@@ -192,7 +192,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
       <div class="flex justify-center">
         <UiButton as-child>
           <NuxtLink
-            data-test-coffee
+            test-id="coffee"
             href="https://ko-fi.com/B0B2SSBBQ"
             target="_blank"
             class="flex items-center gap-4"

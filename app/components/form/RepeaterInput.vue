@@ -43,7 +43,7 @@ function moveDown(index: number) {
 <template>
   <div :class="cn('space-y-4', props.class)">
     <div class="flex items-end justify-between gap-2">
-      <UiLabel v-if="label" data-test-label :required="required">
+      <UiLabel v-if="label" test-id="label" :required="required">
         {{ label }}
       </UiLabel>
       <UiButton

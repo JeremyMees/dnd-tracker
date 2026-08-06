@@ -73,7 +73,7 @@ const tabs = computed<Tab[]>(() => {
         <UiButton as-child variant="foreground-ghost" size="icon-sm">
           <NuxtLinkLocale
             v-tippy="$t('actions.back')"
-            data-test-back
+            test-id="back"
             to="/campaigns"
           >
             <Icon name="tabler:arrow-left" :aria-hidden="true" />
@@ -84,19 +84,19 @@ const tabs = computed<Tab[]>(() => {
           <ClientOnly>
             <span
               v-if="isSuccess && data?.title"
-              data-test-title
+              test-id="title"
               class="text-foreground"
             >
               {{ data.title }}
             </span>
             <UiSkeleton
               v-else
-              data-test-title-loader
+              test-id="title-loader"
               class="w-[150px] h-9 rounded-full"
             />
             <template #fallback>
               <UiSkeleton
-                data-test-title-loader
+                test-id="title-loader"
                 class="w-[150px] h-9 rounded-full"
               />
             </template>
@@ -134,7 +134,7 @@ const tabs = computed<Tab[]>(() => {
       />
       <Card
         v-else
-        data-test-error
+        test-id="error"
         color="danger"
         class="h-[40vh] flex flex-col items-center justify-center gap-2"
       >

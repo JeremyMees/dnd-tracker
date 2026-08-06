@@ -41,13 +41,13 @@ describe('AvatarSelector', async () => {
   it('Should render avatar with default props correctly', async () => {
     const component = await mountSuspended(AvatarSelector, { props })
 
-    const icon = component.find('[data-test-icon]')
+    const icon = component.find('[test-id="icon"]')
     expect(icon.exists()).toBeTruthy()
     expect(icon.attributes('class')).toContain(
       identifiers[props.identifier].icon,
     )
 
-    const current = component.find('[data-test-current]')
+    const current = component.find('[test-id="current"]')
     expect(current.exists()).toBeTruthy()
     expect(current.text()).toBe(`1/${props.options.length}`)
   })
@@ -56,10 +56,10 @@ describe('AvatarSelector', async () => {
     const component = await mountSuspended(AvatarSelector, { props })
 
     const options = props.options.length
-    const nextButton = component.find('[data-test-next]')
-    const prevButton = component.find('[data-test-prev]')
+    const nextButton = component.find('[test-id="next"]')
+    const prevButton = component.find('[test-id="prev"]')
 
-    expect(component.find(`[data-test-current]`).text()).toBe(`1/${options}`)
+    expect(component.find(`[test-id="current"]`).text()).toBe(`1/${options}`)
 
     // First click on next, should go to option 2
     await nextButton.trigger('click')
@@ -67,7 +67,7 @@ describe('AvatarSelector', async () => {
     expect(emitted).toBeTruthy()
     component.setProps({ selected: emitted?.[0]?.[0] as string })
     await nextTick()
-    expect(component.find(`[data-test-current]`).text()).toBe(`2/${options}`)
+    expect(component.find(`[test-id="current"]`).text()).toBe(`2/${options}`)
 
     // Second click on next, should wrap around to option 1
     await nextButton.trigger('click')
@@ -75,7 +75,7 @@ describe('AvatarSelector', async () => {
     expect(emitted).toBeTruthy()
     component.setProps({ selected: emitted?.[1]?.[0] as string })
     await nextTick()
-    expect(component.find(`[data-test-current]`).text()).toBe(`1/${options}`)
+    expect(component.find(`[test-id="current"]`).text()).toBe(`1/${options}`)
 
     // Click on prev, should go to option 2
     await prevButton.trigger('click')
@@ -83,6 +83,6 @@ describe('AvatarSelector', async () => {
     expect(emitted).toBeTruthy()
     component.setProps({ selected: emitted?.[2]?.[0] as string })
     await nextTick()
-    expect(component.find(`[data-test-current]`).text()).toBe(`2/${options}`)
+    expect(component.find(`[test-id="current"]`).text()).toBe(`2/${options}`)
   })
 })

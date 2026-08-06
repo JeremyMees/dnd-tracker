@@ -34,7 +34,7 @@ function removeItem(index: number) {
 
 <template>
   <div class="space-y-2">
-    <UiLabel v-if="label" data-test-label :required="required">
+    <UiLabel v-if="label" test-id="label" :required="required">
       {{ label }}
     </UiLabel>
 
@@ -55,7 +55,7 @@ function removeItem(index: number) {
                 class="has-[>button]:mr-0 pr-1"
               >
                 <UiInputGroupButton
-                  data-test-remove
+                  test-id="remove"
                   :aria-label="$t('actions.remove')"
                   type="button"
                   :disabled="!canRemove"
@@ -72,7 +72,7 @@ function removeItem(index: number) {
     </div>
     <UiButton
       v-if="fields.length < 10"
-      data-test-add
+      test-id="add"
       type="button"
       variant="foreground-ghost"
       size="sm"
@@ -82,7 +82,7 @@ function removeItem(index: number) {
       <Icon name="tabler:plus" />
       {{ $t('actions.addAnother') }}
     </UiButton>
-    <span v-else data-test-max class="text-destructive">
+    <span v-else test-id="max" class="text-destructive">
       {{ $t('general.max') }} 10
     </span>
   </div>

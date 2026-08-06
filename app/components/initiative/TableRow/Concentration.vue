@@ -23,7 +23,7 @@ function updateConcentration(): void {
   <UiButton
     v-if="item.type !== 'lair'"
     v-tippy="$t('general.concentration')"
-    :data-test-concentration="item.concentration"
+    :test-id="item.concentration"
     :aria-label="$t('general.concentration')"
     variant="default-ghost"
     size="icon-sm"

@@ -55,12 +55,12 @@ const onSubmit = form.handleSubmit(async values => {
           aria-hidden="true"
         />
         <div class="flex flex-col gap-y-1 text-left">
-          <span data-test-name>
+          <span test-id="name">
             {{ item.name }}
           </span>
           <span
             v-if="item.summoner?.name"
-            data-test-summoner
+            test-id="summoner"
             class="text-2xs text-muted-foreground"
           >
             {{ $t('general.summoner') }}: {{ item.summoner.name }}

@@ -154,7 +154,7 @@ async function fetchPermissions() {
         <slot name="top" />
         <UiButton
           v-if="selectedRowLength"
-          data-test-remove
+          test-id="remove"
           variant="destructive"
           size="sm"
           :aria-label="
@@ -278,7 +278,7 @@ async function fetchPermissions() {
 
             <UiTableRow v-else>
               <UiTableCell
-                data-test-empty
+                test-id="empty"
                 :colspan="columns.length"
                 class="h-24 text-center text-muted-foreground"
               >
@@ -315,7 +315,7 @@ async function fetchPermissions() {
         <ClientOnly>
           <UiPagination
             v-model:page="internalPage"
-            :data-test-pagination="internalPage"
+            :test-id="internalPage"
             :total="
               Math.max(1, (options?.pageCount || 0) * pagination.pageSize)
             "
@@ -339,12 +339,12 @@ async function fetchPermissions() {
                 class="border-0 border-r rounded-r-none border-r-foreground"
               />
               <UiPaginationPrev
-                data-test-pagination-prev
+                test-id="pagination-prev"
                 :disabled="!table.getCanPreviousPage()"
                 class="border-0 border-r rounded-r-none border-r-foreground"
               />
               <UiPaginationNext
-                data-test-pagination-next
+                test-id="pagination-next"
                 :disabled="
                   !table.getCanNextPage() ||
                   (options?.pageCount && options.pageCount <= 1)

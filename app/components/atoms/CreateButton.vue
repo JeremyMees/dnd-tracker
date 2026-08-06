@@ -13,7 +13,7 @@ defineProps<{
 
 <template>
   <ClientOnly>
-    <UiSkeleton v-if="loading" data-test-skeleton class="w-[70px] h-[32px]" />
+    <UiSkeleton v-if="loading" test-id="skeleton" class="w-[70px] h-[32px]" />
     <UiButton
       v-else
       size="sm"

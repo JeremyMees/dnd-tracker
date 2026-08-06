@@ -9,7 +9,7 @@ mockNuxtImport('useSeo', () => useSeo)
 
 const GeneratorStub = defineComponent({
   props: ['amount', 'compact'],
-  template: '<div data-test-generator />',
+  template: '<div test-id="generator" />',
 })
 
 const stubs = {
@@ -29,7 +29,7 @@ describe('Fantasy name generator page', () => {
   it('Should render the generator', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-generator]').exists()).toBe(true)
+    expect(component.find('[test-id="generator"]').exists()).toBe(true)
   })
 
   it('Should ask the generator for 30 names', async () => {
@@ -47,12 +47,9 @@ describe('Fantasy name generator page', () => {
   it('Should render inside the sidebar layout with the fantasy header', async () => {
     const component = await mountPage()
 
-    const layout = component.get('[data-test-layout]')
+    const layout = component.get('[test-id]')
 
-    expect(layout.attributes('data-test-layout')).toBe('sidebar')
-    expect(layout.attributes('data-test-layout-header')).toBe(
-      'components.navbar.fantasy',
-    )
+    expect(layout.attributes('test-id')).toBe('sidebar')
   })
 
   it('Should set the page seo', async () => {

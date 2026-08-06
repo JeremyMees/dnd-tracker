@@ -61,19 +61,19 @@ const FeatureRequestCardStub = defineComponent({
   name: 'FeatureRequestCardStub',
   props: ['feature'],
   emits: ['update', 'login'],
-  template: '<div data-test-feature-card>{{ feature.id }}</div>',
+  template: '<div test-id="feature-card">{{ feature.id }}</div>',
 })
 
 const SkeletonFeatureRequestCardStub = defineComponent({
   name: 'SkeletonFeatureRequestCardStub',
-  template: '<div data-test-skeleton />',
+  template: '<div test-id="skeleton" />',
 })
 
 const PaginationStub = defineComponent({
   name: 'PaginationStub',
   props: ['page', 'pages', 'perPage', 'styles'],
   emits: ['paginate'],
-  template: '<div data-test-pagination />',
+  template: '<div test-id="pagination" />',
 })
 
 const stubs = {
@@ -93,7 +93,7 @@ async function mountPage() {
   return {
     component,
     get featureCards() {
-      return component.findAll('[data-test-feature-card]')
+      return component.findAll('[test-id="feature-card"]')
     },
     get card() {
       return component.findComponent({ name: 'FeatureRequestCardStub' })
@@ -102,13 +102,13 @@ async function mountPage() {
       return component.findComponent({ name: 'PaginationStub' })
     },
     async search(value: string) {
-      await component.get('[data-test-search]').setValue(value)
+      await component.get('[test-id="search"]').setValue(value)
     },
     async selectFilter(value: 'all' | 'my') {
       await component.findComponent(Select).vm.$emit('update:modelValue', value)
     },
     async clickRequest() {
-      await component.get('[data-test-request]').trigger('click')
+      await component.get('[test-id="request"]').trigger('click')
     },
   }
 }
@@ -185,7 +185,7 @@ describe('Feature request page', () => {
 
     const { component, featureCards } = await mountPage()
 
-    expect(component.findAll('[data-test-skeleton]')).toHaveLength(2)
+    expect(component.findAll('[test-id="skeleton"]')).toHaveLength(2)
     expect(featureCards).toHaveLength(0)
   })
 
@@ -262,7 +262,7 @@ describe('Feature request page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-pagination]').exists()).toBe(true)
+    expect(component.find('[test-id="pagination"]').exists()).toBe(true)
   })
 
   it('Should not render pagination for a single page', async () => {
@@ -270,7 +270,7 @@ describe('Feature request page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-pagination]').exists()).toBe(false)
+    expect(component.find('[test-id="pagination"]').exists()).toBe(false)
   })
 
   it('Should update the page and scroll when pagination emits paginate', async () => {
@@ -290,10 +290,10 @@ describe('Feature request page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-cta]').text()).toContain(
+    expect(component.get('[test-id="cta"]').text()).toContain(
       'pages.featureRequest.cta.title',
     )
-    expect(component.find('[data-test-nothing]').exists()).toBe(false)
+    expect(component.find('[test-id="nothing"]').exists()).toBe(false)
   })
 
   it('Should show a "nothing found" message when a search yields no results', async () => {
@@ -303,10 +303,10 @@ describe('Feature request page', () => {
 
     await search('nonexistent')
 
-    expect(component.get('[data-test-nothing]').text()).toBe(
+    expect(component.get('[test-id="nothing"]').text()).toBe(
       'pages.featureRequest.nothing',
     )
-    expect(component.find('[data-test-cta]').exists()).toBe(false)
+    expect(component.find('[test-id="cta"]').exists()).toBe(false)
   })
 
   it('Should show a "nothing found" message when the "my" filter yields no results', async () => {
@@ -317,10 +317,10 @@ describe('Feature request page', () => {
 
     await selectFilter('my')
 
-    expect(component.get('[data-test-nothing]').text()).toBe(
+    expect(component.get('[test-id="nothing"]').text()).toBe(
       'pages.featureRequest.nothing',
     )
-    expect(component.find('[data-test-cta]').exists()).toBe(false)
+    expect(component.find('[test-id="cta"]').exists()).toBe(false)
   })
 
   it('Should open the request modal when a signed in user clicks request', async () => {
@@ -352,10 +352,10 @@ describe('Feature request page', () => {
     const { component } = await mountPage()
 
     expect(
-      component.get('[data-test-search]').attributes('disabled'),
+      component.get('[test-id="search"]').attributes('disabled'),
     ).toBeDefined()
     expect(
-      component.get('[data-test-request]').attributes('disabled'),
+      component.get('[test-id="request"]').attributes('disabled'),
     ).toBeDefined()
     expect(component.findComponent(Select).props('disabled')).toBe(true)
   })

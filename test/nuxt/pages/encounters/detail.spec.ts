@@ -80,7 +80,7 @@ const SheetProbe = defineComponent({
   setup() {
     return validateInject(INITIATIVE_SHEET)
   },
-  template: '<p data-test-table>{{ sheet?.title ?? "no sheet" }}</p>',
+  template: '<p test-id="table">{{ sheet?.title ?? "no sheet" }}</p>',
 })
 
 const openDropdownStub = { template: '<div><slot /></div>' }
@@ -93,7 +93,7 @@ const stubs = {
   DropdownMenuItem: openDropdownStub,
   EncounterSidebar: {
     props: ['isExpanded'],
-    template: '<div data-test-sidebar />',
+    template: '<div test-id="sidebar" />',
   },
   NuxtLayout: nuxtLayoutStub,
 }
@@ -149,17 +149,15 @@ describe('Encounter detail page', () => {
   it('Should render inside the sidebar layout', async () => {
     const { component } = await mountPage()
 
-    expect(
-      component.get('[data-test-layout]').attributes('data-test-layout'),
-    ).toBe('sidebar')
-    expect(component.find('[data-test-sidebar]').exists()).toBe(true)
+    expect(component.get('[test-id]').attributes('test-id')).toBe('sidebar')
+    expect(component.find('[test-id="sidebar"]').exists()).toBe(true)
   })
 
   it('Should render the title of the encounter', async () => {
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-title]').text()).toBe(sheet.title)
-    expect(component.find('[data-test-title-loader]').exists()).toBe(false)
+    expect(component.get('[test-id="title"]').text()).toBe(sheet.title)
+    expect(component.find('[test-id="title-loader"]').exists()).toBe(false)
   })
 
   it('Should render a loader while the encounter has no title', async () => {
@@ -167,8 +165,8 @@ describe('Encounter detail page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-title]').exists()).toBe(false)
-    expect(component.find('[data-test-title-loader]').exists()).toBe(true)
+    expect(component.find('[test-id="title"]').exists()).toBe(false)
+    expect(component.find('[test-id="title-loader"]').exists()).toBe(true)
   })
 
   it('Should provide the encounter to the initiative table', async () => {
@@ -191,8 +189,8 @@ describe('Encounter detail page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-table]').exists()).toBe(false)
-    expect(component.get('[data-test-error]').text()).toContain(
+    expect(component.find('[test-id="table"]').exists()).toBe(false)
+    expect(component.get('[test-id="error"]').text()).toContain(
       'general.error.text',
     )
   })
@@ -202,21 +200,21 @@ describe('Encounter detail page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.get('[data-test-back]').attributes('href')).toBe(
+    expect(component.get('[test-id="back"]').attributes('href')).toBe(
       '/encounters',
     )
-    expect(component.find('[data-test-back-campaign]').exists()).toBe(false)
+    expect(component.find('[test-id="back-campaign"]').exists()).toBe(false)
   })
 
   it('Should offer the campaign and the encounters as back links for a campaign encounter', async () => {
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-back]').exists()).toBe(false)
-    expect(component.get('[data-test-back-campaign]').attributes('href')).toBe(
+    expect(component.find('[test-id="back"]').exists()).toBe(false)
+    expect(component.get('[test-id="back-campaign"]').attributes('href')).toBe(
       '/campaigns/1-test-campaign/encounters',
     )
     expect(
-      component.get('[data-test-back-encounters]').attributes('href'),
+      component.get('[test-id="back-encounters"]').attributes('href'),
     ).toBe('/encounters')
   })
 

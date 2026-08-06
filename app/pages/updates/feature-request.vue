@@ -43,7 +43,7 @@ const { data, status } = useFeatureListing(
             <UiInputGroupInput
               id="search"
               v-model="search"
-              data-test-search
+              test-id="search"
               name="search"
               type="search"
               :disabled="status === 'pending'"
@@ -84,7 +84,7 @@ const { data, status } = useFeatureListing(
           </UiSelect>
         </div>
         <UiButton
-          data-test-request
+          test-id="request"
           :aria-label="$t('pages.featureRequest.request')"
           :disabled="status === 'pending'"
           class="mt-5"
@@ -141,7 +141,7 @@ const { data, status } = useFeatureListing(
         v-else-if="
           data?.features?.length === 0 && (search || createdBy === 'my')
         "
-        data-test-nothing
+        test-id="nothing"
         class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
       >
         <p>
@@ -153,7 +153,7 @@ const { data, status } = useFeatureListing(
         v-else-if="
           data?.features?.length === 0 && (!search || createdBy === 'all')
         "
-        data-test-cta
+        test-id="cta"
         class="flex flex-col justify-center gap-4 border-4 border-secondary bg-secondary/50 rounded-lg p-4"
       >
         <h3 class="pb-2">

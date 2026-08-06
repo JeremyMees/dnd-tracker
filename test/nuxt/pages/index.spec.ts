@@ -34,7 +34,7 @@ describe('Index page', () => {
   it('Should render the hero', async () => {
     const component = await mountPage()
 
-    expect(component.get('[data-test-hero]').text()).toContain(
+    expect(component.get('[test-id="hero"]').text()).toContain(
       'components.hero.title',
     )
   })
@@ -42,7 +42,7 @@ describe('Index page', () => {
   it('Should render both text blocks with their title and text', async () => {
     const component = await mountPage()
 
-    const blocks = component.findAll('[data-test-text-block]')
+    const blocks = component.findAll('[test-id="text-block"]')
 
     expect(blocks).toHaveLength(2)
     expect(blocks[0]!.get('h2').text()).toBe('pages.home.textBlock1.title')
@@ -54,18 +54,18 @@ describe('Index page', () => {
   it('Should render the dragon next to the text blocks', async () => {
     const component = await mountPage()
 
-    expect(component.find('[data-test-dragon]').exists()).toBe(true)
+    expect(component.find('[test-id="dragon"]').exists()).toBe(true)
   })
 
   it('Should move the eyes of the dragon along with the mouse', async () => {
     const component = await mountPage()
 
-    const eye = () => component.get('[data-test-dragon] > div:first-child')
+    const eye = () => component.get('[test-id="dragon"] > div:first-child')
 
     expect(eye().attributes('style')).toBeUndefined()
 
     await component
-      .get('[data-test-dragon]')
+      .get('[test-id="dragon"]')
       .trigger('mousemove', { clientX: 10, clientY: 20 })
 
     expect(eye().attributes('style')).toContain('rotate(')
@@ -74,7 +74,7 @@ describe('Index page', () => {
   it('Should render the summary with all its items', async () => {
     const component = await mountPage()
 
-    const summary = component.get('[data-test-summary]')
+    const summary = component.get('[test-id="summary"]')
 
     expect(summary.get('h2').text()).toBe('pages.home.summary.title')
     expect(summary.findAll('li').map(item => item.text())).toEqual([
@@ -90,7 +90,7 @@ describe('Index page', () => {
   it('Should render the flame artwork next to the summary', async () => {
     const component = await mountPage()
 
-    const flame = component.get('[data-test-flame]')
+    const flame = component.get('[test-id="flame"]')
 
     expect(flame.attributes('src')).toBe('/art/flame.svg')
     expect(flame.attributes('alt')).toBe('Hearth')
@@ -99,27 +99,27 @@ describe('Index page', () => {
   it('Should render the scroll container with the initiative sheet', async () => {
     const component = await mountPage()
 
-    const container = component.get('[data-test-container-scroll]')
+    const container = component.get('[test-id="container-scroll"]')
 
-    expect(container.get('[data-test-container-scroll-title]').text()).toBe(
+    expect(container.get('[test-id="container-scroll-title"]').text()).toBe(
       'pages.home.containerScroll.title',
     )
-    expect(container.get('[data-test-container-scroll-subtitle]').text()).toBe(
+    expect(container.get('[test-id="container-scroll-subtitle"]').text()).toBe(
       'pages.home.containerScroll.subtitle',
     )
     expect(
-      container.get('[data-test-container-scroll-image]').attributes('src'),
+      container.get('[test-id="container-scroll-image"]').attributes('src'),
     ).toContain('initiative-sheet.png')
   })
 
   it('Should render the cta banner copy', async () => {
     const component = await mountPage()
 
-    const banner = component.get('[data-test-cta-banner]')
+    const banner = component.get('[test-id="cta-banner"]')
 
     expect(banner.text()).toContain('pages.home.ctaBanner.title')
     expect(banner.text()).toContain('pages.home.ctaBanner.text')
-    expect(banner.get('[data-test-link]').text()).toBe(
+    expect(banner.get('[test-id="link"]').text()).toBe(
       'pages.home.ctaBanner.button',
     )
   })
@@ -127,7 +127,7 @@ describe('Index page', () => {
   it('Should render the faq with all its questions', async () => {
     const component = await mountPage()
 
-    const faq = component.get('[data-test-faq]')
+    const faq = component.get('[test-id="faq"]')
 
     expect(faq.get('h2').text()).toBe('pages.home.faq.title')
     expect(faq.findAll('button').map(question => question.text())).toEqual([
@@ -140,7 +140,7 @@ describe('Index page', () => {
   it('Should reveal the answer of a faq question when it is opened', async () => {
     const component = await mountPage()
 
-    const faq = component.get('[data-test-faq]')
+    const faq = component.get('[test-id="faq"]')
 
     expect(faq.text()).not.toContain('pages.home.faq.item2.content')
 

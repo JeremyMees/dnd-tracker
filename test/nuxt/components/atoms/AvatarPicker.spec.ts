@@ -37,7 +37,7 @@ describe('AvatarPicker', async () => {
       modalValue: defaultAvatar,
     })
 
-    const avatar = component.find('[data-test-avatar]')
+    const avatar = component.find('[test-id="avatar"]')
     expect(avatar.exists()).toBeTruthy()
     expect(avatar.attributes('class')).toContain(avatarSizes.lg)
 
@@ -49,8 +49,8 @@ describe('AvatarPicker', async () => {
     )
     expect(optionsButton.exists()).toBeTruthy()
 
-    expect(component.find('[data-test-deprecated]').exists()).toBeFalsy()
-    expect(component.find('[data-test-creator]').exists()).toBeFalsy()
+    expect(component.find('[test-id="deprecated"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="creator"]').exists()).toBeFalsy()
   })
 
   it('Should show deprecated message when user has an old avatar', async () => {
@@ -58,7 +58,7 @@ describe('AvatarPicker', async () => {
       props: { ...props, deprecatedAvatar: true },
     })
 
-    const deprecatedMessage = component.find('[data-test-deprecated]')
+    const deprecatedMessage = component.find('[test-id="deprecated"]')
     expect(deprecatedMessage.exists()).toBeTruthy()
     expect(deprecatedMessage.text()).toContain(
       'components.avatarPicker.deprecated',
@@ -75,7 +75,7 @@ describe('AvatarPicker', async () => {
     )
     expect(optionsButton.exists()).toBeFalsy()
 
-    expect(component.find('[data-test-creator]').exists()).toBeTruthy()
+    expect(component.find('[test-id="creator"]').exists()).toBeTruthy()
   })
 
   it('Should apply correct size', async () => {
@@ -83,19 +83,19 @@ describe('AvatarPicker', async () => {
       props: { ...props, size: 'xs' },
     })
 
-    expect(component.find('[data-test-avatar]').attributes('class')).toContain(
+    expect(component.find('[test-id="avatar"]').attributes('class')).toContain(
       avatarSizes.xs,
     )
 
     component.setProps({ size: 'sm' })
     await nextTick()
-    expect(component.find('[data-test-avatar]').attributes('class')).toContain(
+    expect(component.find('[test-id="avatar"]').attributes('class')).toContain(
       avatarSizes.sm,
     )
 
     component.setProps({ size: 'base' })
     await nextTick()
-    expect(component.find('[data-test-avatar]').attributes('class')).toContain(
+    expect(component.find('[test-id="avatar"]').attributes('class')).toContain(
       avatarSizes.base,
     )
   })

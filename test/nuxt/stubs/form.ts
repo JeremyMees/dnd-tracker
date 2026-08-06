@@ -22,7 +22,7 @@ export async function fillForm(
   values: Record<string, string | number>,
 ): Promise<void> {
   for (const [field, value] of Object.entries(values)) {
-    await component.get(`[data-test-${field}]`).setValue(value)
+    await component.get(`[test-id="${field}"]`).setValue(value)
   }
 
   await flushPromises()

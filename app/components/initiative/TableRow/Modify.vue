@@ -39,7 +39,7 @@ function deleteRow(): void {
     <UiButton v-if="item.link" variant="info-ghost" size="icon-sm" as-child>
       <NuxtLink
         v-tippy="$t('components.actions.link')"
-        data-test-link
+        test-id="link"
         :aria-label="$t('components.actions.link')"
         target="_blank"
         :to="item.link"
@@ -49,7 +49,7 @@ function deleteRow(): void {
     </UiButton>
     <UiButton
       v-tippy="$t('actions.copy')"
-      data-test-copy
+      test-id="copy"
       variant="help-ghost"
       size="icon-sm"
       :disabled="maxCharacters"
@@ -60,7 +60,7 @@ function deleteRow(): void {
     </UiButton>
     <UiButton
       v-tippy="$t('actions.delete')"
-      data-test-delete
+      test-id="delete"
       variant="destructive-ghost"
       size="icon-sm"
       :aria-label="$t('actions.delete')"

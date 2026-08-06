@@ -65,10 +65,10 @@ async function mountPage(overrides: { current?: CampaignFull } = {}) {
   return {
     component,
     async transfer() {
-      await component.get('[data-test-transfer]').trigger('click')
+      await component.get('[test-id="transfer"]').trigger('click')
     },
     async remove() {
-      await component.get('[data-test-delete]').trigger('click')
+      await component.get('[test-id="delete"]').trigger('click')
     },
   }
 }
@@ -112,9 +112,9 @@ describe('Campaign danger zone page', () => {
   it('Should show the transfer and delete actions to the owner', async () => {
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-transfer]').exists()).toBe(true)
-    expect(component.find('[data-test-delete]').exists()).toBe(true)
-    expect(component.find('[data-test-no-permission]').exists()).toBe(false)
+    expect(component.find('[test-id="transfer"]').exists()).toBe(true)
+    expect(component.find('[test-id="delete"]').exists()).toBe(true)
+    expect(component.find('[test-id="no-permission"]').exists()).toBe(false)
   })
 
   it('Should tell anybody else that they have no permission', async () => {
@@ -122,9 +122,9 @@ describe('Campaign danger zone page', () => {
 
     const { component } = await mountPage()
 
-    expect(component.find('[data-test-transfer]').exists()).toBe(false)
-    expect(component.find('[data-test-delete]').exists()).toBe(false)
-    expect(component.get('[data-test-no-permission]').text()).toBe(
+    expect(component.find('[test-id="transfer"]').exists()).toBe(false)
+    expect(component.find('[test-id="delete"]').exists()).toBe(false)
+    expect(component.get('[test-id="no-permission"]').text()).toBe(
       'pages.campaign.danger.noPermission',
     )
   })
@@ -132,15 +132,15 @@ describe('Campaign danger zone page', () => {
   it('Should show a loader while the campaign is not loaded', async () => {
     const { component } = await mountPage({ current: undefined })
 
-    expect(component.find('[data-test-loader]').exists()).toBe(true)
-    expect(component.find('[data-test-transfer]').exists()).toBe(false)
+    expect(component.find('[test-id="loader"]').exists()).toBe(true)
+    expect(component.find('[test-id="transfer"]').exists()).toBe(false)
   })
 
   it('Should not allow transferring without a team', async () => {
     const { component } = await mountPage()
 
     expect(
-      component.get('[data-test-transfer]').attributes('disabled'),
+      component.get('[test-id="transfer"]').attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -150,7 +150,7 @@ describe('Campaign danger zone page', () => {
     })
 
     expect(
-      component.get('[data-test-transfer]').attributes('disabled'),
+      component.get('[test-id="transfer"]').attributes('disabled'),
     ).toBeUndefined()
   })
 

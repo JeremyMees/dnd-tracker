@@ -37,7 +37,7 @@ export function createListingStubs({
       expose({ vueTable: { getState: () => state.value } })
 
       return () =>
-        h('div', { 'data-test-table': '' }, [
+        h('div', { 'test-id': 'table' }, [
           slots.top?.(),
           props.loading ? slots.loading?.() : undefined,
         ])
@@ -49,30 +49,30 @@ export function createListingStubs({
     setup(_props, { expose }) {
       expose({ show })
 
-      return () => h('div', { 'data-test-limit': '' })
+      return () => h('div', { 'test-id': 'limit' })
     },
   })
 
   const ContentCount = defineComponent({
     name: 'ContentCountStub',
     props: ['count', 'max', 'loading'],
-    template: '<div data-test-content-count />',
+    template: '<div test-id="content-count" />',
   })
 
   const CreateButton = defineComponent({
     name: 'CreateButtonStub',
     props: ['allowCreate', 'disabled', 'loading'],
     emits: ['create', 'hitLimit'],
-    template: '<div data-test-create />',
+    template: '<div test-id="create" />',
   })
 
   const RefreshCard = defineComponent({
     name: 'RefreshCardStub',
     emits: ['refresh'],
-    template: '<div data-test-refresh />',
+    template: '<div test-id="refresh" />',
   })
 
-  const skeletonRow = { template: '<div data-test-skeleton-row />' }
+  const skeletonRow = { template: '<div test-id="skeleton-row" />' }
 
   return {
     DataTable,

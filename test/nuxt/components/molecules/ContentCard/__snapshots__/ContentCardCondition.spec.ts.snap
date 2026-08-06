@@ -2,6 +2,6 @@
 
 exports[`ContentCardCondition > Should match snapshot 1`] = `
 "<div class="text-sm">
-  <div data-test-desc="" class="md-richtext text-muted-foreground line-clamp-3">A Blinded creature cannot see.</div>
+  <div test-id="desc" class="md-richtext text-muted-foreground line-clamp-3">A Blinded creature cannot see.</div>
 </div>"
 `;
