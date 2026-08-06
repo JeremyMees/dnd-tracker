@@ -13,6 +13,8 @@ const summonersOptions = computed<Option<string>[]>(() => {
       .map(o => ({ label: o.name, value: o.id }))
   } else return []
 })
+
+const showAdvanced = ref(false)
 </script>
 
 <template>
@@ -207,129 +209,6 @@ const summonersOptions = computed<Option<string>[]>(() => {
     </UiFormField>
   </div>
 
-  <div v-if="type !== 'lair'" class="grid sm:grid-cols-2 gap-x-3">
-    <UiFormField v-slot="{ componentField }" name="hitDice">
-      <UiFormItem v-auto-animate>
-        <UiFormLabel>
-          {{ $t('components.inputs.hitDiceLabel') }}
-        </UiFormLabel>
-        <UiFormControl>
-          <UiInput type="text" placeholder="2d6" v-bind="componentField" />
-        </UiFormControl>
-        <UiFormMessage />
-      </UiFormItem>
-    </UiFormField>
-    <UiFormField v-slot="{ componentField }" name="armorDetail">
-      <UiFormItem v-auto-animate>
-        <UiFormLabel>
-          {{ $t('components.inputs.armorDetailLabel') }}
-        </UiFormLabel>
-        <UiFormControl>
-          <UiInput type="text" v-bind="componentField" />
-        </UiFormControl>
-        <UiFormMessage />
-      </UiFormItem>
-    </UiFormField>
-  </div>
-
-  <div v-if="type !== 'lair'" class="grid sm:grid-cols-2 gap-x-3">
-    <UiFormField v-slot="{ componentField }" name="proficiencyBonus">
-      <UiFormItem v-auto-animate>
-        <UiFormLabel>
-          {{ $t('general.proficiencyBonus') }}
-        </UiFormLabel>
-        <UiFormControl>
-          <UiInput type="number" v-bind="componentField" />
-        </UiFormControl>
-        <UiFormMessage />
-      </UiFormItem>
-    </UiFormField>
-    <UiFormField v-slot="{ componentField }" name="passivePerception">
-      <UiFormItem v-auto-animate>
-        <UiFormLabel>
-          {{ $t('general.passivePerception') }}
-        </UiFormLabel>
-        <UiFormControl>
-          <UiInput type="number" v-bind="componentField" />
-        </UiFormControl>
-        <UiFormMessage />
-      </UiFormItem>
-    </UiFormField>
-  </div>
-
-  <template v-if="type !== 'lair'">
-    <UiLabel>
-      {{ $t('general.speed') }}
-    </UiLabel>
-    <div
-      class="rounded-md border p-3 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-2"
-    >
-      <UiFormField
-        v-for="key in speedTypes.filter(k => k !== 'hover')"
-        :key="key"
-        v-slot="{ componentField }"
-        :name="`speed.${key}`"
-      >
-        <UiFormItem v-auto-animate>
-          <UiFormLabel>{{ speedMap[key] }}</UiFormLabel>
-          <UiFormControl>
-            <UiInput type="number" v-bind="componentField" />
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-      <UiFormField
-        v-slot="{ value, handleChange }"
-        name="speed.hover"
-        type="checkbox"
-      >
-        <UiFormItem class="flex flex-row items-start gap-2 pb-1">
-          <UiFormControl>
-            <UiCheckbox
-              :model-value="value"
-              @update:model-value="handleChange"
-            />
-          </UiFormControl>
-          <UiFormLabel class="mt-0.5">
-            {{ speedMap.hover }}
-          </UiFormLabel>
-        </UiFormItem>
-      </UiFormField>
-    </div>
-  </template>
-
-  <template v-if="type !== 'lair'">
-    <UiLabel>
-      {{ $t('general.sense', 2) }}
-    </UiLabel>
-    <div class="rounded-md border p-3 grid sm:grid-cols-2 gap-x-3 gap-y-2">
-      <UiFormField
-        v-for="(label, key) in sightRangeMap"
-        :key="key"
-        v-slot="{ componentField }"
-        :name="`sight.${key}`"
-      >
-        <UiFormItem v-auto-animate>
-          <UiFormLabel>{{ label }}</UiFormLabel>
-          <UiFormControl>
-            <UiInput type="number" v-bind="componentField" />
-          </UiFormControl>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
-    </div>
-  </template>
-
-  <div v-if="type !== 'lair'">
-    <FormListInput
-      name="languages"
-      type="text"
-      :empty="''"
-      :label="$t('general.language', 2)"
-      :max="20"
-    />
-  </div>
-
   <UiFormField v-slot="{ componentField }" name="link">
     <UiFormItem v-auto-animate>
       <UiFormLabel>
@@ -341,4 +220,157 @@ const summonersOptions = computed<Option<string>[]>(() => {
       <UiFormMessage />
     </UiFormItem>
   </UiFormField>
+
+  <div v-if="type !== 'lair'">
+    <UiButton
+      type="button"
+      variant="secondary"
+      class="w-full justify-between"
+      test-id="advanced-toggle"
+      :aria-expanded="showAdvanced"
+      @click="showAdvanced = !showAdvanced"
+    >
+      {{ $t('general.advanced') }}
+      <Icon
+        name="tabler:chevron-down"
+        class="transition-transform duration-200"
+        :class="{ 'rotate-180': showAdvanced }"
+        aria-hidden="true"
+      />
+    </UiButton>
+    <AnimationExpand>
+      <div
+        v-show="showAdvanced"
+        test-id="advanced-content"
+        class="space-y-4 border rounded-lg p-4"
+      >
+        <div class="grid sm:grid-cols-2 gap-x-3">
+          <UiFormField v-slot="{ componentField }" name="hitDice">
+            <UiFormItem v-auto-animate>
+              <UiFormLabel>
+                {{ $t('components.inputs.hitDiceLabel') }}
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInput
+                  type="text"
+                  placeholder="2d6"
+                  v-bind="componentField"
+                />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+          <UiFormField v-slot="{ componentField }" name="armorDetail">
+            <UiFormItem v-auto-animate>
+              <UiFormLabel>
+                {{ $t('components.inputs.armorDetailLabel') }}
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInput type="text" v-bind="componentField" />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-x-3">
+          <UiFormField v-slot="{ componentField }" name="proficiencyBonus">
+            <UiFormItem v-auto-animate>
+              <UiFormLabel>
+                {{ $t('general.proficiencyBonus') }}
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInput type="number" v-bind="componentField" />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+          <UiFormField v-slot="{ componentField }" name="passivePerception">
+            <UiFormItem v-auto-animate>
+              <UiFormLabel>
+                {{ $t('general.passivePerception') }}
+              </UiFormLabel>
+              <UiFormControl>
+                <UiInput type="number" v-bind="componentField" />
+              </UiFormControl>
+              <UiFormMessage />
+            </UiFormItem>
+          </UiFormField>
+        </div>
+
+        <div>
+          <UiLabel>
+            {{ $t('general.speed') }}
+          </UiLabel>
+          <div
+            class="rounded-md border p-3 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-2"
+          >
+            <UiFormField
+              v-for="key in speedTypes.filter(k => k !== 'hover')"
+              :key="key"
+              v-slot="{ componentField }"
+              :name="`speed.${key}`"
+            >
+              <UiFormItem v-auto-animate>
+                <UiFormLabel>{{ speedMap[key] }}</UiFormLabel>
+                <UiFormControl>
+                  <UiInput type="number" v-bind="componentField" />
+                </UiFormControl>
+                <UiFormMessage />
+              </UiFormItem>
+            </UiFormField>
+            <UiFormField
+              v-slot="{ value, handleChange }"
+              name="speed.hover"
+              type="checkbox"
+            >
+              <UiFormItem class="flex flex-row items-start gap-2 pb-1">
+                <UiFormControl>
+                  <UiCheckbox
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </UiFormControl>
+                <UiFormLabel class="mt-0.5">
+                  {{ speedMap.hover }}
+                </UiFormLabel>
+              </UiFormItem>
+            </UiFormField>
+          </div>
+        </div>
+
+        <div>
+          <UiLabel>
+            {{ $t('general.sense', 2) }}
+          </UiLabel>
+          <div
+            class="rounded-md border p-3 grid sm:grid-cols-2 gap-x-3 gap-y-2"
+          >
+            <UiFormField
+              v-for="(label, key) in sightRangeMap"
+              :key="key"
+              v-slot="{ componentField }"
+              :name="`sight.${key}`"
+            >
+              <UiFormItem v-auto-animate>
+                <UiFormLabel>{{ label }}</UiFormLabel>
+                <UiFormControl>
+                  <UiInput type="number" v-bind="componentField" />
+                </UiFormControl>
+                <UiFormMessage />
+              </UiFormItem>
+            </UiFormField>
+          </div>
+        </div>
+
+        <FormListInput
+          name="languages"
+          type="text"
+          :empty="''"
+          :label="$t('general.language', 2)"
+          :max="20"
+        />
+      </div>
+    </AnimationExpand>
+  </div>
 </template>
