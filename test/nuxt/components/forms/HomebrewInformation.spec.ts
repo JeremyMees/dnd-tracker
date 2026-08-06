@@ -1,21 +1,18 @@
-import { defineComponent } from 'vue'
-import { useForm } from 'vee-validate'
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import HomebrewInformation from '~/components/form/HomebrewInformation.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithForm } from '~~/test/nuxt/stubs/form'
 
-function mountWithForm(type?: string, initiativeSheet?: InitiativeSheet) {
-  const Wrapper = defineComponent({
-    components: { FormHomebrewInformation: HomebrewInformation },
-    setup() {
-      useForm({ initialValues: { type } })
-      return { type, initiativeSheet }
-    },
-    template:
-      '<FormHomebrewInformation :type="type" :sheet="initiativeSheet" />',
+async function mountHomebrewInformation(
+  type?: string,
+  initiativeSheet?: InitiativeSheet,
+) {
+  const { component } = await mountWithForm(HomebrewInformation, {
+    props: { type, sheet: initiativeSheet },
+    initialValues: { type },
   })
-  return mountSuspended(Wrapper)
+
+  return component
 }
 
 function isHidden(el: HTMLElement) {
@@ -23,8 +20,14 @@ function isHidden(el: HTMLElement) {
 }
 
 describe('HomebrewInformation', () => {
+  it('Should match snapshot', async () => {
+    const component = await mountHomebrewInformation()
+
+    expect(component.html()).toMatchSnapshot()
+  })
+
   it('Should always render the type, name, initiativeModifier and link fields', async () => {
-    const component = await mountWithForm()
+    const component = await mountHomebrewInformation()
     const html = component.html()
 
     expect(html).toContain('components.inputs.typeLabel')
@@ -35,75 +38,75 @@ describe('HomebrewInformation', () => {
 
   describe('Amount field', () => {
     it('Should not show amount without a sheet', async () => {
-      const component = await mountWithForm('monster')
+      const component = await mountHomebrewInformation('monster')
       expect(component.html()).not.toContain('components.inputs.amountLabel')
     })
 
     it('Should not show amount for types other than monster/summon', async () => {
-      const component = await mountWithForm('npc', sheet)
+      const component = await mountHomebrewInformation('npc', sheet)
       expect(component.html()).not.toContain('components.inputs.amountLabel')
     })
 
     it('Should show amount for monster with a sheet', async () => {
-      const component = await mountWithForm('monster', sheet)
+      const component = await mountHomebrewInformation('monster', sheet)
       expect(component.html()).toContain('components.inputs.amountLabel')
     })
 
     it('Should show amount for summon with a sheet', async () => {
-      const component = await mountWithForm('summon', sheet)
+      const component = await mountHomebrewInformation('summon', sheet)
       expect(component.html()).toContain('components.inputs.amountLabel')
     })
   })
 
   describe('Summoner field', () => {
     it('Should not show summoner without a sheet', async () => {
-      const component = await mountWithForm('summon')
+      const component = await mountHomebrewInformation('summon')
       expect(component.html()).not.toContain('components.inputs.summonerLabel')
     })
 
     it('Should not show summoner for types other than summon', async () => {
-      const component = await mountWithForm('npc', sheet)
+      const component = await mountHomebrewInformation('npc', sheet)
       expect(component.html()).not.toContain('components.inputs.summonerLabel')
     })
 
     it('Should show summoner for summon with a sheet', async () => {
-      const component = await mountWithForm('summon', sheet)
+      const component = await mountHomebrewInformation('summon', sheet)
       expect(component.html()).toContain('components.inputs.summonerLabel')
     })
   })
 
   describe('Player field', () => {
     it('Should show player field for player type without a sheet', async () => {
-      const component = await mountWithForm('player')
+      const component = await mountHomebrewInformation('player')
       expect(component.html()).toContain('components.inputs.playerLabel')
     })
 
     it('Should not show player field for player type with a sheet', async () => {
-      const component = await mountWithForm('player', sheet)
+      const component = await mountHomebrewInformation('player', sheet)
       expect(component.html()).not.toContain('components.inputs.playerLabel')
     })
 
     it('Should not show player field for non-player types', async () => {
-      const component = await mountWithForm('npc')
+      const component = await mountHomebrewInformation('npc')
       expect(component.html()).not.toContain('components.inputs.playerLabel')
     })
   })
 
   describe('Initiative field', () => {
     it('Should not show initiative without a sheet', async () => {
-      const component = await mountWithForm('npc')
+      const component = await mountHomebrewInformation('npc')
       expect(component.find('input[name="initiative"]').exists()).toBeFalsy()
     })
 
     it('Should show initiative with a sheet', async () => {
-      const component = await mountWithForm('npc', sheet)
+      const component = await mountHomebrewInformation('npc', sheet)
       expect(component.find('input[name="initiative"]').exists()).toBeTruthy()
     })
   })
 
   describe('AC and HP fields', () => {
     it('Should show AC and HP for non-lair types', async () => {
-      const component = await mountWithForm('npc')
+      const component = await mountHomebrewInformation('npc')
       const html = component.html()
 
       expect(html).toContain('components.inputs.acLabel')
@@ -111,7 +114,7 @@ describe('HomebrewInformation', () => {
     })
 
     it('Should not show AC and HP for lair type', async () => {
-      const component = await mountWithForm('lair')
+      const component = await mountHomebrewInformation('lair')
       const html = component.html()
 
       expect(html).not.toContain('components.inputs.acLabel')
@@ -121,7 +124,7 @@ describe('HomebrewInformation', () => {
 
   describe('Advanced fields', () => {
     it('Should render the advanced toggle for non-lair types, collapsed by default', async () => {
-      const component = await mountWithForm('npc')
+      const component = await mountHomebrewInformation('npc')
       const toggle = component.find('[test-id="advanced-toggle"]')
       const content = component.find('[test-id="advanced-content"]')
 
@@ -132,7 +135,7 @@ describe('HomebrewInformation', () => {
     })
 
     it('Should not render the advanced toggle for lair type', async () => {
-      const component = await mountWithForm('lair')
+      const component = await mountHomebrewInformation('lair')
 
       expect(component.find('[test-id="advanced-toggle"]').exists()).toBeFalsy()
       expect(
@@ -141,7 +144,7 @@ describe('HomebrewInformation', () => {
     })
 
     it('Should reveal all advanced fields when the toggle is clicked', async () => {
-      const component = await mountWithForm('npc')
+      const component = await mountHomebrewInformation('npc')
       const toggle = component.find('[test-id="advanced-toggle"]')
 
       await toggle.trigger('click')
@@ -165,7 +168,7 @@ describe('HomebrewInformation', () => {
     it('Should hide the advanced fields again when the toggle is clicked twice', async () => {
       vi.useFakeTimers()
 
-      const component = await mountWithForm('npc')
+      const component = await mountHomebrewInformation('npc')
       const toggle = component.find('[test-id="advanced-toggle"]')
 
       await toggle.trigger('click')

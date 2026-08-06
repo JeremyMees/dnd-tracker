@@ -308,9 +308,14 @@ async function addInitiative(options: {
         </span>
       </div>
 
+      <div v-if="formError" class="text-sm text-destructive">
+        {{ formError }}
+      </div>
+
       <div class="flex justify-end gap-2">
         <UiButton
           v-tippy="$t('actions.prev')"
+          test-id="prev"
           type="button"
           variant="foreground"
           size="icon"
@@ -322,6 +327,7 @@ async function addInitiative(options: {
         </UiButton>
         <UiButton
           v-tippy="$t('actions.next')"
+          test-id="next"
           type="button"
           variant="foreground"
           size="icon"

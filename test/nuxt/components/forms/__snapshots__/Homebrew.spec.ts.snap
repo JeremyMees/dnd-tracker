@@ -1,0 +1,936 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Homebrew > Should match snapshot 1`] = `
+"<form class="space-y-4">
+  <div dir="ltr" data-orientation="horizontal">
+    <div class="items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full grid-cols-4" tabindex="0" data-orientation="horizontal" dir="ltr" style="outline-color: none; outline-style: none; outline-width: initial;" role="tablist" aria-orientation="horizontal"><button class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm" data-reka-collection-item="" tabindex="-1" data-orientation="horizontal" data-active="" id="reka-tabs-v-0-0-0-trigger-info" role="tab" type="button" aria-selected="true" data-state="active"><span class="truncate">general.info</span></button><button class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm" data-reka-collection-item="" tabindex="-1" data-orientation="horizontal" id="reka-tabs-v-0-0-0-trigger-stats" role="tab" type="button" aria-selected="false" data-state="inactive"><span class="truncate">general.stats</span></button><button class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm" data-reka-collection-item="" tabindex="-1" data-orientation="horizontal" id="reka-tabs-v-0-0-0-trigger-traits" role="tab" type="button" aria-selected="false" data-state="inactive"><span class="truncate">general.trait</span></button><button class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm" data-reka-collection-item="" tabindex="-1" data-orientation="horizontal" id="reka-tabs-v-0-0-0-trigger-actions" role="tab" type="button" aria-selected="false" data-state="inactive"><span class="truncate">general.action</span></button></div>
+    <div class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+      <div class="">
+        <div class="space-y-2"><label for="reka-v-0-0-5-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.typeLabel<span class="text-destructive">*</span>
+            <!--v-if-->
+          </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-5-form-item" aria-describedby="reka-v-0-0-5-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-6" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">general.player</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+          <!--teleport start-->
+          <!--teleport end--><select aria-hidden="true" tabindex="-1" style="position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; word-wrap: normal; top: -1px; left: -1px;" name="type" value="player">
+            <!--v-if-->
+            <option value="player">general.player</option>
+            <option value="summon">general.summon</option>
+            <option value="npc">general.npc</option>
+            <option value="monster">general.monster</option>
+            <option value="lair">general.lair</option>
+          </select>
+          <!---->
+        </div>
+        <!--v-if-->
+      </div>
+      <!--v-if-->
+      <div class="grid sm:grid-cols-2 gap-x-3">
+        <div class="space-y-2"><label for="reka-v-0-0-7-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.nameLabel<span class="text-destructive">*</span>
+            <!--v-if-->
+          </label>
+          <div data-slot="input-group" role="group" class="group/input-group bg-background border-input relative flex w-full items-center rounded-md border shadow-xs transition-[color,box-shadow] outline-none h-10 min-w-0 has-[>textarea]:h-auto has-[>[data-align=inline-start]]:[&amp;>input]:pl-2 has-[>[data-align=inline-end]]:[&amp;>input]:pr-2 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&amp;>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&amp;>input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-background" id="reka-v-0-0-7-form-item" aria-describedby="reka-v-0-0-7-form-item-description" aria-invalid="false"><input data-slot="input-group-control" name="name" type="text" class="flex h-10 w-full border-input px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 rounded-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent ring-offset-transparent" value="">
+            <div role="group" data-slot="input-group-addon" data-align="inline-end" class="text-muted-foreground flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium select-none [&amp;>svg:not([class*='size-'])]:size-4 [&amp;>kbd]:rounded-[calc(var(--radius)-5px)] group-data-[disabled=true]/input-group:opacity-50 order-last has-[>kbd]:mr-[-0.35rem] has-[>button]:mr-0 pr-2"><button class="justify-center whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground text-sm shadow-none flex gap-2 items-center size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0" data-size="icon-xs" type="button" aria-label="actions.generateName"><span class="iconify i-tabler:arrows-shuffle-2" aria-hidden="true"></span></button></div>
+          </div>
+          <!---->
+        </div>
+        <div class="space-y-2"><label for="reka-v-0-0-8-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.playerLabel
+            <!--v-if-->
+            <!--v-if-->
+          </label><input id="reka-v-0-0-8-form-item" aria-describedby="reka-v-0-0-8-form-item-description" aria-invalid="false" name="player" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" value="">
+          <!---->
+        </div>
+      </div>
+      <div class="">
+        <!--v-if-->
+        <div class="space-y-2"><label for="reka-v-0-0-9-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.initiativeLabel (MODIFIER)
+            <!--v-if-->
+            <!--v-if-->
+          </label><input id="reka-v-0-0-9-form-item" aria-describedby="reka-v-0-0-9-form-item-description" aria-invalid="false" name="initiativeModifier" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+          <!---->
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-x-3">
+        <div class="space-y-2"><label for="reka-v-0-0-10-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.acLabel
+            <!--v-if-->
+            <!--v-if-->
+          </label><input id="reka-v-0-0-10-form-item" aria-describedby="reka-v-0-0-10-form-item-description" aria-invalid="false" name="armorClass" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+          <!---->
+        </div>
+        <div class="space-y-2"><label for="reka-v-0-0-11-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.hpLabel
+            <!--v-if-->
+            <!--v-if-->
+          </label><input id="reka-v-0-0-11-form-item" aria-describedby="reka-v-0-0-11-form-item-description" aria-invalid="false" name="hitPoints" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+          <!---->
+        </div>
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-12-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.linkLabel
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-12-form-item" aria-describedby="reka-v-0-0-12-form-item-description" aria-invalid="false" name="link" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" value="">
+        <!---->
+      </div>
+      <div><button class="inline-flex items-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-secondary/50 hover:bg-secondary/60 border-secondary text-foreground shadow-sm h-10 px-4 py-2 w-full justify-between" type="button" test-id="advanced-toggle" aria-expanded="false">general.advanced <span class="iconify i-tabler:chevron-down transition-transform duration-200" aria-hidden="true"></span></button>
+        <div data-v-d120b405="" test-id="advanced-content" class="space-y-4 border rounded-lg p-4" style="display: none;">
+          <div class="grid sm:grid-cols-2 gap-x-3">
+            <div class="space-y-2"><label for="reka-v-0-0-13-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.hitDiceLabel
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-13-form-item" aria-describedby="reka-v-0-0-13-form-item-description" aria-invalid="false" placeholder="2d6" name="hitDice" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" value="">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-14-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.armorDetailLabel
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-14-form-item" aria-describedby="reka-v-0-0-14-form-item-description" aria-invalid="false" name="armorDetail" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" value="">
+              <!---->
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-x-3">
+            <div class="space-y-2"><label for="reka-v-0-0-15-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.proficiencyBonus
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-15-form-item" aria-describedby="reka-v-0-0-15-form-item-description" aria-invalid="false" name="proficiencyBonus" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-16-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.passivePerception
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-16-form-item" aria-describedby="reka-v-0-0-16-form-item-description" aria-invalid="false" name="passivePerception" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+          </div>
+          <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.speed
+              <!--v-if-->
+            </label>
+            <div class="rounded-md border p-3 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-2">
+              <div class="space-y-2"><label for="reka-v-0-0-17-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Walk
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-17-form-item" aria-describedby="reka-v-0-0-17-form-item-description" aria-invalid="false" name="speed.walk" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-18-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Crawl
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-18-form-item" aria-describedby="reka-v-0-0-18-form-item-description" aria-invalid="false" name="speed.crawl" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-19-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fly
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-19-form-item" aria-describedby="reka-v-0-0-19-form-item-description" aria-invalid="false" name="speed.fly" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-20-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Burrow
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-20-form-item" aria-describedby="reka-v-0-0-20-form-item-description" aria-invalid="false" name="speed.burrow" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-21-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Climb
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-21-form-item" aria-describedby="reka-v-0-0-21-form-item-description" aria-invalid="false" name="speed.climb" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-22-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Swim
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-22-form-item" aria-describedby="reka-v-0-0-22-form-item-description" aria-invalid="false" name="speed.swim" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2 flex flex-row items-start gap-2 pb-1"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-23-form-item-description" aria-invalid="false" id="reka-v-0-0-23-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-23-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mt-0.5">Hover
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+            </div>
+          </div>
+          <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.sense
+              <!--v-if-->
+            </label>
+            <div class="rounded-md border p-3 grid sm:grid-cols-2 gap-x-3 gap-y-2">
+              <div class="space-y-2"><label for="reka-v-0-0-24-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Normal Sight
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-24-form-item" aria-describedby="reka-v-0-0-24-form-item-description" aria-invalid="false" name="sight.normalSightRange" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-25-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Darkvision
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-25-form-item" aria-describedby="reka-v-0-0-25-form-item-description" aria-invalid="false" name="sight.darkVisionRange" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-26-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Blindsight
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-26-form-item" aria-describedby="reka-v-0-0-26-form-item-description" aria-invalid="false" name="sight.blindSightRange" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-27-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Tremorsense
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-27-form-item" aria-describedby="reka-v-0-0-27-form-item-description" aria-invalid="false" name="sight.tremorSenseRange" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+              <div class="space-y-2"><label for="reka-v-0-0-28-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Truesight
+                  <!--v-if-->
+                  <!--v-if-->
+                </label><input id="reka-v-0-0-28-form-item" aria-describedby="reka-v-0-0-28-form-item-description" aria-invalid="false" name="sight.trueSightRange" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class="space-y-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" test-id="label">general.language
+              <!--v-if-->
+            </label>
+            <div class="flex flex-col gap-2"></div><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-foreground hover:text-background h-8 rounded-md px-3 text-xs" test-id="add" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.addAnother</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" style="display: none;">
+      <div class="space-y-6">
+        <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.ability
+            <!--v-if-->
+          </label>
+          <div class="rounded-md border p-3 grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+            <div class="space-y-2"><label for="reka-v-0-0-29-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">STR
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-29-form-item" aria-describedby="reka-v-0-0-29-form-item-description" aria-invalid="false" name="abilityScores.strength" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-30-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">DEX
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-30-form-item" aria-describedby="reka-v-0-0-30-form-item-description" aria-invalid="false" name="abilityScores.dexterity" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-31-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CON
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-31-form-item" aria-describedby="reka-v-0-0-31-form-item-description" aria-invalid="false" name="abilityScores.constitution" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-32-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">INT
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-32-form-item" aria-describedby="reka-v-0-0-32-form-item-description" aria-invalid="false" name="abilityScores.intelligence" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-33-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">WIS
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-33-form-item" aria-describedby="reka-v-0-0-33-form-item-description" aria-invalid="false" name="abilityScores.wisdom" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-34-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CHA
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-34-form-item" aria-describedby="reka-v-0-0-34-form-item-description" aria-invalid="false" name="abilityScores.charisma" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+          </div>
+        </div>
+        <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.modifiersLabel
+            <!--v-if-->
+          </label>
+          <div class="rounded-md border p-3 grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+            <div class="space-y-2"><label for="reka-v-0-0-35-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">STR
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-35-form-item" aria-describedby="reka-v-0-0-35-form-item-description" aria-invalid="false" name="modifiers.strength" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-36-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">DEX
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-36-form-item" aria-describedby="reka-v-0-0-36-form-item-description" aria-invalid="false" name="modifiers.dexterity" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-37-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CON
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-37-form-item" aria-describedby="reka-v-0-0-37-form-item-description" aria-invalid="false" name="modifiers.constitution" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-38-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">INT
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-38-form-item" aria-describedby="reka-v-0-0-38-form-item-description" aria-invalid="false" name="modifiers.intelligence" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-39-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">WIS
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-39-form-item" aria-describedby="reka-v-0-0-39-form-item-description" aria-invalid="false" name="modifiers.wisdom" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-40-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CHA
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-40-form-item" aria-describedby="reka-v-0-0-40-form-item-description" aria-invalid="false" name="modifiers.charisma" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+          </div>
+        </div>
+        <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.savingThrow
+            <!--v-if-->
+          </label>
+          <div class="rounded-md border p-3 grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+            <div class="space-y-2"><label for="reka-v-0-0-41-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">STR
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-41-form-item" aria-describedby="reka-v-0-0-41-form-item-description" aria-invalid="false" name="savingThrows.strength" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-42-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">DEX
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-42-form-item" aria-describedby="reka-v-0-0-42-form-item-description" aria-invalid="false" name="savingThrows.dexterity" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-43-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CON
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-43-form-item" aria-describedby="reka-v-0-0-43-form-item-description" aria-invalid="false" name="savingThrows.constitution" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-44-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">INT
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-44-form-item" aria-describedby="reka-v-0-0-44-form-item-description" aria-invalid="false" name="savingThrows.intelligence" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-45-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">WIS
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-45-form-item" aria-describedby="reka-v-0-0-45-form-item-description" aria-invalid="false" name="savingThrows.wisdom" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-46-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CHA
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-46-form-item" aria-describedby="reka-v-0-0-46-form-item-description" aria-invalid="false" name="savingThrows.charisma" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+          </div>
+        </div>
+        <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.skillBonusesLabel
+            <!--v-if-->
+          </label>
+          <div class="rounded-md border p-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-2">
+            <div class="space-y-2"><label for="reka-v-0-0-47-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acrobatics
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-47-form-item" aria-describedby="reka-v-0-0-47-form-item-description" aria-invalid="false" name="skillBonuses.acrobatics" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-48-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Animal Handling
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-48-form-item" aria-describedby="reka-v-0-0-48-form-item-description" aria-invalid="false" name="skillBonuses.animalHandling" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-49-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Arcana
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-49-form-item" aria-describedby="reka-v-0-0-49-form-item-description" aria-invalid="false" name="skillBonuses.arcana" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-50-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Athletics
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-50-form-item" aria-describedby="reka-v-0-0-50-form-item-description" aria-invalid="false" name="skillBonuses.athletics" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-51-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Deception
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-51-form-item" aria-describedby="reka-v-0-0-51-form-item-description" aria-invalid="false" name="skillBonuses.deception" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-52-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">History
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-52-form-item" aria-describedby="reka-v-0-0-52-form-item-description" aria-invalid="false" name="skillBonuses.history" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-53-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Insight
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-53-form-item" aria-describedby="reka-v-0-0-53-form-item-description" aria-invalid="false" name="skillBonuses.insight" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-54-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Intimidation
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-54-form-item" aria-describedby="reka-v-0-0-54-form-item-description" aria-invalid="false" name="skillBonuses.intimidation" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-55-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Investigation
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-55-form-item" aria-describedby="reka-v-0-0-55-form-item-description" aria-invalid="false" name="skillBonuses.investigation" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-56-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Medicine
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-56-form-item" aria-describedby="reka-v-0-0-56-form-item-description" aria-invalid="false" name="skillBonuses.medicine" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-57-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nature
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-57-form-item" aria-describedby="reka-v-0-0-57-form-item-description" aria-invalid="false" name="skillBonuses.nature" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-58-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Perception
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-58-form-item" aria-describedby="reka-v-0-0-58-form-item-description" aria-invalid="false" name="skillBonuses.perception" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-59-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Performance
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-59-form-item" aria-describedby="reka-v-0-0-59-form-item-description" aria-invalid="false" name="skillBonuses.performance" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-60-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Persuasion
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-60-form-item" aria-describedby="reka-v-0-0-60-form-item-description" aria-invalid="false" name="skillBonuses.persuasion" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-61-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Religion
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-61-form-item" aria-describedby="reka-v-0-0-61-form-item-description" aria-invalid="false" name="skillBonuses.religion" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-62-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sleight of Hand
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-62-form-item" aria-describedby="reka-v-0-0-62-form-item-description" aria-invalid="false" name="skillBonuses.sleightOfHand" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-63-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Stealth
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-63-form-item" aria-describedby="reka-v-0-0-63-form-item-description" aria-invalid="false" name="skillBonuses.stealth" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+            <div class="space-y-2"><label for="reka-v-0-0-64-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Survival
+                <!--v-if-->
+                <!--v-if-->
+              </label><input id="reka-v-0-0-64-form-item" aria-describedby="reka-v-0-0-64-form-item-description" aria-invalid="false" name="skillBonuses.survival" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+              <!---->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" style="display: none;">
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <div class="flex items-end justify-between gap-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" test-id="label">components.inputs.traitsLabel
+              <!--v-if-->
+            </label><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-8 rounded-md px-3 text-xs" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.add</button></div>
+          <div class="space-y-4">
+            <div class="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg text-sm">components.repeaterInput.noItems</div>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="space-y-2"><label for="reka-v-0-0-65-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Damage immunities
+              <!--v-if-->
+              <!--v-if-->
+            </label>
+            <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-66-form-item-description" aria-invalid="false" id="reka-v-0-0-66-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-66-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-67-form-item-description" aria-invalid="false" id="reka-v-0-0-67-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-67-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bludgeoning
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-68-form-item-description" aria-invalid="false" id="reka-v-0-0-68-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-68-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-69-form-item-description" aria-invalid="false" id="reka-v-0-0-69-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-69-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-70-form-item-description" aria-invalid="false" id="reka-v-0-0-70-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-70-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Force
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-71-form-item-description" aria-invalid="false" id="reka-v-0-0-71-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-71-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lightning
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-72-form-item-description" aria-invalid="false" id="reka-v-0-0-72-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-72-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Necrotic
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-73-form-item-description" aria-invalid="false" id="reka-v-0-0-73-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-73-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Piercing
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-74-form-item-description" aria-invalid="false" id="reka-v-0-0-74-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-74-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poison
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-75-form-item-description" aria-invalid="false" id="reka-v-0-0-75-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-75-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Psychic
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-76-form-item-description" aria-invalid="false" id="reka-v-0-0-76-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-76-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Radiant
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-77-form-item-description" aria-invalid="false" id="reka-v-0-0-77-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-77-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slashing
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-78-form-item-description" aria-invalid="false" id="reka-v-0-0-78-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-78-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Thunder
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <div class="space-y-2"><label for="reka-v-0-0-79-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Damage resistances
+              <!--v-if-->
+              <!--v-if-->
+            </label>
+            <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-80-form-item-description" aria-invalid="false" id="reka-v-0-0-80-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-80-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-81-form-item-description" aria-invalid="false" id="reka-v-0-0-81-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-81-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bludgeoning
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-82-form-item-description" aria-invalid="false" id="reka-v-0-0-82-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-82-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-83-form-item-description" aria-invalid="false" id="reka-v-0-0-83-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-83-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-84-form-item-description" aria-invalid="false" id="reka-v-0-0-84-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-84-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Force
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-85-form-item-description" aria-invalid="false" id="reka-v-0-0-85-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-85-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lightning
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-86-form-item-description" aria-invalid="false" id="reka-v-0-0-86-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-86-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Necrotic
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-87-form-item-description" aria-invalid="false" id="reka-v-0-0-87-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-87-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Piercing
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-88-form-item-description" aria-invalid="false" id="reka-v-0-0-88-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-88-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poison
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-89-form-item-description" aria-invalid="false" id="reka-v-0-0-89-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-89-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Psychic
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-90-form-item-description" aria-invalid="false" id="reka-v-0-0-90-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-90-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Radiant
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-91-form-item-description" aria-invalid="false" id="reka-v-0-0-91-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-91-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slashing
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-92-form-item-description" aria-invalid="false" id="reka-v-0-0-92-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-92-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Thunder
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <div class="space-y-2"><label for="reka-v-0-0-93-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Damage vulnerabilities
+              <!--v-if-->
+              <!--v-if-->
+            </label>
+            <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-94-form-item-description" aria-invalid="false" id="reka-v-0-0-94-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-94-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-95-form-item-description" aria-invalid="false" id="reka-v-0-0-95-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-95-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bludgeoning
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-96-form-item-description" aria-invalid="false" id="reka-v-0-0-96-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-96-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-97-form-item-description" aria-invalid="false" id="reka-v-0-0-97-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-97-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-98-form-item-description" aria-invalid="false" id="reka-v-0-0-98-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-98-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Force
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-99-form-item-description" aria-invalid="false" id="reka-v-0-0-99-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-99-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lightning
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-100-form-item-description" aria-invalid="false" id="reka-v-0-0-100-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-100-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Necrotic
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-101-form-item-description" aria-invalid="false" id="reka-v-0-0-101-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-101-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Piercing
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-102-form-item-description" aria-invalid="false" id="reka-v-0-0-102-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-102-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poison
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-103-form-item-description" aria-invalid="false" id="reka-v-0-0-103-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-103-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Psychic
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-104-form-item-description" aria-invalid="false" id="reka-v-0-0-104-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-104-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Radiant
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-105-form-item-description" aria-invalid="false" id="reka-v-0-0-105-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-105-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slashing
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-106-form-item-description" aria-invalid="false" id="reka-v-0-0-106-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-106-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Thunder
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <div class="space-y-2"><label for="reka-v-0-0-107-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Condition immunities
+              <!--v-if-->
+              <!--v-if-->
+            </label>
+            <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-108-form-item-description" aria-invalid="false" id="reka-v-0-0-108-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-108-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Blinded
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-109-form-item-description" aria-invalid="false" id="reka-v-0-0-109-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-109-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Charmed
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-110-form-item-description" aria-invalid="false" id="reka-v-0-0-110-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-110-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Deafened
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-111-form-item-description" aria-invalid="false" id="reka-v-0-0-111-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-111-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Frightened
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-112-form-item-description" aria-invalid="false" id="reka-v-0-0-112-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-112-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Grappled
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-113-form-item-description" aria-invalid="false" id="reka-v-0-0-113-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-113-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Incapacitated
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-114-form-item-description" aria-invalid="false" id="reka-v-0-0-114-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-114-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Invisible
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-115-form-item-description" aria-invalid="false" id="reka-v-0-0-115-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-115-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Paralyzed
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-116-form-item-description" aria-invalid="false" id="reka-v-0-0-116-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-116-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Petrified
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-117-form-item-description" aria-invalid="false" id="reka-v-0-0-117-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-117-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poisoned
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-118-form-item-description" aria-invalid="false" id="reka-v-0-0-118-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-118-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Prone
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-119-form-item-description" aria-invalid="false" id="reka-v-0-0-119-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-119-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Restrained
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-120-form-item-description" aria-invalid="false" id="reka-v-0-0-120-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-120-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Stunned
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-121-form-item-description" aria-invalid="false" id="reka-v-0-0-121-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-121-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Unconscious
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+              <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-122-form-item-description" aria-invalid="false" id="reka-v-0-0-122-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                  <!---->
+                </button>
+                <!--v-if--><label for="reka-v-0-0-122-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Exhaustion
+                  <!--v-if-->
+                  <!--v-if-->
+                </label>
+              </div>
+            </div>
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" style="display: none;">
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <div class="flex items-end justify-between gap-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" test-id="label">components.inputs.actionsLabel
+              <!--v-if-->
+            </label><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-8 rounded-md px-3 text-xs" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.add</button></div>
+          <div class="space-y-4">
+            <div class="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg text-sm">components.repeaterInput.noItems</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col gap-y-4">
+    <!--v-if-->
+    <!--v-if-->
+    <div class="flex justify-end gap-2"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-foreground/50 hover:bg-foreground/60 border-foreground text-background shadow-sm size-10 min-w-10" test-id="prev" type="button" disabled=""><span class="iconify i-tabler:arrow-left" aria-hidden="true"></span></button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-foreground/50 hover:bg-foreground/60 border-foreground text-background shadow-sm size-10 min-w-10" test-id="next" type="button"><span class="iconify i-tabler:arrow-right" aria-hidden="true"></span></button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 w-full md:w-fit" type="submit">actions.save</button></div>
+  </div>
+</form>"
+`;

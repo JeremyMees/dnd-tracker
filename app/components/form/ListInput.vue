@@ -42,7 +42,7 @@ function removeItem(index: number) {
       <UiFormField
         v-for="(field, index) in fields"
         :key="field.key"
-        v-slot="{ field: componentField }"
+        v-slot="{ componentField }"
         class="flex-1"
         :name="`${name}.${index}`"
       >

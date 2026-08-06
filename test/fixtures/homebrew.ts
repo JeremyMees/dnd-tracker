@@ -24,3 +24,30 @@ export const mockHomebrewItem: HomebrewItemRow = {
   speed: null,
   traits: null,
 }
+
+export const mockHomebrewPlayer: HomebrewItemRow = {
+  ...mockHomebrewItem,
+  id: 2,
+  name: 'Kees',
+  type: 'player',
+  player: 'Jeremy',
+  armorClass: 15,
+  hitPoints: 32,
+  initiativeModifier: '3',
+}
+
+export const mockHomebrewSummon: HomebrewItemRow = {
+  ...mockHomebrewItem,
+  id: 3,
+  name: 'Spirit Wolf',
+  type: 'summon',
+  armorClass: 13,
+  hitPoints: 18,
+  initiativeModifier: null,
+}
+
+export const mockHomebrewListing: HomebrewItemRow[] = [
+  mockHomebrewItem,
+  mockHomebrewPlayer,
+  mockHomebrewSummon,
+]

@@ -1,28 +1,24 @@
-import { defineComponent } from 'vue'
-import { useForm } from 'vee-validate'
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import AttackInputs from '~/components/form/AttackInputs.vue'
+import { mountWithForm } from '~~/test/nuxt/stubs/form'
 
-function mountWithForm(attackType: DndAttackType = 'melee') {
-  const Wrapper = defineComponent({
-    components: { FormAttackInputs: AttackInputs },
-    setup() {
-      useForm({ initialValues: { attack: { attackType } } })
-    },
-    template: '<FormAttackInputs field-name="attack" />',
+async function mountAttackInputs(attackType: DndAttackType = 'melee') {
+  const { component } = await mountWithForm(AttackInputs, {
+    props: { fieldName: 'attack' },
+    initialValues: { attack: { attackType } },
   })
-  return mountSuspended(Wrapper)
+
+  return component
 }
 
 describe('AttackInputs', () => {
   it('Should match snapshot', async () => {
-    const component = await mountWithForm()
+    const component = await mountAttackInputs()
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should always render name, attackType, toHitMod and distanceUnit fields', async () => {
-    const component = await mountWithForm()
+    const component = await mountAttackInputs()
     const html = component.html()
 
     expect(html).toContain('components.inputs.nameLabel')
@@ -32,7 +28,7 @@ describe('AttackInputs', () => {
   })
 
   it('Should always render damage and extra damage fields', async () => {
-    const component = await mountWithForm()
+    const component = await mountAttackInputs()
     const html = component.html()
 
     expect(html).toContain('components.inputs.damageDieCountLabel')
@@ -46,7 +42,7 @@ describe('AttackInputs', () => {
   })
 
   it('Should always render the targetCreatureOnly checkbox', async () => {
-    const component = await mountWithForm()
+    const component = await mountAttackInputs()
 
     expect(component.html()).toContain(
       'components.inputs.targetCreatureOnlyLabel',
@@ -55,7 +51,7 @@ describe('AttackInputs', () => {
 
   describe('Conditional fields based on attackType', () => {
     it('Should show reach for melee attack', async () => {
-      const component = await mountWithForm('melee')
+      const component = await mountAttackInputs('melee')
 
       expect(component.html()).toContain('components.inputs.reachLabel')
       expect(component.html()).not.toContain('components.inputs.rangeLabel')
@@ -63,14 +59,14 @@ describe('AttackInputs', () => {
     })
 
     it('Should show reach for meleeSpell attack', async () => {
-      const component = await mountWithForm('meleeSpell')
+      const component = await mountAttackInputs('meleeSpell')
 
       expect(component.html()).toContain('components.inputs.reachLabel')
       expect(component.html()).not.toContain('components.inputs.rangeLabel')
     })
 
     it('Should show range and longRange for ranged attack', async () => {
-      const component = await mountWithForm('ranged')
+      const component = await mountAttackInputs('ranged')
 
       expect(component.html()).not.toContain('components.inputs.reachLabel')
       expect(component.html()).toContain('components.inputs.rangeLabel')
@@ -78,7 +74,7 @@ describe('AttackInputs', () => {
     })
 
     it('Should show range but not longRange for rangedSpell attack', async () => {
-      const component = await mountWithForm('rangedSpell')
+      const component = await mountAttackInputs('rangedSpell')
 
       expect(component.html()).not.toContain('components.inputs.reachLabel')
       expect(component.html()).toContain('components.inputs.rangeLabel')
@@ -86,14 +82,14 @@ describe('AttackInputs', () => {
     })
 
     it('Should show spell save fields for meleeSpell attack', async () => {
-      const component = await mountWithForm('meleeSpell')
+      const component = await mountAttackInputs('meleeSpell')
 
       expect(component.html()).toContain('components.inputs.spellSaveLabel')
       expect(component.html()).toContain('components.inputs.saveTypeLabel')
     })
 
     it('Should show spell save fields for rangedSpell attack', async () => {
-      const component = await mountWithForm('rangedSpell')
+      const component = await mountAttackInputs('rangedSpell')
 
       expect(component.html()).toContain('components.inputs.spellSaveLabel')
       expect(component.html()).toContain('components.inputs.saveTypeLabel')
@@ -101,7 +97,7 @@ describe('AttackInputs', () => {
 
     it('Should not show spell save fields for physical attacks', async () => {
       for (const type of ['melee', 'ranged'] as DndAttackType[]) {
-        const component = await mountWithForm(type)
+        const component = await mountAttackInputs(type)
 
         expect(component.html()).not.toContain(
           'components.inputs.spellSaveLabel',

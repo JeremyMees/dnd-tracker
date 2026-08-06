@@ -1,0 +1,480 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`HomebrewTraits > Should match snapshot 1`] = `
+"<div class="space-y-6">
+  <div class="space-y-4">
+    <div class="flex items-end justify-between gap-2"><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" test-id="label">components.inputs.traitsLabel
+        <!--v-if-->
+      </label><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-8 rounded-md px-3 text-xs" type="button"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.add</button></div>
+    <div class="space-y-4">
+      <div class="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg text-sm">components.repeaterInput.noItems</div>
+    </div>
+  </div>
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div class="space-y-2"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Damage immunities
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-1-form-item-description" aria-invalid="false" id="reka-v-0-0-1-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-1-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" id="reka-v-0-0-2-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-2-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bludgeoning
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" id="reka-v-0-0-3-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" id="reka-v-0-0-4-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-5-form-item-description" aria-invalid="false" id="reka-v-0-0-5-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-5-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Force
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-6-form-item-description" aria-invalid="false" id="reka-v-0-0-6-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-6-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lightning
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-7-form-item-description" aria-invalid="false" id="reka-v-0-0-7-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-7-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Necrotic
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-8-form-item-description" aria-invalid="false" id="reka-v-0-0-8-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-8-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Piercing
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-9-form-item-description" aria-invalid="false" id="reka-v-0-0-9-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-9-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poison
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-10-form-item-description" aria-invalid="false" id="reka-v-0-0-10-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-10-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Psychic
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-11-form-item-description" aria-invalid="false" id="reka-v-0-0-11-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-11-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Radiant
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-12-form-item-description" aria-invalid="false" id="reka-v-0-0-12-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-12-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slashing
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-13-form-item-description" aria-invalid="false" id="reka-v-0-0-13-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-13-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Thunder
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-14-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Damage resistances
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-15-form-item-description" aria-invalid="false" id="reka-v-0-0-15-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-15-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-16-form-item-description" aria-invalid="false" id="reka-v-0-0-16-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-16-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bludgeoning
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-17-form-item-description" aria-invalid="false" id="reka-v-0-0-17-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-17-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-18-form-item-description" aria-invalid="false" id="reka-v-0-0-18-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-18-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-19-form-item-description" aria-invalid="false" id="reka-v-0-0-19-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-19-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Force
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-20-form-item-description" aria-invalid="false" id="reka-v-0-0-20-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-20-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lightning
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-21-form-item-description" aria-invalid="false" id="reka-v-0-0-21-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-21-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Necrotic
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-22-form-item-description" aria-invalid="false" id="reka-v-0-0-22-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-22-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Piercing
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-23-form-item-description" aria-invalid="false" id="reka-v-0-0-23-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-23-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poison
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-24-form-item-description" aria-invalid="false" id="reka-v-0-0-24-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-24-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Psychic
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-25-form-item-description" aria-invalid="false" id="reka-v-0-0-25-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-25-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Radiant
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-26-form-item-description" aria-invalid="false" id="reka-v-0-0-26-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-26-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slashing
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-27-form-item-description" aria-invalid="false" id="reka-v-0-0-27-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-27-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Thunder
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-28-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Damage vulnerabilities
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-29-form-item-description" aria-invalid="false" id="reka-v-0-0-29-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-29-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-30-form-item-description" aria-invalid="false" id="reka-v-0-0-30-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-30-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Bludgeoning
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-31-form-item-description" aria-invalid="false" id="reka-v-0-0-31-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-31-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-32-form-item-description" aria-invalid="false" id="reka-v-0-0-32-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-32-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-33-form-item-description" aria-invalid="false" id="reka-v-0-0-33-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-33-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Force
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-34-form-item-description" aria-invalid="false" id="reka-v-0-0-34-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-34-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lightning
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-35-form-item-description" aria-invalid="false" id="reka-v-0-0-35-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-35-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Necrotic
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-36-form-item-description" aria-invalid="false" id="reka-v-0-0-36-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-36-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Piercing
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-37-form-item-description" aria-invalid="false" id="reka-v-0-0-37-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-37-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poison
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-38-form-item-description" aria-invalid="false" id="reka-v-0-0-38-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-38-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Psychic
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-39-form-item-description" aria-invalid="false" id="reka-v-0-0-39-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-39-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Radiant
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-40-form-item-description" aria-invalid="false" id="reka-v-0-0-40-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-40-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Slashing
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-41-form-item-description" aria-invalid="false" id="reka-v-0-0-41-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-41-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Thunder
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+      </div>
+      <!---->
+    </div>
+    <div class="space-y-2"><label for="reka-v-0-0-42-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Condition immunities
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div class="grid gap-1 grid-cols-2 rounded-md border p-3">
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-43-form-item-description" aria-invalid="false" id="reka-v-0-0-43-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-43-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Blinded
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-44-form-item-description" aria-invalid="false" id="reka-v-0-0-44-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-44-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Charmed
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-45-form-item-description" aria-invalid="false" id="reka-v-0-0-45-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-45-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Deafened
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-46-form-item-description" aria-invalid="false" id="reka-v-0-0-46-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-46-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Frightened
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-47-form-item-description" aria-invalid="false" id="reka-v-0-0-47-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-47-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Grappled
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-48-form-item-description" aria-invalid="false" id="reka-v-0-0-48-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-48-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Incapacitated
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-49-form-item-description" aria-invalid="false" id="reka-v-0-0-49-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-49-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Invisible
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-50-form-item-description" aria-invalid="false" id="reka-v-0-0-50-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-50-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Paralyzed
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-51-form-item-description" aria-invalid="false" id="reka-v-0-0-51-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-51-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Petrified
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-52-form-item-description" aria-invalid="false" id="reka-v-0-0-52-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-52-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Poisoned
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-53-form-item-description" aria-invalid="false" id="reka-v-0-0-53-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-53-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Prone
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-54-form-item-description" aria-invalid="false" id="reka-v-0-0-54-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-54-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Restrained
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-55-form-item-description" aria-invalid="false" id="reka-v-0-0-55-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-55-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Stunned
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-56-form-item-description" aria-invalid="false" id="reka-v-0-0-56-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-56-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Unconscious
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-57-form-item-description" aria-invalid="false" id="reka-v-0-0-57-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <!---->
+          </button>
+          <!--v-if--><label for="reka-v-0-0-57-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Exhaustion
+            <!--v-if-->
+            <!--v-if-->
+          </label>
+        </div>
+      </div>
+      <!---->
+    </div>
+  </div>
+</div>"
+`;
