@@ -16,7 +16,6 @@
     "typecheck": "nuxt typecheck",
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > shared/types/database-generated.ts",
     "prepare": "husky",
-    "e2e": "npx playwright test",
     "test": "vitest",
     "deps": "npx taze -w"
   },
@@ -101,7 +100,6 @@
     "@iconify-json/tabler": "^1.2.38",
     "@inspira-ui/plugins": "^0.0.2",
     "@nuxt/test-utils": "^4.1.0",
-    "@playwright/test": "^1.62.1",
     "@tanstack/eslint-plugin-query": "^5.101.4",
     "@types/node": "^26.1.2",
     "@types/sanitize-html": "^2.16.1",

@@ -24,21 +24,8 @@ logs
 !.env.example
 !.env.test
 
-# Local Netlify folder
-.netlify
-
-# Playwright
-/test/e2e/results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/test/e2e/.auth
-
 # Sentry Config File
 .env.sentry-build-plugin
-
-# Cursor
-.cursor
 
 # VSCode
 .vscode/mcp.json
