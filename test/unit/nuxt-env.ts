@@ -25,9 +25,12 @@ export function nuxtAutoImports(): Plugin {
         'useI18n',
         'useSupabaseClient',
       ].map(name => ({ name, from: '#app' })),
-      ...['defineEventHandler', 'sendRedirect', 'readValidatedBody'].map(
-        name => ({ name, from: 'h3' }),
-      ),
+      ...[
+        'defineEventHandler',
+        'sendRedirect',
+        'readValidatedBody',
+        'readBody',
+      ].map(name => ({ name, from: 'h3' })),
     ],
     presets: ['vue'],
     dts: false,
