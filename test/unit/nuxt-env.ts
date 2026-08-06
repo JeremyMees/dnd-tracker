@@ -8,7 +8,6 @@ export const nuxtAliases = {
   '~': resolve(root, 'app'),
   '~~': root,
   '#app': resolve(import.meta.dirname, 'stubs/nuxt.ts'),
-  '#supabase/server': resolve(import.meta.dirname, 'stubs/supabase-server.ts'),
 }
 
 export function nuxtAutoImports(): Plugin {
@@ -26,10 +25,9 @@ export function nuxtAutoImports(): Plugin {
         'useI18n',
         'useSupabaseClient',
       ].map(name => ({ name, from: '#app' })),
-      ...['defineEventHandler', 'sendRedirect'].map(name => ({
-        name,
-        from: 'h3',
-      })),
+      ...['defineEventHandler', 'sendRedirect', 'readValidatedBody'].map(
+        name => ({ name, from: 'h3' }),
+      ),
     ],
     presets: ['vue'],
     dts: false,
