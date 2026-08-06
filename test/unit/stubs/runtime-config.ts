@@ -4,6 +4,7 @@ import { createError } from 'h3'
 const hoisted = vi.hoisted(() => ({
   useRuntimeConfig: vi.fn<() => Record<string, unknown>>(() => ({
     public: {},
+    stripeSk: 'sk_test_placeholder',
   })),
 }))
 
