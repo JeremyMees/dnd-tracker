@@ -8,17 +8,19 @@ withDefaults(
     variant?: ModalVariant
     header?: string
     subHeader?: string
+    closing?: boolean
   }>(),
   {
     variant: 'default',
     header: '',
     subHeader: '',
+    closing: false,
   },
 )
 </script>
 
 <template>
-  <UiDialog open>
+  <UiDialog :open="!closing">
     <UiDialogContent
       :class="{
         'max-w-xl': variant === 'default',

@@ -12,17 +12,19 @@ withDefaults(
     confirmText: string
     declineText: string
     loading?: boolean
+    closing?: boolean
     callback: ConfirmCallback
   }>(),
   {
     type: 'danger',
     loading: false,
+    closing: false,
   },
 )
 </script>
 
 <template>
-  <UiAlertDialog open>
+  <UiAlertDialog :open="!closing">
     <UiAlertDialogContent>
       <UiAlertDialogHeader>
         <UiAlertDialogTitle>

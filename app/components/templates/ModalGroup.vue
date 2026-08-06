@@ -31,6 +31,7 @@ const modalComponents: Record<ModalComponent, Component> = {
     :header="modal.header"
     :sub-header="modal.subHeader"
     :variant="modal.variant"
+    :closing="modal.closing"
     @close="close(modal.uuid)"
   >
     <component

@@ -8,11 +8,26 @@ export interface ConfirmConfig {
 export interface PopulatedConfirmConfig extends Required<ConfirmConfig> {
   uuid: string
   loading: boolean
+  closing: boolean
   callback: ConfirmCallback
 }
 
+const CLOSE_ANIMATION_DURATION = 200
+
 export function useConfirmDialogs() {
   const dialogs = useState<PopulatedConfirmConfig[]>('confirmDialogs', () => [])
+
+  function closeDialog(uuid: string): void {
+    const dialog = dialogs.value.find(dialog => dialog.uuid === uuid)
+
+    if (dialog) {
+      dialog.closing = true
+
+      setTimeout(() => {
+        dialogs.value = dialogs.value.filter(dialog => dialog.uuid !== uuid)
+      }, CLOSE_ANIMATION_DURATION)
+    }
+  }
 
   const handlers = {
     confirm: async (uuid: string) => {
@@ -22,7 +37,7 @@ export function useConfirmDialogs() {
           dialogs.value[foundIndex].loading = true
           await dialogs.value[foundIndex].callback(true)
 
-          dialogs.value.splice(foundIndex, 1)
+          closeDialog(uuid)
         } catch {
           dialogs.value[foundIndex].loading = false
         }
@@ -33,7 +48,7 @@ export function useConfirmDialogs() {
       if (foundIndex !== -1 && dialogs.value[foundIndex]) {
         await dialogs.value[foundIndex].callback(false)
 
-        dialogs.value.splice(foundIndex, 1)
+        closeDialog(uuid)
       }
     },
   }
@@ -55,6 +70,7 @@ export function useConfirm() {
           uuid: crypto.randomUUID(),
           callback,
           loading: false,
+          closing: false,
           title: t('components.confirmationModal.title'),
           description: t('components.confirmationModal.text'),
           confirmText: t('actions.continue'),

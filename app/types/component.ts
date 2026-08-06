@@ -32,6 +32,7 @@ export interface Modal {
   variant?: ModalVariant
   props?: Record<string, unknown>
   events?: Record<string, (...args: never[]) => void>
+  closing?: boolean
 }
 
 export type ConfirmCallback = (confirmed: boolean) => unknown
