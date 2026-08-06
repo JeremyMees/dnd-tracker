@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFeatureListing, useFeatureVote } from '~~/queries/features'
+import { useFeatureListing, useFeatureVote } from '~/queries/features'
 
 useSeo('Feature request')
 

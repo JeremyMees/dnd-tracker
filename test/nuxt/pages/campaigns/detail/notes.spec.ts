@@ -53,7 +53,7 @@ let listingEnabled: ComputedRef<boolean> | undefined
 let listingPageSize: number | undefined
 let countCampaign: number | undefined
 
-vi.mock('~~/queries/notes', () => ({
+vi.mock('~/queries/notes', () => ({
   useNoteCount: (id: number, enabled: ComputedRef<boolean>) => {
     countCampaign = id
     countEnabled = enabled
@@ -84,7 +84,7 @@ interface ColumnOptions {
 
 let columnOptions: ColumnOptions | undefined
 
-vi.mock('~~/tables/note-listing', () => ({
+vi.mock('~/tables/note-listing', () => ({
   generateColumns: (options: ColumnOptions) => {
     columnOptions = options
 

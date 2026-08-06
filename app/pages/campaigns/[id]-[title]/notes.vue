@@ -6,8 +6,8 @@ import {
   generateColumns,
   expandedMarkup,
   initialState,
-} from '~~/tables/note-listing'
-import { useNoteCount, useNoteListing, useNoteRemove } from '~~/queries/notes'
+} from '~/tables/note-listing'
+import { useNoteCount, useNoteListing, useNoteRemove } from '~/queries/notes'
 
 useSeo('Campaign notes')
 

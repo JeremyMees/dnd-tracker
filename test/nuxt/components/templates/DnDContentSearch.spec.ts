@@ -27,7 +27,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast: mockToast }),
 }))
 
-vi.mock('~~/queries/open5e', () => ({
+vi.mock('~/queries/open5e', () => ({
   useOpen5eListing: () => ({ data, status }),
   useOpen5eDocuments: () => ({ data: ref([]), status: ref('success') }),
 }))

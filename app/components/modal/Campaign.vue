@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCampaignCreate, useCampaignUpdate } from '~~/queries/campaigns'
+import { useCampaignCreate, useCampaignUpdate } from '~/queries/campaigns'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useProfileUpdate, useProfileRemove } from '~~/queries/profiles'
+import { useProfileUpdate, useProfileRemove } from '~/queries/profiles'
 
 definePageMeta({ auth: true })
 useSeo('Profile')

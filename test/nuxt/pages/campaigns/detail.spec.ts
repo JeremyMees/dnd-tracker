@@ -13,7 +13,7 @@ const isPending = ref(false)
 const isError = ref(false)
 const isSuccess = ref(true)
 
-vi.mock('~~/queries/campaigns', () => ({
+vi.mock('~/queries/campaigns', () => ({
   useCampaignDetail: () => ({ data, isPending, isError, isSuccess }),
 }))
 

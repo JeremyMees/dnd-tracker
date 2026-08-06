@@ -5,8 +5,8 @@ import {
   getExpandedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
-import { generateColumns, expandedMarkup } from '~~/tables/initiative-sheet'
-import { prefetchConditionsListing } from '~~/queries/open5e'
+import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
+import { prefetchConditionsListing } from '~/queries/open5e'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 defineProps<{ loading: boolean }>()

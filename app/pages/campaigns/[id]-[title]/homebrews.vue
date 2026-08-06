@@ -5,12 +5,12 @@ import {
   generateColumns,
   expandedMarkup,
   initialState,
-} from '~~/tables/homebrew-listing'
+} from '~/tables/homebrew-listing'
 import {
   useHomebrewCount,
   useHomebrewListing,
   useHomebrewRemove,
-} from '~~/queries/homebrews'
+} from '~/queries/homebrews'
 
 useSeo('Campaign homebrews')
 

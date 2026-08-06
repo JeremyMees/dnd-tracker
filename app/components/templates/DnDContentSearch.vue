@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useOpen5eListing, useOpen5eDocuments } from '~~/queries/open5e'
+import { useOpen5eListing, useOpen5eDocuments } from '~/queries/open5e'
 
 const props = withDefaults(
   defineProps<{

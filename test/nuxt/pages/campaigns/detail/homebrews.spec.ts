@@ -49,7 +49,7 @@ let listingEnabled: ComputedRef<boolean> | undefined
 let listingPageSize: number | undefined
 let countCampaign: number | undefined
 
-vi.mock('~~/queries/homebrews', () => ({
+vi.mock('~/queries/homebrews', () => ({
   useHomebrewCount: (id: number, enabled: ComputedRef<boolean>) => {
     countCampaign = id
     countEnabled = enabled
@@ -77,7 +77,7 @@ interface ColumnOptions {
 
 let columnOptions: ColumnOptions | undefined
 
-vi.mock('~~/tables/homebrew-listing', () => ({
+vi.mock('~/tables/homebrew-listing', () => ({
   generateColumns: (options: ColumnOptions) => {
     columnOptions = options
 

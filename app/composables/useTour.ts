@@ -1,5 +1,5 @@
 import type { Config, DriveStep, Driver } from 'driver.js'
-import { useProfileUpdate } from '~~/queries/profiles'
+import { useProfileUpdate } from '~/queries/profiles'
 
 export function useTour() {
   const { user } = useAuthentication()

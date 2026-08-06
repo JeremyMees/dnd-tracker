@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePricingListing } from '~~/queries/pricing'
+import { usePricingListing } from '~/queries/pricing'
 
 useSeo('Pricing')
 

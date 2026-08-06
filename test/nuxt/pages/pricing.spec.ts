@@ -11,7 +11,7 @@ const { navigateTo, useFetch, useSeo } = vi.hoisted(() => ({
   useSeo: vi.fn(),
 }))
 
-vi.mock('~~/queries/pricing', () => ({
+vi.mock('~/queries/pricing', () => ({
   usePricingListing: () => ({ data: products, isPending }),
 }))
 

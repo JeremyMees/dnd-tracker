@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useHomebrewCreate, useHomebrewUpdate } from '~~/queries/homebrews'
+import { useHomebrewCreate, useHomebrewUpdate } from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { homebrewType } from '~~/constants/validation'

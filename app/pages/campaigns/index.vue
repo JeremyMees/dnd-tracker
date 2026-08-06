@@ -2,13 +2,13 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
-import { generateColumns, initialState } from '~~/tables/campaign-listing'
+import { generateColumns, initialState } from '~/tables/campaign-listing'
 import {
   useCampaignCount,
   useCampaignListing,
   useCampaignRemove,
-} from '~~/queries/campaigns'
-import { useTeamMemberRemove } from '~~/queries/team-members'
+} from '~/queries/campaigns'
+import { useTeamMemberRemove } from '~/queries/team-members'
 
 definePageMeta({ auth: true })
 useSeo('Campaigns')

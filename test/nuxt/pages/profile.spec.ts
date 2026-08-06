@@ -19,7 +19,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
 }))
 
-vi.mock('~~/queries/profiles', () => ({
+vi.mock('~/queries/profiles', () => ({
   useProfileUpdate: () => ({ mutateAsync: updateProfile }),
   useProfileRemove: () => ({ mutateAsync: removeProfile }),
 }))

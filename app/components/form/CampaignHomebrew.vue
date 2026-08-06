@@ -7,11 +7,8 @@ import {
   getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
-import {
-  generateColumns,
-  initialState,
-} from '~~/tables/homebrew-select-listing'
-import { useHomebrewListing } from '~~/queries/homebrews'
+import { generateColumns, initialState } from '~/tables/homebrew-select-listing'
+import { useHomebrewListing } from '~/queries/homebrews'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const emit = defineEmits<{ close: [] }>()

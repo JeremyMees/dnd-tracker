@@ -25,7 +25,7 @@ const props: Props = {
   item: sheet.rows[0]!,
 }
 
-vi.mock('~~/queries/open5e', () => ({
+vi.mock('~/queries/open5e', () => ({
   useConditionsListing: () => ({
     data: ref(conditions),
     isPending: ref(false),

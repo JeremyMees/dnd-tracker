@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { useToast } from '~/components/ui/toast/use-toast'
-import {
-  useTeamMemberRemove,
-  useJoinTokenRemove,
-} from '~~/queries/team-members'
+import { useTeamMemberRemove, useJoinTokenRemove } from '~/queries/team-members'
 
 useSeo('Campaign settings')
 

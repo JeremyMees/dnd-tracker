@@ -22,7 +22,7 @@ vi.mock('driver.js/dist/driver.css', () => {
   return {}
 })
 
-vi.mock('~~/queries/profiles', () => ({
+vi.mock('~/queries/profiles', () => ({
   useProfileUpdate: () => ({ mutateAsync: updateProfileMock }),
 }))
 

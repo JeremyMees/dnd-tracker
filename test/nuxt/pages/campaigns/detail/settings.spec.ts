@@ -32,7 +32,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
 }))
 
-vi.mock('~~/queries/team-members', () => ({
+vi.mock('~/queries/team-members', () => ({
   useTeamMemberRemove: () => ({ mutateAsync: removeTeamMember }),
   useJoinTokenRemove: () => ({ mutateAsync: removeJoinCampaignToken }),
 }))

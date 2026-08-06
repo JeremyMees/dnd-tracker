@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useJoinTokenCreate } from '~~/queries/team-members'
+import { useJoinTokenCreate } from '~/queries/team-members'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 

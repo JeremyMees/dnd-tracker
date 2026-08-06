@@ -24,7 +24,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
 }))
 
-vi.mock('~~/queries/campaigns', () => ({
+vi.mock('~/queries/campaigns', () => ({
   useCampaignRemove: () => ({ mutateAsync: removeCampaign }),
 }))
 

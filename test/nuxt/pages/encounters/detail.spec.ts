@@ -53,7 +53,7 @@ const data = ref<InitiativeSheet | undefined>()
 const isPending = ref(false)
 const isError = ref(false)
 
-vi.mock('~~/queries/initiative-sheets', () => ({
+vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
 }))

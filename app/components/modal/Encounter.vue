@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useEncounterCreate, useEncounterUpdate } from '~~/queries/encounters'
-import { useCampaignMinimalListing } from '~~/queries/campaigns'
+import { useEncounterCreate, useEncounterUpdate } from '~/queries/encounters'
+import { useCampaignMinimalListing } from '~/queries/campaigns'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 

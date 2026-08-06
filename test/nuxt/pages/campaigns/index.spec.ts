@@ -48,7 +48,7 @@ const status = ref<'pending' | 'success' | 'error'>('success')
 
 let filter: ComputedRef<SbFilter> | undefined
 
-vi.mock('~~/queries/campaigns', () => ({
+vi.mock('~/queries/campaigns', () => ({
   useCampaignCount: () => ({ data: count }),
   useCampaignListing: (data: ComputedRef<SbFilter>) => {
     filter = data
@@ -58,7 +58,7 @@ vi.mock('~~/queries/campaigns', () => ({
   useCampaignRemove: () => ({ mutateAsync: removeCampaign }),
 }))
 
-vi.mock('~~/queries/team-members', () => ({
+vi.mock('~/queries/team-members', () => ({
   useTeamMemberRemove: () => ({ mutateAsync: removeTeamMember }),
 }))
 
@@ -69,7 +69,7 @@ interface ColumnOptions {
 
 let columnOptions: ColumnOptions | undefined
 
-vi.mock('~~/tables/campaign-listing', () => ({
+vi.mock('~/tables/campaign-listing', () => ({
   generateColumns: (options: ColumnOptions) => {
     columnOptions = options
 

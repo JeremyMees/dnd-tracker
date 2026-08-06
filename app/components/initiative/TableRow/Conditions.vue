@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useConditionsListing } from '~~/queries/open5e'
+import { useConditionsListing } from '~/queries/open5e'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 

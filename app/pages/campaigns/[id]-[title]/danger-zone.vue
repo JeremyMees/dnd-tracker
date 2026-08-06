@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useCampaignRemove } from '~~/queries/campaigns'
+import { useCampaignRemove } from '~/queries/campaigns'
 
 useSeo('Campaign danger zone')
 

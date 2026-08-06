@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCampaignDetail } from '~~/queries/campaigns'
+import { useCampaignDetail } from '~/queries/campaigns'
 
 definePageMeta({
   auth: true,

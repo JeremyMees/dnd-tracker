@@ -5,7 +5,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
-} from '~~/queries/initiative-sheets'
+} from '~/queries/initiative-sheets'
 
 definePageMeta({
   auth: true,

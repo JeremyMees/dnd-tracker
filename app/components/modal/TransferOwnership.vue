@@ -3,8 +3,8 @@ import { useToast } from '~/components/ui/toast/use-toast'
 import {
   useTeamMemberCreate,
   useTeamMemberRemove,
-} from '~~/queries/team-members'
-import { useCampaignUpdate } from '~~/queries/campaigns'
+} from '~/queries/team-members'
+import { useCampaignUpdate } from '~/queries/campaigns'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { campaignTransferRole } from '~~/constants/validation'

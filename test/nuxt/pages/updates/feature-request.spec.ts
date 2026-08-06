@@ -16,7 +16,7 @@ const { navigateTo, open, scrollToId, useSeo, vote } = vi.hoisted(() => ({
 
 let filters: ComputedRef<SbFilter> | undefined
 
-vi.mock('~~/queries/features', () => ({
+vi.mock('~/queries/features', () => ({
   useFeatureListing: (input: ComputedRef<SbFilter>) => {
     filters = input
     return { data, status }

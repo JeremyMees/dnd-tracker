@@ -25,7 +25,7 @@ const props: Props = {
   loading: false,
 }
 
-vi.mock('~~/queries/open5e', () => ({
+vi.mock('~/queries/open5e', () => ({
   prefetchConditionsListing: () => Promise.resolve(),
   useConditionsListing: () => ({
     data: conditions,
