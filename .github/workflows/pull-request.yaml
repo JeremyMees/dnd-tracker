@@ -1,69 +1,14 @@
 name: Pull request
+
 on:
   pull_request:
     branches: ["main", "develop", "develop/*"]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  linting:
-    name: Linting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: "npm"
-      - name: Install dependencies
-        run: npm install
-      - name: Run eslint
-        run: npm run lint
-
-  formatting:
-    name: Formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: "npm"
-      - name: Install dependencies
-        run: npm install
-      - name: Run prettier
-        run: npm run format
-
-  typechecking:
-    name: Typechecking
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: "npm"
-      - name: Install dependencies
-        run: npm install
-      - name: Run typechecking
-        run: npm run typecheck
-
-  testing:
-    name: Testing
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: "npm"
-      - name: Install dependencies
-        run: npm install
-      - name: Run tests
-        run: npm run test
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yaml

@@ -1,0 +1,53 @@
+name: Validate
+
+on:
+  workflow_call:
+
+jobs:
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          save-cache: "true"
+      - name: Run eslint
+        run: npm run lint
+
+  formatting:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          prepare: "false"
+      - name: Run prettier
+        run: npm run format
+
+  typechecking:
+    name: Typechecking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Run typechecking
+        run: npm run typecheck
+
+  testing:
+    name: Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Run tests
+        run: npm run test
