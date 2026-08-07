@@ -1,0 +1,13 @@
+test
+.github
+.husky
+.vscode
+.claude
+supabase
+README.md
+LICENSE
+vitest.config.ts
+lint-staged.config.mjs
+eslint.config.mjs
+.prettierrc
+.prettierignore

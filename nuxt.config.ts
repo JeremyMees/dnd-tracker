@@ -99,6 +99,7 @@ export default defineNuxtConfig({
 
   sourcemap: {
     client: 'hidden',
+    server: false,
   },
 
   compatibilityDate: '2026-08-03',
@@ -169,9 +170,11 @@ export default defineNuxtConfig({
   ogImage: { enabled: false },
 
   sentry: {
-    sourceMapsUploadOptions: {
-      org: 'kees',
-      project: 'dnd-tracker',
+    org: 'kees',
+    project: 'dnd-tracker',
+
+    sourcemaps: {
+      filesToDeleteAfterUpload: ['./.vercel/output/static/**/*.map'],
     },
 
     autoInjectServerSentry: 'top-level-import',
