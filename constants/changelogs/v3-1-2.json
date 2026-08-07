@@ -1,0 +1,45 @@
+{
+  "version": "v3.1.2",
+  "date": "2026-08-07",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Pages now load about 10% faster"
+        },
+        {
+          "text": "Less used fields in the homebrew form are hidden behind an advanced toggle, so the form is easier to fill in"
+        },
+        {
+          "text": "English is now the default language instead of Dutch"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Pop-ups and confirmation windows now open and close with a smooth animation"
+        },
+        {
+          "text": "Added more automated checks behind the scenes to catch problems before they reach you"
+        },
+        {
+          "text": "Everything you type is now checked more carefully before it is saved, keeping your data safer"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "The number of encounters shown could be wrong and no longer match the encounters you actually have"
+        },
+        {
+          "text": "The border of a selected input field was cut off inside pop-ups"
+        }
+      ]
+    }
+  ]
+}
