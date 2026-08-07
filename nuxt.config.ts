@@ -104,6 +104,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-08-03',
 
   nitro: {
+    externals: {
+      inline: ['sanitize-html'],
+    },
     rollupConfig: {
       plugins: [
         // @ts-expect-error Needed for vue-email
