@@ -59,7 +59,7 @@ describe('TitleText', async () => {
       slots,
     })
 
-    const buttonWrapper = component.find('[data-test-button]')
+    const buttonWrapper = component.find('[test-id="button"]')
 
     expect(buttonWrapper.classes()).toContain('justify-center')
     expect(component.find('.group').classes()).toContain('text-center')
@@ -75,7 +75,7 @@ describe('TitleText', async () => {
       slots,
     })
 
-    const buttonWrapper = component.find('[data-test-button]')
+    const buttonWrapper = component.find('[test-id="button"]')
 
     expect(buttonWrapper.classes()).toContain('justify-start')
     expect(component.find('.group').classes()).not.toContain('text-center')
@@ -87,7 +87,7 @@ describe('TitleText', async () => {
       slots,
     })
 
-    const link = component.find('[data-test-link]')
+    const link = component.find('[test-id="link"]')
 
     expect(component.text()).toContain('Click Me')
     expect(link.exists()).toBeTruthy()
@@ -102,7 +102,7 @@ describe('TitleText', async () => {
       slots,
     })
 
-    const button = component.find('[data-test-button]')
+    const button = component.find('[test-id="button"]')
 
     expect(button.exists()).toBeFalsy()
   })
@@ -115,7 +115,7 @@ describe('TitleText', async () => {
       slots,
     })
 
-    const button = component.find('[data-test-button]')
+    const button = component.find('[test-id="button"]')
     expect(button.exists()).toBeFalsy()
   })
 })

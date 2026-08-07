@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCardSpell from '~/components/molecules/ContentCard/ContentCardSpell.vue'
-import { dndSpellFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndSpellFixture } from '~~/test/fixtures/open5e'
 
 interface Props {
   content: DndSpell
@@ -24,7 +24,7 @@ describe('ContentCardSpell', async () => {
     const component = await mountSuspended(ContentCardSpell, { props })
 
     expect(component.text()).toContain('A shimmering green arrow')
-    expect(component.find('[data-test-separator]').exists()).toBeFalsy()
+    expect(component.find('[test-id="separator"]').exists()).toBeFalsy()
     expect(component.text()).not.toContain('Level: 2')
   })
 
@@ -33,7 +33,7 @@ describe('ContentCardSpell', async () => {
       props: { ...props, isOpen: true },
     })
 
-    expect(component.find('[data-test-separator]').exists()).toBeTruthy()
+    expect(component.find('[test-id="separator"]').exists()).toBeTruthy()
     expect(component.text()).toContain('Level: 2')
     expect(component.text()).toContain('School: evocation')
     expect(component.text()).toContain('Classes: wizard')

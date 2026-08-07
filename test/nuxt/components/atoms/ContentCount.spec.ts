@@ -22,7 +22,7 @@ describe('ContentCount', async () => {
   it('Should render with default props correctly', async () => {
     const component = await mountSuspended(ContentCount, { props })
 
-    expect(component.find('[data-test-count]').text()).toBe(
+    expect(component.find('[test-id="count"]').text()).toBe(
       `${props.count}/${props.max}`,
     )
   })
@@ -32,7 +32,7 @@ describe('ContentCount', async () => {
       props: { ...props, count: 0 },
     })
 
-    expect(component.find('[data-test-count]').text()).toBe(`0/${props.max}`)
+    expect(component.find('[test-id="count"]').text()).toBe(`0/${props.max}`)
   })
 
   it('Should render a loading state', async () => {
@@ -40,12 +40,12 @@ describe('ContentCount', async () => {
       props: { ...props, loading: true },
     })
 
-    expect(component.find('[data-test-skeleton]').exists()).toBeTruthy()
+    expect(component.find('[test-id="skeleton"]').exists()).toBeTruthy()
 
     component.setProps({ loading: false, count: undefined })
     await nextTick()
 
-    expect(component.find('[data-test-skeleton]').exists()).toBeTruthy()
+    expect(component.find('[test-id="skeleton"]').exists()).toBeTruthy()
   })
 
   it('Should render red text when count is greater or equal to max', async () => {
@@ -53,7 +53,7 @@ describe('ContentCount', async () => {
       props: { ...props, count: 2 },
     })
 
-    expect(component.find('[data-test-count]').attributes('class')).toContain(
+    expect(component.find('[test-id="count"]').attributes('class')).toContain(
       'text-destructive',
     )
   })

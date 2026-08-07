@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify'
+import { allowedHTMLAttr, allowedHTMLTags } from '~~/constants/html-policy'
 
 export function scrollToId(id: string): void {
   const el = document.getElementById(id)
@@ -16,40 +17,27 @@ export function randomColor(): string {
   return Math.floor(Math.random() * 16777215).toString(16)
 }
 
-export function sortByNumber(
-  a: number | any[],
-  b: number | any[],
-  acs: boolean,
-): number {
-  a = Array.isArray(a) ? a.length : a
-  b = Array.isArray(b) ? b.length : b
+export function sortByNumber(a: unknown, b: unknown, acs: boolean): number {
+  const aNum = Array.isArray(a) ? a.length : a
+  const bNum = Array.isArray(b) ? b.length : b
 
-  if (a == null) {
-    return b == null ? 0 : 1
-  } else if (b == null) {
-    return -1
-  }
+  if (typeof aNum !== 'number') return typeof bNum === 'number' ? 1 : 0
+  if (typeof bNum !== 'number') return -1
 
-  return acs ? a - b : b - a
+  return acs ? aNum - bNum : bNum - aNum
 }
 
-export function sortByString(a: string, b: string, acs: boolean): number {
-  a = a ?? ''
-  b = b ?? ''
+export function sortByString(a: unknown, b: unknown, acs: boolean): number {
+  const aStr = typeof a === 'string' ? a : ''
+  const bStr = typeof b === 'string' ? b : ''
 
-  return acs ? a.localeCompare(b) : b.localeCompare(a)
+  return acs ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr)
 }
 
 export function sortCreatedAt<T extends { createdAt: string }>(arr: T[]): T[] {
   return arr.sort((a, b) => {
     return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
   })
-}
-
-export function focusInput({ node }: any): void {
-  const id = node?.context?.id
-
-  if (id) document.getElementById(id)?.focus()
 }
 
 export function homebrewIcon(type: HomebrewType): string {
@@ -97,25 +85,10 @@ export function homebrewColor(type: HomebrewType): string {
   }
 }
 
-export function sanitizeHTML(dirty: string): string {
+export function sanitizeClientHTML(dirty: string): string {
   return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: [
-      'h1',
-      'h2',
-      'h3',
-      'p',
-      'a',
-      'ol',
-      'ul',
-      'li',
-      'blockquote',
-      'hr',
-      'mark',
-      'strong',
-      'em',
-      's',
-    ],
-    ALLOWED_ATTR: ['href', 'name', 'target', 'rel'],
+    ALLOWED_TAGS: allowedHTMLTags,
+    ALLOWED_ATTR: allowedHTMLAttr,
   }).replaceAll('<hr />', '<hr>')
 }
 

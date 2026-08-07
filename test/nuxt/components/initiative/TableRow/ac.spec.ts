@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Ac from '~/components/initiative/TableRow/Ac.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface AcTestMethods {
   handleAcChanges: (
@@ -60,11 +60,11 @@ describe('Initiative table row ac', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-ac]').text()).toBe(armorClass.toString())
-    expect(component.get('[data-test-max]').text()).toContain(
+    expect(component.get('[test-id="ac"]').text()).toBe(armorClass.toString())
+    expect(component.get('[test-id="max"]').text()).toContain(
       maxArmorClass.toString(),
     )
-    expect(component.get('[data-test-temp]').text()).toContain(
+    expect(component.get('[test-id="temp"]').text()).toContain(
       tempArmorClass.toString(),
     )
   })
@@ -77,10 +77,10 @@ describe('Initiative table row ac', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-trigger]').classes()).toContain(
+    expect(component.get('[test-id="trigger"]').classes()).toContain(
       'bg-destructive/20',
     )
-    expect(component.get('[data-test-ac]').classes()).toContain(
+    expect(component.get('[test-id="ac"]').classes()).toContain(
       'text-destructive',
     )
   })
@@ -94,7 +94,7 @@ describe('Initiative table row ac', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
+    expect(component.get('[test-id="empty"]').isVisible()).toBeTruthy()
   })
 
   it('Should set AC to 0 when negative values are not allowed', async () => {

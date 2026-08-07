@@ -27,7 +27,7 @@ export default defineNuxtRouteMiddleware(async to => {
     ) {
       return navigateTo(localePath('/no-access'))
     }
-  } catch (error) {
+  } catch {
     return navigateTo(localePath('/'))
   }
 })

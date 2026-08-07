@@ -27,9 +27,10 @@ const onSubmit = form.handleSubmit(async values => {
     })
 
     emit('close')
-  } catch (err: any) {
+  } catch (err) {
     formError.value =
-      err.message || 'An error occurred during updating initiative settings'
+      getErrorMessage(err) ||
+      'An error occurred during updating initiative settings'
   }
 })
 </script>

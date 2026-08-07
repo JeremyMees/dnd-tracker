@@ -60,9 +60,16 @@ export function sbPages(count: number | null, perPage: number): number {
   return Math.ceil((count || 1) / perPage)
 }
 
-export function sbCount(key: string, obj: Record<string, any>): number {
-  const value = obj[key]
+export function sbCount(key: string, obj: object): number {
+  const value = (obj as Record<string, unknown>)[key]
 
-  if (value && Array.isArray(value) && value.length) return value[0].count
-  else return 0
+  if (Array.isArray(value) && value.length) {
+    const [first] = value
+
+    if (typeof first === 'object' && first !== null && 'count' in first) {
+      return typeof first.count === 'number' ? first.count : 0
+    }
+  }
+
+  return 0
 }

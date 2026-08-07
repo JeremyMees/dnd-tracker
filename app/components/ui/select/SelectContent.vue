@@ -7,9 +7,8 @@ import {
   SelectViewport,
   useForwardPropsEmits,
 } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import type { HTMLAttributes } from 'vue'
 import { SelectScrollDownButton, SelectScrollUpButton } from '.'
-import { cn } from '@/utils/shadcn'
 
 defineOptions({
   inheritAttrs: false,
@@ -19,6 +18,7 @@ const props = withDefaults(
   defineProps<SelectContentProps & { class?: HTMLAttributes['class'] }>(),
   {
     position: 'popper',
+    class: '',
   },
 )
 const emits = defineEmits<SelectContentEmits>()

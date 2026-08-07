@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useConditionsListing } from '~~/queries/open5e'
+import { useConditionsListing } from '~/queries/open5e'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { renderMarkdown } = useMarkdown()
 
 const selected = ref<DndCondition[]>([])
 const popoverOpen = ref<boolean>(false)
@@ -58,7 +59,7 @@ function toggleSelected(item: DndCondition): void {
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
         <button
-          data-test-trigger
+          test-id="trigger"
           :disabled="isPending"
           :class="{ 'cursor-progress': isPending }"
           class="h-[27px] flex flex-col justify-center"
@@ -104,12 +105,12 @@ function toggleSelected(item: DndCondition): void {
     </UiPopover>
     <div
       v-if="item.conditions.length"
-      data-test-conditions
+      test-id="conditions"
       class="flex flex-wrap justify-center md:justify-start gap-1"
     >
       <UiPopover v-for="condition in item.conditions" :key="condition.name">
         <UiPopoverTrigger>
-          <UiBadge data-test-badge class="whitespace-nowrap">
+          <UiBadge test-id="badge" class="whitespace-nowrap">
             {{ condition.name }}
             {{ condition.level ? `(${condition.level})` : '' }}
           </UiBadge>
@@ -119,7 +120,7 @@ function toggleSelected(item: DndCondition): void {
             <UiPopoverTitle>{{ condition.name }}</UiPopoverTitle>
           </UiPopoverHeader>
           <div
-            v-dompurify-html="$md.render(condition.desc)"
+            v-dompurify-html="renderMarkdown(condition.desc)"
             class="text-sm text-muted-foreground"
           />
           <UiNumberField

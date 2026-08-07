@@ -1,6 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
+import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
 import middleware from '~/middleware/encounter-share-access'
 
 vi.mock('@tanstack/vue-query', async importOriginal => {
@@ -13,17 +13,22 @@ const mockQueryClient = {
   removeQueries: vi.fn(),
 }
 
+const { fetchMock } = vi.hoisted(() => ({ fetchMock: vi.fn() }))
+
+mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('createError', () => vi.fn(message => new Error(message)))
 
 describe('Encounter share access middleware', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    fetchMock.mockReset()
   })
 
   it('should return early when no token in query', async () => {
     await middleware(mockTo, mockFrom)
 
+    expect(fetchMock).not.toHaveBeenCalled()
     expect(mockQueryClient.setQueryData).not.toHaveBeenCalled()
     expect(mockQueryClient.removeQueries).not.toHaveBeenCalled()
     expect(navigateTo).not.toHaveBeenCalled()
@@ -32,12 +37,11 @@ describe('Encounter share access middleware', () => {
   it('should set query data when fetch succeeds with encounter', async () => {
     const mockEncounter = { id: 1, name: 'Test Encounter' }
 
-    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi.fn().mockResolvedValue(mockEncounter)
+    fetchMock.mockResolvedValue(mockEncounter)
 
     await middleware({ ...mockTo, query: { token: 'valid-token' } }, mockFrom)
 
-    expect(global.$fetch).toHaveBeenCalledWith('/api/encounter/share', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/share', {
       query: { token: 'valid-token' },
     })
     expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
@@ -49,8 +53,7 @@ describe('Encounter share access middleware', () => {
   })
 
   it('should remove queries and navigate when fetch succeeds but no encounter', async () => {
-    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi.fn().mockResolvedValue(null)
+    fetchMock.mockResolvedValue(null)
 
     await middleware({ ...mockTo, query: { token: 'invalid-token' } }, mockFrom)
 
@@ -62,8 +65,7 @@ describe('Encounter share access middleware', () => {
   })
 
   it('should remove queries and navigate on fetch error', async () => {
-    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi.fn().mockRejectedValue(new Error('Fetch failed'))
+    fetchMock.mockRejectedValue(new Error('Fetch failed'))
 
     await middleware({ ...mockTo, query: { token: 'error-token' } }, mockFrom)
 

@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCardArmor from '~/components/molecules/ContentCard/ContentCardArmor.vue'
-import { dndArmorFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndArmorFixture } from '~~/test/fixtures/open5e'
 
 interface Props {
   content: DndArmor

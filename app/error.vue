@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { Motion } from 'motion-v'
 import type { NuxtError } from '#app'
 
 useSeo('Error')
 
-defineProps({
-  error: Object as () => NuxtError,
-})
+withDefaults(
+  defineProps<{
+    error?: NuxtError
+  }>(),
+  {
+    error: undefined,
+  },
+)
 </script>
 
 <template>
@@ -15,7 +19,7 @@ defineProps({
       class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center pt-10"
     >
       <div class="text-[100px] font-black">
-        {{ error!.status }}
+        {{ error?.status }}
       </div>
       <h1 class="text-primary">
         {{ $t('pages.error.404') }}

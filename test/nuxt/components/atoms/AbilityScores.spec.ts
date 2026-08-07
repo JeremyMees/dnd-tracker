@@ -32,13 +32,13 @@ describe('AbilityScores', () => {
   it('should render all 6 ability score blocks', async () => {
     const component = await mountSuspended(AbilityScores, { props })
 
-    expect(component.findAll('[data-test-ability-block]')).toHaveLength(6)
+    expect(component.findAll('[test-id="ability-block"]')).toHaveLength(6)
   })
 
   it('should display each ability abbreviation', async () => {
     const component = await mountSuspended(AbilityScores, { props })
     const labels = component
-      .findAll('[data-test-ability-label]')
+      .findAll('[test-id="ability-label"]')
       .map(el => el.text())
 
     expect(labels).toContain('STR')
@@ -52,7 +52,7 @@ describe('AbilityScores', () => {
   it('should display formatted modifiers with + prefix for positive values', async () => {
     const component = await mountSuspended(AbilityScores, { props })
     const modifierTexts = component
-      .findAll('[data-test-ability-modifier]')
+      .findAll('[test-id="ability-modifier"]')
       .map(el => el.text())
 
     expect(modifierTexts).toContain('+4')
@@ -65,7 +65,7 @@ describe('AbilityScores', () => {
   it('should display formatted modifier with - prefix for negative values', async () => {
     const component = await mountSuspended(AbilityScores, { props })
     const modifierTexts = component
-      .findAll('[data-test-ability-modifier]')
+      .findAll('[test-id="ability-modifier"]')
       .map(el => el.text())
 
     expect(modifierTexts).toContain('-1')
@@ -74,7 +74,7 @@ describe('AbilityScores', () => {
   it('should display raw ability scores', async () => {
     const component = await mountSuspended(AbilityScores, { props })
     const scoreTexts = component
-      .findAll('[data-test-ability-score]')
+      .findAll('[test-id="ability-score"]')
       .map(el => el.text())
 
     expect(scoreTexts).toContain('18')
@@ -95,7 +95,7 @@ describe('AbilityScores', () => {
       props: { abilityScores, modifiers: partialModifiers },
     })
     const modifierTexts = component
-      .findAll('[data-test-ability-modifier]')
+      .findAll('[test-id="ability-modifier"]')
       .map(el => el.text())
 
     expect(modifierTexts).toContain('+4')
@@ -112,7 +112,7 @@ describe('AbilityScores', () => {
       props: { abilityScores, modifiers: partialModifiers },
     })
     const modifierTexts = component
-      .findAll('[data-test-ability-modifier]')
+      .findAll('[test-id="ability-modifier"]')
       .map(el => el.text())
 
     expect(modifierTexts).toContain('+0')

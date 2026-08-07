@@ -13,6 +13,7 @@ const props = withDefaults(
   >(),
   {
     required: false,
+    class: '',
   },
 )
 

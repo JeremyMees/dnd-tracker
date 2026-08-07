@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import user from '../fixtures/user.json'
+import user from '../../fixtures/user.json'
 import { useAuthentication } from '~/composables/useAuthentication'
 import { useUi } from '~/composables/useUi'
 
@@ -15,8 +15,8 @@ describe('useUi', async () => {
 
   afterEach(() => vi.clearAllMocks())
 
-  const createAuthMock = (userData: any) => ({
-    user: ref(userData),
+  const createAuthMock = (userData: unknown) => ({
+    user: ref(userData as AuthUser | null),
     register: vi.fn(),
     login: vi.fn(),
     logout: vi.fn(),

@@ -1,6 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
+import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
 import middleware from '~/middleware/valid-token'
 
 vi.mock('@tanstack/vue-query', async importOriginal => {
@@ -24,6 +24,9 @@ const mockQueryClient = {
   setQueryData: vi.fn(),
 }
 
+const { fetchMock } = vi.hoisted(() => ({ fetchMock: vi.fn() }))
+
+mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))
 mockNuxtImport('navigateTo', () => vi.fn())
 
@@ -31,6 +34,7 @@ describe('Valid Token middleware', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     singleMock.mockReset()
+    fetchMock.mockReset()
   })
 
   it('should redirect to home when no token', async () => {
@@ -51,8 +55,7 @@ describe('Valid Token middleware', () => {
   it('should throw when $fetch fails', async () => {
     const query = { token: 'invalid' }
 
-    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi.fn().mockRejectedValue(new Error('Invalid token'))
+    fetchMock.mockRejectedValue(new Error('Invalid token'))
 
     await expect(middleware({ ...mockTo, query }, mockFrom)).rejects.toThrow(
       'Invalid token',
@@ -62,10 +65,7 @@ describe('Valid Token middleware', () => {
   it('should redirect to no-access when supabase query fails', async () => {
     const query = { token: 'valid' }
 
-    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi
-      .fn()
-      .mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
+    fetchMock.mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
     singleMock.mockResolvedValue({
       data: null,
       error: { message: 'Not found' },
@@ -85,10 +85,7 @@ describe('Valid Token middleware', () => {
       campaign: { id: 1, title: 'Test' },
     }
 
-    // @ts-expect-error - Error is expected to be thrown, but we want to mock the response for the test
-    global.$fetch = vi
-      .fn()
-      .mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
+    fetchMock.mockResolvedValue({ campaign: 1, user: 2, role: 'member' })
     singleMock.mockResolvedValue({ data: mockData, error: null })
 
     await middleware({ ...mockTo, query }, mockFrom)

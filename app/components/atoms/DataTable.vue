@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="TData extends { id: number }">
 import type {
   ColumnDef,
   PaginationState,
@@ -18,17 +18,22 @@ const emit = defineEmits<{
   invalidate: []
 }>()
 
-type PermissionFunc = (item: any) => Promise<boolean>
+type PermissionFunc = (item: TData) => Promise<boolean>
 
 const props = withDefaults(
   defineProps<{
-    columns: ColumnDef<any, any>[]
-    data: any[]
+    // Each column carries a different cell value type, and TanStack's ColumnDef
+    // is invariant in that second parameter — so a heterogeneous column array
+    // cannot be typed with `unknown`. TanStack's own docs and shadcn-vue use
+    // `any` here for the same reason. TData below is fully typed.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    columns: ColumnDef<TData, any>[]
+    data: TData[]
     loading: boolean
-    options?: Partial<TableOptions<any>>
+    options?: Partial<TableOptions<TData>>
     emptyMessage?: string
     permission?: boolean | PermissionFunc
-    expandedMarkup?: (row: Row<any>) => VNode
+    expandedMarkup?: (row: Row<TData>) => VNode
     pageSize?: number
   }>(),
   {
@@ -83,11 +88,11 @@ const table = useVueTable({
   manualPagination: true,
   manualSorting: true,
   manualFiltering: true,
-  enableRowSelection: (row: Row<any>) =>
+  enableRowSelection: (row: Row<TData>) =>
     rowSelectionPermissions.value[row.original.id] ?? false,
   getCoreRowModel: getCoreRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
-  getRowId: row => row.id,
+  getRowId: row => String(row.id),
   onSortingChange: updaterOrValue => {
     valueUpdater(updaterOrValue, sorting)
     pagination.value.pageIndex = 0
@@ -149,7 +154,7 @@ async function fetchPermissions() {
         <slot name="top" />
         <UiButton
           v-if="selectedRowLength"
-          data-test-remove
+          test-id="remove"
           variant="destructive"
           size="sm"
           :aria-label="
@@ -214,7 +219,11 @@ async function fetchPermissions() {
                   />
                   <Icon
                     v-if="header.column.getIsSorted()"
-                    :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
+                    :name="
+                      header.column.getIsSorted() === 'asc'
+                        ? 'tabler:sort-ascending'
+                        : 'tabler:sort-descending'
+                    "
                     class="size-4"
                   />
                 </div>
@@ -269,7 +278,7 @@ async function fetchPermissions() {
 
             <UiTableRow v-else>
               <UiTableCell
-                data-test-empty
+                test-id="empty"
                 :colspan="columns.length"
                 class="h-24 text-center text-muted-foreground"
               >
@@ -306,7 +315,7 @@ async function fetchPermissions() {
         <ClientOnly>
           <UiPagination
             v-model:page="internalPage"
-            :data-test-pagination="internalPage"
+            :test-id="internalPage"
             :total="
               Math.max(1, (options?.pageCount || 0) * pagination.pageSize)
             "
@@ -330,12 +339,12 @@ async function fetchPermissions() {
                 class="border-0 border-r rounded-r-none border-r-foreground"
               />
               <UiPaginationPrev
-                data-test-pagination-prev
+                test-id="pagination-prev"
                 :disabled="!table.getCanPreviousPage()"
                 class="border-0 border-r rounded-r-none border-r-foreground"
               />
               <UiPaginationNext
-                data-test-pagination-next
+                test-id="pagination-next"
                 :disabled="
                   !table.getCanNextPage() ||
                   (options?.pageCount && options.pageCount <= 1)

@@ -21,7 +21,7 @@ const reversedPercentage = computed<number>(() => {
       class="stroke-current text-secondary"
     />
     <circle
-      data-test-dial
+      test-id="dial"
       cx="18"
       cy="18"
       r="16"

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { useToast } from '~/components/ui/toast/use-toast'
-import {
-  useTeamMemberRemove,
-  useJoinTokenRemove,
-} from '~~/queries/team-members'
+import { useTeamMemberRemove, useJoinTokenRemove } from '~/queries/team-members'
 
 useSeo('Campaign settings')
 
@@ -115,6 +112,7 @@ async function remove(
               <div
                 v-for="member in members"
                 :key="member.user.id"
+                test-id="member"
                 class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
               >
                 <div class="flex items-center gap-2">
@@ -144,7 +142,11 @@ async function remove(
                     </span>
                   </div>
                 </div>
-                <div v-if="member?.invite" class="flex items-center gap-2">
+                <div
+                  v-if="member?.invite"
+                  test-id="invited"
+                  class="flex items-center gap-2"
+                >
                   <Icon
                     name="tabler:send"
                     :aria-hidden="true"
@@ -154,7 +156,7 @@ async function remove(
                     {{ $t('general.invited') }}
                   </span>
                 </div>
-                <div v-else-if="member.role === 'Owner'">
+                <div v-else-if="member.role === 'Owner'" test-id="owner">
                   {{ $t(`general.roles.Owner.title`) }}
                 </div>
                 <FormRoleUpdate
@@ -165,6 +167,7 @@ async function remove(
                 <div class="flex sm:justify-end items-center">
                   <UiButton
                     v-tippy="$t('actions.delete')"
+                    test-id="remove"
                     variant="destructive-ghost"
                     size="icon-sm"
                     :disabled="member.role === 'Owner'"
@@ -188,6 +191,7 @@ async function remove(
         <div class="flex justify-end mt-4">
           <ClientOnly>
             <UiButton
+              test-id="invite"
               :aria-label="$t('pages.campaign.settings.add')"
               :disabled="
                 [...(current?.team || []), ...(current?.join_campaign || [])]

@@ -1,8 +1,8 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
-import conditions from '~~/test/nuxt/fixtures/conditions.json'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
+import conditions from '~~/test/fixtures/conditions.json'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 interface Props {
@@ -25,7 +25,7 @@ const props: Props = {
   loading: false,
 }
 
-vi.mock('~~/queries/open5e', () => ({
+vi.mock('~/queries/open5e', () => ({
   prefetchConditionsListing: () => Promise.resolve(),
   useConditionsListing: () => ({
     data: conditions,
@@ -38,14 +38,16 @@ vi.mock('~~/queries/open5e', () => ({
 }))
 
 vi.mock('~~/composables/initiative-sheet', () => ({
-  useInitiativeSheet: (data: any, update: any) => {
+  useInitiativeSheet: (data: ComputedRef<InitiativeSheet | undefined>) => {
     const expanded = ref({})
     const selected = ref<Record<string, boolean>>({})
     const active = computed(() => {
       const selectedRowId = Object.keys(selected.value).find(
         key => selected.value[key] === true,
       )
-      return data.value?.rows.find((row: any) => row.id === selectedRowId)
+      return data.value?.rows.find(
+        (row: InitiativeSheetRow) => row.id === selectedRowId,
+      )
     })
     const columnVisibility = computed(() => {
       const rows = data.value?.settings?.modified
@@ -101,8 +103,8 @@ describe('Initiative table', () => {
   it('Should display table rows when data is available and widgets section', async () => {
     const component = await mountSuspended(Table, { props, provide })
 
-    expect(component.findAll('[data-test-row]').length).toBe(sheet.rows.length)
-    expect(component.find('[data-test-widgets]').exists()).toBeTruthy()
+    expect(component.findAll('[test-id="row"]').length).toBe(sheet.rows.length)
+    expect(component.find('[test-id="widgets"]').exists()).toBeTruthy()
   })
 
   it('Should display loading state when loading is true', async () => {
@@ -116,7 +118,7 @@ describe('Initiative table', () => {
       provide,
     })
 
-    expect(component.findAll('[data-test-loading]').length).toBe(10)
+    expect(component.findAll('[test-id="loading"]').length).toBe(10)
   })
 
   it('Should display empty state when no data is available', async () => {
@@ -127,7 +129,7 @@ describe('Initiative table', () => {
       provide,
     })
 
-    expect(component.find('[data-test-empty-state]').exists()).toBeTruthy()
+    expect(component.find('[test-id="empty-state"]').exists()).toBeTruthy()
   })
 
   describe('Table padding', () => {
@@ -164,7 +166,7 @@ describe('Initiative table', () => {
     it('Should show all columns by default and update when settings change', async () => {
       const component = await mountSuspended(Table, { props, provide })
 
-      expect(component.findAll('[data-test-header]').length).toBe(10)
+      expect(component.findAll('[test-id="header"]').length).toBe(10)
 
       mockSheet.value = {
         ...sheet,
@@ -177,7 +179,7 @@ describe('Initiative table', () => {
 
       await nextTick()
 
-      expect(component.findAll('[data-test-header]').length).toBe(3)
+      expect(component.findAll('[test-id="header"]').length).toBe(3)
     })
 
     it('Should hide columns based on settings', async () => {
@@ -192,7 +194,7 @@ describe('Initiative table', () => {
 
       const component = await mountSuspended(Table, { props, provide })
 
-      expect(component.findAll('[data-test-header]').length).toBe(5)
+      expect(component.findAll('[test-id="header"]').length).toBe(5)
     })
 
     it('Should maintain column visibility state after row expansion', async () => {
@@ -207,13 +209,13 @@ describe('Initiative table', () => {
 
       const component = await mountSuspended(Table, { props, provide })
 
-      const firstRow = component.find('[data-test-row]')
+      const firstRow = component.find('[test-id="row"]')
       const expandButton = firstRow.find('button[arialabel="actions.show"]')
 
       await expandButton.trigger('click')
       await nextTick()
 
-      expect(component.findAll('[data-test-header]').length).toBe(3)
+      expect(component.findAll('[test-id="header"]').length).toBe(3)
     })
   })
 
@@ -221,7 +223,7 @@ describe('Initiative table', () => {
     const component = await mountSuspended(Table, { props, provide })
 
     // Test row selection
-    const firstRow = component.find('[data-test-row]')
+    const firstRow = component.find('[test-id="row"]')
     await firstRow.trigger('click')
     await nextTick()
 
@@ -232,6 +234,6 @@ describe('Initiative table', () => {
     await expandButton.trigger('click')
     await nextTick()
 
-    expect(component.find('[data-test-expanded]').exists()).toBeTruthy()
+    expect(component.find('[test-id="expanded"]').exists()).toBeTruthy()
   })
 })

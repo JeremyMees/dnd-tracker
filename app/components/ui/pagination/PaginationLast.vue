@@ -7,6 +7,7 @@ const props = withDefaults(
   defineProps<PaginationLastProps & { class?: HTMLAttributes['class'] }>(),
   {
     asChild: true,
+    class: '',
   },
 )
 

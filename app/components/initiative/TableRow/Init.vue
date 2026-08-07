@@ -48,8 +48,9 @@ const onSubmit = form.handleSubmit(async values => {
 
     await update({ rows })
     popoverOpen.value = false
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred during name update'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred during name update'
   }
 })
 
@@ -111,15 +112,15 @@ async function moveRow(up: boolean): Promise<void> {
   <div class="flex gap-2 items-center text-left">
     <UiPopover v-model:open="popoverOpen">
       <UiPopoverTrigger as-child>
-        <button data-test-trigger class="flex flex-col justify-center">
+        <button test-id="trigger" class="flex flex-col justify-center">
           <Icon
             v-if="item.initiative < 0"
-            data-test-empty
+            test-id="empty"
             name="tabler:plus"
             class="size-5 min-w-5 text-foreground/10"
             aria-hidden="true"
           />
-          <span v-else data-test-initiative>
+          <span v-else test-id="initiative">
             {{ item.initiative }}
           </span>
         </button>
@@ -174,13 +175,13 @@ async function moveRow(up: boolean): Promise<void> {
     </UiPopover>
     <div
       v-if="item.initiative !== null && item.initiative >= 0"
-      data-test-controls
+      test-id="controls"
       class="flex flex-col"
     >
       <button
         v-if="canGoUp"
         v-tippy="$t('actions.moveUp')"
-        data-test-up
+        test-id="up"
         :aria-label="$t('actions.moveUp')"
         :class="{ 'relative top-1': canGoDown }"
         class="flex items-center"
@@ -195,7 +196,7 @@ async function moveRow(up: boolean): Promise<void> {
       <button
         v-if="canGoDown"
         v-tippy="$t('actions.moveDown')"
-        data-test-down
+        test-id="down"
         :aria-label="$t('actions.moveDown')"
         :class="{ 'relative bottom-1': canGoUp }"
         class="flex items-center"

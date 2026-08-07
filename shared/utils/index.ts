@@ -1,4 +1,6 @@
+export * from './locale'
 export * from './parse'
+
 export * from './transformers/armor'
 export * from './transformers/condition'
 export * from './transformers/magic-item'

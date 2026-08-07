@@ -2,14 +2,14 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import Notes from '~/components/initiative/TableRow/Notes.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
 }
 
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -84,7 +84,7 @@ describe('Initiative table row notes', async () => {
 
   it('Should not update when sheet is undefined', async () => {
     vi.useFakeTimers()
-    mockSheet.value = undefined as any
+    mockSheet.value = undefined
 
     const component = await mountSuspended(Notes, {
       props,

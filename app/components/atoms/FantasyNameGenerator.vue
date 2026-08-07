@@ -52,7 +52,7 @@ watch([selectedRace, selectedDndGender], () => {
   <div class="flex flex-col gap-4">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-2">
-        <label v-if="!compact" data-test-label class="text-sm font-medium">
+        <label v-if="!compact" test-id="label" class="text-sm font-medium">
           Race
         </label>
         <UiSelect v-model="selectedRace">
@@ -72,7 +72,7 @@ watch([selectedRace, selectedDndGender], () => {
       </div>
 
       <div class="flex flex-col gap-2">
-        <label v-if="!compact" data-test-label class="text-sm font-medium">
+        <label v-if="!compact" test-id="label" class="text-sm font-medium">
           DndGender
         </label>
         <UiSelect v-model="selectedDndGender">
@@ -114,7 +114,7 @@ watch([selectedRace, selectedDndGender], () => {
     <SkeletonList v-else :amount="amount" />
 
     <div
-      data-test-actions
+      test-id="actions"
       class="flex w-full gap-2"
       :class="compact ? '' : 'flex-col mt-4'"
     >
@@ -125,7 +125,7 @@ watch([selectedRace, selectedDndGender], () => {
         </p>
       </div>
       <UiButton
-        data-test-generate
+        test-id="generate"
         :disabled="!names.length"
         class="self-end"
         @click="generate"

@@ -6,8 +6,8 @@ import {
   generateColumns,
   expandedMarkup,
   initialState,
-} from '~~/tables/note-listing'
-import { useNoteCount, useNoteListing, useNoteRemove } from '~~/queries/notes'
+} from '~/tables/note-listing'
+import { useNoteCount, useNoteListing, useNoteRemove } from '~/queries/notes'
 
 useSeo('Campaign notes')
 
@@ -26,7 +26,7 @@ const { t } = useI18n()
 const { startCoolDown, isInCoolDown, getRemainingTime } = useCoolDown()
 const queryClient = useQueryClient()
 
-const table = ref<InstanceType<typeof DataTable>>()
+const table = ref<DataTableExposed>()
 const pageSize = 20
 const max = 100
 
@@ -122,7 +122,7 @@ async function sendNoteAsMail(
       description: t('general.mail.success.title'),
       variant: 'success',
     })
-  } catch (err) {
+  } catch {
     toast({
       title: t('general.error.title'),
       description: t('general.error.text'),

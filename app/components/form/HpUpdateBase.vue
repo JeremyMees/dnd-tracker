@@ -35,8 +35,9 @@ const onSubmit = form.handleSubmit(async values => {
     }
 
     await props.updateRow(row)
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred while updating base HP'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred while updating base HP'
   }
 })
 </script>

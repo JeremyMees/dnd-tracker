@@ -6,7 +6,8 @@ export function useSeo(title?: string): void {
   useHead({
     ...(title ? { title } : {}),
     titleTemplate: (title?: string) => {
-      const isHome = availableLocales.includes(title?.toLowerCase() as any)
+      const lowered = title?.toLowerCase()
+      const isHome = availableLocales.some(locale => locale === lowered)
       return title && !isHome ? `${title} | ${seo.name}` : seo.name
     },
     htmlAttrs: {
@@ -19,6 +20,12 @@ export function useSeo(title?: string): void {
         href: '/favicon.ico',
       },
     ],
+    meta: [
+      {
+        name: 'keywords',
+        content: seo.keywords,
+      },
+    ],
   })
 
   useSeoMeta({
@@ -27,7 +34,6 @@ export function useSeo(title?: string): void {
     twitterImage: seo.socials,
     twitterTitle: seo.title,
     twitterDescription: seo.description,
-    keywords: seo.keywords,
   })
 
   useSchemaOrg([

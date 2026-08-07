@@ -41,8 +41,9 @@ const onSubmit = form.handleSubmit(async values => {
     })
 
     navigateTo(localePath('/'))
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred during contact request'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred during contact request'
 
     toast({
       description: t('general.mail.fail.text'),
@@ -56,7 +57,7 @@ const onSubmit = form.handleSubmit(async values => {
 <template>
   <NuxtLayout name="centered">
     <template #header>
-      <h1 class="head-3">
+      <h1 test-id="title" class="head-3">
         {{ $t('pages.contact.title') }}
       </h1>
     </template>
@@ -68,7 +69,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.nameLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput type="text" v-bind="componentField" />
+            <UiInput test-id="name" type="text" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -79,7 +80,7 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.emailLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiInput type="email" v-bind="componentField" />
+            <UiInput test-id="email" type="email" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
@@ -90,15 +91,15 @@ const onSubmit = form.handleSubmit(async values => {
             {{ $t('components.inputs.questionLabel') }}
           </UiFormLabel>
           <UiFormControl>
-            <UiTextarea v-bind="componentField" />
+            <UiTextarea test-id="question" v-bind="componentField" />
           </UiFormControl>
           <UiFormMessage />
         </UiFormItem>
       </UiFormField>
-      <div v-if="formError" class="text-sm text-destructive">
+      <div v-if="formError" test-id="error" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton type="submit" class="w-full">
+      <UiButton test-id="submit" type="submit" class="w-full">
         {{ $t('pages.contact.send') }}
       </UiButton>
     </UiFormWrapper>

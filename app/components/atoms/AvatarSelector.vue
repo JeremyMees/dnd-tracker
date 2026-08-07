@@ -13,23 +13,21 @@ const current = computed<number>(() => {
     : 0
 })
 
+const identifiers: Record<string, { icon: string; label: string }> = {
+  accessoriesVariant: { icon: 'tabler:eyeglass-2', label: 'accessories' },
+  backgroundColor: { icon: 'tabler:background', label: 'backgroundColor' },
+  clothingColor: { icon: 'tabler:shirt', label: 'clothingColor' },
+  expressionVariant: { icon: 'tabler:lego', label: 'face' },
+  facialHairVariant: { icon: 'tabler:moustache', label: 'facialHair' },
+  headVariant: { icon: 'tabler:mood-boy', label: 'hair' },
+}
+
 const icon = computed<string>(() => {
-  switch (props.identifier) {
-    case 'backgroundColor':
-      return 'tabler:background'
-    case 'accessories':
-      return 'tabler:eyeglass-2'
-    case 'clothingColor':
-      return 'tabler:shirt'
-    case 'face':
-      return 'tabler:lego'
-    case 'facialHair':
-      return 'tabler:moustache'
-    case 'head':
-      return 'tabler:mood-boy'
-    default:
-      return 'tabler:palette'
-  }
+  return identifiers[props.identifier]?.icon ?? 'tabler:palette'
+})
+
+const label = computed<string>(() => {
+  return identifiers[props.identifier]?.label ?? props.identifier
 })
 
 function prev(): void {
@@ -54,18 +52,18 @@ function next(): void {
     class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden"
   >
     <Icon
-      v-tippy="$t(`general.${identifier === 'head' ? 'hair' : identifier}`)"
-      data-test-icon
+      v-tippy="$t(`general.${label}`)"
+      test-id="icon"
       :name="icon"
       class="min-w-6 min-h-6"
       aria-hidden="true"
     />
-    <span data-test-current class="w-8 text-xs text-muted-foreground">
+    <span test-id="current" class="w-8 text-xs text-muted-foreground">
       {{ current + 1 }}/{{ options.length }}
     </span>
     <div class="flex items-center">
       <button
-        data-test-prev
+        test-id="prev"
         :aria-label="$t('actions.prev')"
         class="w-5 flex items-center justify-center focus:outline-primary"
         @click="prev"
@@ -77,7 +75,7 @@ function next(): void {
         />
       </button>
       <button
-        data-test-next
+        test-id="next"
         :aria-label="$t('actions.next')"
         class="w-5 flex items-center justify-center focus:outline-primary"
         @click="next"

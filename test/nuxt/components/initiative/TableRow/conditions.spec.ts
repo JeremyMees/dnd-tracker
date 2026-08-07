@@ -2,8 +2,8 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Conditions from '~/components/initiative/TableRow/Conditions.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
-import conditions from '~~/test/nuxt/fixtures/conditions.json'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
+import conditions from '~~/test/fixtures/conditions.json'
 
 interface Props {
   item: InitiativeSheetRow
@@ -25,7 +25,7 @@ const props: Props = {
   item: sheet.rows[0]!,
 }
 
-vi.mock('~~/queries/open5e', () => ({
+vi.mock('~/queries/open5e', () => ({
   useConditionsListing: () => ({
     data: ref(conditions),
     isPending: ref(false),
@@ -60,7 +60,7 @@ describe('Initiative table row conditions', async () => {
   it('Should always show add condition button', async () => {
     const component = await mountSuspended(Conditions, { props, provide })
 
-    expect(component.find('[data-test-trigger]').exists()).toBeTruthy()
+    expect(component.find('[test-id="trigger"]').exists()).toBeTruthy()
   })
 
   it('Should show selected conditions', async () => {
@@ -74,9 +74,9 @@ describe('Initiative table row conditions', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-conditions]').exists()).toBeTruthy()
+    expect(component.find('[test-id="conditions"]').exists()).toBeTruthy()
 
-    const badges = component.findAll('[data-test-badge]')
+    const badges = component.findAll('[test-id="badge"]')
 
     expect(badges.length).toBe(2)
     expect(badges[0]!.text()).toBe(conditions[0]!.name)
@@ -94,7 +94,7 @@ describe('Initiative table row conditions', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-conditions]').exists()).toBeFalsy()
+    expect(component.find('[test-id="conditions"]').exists()).toBeFalsy()
   })
 
   it('Should display the level of the condition if available', async () => {
@@ -113,7 +113,7 @@ describe('Initiative table row conditions', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-badge]').text()).toBe(
+    expect(component.find('[test-id="badge"]').text()).toBe(
       `${conditions[0]!.name} (2)`,
     )
   })

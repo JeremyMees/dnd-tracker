@@ -21,7 +21,7 @@ describe('PercentageDial', async () => {
 
   it('Should set stroke-dashoffset to the correct value', async () => {
     const component = await mountSuspended(PercentageDial, { props })
-    const dial = component.find('[data-test-dial]')
+    const dial = component.find('[test-id="dial"]')
 
     expect(dial.attributes('stroke-dashoffset')).toBe('-50')
 

@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Name from '~/components/initiative/TableRow/Name.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
@@ -13,7 +13,7 @@ type MockFunctions = {
 }
 
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -49,8 +49,8 @@ describe('Initiative table row name', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-name]').text()).toBe(props.item.name)
-    expect(component.find('[data-test-summoner]').text()).toBe(
+    expect(component.find('[test-id="name"]').text()).toBe(props.item.name)
+    expect(component.find('[test-id="summoner"]').text()).toBe(
       'general.summoner: Summoner',
     )
   })
@@ -58,11 +58,11 @@ describe('Initiative table row name', async () => {
   it('Should not display summoner', async () => {
     const component = await mountSuspended(Name, { props, provide })
 
-    expect(component.find('[data-test-summoner]').exists()).toBeFalsy()
+    expect(component.find('[test-id="summoner"]').exists()).toBeFalsy()
   })
 
   it('Should not update if sheet is undefined', async () => {
-    mockSheet.value = undefined as any
+    mockSheet.value = undefined
 
     const component = await mountSuspended(Name, {
       props,

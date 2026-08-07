@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useJoinTokenCreate } from '~~/queries/team-members'
+import { useJoinTokenCreate } from '~/queries/team-members'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -97,7 +97,9 @@ async function handleSearch(): Promise<void> {
 
       noUser.value = undefined
     } else noUser.value = email
-  } catch ({ message }: any) {
+  } catch (error) {
+    const message = getErrorMessage(error) ?? ''
+
     if (
       [
         'self',
@@ -149,8 +151,8 @@ const onSubmit = form.handleSubmit(async values => {
     })
 
     emit('close')
-  } catch (err: any) {
-    formError.value = err.message || t('general.error.text')
+  } catch (err) {
+    formError.value = getErrorMessage(err) || t('general.error.text')
   }
 })
 

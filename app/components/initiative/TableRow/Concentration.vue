@@ -23,7 +23,7 @@ function updateConcentration(): void {
   <UiButton
     v-if="item.type !== 'lair'"
     v-tippy="$t('general.concentration')"
-    :data-test-concentration="item.concentration"
+    :test-id="item.concentration"
     :aria-label="$t('general.concentration')"
     variant="default-ghost"
     size="icon-sm"
@@ -31,7 +31,9 @@ function updateConcentration(): void {
     @click="updateConcentration"
   >
     <Icon
-      :name="`tabler:${item.concentration ? 'circle-filled' : 'circle-dotted'}`"
+      :name="
+        item.concentration ? 'tabler:circle-filled' : 'tabler:circle-dotted'
+      "
       :aria-hidden="true"
     />
   </UiButton>

@@ -1,27 +1,30 @@
 type CoolDown = { seconds: number; interval: NodeJS.Timeout }
-type CoolDowns = Record<string, CoolDown>
 
 export function useCoolDown() {
-  const coolDowns: CoolDowns = reactive({})
+  const coolDowns = reactive(new Map<number, CoolDown>())
 
   const startCoolDown = (id: number, seconds: number) => {
-    if (!coolDowns[id]) {
-      const interval = setInterval(() => {
-        if (coolDowns[id] && coolDowns[id].seconds > 0) {
-          coolDowns[id].seconds -= 1
-        } else if (coolDowns[id]) {
-          clearInterval(coolDowns[id].interval)
-          delete coolDowns[id]
-        }
-      }, 1000)
+    if (coolDowns.has(id)) return
 
-      coolDowns[id] = { seconds, interval }
-    }
+    const interval = setInterval(() => {
+      const coolDown = coolDowns.get(id)
+
+      if (!coolDown) return
+
+      if (coolDown.seconds > 0) {
+        coolDown.seconds -= 1
+      } else {
+        clearInterval(coolDown.interval)
+        coolDowns.delete(id)
+      }
+    }, 1000)
+
+    coolDowns.set(id, { seconds, interval })
   }
 
   const clearAllCoolDowns = () => {
-    Object.values(coolDowns).forEach(({ interval }) => clearInterval(interval))
-    Object.keys(coolDowns).forEach(key => delete coolDowns[key])
+    coolDowns.forEach(({ interval }) => clearInterval(interval))
+    coolDowns.clear()
   }
 
   if (getCurrentInstance()) {
@@ -29,8 +32,8 @@ export function useCoolDown() {
   }
 
   const isInCoolDown = (id: number): boolean =>
-    !!coolDowns[id] && coolDowns[id].seconds > 0
-  const getRemainingTime = (id: number) => coolDowns[id]?.seconds || 0
+    (coolDowns.get(id)?.seconds ?? 0) > 0
+  const getRemainingTime = (id: number) => coolDowns.get(id)?.seconds || 0
 
   return {
     startCoolDown,

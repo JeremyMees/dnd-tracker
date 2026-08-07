@@ -66,16 +66,8 @@ The application will be available at `http://localhost:3000`
 
 ### Testing
 
-#### Unit Tests
-
 ```bash
 npm run test
-```
-
-#### End-to-End Tests
-
-```bash
-npm run e2e
 ```
 
 ## Contributing
@@ -89,7 +81,6 @@ We welcome contributions to D&D Tracker! Here's how you can help:
 4. Run the test suite to ensure everything works:
    ```bash
    npm run test
-   npm run e2e
    ```
 5. Commit your changes (`git commit -m 'Add amazing feature'`)
 6. Push to your branch (`git push origin feature/amazing-feature`)

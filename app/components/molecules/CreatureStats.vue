@@ -36,7 +36,7 @@ const languageNames = computed(() => {
   <section class="flex flex-col gap-4">
     <div
       v-if="Object.keys(creature.savingThrows ?? {}).length"
-      data-test-saving-throws
+      test-id="saving-throws"
     >
       <p class="head-6">
         {{ $t('general.savingThrow', 2) }}
@@ -57,7 +57,7 @@ const languageNames = computed(() => {
       </div>
     </div>
 
-    <div v-if="speedEntries.length" data-test-speed>
+    <div v-if="speedEntries.length" test-id="speed">
       <p class="head-6">
         {{ $t('general.speed') }}
       </p>
@@ -65,7 +65,7 @@ const languageNames = computed(() => {
         <div
           v-for="entry in speedEntries"
           :key="entry.label"
-          data-test-speed-entry
+          test-id="speed-entry"
           class="flex gap-1"
         >
           <span class="text-muted-foreground">{{ entry.label }}:</span>
@@ -74,7 +74,7 @@ const languageNames = computed(() => {
       </div>
     </div>
 
-    <div v-if="sightEntries.length" data-test-senses>
+    <div v-if="sightEntries.length" test-id="senses">
       <p class="head-6">
         {{ $t('general.sense', 2) }}
       </p>
@@ -82,7 +82,7 @@ const languageNames = computed(() => {
         <div
           v-for="entry in sightEntries"
           :key="entry.label"
-          data-test-sense-entry
+          test-id="sense-entry"
           class="flex gap-1"
         >
           <span class="text-muted-foreground">{{ entry.label }}:</span>
@@ -91,7 +91,7 @@ const languageNames = computed(() => {
       </div>
     </div>
 
-    <div v-if="skillEntries.length" data-test-skills>
+    <div v-if="skillEntries.length" test-id="skills">
       <p class="head-6">
         {{ $t('general.skill', 2) }}
       </p>
@@ -99,7 +99,7 @@ const languageNames = computed(() => {
         <div
           v-for="skill in skillEntries"
           :key="skill.key"
-          data-test-skill-entry
+          test-id="skill-entry"
           class="flex gap-1"
         >
           <span class="text-muted-foreground">{{ skill.label }}:</span>
@@ -108,7 +108,7 @@ const languageNames = computed(() => {
       </div>
     </div>
 
-    <div v-if="languageNames.length" data-test-languages>
+    <div v-if="languageNames.length" test-id="languages">
       <p class="head-6">
         {{ $t('general.language', 2) }}
       </p>
@@ -117,7 +117,7 @@ const languageNames = computed(() => {
       </p>
     </div>
 
-    <div v-if="isResistant" data-test-resistances>
+    <div v-if="isResistant" test-id="resistances">
       <p class="head-6">
         {{ $t('general.resistancesImmunities') }}
       </p>
@@ -141,7 +141,7 @@ const languageNames = computed(() => {
       </div>
     </div>
 
-    <div v-if="creature.traits?.length" data-test-traits>
+    <div v-if="creature.traits?.length" test-id="traits">
       <p class="head-6">
         {{ $t('general.trait', 2) }}
       </p>
@@ -149,7 +149,7 @@ const languageNames = computed(() => {
         <li
           v-for="trait in creature.traits"
           :key="trait.name"
-          data-test-trait
+          test-id="trait"
           class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0"
         >
           <div class="flex flex-wrap gap-x-4 items-center">

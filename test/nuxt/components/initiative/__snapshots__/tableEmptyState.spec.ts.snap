@@ -11,7 +11,7 @@ exports[`Initiative table empty state > Should match snapshot with campaign prop
       <div class="flex items-center gap-2"><span class="iconify i-tabler:bat size-4 min-w-4 text-destructive" aria-hidden="true"></span><span>general.bestiary</span></div>
       <p class="text-muted-foreground">components.initiativeTable.emptyState.bestiary</p>
     </div>
-    <div data-test-campaign="">
+    <div test-id="campaign">
       <div class="flex items-center gap-2"><span class="iconify i-tabler:meeple size-4 min-w-4 text-primary" aria-hidden="true"></span><span>general.campaignHomebrew</span></div>
       <p class="text-muted-foreground">components.initiativeTable.emptyState.campaignHomebrew</p>
     </div>

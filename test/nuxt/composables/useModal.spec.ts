@@ -1,9 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { mockModal } from '../fixtures/modal'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { mockModal } from '../../fixtures/modal'
 import { useModal } from '~/composables/useModal'
 
 describe('useModal', async () => {
-  beforeEach(() => clearNuxtState())
+  beforeEach(() => {
+    clearNuxtState()
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => vi.useRealTimers())
 
   it('Should add a modal to the array', async () => {
     const modal = useModal()
@@ -22,7 +27,7 @@ describe('useModal', async () => {
     expect(modal.modals.value.length).toBe(1)
   })
 
-  it('Should close a modal', async () => {
+  it('Should mark a modal as closing before removing it', async () => {
     const modal = useModal()
 
     const uuid = modal.open(mockModal)
@@ -30,6 +35,11 @@ describe('useModal', async () => {
     expect(modal.modals.value.length).toBe(1)
 
     modal.close(uuid)
+
+    expect(modal.modals.value.length).toBe(1)
+    expect(modal.modals.value[0]?.closing).toBe(true)
+
+    vi.advanceTimersByTime(200)
 
     expect(modal.modals.value.length).toBe(0)
   })

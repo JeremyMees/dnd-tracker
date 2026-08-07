@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import LimitCta from '~/components/atoms/LimitCta.vue'
+import { ONE_SECOND, ONE_HOUR, ONE_DAY } from '~~/constants/time'
 
 const stubs = {
   AnimationExpand: {
@@ -30,12 +31,12 @@ describe('LimitCta', async () => {
     component.vm.show()
     await nextTick()
 
-    expect(component.find('[data-test-cta]').exists()).toBeTruthy()
+    expect(component.find('[test-id="cta"]').exists()).toBeTruthy()
   })
 
   it('Should show component if cookie is expired', async () => {
     const now = Date.now()
-    const dayAgo = now - 24 * 60 * 60 * 1000 - 1000
+    const dayAgo = now - ONE_DAY - ONE_SECOND
     const mockUseCookie = vi.fn().mockReturnValue({ value: dayAgo })
 
     vi.stubGlobal('useCookie', mockUseCookie)
@@ -47,12 +48,12 @@ describe('LimitCta', async () => {
     vi.advanceTimersByTime(100)
     await nextTick()
 
-    expect(component.find('[data-test-cta]')).toBeTruthy()
+    expect(component.find('[test-id="cta"]')).toBeTruthy()
   })
 
   it('Should not show component if cookie is not expired', async () => {
     const now = Date.now()
-    const recentTime = now - 1000 * 60 * 60
+    const recentTime = now - ONE_HOUR
     const mockUseCookie = vi.fn().mockReturnValue({ value: recentTime })
 
     vi.stubGlobal('useCookie', mockUseCookie)
@@ -64,7 +65,7 @@ describe('LimitCta', async () => {
     vi.advanceTimersByTime(100)
     await nextTick()
 
-    expect(component.find('[data-test-cta]').exists()).toBeFalsy()
+    expect(component.find('[test-id="cta"]').exists()).toBeFalsy()
   })
 
   it('Should hide component when close button is clicked', async () => {
@@ -74,12 +75,12 @@ describe('LimitCta', async () => {
     component.vm.show()
     await nextTick()
 
-    expect(component.find('[data-test-cta]')).toBeTruthy()
+    expect(component.find('[test-id="cta"]')).toBeTruthy()
 
-    await component.find('[data-test-close]').trigger('click')
+    await component.find('[test-id="close"]').trigger('click')
     await nextTick()
 
-    expect(component.find('[data-test-cta]').exists()).toBeFalsy()
+    expect(component.find('[test-id="cta"]').exists()).toBeFalsy()
   })
 
   it('Should auto-close after 10 seconds', async () => {
@@ -89,12 +90,12 @@ describe('LimitCta', async () => {
     component.vm.show()
     await nextTick()
 
-    expect(component.find('[data-test-cta]')).toBeTruthy()
+    expect(component.find('[test-id="cta"]')).toBeTruthy()
 
     vi.advanceTimersByTime(10000)
     await nextTick()
 
-    expect(component.find('[data-test-cta]').exists()).toBeFalsy()
+    expect(component.find('[test-id="cta"]').exists()).toBeFalsy()
   })
 
   it('Should reset auto-close timer when show is called again', async () => {
@@ -115,11 +116,11 @@ describe('LimitCta', async () => {
     vi.advanceTimersByTime(5000)
     await nextTick()
 
-    expect(component.find('[data-test-cta]')).toBeTruthy()
+    expect(component.find('[test-id="cta"]')).toBeTruthy()
 
     vi.advanceTimersByTime(5000)
     await nextTick()
 
-    expect(component.find('[data-test-cta]').exists()).toBeFalsy()
+    expect(component.find('[test-id="cta"]').exists()).toBeFalsy()
   })
 })

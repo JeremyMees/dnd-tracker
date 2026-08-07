@@ -48,7 +48,7 @@ export default defineEventHandler(async event => {
     customer = await stripe.customers.create({ email: profile.email })
   }
 
-  const lang = body.locale === 'nl' ? '' : `/${body.locale}`
+  const lang = localeParam(body.locale)
 
   const session = await stripe.checkout.sessions.create({
     allow_promotion_codes: true,

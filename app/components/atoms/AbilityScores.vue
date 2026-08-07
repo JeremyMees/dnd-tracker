@@ -15,18 +15,18 @@ const props = defineProps<{
     <div
       v-for="[key, value] in Object.entries(abilityTypeMap)"
       :key="key"
-      data-test-ability-block
+      test-id="ability-block"
       class="p-1 rounded-lg min-w-16 bg-secondary text-center flex flex-col gap-1"
     >
-      <span data-test-ability-label class="text-muted-foreground">
+      <span test-id="ability-label" class="text-muted-foreground">
         {{ key }}
       </span>
-      <span data-test-ability-modifier>
+      <span test-id="ability-modifier">
         {{
           isDefined(modifiers?.[value]) ? formatBonus(modifiers[value]) : '_'
         }}
       </span>
-      <span data-test-ability-score class="text-xs text-muted-foreground">
+      <span test-id="ability-score" class="text-xs text-muted-foreground">
         {{ isDefined(abilityScores[value]) ? abilityScores[value] : '_' }}
       </span>
     </div>

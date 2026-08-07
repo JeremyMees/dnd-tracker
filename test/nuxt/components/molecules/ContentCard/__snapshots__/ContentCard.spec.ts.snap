@@ -1,14 +1,121 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContentCard > Should match snapshot 1`] = `
-"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="spells">
+exports[`ContentCard - 'armor' > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="armor">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
-    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" data-test-title="">Acid Arrow</h3>
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Breastplate</h3>
   </div>
   <div class="p-6 px-4 py-0">
-    <div class="text-sm" data-test-spell="">
-      <div class="md-richtext text-muted-foreground line-clamp-3">A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 Acid damage and 2d4 Acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage only.</div>
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div class="text-sm" test-id="armor">
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> medium</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 14 + Dex modifier (max 2)</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 14</p>
+      <!--v-if-->
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> general.no</p>
+    </div>
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2"></div>
+</div>"
+`;
+
+exports[`ContentCard - 'condition' (expanded) > Should match snapshot when expanded 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="conditions">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Blinded</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div class="text-sm" test-id="condition">
+      <div test-id="desc" class="md-richtext text-muted-foreground">A Blinded creature cannot see.</div>
+    </div>
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readLess">
+        <p>actions.readLess</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2 rotate-180" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'condition' > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="conditions">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Blinded</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <div class="text-sm" test-id="condition">
+      <div test-id="desc" class="md-richtext text-muted-foreground line-clamp-3">A Blinded creature cannot see.</div>
+    </div>
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+        <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'magic item' (expanded) > Should match snapshot when expanded 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="magicitems">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Adamantine Armor (Breastplate)</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <!--v-if-->
+    <div class="text-sm" test-id="magic-item">
+      <div class="md-richtext text-muted-foreground">This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any Critical Hit against you becomes a normal hit.</div>
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2" test-id="separator"></div>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Category:</span> armor</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Rarity:</span> Uncommon</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Size:</span> tiny</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Weight:</span> 20 pounds</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Cost:</span> 0.00</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Requires Attunement:</span> No</p>
+      <!--v-if-->
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2"></div>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Class:</span> 14 + Dex modifier (max 2)</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Armor Category:</span> medium</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Base AC:</span> 14</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Stealth Disadvantage:</span> No</p>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readLess">
+        <p>actions.readLess</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2 rotate-180" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'magic item' > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="magicitems">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Adamantine Armor (Breastplate)</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <!--v-if-->
+    <div class="text-sm" test-id="magic-item">
+      <div class="md-richtext text-muted-foreground line-clamp-3">This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any Critical Hit against you becomes a normal hit.</div>
       <!--v-if-->
       <!--v-if-->
     </div>
@@ -17,7 +124,143 @@ exports[`ContentCard > Should match snapshot 1`] = `
     <!--v-if-->
   </div>
   <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" aria-label="actions.readMore">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+        <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'spell' (expanded) > Should match snapshot when expanded 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="spells">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Acid Arrow</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <div class="text-sm" test-id="spell">
+      <div class="md-richtext text-muted-foreground">A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 Acid damage and 2d4 Acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage only.</div>
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2" test-id="separator"></div>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Level:</span> 2</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Higher level:</span> The damage (both initial and later) increases by 1d4 for each spell slot level above 2.</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">School:</span> evocation</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Classes:</span> wizard</p>
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2"></div>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Casting time:</span> action</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Duration:</span> instantaneous</p>
+      <!--v-if-->
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Range:</span> 90 feet</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Components:</span> V, S, M (powdered rhubarb leaf)</p>
+      <!--v-if-->
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2"></div>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Target type:</span> creature</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Target count:</span> 1</p>
+      <!--v-if-->
+      <!--v-if-->
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2"></div>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Attack roll:</span> general.yes</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage roll:</span> 4d4</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage types:</span> acid</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Saving throw:</span> wisdom</p>
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2"></div>
+      <!--v-if-->
+      <!--v-if-->
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Material consumed:</span> general.no</p>
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readLess">
+        <p>actions.readLess</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2 rotate-180" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'spell' > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="spells">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Acid Arrow</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <div class="text-sm" test-id="spell">
+      <div class="md-richtext text-muted-foreground line-clamp-3">A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 Acid damage and 2d4 Acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage only.</div>
+      <!--v-if-->
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+        <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'weapon' (expanded) > Should match snapshot when expanded 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="weapons">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Battleaxe</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <!--v-if-->
+    <!--v-if-->
+    <div class="text-sm" test-id="weapon">
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage:</span> 1d8 <span>(slashing)</span></p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Range:</span> 0 <span class="ml-0.5">feet</span></p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Simple Weapon:</span> No</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Improvised:</span> No</p>
+      <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2" test-id="separator"></div>
+      <ul class="mt-1 list-disc list-outside ml-5">
+        <li class="mt-0.5"><strong>Topple</strong>: <span class="text-muted-foreground">If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.</span>
+          <!--v-if-->
+        </li>
+        <li class="mt-0.5"><strong>Versatile</strong>: <span class="text-muted-foreground">A Versatile weapon can be used with one or two hands. A damage value in parentheses appears with the property. The weapon deals that damage when used with two hands to make a melee attack.</span>
+          <div class="text-muted-foreground">1d10</div>
+        </li>
+      </ul>
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readLess">
+        <p>actions.readLess</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2 rotate-180" aria-hidden="true"></span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`ContentCard - 'weapon' > Should match snapshot 1`] = `
+"<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="weapons">
+  <div class="flex flex-col gap-y-1.5 p-4">
+    <!--v-if-->
+    <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Battleaxe</h3>
+  </div>
+  <div class="p-6 px-4 py-0">
+    <!--v-if-->
+    <!--v-if-->
+    <div class="text-sm" test-id="weapon">
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage:</span> 1d8 <span>(slashing)</span></p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Range:</span> 0 <span class="ml-0.5">feet</span></p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Simple Weapon:</span> No</p>
+      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Improvised:</span> No</p>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+    <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
         <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
       </button></div>
   </div>

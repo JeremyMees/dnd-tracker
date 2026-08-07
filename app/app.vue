@@ -4,6 +4,12 @@ const route = useRoute()
 
 useHealthCheck()
 
+const nuxtReady = ref<boolean>(false)
+
+onNuxtReady(() => {
+  nuxtReady.value = true
+})
+
 const pageName = computed<string>(() =>
   !route.name || typeof route.name !== 'string'
     ? ''
@@ -19,11 +25,12 @@ const pageName = computed<string>(() =>
       error-color="#F87272"
     />
 
+    <LazyConsentBanner v-if="nuxtReady" />
+
     <ClientOnly>
-      <ConsentBanner />
       <UiToaster />
       <ModalGroup />
-      <ConfirmDialog
+      <LazyConfirmDialog
         v-for="dialog in dialogs"
         :key="dialog.uuid"
         v-bind="dialog"

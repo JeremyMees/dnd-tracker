@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
-import { useTeamMemberUpdate } from '~~/queries/team-members'
+import { useTeamMemberUpdate } from '~/queries/team-members'
 import { roleType } from '~~/constants/validation'
 
 const props = defineProps<{

@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RoleUpdate > Should match snapshot 1`] = `
+"<form class="space-y-4">
+  <div class="space-y-2">
+    <div id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" class="flex items-center gap-1"><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-1" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">general.roles.Viewer.title</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+      <!--v-if-->
+    </div>
+    <!--teleport start-->
+    <!--teleport end--><select aria-hidden="true" tabindex="-1" style="position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; word-wrap: normal; top: -1px; left: -1px;" name="role" value="Viewer">
+      <!--v-if-->
+      <option value="Viewer">general.roles.Viewer.title</option>
+      <option value="Admin">general.roles.Admin.title</option>
+    </select>
+  </div>
+  <!--v-if-->
+</form>"
+`;

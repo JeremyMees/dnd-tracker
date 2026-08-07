@@ -7,11 +7,8 @@ import {
   getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
-import {
-  generateColumns,
-  initialState,
-} from '~~/tables/homebrew-select-listing'
-import { useHomebrewListing } from '~~/queries/homebrews'
+import { generateColumns, initialState } from '~/tables/homebrew-select-listing'
+import { useHomebrewListing } from '~/queries/homebrews'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const emit = defineEmits<{ close: [] }>()
@@ -170,7 +167,11 @@ async function addHomebrews(addAll: boolean): Promise<void> {
               />
               <Icon
                 v-if="header.column.getIsSorted()"
-                :name="`tabler:sort-${header.column.getIsSorted() === 'asc' ? 'ascending' : 'descending'}`"
+                :name="
+                  header.column.getIsSorted() === 'asc'
+                    ? 'tabler:sort-ascending'
+                    : 'tabler:sort-descending'
+                "
                 class="size-4"
               />
             </div>

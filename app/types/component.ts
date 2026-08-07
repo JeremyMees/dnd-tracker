@@ -1,3 +1,4 @@
+import type { Table } from '@tanstack/vue-table'
 import type { ToastProps } from '~/components/ui/toast'
 
 export interface Toast {
@@ -29,8 +30,15 @@ export interface Modal {
   header: string
   subHeader?: string
   variant?: ModalVariant
-  props?: Record<string, any>
-  events?: Record<string, (...args: any[]) => any>
+  props?: Record<string, unknown>
+  events?: Record<string, (...args: never[]) => void>
+  closing?: boolean
+}
+
+export type ConfirmCallback = (confirmed: boolean) => unknown
+
+export interface DataTableExposed<TData = { id: number }> {
+  vueTable: Table<TData>
 }
 
 export interface TableHeader {

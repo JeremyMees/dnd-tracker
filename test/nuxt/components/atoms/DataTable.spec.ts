@@ -3,7 +3,7 @@ import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { describe, expect, it, vi } from 'vitest'
 import DataTable from '~/components/atoms/DataTable.vue'
-import { expandButton, selectButton } from '~~/tables/generate-functions'
+import { expandButton, selectButton } from '~/tables/generate-functions'
 
 interface TestData {
   id: number
@@ -16,6 +16,8 @@ const mockData: TestData[] = [
   { id: 2, name: 'Jane Smith', age: 25 },
   { id: 3, name: 'Bob Johnson', age: 40 },
 ]
+
+const TypedDataTable = DataTable<TestData>
 
 const columnHelper = createColumnHelper<TestData>()
 
@@ -56,14 +58,14 @@ const mockColumns: ColumnDef<TestData>[] = [
   }) as ColumnDef<TestData>,
 ]
 
-interface Props {
-  columns: ColumnDef<any, any>[]
-  data: any[]
+type Props = {
+  columns: ColumnDef<TestData>[]
+  data: TestData[]
   loading: boolean
-  options?: Partial<TableOptions<any>>
+  options?: Partial<TableOptions<TestData>>
   emptyMessage?: string
-  permission?: boolean | ((item: any) => Promise<boolean>)
-  expandedMarkup?: (row: Row<any>) => VNode
+  permission?: boolean | ((item: TestData) => Promise<boolean>)
+  expandedMarkup?: (row: Row<TestData>) => VNode
 }
 
 const props: Props = {
@@ -79,12 +81,12 @@ const props: Props = {
 
 describe('DataTable', () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render table with correct data', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
 
     const headers = component.findAll('th')
     expect(headers.length).toBe(5)
@@ -102,11 +104,11 @@ describe('DataTable', () => {
     expect(firstRowCells[3]!.text()).toContain('John Doe')
     expect(firstRowCells[4]!.text()).toContain('30')
 
-    expect(component.find('[data-test-empty]').exists()).toBeFalsy()
+    expect(component.find('[test-id="empty"]').exists()).toBeFalsy()
   })
 
   it('Should show loading state correctly', async () => {
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: { ...props, loading: true, data: [] },
       slots: {
         loading: () => h('div', 'Loading'),
@@ -117,24 +119,24 @@ describe('DataTable', () => {
   })
 
   it('Should show empty message when no data', async () => {
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: { ...props, data: [] },
     })
 
-    const empty = component.find('[data-test-empty]')
+    const empty = component.find('[test-id="empty"]')
     expect(empty.exists()).toBeTruthy()
     expect(empty.text()).toBe(props.emptyMessage)
   })
 
   it('Should emit remove event when bulk remove button is clicked', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
 
     const checkbox = component.find('button[role="checkbox"]')
     expect(checkbox.exists()).toBeTruthy()
     await checkbox.trigger('click')
     await nextTick()
 
-    const removeButton = component.find('[data-test-remove]')
+    const removeButton = component.find('[test-id="remove"]')
     expect(removeButton.exists()).toBeTruthy()
     await removeButton.trigger('click')
 
@@ -144,7 +146,7 @@ describe('DataTable', () => {
   })
 
   it('Should handle row expansion correctly', async () => {
-    const component = await mountSuspended(DataTable, { props })
+    const component = await mountSuspended(TypedDataTable, { props })
 
     let expansionButton = component.find('button[arialabel="actions.show"]')
     expect(expansionButton.exists()).toBeTruthy()
@@ -178,27 +180,27 @@ describe('DataTable', () => {
       },
     }
 
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: paginationProps,
     })
 
-    let paginationText = component.find('[data-test-pagination="1"]')
+    let paginationText = component.find('[test-id="1"]')
     expect(paginationText.exists()).toBeTruthy()
 
-    const nextButton = component.find('button[data-test-pagination-next]')
+    const nextButton = component.find('button[test-id="pagination-next"]')
     expect(nextButton.exists()).toBeTruthy()
     await nextButton.trigger('click')
     await nextTick()
 
-    paginationText = component.find('[data-test-pagination="2"]')
+    paginationText = component.find('[test-id="2"]')
     expect(paginationText.exists()).toBeTruthy()
 
-    const prevButton = component.find('button[data-test-pagination-prev]')
+    const prevButton = component.find('button[test-id="pagination-prev"]')
     expect(prevButton.exists()).toBeTruthy()
     await prevButton.trigger('click')
     await nextTick()
 
-    paginationText = component.find('[data-test-pagination="1"]')
+    paginationText = component.find('[test-id="1"]')
     expect(paginationText.exists()).toBeTruthy()
   })
 
@@ -207,7 +209,7 @@ describe('DataTable', () => {
       .fn()
       .mockImplementation(item => Promise.resolve(item.id === 1))
 
-    const component = await mountSuspended(DataTable, {
+    const component = await mountSuspended(TypedDataTable, {
       props: {
         ...props,
         permission: permissionFn,

@@ -2,7 +2,7 @@
 
 exports[`Initiative table row name > Should match snapshot 1`] = `
 "<button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true"></span>
-  <div class="flex flex-col gap-y-1 text-left"><span data-test-name="">Sister Iarnă</span>
+  <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Sister Iarnă</span>
     <!--v-if-->
   </div>
 </button>

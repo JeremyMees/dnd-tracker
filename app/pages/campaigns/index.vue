@@ -2,13 +2,13 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
-import { generateColumns, initialState } from '~~/tables/campaign-listing'
+import { generateColumns, initialState } from '~/tables/campaign-listing'
 import {
   useCampaignCount,
   useCampaignListing,
   useCampaignRemove,
-} from '~~/queries/campaigns'
-import { useTeamMemberRemove } from '~~/queries/team-members'
+} from '~/queries/campaigns'
+import { useTeamMemberRemove } from '~/queries/team-members'
 
 definePageMeta({ auth: true })
 useSeo('Campaigns')
@@ -20,7 +20,7 @@ const { t } = useI18n()
 const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
 
-const table = ref<InstanceType<typeof DataTable>>()
+const table = ref<DataTableExposed>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { data: count } = useCampaignCount()
@@ -63,7 +63,7 @@ const columns = generateColumns({
 
         try {
           await removeTeamMember({ member: member.id, campaign: item.id })
-        } catch (err) {
+        } catch {
           toast({
             title: t('general.error.title'),
             description: t('general.error.text'),

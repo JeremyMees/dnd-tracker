@@ -10,13 +10,13 @@ defineProps<{ title: string }>()
       >
         <Icon name="tabler:grip-vertical" />
       </span>
-      <span data-test-title class="text-sm font-medium pt-0.5">
+      <span test-id="title" class="text-sm font-medium pt-0.5">
         {{ title }}
       </span>
     </div>
     <div
       v-if="$slots.default"
-      data-test-actions
+      test-id="actions"
       class="ml-auto flex items-center gap-1"
     >
       <slot />

@@ -1,31 +1,27 @@
-import { defineComponent } from 'vue'
-import { useForm } from 'vee-validate'
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ActionInputs from '~/components/form/ActionInputs.vue'
+import { mountWithForm } from '~~/test/nuxt/stubs/form'
 
-function mountWithForm(
+async function mountActionInputs(
   actionType: DndActionType = 'action',
   usageLimits?: DndUsageLimits,
 ) {
-  const Wrapper = defineComponent({
-    components: { FormActionInputs: ActionInputs },
-    setup() {
-      useForm({ initialValues: { action: { actionType, usageLimits } } })
-    },
-    template: '<FormActionInputs field-name="action" />',
+  const { component } = await mountWithForm(ActionInputs, {
+    props: { fieldName: 'action' },
+    initialValues: { action: { actionType, usageLimits } },
   })
-  return mountSuspended(Wrapper)
+
+  return component
 }
 
 describe('ActionInputs', () => {
   it('Should match snapshot', async () => {
-    const component = await mountWithForm()
+    const component = await mountActionInputs()
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should always render actionType, name and desc fields', async () => {
-    const component = await mountWithForm()
+    const component = await mountActionInputs()
     const html = component.html()
 
     expect(html).toContain('components.inputs.actionTypeLabel')
@@ -34,7 +30,7 @@ describe('ActionInputs', () => {
   })
 
   it('Should always render limitedToForm and usage type fields', async () => {
-    const component = await mountWithForm()
+    const component = await mountActionInputs()
     const html = component.html()
 
     expect(html).toContain('components.inputs.limitedToFormLabel')
@@ -50,7 +46,7 @@ describe('ActionInputs', () => {
         'specialAbility',
         'lairAction',
       ] as DndActionType[]) {
-        const component = await mountWithForm(type)
+        const component = await mountActionInputs(type)
         expect(component.html()).not.toContain(
           'components.inputs.legendaryActionCostLabel',
         )
@@ -58,14 +54,14 @@ describe('ActionInputs', () => {
     })
 
     it('Should show legendary action cost for legendaryAction', async () => {
-      const component = await mountWithForm('legendaryAction')
+      const component = await mountActionInputs('legendaryAction')
       expect(component.html()).toContain(
         'components.inputs.legendaryActionCostLabel',
       )
     })
 
     it('Should show legendary action cost for mythicAction', async () => {
-      const component = await mountWithForm('mythicAction')
+      const component = await mountActionInputs('mythicAction')
       expect(component.html()).toContain(
         'components.inputs.legendaryActionCostLabel',
       )
@@ -74,14 +70,14 @@ describe('ActionInputs', () => {
 
   describe('Usage param', () => {
     it('Should not show usage param when no usage type is set', async () => {
-      const component = await mountWithForm('action', undefined)
+      const component = await mountActionInputs('action', undefined)
       expect(component.html()).not.toContain(
         'components.inputs.usageParamLabel',
       )
     })
 
     it('Should not show usage param for atWill (no count needed)', async () => {
-      const component = await mountWithForm('action', {
+      const component = await mountActionInputs('action', {
         type: 'atWill',
         param: 1,
       })
@@ -91,7 +87,7 @@ describe('ActionInputs', () => {
     })
 
     it('Should show usage param for perDay', async () => {
-      const component = await mountWithForm('action', {
+      const component = await mountActionInputs('action', {
         type: 'perDay',
         param: 3,
       })
@@ -99,7 +95,7 @@ describe('ActionInputs', () => {
     })
 
     it('Should show usage param for recharge', async () => {
-      const component = await mountWithForm('action', {
+      const component = await mountActionInputs('action', {
         type: 'recharge',
         param: 5,
       })
@@ -107,7 +103,7 @@ describe('ActionInputs', () => {
     })
 
     it('Should show usage param for perRest', async () => {
-      const component = await mountWithForm('action', {
+      const component = await mountActionInputs('action', {
         type: 'perRest',
         param: 2,
       })

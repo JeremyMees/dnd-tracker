@@ -47,7 +47,7 @@ describe('CreateButton', async () => {
       props: { ...props, loading: true },
     })
 
-    expect(component.find('[data-test-skeleton]').exists()).toBeTruthy()
+    expect(component.find('[test-id="skeleton"]').exists()).toBeTruthy()
     expect(component.find('button').exists()).toBeFalsy()
   })
 

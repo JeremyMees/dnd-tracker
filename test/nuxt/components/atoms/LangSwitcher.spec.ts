@@ -14,6 +14,7 @@ const { switchLocalePathMock } = vi.hoisted(() => ({
 }))
 
 mockNuxtImport('useI18n', () => () => ({
+  t: (key: string) => key,
   locale: localeRef,
   locales: [
     { code: 'en', name: 'English' },

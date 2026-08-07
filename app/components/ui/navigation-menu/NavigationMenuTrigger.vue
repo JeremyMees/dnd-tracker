@@ -15,6 +15,7 @@ const props = withDefaults(
   {
     icon: true,
     styled: true,
+    class: '',
   },
 )
 

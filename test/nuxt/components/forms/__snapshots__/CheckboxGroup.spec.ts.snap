@@ -1,0 +1,36 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CheckboxGroup > Should match snapshot 1`] = `
+"<div class="space-y-2"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">label
+    <!--v-if-->
+    <!--v-if-->
+  </label>
+  <div class="grid gap-1">
+    <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-1-form-item-description" aria-invalid="false" id="reka-v-0-0-1-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+        <!---->
+      </button>
+      <!--v-if--><label for="reka-v-0-0-1-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acid
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+    </div>
+    <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" id="reka-v-0-0-2-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+        <!---->
+      </button>
+      <!--v-if--><label for="reka-v-0-0-2-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cold
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+    </div>
+    <div class="flex flex-row items-center space-x-2 space-y-0"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" id="reka-v-0-0-3-form-item" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+        <!---->
+      </button>
+      <!--v-if--><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Fire
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+    </div>
+  </div>
+  <!---->
+</div>"
+`;

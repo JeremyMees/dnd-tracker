@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFeatureCreate } from '~~/queries/features'
+import { useFeatureCreate } from '~/queries/features'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 

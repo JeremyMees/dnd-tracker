@@ -2,13 +2,13 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
-import { generateColumns, initialState } from '~~/tables/encounter-listing'
+import { generateColumns, initialState } from '~/tables/encounter-listing'
 import {
   useEncounterCount,
   useEncounterListing,
   useEncounterRemove,
   useEncounterCopy,
-} from '~~/queries/encounters'
+} from '~/queries/encounters'
 
 const props = defineProps<{
   campaignId?: number
@@ -23,7 +23,7 @@ const { t, locale } = useI18n()
 const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
 
-const table = ref<InstanceType<typeof DataTable>>()
+const table = ref<DataTableExposed>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const enableDateFetching = computed(() => props.fetchReady)

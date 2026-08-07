@@ -27,6 +27,8 @@ mockComponent('Icon', {
 describe('TabItem', async () => {
   mockNuxtImport('useRoute', () => () => ({
     fullPath: '/home',
+    path: '/home',
+    query: {},
   }))
 
   it('Should match snapshot', async () => {

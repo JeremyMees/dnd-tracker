@@ -1,4 +1,6 @@
-export interface AuthUser extends ProfileRow {}
+import { FIVE_MINUTES } from '~~/constants/time'
+
+export type AuthUser = ProfileRow
 
 interface Credentials {
   email: string
@@ -82,7 +84,7 @@ export function useAuthentication() {
       if (
         user.value &&
         gc.value &&
-        new Date().getTime() - gc.value < 1000 * 60 * 5 &&
+        new Date().getTime() - gc.value < FIVE_MINUTES &&
         !forceRefresh
       )
         return

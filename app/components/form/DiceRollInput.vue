@@ -27,7 +27,7 @@ const isRollingShown = shallowRef(false)
       </UiFormControl>
       <DiceRoller
         v-if="isRollingShown"
-        data-test-roller
+        test-id="roller"
         @rolled="(setValue($event), (isRollingShown = false))"
       />
       <UiFormMessage />

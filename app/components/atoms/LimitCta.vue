@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { ONE_DAY } from '~~/constants/time'
+
 const isShown = ref<boolean>(false)
 const cookie = useCookie<number>('limit_cta')
 const removeTimer = ref()
 const showTimer = ref()
-const day = 24 * 60 * 60 * 1000
 
 defineExpose({ show })
 
@@ -36,7 +37,7 @@ function checkShow(): void {
   if (!cookie.value || isNaN(cookie.value)) show()
   else {
     const now = Date.now()
-    if (now - cookie.value > day) show()
+    if (now - cookie.value > ONE_DAY) show()
   }
 }
 </script>
@@ -45,7 +46,7 @@ function checkShow(): void {
   <AnimationExpand>
     <div
       v-if="isShown"
-      data-test-cta
+      test-id="cta"
       class="fixed bottom-2 left-1/2 -translate-x-1/2 z-10 w-full max-w-prose"
     >
       <Card
@@ -53,7 +54,7 @@ function checkShow(): void {
         class="flex flex-col md:flex-row md:items-center gap-4 backdrop-blur-xl px-6"
       >
         <UiButton
-          data-test-close
+          test-id="close"
           variant="secondary-ghost"
           size="icon-sm"
           :aria-label="$t('actions.close')"

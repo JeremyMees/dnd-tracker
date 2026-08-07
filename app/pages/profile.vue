@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useProfileUpdate, useProfileRemove } from '~~/queries/profiles'
+import { useProfileUpdate, useProfileRemove } from '~/queries/profiles'
 
 definePageMeta({ auth: true })
 useSeo('Profile')
@@ -92,8 +92,9 @@ async function handleRemoveUser(): Promise<void> {
   <NuxtLayout container>
     <section class="space-y-2 relative">
       <div class="flex flex-wrap justify-center gap-y-2 gap-x-4 pb-6">
-        <AvatarPicker
+        <LazyAvatarPicker
           v-model="avatar"
+          hydrate-on-visible
           profile
           :deprecated-avatar="!user.avatarOptions"
           @save="updateAvatar"
@@ -103,7 +104,7 @@ async function handleRemoveUser(): Promise<void> {
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
         <div class="flex gap-4">
           {{ $t('pages.profile.subscription.current') }}:
-          <span class="font-bold capitalize">
+          <span test-id="subscription" class="font-bold capitalize">
             {{ user.subscriptionType }}
           </span>
         </div>
@@ -151,6 +152,7 @@ async function handleRemoveUser(): Promise<void> {
       <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <UiButton
+          test-id="delete"
           variant="destructive"
           :aria-label="$t('pages.profile.delete')"
           @click="handleRemoveUser"

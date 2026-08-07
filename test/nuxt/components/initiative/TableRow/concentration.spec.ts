@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Concentration from '~/components/initiative/TableRow/Concentration.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
@@ -54,9 +54,7 @@ describe('Initiative table row concentration', async () => {
   it('Should show filled circle when concentration is true', async () => {
     const component = await mountSuspended(Concentration, { props, provide })
 
-    expect(
-      component.find('[data-test-concentration="true"]').exists(),
-    ).toBeTruthy()
+    expect(component.find('[test-id="true"]').exists()).toBeTruthy()
   })
 
   it('Should show dotted circle when concentration is false', async () => {
@@ -67,9 +65,7 @@ describe('Initiative table row concentration', async () => {
       provide,
     })
 
-    expect(
-      component.find('[data-test-concentration="false"]').exists(),
-    ).toBeTruthy()
+    expect(component.find('[test-id="false"]').exists()).toBeTruthy()
   })
 
   it('Should call update with toggled concentration', async () => {

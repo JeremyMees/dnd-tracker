@@ -120,8 +120,9 @@ const onSubmit = form.handleSubmit(async values => {
     popoverOpen.value = false
 
     animateTableUpdate(`${values.target}-hp`, 'red')
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred during action roll'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred during action roll'
   }
 })
 </script>

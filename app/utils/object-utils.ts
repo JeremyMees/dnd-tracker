@@ -11,10 +11,10 @@ export function nullsToUndefined<T extends Record<string, unknown>>(
 }
 
 export function removeEmptyKeys<T>(
-  object: Record<string, any>,
+  object: Record<string, unknown>,
   deep: boolean = false,
 ): T {
-  const result: Record<string, any> = {}
+  const result: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(object)) {
     if (value !== undefined && value !== null) {
@@ -22,7 +22,7 @@ export function removeEmptyKeys<T>(
 
       result[key] =
         deep && typeof value === 'object' && !Array.isArray(value)
-          ? removeEmptyKeys(value)
+          ? removeEmptyKeys(value as Record<string, unknown>)
           : value
     }
   }
@@ -30,10 +30,7 @@ export function removeEmptyKeys<T>(
   return result as T
 }
 
-export function getValueFromNestedKeys<T extends Record<string, any>>(
-  v: T,
-  keys: string,
-): any {
+export function getValueFromNestedKeys(v: unknown, keys: string): unknown {
   let value = v
 
   for (const key of keys.split('.')) {
@@ -41,16 +38,19 @@ export function getValueFromNestedKeys<T extends Record<string, any>>(
       return value
     }
 
-    value = value[key]
+    value =
+      typeof value === 'object'
+        ? (value as Record<string, unknown>)[key]
+        : undefined
   }
 
   return value
 }
 
-export function flattenObject<T>(obj: Record<string, any>): T {
-  const result: Record<string, any> = {}
+export function flattenObject<T>(obj: Record<string, unknown>): T {
+  const result: Record<string, unknown> = {}
 
-  function recurse(currentObj: Record<string, any>): void {
+  function recurse(currentObj: Record<string, unknown>): void {
     for (const key in currentObj) {
       if (Object.prototype.hasOwnProperty.call(currentObj, key)) {
         const value = currentObj[key]
@@ -60,7 +60,7 @@ export function flattenObject<T>(obj: Record<string, any>): T {
           value !== null &&
           !Array.isArray(value)
         ) {
-          recurse(value)
+          recurse(value as Record<string, unknown>)
         } else {
           result[key] = value
         }

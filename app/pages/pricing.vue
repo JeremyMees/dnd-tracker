@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePricingListing } from '~~/queries/pricing'
+import { usePricingListing } from '~/queries/pricing'
 
 useSeo('Pricing')
 
@@ -17,7 +17,10 @@ const shownProduct = computed<ProductPricing[]>(() => {
 })
 
 async function subscribe(id: string): Promise<void> {
-  if (!user.value) navigateTo(localePath('/login'))
+  if (!user.value) {
+    navigateTo(localePath('/login'))
+    return
+  }
 
   const { data } = await useFetch('/api/stripe/subscribe', {
     method: 'POST',
@@ -45,10 +48,16 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
 <template>
   <NuxtLayout shadow container>
     <section class="mb-8 lg:mb-12">
-      <h1 class="mb-4 sm:text-4xl xl:text-5xl text-center max-w-3xl mx-auto">
+      <h1
+        test-id="title"
+        class="mb-4 sm:text-4xl xl:text-5xl text-center max-w-3xl mx-auto"
+      >
         {{ t('pages.pricing.title') }}
       </h1>
-      <p class="mb-16 max-w-xl mx-auto text-center text-muted-foreground">
+      <p
+        test-id="description"
+        class="mb-16 max-w-xl mx-auto text-center text-muted-foreground"
+      >
         {{ t('pages.pricing.description') }}
       </p>
 
@@ -79,30 +88,35 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             y: 50,
           }"
         >
-          <UiCard>
+          <UiCard test-id="product">
             <UiCardHeader>
               <UiCardTitle class="pb-2 flex items-center justify-between">
-                <span>
+                <span test-id="product-title">
                   {{ product.title }}
                 </span>
-                <UiBadge v-if="product.isPopular" variant="muted">
+                <UiBadge
+                  v-if="product.isPopular"
+                  test-id="popular"
+                  variant="muted"
+                >
                   {{ $t('pages.pricing.popular') }}
                 </UiBadge>
               </UiCardTitle>
 
-              <UiCardDescription class="pb-4">
-                {{ product.description }}
+              <UiCardDescription test-id="product-description" class="pb-4">
+                {{ $t(product.description) }}
               </UiCardDescription>
 
               <div class="flex items-end gap-1">
                 <span class="text-3xl font-bold">
                   <span
                     v-if="!isDefined(product.price)"
+                    test-id="price-loading"
                     class="flex items-center"
                   >
                     €<UiSkeleton class="w-[30px] h-[34px]" />
                   </span>
-                  <span v-else>€{{ product.price }}</span>
+                  <span v-else test-id="price">€{{ product.price }}</span>
                 </span>
                 <span class="text-muted-foreground">
                   /{{ $t('general.oneTime') }}</span
@@ -115,11 +129,14 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                 <span
                   v-for="(benefit, j) in product.items"
                   :key="j"
+                  test-id="benefit"
                   class="flex items-center gap-2 text-sm dark:text-muted-foreground"
                 >
                   <Icon
                     v-if="benefit.icon"
-                    :name="`tabler:${benefit.icon}`"
+                    :name="
+                      benefit.icon === 'check' ? 'tabler:check' : 'tabler:x'
+                    "
                     :class="
                       benefit.icon === 'check'
                         ? 'text-success'
@@ -133,9 +150,14 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
             </UiCardContent>
 
             <UiCardFooter>
-              <UiSkeleton v-if="isPending" class="h-[52px] rounded-lg w-full" />
+              <UiSkeleton
+                v-if="isPending"
+                test-id="cta-loading"
+                class="h-[52px] rounded-lg w-full"
+              />
               <UiButton
                 v-else-if="isCurrent(product.type)"
+                test-id="current"
                 variant="success"
                 class="w-full"
               >
@@ -148,6 +170,7 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
                     product.price !== 0 &&
                     isUpgradeable(product.type))
                 "
+                test-id="subscribe"
                 :aria-label="t('pages.pricing.cta')"
                 :disabled="isPending"
                 variant="tertiary"
@@ -160,12 +183,16 @@ function isUpgradeable(type: StripeSubscriptionType): boolean {
           </UiCard>
         </Motion>
       </Motion>
-      <p class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground">
+      <p
+        test-id="text"
+        class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground"
+      >
         {{ t('pages.pricing.text') }}
       </p>
       <div class="flex justify-center">
         <UiButton as-child>
           <NuxtLink
+            test-id="coffee"
             href="https://ko-fi.com/B0B2SSBBQ"
             target="_blank"
             class="flex items-center gap-4"

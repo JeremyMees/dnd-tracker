@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Init from '~/components/initiative/TableRow/Init.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { sheet } from '~~/test/nuxt/fixtures/initiative-sheet'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   item: InitiativeSheetRow
@@ -43,7 +43,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-initiative]').text()).toBe(
+    expect(component.get('[test-id="initiative"]').text()).toBe(
       initiative.toString(),
     )
   })
@@ -56,7 +56,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-empty]').isVisible()).toBeTruthy()
+    expect(component.get('[test-id="empty"]').isVisible()).toBeTruthy()
   })
 
   it('Should show up/down controls when initiative is defined', async () => {
@@ -67,7 +67,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-controls]').isVisible()).toBeTruthy()
+    expect(component.get('[test-id="controls"]').isVisible()).toBeTruthy()
   })
 
   it('Should not show controls when initiative is not defined', async () => {
@@ -78,7 +78,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-controls]').exists()).toBeFalsy()
+    expect(component.find('[test-id="controls"]').exists()).toBeFalsy()
   })
 
   it('Should enable up button when can move up', async () => {
@@ -97,7 +97,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-up]').isVisible()).toBeTruthy()
+    expect(component.get('[test-id="up"]').isVisible()).toBeTruthy()
   })
 
   it('Should enable down button when can move down', async () => {
@@ -116,7 +116,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.get('[data-test-down]').isVisible()).toBeTruthy()
+    expect(component.get('[test-id="down"]').isVisible()).toBeTruthy()
   })
 
   it('Should move row up when clicking up button', async () => {
@@ -135,7 +135,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    await component.get('[data-test-up]').trigger('click')
+    await component.get('[test-id="up"]').trigger('click')
 
     expect(mockUpdate).toHaveBeenCalled()
 
@@ -170,7 +170,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    await component.get('[data-test-down]').trigger('click')
+    await component.get('[test-id="down"]').trigger('click')
 
     expect(mockUpdate).toHaveBeenCalled()
 
@@ -200,7 +200,7 @@ describe('Initiative table row init', async () => {
       provide,
     })
 
-    expect(component.find('[data-test-up]').exists()).toBeFalsy()
-    expect(component.find('[data-test-down]').exists()).toBeFalsy()
+    expect(component.find('[test-id="up"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="down"]').exists()).toBeFalsy()
   })
 })

@@ -1,7 +1,7 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockFrom, mockTo } from '~~/test/nuxt/fixtures/middleware'
-import { authUser } from '~~/test/nuxt/fixtures/auth-user'
+import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
+import { authUser } from '~~/test/fixtures/auth-user'
 import middleware from '~/middleware/encounter-access'
 
 vi.mock('@tanstack/vue-query', async importOriginal => {
@@ -26,10 +26,10 @@ const mockSupabase = {
   })),
 }
 
-let mockSupabaseResponse: { data: any; error: any }
+let mockSupabaseResponse: { data: unknown; error: { message: string } | null }
 
 mockNuxtImport('useState', () =>
-  vi.fn((key: string, init?: () => any) => {
+  vi.fn((key: string, init?: () => unknown) => {
     if (key === 'auth-user') return { value: mockUser }
     return { value: init ? init() : null }
   }),
@@ -37,7 +37,7 @@ mockNuxtImport('useState', () =>
 mockNuxtImport('navigateTo', () => vi.fn())
 mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))
 mockNuxtImport('createError', () =>
-  vi.fn((error: any) => new Error(error.message)),
+  vi.fn((error: { message: string }) => new Error(error.message)),
 )
 
 let mockUser: AuthUser | null = null

@@ -16,14 +16,14 @@ const resetOpen = ref<boolean>(false)
   >
     <InitiativePet
       v-if="data?.settings?.pet"
-      data-test-pet
+      test-id="pet"
       :pet="data.settings.pet"
       class="max-[350px]:hidden absolute top-13 sm:top-5 left-4"
     />
     <div class="flex gap-2 items-center">
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
-        <span data-test-round class="font-bold text-foreground">
+        <span test-id="round" class="font-bold text-foreground">
           {{ data?.round || 1 }}
         </span>
       </span>
@@ -32,7 +32,7 @@ const resetOpen = ref<boolean>(false)
           <UiButton
             id="tour-11"
             v-tippy="$t('actions.reset')"
-            data-test-reset
+            test-id="reset"
             aria-label="Reset rounds"
             :disabled="!data?.rows.length"
             variant="destructive-ghost"
@@ -81,7 +81,7 @@ const resetOpen = ref<boolean>(false)
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"
-        data-test-previous
+        test-id="previous"
         :disabled="
           !data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)
         "
@@ -100,7 +100,7 @@ const resetOpen = ref<boolean>(false)
       </p>
       <button
         v-tippy="{ content: $t('actions.next') }"
-        data-test-next
+        test-id="next"
         :disabled="!data?.rows.length"
         :aria-label="$t('actions.next')"
         class="group disabled:cursor-not-allowed p-1 border-l-4 border-primary flex flex-col items-center"

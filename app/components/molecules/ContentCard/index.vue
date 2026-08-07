@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineEmits<{ pin: []; unpin: [] }>()
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     hit: DndItem
     pinned?: boolean
@@ -34,7 +34,7 @@ const isOpen = ref<boolean>(false)
           content: $t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
           placement: 'left',
         }"
-        data-test-pin
+        test-id="pin"
         variant="secondary-ghost"
         size="icon"
         :aria-label="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
@@ -48,34 +48,41 @@ const isOpen = ref<boolean>(false)
           aria-hidden="true"
         />
       </UiButton>
-      <UiCardTitle data-test-title class="overflow-hidden text-ellipsis">
+      <UiCardTitle test-id="title" class="overflow-hidden text-ellipsis">
         {{ hit.name }}
       </UiCardTitle>
     </UiCardHeader>
     <UiCardContent class="px-4 py-0">
       <ContentCardSpell
         v-if="isSpell(hit)"
-        data-test-spell
+        test-id="spell"
         :content="hit"
         :is-open="isOpen"
       />
       <ContentCardMagicItem
         v-if="isMagicItem(hit)"
-        data-test-magic-item
+        test-id="magic-item"
         :content="hit"
         :is-open="isOpen"
       />
       <ContentCardWeapon
         v-if="isWeapon(hit)"
-        data-test-weapon
+        test-id="weapon"
         :content="hit"
         :is-open="isOpen"
       />
-      <ContentCardArmor v-if="isArmor(hit)" data-test-armor :content="hit" />
+      <ContentCardArmor v-if="isArmor(hit)" test-id="armor" :content="hit" />
+      <ContentCardCondition
+        v-if="isCondition(hit)"
+        test-id="condition"
+        :content="hit"
+        :is-open="isOpen"
+      />
     </UiCardContent>
     <UiCardFooter class="pl-4 pr-0 pb-0 pt-2">
       <div v-if="!isArmor(hit)" class="flex justify-end w-full">
         <UiButton
+          test-id="toggle"
           variant="secondary-ghost"
           class="flex gap-2 text-foreground"
           :aria-label="$t(`actions.read${isOpen ? 'Less' : 'More'}`)"

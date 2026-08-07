@@ -17,6 +17,7 @@ const props = withDefaults(
     min: 0,
     required: false,
     class: '',
+    label: undefined,
   },
 )
 
@@ -42,7 +43,7 @@ function moveDown(index: number) {
 <template>
   <div :class="cn('space-y-4', props.class)">
     <div class="flex items-end justify-between gap-2">
-      <UiLabel v-if="label" data-test-label :required="required">
+      <UiLabel v-if="label" test-id="label" :required="required">
         {{ label }}
       </UiLabel>
       <UiButton
@@ -75,6 +76,7 @@ function moveDown(index: number) {
         <div class="flex flex-col gap-2">
           <UiButton
             v-tippy="$t('actions.moveUp')"
+            :test-id="`move-up-${index}`"
             type="button"
             variant="default-ghost"
             size="icon-sm"
@@ -85,6 +87,7 @@ function moveDown(index: number) {
           </UiButton>
           <UiButton
             v-tippy="$t('actions.moveDown')"
+            :test-id="`move-down-${index}`"
             type="button"
             variant="default-ghost"
             size="icon-sm"
@@ -95,6 +98,7 @@ function moveDown(index: number) {
           </UiButton>
           <UiButton
             v-tippy="$t('actions.remove')"
+            :test-id="`remove-${index}`"
             type="button"
             variant="destructive-ghost"
             size="icon-sm"

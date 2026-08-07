@@ -3,19 +3,21 @@ defineProps<{
   content: DndMagicItem
   isOpen: boolean
 }>()
+
+const { renderMarkdown } = useMarkdown()
 </script>
 
 <template>
   <div class="text-sm">
     <div
       v-if="content.desc"
-      v-dompurify-html="$md.render(content.desc)"
+      v-dompurify-html="renderMarkdown(content.desc)"
       class="md-richtext text-muted-foreground"
       :class="{
         'line-clamp-3': !isOpen,
       }"
     />
-    <UiSeparator v-if="isOpen" data-test-separator class="my-2" />
+    <UiSeparator v-if="isOpen" test-id="separator" class="my-2" />
     <template v-if="isOpen">
       <p v-if="content.type" class="mt-1 text-muted-foreground">
         <span class="font-bold text-foreground">Category:</span>

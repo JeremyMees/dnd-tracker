@@ -15,5 +15,5 @@ export default defineEventHandler(async event => {
     .delete()
     .match({ token, user: user.id })
 
-  if (error) throw createError(error)
+  if (error) throw createError(postgresErrorToH3Error(error))
 })

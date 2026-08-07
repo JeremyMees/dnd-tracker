@@ -38,8 +38,9 @@ const onSubmit = form.handleSubmit(async values => {
     }
 
     await props.updateRow(row)
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred while updating base AC'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred while updating base AC'
   }
 })
 </script>

@@ -20,10 +20,10 @@ const showSettings = ref(false)
     aria-modal="true"
     role="dialog"
     :data-state="showPopup ? 'open' : 'closed'"
-    data-test-banner
+    test-id="banner"
     class="fixed border-4 border-muted bg-background shadow-lg z-50 md:w-lg overflow-hidden rounded-2xl right-4 left-4 bottom-4 p-4 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
   >
-    <div v-if="!showSettings" data-test-banner-info class="flex flex-col gap-6">
+    <div v-if="!showSettings" test-id="banner-info" class="flex flex-col gap-6">
       <div class="flex flex-col gap-1">
         <p class="font-bold">
           {{ $t('components.ConsentBanner.banner.title') }}
@@ -35,7 +35,7 @@ const showSettings = ref(false)
       <div class="flex flex-col md:flex-row justify-between gap-2">
         <div class="flex flex-row gap-2">
           <UiButton
-            data-test-reject-all
+            test-id="reject-all"
             variant="secondary"
             class="w-full md:w-fit"
             @click="rejectAll"
@@ -43,7 +43,7 @@ const showSettings = ref(false)
             {{ $t('components.ConsentBanner.rejectAll') }}
           </UiButton>
           <UiButton
-            data-test-accept-all
+            test-id="accept-all"
             variant="secondary"
             class="w-full md:w-fit"
             @click="acceptAll"
@@ -52,7 +52,7 @@ const showSettings = ref(false)
           </UiButton>
         </div>
         <UiButton
-          data-test-customize
+          test-id="customize"
           variant="tertiary"
           @click="showSettings = true"
         >
@@ -61,7 +61,7 @@ const showSettings = ref(false)
       </div>
     </div>
 
-    <div v-else data-test-banner-settings class="flex flex-col gap-6">
+    <div v-else test-id="banner-settings" class="flex flex-col gap-6">
       <div class="flex flex-col gap-1">
         <p class="font-bold">
           {{ $t('components.ConsentBanner.settings.title') }}
@@ -102,7 +102,7 @@ const showSettings = ref(false)
       <div class="flex flex-col md:flex-row justify-between gap-2">
         <div class="flex flex-row gap-2">
           <UiButton
-            data-test-reject-all
+            test-id="reject-all"
             class="w-full md:w-fit"
             variant="secondary"
             @click="rejectAll"
@@ -110,7 +110,7 @@ const showSettings = ref(false)
             {{ $t('components.ConsentBanner.rejectAll') }}
           </UiButton>
           <UiButton
-            data-test-accept-all
+            test-id="accept-all"
             class="w-full md:w-fit"
             variant="secondary"
             @click="acceptAll"
@@ -119,7 +119,7 @@ const showSettings = ref(false)
           </UiButton>
         </div>
         <UiButton
-          data-test-save-preferences
+          test-id="save-preferences"
           variant="tertiary"
           @click="savePreferences"
         >

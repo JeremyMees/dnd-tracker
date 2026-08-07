@@ -5,12 +5,12 @@ import {
   generateColumns,
   expandedMarkup,
   initialState,
-} from '~~/tables/homebrew-listing'
+} from '~/tables/homebrew-listing'
 import {
   useHomebrewCount,
   useHomebrewListing,
   useHomebrewRemove,
-} from '~~/queries/homebrews'
+} from '~/queries/homebrews'
 
 useSeo('Campaign homebrews')
 
@@ -27,7 +27,7 @@ const { ask } = useConfirm()
 const { t } = useI18n()
 const queryClient = useQueryClient()
 
-const table = ref<InstanceType<typeof DataTable>>()
+const table = ref<DataTableExposed>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 const pageSize = 20
 const max = 100

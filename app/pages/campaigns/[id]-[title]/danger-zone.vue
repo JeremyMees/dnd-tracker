@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useCampaignRemove } from '~~/queries/campaigns'
+import { useCampaignRemove } from '~/queries/campaigns'
 
 useSeo('Campaign danger zone')
 
@@ -75,6 +75,7 @@ async function transferOwnership(): Promise<void> {
               </div>
               <div class="flex justify-end">
                 <UiButton
+                  test-id="transfer"
                   variant="foreground"
                   :aria-label="$t('actions.transfer')"
                   :disabled="!current?.team?.length || !current"
@@ -98,6 +99,7 @@ async function transferOwnership(): Promise<void> {
               </div>
               <div class="flex justify-end">
                 <UiButton
+                  test-id="delete"
                   variant="foreground"
                   :aria-label="$t('actions.delete')"
                   :disabled="!current"
@@ -110,17 +112,17 @@ async function transferOwnership(): Promise<void> {
           </template>
           <template #cannot>
             <div class="flex flex-col items-center justify-center h-full">
-              <p class="p-6">
+              <p test-id="no-permission" class="p-6">
                 {{ $t('pages.campaign.danger.noPermission') }}
               </p>
             </div>
           </template>
         </Bouncer>
       </div>
-      <UiSkeleton v-else class="w-full h-[220px]" />
+      <UiSkeleton v-else test-id="loader" class="w-full h-[220px]" />
 
       <template #fallback>
-        <UiSkeleton class="w-full h-[220px]" />
+        <UiSkeleton test-id="loader" class="w-full h-[220px]" />
       </template>
     </ClientOnly>
   </section>

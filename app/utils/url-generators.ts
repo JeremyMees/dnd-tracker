@@ -24,7 +24,7 @@ export function slugify(str: string): string {
 }
 
 export function campaignUrl(
-  campaign: Record<string, any> & { id: number; title: string },
+  campaign: { id: number; title: string },
   type: 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone',
 ): string {
   const title: string = slugify(campaign.title)
@@ -32,18 +32,14 @@ export function campaignUrl(
   return `/campaigns/${campaign.id}${title === '' ? '-campaign' : `-${title}`}/${type}`
 }
 
-export function encounterUrl(encounter: InitiativeRow | EncounterItem): string {
+export function encounterUrl(encounter: { id: number; title: string }): string {
   const title: string = slugify(encounter.title)
 
   return `/encounters/${encounter.id}${title === '' ? '-encounter' : `-${title}`}`
 }
 
-function localeParam(locale: string): string {
-  return locale === 'nl' ? '' : `${locale}/`
-}
-
 export function shareEncounterUrl(token: string, locale: string): string {
   const { appDomain } = useRuntimeConfig().public
 
-  return `${appDomain}/${localeParam(locale)}playground?token=${token}`
+  return `${appDomain}${localeParam(locale)}/playground?token=${token}`
 }

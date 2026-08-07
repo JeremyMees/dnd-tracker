@@ -8,17 +8,19 @@ withDefaults(
     variant?: ModalVariant
     header?: string
     subHeader?: string
+    closing?: boolean
   }>(),
   {
     variant: 'default',
     header: '',
     subHeader: '',
+    closing: false,
   },
 )
 </script>
 
 <template>
-  <UiDialog open>
+  <UiDialog :open="!closing">
     <UiDialogContent
       :class="{
         'max-w-xl': variant === 'default',
@@ -31,7 +33,7 @@ withDefaults(
       @interact-outside="$emit('close')"
       @close="$emit('close')"
     >
-      <UiDialogHeader>
+      <UiDialogHeader class="px-1">
         <UiDialogTitle>
           {{ header }}
         </UiDialogTitle>
@@ -40,7 +42,7 @@ withDefaults(
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <div class="overflow-y-auto mt-4">
+      <div class="overflow-y-auto mt-4 px-1">
         <slot />
       </div>
     </UiDialogContent>

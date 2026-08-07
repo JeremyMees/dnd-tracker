@@ -1,7 +1,7 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import CampaignInviteNoUser from '~~/emails/CampaignInviteNoUser.vue'
+import CampaignInviteNoUser from '~~/server/emails/CampaignInviteNoUser.vue'
 
 const bodySchema = z.object({
   campaignId: z.number().int().positive(),
@@ -38,21 +38,25 @@ export default defineEventHandler(async event => {
     const html = await render(CampaignInviteNoUser, props, { pretty: true })
     const text = await render(CampaignInviteNoUser, props, { plainText: true })
 
-    return await $fetch('https://next-api.useplunk.com/v1/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${plunkApiKey}`,
+    return await $fetch<PlunkSendResponse, string>(
+      'https://next-api.useplunk.com/v1/send',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${plunkApiKey}`,
+        },
+        body: {
+          from: 'jeremy@dnd-tracker.com',
+          to: body.email,
+          subject: 'Added to a campaign on DnD Tracker',
+          body: html,
+          text,
+        },
       },
-      body: {
-        from: 'jeremy@dnd-tracker.com',
-        to: body.email,
-        subject: 'Added to a campaign on DnD Tracker',
-        body: html,
-        text,
-      },
-    })
-  } catch (err) {
+    )
+  } catch (error) {
+    console.error('Error sending campaign invite email to new user:', error)
     throw createError('Failed to send email.')
   }
 })

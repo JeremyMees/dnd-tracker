@@ -6,6 +6,7 @@ interface AuroraBackgroundProps {
 
 const props = withDefaults(defineProps<AuroraBackgroundProps>(), {
   radialGradient: true,
+  class: '',
 })
 </script>
 

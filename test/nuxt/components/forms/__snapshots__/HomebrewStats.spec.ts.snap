@@ -1,0 +1,246 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`HomebrewStats > Should match snapshot 1`] = `
+"<div class="space-y-6">
+  <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.ability
+      <!--v-if-->
+    </label>
+    <div class="rounded-md border p-3 grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+      <div class="space-y-2"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">STR
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" name="abilityScores.strength" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-1-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">DEX
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-1-form-item" aria-describedby="reka-v-0-0-1-form-item-description" aria-invalid="false" name="abilityScores.dexterity" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-2-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CON
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-2-form-item" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" name="abilityScores.constitution" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-3-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">INT
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-3-form-item" aria-describedby="reka-v-0-0-3-form-item-description" aria-invalid="false" name="abilityScores.intelligence" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">WIS
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-4-form-item" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" name="abilityScores.wisdom" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-5-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CHA
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-5-form-item" aria-describedby="reka-v-0-0-5-form-item-description" aria-invalid="false" name="abilityScores.charisma" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.modifiersLabel
+      <!--v-if-->
+    </label>
+    <div class="rounded-md border p-3 grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+      <div class="space-y-2"><label for="reka-v-0-0-6-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">STR
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-6-form-item" aria-describedby="reka-v-0-0-6-form-item-description" aria-invalid="false" name="modifiers.strength" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-7-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">DEX
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-7-form-item" aria-describedby="reka-v-0-0-7-form-item-description" aria-invalid="false" name="modifiers.dexterity" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-8-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CON
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-8-form-item" aria-describedby="reka-v-0-0-8-form-item-description" aria-invalid="false" name="modifiers.constitution" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-9-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">INT
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-9-form-item" aria-describedby="reka-v-0-0-9-form-item-description" aria-invalid="false" name="modifiers.intelligence" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-10-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">WIS
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-10-form-item" aria-describedby="reka-v-0-0-10-form-item-description" aria-invalid="false" name="modifiers.wisdom" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-11-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CHA
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-11-form-item" aria-describedby="reka-v-0-0-11-form-item-description" aria-invalid="false" name="modifiers.charisma" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">general.savingThrow
+      <!--v-if-->
+    </label>
+    <div class="rounded-md border p-3 grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-2">
+      <div class="space-y-2"><label for="reka-v-0-0-12-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">STR
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-12-form-item" aria-describedby="reka-v-0-0-12-form-item-description" aria-invalid="false" name="savingThrows.strength" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-13-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">DEX
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-13-form-item" aria-describedby="reka-v-0-0-13-form-item-description" aria-invalid="false" name="savingThrows.dexterity" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-14-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CON
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-14-form-item" aria-describedby="reka-v-0-0-14-form-item-description" aria-invalid="false" name="savingThrows.constitution" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-15-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">INT
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-15-form-item" aria-describedby="reka-v-0-0-15-form-item-description" aria-invalid="false" name="savingThrows.intelligence" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-16-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">WIS
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-16-form-item" aria-describedby="reka-v-0-0-16-form-item-description" aria-invalid="false" name="savingThrows.wisdom" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-17-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">CHA
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-17-form-item" aria-describedby="reka-v-0-0-17-form-item-description" aria-invalid="false" name="savingThrows.charisma" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.skillBonusesLabel
+      <!--v-if-->
+    </label>
+    <div class="rounded-md border p-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-2">
+      <div class="space-y-2"><label for="reka-v-0-0-18-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Acrobatics
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-18-form-item" aria-describedby="reka-v-0-0-18-form-item-description" aria-invalid="false" name="skillBonuses.acrobatics" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-19-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Animal Handling
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-19-form-item" aria-describedby="reka-v-0-0-19-form-item-description" aria-invalid="false" name="skillBonuses.animalHandling" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-20-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Arcana
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-20-form-item" aria-describedby="reka-v-0-0-20-form-item-description" aria-invalid="false" name="skillBonuses.arcana" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-21-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Athletics
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-21-form-item" aria-describedby="reka-v-0-0-21-form-item-description" aria-invalid="false" name="skillBonuses.athletics" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-22-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Deception
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-22-form-item" aria-describedby="reka-v-0-0-22-form-item-description" aria-invalid="false" name="skillBonuses.deception" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-23-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">History
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-23-form-item" aria-describedby="reka-v-0-0-23-form-item-description" aria-invalid="false" name="skillBonuses.history" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-24-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Insight
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-24-form-item" aria-describedby="reka-v-0-0-24-form-item-description" aria-invalid="false" name="skillBonuses.insight" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-25-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Intimidation
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-25-form-item" aria-describedby="reka-v-0-0-25-form-item-description" aria-invalid="false" name="skillBonuses.intimidation" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-26-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Investigation
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-26-form-item" aria-describedby="reka-v-0-0-26-form-item-description" aria-invalid="false" name="skillBonuses.investigation" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-27-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Medicine
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-27-form-item" aria-describedby="reka-v-0-0-27-form-item-description" aria-invalid="false" name="skillBonuses.medicine" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-28-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nature
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-28-form-item" aria-describedby="reka-v-0-0-28-form-item-description" aria-invalid="false" name="skillBonuses.nature" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-29-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Perception
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-29-form-item" aria-describedby="reka-v-0-0-29-form-item-description" aria-invalid="false" name="skillBonuses.perception" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-30-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Performance
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-30-form-item" aria-describedby="reka-v-0-0-30-form-item-description" aria-invalid="false" name="skillBonuses.performance" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-31-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Persuasion
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-31-form-item" aria-describedby="reka-v-0-0-31-form-item-description" aria-invalid="false" name="skillBonuses.persuasion" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-32-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Religion
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-32-form-item" aria-describedby="reka-v-0-0-32-form-item-description" aria-invalid="false" name="skillBonuses.religion" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-33-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sleight of Hand
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-33-form-item" aria-describedby="reka-v-0-0-33-form-item-description" aria-invalid="false" name="skillBonuses.sleightOfHand" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-34-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Stealth
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-34-form-item" aria-describedby="reka-v-0-0-34-form-item-description" aria-invalid="false" name="skillBonuses.stealth" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+      <div class="space-y-2"><label for="reka-v-0-0-35-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Survival
+          <!--v-if-->
+          <!--v-if-->
+        </label><input id="reka-v-0-0-35-form-item" aria-describedby="reka-v-0-0-35-form-item-description" aria-invalid="false" name="skillBonuses.survival" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+        <!---->
+      </div>
+    </div>
+  </div>
+</div>"
+`;

@@ -32,7 +32,7 @@ defineProps<{
     </p>
 
     <template v-if="isOpen">
-      <UiSeparator data-test-separator class="my-2" />
+      <UiSeparator test-id="separator" class="my-2" />
 
       <ul
         v-if="content.properties?.length"

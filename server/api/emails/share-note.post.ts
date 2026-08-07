@@ -1,7 +1,7 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import ShareNote from '~~/emails/ShareNote.vue'
+import ShareNote from '~~/server/emails/ShareNote.vue'
 
 const bodySchema = z.object({
   noteId: z.number().int().positive(),
@@ -35,7 +35,7 @@ export default defineEventHandler(async event => {
 
   const props = {
     email: body.email,
-    noteContent: note.text ?? '',
+    noteContent: sanitizeServerHTML(note.text ?? ''),
     noteTitle: note.title,
     campaign: campaign.title,
     sharedBy: sender?.username || 'A campaign member',
@@ -45,21 +45,25 @@ export default defineEventHandler(async event => {
     const html = await render(ShareNote, props, { pretty: true })
     const text = await render(ShareNote, props, { plainText: true })
 
-    return await $fetch('https://next-api.useplunk.com/v1/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${plunkApiKey}`,
+    return await $fetch<PlunkSendResponse, string>(
+      'https://next-api.useplunk.com/v1/send',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${plunkApiKey}`,
+        },
+        body: {
+          from: 'jeremy@dnd-tracker.com',
+          to: body.email,
+          subject: `New Note Shared from ${campaign.title}!`,
+          body: html,
+          text,
+        },
       },
-      body: {
-        from: 'jeremy@dnd-tracker.com',
-        to: body.email,
-        subject: `New Note Shared from ${campaign.title}!`,
-        body: html,
-        text,
-      },
-    })
-  } catch (err) {
+    )
+  } catch (error) {
+    console.error('Error sending share note email:', error)
     throw createError('Failed to send email.')
   }
 })

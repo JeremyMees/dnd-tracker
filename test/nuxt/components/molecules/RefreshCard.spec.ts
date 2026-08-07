@@ -11,7 +11,7 @@ describe('RefreshCard', async () => {
 
   it('Should be emit refresh event', async () => {
     const component = await mountSuspended(RefreshCard)
-    const button = component.find('[data-test-refresh-button]')
+    const button = component.find('[test-id="refresh-button"]')
 
     expect(button.exists()).toBeTruthy()
 

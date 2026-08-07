@@ -44,8 +44,9 @@ const onSubmit = form.handleSubmit(async values => {
 
     if (selected === 'heal') animateTableUpdate(`${props.item.id}-hp`, 'green')
     if (selected === 'damage') animateTableUpdate(`${props.item.id}-hp`, 'red')
-  } catch (err: any) {
-    formError.value = err.message || 'An error occurred while updating HP'
+  } catch (err) {
+    formError.value =
+      getErrorMessage(err) || 'An error occurred while updating HP'
   }
 })
 </script>

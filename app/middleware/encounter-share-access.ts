@@ -17,7 +17,7 @@ export default defineNuxtRouteMiddleware(async to => {
       ['useInitiativeSheetPlayground', to.query.token],
       encounter,
     )
-  } catch (error) {
+  } catch {
     queryClient.removeQueries({
       queryKey: ['useInitiativeSheetPlayground', to.query.token],
     })

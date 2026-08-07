@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { type Component, computed } from 'vue'
 import SidebarMenuButtonChild, {
   type SidebarMenuButtonProps,
 } from './SidebarMenuButtonChild.vue'
@@ -24,6 +23,8 @@ const props = withDefaults(
     as: 'button',
     variant: 'default',
     size: 'default',
+    class: '',
+    tooltip: undefined,
   },
 )
 

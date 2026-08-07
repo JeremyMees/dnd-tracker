@@ -2,7 +2,7 @@
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions } from '~~/constants/dnd'
-import { useOpen5eDocuments, useOpen5eMonsterListing } from '~~/queries/open5e'
+import { useOpen5eDocuments, useOpen5eMonsterListing } from '~/queries/open5e'
 
 const props = withDefaults(
   defineProps<{

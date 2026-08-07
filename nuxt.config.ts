@@ -2,8 +2,8 @@ import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 import packageJSON from './package.json'
 import tailwindcss from '@tailwindcss/vite'
+import { defaultLocale, locales, localized } from './shared/utils/locale'
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -33,6 +33,12 @@ export default defineNuxtConfig({
 
   imports: { dirs: ['@@/types/*.ts', 'types/*.ts'] },
 
+  typescript: {
+    tsConfig: {
+      include: ['../test/unit/**/*'],
+    },
+  },
+
   devtools: { enabled: true },
 
   css: [
@@ -47,7 +53,19 @@ export default defineNuxtConfig({
     description: seo.description,
   },
 
+  sitemap: { zeroRuntime: true },
+
   colorMode: { fallback: 'dark' },
+
+  icon: {
+    serverBundle: false,
+    clientBundle: {
+      scan: {
+        globInclude: ['{app,tables,queries,constants,shared}/**/*.{vue,ts}'],
+      },
+      icons: ['tabler:h-1', 'tabler:h-2', 'tabler:h-3'],
+    },
+  },
 
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
@@ -67,7 +85,7 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
+  routeRules: localized({
     '/': { prerender: true },
     '/contact': { prerender: true },
     '/policies/**': { prerender: true },
@@ -77,13 +95,13 @@ export default defineNuxtConfig({
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
     '/maintenance': { robots: false },
-  },
+  }),
 
   sourcemap: {
     client: 'hidden',
   },
 
-  compatibilityDate: '2024-04-03',
+  compatibilityDate: '2026-08-03',
 
   nitro: {
     rollupConfig: {
@@ -101,7 +119,6 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@dicebear/collection',
         '@dicebear/core',
         '@tanstack/vue-query',
         '@tanstack/vue-table',
@@ -109,7 +126,6 @@ export default defineNuxtConfig({
         '@tiptap/extensions',
         '@tiptap/starter-kit',
         '@tiptap/vue-3',
-        '@unhead/schema-org/vue',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         'c15t',
@@ -132,16 +148,13 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    defaultLocale: 'nl',
+    defaultLocale,
+    locales,
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_redirected',
       redirectOn: 'root',
     },
-    locales: [
-      { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
-      { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },
-    ],
   },
 
   image: {

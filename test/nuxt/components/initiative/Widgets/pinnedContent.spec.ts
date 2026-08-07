@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import PinnedContent from '~/components/initiative/Widgets/PinnedContent.vue'
-import { dndSpellFixture, dndArmorFixture } from '~~/test/nuxt/fixtures/open5e'
+import { dndSpellFixture, dndArmorFixture } from '~~/test/fixtures/open5e'
 
 interface Props {
   value: DndItem[]
@@ -35,6 +35,6 @@ describe('Initiative pinned content widget', async () => {
   it('Should show accordion when items are present', async () => {
     const component = await mountSuspended(PinnedContent, { props })
 
-    expect(component.find('[data-test-accordion]').exists()).toBeTruthy()
+    expect(component.find('[test-id="accordion"]').exists()).toBeTruthy()
   })
 })

@@ -29,8 +29,12 @@ const isChanged = computed<boolean>(() => {
     const currentOptions = avatarCreator.avatar.value.extra
 
     if (initialOptions && currentOptions) {
-      const initial = filterUnwantedKeys(initialOptions as SelectedStyleOptions)
-      const current = filterUnwantedKeys(currentOptions as SelectedStyleOptions)
+      const initial = normalizeStyleOptions(
+        initialOptions as SelectedStyleOptions,
+      )
+      const current = normalizeStyleOptions(
+        currentOptions as SelectedStyleOptions,
+      )
 
       return Object.entries(current).some(([key, value]) => {
         if (!initial[key]) return true
@@ -85,30 +89,6 @@ onMounted(() => {
   }
 })
 
-function filterUnwantedKeys(
-  selected: SelectedStyleOptions,
-): SelectedStyleOptions {
-  const values: SelectedStyleOptions = {}
-
-  for (const key in selected) {
-    if (avatarCreator.blackListedKeys.includes(key)) continue
-
-    let value = selected[key]
-
-    if (value === undefined) continue
-
-    if (typeof value === 'string' && value.includes('#')) {
-      value = value.replace('#', '')
-    }
-
-    if (key === 'primaryBackgroundColor') {
-      values.backgroundColor = value
-    } else values[key] = value
-  }
-
-  return values
-}
-
 function updateAvatar(key: string, value: string): void {
   avatarCreator.update({ [key]: value })
 
@@ -143,7 +123,7 @@ function reset(): void {
       'max-w-prose': profile,
     }"
   >
-    <UiAvatar data-test-avatar :size="size" class="border-4 border-primary">
+    <UiAvatar test-id="avatar" :size="size" class="border-4 border-primary">
       <UiAvatarImage
         :src="avatarCreator.avatar?.value?.url || ''"
         alt="Avatar image"
@@ -208,7 +188,7 @@ function reset(): void {
     </div>
     <div
       v-if="deprecatedAvatar"
-      data-test-deprecated
+      test-id="deprecated"
       class="text-foreground text-xs mt-1 bg-destructive/50 rounded-lg py-1 px-2"
     >
       {{ $t('components.avatarPicker.deprecated') }}
@@ -216,7 +196,7 @@ function reset(): void {
     <AnimationExpand>
       <div
         v-if="creatorOpen"
-        data-test-creator
+        test-id="creator"
         class="flex flex-wrap items-center justify-center gap-1 pt-2"
       >
         <AvatarSelector

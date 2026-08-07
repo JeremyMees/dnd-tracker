@@ -2,7 +2,7 @@
 
 exports[`DragAndDropHeader > Should match snapshot 1`] = `
 "<div class="flex items-center gap-1 px-1">
-  <div class="flex items-center gap-1 px-1"><span class="drag-handle size-4 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"><span class="iconify i-tabler:grip-vertical" aria-hidden="true"></span></span><span data-test-title="" class="text-sm font-medium pt-0.5">My Widget</span></div>
+  <div class="flex items-center gap-1 px-1"><span class="drag-handle size-4 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"><span class="iconify i-tabler:grip-vertical" aria-hidden="true"></span></span><span test-id="title" class="text-sm font-medium pt-0.5">My Widget</span></div>
   <!--v-if-->
 </div>"
 `;

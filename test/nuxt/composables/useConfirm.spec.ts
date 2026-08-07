@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import mockConfirm from '../fixtures/confirm.json'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import mockConfirm from '../../fixtures/confirm.json'
 import { useConfirmDialogs, useConfirm } from '~/composables/useConfirm'
 
 describe('useConfirm', async () => {
@@ -10,10 +10,13 @@ describe('useConfirm', async () => {
 
   beforeEach(() => {
     clearNuxtState()
+    vi.useFakeTimers()
     confirmDialogs = useConfirmDialogs()
     confirm = useConfirm()
     mockCallback.mockReset()
   })
+
+  afterEach(() => vi.useRealTimers())
 
   it('Should add a confirm dialog to the array', async () => {
     confirm.ask(mockConfirm, mockCallback)
@@ -30,6 +33,10 @@ describe('useConfirm', async () => {
     await confirmDialogs.handlers.confirm(uuid)
 
     expect(mockCallback).toHaveBeenCalledWith(true)
+    expect(confirmDialogs.dialogs.value[0]?.closing).toBe(true)
+
+    vi.advanceTimersByTime(200)
+
     expect(confirmDialogs.dialogs.value.length).toBe(0)
   })
 
@@ -42,6 +49,10 @@ describe('useConfirm', async () => {
     await confirmDialogs.handlers.decline(uuid)
 
     expect(mockCallback).toHaveBeenCalledWith(false)
+    expect(confirmDialogs.dialogs.value[0]?.closing).toBe(true)
+
+    vi.advanceTimersByTime(200)
+
     expect(confirmDialogs.dialogs.value.length).toBe(0)
   })
 
@@ -67,6 +78,8 @@ describe('useConfirm', async () => {
     resolveCallback(undefined)
 
     await confirmPromise
+
+    vi.advanceTimersByTime(200)
 
     expect(confirmDialogs.dialogs.value.length).toBe(0)
   })

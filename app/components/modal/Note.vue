@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useNoteCreate, useNoteUpdate } from '~~/queries/notes'
+import { useNoteCreate, useNoteUpdate } from '~/queries/notes'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
