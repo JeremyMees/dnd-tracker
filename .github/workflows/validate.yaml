@@ -42,12 +42,16 @@ jobs:
         run: npm run typecheck
 
   testing:
-    name: Testing
+    name: Testing ${{ matrix.shard }}/3
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run tests
-        run: npm run test
+        run: npm run test -- --shard=${{ matrix.shard }}/3
