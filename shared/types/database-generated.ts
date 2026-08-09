@@ -278,6 +278,7 @@ export type Database = {
           endedAt: string | null
           expiresAt: string
           id: number
+          uuid: string
         }
         Insert: {
           code: string
@@ -287,6 +288,7 @@ export type Database = {
           endedAt?: string | null
           expiresAt: string
           id?: number
+          uuid?: string
         }
         Update: {
           code?: string
@@ -296,6 +298,7 @@ export type Database = {
           endedAt?: string | null
           expiresAt?: string
           id?: number
+          uuid?: string
         }
         Relationships: [
           {
