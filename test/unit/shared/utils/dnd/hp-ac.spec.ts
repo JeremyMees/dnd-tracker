@@ -134,4 +134,18 @@ describe('dnd/hp-ac', () => {
       expect(getAC(monster)).toBe(18)
     })
   })
+
+  describe('getHealthBand', () => {
+    it.each([
+      [80, 100, 'healthy'],
+      [40, 100, 'bloodied'],
+      [10, 100, 'critical'],
+      [0, 100, 'critical'],
+      [5, 0, 'healthy'],
+      [0, 0, 'critical'],
+      [undefined, undefined, 'critical'],
+    ])('bands %s/%s hp as %s', (hitPoints, maxHitPoints, band) => {
+      expect(getHealthBand(hitPoints, maxHitPoints)).toBe(band)
+    })
+  })
 })

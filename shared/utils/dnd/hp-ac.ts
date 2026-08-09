@@ -207,3 +207,19 @@ export function getAC(
 ): number | undefined {
   return isDefined(item.armorClass) ? parseNumber(item.armorClass) : undefined
 }
+
+export function getHealthBand(
+  hitPoints?: number,
+  maxHitPoints?: number,
+): DndHealthBand {
+  const current = hitPoints ?? 0
+  const max = maxHitPoints ?? 0
+
+  if (max <= 0) return current > 0 ? 'healthy' : 'critical'
+
+  const ratio = current / max
+
+  if (ratio <= 0.25) return 'critical'
+  if (ratio <= 0.5) return 'bloodied'
+  return 'healthy'
+}

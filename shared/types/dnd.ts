@@ -191,6 +191,8 @@ export type DndResistanceType =
   | 'damageVulnerabilities'
   | 'conditionImmunities'
 
+export type DndHealthBand = 'healthy' | 'bloodied' | 'critical'
+
 export interface DndSpeed {
   unit: DndDistanceUnit
   walk: number
