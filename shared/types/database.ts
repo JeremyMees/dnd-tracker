@@ -27,6 +27,13 @@ interface HomebrewItemInsert {
   traits?: DndTrait[] | null
 }
 
+interface LiveSeat {
+  seat: string
+  row: string | null
+  name: string
+  spectator: boolean
+}
+
 interface DatabaseOverrides {
   public: {
     Tables: {
@@ -62,6 +69,28 @@ interface DatabaseOverrides {
         Update: {
           avatarOptions?: Record<string, string | number>
         }
+      }
+      live_sessions: {
+        Row: {
+          seats: LiveSeat[]
+        }
+        Insert: {
+          seats?: LiveSeat[]
+        }
+        Update: {
+          seats?: LiveSeat[]
+        }
+      }
+    }
+    Functions: {
+      claim_live_seat: {
+        Args: {
+          p_session: string
+          p_row: string | null
+          p_name: string
+          p_spectator: boolean
+        }
+        Returns: LiveSeat
       }
     }
   }

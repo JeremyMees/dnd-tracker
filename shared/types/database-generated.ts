@@ -278,6 +278,7 @@ export type Database = {
           endedAt: string | null
           expiresAt: string
           id: number
+          seats: Json
           uuid: string
         }
         Insert: {
@@ -288,6 +289,7 @@ export type Database = {
           endedAt?: string | null
           expiresAt: string
           id?: number
+          seats?: Json
           uuid?: string
         }
         Update: {
@@ -298,6 +300,7 @@ export type Database = {
           endedAt?: string | null
           expiresAt?: string
           id?: number
+          seats?: Json
           uuid?: string
         }
         Relationships: [
@@ -440,6 +443,15 @@ export type Database = {
     Functions: {
       apply_live_action: {
         Args: { p_encounter: number; p_patch: Json; p_row_id: string }
+        Returns: Json
+      }
+      claim_live_seat: {
+        Args: {
+          p_name: string
+          p_row: string
+          p_session: string
+          p_spectator: boolean
+        }
         Returns: Json
       }
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }

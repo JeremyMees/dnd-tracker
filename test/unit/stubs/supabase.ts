@@ -66,6 +66,7 @@ export function mockChain(result: Record<string, unknown>): SupabaseChain {
 
 export function mockFrom(
   tables: Record<string, SupabaseChain | SupabaseChain[]>,
+  options: { rpc?: SupabaseChain | SupabaseChain[] } = {},
 ) {
   const queues = new Map(
     Object.entries(tables).map(([table, value]) => [
@@ -92,7 +93,23 @@ export function mockFrom(
     return chain
   })
 
-  serverSupabaseServiceRole.mockReturnValue({ from })
+  const rpcQueue = Array.isArray(options.rpc) ? [...options.rpc] : null
+
+  const rpc = options.rpc
+    ? vi.fn(() => {
+        const chain = rpcQueue ? rpcQueue.shift() : options.rpc
+
+        if (!chain) {
+          throw new Error(
+            'Mock for rpc() was called more times than configured',
+          )
+        }
+
+        return chain
+      })
+    : undefined
+
+  serverSupabaseServiceRole.mockReturnValue({ from, ...(rpc && { rpc }) })
 
   return from
 }
