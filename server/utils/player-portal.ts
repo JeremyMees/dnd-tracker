@@ -32,7 +32,12 @@ function toPlayerRow(
   return playerRow
 }
 
-export function toPlayerSheet(sheet: InitiativeSheet): PlayerSheet {
+export function toPlayerSheet(
+  sheet: Pick<
+    InitiativeSheet,
+    'id' | 'title' | 'round' | 'activeIndex' | 'rows' | 'settings'
+  >,
+): PlayerSheet {
   const hideMonsterNames = sheet.settings.live?.hideMonsterNames ?? false
   const hideMonsterHealth = sheet.settings.live?.hideMonsterHealth ?? false
 
