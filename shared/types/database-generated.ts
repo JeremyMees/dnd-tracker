@@ -269,6 +269,51 @@ export type Database = {
           },
         ]
       }
+      live_sessions: {
+        Row: {
+          code: string
+          createdAt: string
+          createdBy: string
+          encounter: number
+          endedAt: string | null
+          expiresAt: string
+          id: number
+        }
+        Insert: {
+          code: string
+          createdAt?: string
+          createdBy: string
+          encounter: number
+          endedAt?: string | null
+          expiresAt: string
+          id?: number
+        }
+        Update: {
+          code?: string
+          createdAt?: string
+          createdBy?: string
+          encounter?: number
+          endedAt?: string | null
+          expiresAt?: string
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'live_sessions_createdBy_fkey'
+            columns: ['createdBy']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'live_sessions_encounter_fkey'
+            columns: ['encounter']
+            isOneToOne: false
+            referencedRelation: 'initiative_sheets'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       notes: {
         Row: {
           campaign: number
