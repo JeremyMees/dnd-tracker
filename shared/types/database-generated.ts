@@ -435,6 +435,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_live_action: {
+        Args: { p_encounter: number; p_patch: Json; p_row_id: string }
+        Returns: Json
+      }
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }
       is_valid_resistances: { Args: { _j: Json }; Returns: boolean }
       is_valid_traits: { Args: { _j: Json }; Returns: boolean }
