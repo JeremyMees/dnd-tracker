@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { H3Event } from 'h3'
-import { requireUser, requireCampaignAccess } from '~~/server/utils/auth'
+import {
+  requireUser,
+  requireCampaignAccess,
+  requireEncounterAccess,
+} from '~~/server/utils/auth'
 
 const { serverSupabaseUser, serverSupabaseServiceRole } = vi.hoisted(() => ({
   serverSupabaseUser: vi.fn(),
@@ -179,6 +183,106 @@ describe('auth', () => {
       await expect(
         requireCampaignAccess(event, 42, 'user-2'),
       ).resolves.toMatchObject({ role: 'Viewer' })
+    })
+  })
+
+  describe('requireEncounterAccess', () => {
+    function mockEncounterServiceRole({
+      encounterResult = {
+        data: { id: 7, campaign: null, createdBy: 'user-1' },
+        error: null,
+      } as Record<string, unknown>,
+      memberResult = { data: null } as Record<string, unknown>,
+    } = {}) {
+      const encounterSingle = vi.fn().mockResolvedValue(encounterResult)
+      const encounterEq = vi.fn(() => ({ single: encounterSingle }))
+
+      const campaignSingle = vi.fn().mockResolvedValue({
+        data: campaign,
+        error: null,
+      })
+      const campaignEq = vi.fn(() => ({ single: campaignSingle }))
+
+      const teamMaybeSingle = vi.fn().mockResolvedValue(memberResult)
+      const teamMatch = vi.fn(() => ({ maybeSingle: teamMaybeSingle }))
+
+      const from = vi.fn((table: string) => {
+        if (table === 'initiative_sheets') {
+          return { select: () => ({ eq: encounterEq }) }
+        }
+        if (table === 'campaigns') {
+          return { select: () => ({ eq: campaignEq }) }
+        }
+        if (table === 'team') {
+          return { select: () => ({ match: teamMatch }) }
+        }
+
+        throw new Error(`unexpected table "${table}"`)
+      })
+
+      serverSupabaseServiceRole.mockReturnValue({ from })
+
+      return { from }
+    }
+
+    it('resolves the encounter for its owner', async () => {
+      mockEncounterServiceRole()
+
+      await expect(requireEncounterAccess(event, 7, 'user-1')).resolves.toEqual(
+        { id: 7, campaign: null, createdBy: 'user-1' },
+      )
+    })
+
+    it('resolves the encounter for a campaign team member', async () => {
+      mockEncounterServiceRole({
+        encounterResult: {
+          data: { id: 7, campaign: 42, createdBy: 'user-2' },
+          error: null,
+        },
+        memberResult: { data: { role: 'Player' } },
+      })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-1'),
+      ).resolves.toMatchObject({ id: 7 })
+    })
+
+    it('throws a 404 when the encounter does not exist', async () => {
+      mockEncounterServiceRole({ encounterResult: { data: null, error: null } })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-1'),
+      ).rejects.toMatchObject({
+        statusCode: 404,
+        statusMessage: 'Encounter not found',
+      })
+    })
+
+    it('throws a 403 when the encounter has no campaign and the caller is not the owner', async () => {
+      mockEncounterServiceRole({
+        encounterResult: {
+          data: { id: 7, campaign: null, createdBy: 'user-2' },
+          error: null,
+        },
+      })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-1'),
+      ).rejects.toMatchObject({ statusCode: 403, statusMessage: 'Forbidden' })
+    })
+
+    it('throws a 403 when the caller has no campaign access', async () => {
+      mockEncounterServiceRole({
+        encounterResult: {
+          data: { id: 7, campaign: 42, createdBy: 'user-2' },
+          error: null,
+        },
+        memberResult: { data: null },
+      })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-3'),
+      ).rejects.toMatchObject({ statusCode: 403 })
     })
   })
 })
