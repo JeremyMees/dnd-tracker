@@ -125,6 +125,10 @@ export interface InitiativeSettings {
   widgets?: InitiativeWidget[]
   pet?: InitiativePet
   negative?: boolean
+  live?: {
+    hideMonsterNames?: boolean
+    hideMonsterHealth?: boolean
+  }
 }
 
 // Extended Types
