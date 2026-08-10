@@ -6,6 +6,7 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import {
   broadcastLiveAction,
+  broadcastLiveSeats,
   buildAcPatch,
   buildHpPatch,
   liveActionSchema,
@@ -72,6 +73,32 @@ describe('live-broadcast', () => {
           },
         ),
       ).rejects.toMatchObject({ statusCode: 409 })
+    })
+  })
+
+  describe('broadcastLiveSeats', () => {
+    it('broadcasts a seats update over the session channel', async () => {
+      mockFrom({})
+
+      await broadcastLiveSeats(
+        serverSupabaseServiceRole({} as never),
+        'session-uuid',
+        {
+          type: 'kicked',
+          seat: 'seat-1',
+        },
+      )
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+
+      const channel = supabase.channel('live:session-uuid')
+
+      expect(channel.httpSend).toHaveBeenCalledWith('seats', {
+        type: 'kicked',
+        seat: 'seat-1',
+      })
     })
   })
 

@@ -24,6 +24,16 @@ export async function broadcastLiveAction(
   await channel.httpSend('action', { version, ...action })
 }
 
+export async function broadcastLiveSeats(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  session: string,
+  update: LiveSeatsBroadcast,
+): Promise<void> {
+  const channel = supabase.channel(`live:${session}`)
+
+  await channel.httpSend('seats', update)
+}
+
 export const liveActionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('hp'),
