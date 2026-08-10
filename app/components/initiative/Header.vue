@@ -5,9 +5,13 @@ defineEmits<{
   next: []
 }>()
 
-defineProps<{ data: InitiativeSheet | undefined }>()
+defineProps<{
+  data: InitiativeSheet | undefined
+  encounterId?: number
+}>()
 
 const resetOpen = ref<boolean>(false)
+const liveOpen = ref<boolean>(false)
 </script>
 
 <template>
@@ -72,6 +76,27 @@ const resetOpen = ref<boolean>(false)
               {{ $t('components.encounterTable.reset.hard.description') }}
             </span>
           </button>
+        </UiPopoverContent>
+      </UiPopover>
+      <UiPopover v-if="encounterId" v-model:open="liveOpen">
+        <UiPopoverTrigger as-child>
+          <UiButton
+            v-tippy="$t('components.liveSession.title')"
+            test-id="live-session-trigger"
+            :aria-label="$t('components.liveSession.title')"
+            variant="success-ghost"
+            size="icon-sm"
+            class="group"
+          >
+            <Icon
+              name="tabler:broadcast"
+              class="text-success group-hover:text-foreground"
+              aria-hidden="true"
+            />
+          </UiButton>
+        </UiPopoverTrigger>
+        <UiPopoverContent>
+          <InitiativeLiveSessionPanel :encounter-id="encounterId" />
         </UiPopoverContent>
       </UiPopover>
     </div>

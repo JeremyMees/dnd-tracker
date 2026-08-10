@@ -7,6 +7,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 interface Props {
   loading: boolean
+  encounterId?: number
 }
 
 const mockUpdate = vi.fn()
@@ -119,6 +120,17 @@ describe('Initiative table', () => {
     })
 
     expect(component.findAll('[test-id="loading"]').length).toBe(10)
+  })
+
+  it('Should pass the encounterId through to the header', async () => {
+    const component = await mountSuspended(Table, {
+      props: { ...props, encounterId: 42 },
+      provide,
+    })
+
+    expect(
+      component.find('[test-id="live-session-trigger"]').exists(),
+    ).toBeTruthy()
   })
 
   it('Should display empty state when no data is available', async () => {

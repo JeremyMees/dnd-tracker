@@ -1,15 +1,24 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 interface Props {
   data: InitiativeSheet | undefined
+  encounterId?: number
 }
 
 const props: Props = {
   data: sheet,
 }
+
+vi.mock('~/components/initiative/LiveSessionPanel.vue', () => ({
+  default: {
+    name: 'LiveSessionPanelStub',
+    props: ['encounterId'],
+    template: '<div test-id="live-session-panel-stub" />',
+  },
+}))
 
 describe('Initiative header', () => {
   it('Should render correctly with required props', async () => {
@@ -124,5 +133,37 @@ describe('Initiative header', () => {
     await component.find('[test-id="previous"]').trigger('click')
 
     expect(component.emitted('previous')).toBeDefined()
+  })
+
+  it('Should not display the live session trigger without an encounterId', async () => {
+    const component = await mountSuspended(Header, { props })
+
+    expect(
+      component.find('[test-id="live-session-trigger"]').exists(),
+    ).toBeFalsy()
+  })
+
+  it('Should display the live session trigger when an encounterId is given', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+    })
+
+    expect(
+      component.find('[test-id="live-session-trigger"]').exists(),
+    ).toBeTruthy()
+  })
+
+  it('Should render the live session panel with the encounterId when opened', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+    })
+
+    await component.find('[test-id="live-session-trigger"]').trigger('click')
+    await nextTick()
+
+    const panel = component.findComponent({ name: 'LiveSessionPanelStub' })
+
+    expect(panel.exists()).toBeTruthy()
+    expect(panel.props('encounterId')).toBe(42)
   })
 })

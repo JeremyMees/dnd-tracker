@@ -127,7 +127,7 @@ provide(INITIATIVE_SHEET, {
       </div>
     </template>
 
-    <InitiativeTable v-if="!isError" :loading="isPending" />
+    <InitiativeTable v-if="!isError" :loading="isPending" :encounter-id="id" />
     <Card
       v-else
       test-id="error"

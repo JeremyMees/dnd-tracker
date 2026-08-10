@@ -1,0 +1,161 @@
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import LiveSessionPanel from '~/components/initiative/LiveSessionPanel.vue'
+import { authUser } from '~~/test/fixtures/auth-user'
+
+const { ask, toast, mockClipboard, start, stop } = vi.hoisted(() => ({
+  ask: vi.fn(),
+  toast: vi.fn(),
+  mockClipboard: vi.fn(),
+  start: vi.fn(),
+  stop: vi.fn(),
+}))
+
+vi.mock('~/components/ui/toast', () => ({
+  useToast: () => ({ toast }),
+}))
+
+const user = ref<AuthUser>({ ...authUser })
+const session = ref<{ token: string; code: string; expiresAt: string }>()
+const active = ref(false)
+const loading = ref(false)
+
+mockNuxtImport('useAuthenticatedUser', () => () => user)
+mockNuxtImport('useConfirm', () => () => ({ ask }))
+mockNuxtImport('useClipboard', () => () => ({ copy: mockClipboard }))
+mockNuxtImport('useLiveSession', () => () => ({
+  session,
+  active,
+  loading,
+  start,
+  stop,
+}))
+
+const props = { encounterId: 1 }
+
+describe('LiveSessionPanel', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    user.value = { ...authUser, subscriptionType: 'free' }
+    session.value = undefined
+    active.value = false
+    loading.value = false
+  })
+
+  it('Should show the upsell when the user is not pro', async () => {
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    expect(component.find('[test-id="upsell"]').exists()).toBe(true)
+    expect(start).not.toHaveBeenCalled()
+  })
+
+  it('Should start a session on mount when the user is pro', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+
+    await mountSuspended(LiveSessionPanel, { props })
+
+    expect(start).toHaveBeenCalled()
+  })
+
+  it('Should show a loading state while the initial session lookup is pending', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    loading.value = true
+
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    expect(component.find('[test-id="loading"]').exists()).toBe(true)
+  })
+
+  it('Should show a start button when pro but no session is active', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    expect(component.find('[test-id="start"]').exists()).toBe(true)
+  })
+
+  it('Should show the QR code, room code and expiry when a session is active', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    expect(component.find('[test-id="active"]').exists()).toBe(true)
+    expect(component.find('[test-id="qr-code"]').exists()).toBe(true)
+    expect(component.find('[test-id="code"]').text()).toBe('ABC123')
+    expect(component.find('[test-id="expires"]').exists()).toBe(true)
+  })
+
+  it('Should copy the join link and toast on copy', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    await component.find('[test-id="copy-link"]').trigger('click')
+
+    expect(mockClipboard).toHaveBeenCalledWith(
+      expect.stringContaining('/live?code=ABC123'),
+    )
+    expect(toast).toHaveBeenCalledWith({
+      description: 'actions.copyClipboard',
+      variant: 'info',
+    })
+  })
+
+  it('Should ask for confirmation and stop the session when ending it', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    await component.find('[test-id="end"]').trigger('click')
+
+    expect(ask).toHaveBeenCalledWith(
+      {
+        title: 'components.liveSession.endConfirm.title',
+        description: 'components.liveSession.endConfirm.text',
+      },
+      expect.any(Function),
+    )
+
+    const callback = ask.mock.calls[0]?.[1]
+    await callback(true)
+
+    expect(stop).toHaveBeenCalled()
+  })
+
+  it('Should not stop the session when the confirmation is declined', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountSuspended(LiveSessionPanel, { props })
+
+    await component.find('[test-id="end"]').trigger('click')
+
+    const callback = ask.mock.calls[0]?.[1]
+    await callback(false)
+
+    expect(stop).not.toHaveBeenCalled()
+  })
+})

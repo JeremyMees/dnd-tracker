@@ -559,6 +559,19 @@
     }
   },
   "components": {
+    "liveSession": {
+      "title": "Live sessie",
+      "start": "Start live sessie",
+      "code": "Kamercode",
+      "copyLink": "Kopieer link",
+      "expiresIn": "Verloopt over {time}",
+      "end": "Beëindig sessie",
+      "endConfirm": {
+        "title": "Live sessie beëindigen?",
+        "text": "Spelers worden losgekoppeld en hun plekken worden gewist."
+      },
+      "upsell": "Laat spelers de initiatiefvolgorde volgen en op hun eigen beurt handelen vanaf hun telefoon, geen account nodig. Live sessies zijn een Pro-functie."
+    },
     "actionsTable": {
       "cost": "Kost { cost } actie | Kost { cost } acties",
       "form": " Terwijl in { form } vorm.",

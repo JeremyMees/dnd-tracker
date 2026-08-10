@@ -559,6 +559,19 @@
     }
   },
   "components": {
+    "liveSession": {
+      "title": "Live session",
+      "start": "Start live session",
+      "code": "Room code",
+      "copyLink": "Copy link",
+      "expiresIn": "Ends in {time}",
+      "end": "End session",
+      "endConfirm": {
+        "title": "End live session?",
+        "text": "Players will be disconnected and their seats cleared."
+      },
+      "upsell": "Let players follow initiative and act on their own turn from their phones, no account needed. Live sessions are a Pro feature."
+    },
     "actionsTable": {
       "cost": "Cost { cost } action | Costs { cost } actions",
       "form": " While in { form } form.",
