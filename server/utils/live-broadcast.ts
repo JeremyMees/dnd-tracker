@@ -2,6 +2,28 @@ import type { serverSupabaseServiceRole } from '#supabase/server'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { z } from 'zod'
 
+interface LiveActionBroadcast {
+  row: string
+  patch: Partial<InitiativeSheetRow>
+}
+
+export async function broadcastLiveAction(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  session: string,
+  action: LiveActionBroadcast,
+): Promise<void> {
+  const { data: version, error } = await supabase.rpc(
+    'increment_live_version',
+    { p_session: session },
+  )
+
+  if (error) throw createError(postgresErrorToH3Error(error))
+
+  const channel = supabase.channel(`live:${session}`)
+
+  await channel.httpSend('action', { version, ...action })
+}
+
 export const liveActionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('hp'),

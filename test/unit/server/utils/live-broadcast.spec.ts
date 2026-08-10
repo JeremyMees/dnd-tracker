@@ -5,10 +5,11 @@ import {
   serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
 import {
+  broadcastLiveAction,
   buildAcPatch,
   buildHpPatch,
   liveActionSchema,
-} from '~~/server/utils/live-patches'
+} from '~~/server/utils/live-broadcast'
 
 function supabaseWithSheet(data: Record<string, unknown>) {
   mockFrom({ initiative_sheets: mockChain({ data, error: null }) })
@@ -16,9 +17,62 @@ function supabaseWithSheet(data: Record<string, unknown>) {
   return serverSupabaseServiceRole({} as never)
 }
 
-describe('server/utils/live-patches', () => {
+describe('live-broadcast', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+  })
+
+  describe('broadcastLiveAction', () => {
+    it('increments the session version and broadcasts the patch over the session channel', async () => {
+      mockFrom({}, { rpc: mockChain({ data: 4, error: null }) })
+
+      await broadcastLiveAction(
+        serverSupabaseServiceRole({} as never),
+        'session-uuid',
+        {
+          row: 'row-1',
+          patch: { hitPoints: 10 },
+        },
+      )
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
+        p_session: 'session-uuid',
+      })
+      expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+
+      const channel = supabase.channel('live:session-uuid')
+
+      expect(channel.httpSend).toHaveBeenCalledWith('action', {
+        version: 4,
+        row: 'row-1',
+        patch: { hitPoints: 10 },
+      })
+    })
+
+    it('propagates a postgres error from increment_live_version', async () => {
+      mockFrom(
+        {},
+        {
+          rpc: mockChain({
+            data: null,
+            error: { code: '23505', message: 'boom', details: '', hint: '' },
+          }),
+        },
+      )
+
+      await expect(
+        broadcastLiveAction(
+          serverSupabaseServiceRole({} as never),
+          'session-uuid',
+          {
+            row: 'row-1',
+            patch: { hitPoints: 10 },
+          },
+        ),
+      ).rejects.toMatchObject({ statusCode: 409 })
+    })
   })
 
   describe('liveActionSchema', () => {

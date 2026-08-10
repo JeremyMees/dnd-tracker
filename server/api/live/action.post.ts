@@ -81,5 +81,10 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
+  await broadcastLiveAction(supabase, payload.session, {
+    row: seat.row,
+    patch,
+  })
+
   return { row }
 })

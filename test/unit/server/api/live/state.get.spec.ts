@@ -53,6 +53,7 @@ describe('GET /api/live/state', () => {
           code: 'ABC234',
           expiresAt: future.toISOString(),
           endedAt: null,
+          version: 3,
         },
         error: null,
       }),
@@ -78,7 +79,7 @@ describe('GET /api/live/state', () => {
           },
         ],
       },
-      session: { code: 'ABC234', expiresAt: future.toISOString() },
+      session: { code: 'ABC234', expiresAt: future.toISOString(), version: 3 },
     })
   })
 

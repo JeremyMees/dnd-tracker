@@ -109,7 +109,16 @@ export function mockFrom(
       })
     : undefined
 
-  serverSupabaseServiceRole.mockReturnValue({ from, ...(rpc && { rpc }) })
+  const sharedChannel = {
+    httpSend: vi.fn().mockResolvedValue({ success: true }),
+  }
+  const channel = vi.fn(() => sharedChannel)
+
+  serverSupabaseServiceRole.mockReturnValue({
+    from,
+    channel,
+    ...(rpc && { rpc }),
+  })
 
   return from
 }

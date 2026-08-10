@@ -93,7 +93,10 @@ describe('POST /api/live/action', () => {
     mockFrom(
       { live_sessions: mockChain({ data: session, error: null }) },
       {
-        rpc: mockChain({ data: { ...row, concentration: true }, error: null }),
+        rpc: [
+          mockChain({ data: { ...row, concentration: true }, error: null }),
+          mockChain({ data: 4, error: null }),
+        ],
       },
     )
 
@@ -110,6 +113,18 @@ describe('POST /api/live/action', () => {
       p_encounter: 7,
       p_row_id: 'row-1',
       p_patch: { concentration: true },
+    })
+    expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
+      p_session: 'session-uuid',
+    })
+    expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 4,
+      row: 'row-1',
+      patch: { concentration: true },
     })
   })
 

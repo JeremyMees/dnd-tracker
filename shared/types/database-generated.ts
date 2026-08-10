@@ -280,6 +280,7 @@ export type Database = {
           id: number
           seats: Json
           uuid: string
+          version: number
         }
         Insert: {
           code: string
@@ -291,6 +292,7 @@ export type Database = {
           id?: number
           seats?: Json
           uuid?: string
+          version?: number
         }
         Update: {
           code?: string
@@ -302,6 +304,7 @@ export type Database = {
           id?: number
           seats?: Json
           uuid?: string
+          version?: number
         }
         Relationships: [
           {
@@ -454,6 +457,7 @@ export type Database = {
         }
         Returns: Json
       }
+      increment_live_version: { Args: { p_session: string }; Returns: number }
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }
       is_valid_resistances: { Args: { _j: Json }; Returns: boolean }
       is_valid_traits: { Args: { _j: Json }; Returns: boolean }

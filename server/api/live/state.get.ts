@@ -12,7 +12,7 @@ export default defineEventHandler(async event => {
 
   const { data: session } = await supabase
     .from('live_sessions')
-    .select('code, expiresAt, endedAt')
+    .select('code, expiresAt, endedAt, version')
     .eq('uuid', payload.session)
     .eq('encounter', payload.encounter)
     .maybeSingle()
@@ -43,6 +43,10 @@ export default defineEventHandler(async event => {
 
   return {
     sheet: toPlayerSheet(sheet),
-    session: { code: session.code, expiresAt: session.expiresAt },
+    session: {
+      code: session.code,
+      expiresAt: session.expiresAt,
+      version: session.version,
+    },
   }
 })

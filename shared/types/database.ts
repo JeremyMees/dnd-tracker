@@ -100,6 +100,12 @@ interface DatabaseOverrides {
         }
         Returns: InitiativeSheetRow
       }
+      increment_live_version: {
+        Args: {
+          p_session: string
+        }
+        Returns: number
+      }
     }
   }
 }
