@@ -559,6 +559,18 @@
     },
     "fantasyNameGenerator": {
       "tip": "Klik op een naam om deze naar het klembord te kopiëren"
+    },
+    "live": {
+      "title": "Deelnemen aan een live sessie",
+      "text": "Voer de kamercode in die je DM met je heeft gedeeld.",
+      "codeLabel": "Kamercode",
+      "join": "Deelnemen",
+      "confirmed": "Kamercode bevestigd",
+      "errors": {
+        "notFound": "We konden geen live sessie met die code vinden.",
+        "expired": "Deze live sessie is beëindigd.",
+        "generic": "Er is iets misgegaan, probeer het opnieuw."
+      }
     }
   },
   "components": {

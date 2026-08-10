@@ -559,6 +559,18 @@
     },
     "fantasyNameGenerator": {
       "tip": "Click on the generated name to copy it to your clipboard"
+    },
+    "live": {
+      "title": "Join a live session",
+      "text": "Enter the room code your DM shared with you.",
+      "codeLabel": "Room code",
+      "join": "Join",
+      "confirmed": "Room code confirmed",
+      "errors": {
+        "notFound": "We couldn't find a live session with that code.",
+        "expired": "This live session has ended.",
+        "generic": "Something went wrong, please try again."
+      }
     }
   },
   "components": {
