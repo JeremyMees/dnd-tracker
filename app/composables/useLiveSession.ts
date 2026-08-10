@@ -28,7 +28,7 @@ export function useLiveSession(encounterId: number) {
       return t('general.error.text')
     }
 
-    return t(`components.liveSession.errors.${kebabToCamel(slug)}`)
+    return t(`pages.encounter.liveSession.errors.${kebabToCamel(slug)}`)
   }
 
   async function start(): Promise<void> {

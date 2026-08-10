@@ -99,7 +99,7 @@ describe('useLiveSession', () => {
 
     expect(toast).toHaveBeenCalledWith({
       title: 'general.error.title',
-      description: 'components.liveSession.errors.proRequired',
+      description: 'pages.encounter.liveSession.errors.proRequired',
       variant: 'destructive',
     })
     expect(vm.session).toBeUndefined()
@@ -177,7 +177,7 @@ describe('useLiveSession', () => {
 
     expect(toast).toHaveBeenCalledWith({
       title: 'general.error.title',
-      description: 'components.liveSession.errors.noActiveSession',
+      description: 'pages.encounter.liveSession.errors.noActiveSession',
       variant: 'destructive',
     })
     expect(vm.loading).toBe(false)
