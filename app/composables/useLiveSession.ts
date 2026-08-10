@@ -1,3 +1,4 @@
+import { createSharedComposable } from '@vueuse/core'
 import { useToast } from '~/components/ui/toast'
 
 export interface LiveSessionResponse {
@@ -10,7 +11,7 @@ export interface LiveSessionResponse {
 
 const liveSessionErrors = new Set(['pro-required', 'no-active-session'])
 
-export function useLiveSession(encounterId: number) {
+function _useLiveSession(encounterId: number) {
   const { toast } = useToast()
   const { t } = useI18n()
 
@@ -81,3 +82,5 @@ export function useLiveSession(encounterId: number) {
     stop,
   }
 }
+
+export const useLiveSession = createSharedComposable(_useLiveSession)

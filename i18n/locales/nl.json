@@ -574,6 +574,11 @@
         "text": "Spelers worden losgekoppeld en hun plekken worden gewist."
       },
       "upsell": "Laat spelers de initiatiefvolgorde volgen en op hun eigen beurt handelen vanaf hun telefoon, geen account nodig. Live sessies zijn een Pro-functie.",
+      "visibility": {
+        "title": "Zichtbaarheid monsters",
+        "hideMonsterNames": "Verberg namen",
+        "hideMonsterHealth": "Verberg HP"
+      },
       "seats": {
         "title": "Spelers",
         "empty": "Nog niemand heeft zich aangesloten",

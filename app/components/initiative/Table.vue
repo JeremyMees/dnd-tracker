@@ -146,6 +146,6 @@ const table = useVueTable({
       </UiTable>
     </div>
 
-    <LazyInitiativeWidgets test-id="widgets" />
+    <LazyInitiativeWidgets test-id="widgets" :encounter-id="encounterId" />
   </div>
 </template>

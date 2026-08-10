@@ -574,6 +574,11 @@
         "text": "Players will be disconnected and their seats cleared."
       },
       "upsell": "Let players follow initiative and act on their own turn from their phones, no account needed. Live sessions are a Pro feature.",
+      "visibility": {
+        "title": "Monster visibility",
+        "hideMonsterNames": "Hide names",
+        "hideMonsterHealth": "Hide HP"
+      },
       "seats": {
         "title": "Players",
         "empty": "No one has joined yet",

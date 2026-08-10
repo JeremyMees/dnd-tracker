@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{
   encounterId: number
@@ -11,6 +12,7 @@ const { toast } = useToast()
 const clipboard = useClipboard()
 const { ask } = useConfirm()
 const user = useAuthenticatedUser()
+const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const { session, active, loading, start, stop } = useLiveSession(
   props.encounterId,
 )
@@ -25,6 +27,13 @@ let interval: ReturnType<typeof setInterval> | undefined
 
 const remaining = computed<string>(() =>
   session.value ? timeRemaining(session.value.expiresAt, now.value) : '',
+)
+
+const hideMonsterNames = computed<boolean>(
+  () => sheet.value?.settings.live?.hideMonsterNames ?? false,
+)
+const hideMonsterHealth = computed<boolean>(
+  () => sheet.value?.settings.live?.hideMonsterHealth ?? false,
 )
 
 onMounted(() => {
@@ -60,6 +69,23 @@ function endSession(): void {
       if (confirmed) await stop()
     },
   )
+}
+
+async function toggleLiveVisibility(
+  key: 'hideMonsterNames' | 'hideMonsterHealth',
+  value: boolean,
+): Promise<void> {
+  if (!sheet.value) return
+
+  await update({
+    settings: {
+      ...sheet.value.settings,
+      live: {
+        ...sheet.value.settings.live,
+        [key]: value,
+      },
+    },
+  })
 }
 </script>
 
@@ -110,10 +136,22 @@ function endSession(): void {
         </span>
       </div>
 
-      <UiButton test-id="copy-link" size="sm" class="w-full" @click="copyLink">
-        <Icon name="tabler:link" aria-hidden="true" />
-        {{ $t('components.liveSession.copyLink') }}
-      </UiButton>
+      <div class="flex flex-col sm:flex-row gap-2 w-full">
+        <UiButton test-id="copy-link" size="sm" class="grow" @click="copyLink">
+          <Icon name="tabler:link" aria-hidden="true" />
+          {{ $t('components.liveSession.copyLink') }}
+        </UiButton>
+        <UiButton
+          test-id="end"
+          variant="destructive"
+          size="sm"
+          class="grow"
+          :disabled="loading"
+          @click="endSession"
+        >
+          {{ $t('components.liveSession.end') }}
+        </UiButton>
+      </div>
 
       <p
         v-if="remaining"
@@ -125,22 +163,45 @@ function endSession(): void {
 
       <UiSeparator />
 
+      <div test-id="visibility" class="flex flex-col gap-2 w-full text-left">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide">
+          {{ $t('components.liveSession.visibility.title') }}
+        </p>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.visibility.hideMonsterNames') }}
+          </span>
+          <UiSwitch
+            test-id="hide-monster-names"
+            :model-value="hideMonsterNames"
+            @update:model-value="
+              toggleLiveVisibility('hideMonsterNames', $event)
+            "
+          />
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.visibility.hideMonsterHealth') }}
+          </span>
+          <UiSwitch
+            test-id="hide-monster-health"
+            :model-value="hideMonsterHealth"
+            @update:model-value="
+              toggleLiveVisibility('hideMonsterHealth', $event)
+            "
+          />
+        </div>
+      </div>
+
+      <UiSeparator />
+
       <InitiativeLiveSeatList
         :encounter-id="encounterId"
         :session="session"
         :rows="rows ?? []"
       />
-
-      <UiButton
-        test-id="end"
-        variant="destructive-ghost"
-        size="sm"
-        class="w-full"
-        :disabled="loading"
-        @click="endSession"
-      >
-        {{ $t('components.liveSession.end') }}
-      </UiButton>
     </div>
   </div>
 </template>

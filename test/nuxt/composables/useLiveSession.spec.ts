@@ -1,6 +1,7 @@
+import type { VueWrapper } from '@vue/test-utils'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLiveSession } from '~/composables/useLiveSession'
 
 const { fetchMock, toast } = vi.hoisted(() => ({
@@ -29,10 +30,14 @@ const Probe = defineComponent({
   template: '<div />',
 })
 
+let mounted: VueWrapper | undefined
+
 async function mountProbe() {
   const component = await mountSuspended(Probe)
 
   await flushPromises()
+
+  mounted = component
 
   return { component, vm: component.vm as unknown as Probe }
 }
@@ -41,6 +46,11 @@ describe('useLiveSession', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     fetchMock.mockReset()
+  })
+
+  afterEach(() => {
+    mounted?.unmount()
+    mounted = undefined
   })
 
   it('Should have no active session by default', async () => {
@@ -162,6 +172,25 @@ describe('useLiveSession', () => {
     })
     expect(vm.session).toBeUndefined()
     expect(vm.active).toBe(false)
+  })
+
+  it('Should share session state across multiple consumers for the same encounter', async () => {
+    const response = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 10_000).toISOString(),
+    }
+
+    fetchMock.mockResolvedValue(response)
+
+    const first = await mountProbe()
+    const second = await mountProbe()
+
+    await first.vm.start()
+
+    expect(second.vm.session).toEqual(response)
+
+    first.component.unmount()
   })
 
   it('Should toast the translated error when stopping fails with a known slug', async () => {

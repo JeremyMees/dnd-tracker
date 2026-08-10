@@ -65,6 +65,29 @@ describe('InitiativeSettings', () => {
     })
   })
 
+  it('Should preserve existing live settings when saving', async () => {
+    const injected = createInitiativeSheetProvide({
+      ...sheet,
+      settings: {
+        ...sheet.settings!,
+        live: { hideMonsterNames: true },
+      },
+    })
+    const component = await mountSuspended(InitiativeSettings, {
+      provide: injected.provide,
+    })
+
+    await submitForm(component)
+
+    expect(injected.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        settings: expect.objectContaining({
+          live: { hideMonsterNames: true },
+        }),
+      }),
+    )
+  })
+
   it('Should emit close after saving', async () => {
     const component = await mountSettings().mount()
 

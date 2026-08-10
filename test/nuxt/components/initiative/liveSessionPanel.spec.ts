@@ -2,6 +2,8 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LiveSessionPanel from '~/components/initiative/LiveSessionPanel.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
 
 const { ask, toast, mockClipboard, start, stop } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -39,6 +41,16 @@ mockNuxtImport('useLiveSeats', () => () => ({
 
 const props = { encounterId: 1 }
 
+function mountPanel(sheetOverride: InitiativeSheet = sheet) {
+  const injected = createInitiativeSheetProvide(sheetOverride)
+
+  return {
+    injected,
+    mount: () =>
+      mountSuspended(LiveSessionPanel, { props, provide: injected.provide }),
+  }
+}
+
 describe('LiveSessionPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -49,7 +61,7 @@ describe('LiveSessionPanel', () => {
   })
 
   it('Should show the upsell when the user is not pro', async () => {
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     expect(component.find('[test-id="upsell"]').exists()).toBe(true)
     expect(start).not.toHaveBeenCalled()
@@ -58,7 +70,7 @@ describe('LiveSessionPanel', () => {
   it('Should start a session on mount when the user is pro', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
 
-    await mountSuspended(LiveSessionPanel, { props })
+    await mountPanel().mount()
 
     expect(start).toHaveBeenCalled()
   })
@@ -67,7 +79,7 @@ describe('LiveSessionPanel', () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
     loading.value = true
 
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     expect(component.find('[test-id="loading"]').exists()).toBe(true)
   })
@@ -75,7 +87,7 @@ describe('LiveSessionPanel', () => {
   it('Should show a start button when pro but no session is active', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
 
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     expect(component.find('[test-id="start"]').exists()).toBe(true)
   })
@@ -89,7 +101,7 @@ describe('LiveSessionPanel', () => {
     }
     active.value = true
 
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     expect(component.find('[test-id="active"]').exists()).toBe(true)
     expect(component.find('[test-id="qr-code"]').exists()).toBe(true)
@@ -106,7 +118,7 @@ describe('LiveSessionPanel', () => {
     }
     active.value = true
 
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     await component.find('[test-id="copy-link"]').trigger('click')
 
@@ -128,7 +140,7 @@ describe('LiveSessionPanel', () => {
     }
     active.value = true
 
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     await component.find('[test-id="end"]').trigger('click')
 
@@ -155,7 +167,7 @@ describe('LiveSessionPanel', () => {
     }
     active.value = true
 
-    const component = await mountSuspended(LiveSessionPanel, { props })
+    const component = await mountPanel().mount()
 
     await component.find('[test-id="end"]').trigger('click')
 
@@ -163,5 +175,61 @@ describe('LiveSessionPanel', () => {
     await callback(false)
 
     expect(stop).not.toHaveBeenCalled()
+  })
+
+  it('Should reflect the current hideMonsterNames/hideMonsterHealth settings', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountPanel({
+      ...sheet,
+      settings: {
+        ...sheet.settings!,
+        live: { hideMonsterNames: true, hideMonsterHealth: false },
+      },
+    }).mount()
+
+    expect(
+      component.find('[test-id="hide-monster-names"]').attributes('data-state'),
+    ).toBe('checked')
+    expect(
+      component
+        .find('[test-id="hide-monster-health"]')
+        .attributes('data-state'),
+    ).toBe('unchecked')
+  })
+
+  it('Should toggle hideMonsterNames without wiping other live settings', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const withLive = {
+      ...sheet,
+      settings: {
+        ...sheet.settings!,
+        live: { hideMonsterHealth: true },
+      },
+    }
+    const { injected, mount } = mountPanel(withLive)
+    const component = await mount()
+
+    await component.find('[test-id="hide-monster-names"]').trigger('click')
+
+    expect(injected.update).toHaveBeenCalledWith({
+      settings: {
+        ...withLive.settings,
+        live: { hideMonsterHealth: true, hideMonsterNames: true },
+      },
+    })
   })
 })

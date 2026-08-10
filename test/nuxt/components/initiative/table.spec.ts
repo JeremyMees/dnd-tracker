@@ -1,9 +1,12 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import conditions from '~~/test/fixtures/conditions.json'
+import { authUser } from '~~/test/fixtures/auth-user'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+
+mockNuxtImport('useAuthenticatedUser', () => () => ref({ ...authUser }))
 
 interface Props {
   loading: boolean

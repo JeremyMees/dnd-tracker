@@ -190,6 +190,18 @@ describe('useLiveSeats', () => {
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 
+  it('Should share the realtime subscription across multiple consumers for the same session', async () => {
+    session.value = { uuid: 'session-uuid', seats: [seatA] }
+
+    const first = await mountProbe()
+    const second = await mountProbe()
+
+    expect(channelFn).toHaveBeenCalledTimes(1)
+    expect(second.vm.seats).toEqual([seatA])
+
+    first.component.unmount()
+  })
+
   it('Should kick a seat and remove it locally', async () => {
     session.value = { uuid: 'session-uuid', seats: [seatA, seatB] }
     fetchMock.mockResolvedValue({ success: true })

@@ -1,4 +1,5 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
+import { createSharedComposable } from '@vueuse/core'
 import { useToast } from '~/components/ui/toast'
 
 interface LiveSeatsSession {
@@ -13,7 +14,7 @@ const liveSeatErrors = new Set([
   'row-claimed',
 ])
 
-export function useLiveSeats(
+function _useLiveSeats(
   encounterId: number,
   session: Ref<LiveSeatsSession | undefined>,
 ) {
@@ -81,7 +82,7 @@ export function useLiveSeats(
     { immediate: true },
   )
 
-  onBeforeUnmount(unsubscribe)
+  onScopeDispose(unsubscribe)
 
   function errorDescription(error: unknown): string {
     const slug = getErrorMessage(error)
@@ -134,3 +135,5 @@ export function useLiveSeats(
     reassign,
   }
 }
+
+export const useLiveSeats = createSharedComposable(_useLiveSeats)
