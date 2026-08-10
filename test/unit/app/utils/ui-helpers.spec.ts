@@ -12,6 +12,7 @@ import {
   validateParamId,
   animateTableUpdate,
   kebabToCamel,
+  timeRemaining,
 } from '~/utils/ui-helpers'
 
 beforeEach(() => {
@@ -228,6 +229,41 @@ describe('ui-helpers', () => {
 
     it('returns an empty string unchanged', () => {
       expect(kebabToCamel('')).toBe('')
+    })
+  })
+
+  describe('timeRemaining', () => {
+    it('formats hours and minutes when more than an hour remains', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+      const expiresAt = new Date('2024-01-01T02:15:00.000Z')
+
+      expect(timeRemaining(expiresAt, now)).toBe('2h 15m')
+    })
+
+    it('formats only minutes when less than an hour remains', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+      const expiresAt = new Date('2024-01-01T00:42:00.000Z')
+
+      expect(timeRemaining(expiresAt, now)).toBe('42m')
+    })
+
+    it('accepts an ISO string for expiresAt', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+
+      expect(timeRemaining('2024-01-01T00:10:00.000Z', now)).toBe('10m')
+    })
+
+    it('returns an empty string when the time has already expired', () => {
+      const now = new Date('2024-01-01T00:10:00.000Z').getTime()
+      const expiresAt = new Date('2024-01-01T00:00:00.000Z')
+
+      expect(timeRemaining(expiresAt, now)).toBe('')
+    })
+
+    it('returns an empty string when expiring exactly now', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+
+      expect(timeRemaining(new Date(now), now)).toBe('')
     })
   })
 })

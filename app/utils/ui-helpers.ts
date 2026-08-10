@@ -108,6 +108,17 @@ export function isDefined<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
+export function timeRemaining(expiresAt: string | Date, now: number): string {
+  const ms = new Date(expiresAt).getTime() - now
+
+  if (ms <= 0) return ''
+
+  const hours = Math.floor(ms / (60 * 60 * 1000))
+  const minutes = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000))
+
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
+}
+
 export function validateParamId(id: string | string[] | undefined): number {
   if (!id || typeof id !== 'string' || isNaN(+id))
     throw createError({ status: 404, statusText: 'Id is not valid' })
