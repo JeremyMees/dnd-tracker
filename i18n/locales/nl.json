@@ -569,7 +569,13 @@
       "spectatorLabel": "Alleen kijken",
       "join": "Deelnemen",
       "confirmed": "Kamercode bevestigd",
-      "joined": "Je bent erbij!",
+      "currentTurn": "Huidige beurt",
+      "deathSaves": "Death saves",
+      "health": {
+        "healthy": "Gezond",
+        "bloodied": "Gewond",
+        "critical": "Kritiek"
+      },
       "errors": {
         "notFound": "We konden geen live sessie met die code vinden.",
         "expired": "Deze live sessie is beëindigd.",
@@ -595,7 +601,8 @@
       "visibility": {
         "title": "Zichtbaarheid monsters",
         "hideMonsterNames": "Verberg namen",
-        "hideMonsterHealth": "Verberg HP"
+        "hideMonsterHealth": "Verberg HP",
+        "hideMonsterAc": "Verberg AC"
       },
       "seats": {
         "title": "Spelers",

@@ -11,6 +11,8 @@ function playerRow(overrides: Partial<InitiativeSheetRow> = {}) {
     conditions: [],
     hitPoints: 20,
     maxHitPoints: 30,
+    armorClass: 16,
+    tempArmorClass: 2,
     note: 'DM secret note',
     link: 'https://www.dndbeyond.com/characters/1',
     actions: [{ name: 'Fireball' }],
@@ -105,6 +107,46 @@ describe('toPlayerSheet', () => {
 
     expect(result.rows[0]!).not.toHaveProperty('hitPoints')
     expect(result.rows[0]!).not.toHaveProperty('healthBand')
+  })
+
+  it('keeps monster armor class by default', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ armorClass: 15, tempArmorClass: 3 })] }),
+    )
+
+    expect(result.rows[0]!.armorClass).toBe(15)
+    expect(result.rows[0]!.tempArmorClass).toBe(3)
+  })
+
+  it('hides monster armor class entirely when hideMonsterAc is set', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [monsterRow()],
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          live: { hideMonsterAc: true },
+        } as unknown as InitiativeSettings,
+      }),
+    )
+
+    expect(result.rows[0]!).not.toHaveProperty('armorClass')
+    expect(result.rows[0]!).not.toHaveProperty('tempArmorClass')
+  })
+
+  it('keeps non-monster armor class even when hideMonsterAc is set', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [playerRow({ armorClass: 18 })],
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          live: { hideMonsterAc: true },
+        } as unknown as InitiativeSettings,
+      }),
+    )
+
+    expect(result.rows[0]!.armorClass).toBe(18)
   })
 
   it('keeps monster names by default', () => {

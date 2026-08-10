@@ -35,6 +35,9 @@ const hideMonsterNames = computed<boolean>(
 const hideMonsterHealth = computed<boolean>(
   () => sheet.value?.settings.live?.hideMonsterHealth ?? false,
 )
+const hideMonsterAc = computed<boolean>(
+  () => sheet.value?.settings.live?.hideMonsterAc ?? false,
+)
 
 onMounted(() => {
   if (pro.value) start()
@@ -72,7 +75,7 @@ function endSession(): void {
 }
 
 async function toggleLiveVisibility(
-  key: 'hideMonsterNames' | 'hideMonsterHealth',
+  key: 'hideMonsterNames' | 'hideMonsterHealth' | 'hideMonsterAc',
   value: boolean,
 ): Promise<void> {
   if (!sheet.value) return
@@ -191,6 +194,17 @@ async function toggleLiveVisibility(
             @update:model-value="
               toggleLiveVisibility('hideMonsterHealth', $event)
             "
+          />
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.visibility.hideMonsterAc') }}
+          </span>
+          <UiSwitch
+            test-id="hide-monster-ac"
+            :model-value="hideMonsterAc"
+            @update:model-value="toggleLiveVisibility('hideMonsterAc', $event)"
           />
         </div>
       </div>

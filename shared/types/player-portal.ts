@@ -29,3 +29,12 @@ export interface LiveCodeSession {
   expiresAt: string
   rows: Pick<PlayerRow, 'id' | 'name' | 'type'>[]
 }
+
+export interface LiveStateResponse {
+  sheet: PlayerSheet
+  session: {
+    code: string
+    expiresAt: string
+    version: number
+  }
+}

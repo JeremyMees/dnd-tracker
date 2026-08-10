@@ -128,6 +128,7 @@ export interface InitiativeSettings {
   live?: {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean
+    hideMonsterAc?: boolean
   }
 }
 

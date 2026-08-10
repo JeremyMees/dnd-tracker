@@ -569,7 +569,13 @@
       "spectatorLabel": "Just watching",
       "join": "Join",
       "confirmed": "Room code confirmed",
-      "joined": "You're in!",
+      "currentTurn": "Current turn",
+      "deathSaves": "Death saves",
+      "health": {
+        "healthy": "Healthy",
+        "bloodied": "Bloodied",
+        "critical": "Critical"
+      },
       "errors": {
         "notFound": "We couldn't find a live session with that code.",
         "expired": "This live session has ended.",
@@ -595,7 +601,8 @@
       "visibility": {
         "title": "Monster visibility",
         "hideMonsterNames": "Hide names",
-        "hideMonsterHealth": "Hide HP"
+        "hideMonsterHealth": "Hide HP",
+        "hideMonsterAc": "Hide AC"
       },
       "seats": {
         "title": "Players",

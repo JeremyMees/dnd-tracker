@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
+import { useLiveState } from '~/queries/live'
 
 definePageMeta({ middleware: ['live-access'] })
 
@@ -12,6 +13,12 @@ const { seat } = useLiveSeat()
 const validated = ref<LiveCodeSession>()
 const initialErrorStatus = ref<number>()
 const joined = ref<LiveJoinResponse>()
+
+const {
+  data: state,
+  isPending,
+  isError,
+} = useLiveState(computed(() => joined.value?.sessionToken))
 
 const initialCode = computed<string | undefined>(() =>
   typeof route.query.code === 'string' ? route.query.code : undefined,
@@ -46,7 +53,7 @@ function handleJoined(session: LiveJoinResponse): void {
 </script>
 
 <template>
-  <NuxtLayout name="centered">
+  <NuxtLayout :name="joined ? 'simple' : 'centered'">
     <template #header>
       <h1 test-id="title" class="text-center head-3">
         {{ $t('pages.live.title') }}
@@ -54,14 +61,11 @@ function handleJoined(session: LiveJoinResponse): void {
     </template>
 
     <template v-if="joined">
-      <div test-id="joined" class="flex flex-col items-center gap-2">
-        <p class="text-sm text-muted-foreground">
-          {{ $t('pages.live.joined') }}
-        </p>
-        <span class="text-2xl font-bold tracking-widest">
-          {{ joined.code }}
-        </span>
-      </div>
+      <LivePlayerView
+        :sheet="state?.sheet"
+        :loading="isPending"
+        :error="isError"
+      />
     </template>
 
     <template v-else-if="validated">

@@ -177,7 +177,7 @@ describe('LiveSessionPanel', () => {
     expect(stop).not.toHaveBeenCalled()
   })
 
-  it('Should reflect the current hideMonsterNames/hideMonsterHealth settings', async () => {
+  it('Should reflect the current hideMonsterNames/hideMonsterHealth/hideMonsterAc settings', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
     session.value = {
       token: 'jwt',
@@ -190,7 +190,11 @@ describe('LiveSessionPanel', () => {
       ...sheet,
       settings: {
         ...sheet.settings!,
-        live: { hideMonsterNames: true, hideMonsterHealth: false },
+        live: {
+          hideMonsterNames: true,
+          hideMonsterHealth: false,
+          hideMonsterAc: true,
+        },
       },
     }).mount()
 
@@ -202,6 +206,9 @@ describe('LiveSessionPanel', () => {
         .find('[test-id="hide-monster-health"]')
         .attributes('data-state'),
     ).toBe('unchecked')
+    expect(
+      component.find('[test-id="hide-monster-ac"]').attributes('data-state'),
+    ).toBe('checked')
   })
 
   it('Should toggle hideMonsterNames without wiping other live settings', async () => {

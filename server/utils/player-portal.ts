@@ -3,6 +3,7 @@ function toPlayerRow(
   monsterOrdinal: number,
   hideMonsterNames: boolean,
   hideMonsterHealth: boolean,
+  hideMonsterAc: boolean,
 ): PlayerRow {
   const isMonster = row.type === 'monster'
 
@@ -16,9 +17,12 @@ function toPlayerRow(
     conditions: row.conditions,
     deathSaves: row.deathSaves,
     concentration: row.concentration,
-    armorClass: row.armorClass,
-    tempArmorClass: row.tempArmorClass,
     player: row.player,
+  }
+
+  if (!isMonster || !hideMonsterAc) {
+    playerRow.armorClass = row.armorClass
+    playerRow.tempArmorClass = row.tempArmorClass
   }
 
   if (!isMonster) {
@@ -40,6 +44,7 @@ export function toPlayerSheet(
 ): PlayerSheet {
   const hideMonsterNames = sheet.settings.live?.hideMonsterNames ?? false
   const hideMonsterHealth = sheet.settings.live?.hideMonsterHealth ?? false
+  const hideMonsterAc = sheet.settings.live?.hideMonsterAc ?? false
 
   let monsterOrdinal = 0
 
@@ -56,6 +61,7 @@ export function toPlayerSheet(
         monsterOrdinal,
         hideMonsterNames,
         hideMonsterHealth,
+        hideMonsterAc,
       )
     }),
   }

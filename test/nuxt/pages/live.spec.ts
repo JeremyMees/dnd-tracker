@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Live from '~/pages/live.vue'
+import { playerSheet } from '~~/test/fixtures/player-portal'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { getQueryData, useSeo } = vi.hoisted(() => ({
@@ -11,6 +12,18 @@ const { getQueryData, useSeo } = vi.hoisted(() => ({
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useQueryClient: () => ({ getQueryData }),
+}))
+
+const liveState = ref<LiveStateResponse>()
+const isPending = ref(false)
+const isError = ref(false)
+
+vi.mock('~/queries/live', () => ({
+  useLiveState: () => ({
+    data: liveState,
+    isPending,
+    isError,
+  }),
 }))
 
 const query = ref<Record<string, string>>({})
@@ -30,10 +43,16 @@ const JoinFormProbe = defineComponent({
   template: '<div test-id="join-form-probe" />',
 })
 
+const PlayerViewProbe = defineComponent({
+  props: ['sheet', 'loading', 'error'],
+  template: '<div test-id="player-view-probe" />',
+})
+
 const stubs = {
   NuxtLayout: nuxtLayoutStub,
   FormLiveJoinCode: CodeFormProbe,
   FormLiveJoin: JoinFormProbe,
+  LivePlayerView: PlayerViewProbe,
 }
 
 async function mountPage() {
@@ -50,11 +69,24 @@ const codeSession = {
   rows: [{ id: 'row-1', name: 'Elara', type: 'player' }],
 }
 
+const joinedSession = {
+  sessionToken: 'session-token',
+  seatToken: 'seat-token',
+  seat: 'seat-1',
+  row: 'row-1',
+  spectator: false,
+  code: 'ABC234',
+  expiresAt: 'later',
+}
+
 describe('Live page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     query.value = {}
     localStorage.clear()
+    liveState.value = undefined
+    isPending.value = false
+    isError.value = false
   })
 
   it('sets the page seo', async () => {
@@ -111,29 +143,44 @@ describe('Live page', () => {
     expect(form.props('code')).toBe('ABC234')
   })
 
-  it('shows the joined state and stores the seat once the join form emits joined', async () => {
+  it('renders the live player view in the simple layout and stores the seat once joined', async () => {
     query.value = { code: 'ABC234' }
     getQueryData.mockImplementation((key: string[]) =>
       key[0] === 'useLiveCode' ? codeSession : undefined,
     )
 
-    const session = {
-      sessionToken: 'session-token',
-      seatToken: 'seat-token',
-      seat: 'seat-1',
-      row: 'row-1',
-      spectator: false,
-      code: 'ABC234',
-      expiresAt: 'later',
+    const component = await mountPage()
+
+    component.findComponent(JoinFormProbe).vm.$emit('joined', joinedSession)
+    await nextTick()
+
+    expect(component.find('[test-id="simple"]').exists()).toBe(true)
+    expect(component.findComponent(PlayerViewProbe).exists()).toBe(true)
+    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual(
+      joinedSession,
+    )
+  })
+
+  it('passes the fetched sheet and query state to the live player view', async () => {
+    liveState.value = {
+      sheet: playerSheet,
+      session: { code: 'ABC234', expiresAt: 'later', version: 1 },
     }
+    isPending.value = true
+    isError.value = true
 
     const component = await mountPage()
 
-    component.findComponent(JoinFormProbe).vm.$emit('joined', session)
+    component.findComponent(CodeFormProbe).vm.$emit('validated', codeSession)
     await nextTick()
 
-    expect(component.find('[test-id="joined"]').exists()).toBe(true)
-    expect(component.text()).toContain('ABC234')
-    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual(session)
+    component.findComponent(JoinFormProbe).vm.$emit('joined', joinedSession)
+    await nextTick()
+
+    const view = component.findComponent(PlayerViewProbe)
+
+    expect(view.props('sheet')).toEqual(playerSheet)
+    expect(view.props('loading')).toBe(true)
+    expect(view.props('error')).toBe(true)
   })
 })
