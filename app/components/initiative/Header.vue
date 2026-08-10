@@ -96,7 +96,10 @@ const liveOpen = ref<boolean>(false)
           </UiButton>
         </UiPopoverTrigger>
         <UiPopoverContent>
-          <InitiativeLiveSessionPanel :encounter-id="encounterId" />
+          <InitiativeLiveSessionPanel
+            :encounter-id="encounterId"
+            :rows="data?.rows"
+          />
         </UiPopoverContent>
       </UiPopover>
     </div>

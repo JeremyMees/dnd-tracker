@@ -18,3 +18,15 @@ export interface LiveRowTokenPayload extends LiveTokenClaims {
   kind: 'row'
   row: string
 }
+
+export interface LiveSeat {
+  seat: string
+  row: string | null
+  name: string
+  spectator: boolean
+}
+
+export type LiveSeatsBroadcast =
+  | { type: 'joined'; seat: LiveSeat }
+  | { type: 'kicked'; seat: string }
+  | { type: 'reassigned'; seat: string; row: string | null }

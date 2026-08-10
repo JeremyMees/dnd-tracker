@@ -26,7 +26,12 @@ describe('POST /api/live/start', () => {
       live_sessions: [
         mockChain({ data: null, error: null }),
         mockChain({
-          data: { uuid: 'session-uuid', code: 'ABC234', expiresAt: future },
+          data: {
+            uuid: 'session-uuid',
+            code: 'ABC234',
+            expiresAt: future,
+            seats: [],
+          },
           error: null,
         }),
       ],
@@ -38,8 +43,10 @@ describe('POST /api/live/start', () => {
 
     expect(result).toEqual({
       token: expect.any(String),
+      uuid: 'session-uuid',
       code: 'ABC234',
       expiresAt: future,
+      seats: [],
     })
 
     await expect(
@@ -52,7 +59,14 @@ describe('POST /api/live/start', () => {
       profiles: mockChain({ data: { subscriptionType: 'pro' }, error: null }),
       initiative_sheets: mockChain({ data: encounter, error: null }),
       live_sessions: mockChain({
-        data: { uuid: 'existing-uuid', code: 'XYZ789', expiresAt: future },
+        data: {
+          uuid: 'existing-uuid',
+          code: 'XYZ789',
+          expiresAt: future,
+          seats: [
+            { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+          ],
+        },
         error: null,
       }),
     })
@@ -63,8 +77,12 @@ describe('POST /api/live/start', () => {
 
     expect(result).toEqual({
       token: expect.any(String),
+      uuid: 'existing-uuid',
       code: 'XYZ789',
       expiresAt: future,
+      seats: [
+        { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+      ],
     })
   })
 

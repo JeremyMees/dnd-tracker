@@ -420,7 +420,10 @@
       "liveSession": {
         "errors": {
           "proRequired": "Live sessies vereisen een pro-abonnement",
-          "noActiveSession": "Geen actieve live sessie"
+          "noActiveSession": "Geen actieve live sessie",
+          "seatNotFound": "Die speler heeft de sessie al verlaten",
+          "rowNotFound": "Die rij bestaat niet meer",
+          "rowClaimed": "Die rij is al bezet door een andere speler"
         }
       }
     },
@@ -570,7 +573,21 @@
         "title": "Live sessie beëindigen?",
         "text": "Spelers worden losgekoppeld en hun plekken worden gewist."
       },
-      "upsell": "Laat spelers de initiatiefvolgorde volgen en op hun eigen beurt handelen vanaf hun telefoon, geen account nodig. Live sessies zijn een Pro-functie."
+      "upsell": "Laat spelers de initiatiefvolgorde volgen en op hun eigen beurt handelen vanaf hun telefoon, geen account nodig. Live sessies zijn een Pro-functie.",
+      "seats": {
+        "title": "Spelers",
+        "empty": "Nog niemand heeft zich aangesloten",
+        "spectator": "Toeschouwer",
+        "playing": "Speelt als {row}",
+        "online": "Online",
+        "offline": "Offline",
+        "reassignPlaceholder": "Verplaats naar een andere rij",
+        "kick": "Verwijder",
+        "kickConfirm": {
+          "title": "{name} verwijderen?",
+          "text": "Diegene wordt losgekoppeld en de plek komt weer vrij."
+        }
+      }
     },
     "actionsTable": {
       "cost": "Kost { cost } actie | Kost { cost } acties",

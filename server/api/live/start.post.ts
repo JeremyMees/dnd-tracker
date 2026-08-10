@@ -29,7 +29,7 @@ export default defineEventHandler(async event => {
 
   const { data: existing } = await supabase
     .from('live_sessions')
-    .select('uuid, code, expiresAt')
+    .select('uuid, code, expiresAt, seats')
     .eq('encounter', encounter.id)
     .is('endedAt', null)
     .gt('expiresAt', new Date().toISOString())
@@ -41,7 +41,13 @@ export default defineEventHandler(async event => {
       new Date(existing.expiresAt),
     )
 
-    return { token, code: existing.code, expiresAt: existing.expiresAt }
+    return {
+      token,
+      uuid: existing.uuid,
+      code: existing.code,
+      expiresAt: existing.expiresAt,
+      seats: existing.seats,
+    }
   }
 
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS)
@@ -55,7 +61,7 @@ export default defineEventHandler(async event => {
         code: generateLiveCode(),
         expiresAt: expiresAt.toISOString(),
       })
-      .select('uuid, code, expiresAt')
+      .select('uuid, code, expiresAt, seats')
       .single()
 
     if (!error) {
@@ -64,7 +70,13 @@ export default defineEventHandler(async event => {
         expiresAt,
       )
 
-      return { token, code: session.code, expiresAt: session.expiresAt }
+      return {
+        token,
+        uuid: session.uuid,
+        code: session.code,
+        expiresAt: session.expiresAt,
+        seats: session.seats,
+      }
     }
 
     if (error.code !== '23505') {

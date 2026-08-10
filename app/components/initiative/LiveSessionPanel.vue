@@ -3,6 +3,7 @@ import { useToast } from '~/components/ui/toast'
 
 const props = defineProps<{
   encounterId: number
+  rows?: { id: string; name: string }[]
 }>()
 
 const { t, locale } = useI18n()
@@ -121,6 +122,14 @@ function endSession(): void {
       >
         {{ $t('components.liveSession.expiresIn', { time: remaining }) }}
       </p>
+
+      <UiSeparator />
+
+      <InitiativeLiveSeatList
+        :encounter-id="encounterId"
+        :session="session"
+        :rows="rows ?? []"
+      />
 
       <UiButton
         test-id="end"

@@ -30,6 +30,12 @@ mockNuxtImport('useLiveSession', () => () => ({
   start,
   stop,
 }))
+mockNuxtImport('useLiveSeats', () => () => ({
+  seats: ref([]),
+  connected: ref(new Set()),
+  kick: vi.fn(),
+  reassign: vi.fn(),
+}))
 
 const props = { encounterId: 1 }
 

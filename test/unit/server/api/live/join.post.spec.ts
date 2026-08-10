@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
-import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
+import {
+  mockChain,
+  mockFrom,
+  serverSupabaseServiceRole,
+} from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockStorage } from '~~/test/unit/stubs/storage'
 import {
@@ -79,6 +83,17 @@ describe('POST /api/live/join', () => {
       name: 'Elara',
       spectator: false,
     })
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'seats',
+      {
+        type: 'joined',
+        seat: { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+      },
+    )
   })
 
   it('joins as a spectator without a row', async () => {

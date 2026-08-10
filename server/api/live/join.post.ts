@@ -87,6 +87,16 @@ export default defineEventHandler(async event => {
     throw createError(postgresErrorToH3Error(error))
   }
 
+  await broadcastLiveSeats(supabase, session.uuid, {
+    type: 'joined',
+    seat: {
+      seat: seat.seat,
+      row: seat.row,
+      name: body.name,
+      spectator: body.spectator,
+    },
+  })
+
   const expiresAt = new Date(session.expiresAt)
 
   const [sessionToken, seatToken] = await Promise.all([

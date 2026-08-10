@@ -420,7 +420,10 @@
       "liveSession": {
         "errors": {
           "proRequired": "Live sessions require a pro subscription",
-          "noActiveSession": "No active live session"
+          "noActiveSession": "No active live session",
+          "seatNotFound": "That player already left",
+          "rowNotFound": "That row no longer exists",
+          "rowClaimed": "That row is already claimed by another player"
         }
       }
     },
@@ -570,7 +573,21 @@
         "title": "End live session?",
         "text": "Players will be disconnected and their seats cleared."
       },
-      "upsell": "Let players follow initiative and act on their own turn from their phones, no account needed. Live sessions are a Pro feature."
+      "upsell": "Let players follow initiative and act on their own turn from their phones, no account needed. Live sessions are a Pro feature.",
+      "seats": {
+        "title": "Players",
+        "empty": "No one has joined yet",
+        "spectator": "Spectator",
+        "playing": "Playing as {row}",
+        "online": "Online",
+        "offline": "Offline",
+        "reassignPlaceholder": "Move to a different row",
+        "kick": "Remove",
+        "kickConfirm": {
+          "title": "Remove {name}?",
+          "text": "They will be disconnected and their seat freed up."
+        }
+      }
     },
     "actionsTable": {
       "cost": "Cost { cost } action | Costs { cost } actions",

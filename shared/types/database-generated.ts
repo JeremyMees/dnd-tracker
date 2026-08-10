@@ -461,6 +461,14 @@ export type Database = {
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }
       is_valid_resistances: { Args: { _j: Json }; Returns: boolean }
       is_valid_traits: { Args: { _j: Json }; Returns: boolean }
+      reassign_live_seat: {
+        Args: { p_row: string; p_seat: string; p_session: string }
+        Returns: Json
+      }
+      remove_live_seat: {
+        Args: { p_seat: string; p_session: string }
+        Returns: Json
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { '': string }; Returns: string[] }
     }

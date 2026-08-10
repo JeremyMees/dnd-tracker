@@ -1,9 +1,11 @@
 import { useToast } from '~/components/ui/toast'
 
-interface LiveSessionResponse {
+export interface LiveSessionResponse {
   token: string
+  uuid: string
   code: string
   expiresAt: string
+  seats: LiveSeat[]
 }
 
 const liveSessionErrors = new Set(['pro-required', 'no-active-session'])
