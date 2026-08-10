@@ -101,7 +101,7 @@ describe('POST /api/live/start', () => {
       handler(mockEvent({ method: 'POST', body: { encounter: 7 } })),
     ).rejects.toMatchObject({
       statusCode: 403,
-      statusMessage: 'Live sessions require a pro subscription',
+      statusMessage: 'pro-required',
     })
   })
 

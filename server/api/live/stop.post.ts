@@ -25,7 +25,7 @@ export default defineEventHandler(async event => {
   if (!session) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'No active live session',
+      statusMessage: 'no-active-session',
     })
   }
 

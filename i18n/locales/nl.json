@@ -416,6 +416,12 @@
       "back": {
         "encounters": "Encounters lijst",
         "campaigns": "Campagne: {campaign}"
+      },
+      "liveSession": {
+        "errors": {
+          "proRequired": "Live sessies vereisen een pro-abonnement",
+          "noActiveSession": "Geen actieve live sessie"
+        }
       }
     },
     "register": {

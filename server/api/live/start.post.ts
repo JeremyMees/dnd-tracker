@@ -21,7 +21,7 @@ export default defineEventHandler(async event => {
   if (profile?.subscriptionType !== 'pro') {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Live sessions require a pro subscription',
+      statusMessage: 'pro-required',
     })
   }
 

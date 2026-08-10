@@ -36,7 +36,7 @@ describe('POST /api/live/stop', () => {
       handler(mockEvent({ method: 'POST', body: { encounter: 7 } })),
     ).rejects.toMatchObject({
       statusCode: 404,
-      statusMessage: 'No active live session',
+      statusMessage: 'no-active-session',
     })
   })
 
