@@ -38,6 +38,32 @@ describe('getErrorMessage', () => {
     })
   })
 
+  describe('ofetch FetchError instances', () => {
+    it('prefers the server statusMessage over the generic ofetch message', () => {
+      const error = Object.assign(
+        new Error('[POST] "/api/live/start": 403 Forbidden'),
+        {
+          data: {
+            statusCode: 403,
+            statusMessage: 'Live sessions require a pro subscription',
+          },
+        },
+      )
+
+      expect(getErrorMessage(error)).toBe(
+        'Live sessions require a pro subscription',
+      )
+    })
+
+    it('falls back to the generic message when data has no statusMessage', () => {
+      const error = Object.assign(new Error('network error'), {
+        data: { statusCode: 500 },
+      })
+
+      expect(getErrorMessage(error)).toBe('network error')
+    })
+  })
+
   describe('error-like objects', () => {
     it('reads message off a plain object', () => {
       expect(
