@@ -1,7 +1,10 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
-type UpdateQueryData = Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>
+export type UpdateInitiativeSheetData = Omit<
+  Partial<InitiativeSheet>,
+  NotUpdatable | 'campaign'
+>
 
 export function useRealTimeInitiativeSheet(
   id: number,
@@ -27,7 +30,7 @@ export function useRealTimeInitiativeSheet(
     return correctSubscription && !!data.value.campaign
   })
 
-  function updateQueryData(payload: UpdateQueryData): void {
+  function updateQueryData(payload: UpdateInitiativeSheetData): void {
     queryClient.setQueryData(
       ['useInitiativeSheetDetail', id],
       (old: InitiativeSheet) => {

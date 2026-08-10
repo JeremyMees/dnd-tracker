@@ -30,9 +30,7 @@ onMounted(() => {
   startTour(!!data.value?.campaign)
 })
 
-type UpdateQueryData = Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>
-
-async function handleUpdate(payload: UpdateQueryData): Promise<void> {
+async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   if (!data.value) return
 
   await update({
