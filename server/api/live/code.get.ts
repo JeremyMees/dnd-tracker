@@ -1,6 +1,7 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
+import { claimableRowTypes } from '~~/constants/validation'
 
-export default defineEventHandler(async event => {
+export default defineEventHandler(async (event): Promise<LiveCodeSession> => {
   const { code } = getQuery(event)
 
   if (!code || typeof code !== 'string' || code.length !== 6) {
@@ -11,7 +12,7 @@ export default defineEventHandler(async event => {
 
   const { data: session } = await supabase
     .from('live_sessions')
-    .select('code, expiresAt, endedAt')
+    .select('code, encounter, expiresAt, endedAt, seats')
     .eq('code', code.toUpperCase())
     .maybeSingle()
 
@@ -29,5 +30,27 @@ export default defineEventHandler(async event => {
     })
   }
 
-  return { code: session.code, expiresAt: session.expiresAt }
+  const { data: sheet } = await supabase
+    .from('initiative_sheets')
+    .select('id, title, round, activeIndex, rows, settings')
+    .eq('id', session.encounter)
+    .single()
+
+  if (!sheet) {
+    throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
+  }
+
+  const claimedRows = new Set(
+    session.seats.filter(seat => seat.row).map(seat => seat.row),
+  )
+
+  const rows = toPlayerSheet(sheet)
+    .rows.filter(
+      row =>
+        (claimableRowTypes as readonly HomebrewType[]).includes(row.type) &&
+        !claimedRows.has(row.id),
+    )
+    .map(row => ({ id: row.id, name: row.name, type: row.type }))
+
+  return { code: session.code, expiresAt: session.expiresAt, rows }
 })

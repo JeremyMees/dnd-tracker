@@ -47,6 +47,11 @@ export const homebrewType = [
   'lair',
 ] as const satisfies readonly HomebrewType[]
 
+export const claimableRowTypes = [
+  'player',
+  'npc',
+] as const satisfies readonly HomebrewType[]
+
 export const abilityType = [
   'strength',
   'dexterity',

@@ -30,3 +30,13 @@ export type LiveSeatsBroadcast =
   | { type: 'joined'; seat: LiveSeat }
   | { type: 'kicked'; seat: string }
   | { type: 'reassigned'; seat: string; row: string | null }
+
+export interface LiveJoinResponse {
+  sessionToken: string
+  seatToken: string
+  seat: string
+  row: string | null
+  spectator: boolean
+  code: string
+  expiresAt: string
+}

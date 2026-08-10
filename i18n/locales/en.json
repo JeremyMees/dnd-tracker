@@ -564,12 +564,18 @@
       "title": "Join a live session",
       "text": "Enter the room code your DM shared with you.",
       "codeLabel": "Room code",
+      "nameLabel": "Your name",
+      "rowLabel": "Play as",
+      "spectatorLabel": "Just watching",
       "join": "Join",
       "confirmed": "Room code confirmed",
+      "joined": "You're in!",
       "errors": {
         "notFound": "We couldn't find a live session with that code.",
         "expired": "This live session has ended.",
-        "generic": "Something went wrong, please try again."
+        "generic": "Something went wrong, please try again.",
+        "rowRequired": "Choose a character or turn on spectator mode.",
+        "rowClaimed": "That character has already been claimed."
       }
     }
   },

@@ -564,12 +564,18 @@
       "title": "Deelnemen aan een live sessie",
       "text": "Voer de kamercode in die je DM met je heeft gedeeld.",
       "codeLabel": "Kamercode",
+      "nameLabel": "Jouw naam",
+      "rowLabel": "Speel als",
+      "spectatorLabel": "Alleen kijken",
       "join": "Deelnemen",
       "confirmed": "Kamercode bevestigd",
+      "joined": "Je bent erbij!",
       "errors": {
         "notFound": "We konden geen live sessie met die code vinden.",
         "expired": "Deze live sessie is beëindigd.",
-        "generic": "Er is iets misgegaan, probeer het opnieuw."
+        "generic": "Er is iets misgegaan, probeer het opnieuw.",
+        "rowRequired": "Kies een personage of zet kijkmodus aan.",
+        "rowClaimed": "Dat personage is al bezet."
       }
     }
   },

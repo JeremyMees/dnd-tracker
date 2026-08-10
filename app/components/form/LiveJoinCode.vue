@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  validated: [session: { code: string; expiresAt: string }]
+  validated: [session: LiveCodeSession]
 }>()
 
 const { t } = useI18n()
@@ -36,10 +36,9 @@ const onSubmit = form.handleSubmit(async values => {
   isLoading.value = true
 
   try {
-    const session = await $fetch<{ code: string; expiresAt: string }>(
-      '/api/live/code',
-      { query: { code: values.code.toUpperCase() } },
-    )
+    const session = await $fetch<LiveCodeSession>('/api/live/code', {
+      query: { code: values.code.toUpperCase() },
+    })
 
     emit('validated', session)
   } catch (error) {

@@ -23,7 +23,13 @@ const session = {
   endedAt: null,
 }
 
-const sheet = { rows: [{ id: 'row-1' }, { id: 'row-2' }] }
+const sheet = {
+  rows: [
+    { id: 'row-1', type: 'player' },
+    { id: 'row-2', type: 'npc' },
+    { id: 'row-3', type: 'monster' },
+  ],
+}
 
 function joinEvent(body: Record<string, unknown>) {
   return mockEvent({
@@ -150,6 +156,43 @@ describe('POST /api/live/join', () => {
     await expect(
       handler(joinEvent({ code: 'ABC234', name: 'Elara', row: 'missing' })),
     ).rejects.toMatchObject({ statusCode: 404, statusMessage: 'Row not found' })
+  })
+
+  it('throws a 404 when the row is a monster (not player or npc)', async () => {
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({ data: sheet, error: null }),
+    })
+
+    await expect(
+      handler(joinEvent({ code: 'ABC234', name: 'Elara', row: 'row-3' })),
+    ).rejects.toMatchObject({ statusCode: 404, statusMessage: 'Row not found' })
+  })
+
+  it('allows claiming an npc row', async () => {
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({ data: sheet, error: null }),
+      },
+      {
+        rpc: mockChain({
+          data: {
+            seat: 'seat-3',
+            row: 'row-2',
+            name: 'Ally',
+            spectator: false,
+          },
+          error: null,
+        }),
+      },
+    )
+
+    const result = await handler(
+      joinEvent({ code: 'ABC234', name: 'Ally', row: 'row-2' }),
+    )
+
+    expect(result).toMatchObject({ seat: 'seat-3', row: 'row-2' })
   })
 
   it('throws a 409 when the session is full', async () => {

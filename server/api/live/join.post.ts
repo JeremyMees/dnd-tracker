@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
+import { claimableRowTypes } from '~~/constants/validation'
 import { FIVE_MINUTES } from '~~/constants/time'
 import * as z from 'zod'
 
@@ -51,9 +52,12 @@ export default defineEventHandler(async event => {
       .eq('id', session.encounter)
       .single()
 
-    const rowExists = sheet?.rows.some(row => row.id === body.row)
+    const row = sheet?.rows.find(row => row.id === body.row)
+    const claimable = (claimableRowTypes as readonly HomebrewType[]).includes(
+      row?.type as HomebrewType,
+    )
 
-    if (!rowExists) {
+    if (!row || !claimable) {
       throw createError({ statusCode: 404, statusMessage: 'Row not found' })
     }
   }

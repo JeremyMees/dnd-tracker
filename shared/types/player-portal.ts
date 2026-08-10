@@ -23,3 +23,9 @@ export interface PlayerSheet {
   activeIndex: number
   rows: PlayerRow[]
 }
+
+export interface LiveCodeSession {
+  code: string
+  expiresAt: string
+  rows: Pick<PlayerRow, 'id' | 'name' | 'type'>[]
+}

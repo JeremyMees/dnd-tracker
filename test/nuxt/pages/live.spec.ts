@@ -18,13 +18,23 @@ const query = ref<Record<string, string>>({})
 mockNuxtImport('useSeo', () => useSeo)
 mockNuxtImport('useRoute', () => () => ({ query: query.value }))
 
-const FormProbe = defineComponent({
+const CodeFormProbe = defineComponent({
   props: ['initialCode', 'initialErrorStatus'],
   emits: ['validated'],
-  template: '<div test-id="form-probe" />',
+  template: '<div test-id="code-form-probe" />',
 })
 
-const stubs = { NuxtLayout: nuxtLayoutStub, FormLiveJoinCode: FormProbe }
+const JoinFormProbe = defineComponent({
+  props: ['code', 'rows'],
+  emits: ['joined'],
+  template: '<div test-id="join-form-probe" />',
+})
+
+const stubs = {
+  NuxtLayout: nuxtLayoutStub,
+  FormLiveJoinCode: CodeFormProbe,
+  FormLiveJoin: JoinFormProbe,
+}
 
 async function mountPage() {
   const component = await mountSuspended(Live, { global: { stubs } })
@@ -34,10 +44,17 @@ async function mountPage() {
   return component
 }
 
+const codeSession = {
+  code: 'ABC234',
+  expiresAt: 'later',
+  rows: [{ id: 'row-1', name: 'Elara', type: 'player' }],
+}
+
 describe('Live page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     query.value = {}
+    localStorage.clear()
   })
 
   it('sets the page seo', async () => {
@@ -49,47 +66,74 @@ describe('Live page', () => {
   it('renders the code-entry form when there is no code in the query', async () => {
     const component = await mountPage()
 
-    expect(component.findComponent(FormProbe).exists()).toBe(true)
+    expect(component.findComponent(CodeFormProbe).exists()).toBe(true)
+    expect(component.findComponent(JoinFormProbe).exists()).toBe(false)
     expect(getQueryData).not.toHaveBeenCalled()
   })
 
-  it('shows the confirmed state when a cached session exists for the query code', async () => {
+  it('renders the join form when a cached session exists for the query code', async () => {
     query.value = { code: 'ABC234' }
     getQueryData.mockImplementation((key: string[]) =>
-      key[0] === 'useLiveCode'
-        ? { code: 'ABC234', expiresAt: 'later' }
-        : undefined,
+      key[0] === 'useLiveCode' ? codeSession : undefined,
     )
 
     const component = await mountPage()
+    const form = component.findComponent(JoinFormProbe)
 
     expect(getQueryData).toHaveBeenCalledWith(['useLiveCode', 'ABC234'])
-    expect(component.find('[test-id="confirmed"]').exists()).toBe(true)
-    expect(component.text()).toContain('ABC234')
+    expect(form.exists()).toBe(true)
+    expect(form.props('code')).toBe('ABC234')
+    expect(form.props('rows')).toEqual(codeSession.rows)
   })
 
-  it('passes the cached error status to the form when validation failed', async () => {
+  it('passes the cached error status to the code form when validation failed', async () => {
     query.value = { code: 'ZZZZZZ' }
     getQueryData.mockImplementation((key: string[]) =>
       key[0] === 'useLiveCodeError' ? 410 : undefined,
     )
 
     const component = await mountPage()
-    const form = component.findComponent(FormProbe)
+    const form = component.findComponent(CodeFormProbe)
 
     expect(form.props('initialErrorStatus')).toBe(410)
     expect(form.props('initialCode')).toBe('ZZZZZZ')
   })
 
-  it('shows the confirmed state once the form emits validated', async () => {
+  it('renders the join form once the code form emits validated', async () => {
     const component = await mountPage()
 
-    component
-      .findComponent(FormProbe)
-      .vm.$emit('validated', { code: 'ABC234', expiresAt: 'later' })
+    component.findComponent(CodeFormProbe).vm.$emit('validated', codeSession)
     await nextTick()
 
-    expect(component.find('[test-id="confirmed"]').exists()).toBe(true)
+    const form = component.findComponent(JoinFormProbe)
+
+    expect(form.exists()).toBe(true)
+    expect(form.props('code')).toBe('ABC234')
+  })
+
+  it('shows the joined state and stores the seat once the join form emits joined', async () => {
+    query.value = { code: 'ABC234' }
+    getQueryData.mockImplementation((key: string[]) =>
+      key[0] === 'useLiveCode' ? codeSession : undefined,
+    )
+
+    const session = {
+      sessionToken: 'session-token',
+      seatToken: 'seat-token',
+      seat: 'seat-1',
+      row: 'row-1',
+      spectator: false,
+      code: 'ABC234',
+      expiresAt: 'later',
+    }
+
+    const component = await mountPage()
+
+    component.findComponent(JoinFormProbe).vm.$emit('joined', session)
+    await nextTick()
+
+    expect(component.find('[test-id="joined"]').exists()).toBe(true)
     expect(component.text()).toContain('ABC234')
+    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual(session)
   })
 })

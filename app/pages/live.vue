@@ -7,9 +7,11 @@ useSeo('Live')
 
 const route = useRoute()
 const queryClient = useQueryClient()
+const { seat } = useLiveSeat()
 
-const validated = ref<{ code: string; expiresAt: string }>()
+const validated = ref<LiveCodeSession>()
 const initialErrorStatus = ref<number>()
+const joined = ref<LiveJoinResponse>()
 
 const initialCode = computed<string | undefined>(() =>
   typeof route.query.code === 'string' ? route.query.code : undefined,
@@ -18,10 +20,10 @@ const initialCode = computed<string | undefined>(() =>
 onMounted(() => {
   if (!initialCode.value) return
 
-  const session = queryClient.getQueryData<{
-    code: string
-    expiresAt: string
-  }>(['useLiveCode', initialCode.value])
+  const session = queryClient.getQueryData<LiveCodeSession>([
+    'useLiveCode',
+    initialCode.value,
+  ])
 
   if (session) validated.value = session
   else {
@@ -33,8 +35,13 @@ onMounted(() => {
   }
 })
 
-function handleValidated(session: { code: string; expiresAt: string }): void {
+function handleValidated(session: LiveCodeSession): void {
   validated.value = session
+}
+
+function handleJoined(session: LiveJoinResponse): void {
+  seat.value = session
+  joined.value = session
 }
 </script>
 
@@ -46,7 +53,29 @@ function handleValidated(session: { code: string; expiresAt: string }): void {
       </h1>
     </template>
 
-    <template v-if="!validated">
+    <template v-if="joined">
+      <div test-id="joined" class="flex flex-col items-center gap-2">
+        <p class="text-sm text-muted-foreground">
+          {{ $t('pages.live.joined') }}
+        </p>
+        <span class="text-2xl font-bold tracking-widest">
+          {{ joined.code }}
+        </span>
+      </div>
+    </template>
+
+    <template v-else-if="validated">
+      <p class="text-sm text-muted-foreground text-center mb-4">
+        {{ $t('pages.live.confirmed') }}
+      </p>
+      <FormLiveJoin
+        :code="validated.code"
+        :rows="validated.rows"
+        @joined="handleJoined"
+      />
+    </template>
+
+    <template v-else>
       <p class="text-sm text-muted-foreground text-center mb-4">
         {{ $t('pages.live.text') }}
       </p>
@@ -56,14 +85,5 @@ function handleValidated(session: { code: string; expiresAt: string }): void {
         @validated="handleValidated"
       />
     </template>
-
-    <div v-else test-id="confirmed" class="flex flex-col items-center gap-2">
-      <p class="text-sm text-muted-foreground">
-        {{ $t('pages.live.confirmed') }}
-      </p>
-      <span class="text-2xl font-bold tracking-widest">
-        {{ validated.code }}
-      </span>
-    </div>
   </NuxtLayout>
 </template>
