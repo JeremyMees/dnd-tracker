@@ -11,6 +11,7 @@ import {
   isDefined,
   validateParamId,
   animateTableUpdate,
+  kebabToCamel,
 } from '~/utils/ui-helpers'
 
 beforeEach(() => {
@@ -212,6 +213,21 @@ describe('ui-helpers', () => {
 
       vi.runAllTimers()
       vi.useRealTimers()
+    })
+  })
+
+  describe('kebabToCamel', () => {
+    it('converts a kebab-case string to camelCase', () => {
+      expect(kebabToCamel('pro-required')).toBe('proRequired')
+      expect(kebabToCamel('no-active-session')).toBe('noActiveSession')
+    })
+
+    it('returns a string without dashes unchanged', () => {
+      expect(kebabToCamel('generic')).toBe('generic')
+    })
+
+    it('returns an empty string unchanged', () => {
+      expect(kebabToCamel('')).toBe('')
     })
   })
 })

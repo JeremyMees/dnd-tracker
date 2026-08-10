@@ -137,3 +137,7 @@ export function animateTableUpdate(id: string, color: 'green' | 'red'): void {
     if (el) el.style.animation = ''
   }, 1000)
 }
+
+export function kebabToCamel(value: string): string {
+  return value.replace(/-([a-z])/g, (_, char) => char.toUpperCase())
+}
