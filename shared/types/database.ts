@@ -92,6 +92,14 @@ interface DatabaseOverrides {
         }
         Returns: LiveSeat
       }
+      apply_live_action: {
+        Args: {
+          p_encounter: number
+          p_row_id: string
+          p_patch: Partial<InitiativeSheetRow>
+        }
+        Returns: InitiativeSheetRow
+      }
     }
   }
 }
