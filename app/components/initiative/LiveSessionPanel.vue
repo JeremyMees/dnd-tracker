@@ -40,7 +40,7 @@ const hideMonsterAc = computed<boolean>(
 )
 
 onMounted(() => {
-  if (pro.value) start()
+  if (pro.value) start({ createIfMissing: false })
 
   interval = setInterval(() => {
     now.value = Date.now()
@@ -122,7 +122,7 @@ async function toggleLiveVisibility(
     </div>
 
     <div v-else-if="!active" test-id="start" class="flex flex-col gap-2">
-      <UiButton :disabled="loading" @click="start">
+      <UiButton :disabled="loading" @click="() => start()">
         {{ $t('components.liveSession.start') }}
       </UiButton>
     </div>

@@ -582,7 +582,8 @@
         "generic": "Er is iets misgegaan, probeer het opnieuw.",
         "rowRequired": "Kies een personage of zet kijkmodus aan.",
         "rowClaimed": "Dat personage is al bezet."
-      }
+      },
+      "you": "Jij"
     }
   },
   "components": {

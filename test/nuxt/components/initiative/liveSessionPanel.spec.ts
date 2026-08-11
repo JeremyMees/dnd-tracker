@@ -67,12 +67,12 @@ describe('LiveSessionPanel', () => {
     expect(start).not.toHaveBeenCalled()
   })
 
-  it('Should start a session on mount when the user is pro', async () => {
+  it('Should check for a session on mount without creating one', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
 
     await mountPanel().mount()
 
-    expect(start).toHaveBeenCalled()
+    expect(start).toHaveBeenCalledWith({ createIfMissing: false })
   })
 
   it('Should show a loading state while the initial session lookup is pending', async () => {
@@ -90,6 +90,18 @@ describe('LiveSessionPanel', () => {
     const component = await mountPanel().mount()
 
     expect(component.find('[test-id="start"]').exists()).toBe(true)
+  })
+
+  it('Should create a session when the start button is clicked', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+
+    const component = await mountPanel().mount()
+
+    start.mockClear()
+
+    await component.get('[test-id="start"] button').trigger('click')
+
+    expect(start).toHaveBeenCalledWith()
   })
 
   it('Should show the QR code, room code and expiry when a session is active', async () => {

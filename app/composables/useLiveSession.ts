@@ -34,14 +34,23 @@ function _useLiveSession(encounterId: number) {
     return t(`pages.encounter.liveSession.errors.${kebabToCamel(slug)}`)
   }
 
-  async function start(): Promise<void> {
+  async function start(
+    options: { createIfMissing?: boolean } = {},
+  ): Promise<void> {
+    const createIfMissing = options.createIfMissing ?? true
+
     loading.value = true
 
     try {
-      session.value = await $fetch<LiveSessionResponse>('/api/live/start', {
-        method: 'POST',
-        body: { encounter: encounterId },
-      })
+      const response = await $fetch<LiveSessionResponse | null>(
+        '/api/live/start',
+        {
+          method: 'POST',
+          body: { encounter: encounterId, createIfMissing },
+        },
+      )
+
+      if (response) session.value = response
     } catch (error) {
       toast({
         title: t('general.error.title'),

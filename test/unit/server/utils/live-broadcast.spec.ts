@@ -133,10 +133,10 @@ describe('live-broadcast', () => {
       ).toThrow()
     })
 
-    it('accepts a valid initiative action', () => {
+    it('rejects an initiative action', () => {
       expect(() =>
         liveActionSchema.parse({ type: 'initiative', value: 12 }),
-      ).not.toThrow()
+      ).toThrow()
     })
 
     it('accepts a valid deathSaves action', () => {

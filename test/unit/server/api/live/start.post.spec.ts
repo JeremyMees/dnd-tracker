@@ -25,6 +25,7 @@ describe('POST /api/live/start', () => {
       initiative_sheets: mockChain({ data: encounter, error: null }),
       live_sessions: [
         mockChain({ data: null, error: null }),
+        mockChain({ data: null, error: null }),
         mockChain({
           data: {
             uuid: 'session-uuid',
@@ -92,6 +93,7 @@ describe('POST /api/live/start', () => {
       initiative_sheets: mockChain({ data: encounter, error: null }),
       live_sessions: [
         mockChain({ data: null, error: null }),
+        mockChain({ data: null, error: null }),
         mockChain({
           data: null,
           error: { code: '23505', message: 'duplicate', details: '', hint: '' },
@@ -108,6 +110,73 @@ describe('POST /api/live/start', () => {
     )
 
     expect(result).toMatchObject({ code: 'DEF456' })
+  })
+
+  it('returns null without creating a session when createIfMissing is false and none is active', async () => {
+    mockFrom({
+      profiles: mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+      initiative_sheets: mockChain({ data: encounter, error: null }),
+      live_sessions: [mockChain({ data: null, error: null })],
+    })
+
+    const result = await handler(
+      mockEvent({
+        method: 'POST',
+        body: { encounter: 7, createIfMissing: false },
+      }),
+    )
+
+    expect(result).toBeNull()
+  })
+
+  it('still returns the existing active session when createIfMissing is false', async () => {
+    mockFrom({
+      profiles: mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+      initiative_sheets: mockChain({ data: encounter, error: null }),
+      live_sessions: mockChain({
+        data: {
+          uuid: 'existing-uuid',
+          code: 'XYZ789',
+          expiresAt: future,
+          seats: [],
+        },
+        error: null,
+      }),
+    })
+
+    const result = await handler(
+      mockEvent({
+        method: 'POST',
+        body: { encounter: 7, createIfMissing: false },
+      }),
+    )
+
+    expect(result).toMatchObject({ uuid: 'existing-uuid', code: 'XYZ789' })
+  })
+
+  it('closes out a stale expired-but-unended session before creating a new one', async () => {
+    const updateChain = mockChain({ data: null, error: null })
+
+    mockFrom({
+      profiles: mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+      initiative_sheets: mockChain({ data: encounter, error: null }),
+      live_sessions: [
+        mockChain({ data: null, error: null }),
+        updateChain,
+        mockChain({
+          data: { uuid: 'session-uuid', code: 'ABC234', expiresAt: future },
+          error: null,
+        }),
+      ],
+    })
+
+    await handler(mockEvent({ method: 'POST', body: { encounter: 7 } }))
+
+    expect(updateChain.update).toHaveBeenCalledWith({
+      endedAt: expect.any(String),
+    })
+    expect(updateChain.eq).toHaveBeenCalledWith('encounter', 7)
+    expect(updateChain.is).toHaveBeenCalledWith('endedAt', null)
   })
 
   it('throws a 403 when the caller is not on a pro subscription', async () => {

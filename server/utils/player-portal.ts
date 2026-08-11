@@ -4,8 +4,10 @@ function toPlayerRow(
   hideMonsterNames: boolean,
   hideMonsterHealth: boolean,
   hideMonsterAc: boolean,
+  isOwnRow: boolean,
 ): PlayerRow {
   const isMonster = row.type === 'monster'
+  const hidePlayerHealth = row.type === 'player' && !isOwnRow
 
   const playerRow: PlayerRow = {
     id: row.id,
@@ -15,17 +17,20 @@ function toPlayerRow(
       isMonster && hideMonsterNames ? `Monster ${monsterOrdinal}` : row.name,
     type: row.type,
     conditions: row.conditions,
-    deathSaves: row.deathSaves,
     concentration: row.concentration,
     player: row.player,
   }
+
+  if (!hidePlayerHealth) playerRow.deathSaves = row.deathSaves
 
   if (!isMonster || !hideMonsterAc) {
     playerRow.armorClass = row.armorClass
     playerRow.tempArmorClass = row.tempArmorClass
   }
 
-  if (!isMonster) {
+  if (hidePlayerHealth) {
+    playerRow.healthBand = getHealthBand(row.hitPoints, row.maxHitPoints)
+  } else if (!isMonster) {
     playerRow.hitPoints = row.hitPoints
     playerRow.maxHitPoints = row.maxHitPoints
     playerRow.tempHitPoints = row.tempHitPoints
@@ -41,6 +46,7 @@ export function toPlayerSheet(
     InitiativeSheet,
     'id' | 'title' | 'round' | 'activeIndex' | 'rows' | 'settings'
   >,
+  ownRowId?: string,
 ): PlayerSheet {
   const hideMonsterNames = sheet.settings.live?.hideMonsterNames ?? false
   const hideMonsterHealth = sheet.settings.live?.hideMonsterHealth ?? false
@@ -62,7 +68,31 @@ export function toPlayerSheet(
         hideMonsterNames,
         hideMonsterHealth,
         hideMonsterAc,
+        row.id === ownRowId,
       )
     }),
+  }
+}
+
+export async function resolveOwnRowId(
+  seatToken: unknown,
+  session: LiveSessionTokenPayload,
+  seats: LiveSeat[],
+): Promise<string | undefined> {
+  if (!seatToken || typeof seatToken !== 'string') return undefined
+
+  try {
+    const payload = await verifyLiveSeatToken(seatToken)
+
+    if (
+      payload.session !== session.session ||
+      payload.encounter !== session.encounter
+    ) {
+      return undefined
+    }
+
+    return seats.find(s => s.seat === payload.seat)?.row ?? undefined
+  } catch {
+    return undefined
   }
 }

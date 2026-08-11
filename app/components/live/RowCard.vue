@@ -4,6 +4,13 @@ const props = defineProps<{
   active: boolean
 }>()
 
+const { seat } = useLiveSeat()
+
+const own = computed(
+  () =>
+    !!seat.value && !seat.value.spectator && seat.value.row === props.row.id,
+)
+
 const healthBandClass = computed(() => {
   if (props.row.healthBand === 'healthy') {
     return 'border-success bg-success/20 text-success'
@@ -33,18 +40,14 @@ const healthBandClass = computed(() => {
           <UiCardTitle test-id="name" class="text-lg truncate">
             {{ row.name }}
           </UiCardTitle>
+          <UiBadge v-if="own" test-id="own" class="shrink-0">
+            {{ $t('pages.live.you') }}
+          </UiBadge>
         </div>
         <UiBadge test-id="initiative" variant="outline" class="shrink-0">
           {{ $t('general.initiative') }}: {{ row.initiative }}
         </UiBadge>
       </div>
-      <span
-        v-if="active"
-        test-id="active"
-        class="text-primary text-xs font-bold uppercase tracking-wide"
-      >
-        {{ $t('pages.live.currentTurn') }}
-      </span>
     </UiCardHeader>
 
     <UiCardContent class="p-4 pt-0 flex flex-col gap-3">

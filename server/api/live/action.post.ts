@@ -53,6 +53,16 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 403, statusMessage: 'No row claimed' })
   }
 
+  const { data: sheet } = await supabase
+    .from('initiative_sheets')
+    .select('activeIndex, rows')
+    .eq('id', payload.encounter)
+    .single()
+
+  if (sheet?.rows[sheet.activeIndex]?.id !== seat.row) {
+    throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
+  }
+
   let patch
 
   if (body.action.type === 'hp') {
@@ -83,7 +93,7 @@ export default defineEventHandler(async event => {
 
   await broadcastLiveAction(supabase, payload.session, {
     row: seat.row,
-    patch,
+    patch: sanitizeBroadcastPatch(row, body.action.type, patch),
   })
 
   return { row }

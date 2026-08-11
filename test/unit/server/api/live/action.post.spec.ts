@@ -68,7 +68,7 @@ describe('POST /api/live/action', () => {
       {
         live_sessions: mockChain({ data: session, error: null }),
         initiative_sheets: mockChain({
-          data: { rows: [row], settings: {} },
+          data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
         }),
       },
@@ -87,11 +87,142 @@ describe('POST /api/live/action', () => {
     expect(result).toEqual({ row: { ...row, hitPoints: 15 } })
   })
 
+  it('broadcasts a health band instead of raw hp for a player row hp action', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [row], settings: {} },
+          error: null,
+        }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, hitPoints: 7 }, error: null }),
+          mockChain({ data: 4, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'hp', hpType: 'damage', amount: 3 },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 4,
+      row: 'row-1',
+      patch: {
+        healthBand: 'bloodied',
+        concentration: undefined,
+        conditions: [],
+      },
+    })
+  })
+
+  it('broadcasts nothing for a player row death saves action', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [row] },
+          error: null,
+        }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, deathSaves: undefined }, error: null }),
+          mockChain({ data: 5, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: {
+          type: 'deathSaves',
+          value: {
+            save: [true, false, false],
+            fail: [false, false, false],
+          },
+        },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 5,
+      row: 'row-1',
+      patch: {},
+    })
+  })
+
+  it('broadcasts the raw hp patch for a non-player row', async () => {
+    const token = await seatToken()
+    const npcRow = { ...row, type: 'npc' as const }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [npcRow], settings: {} },
+          error: null,
+        }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...npcRow, hitPoints: 15 }, error: null }),
+          mockChain({ data: 6, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'hp', hpType: 'heal', amount: 5 },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 6,
+      row: 'row-1',
+      patch: {
+        hitPoints: 15,
+        tempHitPoints: undefined,
+        deathSaves: undefined,
+        concentration: undefined,
+        conditions: [],
+      },
+    })
+  })
+
   it('forwards a direct field patch for non-hp/ac actions', async () => {
     const token = await seatToken()
 
     mockFrom(
-      { live_sessions: mockChain({ data: session, error: null }) },
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [row] },
+          error: null,
+        }),
+      },
       {
         rpc: [
           mockChain({ data: { ...row, concentration: true }, error: null }),
@@ -136,6 +267,7 @@ describe('POST /api/live/action', () => {
         live_sessions: mockChain({ data: session, error: null }),
         initiative_sheets: mockChain({
           data: {
+            activeIndex: 0,
             rows: [
               { ...row, armorClass: 15, maxArmorClass: 18, tempArmorClass: 0 },
             ],
@@ -281,11 +413,44 @@ describe('POST /api/live/action', () => {
     })
   })
 
+  it("throws a 403 when it is not the seat's row's turn", async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: {
+          activeIndex: 1,
+          rows: [row, { ...row, id: 'row-2' }],
+        },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        actionEvent({
+          seatToken: token,
+          action: { type: 'concentration', value: true },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'Not your turn',
+    })
+  })
+
   it('propagates a postgres error from apply_live_action', async () => {
     const token = await seatToken()
 
     mockFrom(
-      { live_sessions: mockChain({ data: session, error: null }) },
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [row] },
+          error: null,
+        }),
+      },
       {
         rpc: mockChain({
           data: null,

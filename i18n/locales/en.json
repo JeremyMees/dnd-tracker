@@ -582,7 +582,8 @@
         "generic": "Something went wrong, please try again.",
         "rowRequired": "Choose a character or turn on spectator mode.",
         "rowClaimed": "That character has already been claimed."
-      }
+      },
+      "you": "You"
     }
   },
   "components": {

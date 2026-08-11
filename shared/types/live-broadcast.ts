@@ -42,6 +42,13 @@ export interface LiveSyncEvent {
   sheet: PlayerSheet
 }
 
+export type LiveAction =
+  | { type: 'hp'; hpType: 'heal' | 'damage' | 'temp'; amount: number }
+  | { type: 'ac'; acType: 'add' | 'remove' | 'temp'; amount: number }
+  | { type: 'deathSaves'; value: DndDeathSaves }
+  | { type: 'concentration'; value: boolean }
+  | { type: 'conditions'; value: DndCondition[] }
+
 export interface LiveJoinResponse {
   sessionToken: string
   seatToken: string

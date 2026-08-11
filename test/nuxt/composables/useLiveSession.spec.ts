@@ -19,7 +19,7 @@ interface Probe {
   session?: { token: string; code: string; expiresAt: string }
   active: boolean
   loading: boolean
-  start: () => Promise<void>
+  start: (options?: { createIfMissing?: boolean }) => Promise<void>
   stop: () => Promise<void>
   sync: (payload: Record<string, unknown>) => void
 }
@@ -76,11 +76,44 @@ describe('useLiveSession', () => {
 
     expect(fetchMock).toHaveBeenCalledWith('/api/live/start', {
       method: 'POST',
-      body: { encounter: 1 },
+      body: { encounter: 1, createIfMissing: true },
     })
     expect(vm.session).toEqual(response)
     expect(vm.active).toBe(true)
     expect(vm.loading).toBe(false)
+  })
+
+  it('Should check without creating when createIfMissing is false', async () => {
+    fetchMock.mockResolvedValue(null)
+
+    const { vm } = await mountProbe()
+
+    await vm.start({ createIfMissing: false })
+
+    expect(fetchMock).toHaveBeenCalledWith('/api/live/start', {
+      method: 'POST',
+      body: { encounter: 1, createIfMissing: false },
+    })
+    expect(vm.session).toBeUndefined()
+    expect(vm.active).toBe(false)
+    expect(toast).not.toHaveBeenCalled()
+  })
+
+  it('Should still populate session state when a check finds an existing session', async () => {
+    const response = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 10_000).toISOString(),
+    }
+
+    fetchMock.mockResolvedValue(response)
+
+    const { vm } = await mountProbe()
+
+    await vm.start({ createIfMissing: false })
+
+    expect(vm.session).toEqual(response)
+    expect(vm.active).toBe(true)
   })
 
   it('Should consider an expired session inactive', async () => {

@@ -10,7 +10,7 @@ const { session, active, start } = useLiveSession(props.encounterId)
 const pro = computed<boolean>(() => isPro(user.value))
 
 onMounted(() => {
-  if (pro.value) start()
+  if (pro.value) start({ createIfMissing: false })
 })
 </script>
 

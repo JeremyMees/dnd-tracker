@@ -1,10 +1,12 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import { useQueryClient } from '@tanstack/vue-query'
+import { liveStateQueryKey } from '~/queries/live'
 
 export function useLiveRealtime(
   token: ComputedRef<string | undefined>,
   uuid: ComputedRef<string | undefined>,
   seat: ComputedRef<string | undefined>,
+  ownRow: ComputedRef<string | null | undefined>,
 ) {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
@@ -14,7 +16,7 @@ export function useLiveRealtime(
   let channel: RealtimeChannel | undefined
 
   function queryKey(): unknown[] {
-    return ['useLiveState', token.value]
+    return liveStateQueryKey(token.value, seat.value)
   }
 
   function refetch(): void {
@@ -27,6 +29,11 @@ export function useLiveRealtime(
     if (!current || current.session.version >= payload.version) return
 
     if (current.session.version !== payload.version - 1) {
+      refetch()
+      return
+    }
+
+    if (ownRow.value && payload.row === ownRow.value) {
       refetch()
       return
     }
@@ -47,6 +54,11 @@ export function useLiveRealtime(
     const current = queryClient.getQueryData<LiveStateResponse>(queryKey())
 
     if (current && current.session.version >= payload.version) return
+
+    if (ownRow.value) {
+      refetch()
+      return
+    }
 
     queryClient.setQueryData<LiveStateResponse>(queryKey(), old => ({
       sheet: payload.sheet,

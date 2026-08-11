@@ -1,7 +1,7 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async event => {
-  const { token } = getQuery(event)
+  const { token, seatToken } = getQuery(event)
 
   if (!token || typeof token !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'Token not provided' })
@@ -12,7 +12,7 @@ export default defineEventHandler(async event => {
 
   const { data: session } = await supabase
     .from('live_sessions')
-    .select('code, expiresAt, endedAt, version')
+    .select('code, expiresAt, endedAt, version, seats')
     .eq('uuid', payload.session)
     .eq('encounter', payload.encounter)
     .maybeSingle()
@@ -41,8 +41,10 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
   }
 
+  const ownRowId = await resolveOwnRowId(seatToken, payload, session.seats)
+
   return {
-    sheet: toPlayerSheet(sheet),
+    sheet: toPlayerSheet(sheet, ownRowId),
     session: {
       code: session.code,
       expiresAt: session.expiresAt,

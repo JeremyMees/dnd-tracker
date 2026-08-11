@@ -42,12 +42,12 @@ describe('LiveConnected', () => {
     expect(component.find('[test-id="live-connected"]').exists()).toBe(true)
   })
 
-  it('Should start the session on mount when the user is pro', async () => {
+  it('Should check for a session on mount without creating one', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
 
     await mountSuspended(LiveConnected, { props })
 
-    expect(start).toHaveBeenCalled()
+    expect(start).toHaveBeenCalledWith({ createIfMissing: false })
   })
 
   it('Should not start the session on mount when the user is not pro', async () => {

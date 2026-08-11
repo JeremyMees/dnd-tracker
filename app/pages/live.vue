@@ -15,12 +15,14 @@ const initialErrorStatus = ref<number>()
 const joined = ref<LiveJoinResponse>()
 
 const token = computed(() => joined.value?.sessionToken)
+const seatToken = computed(() => joined.value?.seatToken)
 const uuid = computed(() => joined.value?.uuid)
 const seatId = computed(() => joined.value?.seat)
+const ownRow = computed(() => joined.value?.row)
 
-const { data: state, isPending, isError } = useLiveState(token)
+const { data: state, isPending, isError } = useLiveState(token, seatToken)
 
-useLiveRealtime(token, uuid, seatId)
+useLiveRealtime(token, uuid, seatId, ownRow)
 
 const initialCode = computed<string | undefined>(() =>
   typeof route.query.code === 'string' ? route.query.code : undefined,

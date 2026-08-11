@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
-import { signLiveSessionToken } from '~~/server/utils/live-token'
+import {
+  signLiveSeatToken,
+  signLiveSessionToken,
+} from '~~/server/utils/live-token'
 import handler from '~~/server/api/live/state.get'
 
 const future = new Date(Date.now() + 60_000)
@@ -28,11 +31,12 @@ const sheet = {
   ],
 }
 
-function eventWithToken(token: string) {
-  return mockEvent({
-    method: 'GET',
-    path: `/?token=${encodeURIComponent(token)}`,
-  })
+function eventWithToken(token: string, seatToken?: string) {
+  const query = seatToken
+    ? `token=${encodeURIComponent(token)}&seatToken=${encodeURIComponent(seatToken)}`
+    : `token=${encodeURIComponent(token)}`
+
+  return mockEvent({ method: 'GET', path: `/?${query}` })
 }
 
 describe('GET /api/live/state', () => {
@@ -74,13 +78,90 @@ describe('GET /api/live/state', () => {
             name: 'Elara',
             type: 'player',
             conditions: [],
-            hitPoints: 20,
-            maxHitPoints: 30,
+            healthBand: 'healthy',
           },
         ],
       },
       session: { code: 'ABC234', expiresAt: future.toISOString(), version: 3 },
     })
+  })
+
+  it('reveals real hp for the row claimed by a valid seat token', async () => {
+    const token = await signLiveSessionToken(
+      { session: 'session-uuid', encounter: 7 },
+      future,
+    )
+    const seatToken = await signLiveSeatToken(
+      {
+        session: 'session-uuid',
+        encounter: 7,
+        seat: 'seat-1',
+        name: 'Elara',
+        spectator: false,
+      },
+      future,
+    )
+
+    mockFrom({
+      live_sessions: mockChain({
+        data: {
+          code: 'ABC234',
+          expiresAt: future.toISOString(),
+          endedAt: null,
+          version: 3,
+          seats: [
+            { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+          ],
+        },
+        error: null,
+      }),
+      initiative_sheets: mockChain({ data: sheet, error: null }),
+    })
+
+    const result = await handler(eventWithToken(token, seatToken))
+
+    expect(result.sheet.rows[0]).toMatchObject({
+      hitPoints: 20,
+      maxHitPoints: 30,
+    })
+  })
+
+  it('ignores a seat token for a different session and falls back to the generic view', async () => {
+    const token = await signLiveSessionToken(
+      { session: 'session-uuid', encounter: 7 },
+      future,
+    )
+    const seatToken = await signLiveSeatToken(
+      {
+        session: 'other-session',
+        encounter: 7,
+        seat: 'seat-1',
+        name: 'Elara',
+        spectator: false,
+      },
+      future,
+    )
+
+    mockFrom({
+      live_sessions: mockChain({
+        data: {
+          code: 'ABC234',
+          expiresAt: future.toISOString(),
+          endedAt: null,
+          version: 3,
+          seats: [
+            { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+          ],
+        },
+        error: null,
+      }),
+      initiative_sheets: mockChain({ data: sheet, error: null }),
+    })
+
+    const result = await handler(eventWithToken(token, seatToken))
+
+    expect(result.sheet.rows[0]).not.toHaveProperty('hitPoints')
+    expect(result.sheet.rows[0]!.healthBand).toBe('healthy')
   })
 
   it('throws a 400 when no token is provided', async () => {

@@ -66,8 +66,8 @@ describe('toPlayerSheet', () => {
     })
   })
 
-  it('strips DM-only fields from a row and keeps real HP for non-monsters', () => {
-    const result = toPlayerSheet(sheet({ rows: [playerRow()] }))
+  it("strips DM-only fields from a row and keeps real HP for the row's own seat", () => {
+    const result = toPlayerSheet(sheet({ rows: [playerRow()] }), 'row-1')
 
     expect(result.rows[0]!).not.toHaveProperty('note')
     expect(result.rows[0]!).not.toHaveProperty('link')
@@ -79,6 +79,45 @@ describe('toPlayerSheet', () => {
       hitPoints: 20,
       maxHitPoints: 30,
     })
+    expect(result.rows[0]!).not.toHaveProperty('healthBand')
+  })
+
+  it('keeps real HP and death saves for a non-player row with no owning seat', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [playerRow({ type: 'npc', deathSaves: resetDeathSaves() })],
+      }),
+    )
+
+    expect(result.rows[0]!).toMatchObject({ hitPoints: 20, maxHitPoints: 30 })
+    expect(result.rows[0]!).toHaveProperty('deathSaves')
+    expect(result.rows[0]!).not.toHaveProperty('healthBand')
+  })
+
+  it('hides real HP and death saves behind a health band for a player row viewed by someone else', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [playerRow({ deathSaves: resetDeathSaves() })],
+      }),
+    )
+
+    expect(result.rows[0]!).not.toHaveProperty('hitPoints')
+    expect(result.rows[0]!).not.toHaveProperty('maxHitPoints')
+    expect(result.rows[0]!).not.toHaveProperty('tempHitPoints')
+    expect(result.rows[0]!).not.toHaveProperty('deathSaves')
+    expect(result.rows[0]!.healthBand).toBe('healthy')
+  })
+
+  it('keeps real HP and death saves for a player row when it belongs to the viewer', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [playerRow({ deathSaves: resetDeathSaves() })],
+      }),
+      'row-1',
+    )
+
+    expect(result.rows[0]!).toMatchObject({ hitPoints: 20, maxHitPoints: 30 })
+    expect(result.rows[0]!).toHaveProperty('deathSaves')
     expect(result.rows[0]!).not.toHaveProperty('healthBand')
   })
 

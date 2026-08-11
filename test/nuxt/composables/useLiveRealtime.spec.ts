@@ -44,6 +44,7 @@ mockNuxtImport('useSupabaseClient', () => () => ({
 const token = ref<string>()
 const uuid = ref<string>()
 const seat = ref<string>()
+const ownRow = ref<string | null>()
 
 const Probe = defineComponent({
   setup() {
@@ -51,6 +52,7 @@ const Probe = defineComponent({
       computed(() => token.value),
       computed(() => uuid.value),
       computed(() => seat.value),
+      computed(() => ownRow.value),
     )
 
     return {}
@@ -89,6 +91,7 @@ describe('useLiveRealtime', () => {
     token.value = 'session-token'
     uuid.value = 'session-uuid'
     seat.value = 'seat-1'
+    ownRow.value = undefined
   })
 
   afterEach(() => {
@@ -97,6 +100,7 @@ describe('useLiveRealtime', () => {
     token.value = undefined
     uuid.value = undefined
     seat.value = undefined
+    ownRow.value = undefined
   })
 
   it('subscribes to the session channel and tracks presence once subscribed', async () => {
@@ -201,6 +205,92 @@ describe('useLiveRealtime', () => {
     expect(invalidateQueries).not.toHaveBeenCalled()
   })
 
+  it('refetches instead of merging an action broadcast for the viewer own row', async () => {
+    const current = {
+      sheet: {
+        id: 1,
+        title: 'Ambush',
+        round: 1,
+        activeIndex: 0,
+        rows: [
+          {
+            id: 'row-1',
+            index: 0,
+            initiative: 10,
+            name: 'Elara',
+            type: 'player',
+            conditions: [],
+            hitPoints: 20,
+          },
+        ],
+      },
+      session: { code: 'ABC234', expiresAt: 'later', version: 3 },
+    }
+
+    getQueryData.mockReturnValue(current)
+    ownRow.value = 'row-1'
+
+    await mountProbe()
+
+    emitBroadcast('action', {
+      version: 4,
+      row: 'row-1',
+      patch: { healthBand: 'bloodied' },
+    })
+
+    expect(setQueryData).not.toHaveBeenCalled()
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useLiveState', 'session-token'],
+    })
+  })
+
+  it('merges an action broadcast for a row other than the viewer own row', async () => {
+    const current = {
+      sheet: {
+        id: 1,
+        title: 'Ambush',
+        round: 1,
+        activeIndex: 0,
+        rows: [
+          {
+            id: 'row-1',
+            index: 0,
+            initiative: 10,
+            name: 'Elara',
+            type: 'player',
+            conditions: [],
+            hitPoints: 20,
+          },
+        ],
+      },
+      session: { code: 'ABC234', expiresAt: 'later', version: 3 },
+    }
+
+    getQueryData.mockReturnValue(current)
+    ownRow.value = 'row-2'
+
+    await mountProbe()
+
+    emitBroadcast('action', {
+      version: 4,
+      row: 'row-1',
+      patch: { healthBand: 'bloodied' },
+    })
+
+    expect(invalidateQueries).not.toHaveBeenCalled()
+    expect(setQueryData).toHaveBeenCalledWith(
+      ['useLiveState', 'session-token'],
+      {
+        ...current,
+        session: { ...current.session, version: 4 },
+        sheet: {
+          ...current.sheet,
+          rows: [{ ...current.sheet.rows[0], healthBand: 'bloodied' }],
+        },
+      },
+    )
+  })
+
   it('invalidates the query on a version gap instead of applying a stale patch', async () => {
     getQueryData.mockReturnValue({
       sheet: { id: 1, title: 't', round: 1, activeIndex: 0, rows: [] },
@@ -267,6 +357,28 @@ describe('useLiveRealtime', () => {
     expect(updater(oldState)).toEqual({
       sheet: newSheet,
       session: { code: 'ABC234', expiresAt: 'later', version: 3 },
+    })
+  })
+
+  it('refetches instead of applying a sync broadcast when the viewer owns a row', async () => {
+    const oldState = {
+      sheet: { id: 1, title: 'Old', round: 1, activeIndex: 0, rows: [] },
+      session: { code: 'ABC234', expiresAt: 'later', version: 2 },
+    }
+
+    getQueryData.mockReturnValue(oldState)
+    ownRow.value = 'row-1'
+
+    await mountProbe()
+
+    emitBroadcast('sync', {
+      version: 3,
+      sheet: { id: 1, title: 'New', round: 2, activeIndex: 1, rows: [] },
+    })
+
+    expect(setQueryData).not.toHaveBeenCalled()
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useLiveState', 'session-token'],
     })
   })
 

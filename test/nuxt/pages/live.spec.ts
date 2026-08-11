@@ -175,11 +175,13 @@ describe('Live page', () => {
 
     expect(useLiveRealtime).toHaveBeenCalledTimes(1)
 
-    const [tokenArg, uuidArg, seatArg] = useLiveRealtime.mock.calls[0]!
+    const [tokenArg, uuidArg, seatArg, ownRowArg] =
+      useLiveRealtime.mock.calls[0]!
 
     expect(tokenArg.value).toBeUndefined()
     expect(uuidArg.value).toBeUndefined()
     expect(seatArg.value).toBeUndefined()
+    expect(ownRowArg.value).toBeUndefined()
 
     component.findComponent(JoinFormProbe).vm.$emit('joined', joinedSession)
     await nextTick()
@@ -187,6 +189,7 @@ describe('Live page', () => {
     expect(tokenArg.value).toBe('session-token')
     expect(uuidArg.value).toBe('session-uuid')
     expect(seatArg.value).toBe('seat-1')
+    expect(ownRowArg.value).toBe('row-1')
   })
 
   it('passes the fetched sheet and query state to the live player view', async () => {

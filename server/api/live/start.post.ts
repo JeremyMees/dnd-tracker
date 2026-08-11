@@ -3,6 +3,7 @@ import * as z from 'zod'
 
 const bodySchema = z.object({
   encounter: z.number().int().positive(),
+  createIfMissing: z.boolean().optional().default(true),
 })
 
 const SESSION_DURATION_MS = 12 * 60 * 60 * 1000
@@ -49,6 +50,14 @@ export default defineEventHandler(async event => {
       seats: existing.seats,
     }
   }
+
+  if (!body.createIfMissing) return null
+
+  await supabase
+    .from('live_sessions')
+    .update({ endedAt: new Date().toISOString() })
+    .eq('encounter', encounter.id)
+    .is('endedAt', null)
 
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS)
 

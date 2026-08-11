@@ -43,6 +43,26 @@ export async function broadcastLiveState(
   await channel.httpSend('sync', { version, sheet })
 }
 
+export function sanitizeBroadcastPatch(
+  row: InitiativeSheetRow,
+  actionType: string,
+  patch: Partial<InitiativeSheetRow>,
+): Partial<PlayerRow> {
+  if (row.type !== 'player') return patch
+
+  if (actionType === 'hp') {
+    return {
+      healthBand: getHealthBand(row.hitPoints, row.maxHitPoints),
+      concentration: patch.concentration,
+      conditions: patch.conditions,
+    }
+  }
+
+  if (actionType === 'deathSaves') return {}
+
+  return patch
+}
+
 export async function broadcastLiveSeats(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
@@ -64,7 +84,6 @@ export const liveActionSchema = z.discriminatedUnion('type', [
     acType: z.enum(['add', 'remove', 'temp']),
     amount: z.number().int().nonnegative(),
   }),
-  z.object({ type: z.literal('initiative'), value: z.number() }),
   z.object({ type: z.literal('deathSaves'), value: deathSavesSchema }),
   z.object({ type: z.literal('concentration'), value: z.boolean() }),
   z.object({ type: z.literal('conditions'), value: z.array(conditionSchema) }),

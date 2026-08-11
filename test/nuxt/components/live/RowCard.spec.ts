@@ -1,9 +1,30 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import LiveRowCard from '~/components/live/RowCard.vue'
 import { playerRow as baseRow } from '~~/test/fixtures/player-portal'
 
+function setSeat(overrides: Partial<LiveJoinResponse> = {}): void {
+  localStorage.setItem(
+    'live-seat',
+    JSON.stringify({
+      sessionToken: 'session-token',
+      seatToken: 'seat-token',
+      seat: 'seat-1',
+      row: 'row-1',
+      spectator: false,
+      code: 'ABC234',
+      expiresAt: 'later',
+      uuid: 'session-uuid',
+      ...overrides,
+    }),
+  )
+}
+
 describe('LiveRowCard', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   it('renders the name, type icon and initiative', async () => {
     const component = await mountSuspended(LiveRowCard, {
       props: { row: baseRow, active: false },
@@ -11,16 +32,25 @@ describe('LiveRowCard', () => {
 
     expect(component.get('[test-id="name"]').text()).toBe('Elara')
     expect(component.get('[test-id="initiative"]').text()).toContain('15')
-    expect(component.find('[test-id="active"]').exists()).toBe(false)
   })
 
-  it('shows the current turn label when active', async () => {
+  it('highlights the card when active', async () => {
     const component = await mountSuspended(LiveRowCard, {
       props: { row: baseRow, active: true },
     })
 
-    expect(component.get('[test-id="active"]').text()).toBe(
-      'pages.live.currentTurn',
+    expect(component.get('[test-id="row"]').classes()).toContain(
+      'border-primary!',
+    )
+  })
+
+  it('does not highlight the card when inactive', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: { row: baseRow, active: false },
+    })
+
+    expect(component.get('[test-id="row"]').classes()).not.toContain(
+      'border-primary!',
     )
   })
 
@@ -154,5 +184,43 @@ describe('LiveRowCard', () => {
     })
 
     expect(component.find('[test-id="death-saves"]').exists()).toBe(false)
+  })
+
+  it('does not show the own badge without a claimed seat', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: { row: baseRow, active: false },
+    })
+
+    expect(component.find('[test-id="own"]').exists()).toBe(false)
+  })
+
+  it('shows the own badge for the claimed row', async () => {
+    setSeat({ row: baseRow.id })
+
+    const component = await mountSuspended(LiveRowCard, {
+      props: { row: baseRow, active: false },
+    })
+
+    expect(component.get('[test-id="own"]').text()).toBe('pages.live.you')
+  })
+
+  it('does not show the own badge for a different row', async () => {
+    setSeat({ row: 'row-2' })
+
+    const component = await mountSuspended(LiveRowCard, {
+      props: { row: baseRow, active: false },
+    })
+
+    expect(component.find('[test-id="own"]').exists()).toBe(false)
+  })
+
+  it('does not show the own badge for a spectator seat', async () => {
+    setSeat({ row: baseRow.id, spectator: true })
+
+    const component = await mountSuspended(LiveRowCard, {
+      props: { row: baseRow, active: false },
+    })
+
+    expect(component.find('[test-id="own"]').exists()).toBe(false)
   })
 })
