@@ -75,6 +75,7 @@ describe('POST /api/live/join', () => {
       spectator: false,
       code: 'ABC234',
       expiresAt: future,
+      uuid: 'session-uuid',
     })
 
     await expect(

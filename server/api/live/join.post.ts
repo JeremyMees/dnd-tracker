@@ -128,5 +128,6 @@ export default defineEventHandler(async event => {
     spectator: body.spectator,
     code: session.code,
     expiresAt: session.expiresAt,
+    uuid: session.uuid,
   }
 })

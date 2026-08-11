@@ -4,8 +4,9 @@ import Live from '~/pages/live.vue'
 import { playerSheet } from '~~/test/fixtures/player-portal'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const { getQueryData, useSeo } = vi.hoisted(() => ({
+const { getQueryData, useLiveRealtime, useSeo } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
+  useLiveRealtime: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -13,6 +14,8 @@ vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useQueryClient: () => ({ getQueryData }),
 }))
+
+mockNuxtImport('useLiveRealtime', () => useLiveRealtime)
 
 const liveState = ref<LiveStateResponse>()
 const isPending = ref(false)
@@ -77,6 +80,7 @@ const joinedSession = {
   spectator: false,
   code: 'ABC234',
   expiresAt: 'later',
+  uuid: 'session-uuid',
 }
 
 describe('Live page', () => {
@@ -159,6 +163,30 @@ describe('Live page', () => {
     expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual(
       joinedSession,
     )
+  })
+
+  it('wires the realtime subscription to the joined session', async () => {
+    query.value = { code: 'ABC234' }
+    getQueryData.mockImplementation((key: string[]) =>
+      key[0] === 'useLiveCode' ? codeSession : undefined,
+    )
+
+    const component = await mountPage()
+
+    expect(useLiveRealtime).toHaveBeenCalledTimes(1)
+
+    const [tokenArg, uuidArg, seatArg] = useLiveRealtime.mock.calls[0]!
+
+    expect(tokenArg.value).toBeUndefined()
+    expect(uuidArg.value).toBeUndefined()
+    expect(seatArg.value).toBeUndefined()
+
+    component.findComponent(JoinFormProbe).vm.$emit('joined', joinedSession)
+    await nextTick()
+
+    expect(tokenArg.value).toBe('session-token')
+    expect(uuidArg.value).toBe('session-uuid')
+    expect(seatArg.value).toBe('seat-1')
   })
 
   it('passes the fetched sheet and query state to the live player view', async () => {

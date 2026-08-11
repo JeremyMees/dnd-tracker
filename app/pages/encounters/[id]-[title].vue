@@ -23,6 +23,7 @@ const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
   id,
   data,
 )
+const { sync: syncLiveSession } = useLiveSession(id)
 
 const activeRow = ref<InitiativeSheetRow>()
 
@@ -40,6 +41,8 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
       if (!realtimeData.value && !error) updateQueryData(payload)
     },
   })
+
+  syncLiveSession(payload)
 }
 
 provide(INITIATIVE_SHEET, {

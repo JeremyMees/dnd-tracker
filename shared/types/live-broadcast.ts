@@ -31,6 +31,17 @@ export type LiveSeatsBroadcast =
   | { type: 'kicked'; seat: string }
   | { type: 'reassigned'; seat: string; row: string | null }
 
+export interface LiveActionEvent {
+  version: number
+  row: string
+  patch: Partial<PlayerRow>
+}
+
+export interface LiveSyncEvent {
+  version: number
+  sheet: PlayerSheet
+}
+
 export interface LiveJoinResponse {
   sessionToken: string
   seatToken: string
@@ -39,4 +50,5 @@ export interface LiveJoinResponse {
   spectator: boolean
   code: string
   expiresAt: string
+  uuid: string
 }

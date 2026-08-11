@@ -21,6 +21,7 @@ interface Probe {
   loading: boolean
   start: () => Promise<void>
   stop: () => Promise<void>
+  sync: (payload: Record<string, unknown>) => void
 }
 
 const Probe = defineComponent({
@@ -191,6 +192,72 @@ describe('useLiveSession', () => {
     expect(second.vm.session).toEqual(response)
 
     first.component.unmount()
+  })
+
+  it('Should not sync when there is no active session', async () => {
+    const { vm } = await mountProbe()
+
+    vm.sync({ round: 2 })
+    await flushPromises()
+
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('Should not sync when the payload has no live-relevant fields', async () => {
+    fetchMock.mockResolvedValueOnce({
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 10_000).toISOString(),
+    })
+
+    const { vm } = await mountProbe()
+
+    await vm.start()
+    fetchMock.mockClear()
+
+    vm.sync({ title: 'Renamed' })
+    await flushPromises()
+
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('Should sync a live-relevant change while a session is active', async () => {
+    fetchMock.mockResolvedValueOnce({
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 10_000).toISOString(),
+    })
+
+    const { vm } = await mountProbe()
+
+    await vm.start()
+    fetchMock.mockClear()
+    fetchMock.mockResolvedValueOnce({ synced: true })
+
+    vm.sync({ round: 3 })
+    await flushPromises()
+
+    expect(fetchMock).toHaveBeenCalledWith('/api/live/sync', {
+      method: 'POST',
+      body: { encounter: 1 },
+    })
+  })
+
+  it('Should not throw when the sync request fails', async () => {
+    fetchMock.mockResolvedValueOnce({
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 10_000).toISOString(),
+    })
+
+    const { vm } = await mountProbe()
+
+    await vm.start()
+    fetchMock.mockClear()
+    fetchMock.mockRejectedValueOnce(new Error('Boom'))
+
+    expect(() => vm.sync({ round: 3 })).not.toThrow()
+    await flushPromises()
   })
 
   it('Should toast the translated error when stopping fails with a known slug', async () => {

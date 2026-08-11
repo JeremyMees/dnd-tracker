@@ -53,6 +53,21 @@ function _useLiveSession(encounterId: number) {
     }
   }
 
+  function sync(payload: UpdateInitiativeSheetData): void {
+    if (!active.value) return
+
+    const relevant = (
+      ['round', 'activeIndex', 'rows', 'settings'] as const
+    ).some(key => key in payload)
+
+    if (!relevant) return
+
+    $fetch('/api/live/sync', {
+      method: 'POST',
+      body: { encounter: encounterId },
+    }).catch(() => undefined)
+  }
+
   async function stop(): Promise<void> {
     loading.value = true
 
@@ -80,6 +95,7 @@ function _useLiveSession(encounterId: number) {
     loading,
     start,
     stop,
+    sync,
   }
 }
 

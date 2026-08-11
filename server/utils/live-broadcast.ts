@@ -7,11 +7,10 @@ interface LiveActionBroadcast {
   patch: Partial<InitiativeSheetRow>
 }
 
-export async function broadcastLiveAction(
+async function incrementLiveVersion(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  action: LiveActionBroadcast,
-): Promise<void> {
+): Promise<number> {
   const { data: version, error } = await supabase.rpc(
     'increment_live_version',
     { p_session: session },
@@ -19,9 +18,29 @@ export async function broadcastLiveAction(
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
+  return version
+}
+
+export async function broadcastLiveAction(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  session: string,
+  action: LiveActionBroadcast,
+): Promise<void> {
+  const version = await incrementLiveVersion(supabase, session)
   const channel = supabase.channel(`live:${session}`)
 
   await channel.httpSend('action', { version, ...action })
+}
+
+export async function broadcastLiveState(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  session: string,
+  sheet: PlayerSheet,
+): Promise<void> {
+  const version = await incrementLiveVersion(supabase, session)
+  const channel = supabase.channel(`live:${session}`)
+
+  await channel.httpSend('sync', { version, sheet })
 }
 
 export async function broadcastLiveSeats(
