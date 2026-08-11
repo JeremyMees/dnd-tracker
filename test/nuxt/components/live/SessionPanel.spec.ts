@@ -134,6 +134,58 @@ describe('LiveSessionPanel', () => {
     expect(component.find('[test-id="expires"]').exists()).toBe(true)
   })
 
+  it('Should default to the session tab, hiding the options and players tabs', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountPanel().mount()
+
+    expect(component.find('[test-id="qr-code"]').exists()).toBe(true)
+    expect(component.find('[test-id="visibility"]').exists()).toBe(false)
+    expect(component.find('[test-id="allow"]').exists()).toBe(false)
+    expect(component.find('[test-id="seat-list"]').exists()).toBe(false)
+  })
+
+  it('Should switch to the options tab and hide the session tab content', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountPanel().mount()
+
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
+
+    expect(component.find('[test-id="visibility"]').exists()).toBe(true)
+    expect(component.find('[test-id="allow"]').exists()).toBe(true)
+    expect(component.find('[test-id="qr-code"]').exists()).toBe(false)
+  })
+
+  it('Should switch to the players tab and show the seat list', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountPanel().mount()
+
+    await component.find('[test-id="tab-players"]').trigger('mousedown')
+
+    expect(component.find('[test-id="seat-list"]').exists()).toBe(true)
+    expect(component.find('[test-id="qr-code"]').exists()).toBe(false)
+  })
+
   it('Should copy the join link and toast on copy', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
     session.value = {
@@ -223,6 +275,8 @@ describe('LiveSessionPanel', () => {
       },
     }).mount()
 
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
+
     expect(
       component.find('[test-id="hide-monster-names"]').attributes('data-state'),
     ).toBe('checked')
@@ -255,6 +309,7 @@ describe('LiveSessionPanel', () => {
     const { injected, mount } = mountPanel(withLive)
     const component = await mount()
 
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
     await component.find('[test-id="hide-monster-names"]').trigger('click')
 
     expect(injected.update).toHaveBeenCalledWith({
@@ -281,6 +336,8 @@ describe('LiveSessionPanel', () => {
         live: { allow: { hp: false, conditions: false } },
       },
     }).mount()
+
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
 
     expect(
       component.find('[test-id="allow-hp"]').attributes('data-state'),
@@ -320,6 +377,7 @@ describe('LiveSessionPanel', () => {
     const { injected, mount } = mountPanel(withLive)
     const component = await mount()
 
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
     await component.find('[test-id="allow-conditions"]').trigger('click')
 
     expect(injected.update).toHaveBeenCalledWith({

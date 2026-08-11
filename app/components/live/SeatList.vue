@@ -1,9 +1,15 @@
 <script setup lang="ts">
-const props = defineProps<{
-  encounterId: number
-  session: LiveSessionResponse | undefined
-  rows: { id: string; name: string }[]
-}>()
+const props = withDefaults(
+  defineProps<{
+    encounterId: number
+    session: LiveSessionResponse | undefined
+    rows: { id: string; name: string }[]
+    showTitle?: boolean
+  }>(),
+  {
+    showTitle: true,
+  },
+)
 
 const { t } = useI18n()
 const { ask } = useConfirm()
@@ -39,7 +45,11 @@ function confirmKick(seat: LiveSeat): void {
 
 <template>
   <div test-id="seat-list" class="flex flex-col gap-2 w-full text-left">
-    <p class="text-xs text-muted-foreground uppercase tracking-wide">
+    <p
+      v-if="showTitle"
+      test-id="seat-list-title"
+      class="text-xs text-muted-foreground"
+    >
       {{ $t('components.liveSession.seats.title') }}
     </p>
 

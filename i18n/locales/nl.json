@@ -590,6 +590,11 @@
     "liveSession": {
       "title": "Live sessie",
       "start": "Start live sessie",
+      "tabs": {
+        "session": "Sessie",
+        "options": "Opties",
+        "players": "Spelers"
+      },
       "code": "Kamercode",
       "copyLink": "Kopieer link",
       "expiresIn": "Verloopt over {time}",

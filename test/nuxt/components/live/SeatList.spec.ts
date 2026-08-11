@@ -61,6 +61,20 @@ describe('LiveSeatList', () => {
     expect(component.find('[test-id="seat-empty"]').exists()).toBe(true)
   })
 
+  it('Should show the title by default', async () => {
+    const component = await mountSuspended(LiveSeatList, { props })
+
+    expect(component.find('[test-id="seat-list-title"]').exists()).toBe(true)
+  })
+
+  it('Should hide the title when showTitle is false', async () => {
+    const component = await mountSuspended(LiveSeatList, {
+      props: { ...props, showTitle: false },
+    })
+
+    expect(component.find('[test-id="seat-list-title"]').exists()).toBe(false)
+  })
+
   it('Should list a claimed seat with its row name and online status', async () => {
     seats.value = [
       {

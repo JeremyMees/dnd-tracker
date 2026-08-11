@@ -590,6 +590,11 @@
     "liveSession": {
       "title": "Live session",
       "start": "Start live session",
+      "tabs": {
+        "session": "Session",
+        "options": "Options",
+        "players": "Players"
+      },
       "code": "Room code",
       "copyLink": "Copy link",
       "expiresIn": "Ends in {time}",

@@ -22,6 +22,8 @@ const link = computed<string>(() =>
   session.value ? liveSessionUrl(session.value.code, locale.value) : '',
 )
 
+const activeTab = ref<'session' | 'options' | 'players'>('session')
+
 const now = ref<number>(Date.now())
 let interval: ReturnType<typeof setInterval> | undefined
 
@@ -118,7 +120,7 @@ async function toggleLiveAllow(
     test-id="live-session-panel"
     class="flex flex-col text-center gap-4 min-w-64"
   >
-    <p class="head-2">
+    <p class="head-3">
       {{ $t('components.liveSession.title') }}
     </p>
 
@@ -148,158 +150,183 @@ async function toggleLiveAllow(
       </UiButton>
     </div>
 
-    <div v-else test-id="active" class="flex flex-col gap-3 items-center">
-      <QrCode :value="link" />
+    <UiTabs v-else v-model="activeTab" test-id="active" class="w-full">
+      <UiTabsList class="grid w-full grid-cols-3">
+        <UiTabsTrigger test-id="tab-session" value="session">
+          {{ $t('components.liveSession.tabs.session') }}
+        </UiTabsTrigger>
+        <UiTabsTrigger test-id="tab-options" value="options">
+          {{ $t('components.liveSession.tabs.options') }}
+        </UiTabsTrigger>
+        <UiTabsTrigger test-id="tab-players" value="players">
+          {{ $t('components.liveSession.tabs.players') }}
+        </UiTabsTrigger>
+      </UiTabsList>
 
-      <div class="flex flex-col items-center gap-1">
-        <span class="text-xs text-muted-foreground">
-          {{ $t('components.liveSession.code') }}
-        </span>
-        <span test-id="code" class="text-2xl font-bold tracking-widest">
-          {{ session?.code }}
-        </span>
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-2 w-full">
-        <UiButton test-id="copy-link" size="sm" class="grow" @click="copyLink">
-          <Icon name="tabler:link" aria-hidden="true" />
-          {{ $t('components.liveSession.copyLink') }}
-        </UiButton>
-        <UiButton
-          test-id="end"
-          variant="destructive"
-          size="sm"
-          class="grow"
-          :disabled="loading"
-          @click="endSession"
-        >
-          {{ $t('components.liveSession.end') }}
-        </UiButton>
-      </div>
-
-      <p
-        v-if="remaining"
-        test-id="expires"
-        class="text-xs text-muted-foreground"
+      <UiTabsContent
+        value="session"
+        class="flex flex-col gap-3 items-center mt-4"
       >
-        {{ $t('components.liveSession.expiresIn', { time: remaining }) }}
-      </p>
+        <QrCode :value="link" />
 
-      <UiSeparator />
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-xs text-muted-foreground">
+            {{ $t('components.liveSession.code') }}
+          </span>
+          <span test-id="code" class="text-2xl font-bold tracking-widest">
+            {{ session?.code }}
+          </span>
+        </div>
 
-      <div test-id="visibility" class="flex flex-col gap-2 w-full text-left">
-        <p class="text-xs text-muted-foreground uppercase tracking-wide">
-          {{ $t('components.liveSession.visibility.title') }}
+        <div class="flex flex-col sm:flex-row gap-2 w-full">
+          <UiButton
+            test-id="copy-link"
+            size="sm"
+            class="grow"
+            @click="copyLink"
+          >
+            <Icon name="tabler:link" aria-hidden="true" />
+            {{ $t('components.liveSession.copyLink') }}
+          </UiButton>
+          <UiButton
+            test-id="end"
+            variant="destructive"
+            size="sm"
+            class="grow"
+            :disabled="loading"
+            @click="endSession"
+          >
+            {{ $t('components.liveSession.end') }}
+          </UiButton>
+        </div>
+
+        <p
+          v-if="remaining"
+          test-id="expires"
+          class="text-xs text-muted-foreground"
+        >
+          {{ $t('components.liveSession.expiresIn', { time: remaining }) }}
         </p>
+      </UiTabsContent>
 
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.visibility.hideMonsterNames') }}
-          </span>
-          <UiSwitch
-            test-id="hide-monster-names"
-            :model-value="hideMonsterNames"
-            @update:model-value="
-              toggleLiveVisibility('hideMonsterNames', $event)
-            "
-          />
+      <UiTabsContent value="options" class="flex flex-col gap-3 w-full mt-4">
+        <div test-id="visibility" class="flex flex-col gap-2 w-full text-left">
+          <p class="text-xs text-muted-foreground">
+            {{ $t('components.liveSession.visibility.title') }}
+          </p>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.visibility.hideMonsterNames') }}
+            </span>
+            <UiSwitch
+              test-id="hide-monster-names"
+              :model-value="hideMonsterNames"
+              @update:model-value="
+                toggleLiveVisibility('hideMonsterNames', $event)
+              "
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.visibility.hideMonsterHealth') }}
+            </span>
+            <UiSwitch
+              test-id="hide-monster-health"
+              :model-value="hideMonsterHealth"
+              @update:model-value="
+                toggleLiveVisibility('hideMonsterHealth', $event)
+              "
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.visibility.hideMonsterAc') }}
+            </span>
+            <UiSwitch
+              test-id="hide-monster-ac"
+              :model-value="hideMonsterAc"
+              @update:model-value="
+                toggleLiveVisibility('hideMonsterAc', $event)
+              "
+            />
+          </div>
         </div>
 
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.visibility.hideMonsterHealth') }}
-          </span>
-          <UiSwitch
-            test-id="hide-monster-health"
-            :model-value="hideMonsterHealth"
-            @update:model-value="
-              toggleLiveVisibility('hideMonsterHealth', $event)
-            "
-          />
+        <UiSeparator />
+
+        <div test-id="allow" class="flex flex-col gap-2 w-full text-left">
+          <p class="text-xs text-muted-foreground">
+            {{ $t('components.liveSession.allow.title') }}
+          </p>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.allow.hp') }}
+            </span>
+            <UiSwitch
+              test-id="allow-hp"
+              :model-value="isAllowed('hp')"
+              @update:model-value="toggleLiveAllow('hp', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.allow.ac') }}
+            </span>
+            <UiSwitch
+              test-id="allow-ac"
+              :model-value="isAllowed('ac')"
+              @update:model-value="toggleLiveAllow('ac', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.allow.deathSaves') }}
+            </span>
+            <UiSwitch
+              test-id="allow-death-saves"
+              :model-value="isAllowed('deathSaves')"
+              @update:model-value="toggleLiveAllow('deathSaves', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.allow.concentration') }}
+            </span>
+            <UiSwitch
+              test-id="allow-concentration"
+              :model-value="isAllowed('concentration')"
+              @update:model-value="toggleLiveAllow('concentration', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('components.liveSession.allow.conditions') }}
+            </span>
+            <UiSwitch
+              test-id="allow-conditions"
+              :model-value="isAllowed('conditions')"
+              @update:model-value="toggleLiveAllow('conditions', $event)"
+            />
+          </div>
         </div>
+      </UiTabsContent>
 
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.visibility.hideMonsterAc') }}
-          </span>
-          <UiSwitch
-            test-id="hide-monster-ac"
-            :model-value="hideMonsterAc"
-            @update:model-value="toggleLiveVisibility('hideMonsterAc', $event)"
-          />
-        </div>
-      </div>
-
-      <UiSeparator />
-
-      <div test-id="allow" class="flex flex-col gap-2 w-full text-left">
-        <p class="text-xs text-muted-foreground uppercase tracking-wide">
-          {{ $t('components.liveSession.allow.title') }}
-        </p>
-
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.allow.hp') }}
-          </span>
-          <UiSwitch
-            test-id="allow-hp"
-            :model-value="isAllowed('hp')"
-            @update:model-value="toggleLiveAllow('hp', $event)"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.allow.ac') }}
-          </span>
-          <UiSwitch
-            test-id="allow-ac"
-            :model-value="isAllowed('ac')"
-            @update:model-value="toggleLiveAllow('ac', $event)"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.allow.deathSaves') }}
-          </span>
-          <UiSwitch
-            test-id="allow-death-saves"
-            :model-value="isAllowed('deathSaves')"
-            @update:model-value="toggleLiveAllow('deathSaves', $event)"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.allow.concentration') }}
-          </span>
-          <UiSwitch
-            test-id="allow-concentration"
-            :model-value="isAllowed('concentration')"
-            @update:model-value="toggleLiveAllow('concentration', $event)"
-          />
-        </div>
-
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm">
-            {{ $t('components.liveSession.allow.conditions') }}
-          </span>
-          <UiSwitch
-            test-id="allow-conditions"
-            :model-value="isAllowed('conditions')"
-            @update:model-value="toggleLiveAllow('conditions', $event)"
-          />
-        </div>
-      </div>
-
-      <UiSeparator />
-
-      <LiveSeatList
-        :encounter-id="encounterId"
-        :session="session"
-        :rows="rows ?? []"
-      />
-    </div>
+      <UiTabsContent value="players" class="mt-4">
+        <LiveSeatList
+          :encounter-id="encounterId"
+          :session="session"
+          :rows="rows ?? []"
+          :show-title="false"
+        />
+      </UiTabsContent>
+    </UiTabs>
   </div>
 </template>
