@@ -605,6 +605,14 @@
         "hideMonsterHealth": "Hide HP",
         "hideMonsterAc": "Hide AC"
       },
+      "allow": {
+        "title": "Player actions",
+        "hp": "HP",
+        "ac": "AC",
+        "deathSaves": "Death saves",
+        "concentration": "Concentration",
+        "conditions": "Conditions"
+      },
       "seats": {
         "title": "Players",
         "empty": "No one has joined yet",

@@ -2,6 +2,7 @@
 const props = defineProps<{
   row: PlayerRow
   active: boolean
+  allow: LiveAllowActions
 }>()
 
 const collapsed = ref(false)
@@ -40,7 +41,7 @@ watch(
     <AnimationExpandHeight>
       <div v-show="!collapsed" test-id="controls">
         <div class="max-h-[45vh] overflow-y-auto px-4 pb-4">
-          <LiveMyCharacterControls :row="row" :active="active" />
+          <LiveMyCharacterControls :row="row" :active="active" :allow="allow" />
         </div>
       </div>
     </AnimationExpandHeight>

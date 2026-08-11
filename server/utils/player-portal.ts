@@ -51,6 +51,7 @@ export function toPlayerSheet(
   const hideMonsterNames = sheet.settings.live?.hideMonsterNames ?? false
   const hideMonsterHealth = sheet.settings.live?.hideMonsterHealth ?? false
   const hideMonsterAc = sheet.settings.live?.hideMonsterAc ?? false
+  const allow = sheet.settings.live?.allow
 
   let monsterOrdinal = 0
 
@@ -71,6 +72,13 @@ export function toPlayerSheet(
         row.id === ownRowId,
       )
     }),
+    allow: {
+      hp: allow?.hp ?? true,
+      ac: allow?.ac ?? true,
+      deathSaves: allow?.deathSaves ?? true,
+      concentration: allow?.concentration ?? true,
+      conditions: allow?.conditions ?? true,
+    },
   }
 }
 

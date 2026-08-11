@@ -22,6 +22,7 @@ export interface PlayerSheet {
   round: number
   activeIndex: number
   rows: PlayerRow[]
+  allow: LiveAllowActions
 }
 
 export interface LiveCodeSession {

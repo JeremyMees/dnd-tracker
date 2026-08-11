@@ -55,12 +55,16 @@ export default defineEventHandler(async event => {
 
   const { data: sheet } = await supabase
     .from('initiative_sheets')
-    .select('activeIndex, rows')
+    .select('activeIndex, rows, settings')
     .eq('id', payload.encounter)
     .single()
 
   if (sheet?.rows[sheet.activeIndex]?.id !== seat.row) {
     throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
+  }
+
+  if (sheet?.settings?.live?.allow?.[body.action.type] === false) {
+    throw createError({ statusCode: 403, statusMessage: 'Action not allowed' })
   }
 
   let patch

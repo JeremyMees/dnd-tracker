@@ -49,6 +49,8 @@ export type LiveAction =
   | { type: 'concentration'; value: boolean }
   | { type: 'conditions'; value: DndCondition[] }
 
+export type LiveAllowActions = Record<LiveAction['type'], boolean>
+
 export interface LiveJoinResponse {
   sessionToken: string
   seatToken: string

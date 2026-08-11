@@ -10,6 +10,14 @@ const ControlsProbe = defineComponent({
 
 const stubs = { LiveMyCharacterControls: ControlsProbe }
 
+const allow: LiveAllowActions = {
+  hp: true,
+  ac: true,
+  deathSaves: true,
+  concentration: true,
+  conditions: true,
+}
+
 function isHidden(wrapper: {
   attributes: (key: string) => string | undefined
 }): boolean {
@@ -19,7 +27,7 @@ function isHidden(wrapper: {
 describe('LiveMyCharacterPanel', () => {
   it('shows the character name and controls, expanded by default', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, active: false },
+      props: { row: baseRow, active: false, allow },
       global: { stubs },
     })
 
@@ -30,7 +38,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('collapses the controls when the toggle is clicked', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, active: false },
+      props: { row: baseRow, active: false, allow },
       global: { stubs },
     })
 
@@ -43,7 +51,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('re-expands the controls once the row becomes active again', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, active: false },
+      props: { row: baseRow, active: false, allow },
       global: { stubs },
     })
 
@@ -55,7 +63,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('collapses the controls once the row is no longer active', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, active: true },
+      props: { row: baseRow, active: true, allow },
       global: { stubs },
     })
 

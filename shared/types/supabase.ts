@@ -129,6 +129,7 @@ export interface InitiativeSettings {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean
     hideMonsterAc?: boolean
+    allow?: Partial<LiveAllowActions>
   }
 }
 

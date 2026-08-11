@@ -51,6 +51,10 @@ onBeforeUnmount(() => {
   if (interval) clearInterval(interval)
 })
 
+function isAllowed(key: keyof LiveAllowActions): boolean {
+  return sheet.value?.settings.live?.allow?.[key] ?? true
+}
+
 function copyLink(): void {
   if (!link.value) return
 
@@ -86,6 +90,23 @@ async function toggleLiveVisibility(
       live: {
         ...sheet.value.settings.live,
         [key]: value,
+      },
+    },
+  })
+}
+
+async function toggleLiveAllow(
+  key: keyof LiveAllowActions,
+  value: boolean,
+): Promise<void> {
+  if (!sheet.value) return
+
+  await update({
+    settings: {
+      ...sheet.value.settings,
+      live: {
+        ...sheet.value.settings.live,
+        allow: { ...sheet.value.settings.live?.allow, [key]: value },
       },
     },
   })
@@ -205,6 +226,69 @@ async function toggleLiveVisibility(
             test-id="hide-monster-ac"
             :model-value="hideMonsterAc"
             @update:model-value="toggleLiveVisibility('hideMonsterAc', $event)"
+          />
+        </div>
+      </div>
+
+      <UiSeparator />
+
+      <div test-id="allow" class="flex flex-col gap-2 w-full text-left">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide">
+          {{ $t('components.liveSession.allow.title') }}
+        </p>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.allow.hp') }}
+          </span>
+          <UiSwitch
+            test-id="allow-hp"
+            :model-value="isAllowed('hp')"
+            @update:model-value="toggleLiveAllow('hp', $event)"
+          />
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.allow.ac') }}
+          </span>
+          <UiSwitch
+            test-id="allow-ac"
+            :model-value="isAllowed('ac')"
+            @update:model-value="toggleLiveAllow('ac', $event)"
+          />
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.allow.deathSaves') }}
+          </span>
+          <UiSwitch
+            test-id="allow-death-saves"
+            :model-value="isAllowed('deathSaves')"
+            @update:model-value="toggleLiveAllow('deathSaves', $event)"
+          />
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.allow.concentration') }}
+          </span>
+          <UiSwitch
+            test-id="allow-concentration"
+            :model-value="isAllowed('concentration')"
+            @update:model-value="toggleLiveAllow('concentration', $event)"
+          />
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm">
+            {{ $t('components.liveSession.allow.conditions') }}
+          </span>
+          <UiSwitch
+            test-id="allow-conditions"
+            :model-value="isAllowed('conditions')"
+            @update:model-value="toggleLiveAllow('conditions', $event)"
           />
         </div>
       </div>

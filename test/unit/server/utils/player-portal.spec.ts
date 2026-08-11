@@ -220,4 +220,36 @@ describe('toPlayerSheet', () => {
       'Monster 2',
     ])
   })
+
+  it('defaults every action to allowed when settings.live.allow is unset', () => {
+    const result = toPlayerSheet(sheet())
+
+    expect(result.allow).toEqual({
+      hp: true,
+      ac: true,
+      deathSaves: true,
+      concentration: true,
+      conditions: true,
+    })
+  })
+
+  it('resolves settings.live.allow overrides per action, defaulting the rest to allowed', () => {
+    const result = toPlayerSheet(
+      sheet({
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          live: { allow: { hp: false, conditions: false } },
+        } as unknown as InitiativeSettings,
+      }),
+    )
+
+    expect(result.allow).toEqual({
+      hp: false,
+      ac: true,
+      deathSaves: true,
+      concentration: true,
+      conditions: false,
+    })
+  })
 })

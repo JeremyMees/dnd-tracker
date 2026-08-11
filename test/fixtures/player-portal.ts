@@ -23,4 +23,11 @@ export const playerSheet: PlayerSheet = {
       conditions: [],
     },
   ],
+  allow: {
+    hp: true,
+    ac: true,
+    deathSaves: true,
+    concentration: true,
+    conditions: true,
+  },
 }

@@ -251,4 +251,72 @@ describe('LiveSessionPanel', () => {
       },
     })
   })
+
+  it('Should reflect the current settings.live.allow settings', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const component = await mountPanel({
+      ...sheet,
+      settings: {
+        ...sheet.settings!,
+        live: { allow: { hp: false, conditions: false } },
+      },
+    }).mount()
+
+    expect(
+      component.find('[test-id="allow-hp"]').attributes('data-state'),
+    ).toBe('unchecked')
+    expect(
+      component.find('[test-id="allow-ac"]').attributes('data-state'),
+    ).toBe('checked')
+    expect(
+      component.find('[test-id="allow-death-saves"]').attributes('data-state'),
+    ).toBe('checked')
+    expect(
+      component
+        .find('[test-id="allow-concentration"]')
+        .attributes('data-state'),
+    ).toBe('checked')
+    expect(
+      component.find('[test-id="allow-conditions"]').attributes('data-state'),
+    ).toBe('unchecked')
+  })
+
+  it('Should toggle an allow setting without wiping other live settings', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const withLive = {
+      ...sheet,
+      settings: {
+        ...sheet.settings!,
+        live: { hideMonsterHealth: true, allow: { hp: false } },
+      },
+    }
+    const { injected, mount } = mountPanel(withLive)
+    const component = await mount()
+
+    await component.find('[test-id="allow-conditions"]').trigger('click')
+
+    expect(injected.update).toHaveBeenCalledWith({
+      settings: {
+        ...withLive.settings,
+        live: {
+          hideMonsterHealth: true,
+          allow: { hp: false, conditions: false },
+        },
+      },
+    })
+  })
 })

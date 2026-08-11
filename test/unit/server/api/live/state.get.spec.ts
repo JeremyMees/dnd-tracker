@@ -81,6 +81,13 @@ describe('GET /api/live/state', () => {
             healthBand: 'healthy',
           },
         ],
+        allow: {
+          hp: true,
+          ac: true,
+          deathSaves: true,
+          concentration: true,
+          conditions: true,
+        },
       },
       session: { code: 'ABC234', expiresAt: future.toISOString(), version: 3 },
     })

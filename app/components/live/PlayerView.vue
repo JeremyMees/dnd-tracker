@@ -7,6 +7,16 @@ const props = defineProps<{
 
 const { seat } = useLiveSeat()
 
+const defaultAllow: LiveAllowActions = {
+  hp: true,
+  ac: true,
+  deathSaves: true,
+  concentration: true,
+  conditions: true,
+}
+
+const allow = computed(() => props.sheet?.allow ?? defaultAllow)
+
 const ownRow = computed(() => {
   if (!seat.value || seat.value.spectator) return undefined
 
@@ -102,6 +112,7 @@ watch(
       v-if="ownRow"
       :row="ownRow"
       :active="ownRow.id === activeRow?.id"
+      :allow="allow"
     />
   </div>
 </template>

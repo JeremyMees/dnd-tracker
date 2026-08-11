@@ -440,6 +440,34 @@ describe('POST /api/live/action', () => {
     })
   })
 
+  it('throws a 403 when the DM has disabled this action type', async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: {
+          activeIndex: 0,
+          rows: [row],
+          settings: { live: { allow: { concentration: false } } },
+        },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        actionEvent({
+          seatToken: token,
+          action: { type: 'concentration', value: true },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'Action not allowed',
+    })
+  })
+
   it('propagates a postgres error from apply_live_action', async () => {
     const token = await seatToken()
 

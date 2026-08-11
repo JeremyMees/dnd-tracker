@@ -605,6 +605,14 @@
         "hideMonsterHealth": "Verberg HP",
         "hideMonsterAc": "Verberg AC"
       },
+      "allow": {
+        "title": "Speleracties",
+        "hp": "HP",
+        "ac": "AC",
+        "deathSaves": "Death saves",
+        "concentration": "Concentratie",
+        "conditions": "Condities"
+      },
       "seats": {
         "title": "Spelers",
         "empty": "Nog niemand heeft zich aangesloten",

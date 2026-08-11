@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { useConditionsListing } from '~/queries/open5e'
 
-const props = defineProps<{ row: PlayerRow; active: boolean }>()
+const props = defineProps<{
+  row: PlayerRow
+  active: boolean
+  allow: LiveAllowActions
+}>()
 
 const { apply, pending } = useLiveMyAction(computed(() => props.row.id))
 const { data: conditionsList, isPending: conditionsPending } =
@@ -30,7 +34,7 @@ async function toggleConcentration(): Promise<void> {
 }
 
 async function toggleCondition(condition: DndCondition): Promise<void> {
-  if (locked.value) return
+  if (locked.value || !props.allow.conditions) return
 
   const exists = props.row.conditions.some(c => c.id === condition.id)
   const value = exists
@@ -48,14 +52,14 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
     <LiveMyCharacterHp
       v-if="isDefined(row.hitPoints)"
       :row="row"
-      :pending="locked"
+      :pending="locked || !allow.hp"
       :apply="apply"
     />
 
     <LiveMyCharacterAc
       v-if="isDefined(row.armorClass)"
       :row="row"
-      :pending="locked"
+      :pending="locked || !allow.ac"
       :apply="apply"
     />
 
@@ -87,7 +91,7 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
             v-for="(value, j) in save"
             :key="`${value}-${j}`"
             :test-id="i === 0 ? 'save' : 'fail'"
-            :disabled="locked"
+            :disabled="locked || !allow.deathSaves"
             class="size-4 rounded border-2"
             :class="{
               'border-success bg-success/20': i === 0,
@@ -104,7 +108,7 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
     <button
       test-id="concentration"
       type="button"
-      :disabled="locked"
+      :disabled="locked || !allow.concentration"
       :data-active="row.concentration"
       class="flex items-center gap-1 w-fit text-muted-foreground"
       @click="toggleConcentration"
@@ -135,7 +139,8 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
           "
           class="cursor-pointer"
           :class="{
-            'opacity-50 pointer-events-none': locked || conditionsPending,
+            'opacity-50 pointer-events-none':
+              locked || conditionsPending || !allow.conditions,
           }"
           @click="toggleCondition(condition)"
         >

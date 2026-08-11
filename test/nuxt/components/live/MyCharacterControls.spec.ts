@@ -29,9 +29,25 @@ vi.mock('~/queries/open5e', () => ({
   }),
 }))
 
-function mountControls(overrides: Partial<PlayerRow> = {}, active = true) {
+const defaultAllow: LiveAllowActions = {
+  hp: true,
+  ac: true,
+  deathSaves: true,
+  concentration: true,
+  conditions: true,
+}
+
+function mountControls(
+  overrides: Partial<PlayerRow> = {},
+  active = true,
+  allow: Partial<LiveAllowActions> = {},
+) {
   return mountSuspended(MyCharacterControls, {
-    props: { row: { ...row, ...overrides }, active },
+    props: {
+      row: { ...row, ...overrides },
+      active,
+      allow: { ...defaultAllow, ...allow },
+    },
   })
 }
 
@@ -199,5 +215,53 @@ describe('LiveMyCharacterControls', () => {
     for (const button of component.findAll('button[type="submit"]')) {
       expect(button.attributes('disabled')).toBeDefined()
     }
+  })
+
+  it('disables hp actions when the DM has disallowed them', async () => {
+    const component = await mountControls({}, true, { hp: false })
+
+    expect(
+      component.get('[test-id="heal"]').attributes('disabled'),
+    ).toBeDefined()
+  })
+
+  it('disables ac actions when the DM has disallowed them', async () => {
+    const component = await mountControls({}, true, { ac: false })
+    const ac = component.getComponent(MyCharacterAc)
+
+    expect(ac.get('[test-id="add-ac"]').attributes('disabled')).toBeDefined()
+  })
+
+  it('disables death saves when the DM has disallowed them', async () => {
+    const component = await mountControls(
+      {
+        deathSaves: {
+          save: [false, false, false],
+          fail: [false, false, false],
+        },
+      },
+      true,
+      { deathSaves: false },
+    )
+
+    expect(
+      component.get('[test-id="save"]').attributes('disabled'),
+    ).toBeDefined()
+  })
+
+  it('disables concentration when the DM has disallowed it', async () => {
+    const component = await mountControls({}, true, { concentration: false })
+
+    expect(
+      component.get('[test-id="concentration"]').attributes('disabled'),
+    ).toBeDefined()
+  })
+
+  it('disables conditions when the DM has disallowed them', async () => {
+    const component = await mountControls({}, true, { conditions: false })
+
+    await component.get('[test-id="condition"]').trigger('click')
+
+    expect(apply).not.toHaveBeenCalled()
   })
 })
