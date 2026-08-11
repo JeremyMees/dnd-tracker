@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import LiveSessionPanel from '~/components/initiative/LiveSessionPanel.vue'
+import LiveSessionPanel from '~/components/live/SessionPanel.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
@@ -58,6 +58,19 @@ describe('LiveSessionPanel', () => {
     session.value = undefined
     active.value = false
     loading.value = false
+  })
+
+  it('Should match snapshot', async () => {
+    const component = await mountPanel().mount()
+
+    expect(component.html()).toMatchSnapshot()
+  })
+
+  it('Should show the upsell when the user is not pro', async () => {
+    const component = await mountPanel().mount()
+
+    expect(component.find('[test-id="upsell"]').exists()).toBe(true)
+    expect(start).not.toHaveBeenCalled()
   })
 
   it('Should show the upsell when the user is not pro', async () => {

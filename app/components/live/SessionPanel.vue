@@ -295,7 +295,7 @@ async function toggleLiveAllow(
 
       <UiSeparator />
 
-      <InitiativeLiveSeatList
+      <LiveSeatList
         :encounter-id="encounterId"
         :session="session"
         :rows="rows ?? []"

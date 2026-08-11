@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import LiveSeatList from '~/components/initiative/LiveSeatList.vue'
+import LiveSeatList from '~/components/live/SeatList.vue'
 
 const { ask, kick, reassign } = vi.hoisted(() => ({
   ask: vi.fn(),

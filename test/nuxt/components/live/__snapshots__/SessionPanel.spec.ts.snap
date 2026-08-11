@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LiveSessionPanel > Should match snapshot 1`] = `
+"<div test-id="live-session-panel" class="flex flex-col text-center gap-4 min-w-64">
+  <p class="head-2">components.liveSession.title</p>
+  <div test-id="upsell" class="flex flex-col gap-3">
+    <p class="text-sm text-muted-foreground">components.liveSession.upsell</p><a href="/pricing" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2">components.navbar.upgrade</a>
+  </div>
+</div>"
+`;

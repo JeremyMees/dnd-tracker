@@ -12,11 +12,11 @@ const props: Props = {
   data: sheet,
 }
 
-vi.mock('~/components/initiative/LiveSessionPanel.vue', () => ({
+vi.mock('~/components/live/SessionPanel.vue', () => ({
   default: {
-    name: 'LiveSessionPanelStub',
+    name: 'SessionPanelStub',
     props: ['encounterId'],
-    template: '<div test-id="live-session-panel-stub" />',
+    template: '<div test-id="session-panel-stub" />',
   },
 }))
 
@@ -161,7 +161,7 @@ describe('Initiative header', () => {
     await component.find('[test-id="live-session-trigger"]').trigger('click')
     await nextTick()
 
-    const panel = component.findComponent({ name: 'LiveSessionPanelStub' })
+    const panel = component.findComponent({ name: 'SessionPanelStub' })
 
     expect(panel.exists()).toBeTruthy()
     expect(panel.props('encounterId')).toBe(42)

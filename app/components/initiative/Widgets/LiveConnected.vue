@@ -16,10 +16,6 @@ onMounted(() => {
 
 <template>
   <Card v-if="active" test-id="live-connected" color="secondary">
-    <InitiativeLiveSeatList
-      :encounter-id="encounterId"
-      :session="session"
-      :rows="rows"
-    />
+    <LiveSeatList :encounter-id="encounterId" :session="session" :rows="rows" />
   </Card>
 </template>
