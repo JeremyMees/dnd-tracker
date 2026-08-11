@@ -6,6 +6,7 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import {
   broadcastLiveAction,
+  broadcastLiveEnded,
   broadcastLiveSeats,
   buildAcPatch,
   buildHpPatch,
@@ -73,6 +74,25 @@ describe('live-broadcast', () => {
           },
         ),
       ).rejects.toMatchObject({ statusCode: 409 })
+    })
+  })
+
+  describe('broadcastLiveEnded', () => {
+    it('broadcasts an ended event over the session channel', async () => {
+      mockFrom({})
+
+      await broadcastLiveEnded(
+        serverSupabaseServiceRole({} as never),
+        'session-uuid',
+      )
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+
+      const channel = supabase.channel('live:session-uuid')
+
+      expect(channel.httpSend).toHaveBeenCalledWith('ended', {})
     })
   })
 

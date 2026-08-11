@@ -5,7 +5,8 @@ import { liveStateQueryKey } from '~/queries/live'
 export function useLiveRealtime(
   token: ComputedRef<string | undefined>,
   uuid: ComputedRef<string | undefined>,
-  seat: ComputedRef<string | undefined>,
+  seatToken: ComputedRef<string | undefined>,
+  seatId: ComputedRef<string | undefined>,
   ownRow: ComputedRef<string | null | undefined>,
 ) {
   const supabase = useSupabaseClient<DB>()
@@ -16,7 +17,7 @@ export function useLiveRealtime(
   let channel: RealtimeChannel | undefined
 
   function queryKey(): unknown[] {
-    return liveStateQueryKey(token.value, seat.value)
+    return liveStateQueryKey(token.value, seatToken.value)
   }
 
   function refetch(): void {
@@ -66,8 +67,13 @@ export function useLiveRealtime(
         code: old?.session.code ?? '',
         expiresAt: old?.session.expiresAt ?? '',
         version: payload.version,
+        kicked: old?.session.kicked ?? false,
       },
     }))
+  }
+
+  function applySeats(payload: LiveSeatsBroadcast): void {
+    if (payload.type === 'kicked' && payload.seat === seatId.value) refetch()
   }
 
   function subscribe(sessionUuid: string): void {
@@ -80,9 +86,13 @@ export function useLiveRealtime(
       .on('broadcast', { event: 'sync' }, ({ payload }) =>
         applySync(payload as LiveSyncEvent),
       )
+      .on('broadcast', { event: 'seats' }, ({ payload }) =>
+        applySeats(payload as LiveSeatsBroadcast),
+      )
+      .on('broadcast', { event: 'ended' }, refetch)
       .subscribe(status => {
-        if (status === 'SUBSCRIBED' && seat.value) {
-          channel!.track({ seat: seat.value })
+        if (status === 'SUBSCRIBED' && seatId.value) {
+          channel!.track({ seat: seatId.value })
         }
       })
   }

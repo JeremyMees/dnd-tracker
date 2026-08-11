@@ -63,6 +63,15 @@ export function sanitizeBroadcastPatch(
   return patch
 }
 
+export async function broadcastLiveEnded(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  session: string,
+): Promise<void> {
+  const channel = supabase.channel(`live:${session}`)
+
+  await channel.httpSend('ended', {})
+}
+
 export async function broadcastLiveSeats(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,

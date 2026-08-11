@@ -583,6 +583,11 @@
         "rowRequired": "Choose a character or turn on spectator mode.",
         "rowClaimed": "That character has already been claimed."
       },
+      "ended": {
+        "title": "Session ended",
+        "text": "This live session is no longer available. Ask your DM for a new code to rejoin.",
+        "action": "Enter a new code"
+      },
       "you": "You"
     }
   },

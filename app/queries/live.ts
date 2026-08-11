@@ -18,5 +18,6 @@ export function useLiveState(
         query: { token: token.value, seatToken: seatToken.value },
       }),
     enabled: computed(() => !!token.value),
+    retry: false,
   })
 }

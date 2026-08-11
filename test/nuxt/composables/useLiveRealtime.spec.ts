@@ -43,7 +43,8 @@ mockNuxtImport('useSupabaseClient', () => () => ({
 
 const token = ref<string>()
 const uuid = ref<string>()
-const seat = ref<string>()
+const seatToken = ref<string>()
+const seatId = ref<string>()
 const ownRow = ref<string | null>()
 
 const Probe = defineComponent({
@@ -51,7 +52,8 @@ const Probe = defineComponent({
     useLiveRealtime(
       computed(() => token.value),
       computed(() => uuid.value),
-      computed(() => seat.value),
+      computed(() => seatToken.value),
+      computed(() => seatId.value),
       computed(() => ownRow.value),
     )
 
@@ -90,7 +92,8 @@ describe('useLiveRealtime', () => {
     visibility.value = 'visible'
     token.value = 'session-token'
     uuid.value = 'session-uuid'
-    seat.value = 'seat-1'
+    seatToken.value = 'seat-1'
+    seatId.value = 'seat-id-1'
     ownRow.value = undefined
   })
 
@@ -99,7 +102,8 @@ describe('useLiveRealtime', () => {
     mounted = undefined
     token.value = undefined
     uuid.value = undefined
-    seat.value = undefined
+    seatToken.value = undefined
+    seatId.value = undefined
     ownRow.value = undefined
   })
 
@@ -124,7 +128,7 @@ describe('useLiveRealtime', () => {
 
     statusCallback('SUBSCRIBED')
 
-    expect(track).toHaveBeenCalledWith({ seat: 'seat-1' })
+    expect(track).toHaveBeenCalledWith({ seat: 'seat-id-1' })
   })
 
   it('does not track presence for a non-subscribed status', async () => {
@@ -137,6 +141,49 @@ describe('useLiveRealtime', () => {
     statusCallback('CHANNEL_ERROR')
 
     expect(track).not.toHaveBeenCalled()
+  })
+
+  it('refetches when the viewer own seat is kicked', async () => {
+    await mountProbe()
+
+    const call = on.mock.calls.find(
+      call => call[0] === 'broadcast' && call[1].event === 'seats',
+    )
+    const handler = call![2] as (arg: { payload: unknown }) => void
+
+    handler({ payload: { type: 'kicked', seat: 'seat-id-1' } })
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
+    })
+  })
+
+  it('ignores a kicked broadcast for a different seat', async () => {
+    await mountProbe()
+
+    const call = on.mock.calls.find(
+      call => call[0] === 'broadcast' && call[1].event === 'seats',
+    )
+    const handler = call![2] as (arg: { payload: unknown }) => void
+
+    handler({ payload: { type: 'kicked', seat: 'someone-else' } })
+
+    expect(invalidateQueries).not.toHaveBeenCalled()
+  })
+
+  it('refetches when the session ends', async () => {
+    await mountProbe()
+
+    const call = on.mock.calls.find(
+      call => call[0] === 'broadcast' && call[1].event === 'ended',
+    )
+    const handler = call![2] as () => void
+
+    handler()
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
+    })
   })
 
   it('does not subscribe until a uuid is available', async () => {
@@ -356,7 +403,34 @@ describe('useLiveRealtime', () => {
 
     expect(updater(oldState)).toEqual({
       sheet: newSheet,
-      session: { code: 'ABC234', expiresAt: 'later', version: 3 },
+      session: {
+        code: 'ABC234',
+        expiresAt: 'later',
+        version: 3,
+        kicked: false,
+      },
+    })
+  })
+
+  it('preserves an existing kicked flag when merging a sync broadcast', async () => {
+    const oldState = {
+      sheet: { id: 1, title: 'Old', round: 1, activeIndex: 0, rows: [] },
+      session: { code: 'ABC234', expiresAt: 'later', version: 2, kicked: true },
+    }
+
+    getQueryData.mockReturnValue(oldState)
+
+    await mountProbe()
+
+    const newSheet = { id: 1, title: 'New', round: 2, activeIndex: 1, rows: [] }
+
+    emitBroadcast('sync', { version: 3, sheet: newSheet })
+
+    const updater = setQueryData.mock.calls[0]![1] as (old: unknown) => unknown
+
+    expect(updater(oldState)).toEqual({
+      sheet: newSheet,
+      session: { code: 'ABC234', expiresAt: 'later', version: 3, kicked: true },
     })
   })
 

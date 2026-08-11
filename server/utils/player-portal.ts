@@ -82,12 +82,19 @@ export function toPlayerSheet(
   }
 }
 
+export interface OwnSeat {
+  row: string | undefined
+  kicked: boolean
+}
+
 export async function resolveOwnRowId(
   seatToken: unknown,
   session: LiveSessionTokenPayload,
   seats: LiveSeat[],
-): Promise<string | undefined> {
-  if (!seatToken || typeof seatToken !== 'string') return undefined
+): Promise<OwnSeat> {
+  if (!seatToken || typeof seatToken !== 'string') {
+    return { row: undefined, kicked: false }
+  }
 
   try {
     const payload = await verifyLiveSeatToken(seatToken)
@@ -96,11 +103,15 @@ export async function resolveOwnRowId(
       payload.session !== session.session ||
       payload.encounter !== session.encounter
     ) {
-      return undefined
+      return { row: undefined, kicked: false }
     }
 
-    return seats.find(s => s.seat === payload.seat)?.row ?? undefined
+    const seat = seats.find(s => s.seat === payload.seat)
+
+    if (!seat) return { row: undefined, kicked: true }
+
+    return { row: seat.row ?? undefined, kicked: false }
   } catch {
-    return undefined
+    return { row: undefined, kicked: false }
   }
 }

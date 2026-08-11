@@ -583,6 +583,11 @@
         "rowRequired": "Kies een personage of zet kijkmodus aan.",
         "rowClaimed": "Dat personage is al bezet."
       },
+      "ended": {
+        "title": "Sessie beëindigd",
+        "text": "Deze live sessie is niet meer beschikbaar. Vraag je DM om een nieuwe code om opnieuw deel te nemen.",
+        "action": "Voer een nieuwe code in"
+      },
       "you": "Jij"
     }
   },

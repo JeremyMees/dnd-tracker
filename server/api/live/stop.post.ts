@@ -17,7 +17,7 @@ export default defineEventHandler(async event => {
     .update({ endedAt: new Date().toISOString() })
     .eq('encounter', encounter.id)
     .is('endedAt', null)
-    .select('id')
+    .select('id, uuid')
     .maybeSingle()
 
   if (error) throw createError(postgresErrorToH3Error(error))
@@ -28,6 +28,8 @@ export default defineEventHandler(async event => {
       statusMessage: 'no-active-session',
     })
   }
+
+  await broadcastLiveEnded(supabase, session.uuid)
 
   return { success: true }
 })

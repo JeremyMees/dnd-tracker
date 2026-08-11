@@ -4,6 +4,7 @@ import {
   mockAuthedUser,
   mockChain,
   mockFrom,
+  serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
 import handler from '~~/server/api/live/stop.post'
 
@@ -15,15 +16,26 @@ describe('POST /api/live/stop', () => {
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
   })
 
-  it('ends the active session for the encounter', async () => {
+  it('ends the active session for the encounter and broadcasts it', async () => {
     mockFrom({
       initiative_sheets: mockChain({ data: encounter, error: null }),
-      live_sessions: mockChain({ data: { id: 3 }, error: null }),
+      live_sessions: mockChain({
+        data: { id: 3, uuid: 'session-uuid' },
+        error: null,
+      }),
     })
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { encounter: 7 } })),
     ).resolves.toEqual({ success: true })
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'ended',
+      {},
+    )
   })
 
   it('throws a 404 when there is no active session', async () => {

@@ -41,14 +41,15 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
   }
 
-  const ownRowId = await resolveOwnRowId(seatToken, payload, session.seats)
+  const ownSeat = await resolveOwnRowId(seatToken, payload, session.seats)
 
   return {
-    sheet: toPlayerSheet(sheet, ownRowId),
+    sheet: toPlayerSheet(sheet, ownSeat.row),
     session: {
       code: session.code,
       expiresAt: session.expiresAt,
       version: session.version,
+      kicked: ownSeat.kicked,
     },
   }
 })

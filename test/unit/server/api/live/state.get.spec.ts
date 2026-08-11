@@ -89,7 +89,12 @@ describe('GET /api/live/state', () => {
           conditions: true,
         },
       },
-      session: { code: 'ABC234', expiresAt: future.toISOString(), version: 3 },
+      session: {
+        code: 'ABC234',
+        expiresAt: future.toISOString(),
+        version: 3,
+        kicked: false,
+      },
     })
   })
 
@@ -169,6 +174,42 @@ describe('GET /api/live/state', () => {
 
     expect(result.sheet.rows[0]).not.toHaveProperty('hitPoints')
     expect(result.sheet.rows[0]!.healthBand).toBe('healthy')
+  })
+
+  it('reports kicked when the seat no longer exists in the session', async () => {
+    const token = await signLiveSessionToken(
+      { session: 'session-uuid', encounter: 7 },
+      future,
+    )
+    const seatToken = await signLiveSeatToken(
+      {
+        session: 'session-uuid',
+        encounter: 7,
+        seat: 'removed-seat',
+        name: 'Elara',
+        spectator: false,
+      },
+      future,
+    )
+
+    mockFrom({
+      live_sessions: mockChain({
+        data: {
+          code: 'ABC234',
+          expiresAt: future.toISOString(),
+          endedAt: null,
+          version: 3,
+          seats: [],
+        },
+        error: null,
+      }),
+      initiative_sheets: mockChain({ data: sheet, error: null }),
+    })
+
+    const result = await handler(eventWithToken(token, seatToken))
+
+    expect(result.session.kicked).toBe(true)
+    expect(result.sheet.rows[0]).not.toHaveProperty('hitPoints')
   })
 
   it('throws a 400 when no token is provided', async () => {

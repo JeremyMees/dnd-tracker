@@ -37,5 +37,6 @@ export interface LiveStateResponse {
     code: string
     expiresAt: string
     version: number
+    kicked: boolean
   }
 }
