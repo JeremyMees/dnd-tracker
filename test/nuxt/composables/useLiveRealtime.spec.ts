@@ -192,7 +192,7 @@ describe('useLiveRealtime', () => {
     })
 
     expect(setQueryData).toHaveBeenCalledWith(
-      ['useLiveState', 'session-token'],
+      ['useLiveState', 'session-token', 'seat-1'],
       {
         ...current,
         session: { ...current.session, version: 4 },
@@ -240,7 +240,7 @@ describe('useLiveRealtime', () => {
 
     expect(setQueryData).not.toHaveBeenCalled()
     expect(invalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['useLiveState', 'session-token'],
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
     })
   })
 
@@ -279,7 +279,7 @@ describe('useLiveRealtime', () => {
 
     expect(invalidateQueries).not.toHaveBeenCalled()
     expect(setQueryData).toHaveBeenCalledWith(
-      ['useLiveState', 'session-token'],
+      ['useLiveState', 'session-token', 'seat-1'],
       {
         ...current,
         session: { ...current.session, version: 4 },
@@ -303,7 +303,7 @@ describe('useLiveRealtime', () => {
 
     expect(setQueryData).not.toHaveBeenCalled()
     expect(invalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['useLiveState', 'session-token'],
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
     })
   })
 
@@ -348,7 +348,7 @@ describe('useLiveRealtime', () => {
     emitBroadcast('sync', { version: 3, sheet: newSheet })
 
     expect(setQueryData).toHaveBeenCalledWith(
-      ['useLiveState', 'session-token'],
+      ['useLiveState', 'session-token', 'seat-1'],
       expect.any(Function),
     )
 
@@ -378,7 +378,7 @@ describe('useLiveRealtime', () => {
 
     expect(setQueryData).not.toHaveBeenCalled()
     expect(invalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['useLiveState', 'session-token'],
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
     })
   })
 
@@ -420,7 +420,7 @@ describe('useLiveRealtime', () => {
     await flushPromises()
 
     expect(invalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['useLiveState', 'session-token'],
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
     })
   })
 
@@ -433,7 +433,7 @@ describe('useLiveRealtime', () => {
     await flushPromises()
 
     expect(invalidateQueries).toHaveBeenCalledWith({
-      queryKey: ['useLiveState', 'session-token'],
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
     })
   })
 

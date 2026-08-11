@@ -104,7 +104,7 @@ describe('useLiveMyAction', () => {
     await flushPromises()
 
     expect(setQueryData).toHaveBeenCalledWith(
-      ['useLiveState', 'session-token'],
+      ['useLiveState', 'session-token', 'seat-token'],
       {
         ...cachedState,
         sheet: {
@@ -173,7 +173,10 @@ describe('useLiveMyAction', () => {
 
     const lastCall = setQueryData.mock.calls.at(-1)!
 
-    expect(lastCall).toEqual([['useLiveState', 'session-token'], cachedState])
+    expect(lastCall).toEqual([
+      ['useLiveState', 'session-token', 'seat-token'],
+      cachedState,
+    ])
     expect(toast).toHaveBeenCalledWith(
       expect.objectContaining({ variant: 'destructive' }),
     )
