@@ -75,9 +75,18 @@
     "moveDown": "Move down",
     "changeInitiative": "Change initiative",
     "applyDamage": "Apply damage",
-    "generateName": "Generate name"
+    "generateName": "Generate name",
+    "kick": "Remove",
+    "copyLink": "Copy link"
   },
   "general": {
+    "spectator": "Spectator | Spectators",
+    "you": "You",
+    "session": "Session | Sessions",
+    "healthy": "Healthy",
+    "bloodied": "Bloodied",
+    "critical": "Critical",
+    "deathSaves": "Death saves",
     "savingThrow": "Saving throw | Saving throws",
     "speed": "Speed",
     "sense": "Sense | Senses",
@@ -567,15 +576,8 @@
       "nameLabel": "Your name",
       "rowLabel": "Play as",
       "spectatorLabel": "Just watching",
-      "join": "Join",
       "confirmed": "Room code confirmed",
       "currentTurn": "Current turn",
-      "deathSaves": "Death saves",
-      "health": {
-        "healthy": "Healthy",
-        "bloodied": "Bloodied",
-        "critical": "Critical"
-      },
       "errors": {
         "notFound": "We couldn't find a live session with that code.",
         "expired": "This live session has ended.",
@@ -587,21 +589,14 @@
         "title": "Session ended",
         "text": "This live session is no longer available. Ask your DM for a new code to rejoin.",
         "action": "Enter a new code"
-      },
-      "you": "You"
+      }
     }
   },
   "components": {
     "liveSession": {
       "title": "Live session",
       "start": "Start live session",
-      "tabs": {
-        "session": "Session",
-        "options": "Options",
-        "players": "Players"
-      },
       "code": "Room code",
-      "copyLink": "Copy link",
       "expiresIn": "Ends in {time}",
       "end": "End session",
       "endConfirm": {
@@ -616,22 +611,13 @@
         "hideMonsterAc": "Hide AC"
       },
       "allow": {
-        "title": "Player actions",
-        "hp": "HP",
-        "ac": "AC",
-        "deathSaves": "Death saves",
-        "concentration": "Concentration",
-        "conditions": "Conditions"
+        "title": "Player actions"
       },
       "seats": {
         "title": "Players",
         "empty": "No one has joined yet",
-        "spectator": "Spectator",
         "playing": "Playing as {row}",
-        "online": "Online",
-        "offline": "Offline",
         "reassignPlaceholder": "Move to a different row",
-        "kick": "Remove",
         "kickConfirm": {
           "title": "Remove {name}?",
           "text": "They will be disconnected and their seat freed up."

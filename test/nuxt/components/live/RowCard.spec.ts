@@ -80,7 +80,7 @@ describe('LiveRowCard', () => {
 
     expect(component.find('[test-id="hp"]').exists()).toBe(false)
     expect(component.get('[test-id="health-band"]').text()).toBe(
-      'pages.live.health.bloodied',
+      'general.bloodied',
     )
   })
 
@@ -201,7 +201,7 @@ describe('LiveRowCard', () => {
       props: { row: baseRow, active: false },
     })
 
-    expect(component.get('[test-id="own"]').text()).toBe('pages.live.you')
+    expect(component.get('[test-id="own"]').text()).toBe('general.you')
   })
 
   it('does not show the own badge for a different row', async () => {

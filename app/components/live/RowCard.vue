@@ -41,7 +41,7 @@ const healthBandClass = computed(() => {
             {{ row.name }}
           </UiCardTitle>
           <UiBadge v-if="own" test-id="own" class="shrink-0">
-            {{ $t('pages.live.you') }}
+            {{ $t('general.you') }}
           </UiBadge>
         </div>
         <UiBadge test-id="initiative" variant="outline" class="shrink-0">
@@ -84,7 +84,7 @@ const healthBandClass = computed(() => {
           test-id="health-band"
           :class="healthBandClass"
         >
-          {{ $t(`pages.live.health.${row.healthBand}`) }}
+          {{ $t(`general.${row.healthBand}`) }}
         </UiBadge>
 
         <div
@@ -140,7 +140,7 @@ const healthBandClass = computed(() => {
 
       <div
         v-if="row.deathSaves && row.type !== 'monster'"
-        v-tippy="$t('pages.live.deathSaves')"
+        v-tippy="$t('general.deathSaves')"
         test-id="death-saves"
         class="grid gap-1 w-fit"
         :class="{

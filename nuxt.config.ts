@@ -96,6 +96,7 @@ export default defineNuxtConfig({
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
     '/maintenance': { robots: false },
+    '/live': { robots: false },
   }),
 
   sourcemap: {

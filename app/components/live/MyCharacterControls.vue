@@ -69,7 +69,7 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
       class="flex flex-col gap-2"
     >
       <span class="text-xs font-bold text-muted-foreground">
-        {{ $t('pages.live.deathSaves') }}
+        {{ $t('general.deathSaves') }}
       </span>
       <div
         class="grid gap-1 w-fit"

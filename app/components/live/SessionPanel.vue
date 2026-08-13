@@ -153,13 +153,13 @@ async function toggleLiveAllow(
     <UiTabs v-else v-model="activeTab" test-id="active" class="w-full">
       <UiTabsList class="grid w-full grid-cols-3">
         <UiTabsTrigger test-id="tab-session" value="session">
-          {{ $t('components.liveSession.tabs.session') }}
+          {{ $t('general.session') }}
         </UiTabsTrigger>
         <UiTabsTrigger test-id="tab-options" value="options">
-          {{ $t('components.liveSession.tabs.options') }}
+          {{ $t('general.option', 2) }}
         </UiTabsTrigger>
         <UiTabsTrigger test-id="tab-players" value="players">
-          {{ $t('components.liveSession.tabs.players') }}
+          {{ $t('general.player', 2) }}
         </UiTabsTrigger>
       </UiTabsList>
 
@@ -186,7 +186,7 @@ async function toggleLiveAllow(
             @click="copyLink"
           >
             <Icon name="tabler:link" aria-hidden="true" />
-            {{ $t('components.liveSession.copyLink') }}
+            {{ $t('actions.copyLink') }}
           </UiButton>
           <UiButton
             test-id="end"
@@ -264,7 +264,7 @@ async function toggleLiveAllow(
 
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm">
-              {{ $t('components.liveSession.allow.hp') }}
+              {{ $t('general.hp') }}
             </span>
             <UiSwitch
               test-id="allow-hp"
@@ -275,7 +275,7 @@ async function toggleLiveAllow(
 
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm">
-              {{ $t('components.liveSession.allow.ac') }}
+              {{ $t('general.ac') }}
             </span>
             <UiSwitch
               test-id="allow-ac"
@@ -286,7 +286,7 @@ async function toggleLiveAllow(
 
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm">
-              {{ $t('components.liveSession.allow.deathSaves') }}
+              {{ $t('general.deathSaves') }}
             </span>
             <UiSwitch
               test-id="allow-death-saves"
@@ -297,7 +297,7 @@ async function toggleLiveAllow(
 
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm">
-              {{ $t('components.liveSession.allow.concentration') }}
+              {{ $t('general.concentration') }}
             </span>
             <UiSwitch
               test-id="allow-concentration"
@@ -308,7 +308,7 @@ async function toggleLiveAllow(
 
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm">
-              {{ $t('components.liveSession.allow.conditions') }}
+              {{ $t('general.condition', 2) }}
             </span>
             <UiSwitch
               test-id="allow-conditions"

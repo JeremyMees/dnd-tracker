@@ -132,7 +132,7 @@ const onSubmit = form.handleSubmit(async values => {
       class="w-full"
       :disabled="isLoading"
     >
-      {{ $t('pages.live.join') }}
+      {{ $t('actions.join') }}
     </UiButton>
   </UiFormWrapper>
 </template>

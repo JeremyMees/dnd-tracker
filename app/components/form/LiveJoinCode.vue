@@ -89,7 +89,7 @@ onMounted(async () => {
       class="w-full"
       :disabled="isLoading"
     >
-      {{ $t('pages.live.join') }}
+      {{ $t('actions.join') }}
     </UiButton>
   </UiFormWrapper>
 </template>

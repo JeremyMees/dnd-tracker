@@ -75,9 +75,18 @@
     "moveDown": "Omlaag",
     "changeInitiative": "Initiatief wijzigen",
     "applyDamage": "Schade toepassen",
-    "generateName": "Naam genereren"
+    "generateName": "Naam genereren",
+    "kick": "Verwijder",
+    "copyLink": "Kopieer link"
   },
   "general": {
+    "spectator": "Toeschouwer | Toeschouwers",
+    "you": "Jij",
+    "session": "Sessie | Sessies",
+    "healthy": "Gezond",
+    "bloodied": "Gewond",
+    "critical": "Kritiek",
+    "deathSaves": "Death saves",
     "savingThrow": "Saving throw | Saving throws",
     "speed": "Speed",
     "sense": "Sense | Senses",
@@ -567,15 +576,8 @@
       "nameLabel": "Jouw naam",
       "rowLabel": "Speel als",
       "spectatorLabel": "Alleen kijken",
-      "join": "Deelnemen",
       "confirmed": "Kamercode bevestigd",
       "currentTurn": "Huidige beurt",
-      "deathSaves": "Death saves",
-      "health": {
-        "healthy": "Gezond",
-        "bloodied": "Gewond",
-        "critical": "Kritiek"
-      },
       "errors": {
         "notFound": "We konden geen live sessie met die code vinden.",
         "expired": "Deze live sessie is beëindigd.",
@@ -587,21 +589,14 @@
         "title": "Sessie beëindigd",
         "text": "Deze live sessie is niet meer beschikbaar. Vraag je DM om een nieuwe code om opnieuw deel te nemen.",
         "action": "Voer een nieuwe code in"
-      },
-      "you": "Jij"
+      }
     }
   },
   "components": {
     "liveSession": {
       "title": "Live sessie",
       "start": "Start live sessie",
-      "tabs": {
-        "session": "Sessie",
-        "options": "Opties",
-        "players": "Spelers"
-      },
       "code": "Kamercode",
-      "copyLink": "Kopieer link",
       "expiresIn": "Verloopt over {time}",
       "end": "Beëindig sessie",
       "endConfirm": {
@@ -616,22 +611,13 @@
         "hideMonsterAc": "Verberg AC"
       },
       "allow": {
-        "title": "Speleracties",
-        "hp": "HP",
-        "ac": "AC",
-        "deathSaves": "Death saves",
-        "concentration": "Concentratie",
-        "conditions": "Condities"
+        "title": "Speleracties"
       },
       "seats": {
         "title": "Spelers",
         "empty": "Nog niemand heeft zich aangesloten",
-        "spectator": "Toeschouwer",
         "playing": "Speelt als {row}",
-        "online": "Online",
-        "offline": "Offline",
         "reassignPlaceholder": "Verplaats naar een andere rij",
-        "kick": "Verwijder",
         "kickConfirm": {
           "title": "{name} verwijderen?",
           "text": "Diegene wordt losgekoppeld en de plek komt weer vrij."

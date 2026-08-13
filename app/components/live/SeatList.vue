@@ -71,8 +71,8 @@ function confirmKick(seat: LiveSeat): void {
         <span
           v-tippy="
             connected.has(seat.seat)
-              ? $t('components.liveSession.seats.online')
-              : $t('components.liveSession.seats.offline')
+              ? $t('general.online')
+              : $t('general.offline')
           "
           :test-id="`seat-status-${seat.seat}`"
           class="size-2 rounded-full shrink-0 animate-pulse"
@@ -86,7 +86,7 @@ function confirmKick(seat: LiveSeat): void {
           <span class="text-xs text-muted-foreground truncate">
             {{
               seat.spectator
-                ? $t('components.liveSession.seats.spectator')
+                ? $t('general.spectator')
                 : $t('components.liveSession.seats.playing', {
                     row: rowName(seat.row),
                   })
@@ -125,7 +125,7 @@ function confirmKick(seat: LiveSeat): void {
           :test-id="`kick-${seat.seat}`"
           variant="destructive-ghost"
           size="icon-sm"
-          :aria-label="$t('components.liveSession.seats.kick')"
+          :aria-label="$t('actions.kick')"
           @click="confirmKick(seat)"
         >
           <Icon name="tabler:user-x" aria-hidden="true" />
