@@ -65,7 +65,7 @@ jobs:
           retention-days: 1
 
   coverage-gate:
-    name: Enforce Coverage Quality Gate
+    name: Coverage Gate
     needs: testing
     runs-on: ubuntu-latest
     steps:
