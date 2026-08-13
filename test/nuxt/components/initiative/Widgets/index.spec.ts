@@ -79,6 +79,8 @@ describe('Initiative widgets wrapper', async () => {
     }
 
     component = await mountSuspended(Widgets, { provide })
+    await new Promise(resolve => setTimeout(resolve, 0))
+    await nextTick()
 
     expect(
       component

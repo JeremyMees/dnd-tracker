@@ -107,13 +107,17 @@ const onSubmit = form.handleSubmit(async values => {
       <UiPopoverTrigger as-child>
         <button
           id="tour-10"
+          test-id="trigger"
           class="flex items-center gap-x-1 w-fit rounded-lg hover:bg-warning/50 hover:text-foreground hover:-mx-2 hover:-my-1 hover:px-2 hover:py-1 transition-all duration-300"
         >
           {{ label }}
           <Icon name="tabler:bolt-filled" class="text-warning" />
         </button>
       </UiPopoverTrigger>
-      <UiPopoverContent class="max-w-[800px] max-h-[600px]">
+      <UiPopoverContent
+        test-id="popover-content"
+        class="max-w-[800px] max-h-[600px]"
+      >
         <UiPopoverHeader>
           <UiPopoverTitle>
             {{ $t('components.initiativeTableHeader.initiative.title') }}

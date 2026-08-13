@@ -34,6 +34,15 @@ describe('Initiative table row init', async () => {
     expect(component.html()).toMatchSnapshot()
   })
 
+  it('Should open the popover when the trigger is clicked', async () => {
+    const component = await mountSuspended(Init, { props, provide })
+    const vm = component.vm as unknown as { popoverOpen: boolean }
+
+    await component.get('[test-id="trigger"]').trigger('click')
+
+    expect(vm.popoverOpen).toBe(true)
+  })
+
   it('Should display initiative value correctly', async () => {
     const initiative = 15
     const component = await mountSuspended(Init, {

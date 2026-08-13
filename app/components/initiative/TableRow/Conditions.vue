@@ -81,6 +81,7 @@ function toggleSelected(item: DndCondition): void {
           <UiBadge
             v-for="condition in conditions"
             :key="condition.name"
+            test-id="option"
             :variant="
               selected.map(s => s.name).includes(condition.name)
                 ? 'default'
@@ -94,6 +95,7 @@ function toggleSelected(item: DndCondition): void {
         </div>
         <div class="flex justify-end mt-4">
           <UiButton
+            test-id="update"
             variant="foreground"
             :aria-label="$t('actions.update')"
             @click="updateCondition(selected)"
@@ -150,6 +152,7 @@ function toggleSelected(item: DndCondition): void {
           </UiNumberField>
           <div class="flex justify-end mt-4">
             <UiButton
+              test-id="remove"
               :aria-label="$t('actions.remove')"
               variant="destructive"
               @click="removeCondition(condition.name)"

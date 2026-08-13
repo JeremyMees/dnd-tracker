@@ -139,6 +139,7 @@ const onSubmit = form.handleSubmit(async values => {
     <UiPopoverTrigger as-child>
       <UiButton
         v-tippy="$t('actions.roll')"
+        test-id="trigger"
         variant="tertiary-ghost"
         size="icon-sm"
         :aria-label="$t('actions.roll')"
@@ -161,6 +162,7 @@ const onSubmit = form.handleSubmit(async values => {
         <div class="flex items-center gap-x-2">
           <UiButton
             :aria-label="$t('general.advantage')"
+            test-id="advantage"
             variant="success"
             size="sm"
             class="border-2"
@@ -173,6 +175,7 @@ const onSubmit = form.handleSubmit(async values => {
           </UiButton>
           <UiButton
             :aria-label="$t('general.straight')"
+            test-id="straight"
             variant="foreground"
             size="sm"
             class="border-2"
@@ -183,6 +186,7 @@ const onSubmit = form.handleSubmit(async values => {
           </UiButton>
           <UiButton
             :aria-label="$t('general.disadvantage')"
+            test-id="disadvantage"
             variant="destructive"
             size="sm"
             class="border-2"
@@ -282,10 +286,14 @@ const onSubmit = form.handleSubmit(async values => {
                 <UiFormMessage />
               </UiFormItem>
             </UiFormField>
-            <div v-if="formError" class="text-sm text-destructive">
+            <div
+              v-if="formError"
+              test-id="error"
+              class="text-sm text-destructive"
+            >
               {{ formError }}
             </div>
-            <UiButton type="submit" class="w-full">
+            <UiButton test-id="submit" type="submit" class="w-full">
               {{ $t('actions.applyDamage') }}
             </UiButton>
           </UiFormWrapper>
