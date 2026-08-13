@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { coverageConfigDefaults, defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import vue from '@vitejs/plugin-vue'
 import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
@@ -32,6 +32,21 @@ export default defineConfig({
     ],
     onConsoleLog: l => {
       return !ignoredLogs.some(p => p.test(l))
+    },
+    coverage: {
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+        perFile: true,
+      },
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        'test/nuxt/stubs/**',
+        'test/unit/stubs/**',
+        'app/components/ui/**',
+      ],
     },
   },
 })
