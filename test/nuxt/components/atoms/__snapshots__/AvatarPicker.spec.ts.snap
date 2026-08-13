@@ -6,6 +6,6 @@ exports[`AvatarPicker > Should match snapshot 1`] = `
     <!--v-if-->
   </div>
   <!--v-if-->
-  <!---->
+  <div></div>
 </div>"
 `;

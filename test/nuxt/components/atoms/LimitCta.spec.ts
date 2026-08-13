@@ -3,12 +3,6 @@ import { describe, expect, it, vi, afterEach } from 'vitest'
 import LimitCta from '~/components/atoms/LimitCta.vue'
 import { ONE_SECOND, ONE_HOUR, ONE_DAY } from '~~/constants/time'
 
-const stubs = {
-  AnimationExpand: {
-    template: '<div><slot></slot></div>',
-  },
-}
-
 describe('LimitCta', async () => {
   afterEach(() => {
     vi.useRealTimers()
@@ -16,7 +10,7 @@ describe('LimitCta', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(LimitCta, { global: { stubs } })
+    const component = await mountSuspended(LimitCta)
 
     vi.useFakeTimers()
     component.vm.show()
@@ -26,7 +20,7 @@ describe('LimitCta', async () => {
   })
 
   it('Should show component on mount if no cookie exists', async () => {
-    const component = await mountSuspended(LimitCta, { global: { stubs } })
+    const component = await mountSuspended(LimitCta)
 
     component.vm.show()
     await nextTick()
@@ -42,7 +36,7 @@ describe('LimitCta', async () => {
     vi.stubGlobal('useCookie', mockUseCookie)
     vi.spyOn(Date, 'now').mockReturnValue(now)
 
-    const component = await mountSuspended(LimitCta, { global: { stubs } })
+    const component = await mountSuspended(LimitCta)
 
     vi.useFakeTimers()
     vi.advanceTimersByTime(100)
