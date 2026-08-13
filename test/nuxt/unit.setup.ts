@@ -1,7 +1,9 @@
-import { config } from '@vue/test-utils'
-import { beforeEach, vi } from 'vitest'
+import { config, enableAutoUnmount } from '@vue/test-utils'
+import { afterEach, beforeEach, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import * as dndHelpers from '~~/shared/utils/dnd/names'
+
+enableAutoUnmount(afterEach)
 
 let nameIndex = 0
 
@@ -32,6 +34,9 @@ config.global.stubs = {
   NuxtLinkLocale: {
     props: ['to'],
     template: '<a :href="to"><slot></slot></a>',
+  },
+  AnimationExpand: {
+    template: '<div><slot></slot></div>',
   },
 }
 

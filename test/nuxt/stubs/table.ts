@@ -89,6 +89,7 @@ export function createListingStubs({
       LimitCta,
       RefreshCard,
       SkeletonCampaignTableRow: skeletonRow,
+      SkeletonEncounterTableRow: skeletonRow,
       SkeletonHomebrewTableRow: skeletonRow,
       SkeletonNoteTableRow: skeletonRow,
     },

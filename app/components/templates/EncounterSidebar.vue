@@ -41,6 +41,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                   placement: 'right',
                   onShow: () => !isExpanded,
                 }"
+                test-id="content"
                 :aria-label="`${$t('components.navbar.dnd-content')}`"
                 @click="openModal = 'content'"
               >
@@ -245,6 +246,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                   placement: 'right',
                   onShow: () => !isExpanded,
                 }"
+                test-id="settings"
                 :aria-label="$t('general.setting', 2)"
                 @click="openModal = 'settings'"
               >

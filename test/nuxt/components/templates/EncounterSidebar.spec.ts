@@ -1,13 +1,13 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import type { VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
+import { DialogContent } from '~/components/ui/dialog'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 
 interface EncounterSidebarVM {
-  diceRollerOpen: boolean
-  fantasyNameGeneratorOpen: boolean
   openModal:
     | 'settings'
     | 'newHomebrew'
@@ -53,6 +53,16 @@ const props = {
   isExpanded: true,
 }
 
+const formStubs = {
+  FormPinContent: { template: '<div />' },
+  FormBestiary: { template: '<div />' },
+  FormCampaignHomebrew: { template: '<div />', emits: ['close'] },
+  FormHomebrew: { template: '<div />', emits: ['close'] },
+  FormInitiativeSettings: { template: '<div />', emits: ['close'] },
+}
+
+let component: VueWrapper<InstanceType<typeof EncounterSidebar>>
+
 describe('EncounterSidebar', () => {
   beforeEach(() => {
     mockUpdate.mockClear()
@@ -60,22 +70,20 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountSuspended(EncounterSidebar, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should have correct initial values', async () => {
-    const component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountSuspended(EncounterSidebar, { props, provide })
     const vm = component.vm as unknown as EncounterSidebarVM
 
-    expect(vm.diceRollerOpen).toBeFalsy()
-    expect(vm.fantasyNameGeneratorOpen).toBeFalsy()
     expect(vm.openModal).toBeUndefined()
   })
 
   it('Should render bestiary button when not at max characters', async () => {
-    const component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountSuspended(EncounterSidebar, { props, provide })
 
     expect(component.find('[test-id="bestiary"]').exists()).toBeTruthy()
   })
@@ -86,7 +94,7 @@ describe('EncounterSidebar', () => {
       campaign: mockSheetCampaign,
     }
 
-    const component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountSuspended(EncounterSidebar, { props, provide })
 
     expect(
       component.find('[test-id="campaign-homebrew"]').exists(),
@@ -99,14 +107,14 @@ describe('EncounterSidebar', () => {
       campaign: undefined,
     }
 
-    const component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountSuspended(EncounterSidebar, { props, provide })
 
     expect(component.find('[test-id="campaign-homebrew"]').exists()).toBeFalsy()
   })
 
   describe('maxCharacters computed', () => {
     it('Should be false when sheet has less than 50 rows', async () => {
-      const component = await mountSuspended(EncounterSidebar, {
+      component = await mountSuspended(EncounterSidebar, {
         props,
         provide,
       })
@@ -123,7 +131,7 @@ describe('EncounterSidebar', () => {
 
       mockSheet.value = { ...sheet, rows }
 
-      const component = await mountSuspended(EncounterSidebar, {
+      component = await mountSuspended(EncounterSidebar, {
         props,
         provide,
       })
@@ -141,7 +149,7 @@ describe('EncounterSidebar', () => {
       mockSheet.value = { ...sheet, rows }
       await nextTick()
 
-      const component = await mountSuspended(EncounterSidebar, {
+      component = await mountSuspended(EncounterSidebar, {
         props,
         provide,
       })
@@ -162,7 +170,7 @@ describe('EncounterSidebar', () => {
       mockSheet.value = { ...sheet, rows }
       await nextTick()
 
-      const component = await mountSuspended(EncounterSidebar, {
+      component = await mountSuspended(EncounterSidebar, {
         props,
         provide,
       })
@@ -172,7 +180,7 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should render correctly when collapsed', async () => {
-    const component = await mountSuspended(EncounterSidebar, {
+    component = await mountSuspended(EncounterSidebar, {
       props: { isExpanded: false },
       provide,
     })
@@ -180,9 +188,120 @@ describe('EncounterSidebar', () => {
     expect(component.html()).toBeTruthy()
   })
 
-  it('Should emit toggleSidebar event when triggered', async () => {
-    const component = await mountSuspended(EncounterSidebar, { props, provide })
+  describe.each<{
+    trigger: string
+    modal: EncounterSidebarVM['openModal']
+    title: string
+    dialogIndex: number
+  }>([
+    {
+      trigger: 'content',
+      modal: 'content',
+      title: 'components.navbar.dnd-content',
+      dialogIndex: 0,
+    },
+    {
+      trigger: 'bestiary',
+      modal: 'bestiary',
+      title: 'general.bestiary',
+      dialogIndex: 1,
+    },
+    {
+      trigger: 'campaign-homebrew',
+      modal: 'addHomebrew',
+      title: 'general.campaignHomebrew',
+      dialogIndex: 2,
+    },
+    {
+      trigger: 'new-homebrew',
+      modal: 'newHomebrew',
+      title: 'general.newHomebrew',
+      dialogIndex: 3,
+    },
+    {
+      trigger: 'settings',
+      modal: 'settings',
+      title: 'general.setting',
+      dialogIndex: 4,
+    },
+  ])('$trigger dialog', ({ trigger, modal, title, dialogIndex }) => {
+    it('Should open the dialog with the correct content when the trigger is clicked', async () => {
+      mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
-    expect(component.emitted()).toBeDefined()
+      component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+      const vm = component.vm as unknown as EncounterSidebarVM
+
+      await component.get(`[test-id="${trigger}"]`).trigger('click')
+
+      expect(vm.openModal).toBe(modal)
+      expect(document.body.textContent).toContain(title)
+    })
+
+    it('Should close the dialog when the close button is clicked', async () => {
+      mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
+
+      component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+      const vm = component.vm as unknown as EncounterSidebarVM
+
+      await component.get(`[test-id="${trigger}"]`).trigger('click')
+
+      const dialogContent =
+        component.findAllComponents(DialogContent)[dialogIndex]!
+      dialogContent.vm.$emit('close')
+      await nextTick()
+
+      expect(vm.openModal).toBeUndefined()
+    })
+
+    it('Should close the dialog on escape key down, pointer down outside and interact outside', async () => {
+      mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
+
+      component = await mountSuspended(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+      const vm = component.vm as unknown as EncounterSidebarVM
+
+      for (const event of [
+        'escapeKeyDown',
+        'pointerDownOutside',
+        'interactOutside',
+      ]) {
+        await component.get(`[test-id="${trigger}"]`).trigger('click')
+        expect(vm.openModal).toBe(modal)
+
+        const dialogContent =
+          component.findAllComponents(DialogContent)[dialogIndex]!
+        dialogContent.vm.$emit(event)
+        await nextTick()
+
+        expect(vm.openModal).toBeUndefined()
+      }
+    })
+  })
+
+  it('Should reset openModal on unmount', async () => {
+    component = await mountSuspended(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+    const vm = component.vm as unknown as EncounterSidebarVM
+
+    await component.get('[test-id="settings"]').trigger('click')
+    expect(vm.openModal).toBe('settings')
+
+    component.unmount()
+
+    expect(vm.openModal).toBeUndefined()
   })
 })

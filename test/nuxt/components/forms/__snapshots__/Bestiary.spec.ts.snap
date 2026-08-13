@@ -26,7 +26,7 @@ exports[`Bestiary > Should match snapshot 1`] = `
     </div>
     <div class="space-y-2 w-full sm:w-auto sm:flex-1"><label for="system" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.gameSystemLabel
         <!--v-if-->
-      </label><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-2" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">5e-2024 <span class="iconify i-tabler:chevron-down ml-auto my-auto size-4 text-muted-foreground" aria-hidden="true"></span></button>
+      </label><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-2" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" test-id="trigger" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">5e-2024 <span class="iconify i-tabler:chevron-down ml-auto my-auto size-4 text-muted-foreground" aria-hidden="true"></span></button>
       <!--teleport start-->
       <!--teleport end-->
     </div>
