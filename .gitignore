@@ -32,3 +32,4 @@ logs
 .vscode/mcp.json
 
 /supabase
+/coverage

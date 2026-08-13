@@ -104,6 +104,7 @@
     "@tanstack/eslint-plugin-query": "^5.101.4",
     "@types/node": "^26.1.2",
     "@types/sanitize-html": "^2.16.1",
+    "@vitest/coverage-v8": "^4.1.10",
     "@vue/test-utils": "^2.4.11",
     "golar": "^0.1.10",
     "happy-dom": "^20.11.1",
