@@ -143,12 +143,19 @@ describe('TextEditor', () => {
       component = await mountSuspended(TextEditor, { props: {} })
 
       vm().editor?.commands.toggleHeading({ level: 1 })
+      await vi.advanceTimersByTimeAsync(32)
       vm().isOpen = true
       await nextTick()
 
+      expect(component.get('[test-id="heading-label"]').text()).toBe('H1')
+
       await component.get('[test-id="paragraph"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(32)
 
       expect(vm().editor?.isActive('paragraph')).toBe(true)
+      expect(component.get('[test-id="heading-label"]').text()).toBe(
+        'general.text',
+      )
       expect(vm().isOpen).toBe(false)
     })
 
@@ -161,8 +168,12 @@ describe('TextEditor', () => {
         await nextTick()
 
         await component.get(`[test-id="heading-${level}"]`).trigger('click')
+        await vi.advanceTimersByTimeAsync(32)
 
         expect(vm().editor?.isActive('heading', { level })).toBe(true)
+        expect(component.get('[test-id="heading-label"]').text()).toBe(
+          `H${level}`,
+        )
         expect(vm().isOpen).toBe(false)
       },
     )
@@ -181,12 +192,20 @@ describe('TextEditor', () => {
       component = await mountSuspended(TextEditor, { props: {} })
 
       await component.get(`[test-id="${testId}"]`).trigger('click')
+      await vi.advanceTimersByTimeAsync(32)
 
       expect(vm().editor?.isActive(mark)).toBe(true)
+      expect(component.get(`[test-id="${testId}"]`).classes()).toContain(
+        'bg-primary!',
+      )
 
       await component.get(`[test-id="${testId}"]`).trigger('click')
+      await vi.advanceTimersByTimeAsync(32)
 
       expect(vm().editor?.isActive(mark)).toBe(false)
+      expect(component.get(`[test-id="${testId}"]`).classes()).not.toContain(
+        'bg-primary!',
+      )
     })
 
     it('Should insert a horizontal rule when clicked', async () => {
@@ -216,13 +235,21 @@ describe('TextEditor', () => {
       })
 
       vm().editor?.commands.insertContent('hello')
-      await nextTick()
+      await vi.advanceTimersByTimeAsync(32)
       expect(vm().editor?.getHTML()).toContain('hello')
+      expect(
+        component.get('[test-id="undo"]').attributes('disabled'),
+      ).toBeUndefined()
 
       vm().editor?.chain().focus().undo().run()
+      await vi.advanceTimersByTimeAsync(32)
       expect(vm().editor?.getHTML()).not.toContain('hello')
+      expect(
+        component.get('[test-id="redo"]').attributes('disabled'),
+      ).toBeUndefined()
 
       vm().editor?.chain().focus().redo().run()
+      await vi.advanceTimersByTimeAsync(32)
       expect(vm().editor?.getHTML()).toContain('hello')
     })
 
@@ -302,11 +329,19 @@ describe('TextEditor', () => {
       vm().editor?.commands.insertContent('link text')
       vm().editor?.commands.selectAll()
       await component.get('[test-id="link"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(32)
       expect(vm().editor?.isActive('link')).toBe(true)
+      expect(
+        component.get('[test-id="unlink"]').attributes('disabled'),
+      ).toBeUndefined()
 
       vm().editor?.chain().focus().unsetLink().run()
+      await vi.advanceTimersByTimeAsync(32)
 
       expect(vm().editor?.isActive('link')).toBe(false)
+      expect(
+        component.get('[test-id="unlink"]').attributes('disabled'),
+      ).toBeDefined()
     })
   })
 
