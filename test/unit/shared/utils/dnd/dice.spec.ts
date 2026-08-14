@@ -88,6 +88,48 @@ describe('dnd/dice', () => {
     })
   })
 
+  describe('formatAttackDice', () => {
+    it('should format count and type into a dice string', () => {
+      expect(formatAttackDice(2, 'd6')).toBe('2d6')
+      expect(formatAttackDice(1, 'd20')).toBe('1d20')
+    })
+
+    it('should return undefined when count is missing', () => {
+      expect(formatAttackDice(undefined, 'd6')).toBeUndefined()
+      expect(formatAttackDice(0, 'd6')).toBeUndefined()
+    })
+
+    it('should return undefined when type is missing', () => {
+      expect(formatAttackDice(2, undefined)).toBeUndefined()
+    })
+  })
+
+  describe('parseAttackDice', () => {
+    it('should parse a valid dice expression', () => {
+      expect(parseAttackDice('2d6')).toEqual({
+        damageDieCount: 2,
+        damageDieType: 'd6',
+      })
+    })
+
+    it('should lowercase the dice type', () => {
+      expect(parseAttackDice('1D20')).toEqual({
+        damageDieCount: 1,
+        damageDieType: 'd20',
+      })
+    })
+
+    it('should return undefined for an invalid expression', () => {
+      expect(parseAttackDice('2d3')).toBeUndefined()
+      expect(parseAttackDice('abc')).toBeUndefined()
+    })
+
+    it('should return undefined for null or undefined input', () => {
+      expect(parseAttackDice(null)).toBeUndefined()
+      expect(parseAttackDice(undefined)).toBeUndefined()
+    })
+  })
+
   describe('parseHitDice', () => {
     it('should parse hit dice expression including bonus', () => {
       expect(parseHitDice('12d10+36')).toEqual({

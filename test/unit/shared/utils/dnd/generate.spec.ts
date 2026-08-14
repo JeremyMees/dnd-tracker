@@ -46,6 +46,21 @@ describe('dnd/generate', () => {
 
       expect(result[0]?.val).toBe('9 mi')
     })
+
+    it('should fall back to ft for an unrecognized unit', () => {
+      const result = generateSpeedEntries({
+        unit: 'unknown' as DndDistanceUnit,
+        walk: 30,
+      })
+
+      expect(result[0]?.val).toBe('30 ft')
+    })
+
+    it('should omit walk when it is not set', () => {
+      const result = generateSpeedEntries({ unit: 'feet', walk: 0, fly: 60 })
+
+      expect(result).toEqual([{ label: 'Fly', val: '60 ft' }])
+    })
   })
 
   describe('generateSightEntries', () => {

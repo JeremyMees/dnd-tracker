@@ -68,6 +68,11 @@ describe('parse', () => {
       expect(parseNumber('abc', 5)).toBe(5)
     })
 
+    it('returns fallback when the fraction denominator is zero', () => {
+      expect(parseNumber('5/0')).toBe(0)
+      expect(parseNumber('5/0', 42)).toBe(42)
+    })
+
     it('returns fallback for null and undefined', () => {
       expect(parseNumber(null)).toBe(0)
       expect(parseNumber(undefined)).toBe(0)
@@ -186,6 +191,11 @@ describe('parse', () => {
     it('returns fallback for non-finite numbers', () => {
       expect(parseIntegerFromText(Number.NaN)).toBe(0)
       expect(parseIntegerFromText(Infinity)).toBe(0)
+    })
+
+    it('returns fallback when the matched digits overflow to Infinity', () => {
+      expect(parseIntegerFromText('9'.repeat(400))).toBe(0)
+      expect(parseIntegerFromText('9'.repeat(400), 99)).toBe(99)
     })
   })
 
