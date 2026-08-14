@@ -103,6 +103,17 @@ describe('LiveMyCharacterAc', () => {
     )
   })
 
+  it('treats a missing temporary armor class as zero when removing', async () => {
+    const component = await mountAc({ tempArmorClass: undefined })
+
+    await submitAs(component, 'remove', 5)
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'ac', acType: 'remove', amount: 5 },
+      { tempArmorClass: 0, armorClass: 9 },
+    )
+  })
+
   it('predicts nothing when armor class is not defined', async () => {
     const component = await mountAc({ armorClass: undefined })
 

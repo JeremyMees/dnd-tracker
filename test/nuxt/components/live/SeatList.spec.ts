@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LiveSeatList from '~/components/live/SeatList.vue'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
 
 const { ask, kick, reassign } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -156,5 +157,29 @@ describe('LiveSeatList', () => {
     await callback(false)
 
     expect(kick).not.toHaveBeenCalled()
+  })
+
+  it('Should leave the reassign select unset when the seat has no row yet', async () => {
+    seats.value = [
+      { seat: 'seat-1', row: null, name: 'Elara', spectator: false },
+    ]
+
+    const component = await mountSuspended(LiveSeatList, { props })
+
+    expect(
+      component.findComponent({ name: 'SelectRoot' }).props('modelValue'),
+    ).toBeUndefined()
+  })
+
+  it('Should reassign a seat to the selected row', async () => {
+    seats.value = [
+      { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+    ]
+
+    const component = await mountSuspended(LiveSeatList, { props })
+
+    await selectOption(component, 'row-2')
+
+    expect(reassign).toHaveBeenCalledWith('seat-1', 'row-2')
   })
 })

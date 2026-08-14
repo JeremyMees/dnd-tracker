@@ -70,6 +70,46 @@ describe('LiveRowCard', () => {
     expect(component.find('[test-id="health-band"]').exists()).toBe(false)
   })
 
+  it('marks the hit points as destructive when at or below zero', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: { ...baseRow, hitPoints: 0, maxHitPoints: 20 },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="hp"] span').classes()).toContain(
+      'text-destructive',
+    )
+  })
+
+  it('hides the max hit points when it equals the current hit points', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: { ...baseRow, hitPoints: 20, maxHitPoints: 20 },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="hp"]').text()).not.toContain('/')
+  })
+
+  it('hides the temp hit points indicator when there are none', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: {
+          ...baseRow,
+          hitPoints: 8,
+          maxHitPoints: 20,
+          tempHitPoints: 0,
+        },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="hp"]').text()).not.toContain('+')
+  })
+
   it('shows the health band badge instead of numbers when hit points are hidden', async () => {
     const component = await mountSuspended(LiveRowCard, {
       props: {
@@ -81,6 +121,35 @@ describe('LiveRowCard', () => {
     expect(component.find('[test-id="hp"]').exists()).toBe(false)
     expect(component.get('[test-id="health-band"]').text()).toBe(
       'general.bloodied',
+    )
+    expect(component.get('[test-id="health-band"]').classes()).toContain(
+      'border-warning',
+    )
+  })
+
+  it('styles the health band badge as healthy', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: { ...baseRow, type: 'monster', healthBand: 'healthy' },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="health-band"]').classes()).toContain(
+      'border-success',
+    )
+  })
+
+  it('styles the health band badge as critical', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: { ...baseRow, type: 'monster', healthBand: 'critical' },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="health-band"]').classes()).toContain(
+      'border-destructive',
     )
   })
 
@@ -98,6 +167,17 @@ describe('LiveRowCard', () => {
     expect(ac.text()).toContain('+2')
   })
 
+  it('hides the temp armor class indicator when there is none', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: { ...baseRow, armorClass: 14, tempArmorClass: 0 },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="ac"]').text()).not.toContain('+')
+  })
+
   it('shows conditions as badges', async () => {
     const component = await mountSuspended(LiveRowCard, {
       props: {
@@ -110,6 +190,22 @@ describe('LiveRowCard', () => {
     })
 
     expect(component.get('[test-id="conditions"]').text()).toContain('Poisoned')
+  })
+
+  it('shows the condition level when defined', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: {
+          ...baseRow,
+          conditions: [
+            { name: 'Exhaustion', id: 'exhaustion', desc: '', level: 2 },
+          ],
+        },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="conditions"]').text()).toContain('(2)')
   })
 
   it('shows the concentration indicator as active when concentrating', async () => {
@@ -158,6 +254,44 @@ describe('LiveRowCard', () => {
 
     expect(grid.findAll('[test-id="save"]')).toHaveLength(3)
     expect(grid.findAll('[test-id="fail"]')).toHaveLength(3)
+  })
+
+  it('highlights the death saves grid as stabilized when all saves succeed', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: {
+          ...baseRow,
+          deathSaves: {
+            save: [true, true, true],
+            fail: [false, false, false],
+          },
+        },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="death-saves"]').classes()).toContain(
+      'bg-success/20',
+    )
+  })
+
+  it('highlights the death saves grid as dead when all saves fail', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: {
+        row: {
+          ...baseRow,
+          deathSaves: {
+            save: [false, false, false],
+            fail: [true, true, true],
+          },
+        },
+        active: false,
+      },
+    })
+
+    expect(component.get('[test-id="death-saves"]').classes()).toContain(
+      'bg-destructive/20',
+    )
   })
 
   it('hides the death saves grid for monster rows even when present', async () => {

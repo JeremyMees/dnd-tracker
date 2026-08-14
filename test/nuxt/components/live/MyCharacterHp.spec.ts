@@ -115,6 +115,28 @@ describe('LiveMyCharacterHp', () => {
     )
   })
 
+  it('treats a missing temporary hit points as zero when taking damage', async () => {
+    const component = await mountHp({ tempHitPoints: undefined })
+
+    await submitAs(component, 'damage', 5)
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'hp', hpType: 'damage', amount: 5 },
+      { tempHitPoints: 0, hitPoints: 5 },
+    )
+  })
+
+  it('does not predict a heal when max hit points is not defined, matching the server no-op', async () => {
+    const component = await mountHp({ maxHitPoints: undefined })
+
+    await submitAs(component, 'heal', 5)
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'hp', hpType: 'heal', amount: 5 },
+      {},
+    )
+  })
+
   it('predicts nothing when hit points are not defined', async () => {
     const component = await mountHp({ hitPoints: undefined })
 

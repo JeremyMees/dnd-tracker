@@ -10,9 +10,9 @@ const RowProbe = defineComponent({
 })
 
 const PanelProbe = defineComponent({
-  props: ['row', 'active'],
+  props: ['row', 'active', 'allow'],
   template:
-    '<div test-id="panel-probe" :data-active="active">{{ row.name }}</div>',
+    '<div test-id="panel-probe" :data-active="active" :data-allow="JSON.stringify(allow)">{{ row.name }}</div>',
 })
 
 const stubs = { LiveRowCard: RowProbe, LiveMyCharacterPanel: PanelProbe }
@@ -108,6 +108,32 @@ describe('LivePlayerView', () => {
     expect(panel.attributes('data-active')).toBe('false')
   })
 
+  it('falls back to allowing every action when the sheet does not specify allow', async () => {
+    setSeat({ row: sheet.rows[0]!.id })
+
+    const sheetWithoutAllow = {
+      ...sheet,
+      allow: undefined,
+    } as unknown as typeof sheet
+
+    const component = await mountSuspended(LivePlayerView, {
+      props: { sheet: sheetWithoutAllow, loading: false, error: false },
+      global: { stubs },
+    })
+
+    const allow = component
+      .get('[test-id="panel-probe"]')
+      .attributes('data-allow')
+
+    expect(JSON.parse(allow!)).toEqual({
+      hp: true,
+      ac: true,
+      deathSaves: true,
+      concentration: true,
+      conditions: true,
+    })
+  })
+
   it('marks the panel as active when the claimed row is taking its turn', async () => {
     setSeat({ row: sheet.rows[1]!.id })
 
@@ -147,6 +173,26 @@ describe('LivePlayerView', () => {
       behavior: 'smooth',
       block: 'nearest',
     })
+  })
+
+  it('does not scroll when there is no longer an active row to find', async () => {
+    localStorage.clear()
+
+    const component = await mountSuspended(LivePlayerView, {
+      props: { sheet, loading: false, error: false },
+      global: { stubs },
+    })
+
+    const rows = component.findAll('[test-id="row-probe"]')
+    const target = rows[0]!.element as HTMLElement
+    const scrollIntoView = vi.fn()
+
+    target.scrollIntoView = scrollIntoView
+
+    await component.setProps({ sheet: undefined })
+    await nextTick()
+
+    expect(scrollIntoView).not.toHaveBeenCalled()
   })
 
   it('does not scroll when the active row is already in view', async () => {

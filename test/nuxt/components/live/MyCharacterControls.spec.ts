@@ -142,6 +142,41 @@ describe('LiveMyCharacterControls', () => {
     )
   })
 
+  it('toggles a death save failure and applies the new value', async () => {
+    const component = await mountControls({
+      deathSaves: {
+        save: [false, false, false],
+        fail: [false, false, false],
+      },
+    })
+
+    await component.get('[test-id="fail"]').trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      {
+        type: 'deathSaves',
+        value: {
+          save: [false, false, false],
+          fail: [true, false, false],
+        },
+      },
+      {
+        deathSaves: {
+          save: [false, false, false],
+          fail: [true, false, false],
+        },
+      },
+    )
+  })
+
+  it('shows the concentration indicator as active when concentrating', async () => {
+    const component = await mountControls({ concentration: true })
+
+    expect(
+      component.get('[test-id="concentration"] .iconify').classes(),
+    ).toContain('i-tabler:circle-filled')
+  })
+
   it('toggles concentration', async () => {
     const component = await mountControls({ concentration: false })
 

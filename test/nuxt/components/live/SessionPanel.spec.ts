@@ -134,6 +134,45 @@ describe('LiveSessionPanel', () => {
     expect(component.find('[test-id="expires"]').exists()).toBe(true)
   })
 
+  it('Should refresh the remaining time every 30 seconds', async () => {
+    vi.useFakeTimers()
+
+    try {
+      const now = new Date('2026-01-01T00:00:00.000Z')
+
+      vi.setSystemTime(now)
+
+      user.value = { ...authUser, subscriptionType: 'pro' }
+      session.value = {
+        token: 'jwt',
+        code: 'ABC123',
+        expiresAt: new Date(now.getTime() + 61_000).toISOString(),
+      }
+      active.value = true
+
+      const t = vi.fn((key: string) => key)
+      const injected = createInitiativeSheetProvide(sheet)
+
+      await mountSuspended(LiveSessionPanel, {
+        props,
+        provide: injected.provide,
+        global: { mocks: { $t: t } },
+      })
+
+      expect(t).toHaveBeenCalledWith('components.liveSession.expiresIn', {
+        time: '1m',
+      })
+
+      await vi.advanceTimersByTimeAsync(30_000)
+
+      expect(t).toHaveBeenCalledWith('components.liveSession.expiresIn', {
+        time: '0m',
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('Should default to the session tab, hiding the options and players tabs', async () => {
     user.value = { ...authUser, subscriptionType: 'pro' }
     session.value = {
@@ -206,6 +245,19 @@ describe('LiveSessionPanel', () => {
       description: 'actions.copyClipboard',
       variant: 'info',
     })
+  })
+
+  it('Should not copy or toast when there is no session link yet', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = undefined
+    active.value = true
+
+    const component = await mountPanel().mount()
+
+    await component.find('[test-id="copy-link"]').trigger('click')
+
+    expect(mockClipboard).not.toHaveBeenCalled()
+    expect(toast).not.toHaveBeenCalled()
   })
 
   it('Should ask for confirmation and stop the session when ending it', async () => {
@@ -356,6 +408,82 @@ describe('LiveSessionPanel', () => {
     expect(
       component.find('[test-id="allow-conditions"]').attributes('data-state'),
     ).toBe('unchecked')
+  })
+
+  it('Should toggle the remaining visibility and allow switches', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const { injected, mount } = mountPanel()
+    const component = await mount()
+
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
+
+    await component.find('[test-id="hide-monster-health"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { hideMonsterHealth: true } },
+    })
+
+    await component.find('[test-id="hide-monster-ac"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { hideMonsterAc: true } },
+    })
+
+    await component.find('[test-id="allow-hp"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { allow: { hp: false } } },
+    })
+
+    await component.find('[test-id="allow-ac"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { allow: { ac: false } } },
+    })
+
+    await component.find('[test-id="allow-death-saves"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { allow: { deathSaves: false } } },
+    })
+
+    await component.find('[test-id="allow-concentration"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: {
+        ...sheet.settings,
+        live: { allow: { concentration: false } },
+      },
+    })
+  })
+
+  it('Should not update the settings when there is no sheet to update', async () => {
+    user.value = { ...authUser, subscriptionType: 'pro' }
+    session.value = {
+      token: 'jwt',
+      code: 'ABC123',
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    }
+    active.value = true
+
+    const injected = createInitiativeSheetProvide(null)
+    const component = await mountSuspended(LiveSessionPanel, {
+      props,
+      provide: injected.provide,
+    })
+
+    await component.find('[test-id="tab-options"]').trigger('mousedown')
+    await component.find('[test-id="hide-monster-names"]').trigger('click')
+    await component.find('[test-id="allow-conditions"]').trigger('click')
+
+    expect(injected.update).not.toHaveBeenCalled()
   })
 
   it('Should toggle an allow setting without wiping other live settings', async () => {
