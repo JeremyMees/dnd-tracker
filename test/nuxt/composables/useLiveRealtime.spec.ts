@@ -338,6 +338,63 @@ describe('useLiveRealtime', () => {
     )
   })
 
+  it('leaves rows untouched that are not targeted by the action broadcast', async () => {
+    const current = {
+      sheet: {
+        id: 1,
+        title: 'Ambush',
+        round: 1,
+        activeIndex: 0,
+        rows: [
+          {
+            id: 'row-1',
+            index: 0,
+            initiative: 10,
+            name: 'Elara',
+            type: 'player',
+            conditions: [],
+            hitPoints: 20,
+          },
+          {
+            id: 'row-2',
+            index: 1,
+            initiative: 8,
+            name: 'Bram',
+            type: 'player',
+            conditions: [],
+            hitPoints: 12,
+          },
+        ],
+      },
+      session: { code: 'ABC234', expiresAt: 'later', version: 3 },
+    }
+
+    getQueryData.mockReturnValue(current)
+
+    await mountProbe()
+
+    emitBroadcast('action', {
+      version: 4,
+      row: 'row-2',
+      patch: { hitPoints: 5 },
+    })
+
+    expect(setQueryData).toHaveBeenCalledWith(
+      ['useLiveState', 'session-token', 'seat-1'],
+      {
+        ...current,
+        session: { ...current.session, version: 4 },
+        sheet: {
+          ...current.sheet,
+          rows: [
+            current.sheet.rows[0],
+            { ...current.sheet.rows[1], hitPoints: 5 },
+          ],
+        },
+      },
+    )
+  })
+
   it('invalidates the query on a version gap instead of applying a stale patch', async () => {
     getQueryData.mockReturnValue({
       sheet: { id: 1, title: 't', round: 1, activeIndex: 0, rows: [] },
@@ -467,6 +524,13 @@ describe('useLiveRealtime', () => {
     })
 
     expect(setQueryData).toHaveBeenCalled()
+
+    const updater = setQueryData.mock.calls[0]![1] as (old: unknown) => unknown
+
+    expect(updater(undefined)).toEqual({
+      sheet: { id: 1, title: 'New', round: 1, activeIndex: 0, rows: [] },
+      session: { code: '', expiresAt: '', version: 1, kicked: false },
+    })
   })
 
   it('ignores a stale sync broadcast', async () => {
@@ -509,6 +573,24 @@ describe('useLiveRealtime', () => {
     expect(invalidateQueries).toHaveBeenCalledWith({
       queryKey: ['useLiveState', 'session-token', 'seat-1'],
     })
+  })
+
+  it('does not refetch when going offline', async () => {
+    await mountProbe()
+
+    isOnline.value = false
+    await flushPromises()
+
+    expect(invalidateQueries).not.toHaveBeenCalled()
+  })
+
+  it('does not refetch when the tab is hidden', async () => {
+    await mountProbe()
+
+    visibility.value = 'hidden'
+    await flushPromises()
+
+    expect(invalidateQueries).not.toHaveBeenCalled()
   })
 
   it('unsubscribes from the channel on unmount', async () => {

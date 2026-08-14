@@ -1,3 +1,4 @@
+import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCoolDown } from '~/composables/useCoolDown'
 
@@ -52,5 +53,42 @@ describe('useCoolDown', () => {
 
     expect(coolDown.isInCoolDown(1)).toBeTruthy()
     expect(coolDown.isInCoolDown(2)).toBeFalsy()
+  })
+
+  it('should return 0 as the remaining time for an unknown id', () => {
+    expect(coolDown.getRemainingTime(999)).toBe(0)
+  })
+
+  it('should clear all cool downs and stop their intervals', () => {
+    coolDown.startCoolDown(1, 10)
+    coolDown.startCoolDown(2, 10)
+
+    coolDown.clearAllCoolDowns()
+
+    expect(coolDown.coolDowns.size).toBe(0)
+
+    vi.advanceTimersByTime(5000)
+
+    expect(coolDown.coolDowns.size).toBe(0)
+  })
+
+  it('should clear all cool downs automatically when the owning component unmounts', async () => {
+    const Probe = defineComponent({
+      setup() {
+        return useCoolDown()
+      },
+      template: '<div />',
+    })
+
+    const component = await mountSuspended(Probe)
+    const vm = component.vm as unknown as ReturnType<typeof useCoolDown>
+
+    vm.startCoolDown(1, 10)
+
+    expect(vm.coolDowns.size).toBe(1)
+
+    component.unmount()
+
+    expect(vm.coolDowns.size).toBe(0)
   })
 })

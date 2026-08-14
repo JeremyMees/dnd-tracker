@@ -6,6 +6,7 @@ import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
 const ignoredLogs = [
   /^<Suspense>/,
   /Cannot destructure property 'canonicalQueryWhitelist'.*seo-utils/,
+  /Failed to load messages for locale/,
 ]
 
 export default defineConfig({

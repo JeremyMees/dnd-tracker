@@ -182,6 +182,17 @@ describe('useLiveMyAction', () => {
     )
   })
 
+  it('does nothing without a claimed seat', async () => {
+    localStorage.clear()
+
+    const vm = await mountProbe()
+
+    await vm.apply({ type: 'concentration', value: true }, {})
+
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(setQueryData).not.toHaveBeenCalled()
+  })
+
   it('does nothing without a claimed row', async () => {
     rowId.value = undefined
 
@@ -190,6 +201,42 @@ describe('useLiveMyAction', () => {
     await vm.apply({ type: 'concentration', value: true }, {})
 
     expect(fetchMock).not.toHaveBeenCalled()
+    expect(setQueryData).not.toHaveBeenCalled()
+  })
+
+  it('skips the optimistic patch when there is no cached state yet', async () => {
+    getQueryData.mockReturnValue(undefined)
+    fetchMock.mockResolvedValue({ row: cachedState.sheet.rows[0] })
+
+    const vm = await mountProbe()
+
+    await vm.apply({ type: 'hp', hpType: 'heal', amount: 5 }, { hitPoints: 15 })
+
+    expect(setQueryData).not.toHaveBeenCalled()
+  })
+
+  it('does not roll back the cache on failure when there was nothing cached to begin with', async () => {
+    getQueryData.mockReturnValue(undefined)
+    fetchMock.mockRejectedValue(new Error('boom'))
+
+    const vm = await mountProbe()
+
+    await vm.apply({ type: 'hp', hpType: 'heal', amount: 5 }, { hitPoints: 15 })
+
+    expect(setQueryData).not.toHaveBeenCalled()
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({ variant: 'destructive' }),
+    )
+  })
+
+  it('does not reconcile the cache on success when there is nothing cached afterwards', async () => {
+    getQueryData.mockReturnValue(undefined)
+    fetchMock.mockResolvedValue({ row: cachedState.sheet.rows[0] })
+
+    const vm = await mountProbe()
+
+    await vm.apply({ type: 'hp', hpType: 'heal', amount: 5 }, { hitPoints: 15 })
+
     expect(setQueryData).not.toHaveBeenCalled()
   })
 

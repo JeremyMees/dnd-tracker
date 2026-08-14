@@ -1,6 +1,9 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useAuthentication } from '~/composables/useAuthentication'
+import {
+  useAuthenticatedUser,
+  useAuthentication,
+} from '~/composables/useAuthentication'
 
 const mockSignUp = vi.fn()
 const mockSignInWithPassword = vi.fn()
@@ -33,12 +36,15 @@ mockNuxtImport('useSupabaseClient', () => () => ({
   from: mockSupabaseFrom,
 }))
 
-mockNuxtImport(
-  'useState',
-  () =>
-    <T>(_key: string, init?: () => T) =>
-      init ? ref(init()) : ref(null as T),
-)
+const stateMap = new Map<string, Ref<unknown>>()
+
+mockNuxtImport('useState', () => {
+  return <T>(key: string, init?: () => T) => {
+    if (!stateMap.has(key)) stateMap.set(key, ref(init ? init() : null))
+
+    return stateMap.get(key) as Ref<T>
+  }
+})
 
 mockNuxtImport(
   'createError',
@@ -67,9 +73,11 @@ describe('useAuthentication', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     clearNuxtState()
+    stateMap.clear()
 
     mockSupabaseSelect.mockReturnValue({ eq: mockSupabaseEq })
     mockSupabaseEq.mockReturnValue({ single: mockSupabaseSingle })
+    mockGetUser.mockReturnValue({ data: { user: { id: 'test-user-id' } } })
 
     auth = useAuthentication()
 
@@ -119,6 +127,38 @@ describe('useAuthentication', () => {
 
       await expect(auth.register(userData)).rejects.toThrow()
       expect(mockSignUp).toHaveBeenCalled()
+    })
+
+    it('should throw a friendly error when the profile already exists', async () => {
+      mockSignUp.mockResolvedValue({
+        data: { user: { id: 'new-user-id' } },
+        error: null,
+      })
+
+      mockSupabaseFrom().insert.mockResolvedValue({
+        error: { message: 'duplicate key value violates unique constraint' },
+      })
+
+      const userData = { email, password, ...user }
+
+      await expect(auth.register(userData)).rejects.toThrow(
+        'Email already in use',
+      )
+    })
+
+    it('should throw the original error for an unrelated profile insert failure', async () => {
+      mockSignUp.mockResolvedValue({
+        data: { user: { id: 'new-user-id' } },
+        error: null,
+      })
+
+      mockSupabaseFrom().insert.mockResolvedValue({
+        error: { message: 'connection reset' },
+      })
+
+      const userData = { email, password, ...user }
+
+      await expect(auth.register(userData)).rejects.toThrow('connection reset')
     })
   })
 
@@ -197,6 +237,45 @@ describe('useAuthentication', () => {
 
       expect(mockSignOut).toHaveBeenCalled()
     })
+
+    it('should do nothing when there is no authenticated user', async () => {
+      mockGetUser.mockReturnValue({ data: { user: null } })
+
+      await auth.fetch()
+
+      expect(mockSupabaseFrom).not.toHaveBeenCalled()
+      expect(auth.user.value).toBeNull()
+    })
+
+    it('should not refetch a profile that was cached recently', async () => {
+      mockSupabaseSingle.mockResolvedValue({
+        data: { id: 'test-user-id', ...user },
+        error: null,
+      })
+
+      await auth.fetch()
+
+      expect(mockSupabaseSingle).toHaveBeenCalledTimes(1)
+
+      await auth.fetch()
+
+      expect(mockSupabaseSingle).toHaveBeenCalledTimes(1)
+    })
+
+    it('should refetch a cached profile when forceRefresh is set', async () => {
+      mockSupabaseSingle.mockResolvedValue({
+        data: { id: 'test-user-id', ...user },
+        error: null,
+      })
+
+      await auth.fetch()
+
+      expect(mockSupabaseSingle).toHaveBeenCalledTimes(1)
+
+      await auth.fetch(true)
+
+      expect(mockSupabaseSingle).toHaveBeenCalledTimes(2)
+    })
   })
 
   describe('onAuthStateChange', () => {
@@ -224,6 +303,25 @@ describe('useAuthentication', () => {
       await new Promise(resolve => setTimeout(resolve, 0))
 
       expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
+    })
+  })
+
+  describe('useAuthenticatedUser', () => {
+    it('should throw when there is no authenticated user', () => {
+      expect(() => useAuthenticatedUser().value).toThrow(
+        'useAuthenticatedUser() can only be used in protected pages',
+      )
+    })
+
+    it('should return the authenticated user', async () => {
+      mockSupabaseSingle.mockResolvedValue({
+        data: { id: 'test-user-id', ...user },
+        error: null,
+      })
+
+      await auth.fetch()
+
+      expect(useAuthenticatedUser().value).toEqual(auth.user.value)
     })
   })
 })

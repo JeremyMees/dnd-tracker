@@ -143,7 +143,7 @@ describe('useLiveSeats', () => {
   })
 
   it('Should update a row when a reassigned broadcast arrives', async () => {
-    session.value = { uuid: 'session-uuid', seats: [seatA] }
+    session.value = { uuid: 'session-uuid', seats: [seatA, seatB] }
 
     const { vm } = await mountProbe()
 
@@ -151,7 +151,7 @@ describe('useLiveSeats', () => {
       payload: { type: 'reassigned', seat: 'seat-1', row: 'row-2' },
     })
 
-    expect(vm.seats).toEqual([{ ...seatA, row: 'row-2' }])
+    expect(vm.seats).toEqual([{ ...seatA, row: 'row-2' }, seatB])
   })
 
   it('Should compute the connected set from the presence state on sync', async () => {
@@ -235,6 +235,26 @@ describe('useLiveSeats', () => {
       variant: 'destructive',
     })
     expect(vm.seats).toEqual([seatA])
+  })
+
+  it('Should toast a generic error when kicking fails with an unrecognized slug', async () => {
+    session.value = { uuid: 'session-uuid', seats: [seatA] }
+    fetchMock.mockRejectedValue(
+      Object.assign(
+        new Error('[POST] "/api/live/kick": 500 Internal Server Error'),
+        { data: { statusCode: 500, statusMessage: 'something-unexpected' } },
+      ),
+    )
+
+    const { vm } = await mountProbe()
+
+    await vm.kick('seat-1')
+
+    expect(toast).toHaveBeenCalledWith({
+      title: 'general.error.title',
+      description: 'general.error.text',
+      variant: 'destructive',
+    })
   })
 
   it('Should reassign a seat to a new row locally', async () => {

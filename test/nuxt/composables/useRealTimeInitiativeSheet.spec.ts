@@ -169,6 +169,20 @@ describe('useRealTimeInitiativeSheet', () => {
     })
   })
 
+  it('Should merge a realtime change without a campaign to keep', async () => {
+    await mountProbe()
+
+    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+
+    const merge = setQueryData.mock.calls[0]![1]
+
+    expect(merge({ ...sheet, campaign: undefined })).toEqual({
+      ...sheet,
+      title: 'Renamed',
+      campaign: undefined,
+    })
+  })
+
   it('Should not merge a realtime change into a missing cache entry', async () => {
     await mountProbe()
 
