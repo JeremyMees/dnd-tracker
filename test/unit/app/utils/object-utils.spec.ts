@@ -189,5 +189,13 @@ describe('object-utils', () => {
 
       expect(flattenObject(obj)).toEqual({})
     })
+
+    it('should ignore inherited properties from the prototype chain', () => {
+      const proto = { inherited: 'nope' }
+      const obj = Object.create(proto)
+      obj.own = 'yes'
+
+      expect(flattenObject(obj)).toEqual({ own: 'yes' })
+    })
   })
 })

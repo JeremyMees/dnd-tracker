@@ -1,4 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { createApp } from 'vue'
+import type { InjectionKey } from 'vue'
 import {
   sortByNumber,
   sortByString,
@@ -13,6 +15,9 @@ import {
   animateTableUpdate,
   kebabToCamel,
   timeRemaining,
+  scrollToId,
+  formatDate,
+  validateInject,
 } from '~/utils/ui-helpers'
 
 beforeEach(() => {
@@ -229,6 +234,55 @@ describe('ui-helpers', () => {
 
     it('returns an empty string unchanged', () => {
       expect(kebabToCamel('')).toBe('')
+    })
+  })
+
+  describe('scrollToId', () => {
+    it('scrolls the matching element into view', () => {
+      const scrollIntoView = vi.fn()
+      document.getElementById = vi.fn().mockReturnValue({ scrollIntoView })
+
+      scrollToId('some-id')
+
+      expect(document.getElementById).toHaveBeenCalledWith('some-id')
+      expect(scrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'end',
+      })
+    })
+
+    it('does nothing when no element matches the id', () => {
+      document.getElementById = vi.fn().mockReturnValue(null)
+
+      expect(() => scrollToId('missing')).not.toThrow()
+    })
+  })
+
+  describe('formatDate', () => {
+    it('formats a date using the current locale', () => {
+      expect(formatDate('2024-03-05')).toBe('03/05/24')
+      expect(formatDate(new Date('2024-12-25'))).toBe('12/25/24')
+    })
+  })
+
+  describe('validateInject', () => {
+    it('throws when the key was never provided', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const key = Symbol('missing') as InjectionKey<string>
+
+      expect(() => validateInject(key)).toThrow()
+
+      warn.mockRestore()
+    })
+
+    it('returns the provided value for the key', () => {
+      const key = Symbol('provided') as InjectionKey<string>
+      const app = createApp({})
+      app.provide(key, 'the value')
+
+      const result = app.runWithContext(() => validateInject(key))
+
+      expect(result).toBe('the value')
     })
   })
 
