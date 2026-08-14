@@ -115,6 +115,18 @@ describe('ConsentBanner', async () => {
     expect(mockUseConsent().savePreferences).toHaveBeenCalled()
   })
 
+  it('Should call toggleConsent when a non-necessary switch is toggled', async () => {
+    const component = await mountSuspended(ConsentBanner)
+
+    const customizeButton = component.find('[test-id="customize"]')
+    await customizeButton?.trigger('click')
+
+    const analyticsSwitch = component.find('[id="analytics"]')
+    await analyticsSwitch.trigger('click')
+
+    expect(mockUseConsent().toggleConsent).toHaveBeenCalledWith('analytics')
+  })
+
   it('Should disable necessary consent toggle', async () => {
     const component = await mountSuspended(ConsentBanner)
 

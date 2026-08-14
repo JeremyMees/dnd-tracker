@@ -54,7 +54,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run tests with coverage
-        run: npm run test -- --shard=${{ matrix.shard }}/4 --coverage.reporter=json --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
+        run: npm run test:coverage -- --shard=${{ matrix.shard }}/4 --coverage.reporter=json --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
       - name: Rename coverage report for this shard
         run: mv coverage/coverage-final.json coverage/coverage-final-${{ matrix.shard }}.json
       - name: Upload coverage artifact

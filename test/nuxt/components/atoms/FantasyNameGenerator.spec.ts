@@ -59,6 +59,50 @@ describe('FantasyNameGenerator', async () => {
     expect(mockClipboard).toHaveBeenCalled()
   })
 
+  it('Should regenerate names when the race select changes', async () => {
+    vi.spyOn(dndHelpers, 'randomName')
+
+    const component = await mountSuspended(FantasyNameGenerator, { props })
+    const callsBefore = vi.mocked(dndHelpers.randomName).mock.calls.length
+
+    const raceSelect = component.findAllComponents({ name: 'SelectRoot' })[0]!
+    await raceSelect.vm.$emit('update:modelValue', 'elf')
+    await nextTick()
+
+    expect(vi.mocked(dndHelpers.randomName).mock.calls.length).toBeGreaterThan(
+      callsBefore,
+    )
+    expect(vi.mocked(dndHelpers.randomName)).toHaveBeenCalledWith(
+      'elf',
+      undefined,
+    )
+
+    vi.restoreAllMocks()
+  })
+
+  it('Should regenerate names when the gender select changes', async () => {
+    vi.spyOn(dndHelpers, 'randomName')
+
+    const component = await mountSuspended(FantasyNameGenerator, { props })
+    const callsBefore = vi.mocked(dndHelpers.randomName).mock.calls.length
+
+    const genderSelect = component.findAllComponents({
+      name: 'SelectRoot',
+    })[1]!
+    await genderSelect.vm.$emit('update:modelValue', 'female')
+    await nextTick()
+
+    expect(vi.mocked(dndHelpers.randomName).mock.calls.length).toBeGreaterThan(
+      callsBefore,
+    )
+    expect(vi.mocked(dndHelpers.randomName)).toHaveBeenCalledWith(
+      undefined,
+      'female',
+    )
+
+    vi.restoreAllMocks()
+  })
+
   it('Should show everything when not in compact mode', async () => {
     const component = await mountSuspended(FantasyNameGenerator, { props })
 

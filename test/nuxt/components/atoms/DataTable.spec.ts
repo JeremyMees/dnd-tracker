@@ -1,4 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { flushPromises } from '@vue/test-utils'
 import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { describe, expect, it, vi } from 'vitest'
@@ -202,6 +203,147 @@ describe('DataTable', () => {
 
     paginationText = component.find('[test-id="1"]')
     expect(paginationText.exists()).toBeTruthy()
+  })
+
+  it('Should sort by column and emit invalidate when a sortable header is clicked', async () => {
+    const component = await mountSuspended(TypedDataTable, { props })
+
+    const headers = component.findAll('th')
+    const nameHeader = headers[3]!
+
+    await nameHeader.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('invalidate')).toBeTruthy()
+    expect(nameHeader.find('.iconify').exists()).toBeTruthy()
+
+    await nameHeader.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('invalidate')!.length).toBe(2)
+  })
+
+  it('Should emit invalidate when the search input triggers a global filter change', async () => {
+    const component = await mountSuspended(TypedDataTable, { props })
+
+    await component.find('input[type="search"]').setValue('John')
+    await nextTick()
+
+    expect(component.emitted('invalidate')).toBeTruthy()
+  })
+
+  it('Should default row permissions to true when no permission prop is given', async () => {
+    const component = await mountSuspended(TypedDataTable, {
+      props: { ...props, permission: undefined },
+    })
+
+    const checkboxes = component.findAll('button[role="checkbox"]')
+    expect(checkboxes.length).toBe(mockData.length)
+  })
+
+  it('Should disable row selection while permissions are still being fetched', async () => {
+    const pendingPermissionFn = vi.fn(() => new Promise<boolean>(() => {}))
+
+    const component = await mountSuspended(TypedDataTable, {
+      props: { ...props, permission: pendingPermissionFn },
+    })
+
+    const checkboxes = component.findAll('button[role="checkbox"]')
+    expect(checkboxes.length).toBe(0)
+  })
+
+  it('Should discard a stale permission fetch that resolves after a newer one', async () => {
+    let resolveStale: (value: boolean) => void = () => {}
+    const stalePromise = new Promise<boolean>(resolve => {
+      resolveStale = resolve
+    })
+
+    const permissionFn = vi
+      .fn()
+      .mockImplementationOnce(() => stalePromise)
+      .mockImplementation(() => Promise.resolve(true))
+
+    const component = await mountSuspended(TypedDataTable, {
+      props: { ...props, data: [mockData[0]!], permission: permissionFn },
+    })
+
+    await component.setProps({ data: [mockData[0]!, mockData[1]!] })
+    await flushPromises()
+
+    resolveStale(false)
+    await flushPromises()
+
+    const checkboxes = component.findAll('button[role="checkbox"]')
+    expect(checkboxes.length).toBe(2)
+  })
+
+  it('Should default page count to 0 when options are not provided', async () => {
+    const component = await mountSuspended(TypedDataTable, {
+      props: { ...props, options: undefined },
+    })
+
+    expect(component.text()).toContain('components.pagination.page')
+  })
+
+  it('Should show a pinned column with sticky styling', async () => {
+    const component = await mountSuspended(TypedDataTable, {
+      props: {
+        ...props,
+        options: {
+          ...props.options,
+          initialState: {
+            columnPinning: { left: ['id'] },
+          },
+        },
+      },
+    })
+
+    const pinnedHeader = component.find('th[data-pinned="left"]')
+    expect(pinnedHeader.exists()).toBeTruthy()
+    expect(pinnedHeader.classes()).toContain('left-0')
+
+    const pinnedCell = component.find('td[data-pinned="left"]')
+    expect(pinnedCell.exists()).toBeTruthy()
+    expect(pinnedCell.classes()).toContain('left-0')
+  })
+
+  it('Should render placeholder header cells for ungrouped columns alongside a grouped column', async () => {
+    const groupedColumns: ColumnDef<TestData>[] = [
+      columnHelper.accessor('id', {
+        header: 'ID',
+        cell: ({ row }) => row.getValue('id'),
+      }) as ColumnDef<TestData>,
+      columnHelper.group({
+        id: 'group',
+        header: 'Info',
+        columns: [
+          columnHelper.accessor('name', {
+            header: 'Name',
+            cell: ({ row }) => row.getValue('name'),
+          }),
+          columnHelper.accessor('age', {
+            header: 'Age',
+            cell: ({ row }) => row.getValue('age'),
+          }),
+        ],
+      }) as unknown as ColumnDef<TestData>,
+    ]
+
+    const component = await mountSuspended(TypedDataTable, {
+      props: { ...props, columns: groupedColumns },
+    })
+
+    const headerRows = component.findAll('thead tr')
+    expect(headerRows.length).toBe(2)
+  })
+
+  it('Should show empty state with no message when emptyMessage is not provided', async () => {
+    const component = await mountSuspended(TypedDataTable, {
+      props: { ...props, data: [], emptyMessage: undefined },
+    })
+
+    const empty = component.find('[test-id="empty"]')
+    expect(empty.text()).toBe('')
   })
 
   it('Should handle custom permissions correctly', async () => {

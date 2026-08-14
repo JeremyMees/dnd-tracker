@@ -121,6 +121,17 @@ describe('DiceRoller', () => {
       ).toBeDefined()
     })
 
+    it('Should keep a dice count at zero when the decrement handler runs while already at zero', async () => {
+      const component = await mountSuspended(DiceRoller, { props })
+      const vm = component.vm as unknown as DiceRollerVM
+      const decrementButton = component.find('[test-id="decrement-d6"]')
+      decrementButton.element.removeAttribute('disabled')
+
+      await decrementButton.trigger('click')
+
+      expect(vm.toRoll.d6).toBe(0)
+    })
+
     it('Should disable the roll button while every dice count is zero and enable it otherwise', async () => {
       const component = await mountSuspended(DiceRoller, { props })
 

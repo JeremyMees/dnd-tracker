@@ -1,9 +1,19 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi, afterEach } from 'vitest'
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import LimitCta from '~/components/atoms/LimitCta.vue'
 import { ONE_SECOND, ONE_HOUR, ONE_DAY } from '~~/constants/time'
 
+const { mockUseCookie } = vi.hoisted(() => ({
+  mockUseCookie: vi.fn(),
+}))
+
+mockNuxtImport('useCookie', () => mockUseCookie)
+
 describe('LimitCta', async () => {
+  beforeEach(() => {
+    mockUseCookie.mockReturnValue({ value: undefined })
+  })
+
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
@@ -12,7 +22,9 @@ describe('LimitCta', async () => {
   it('Should match snapshot', async () => {
     const component = await mountSuspended(LimitCta)
 
-    vi.useFakeTimers()
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
     component.vm.show()
     await nextTick()
 
@@ -28,44 +40,60 @@ describe('LimitCta', async () => {
     expect(component.find('[test-id="cta"]').exists()).toBeTruthy()
   })
 
-  it('Should show component if cookie is expired', async () => {
+  it('Should show component when the auto-check on mount finds an expired cookie', async () => {
     const now = Date.now()
     const dayAgo = now - ONE_DAY - ONE_SECOND
-    const mockUseCookie = vi.fn().mockReturnValue({ value: dayAgo })
-
-    vi.stubGlobal('useCookie', mockUseCookie)
+    mockUseCookie.mockReturnValue({ value: dayAgo })
     vi.spyOn(Date, 'now').mockReturnValue(now)
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
 
     const component = await mountSuspended(LimitCta)
 
-    vi.useFakeTimers()
-    vi.advanceTimersByTime(100)
+    vi.advanceTimersByTime(50)
     await nextTick()
 
-    expect(component.find('[test-id="cta"]')).toBeTruthy()
+    expect(component.find('[test-id="cta"]').exists()).toBeTruthy()
   })
 
-  it('Should not show component if cookie is not expired', async () => {
+  it('Should not show component when the auto-check on mount finds a fresh cookie', async () => {
     const now = Date.now()
     const recentTime = now - ONE_HOUR
-    const mockUseCookie = vi.fn().mockReturnValue({ value: recentTime })
-
-    vi.stubGlobal('useCookie', mockUseCookie)
+    mockUseCookie.mockReturnValue({ value: recentTime })
     vi.spyOn(Date, 'now').mockReturnValue(now)
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
 
     const component = await mountSuspended(LimitCta)
 
-    vi.useFakeTimers()
-    vi.advanceTimersByTime(100)
+    vi.advanceTimersByTime(50)
     await nextTick()
 
     expect(component.find('[test-id="cta"]').exists()).toBeFalsy()
   })
 
+  it('Should show component when the auto-check on mount finds no cookie value', async () => {
+    mockUseCookie.mockReturnValue({ value: undefined })
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
+
+    const component = await mountSuspended(LimitCta)
+
+    vi.advanceTimersByTime(50)
+    await nextTick()
+
+    expect(component.find('[test-id="cta"]').exists()).toBeTruthy()
+  })
+
   it('Should hide component when close button is clicked', async () => {
     const component = await mountSuspended(LimitCta)
 
-    vi.useFakeTimers()
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
     component.vm.show()
     await nextTick()
 
@@ -80,7 +108,9 @@ describe('LimitCta', async () => {
   it('Should auto-close after 10 seconds', async () => {
     const component = await mountSuspended(LimitCta)
 
-    vi.useFakeTimers()
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
     component.vm.show()
     await nextTick()
 
@@ -95,7 +125,9 @@ describe('LimitCta', async () => {
   it('Should reset auto-close timer when show is called again', async () => {
     const component = await mountSuspended(LimitCta)
 
-    vi.useFakeTimers()
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+    })
     vi.spyOn(global, 'clearTimeout')
     component.vm.show()
     await nextTick()

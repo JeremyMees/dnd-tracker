@@ -16,7 +16,8 @@
     "typecheck": "nuxt typecheck",
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > shared/types/database-generated.ts",
     "prepare": "husky",
-    "test": "vitest --coverage",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
     "test:coverage:gate": "nyc report --temp-dir=coverage-raw --report-dir=coverage --reporter=text --reporter=lcov && nyc check-coverage --temp-dir=coverage-raw --per-file --lines 80 --functions 80 --branches 75 --statements 80",
     "deps": "npx taze -w"
   },

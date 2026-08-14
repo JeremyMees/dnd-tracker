@@ -169,6 +169,41 @@ describe('AvatarPicker', async () => {
     expect(component.emitted('update:modelValue')).toBeTruthy()
   })
 
+  it('Should sync avatarCreator when the avatar model is updated externally', async () => {
+    const component = await mountSuspended(AvatarPicker, { props })
+    const vm = component.vm as unknown as AvatarPickerVM
+
+    const newAvatar: Avatar = {
+      url: 'external-url',
+      extra: { clothingColor: 'ff0000' },
+    }
+    await component.setProps({ modelValue: newAvatar })
+    await nextTick()
+
+    expect(vm.avatarCreator.avatar.value?.url).toBe('external-url')
+  })
+
+  it('Should fall back to a JSON comparison for isChanged when extra options are missing', async () => {
+    const noExtraAvatar = {
+      url: 'test-url',
+      extra: undefined,
+    } as unknown as Avatar
+
+    const component = await mountSuspended(AvatarPicker, {
+      props: { ...props, profile: true, modelValue: noExtraAvatar },
+    })
+    const vm = component.vm as unknown as AvatarPickerVM
+
+    expect(vm.isChanged).toBeFalsy()
+
+    await component
+      .get('button[aria-label="components.avatarPicker.options"]')
+      .trigger('click')
+    await component.get('[test-id="creator"] [test-id="next"]').trigger('click')
+
+    expect(vm.isChanged).toBeTruthy()
+  })
+
   describe('profile save/reset flow', () => {
     it('Should show the save and reset buttons once a style is changed', async () => {
       const component = await mountSuspended(AvatarPicker, {
