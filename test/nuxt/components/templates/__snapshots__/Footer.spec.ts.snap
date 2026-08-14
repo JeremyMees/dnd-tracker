@@ -1,0 +1,29 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Footer > Should match snapshot 1`] = `
+"<div class="bg-muted/50 backdrop-blur-lg border-4 border-muted m-4 rounded-lg pt-10 pb-2">
+  <div class="container-max px-4 flex flex-col gap-20">
+    <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20"><a href="/" class="mt-2" test-id="footer-home" aria-label="components.navbar.home"><img width="201" height="62" data-nuxt-img="" srcset="https://ik.imagekit.io/c2es1qasw/text-logo.svg?tr=w-201,h-62,q-90 1x, https://ik.imagekit.io/c2es1qasw/text-logo.svg?tr=w-402,h-124,q-90 2x" alt="DnD Tracker logo" src="https://ik.imagekit.io/c2es1qasw/text-logo.svg?tr=w-201,h-62,q-90"></a>
+      <div class="mt-4 lg:mt-0">
+        <p class="mb-4 head-3">components.navbar.contact</p>
+        <div class="flex flex-col gap-4"><a href="mailto:jeremy@dnd-tracker.com" class="flex items-center" test-id="footer-email"><span class="iconify i-tabler:mail min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Email </a><a href="/contact" class="flex items-center" test-id="footer-contact"><span class="iconify i-tabler:forms min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Form </a></div>
+      </div>
+      <div>
+        <p class="mb-4 head-3">components.navbar.socials</p>
+        <div class="flex flex-col gap-4"><a href="https://www.instagram.com/dnd.tracker/" target="_blank" class="flex items-center" test-id="footer-instagram"><span class="iconify i-tabler:brand-instagram min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Instagram </a><a href="https://bsky.app/profile/lilmees.bsky.social" target="_blank" class="flex items-center" test-id="footer-bluesky"><span class="iconify i-tabler:brand-bluesky min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Bluesky </a><a href="https://ko-fi.com/jeremymees" target="_blank" class="flex items-center" test-id="footer-kofi"><span class="iconify i-tabler:coffee min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Kofi </a></div>
+      </div>
+      <div>
+        <p class="mb-4 head-3">components.navbar.updates</p>
+        <div class="flex flex-col gap-4"><a href="/updates/feature-request" class="flex items-center" test-id="footer-feature-request"><span class="iconify i-tabler:git-pull-request min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.featureRequest</a><a href="/updates/changelog" class="flex items-center" test-id="footer-changelog"><span class="iconify i-tabler:bolt min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.changelog</a><button class="flex items-center"><span class="iconify i-tabler:bug min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.bug</button></div>
+      </div>
+      <div>
+        <p class="mb-4 head-3">components.navbar.policies</p>
+        <div class="flex flex-col gap-4"><a href="/policies/cookie" class="flex items-center" test-id="footer-cookie"><span class="iconify i-tabler:cookie min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.cookie</a><a href="/policies/privacy" class="flex items-center" test-id="footer-privacy"><span class="iconify i-tabler:spy min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.privacy</a><a href="/policies/legal" class="flex items-center" test-id="footer-legal"><span class="iconify i-tabler:gavel min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.legal</a></div>
+      </div>
+    </div>
+    <div class="flex flex-wrap justify-between gap-x-20 gap-y-4"><a href="https://www.instagram.com/mount_lazarus/" target="_blank" class="text-muted-foreground text-sm" test-id="footer-illustration">components.navbar.illustrations Mount Lazarus </a><a href="/updates/changelog" class="text-muted-foreground text-sm" test-id="footer-version"> V3.1.2</a>
+      <p class="text-tertiary text-sm" test-id="footer-copyright"> ©2026 dnd-tracker </p>
+    </div>
+  </div>
+</div>"
+`;

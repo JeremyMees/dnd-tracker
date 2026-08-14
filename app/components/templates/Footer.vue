@@ -9,6 +9,7 @@
         <NuxtLinkLocale
           to="/"
           class="mt-2"
+          test-id="footer-home"
           :aria-label="$t('components.navbar.home')"
         >
           <NuxtImg
@@ -26,6 +27,7 @@
             <NuxtLink
               to="mailto:jeremy@dnd-tracker.com"
               class="flex items-center"
+              test-id="footer-email"
             >
               <Icon
                 name="tabler:mail"
@@ -34,7 +36,11 @@
               />
               Email
             </NuxtLink>
-            <NuxtLinkLocale to="/contact" class="flex items-center">
+            <NuxtLinkLocale
+              to="/contact"
+              class="flex items-center"
+              test-id="footer-contact"
+            >
               <Icon
                 name="tabler:forms"
                 class="min-w-6 min-h-6 mr-2"
@@ -53,6 +59,7 @@
               to="https://www.instagram.com/dnd.tracker/"
               target="_blank"
               class="flex items-center"
+              test-id="footer-instagram"
             >
               <Icon
                 name="tabler:brand-instagram"
@@ -65,6 +72,7 @@
               to="https://bsky.app/profile/lilmees.bsky.social"
               target="_blank"
               class="flex items-center"
+              test-id="footer-bluesky"
             >
               <Icon
                 name="tabler:brand-bluesky"
@@ -77,6 +85,7 @@
               to="https://ko-fi.com/jeremymees"
               target="_blank"
               class="flex items-center"
+              test-id="footer-kofi"
             >
               <Icon
                 name="tabler:coffee"
@@ -95,6 +104,7 @@
             <NuxtLinkLocale
               to="/updates/feature-request"
               class="flex items-center"
+              test-id="footer-feature-request"
             >
               <Icon
                 name="tabler:git-pull-request"
@@ -103,7 +113,11 @@
               />
               {{ $t('components.navbar.featureRequest') }}
             </NuxtLinkLocale>
-            <NuxtLinkLocale to="/updates/changelog" class="flex items-center">
+            <NuxtLinkLocale
+              to="/updates/changelog"
+              class="flex items-center"
+              test-id="footer-changelog"
+            >
               <Icon
                 name="tabler:bolt"
                 class="min-w-6 min-h-6 mr-2"
@@ -119,7 +133,11 @@
             {{ $t('components.navbar.policies') }}
           </p>
           <div class="flex flex-col gap-4">
-            <NuxtLinkLocale to="/policies/cookie" class="flex items-center">
+            <NuxtLinkLocale
+              to="/policies/cookie"
+              class="flex items-center"
+              test-id="footer-cookie"
+            >
               <Icon
                 name="tabler:cookie"
                 class="min-w-6 min-h-6 mr-2"
@@ -127,7 +145,11 @@
               />
               {{ $t('components.navbar.cookie') }}
             </NuxtLinkLocale>
-            <NuxtLinkLocale to="/policies/privacy" class="flex items-center">
+            <NuxtLinkLocale
+              to="/policies/privacy"
+              class="flex items-center"
+              test-id="footer-privacy"
+            >
               <Icon
                 name="tabler:spy"
                 class="min-w-6 min-h-6 mr-2"
@@ -135,7 +157,11 @@
               />
               {{ $t('components.navbar.privacy') }}
             </NuxtLinkLocale>
-            <NuxtLinkLocale to="/policies/legal" class="flex items-center">
+            <NuxtLinkLocale
+              to="/policies/legal"
+              class="flex items-center"
+              test-id="footer-legal"
+            >
               <Icon
                 name="tabler:gavel"
                 class="min-w-6 min-h-6 mr-2"
@@ -151,16 +177,18 @@
           to="https://www.instagram.com/mount_lazarus/"
           target="_blank"
           class="text-muted-foreground text-sm"
+          test-id="footer-illustration"
         >
           {{ $t('components.navbar.illustrations') }} Mount Lazarus
         </NuxtLink>
         <NuxtLinkLocale
           to="/updates/changelog"
           class="text-muted-foreground text-sm"
+          test-id="footer-version"
         >
           V{{ $config.public.appVersion }}
         </NuxtLinkLocale>
-        <p class="text-tertiary text-sm">
+        <p class="text-tertiary text-sm" test-id="footer-copyright">
           ©{{ new Date().getFullYear() }} dnd-tracker
         </p>
       </div>

@@ -54,11 +54,24 @@ const props = {
 }
 
 const formStubs = {
-  FormPinContent: { template: '<div />' },
-  FormBestiary: { template: '<div />' },
-  FormCampaignHomebrew: { template: '<div />', emits: ['close'] },
-  FormHomebrew: { template: '<div />', emits: ['close'] },
-  FormInitiativeSettings: { template: '<div />', emits: ['close'] },
+  FormPinContent: { name: 'FormPinContent', template: '<div />' },
+  FormBestiary: { name: 'FormBestiary', template: '<div />' },
+  FormCampaignHomebrew: {
+    name: 'FormCampaignHomebrew',
+    template: '<div />',
+    emits: ['close'],
+  },
+  FormHomebrew: {
+    name: 'FormHomebrew',
+    props: ['count'],
+    template: '<div />',
+    emits: ['close'],
+  },
+  FormInitiativeSettings: {
+    name: 'FormInitiativeSettings',
+    template: '<div />',
+    emits: ['close'],
+  },
 }
 
 let component: VueWrapper<InstanceType<typeof EncounterSidebar>>
@@ -287,6 +300,76 @@ describe('EncounterSidebar', () => {
         expect(vm.openModal).toBeUndefined()
       }
     })
+  })
+
+  it('Should close the campaign homebrew dialog when the form closes', async () => {
+    mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
+
+    component = await mountSuspended(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+    const vm = component.vm as unknown as EncounterSidebarVM
+
+    await component.get('[test-id="campaign-homebrew"]').trigger('click')
+    expect(vm.openModal).toBe('addHomebrew')
+
+    await component
+      .findComponent({ name: 'FormCampaignHomebrew' })
+      .vm.$emit('close')
+
+    expect(vm.openModal).toBeUndefined()
+  })
+
+  it('Should close the new homebrew dialog when the form closes', async () => {
+    component = await mountSuspended(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+    const vm = component.vm as unknown as EncounterSidebarVM
+
+    await component.get('[test-id="new-homebrew"]').trigger('click')
+    expect(vm.openModal).toBe('newHomebrew')
+
+    await component.findComponent({ name: 'FormHomebrew' }).vm.$emit('close')
+
+    expect(vm.openModal).toBeUndefined()
+  })
+
+  it('Should pass the current row count to the new homebrew form', async () => {
+    mockSheet.value = { ...sheet, rows: [] }
+
+    component = await mountSuspended(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+
+    await component.get('[test-id="new-homebrew"]').trigger('click')
+
+    expect(
+      component.findComponent({ name: 'FormHomebrew' }).props('count'),
+    ).toBe(0)
+  })
+
+  it('Should close the settings dialog when the form closes', async () => {
+    component = await mountSuspended(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+    const vm = component.vm as unknown as EncounterSidebarVM
+
+    await component.get('[test-id="settings"]').trigger('click')
+    expect(vm.openModal).toBe('settings')
+
+    await component
+      .findComponent({ name: 'FormInitiativeSettings' })
+      .vm.$emit('close')
+
+    expect(vm.openModal).toBeUndefined()
   })
 
   it('Should reset openModal on unmount', async () => {

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ProfileMenu > Should match snapshot 1`] = `
+"<button class="outline-none" test-id="trigger" id="reka-dropdown-menu-trigger-v-0-0-0" type="button" aria-haspopup="menu" aria-expanded="true" aria-controls="" data-state="open">Open</button>
+<!--teleport start-->
+<!--teleport end-->"
+`;
