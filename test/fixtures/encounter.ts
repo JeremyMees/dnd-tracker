@@ -1,0 +1,26 @@
+export const mockEncounterItem: EncounterItem = {
+  id: 3,
+  title: 'Goblin Ambush',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  round: 1,
+  activeIndex: 0,
+  rows: [],
+  info: null,
+  infoCards: [],
+  createdBy: { id: '1', username: 'Test User', avatar: 'avatar-url' },
+  campaign: {
+    id: 2,
+    title: 'The Lost Mine',
+    createdBy: { id: '1', username: 'Test User', avatar: 'avatar-url' },
+    team: [],
+  },
+  homebrew_items: 0,
+  initiative_sheets: 0,
+  settings: {
+    spacing: 'normal',
+    modified: false,
+    rows: [],
+    widgets: [],
+    negative: false,
+  },
+}

@@ -98,7 +98,7 @@ const onSubmit = form.handleSubmit(async values => {
 <template>
   <UiFormWrapper @submit="onSubmit">
     <UiFormField v-slot="{ componentField }" name="role">
-      <UiFormItem v-auto-animate>
+      <UiFormItem v-auto-animate test-id="role">
         <UiFormLabel required>
           {{ $t('components.inputs.newRoleLabel') }}
         </UiFormLabel>
@@ -131,7 +131,7 @@ const onSubmit = form.handleSubmit(async values => {
       </UiFormItem>
     </UiFormField>
     <UiFormField v-slot="{ componentField }" name="user">
-      <UiFormItem v-auto-animate>
+      <UiFormItem v-auto-animate test-id="user">
         <UiFormLabel required>
           {{ $t('components.inputs.newOwnerLabel') }}
         </UiFormLabel>
@@ -164,6 +164,7 @@ const onSubmit = form.handleSubmit(async values => {
       v-if="
         currentTeamMemberSubscription && currentTeamMemberSubscription !== 'pro'
       "
+      test-id="free-warning"
       class="text-sm text-destructive-foreground bg-destructive/50 border-2 border-destructive rounded-md p-2"
     >
       {{ $t('components.transferOwnershipModal.free') }}
@@ -189,6 +190,7 @@ const onSubmit = form.handleSubmit(async values => {
         </UiFormLabel>
         <UiFormControl>
           <UiInput
+            test-id="title"
             v-bind="componentField"
             type="text"
             :placeholder="current.title"
@@ -198,11 +200,16 @@ const onSubmit = form.handleSubmit(async values => {
       </UiFormItem>
     </UiFormField>
 
-    <div v-if="formError" class="text-sm text-destructive">
+    <div v-if="formError" test-id="error" class="text-sm text-destructive">
       {{ formError }}
     </div>
 
-    <UiButton type="submit" variant="destructive" class="w-full">
+    <UiButton
+      test-id="submit"
+      type="submit"
+      variant="destructive"
+      class="w-full"
+    >
       {{ $t('actions.transfer') }}
     </UiButton>
   </UiFormWrapper>

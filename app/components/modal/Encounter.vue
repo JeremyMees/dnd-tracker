@@ -99,13 +99,13 @@ const onSubmit = form.handleSubmit(async values => {
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput type="text" v-bind="componentField" />
+          <UiInput test-id="title" type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
     <UiFormField v-if="!campaignId" v-slot="{ componentField }" name="campaign">
-      <UiFormItem>
+      <UiFormItem test-id="campaign">
         <UiFormLabel>{{ $t('components.inputs.campaignLabel') }}</UiFormLabel>
         <UiSelect v-bind="componentField" :disabled="!campaigns">
           <UiFormControl>
@@ -133,6 +133,7 @@ const onSubmit = form.handleSubmit(async values => {
       </UiFormItem>
     </UiFormField>
     <UiButton
+      test-id="settings-toggle"
       type="button"
       variant="secondary"
       class="w-full justify-between"
@@ -148,14 +149,18 @@ const onSubmit = form.handleSubmit(async values => {
       />
     </UiButton>
     <AnimationExpand>
-      <div v-show="showSettings" class="space-y-4 border rounded-lg p-4">
+      <div
+        v-show="showSettings"
+        test-id="settings"
+        class="space-y-4 border rounded-lg p-4"
+      >
         <FormInitiativeSettingsFields />
       </div>
     </AnimationExpand>
-    <div v-if="formError" class="text-sm text-destructive">
+    <div v-if="formError" test-id="error" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton type="submit" class="w-full">
+    <UiButton test-id="submit" type="submit" class="w-full">
       {{
         encounter ? $t('pages.encounters.update') : $t('pages.encounters.add')
       }}

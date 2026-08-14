@@ -41,10 +41,10 @@ const onSubmit = form.handleSubmit(async values => {
       :max="10"
       :min="1"
     />
-    <div v-if="formError" class="text-sm text-destructive">
+    <div v-if="formError" test-id="error" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton type="submit" class="w-full">
+    <UiButton test-id="submit" type="submit" class="w-full">
       {{ $t('actions.sendMail') }}
     </UiButton>
   </UiFormWrapper>

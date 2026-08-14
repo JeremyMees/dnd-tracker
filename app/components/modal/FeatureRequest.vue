@@ -64,7 +64,7 @@ async function sendFeatureEmail(
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput v-bind="componentField" type="text" />
+          <UiInput test-id="title" v-bind="componentField" type="text" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -75,15 +75,15 @@ async function sendFeatureEmail(
           {{ $t('components.inputs.descriptionLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiTextarea v-bind="componentField" />
+          <UiTextarea test-id="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div v-if="formError" class="text-sm text-destructive">
+    <div v-if="formError" test-id="error" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton type="submit" class="w-full">
+    <UiButton test-id="submit" type="submit" class="w-full">
       {{ $t('actions.create') }}
     </UiButton>
   </UiFormWrapper>
