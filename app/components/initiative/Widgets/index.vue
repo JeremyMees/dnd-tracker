@@ -146,6 +146,7 @@ function removeWidget(id: InitiativeWidget) {
       >
         <DragAndDropHeader :title="$t(widgetLabels[widget])">
           <UiButton
+            test-id="remove-widget"
             variant="destructive-ghost"
             size="icon-sm"
             :aria-label="$t('actions.remove')"

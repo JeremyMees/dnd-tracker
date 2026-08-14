@@ -52,6 +52,7 @@ const liveOpen = ref<boolean>(false)
         </UiPopoverTrigger>
         <UiPopoverContent class="flex flex-col gap-2">
           <button
+            test-id="reset-soft"
             :aria-label="$t('components.encounterTable.reset.soft.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
             @click="($emit('reset', false), (resetOpen = false))"
@@ -65,6 +66,7 @@ const liveOpen = ref<boolean>(false)
           </button>
           <UiSeparator />
           <button
+            test-id="reset-hard"
             :aria-label="$t('components.encounterTable.reset.hard.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
             @click="($emit('reset', true), (resetOpen = false))"

@@ -96,4 +96,48 @@ describe('Initiative table row notes', async () => {
 
     expect(mockUpdate).not.toHaveBeenCalled()
   })
+
+  it('Should not update when the row is no longer found in the sheet', async () => {
+    vi.useFakeTimers()
+    mockSheet.value = {
+      ...sheet,
+      rows: sheet.rows.filter(row => row.id !== props.item.id),
+    }
+
+    const component = await mountSuspended(Notes, {
+      props,
+      provide,
+    })
+
+    await component.find('textarea').setValue('New note')
+    await vi.advanceTimersByTimeAsync(500)
+
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('Should sync the note when the item prop changes', async () => {
+    const component = await mountSuspended(Notes, {
+      props: { item: { ...props.item, note: 'Original' } },
+      provide,
+    })
+
+    await component.setProps({
+      item: { ...props.item, note: 'Changed elsewhere' },
+    })
+
+    expect(component.find('textarea').element.value).toBe('Changed elsewhere')
+  })
+
+  it('Should clear the note when the item prop note becomes falsy', async () => {
+    const component = await mountSuspended(Notes, {
+      props: { item: { ...props.item, note: 'Original' } },
+      provide,
+    })
+
+    await component.setProps({
+      item: { ...props.item, note: undefined },
+    })
+
+    expect(component.find('textarea').element.value).toBe('')
+  })
 })
