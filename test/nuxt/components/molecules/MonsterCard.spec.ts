@@ -57,4 +57,47 @@ describe('MonsterCard', async () => {
     expect(component.emitted('add')).toBeTruthy()
     expect(component.emitted('add')![0]).toEqual([props.monster])
   })
+
+  it('Should fall back to a dash when core stats are missing', async () => {
+    const monster = {
+      ...dndMonsterFixture,
+      challengeRating: undefined,
+      armorClass: undefined,
+      hitPoints: undefined,
+      type: undefined,
+    } as unknown as DndMonster
+
+    const component = await mountSuspended(MonsterCard, {
+      props: { ...props, monster },
+    })
+
+    expect(component.text()).toContain('Type: _')
+    expect(component.text()).not.toContain(String(dndMonsterFixture.hitPoints))
+  })
+
+  it('Should hide bonus badges when their values are missing', async () => {
+    const monster = {
+      ...dndMonsterFixture,
+      initiativeBonus: undefined,
+      passivePerception: undefined,
+    } as unknown as DndMonster
+
+    const component = await mountSuspended(MonsterCard, {
+      props: { ...props, monster },
+    })
+
+    expect(component.text()).not.toContain('general.initiativeBonus')
+    expect(component.text()).not.toContain('general.passivePerception')
+  })
+
+  it('Should show the proficiency bonus badge when present', async () => {
+    const monster = { ...dndMonsterFixture, proficiencyBonus: 4 }
+
+    const component = await mountSuspended(MonsterCard, {
+      props: { ...props, monster },
+    })
+
+    expect(component.text()).toContain('general.proficiencyBonus')
+    expect(component.text()).toContain('+4')
+  })
 })

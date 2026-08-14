@@ -36,4 +36,59 @@ describe('ContentCardMagicItem', async () => {
     expect(component.text()).toContain('Rarity: Uncommon')
     expect(component.text()).toContain('Requires Attunement: No')
   })
+
+  it('Should hide optional fields when they are not present', async () => {
+    const content = {
+      ...dndMagicItemFixture,
+      desc: undefined,
+      type: undefined,
+      rarity: undefined,
+      size: undefined,
+      weight: undefined,
+      cost: undefined,
+      requiresAttunement: undefined,
+      armor: {
+        ...dndMagicItemFixture.armor,
+        acBase: undefined,
+        grantsStealthDisadvantage: undefined,
+      },
+    } as unknown as DndMagicItem
+
+    const component = await mountSuspended(ContentCardMagicItem, {
+      props: { content, isOpen: true },
+    })
+
+    expect(component.text()).not.toMatch(/(?<!Armor )Category:/)
+    expect(component.text()).not.toContain('Rarity')
+    expect(component.text()).not.toContain('Size')
+    expect(component.text()).not.toContain('Weight')
+    expect(component.text()).not.toContain('Cost')
+    expect(component.text()).not.toContain('Requires Attunement')
+    expect(component.text()).not.toContain('Base AC')
+    expect(component.text()).not.toContain('Stealth Disadvantage')
+  })
+
+  it('Should show alternate optional field values when present', async () => {
+    const content: DndMagicItem = {
+      ...dndMagicItemFixture,
+      requiresAttunement: true,
+      attunementDetail: 'Only by a spellcaster',
+      armor: {
+        ...dndMagicItemFixture.armor!,
+        grantsStealthDisadvantage: true,
+        strengthScoreRequired: 13,
+      },
+    }
+
+    const component = await mountSuspended(ContentCardMagicItem, {
+      props: { content, isOpen: true },
+    })
+
+    expect(component.text()).toContain('Requires Attunement: Yes')
+    expect(component.text()).toContain(
+      'Attunement Detail: Only by a spellcaster',
+    )
+    expect(component.text()).toContain('Stealth Disadvantage: Yes')
+    expect(component.text()).toContain('Strength Required: 13')
+  })
 })
