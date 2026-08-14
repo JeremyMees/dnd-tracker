@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
+import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
   row: PlayerRow
@@ -11,7 +12,9 @@ const props = defineProps<{
 const selected = ref<'add' | 'remove' | 'temp'>('add')
 
 const form = useForm({
-  validationSchema: z.object({ amount: z.int().min(0).max(1000) }),
+  validationSchema: z.object({
+    amount: z.int().min(0).max(maxHealthAndArmour),
+  }),
 })
 
 function predict(

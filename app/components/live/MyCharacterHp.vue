@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
+import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
   row: PlayerRow
@@ -11,7 +12,9 @@ const props = defineProps<{
 const selected = ref<'heal' | 'damage' | 'temp'>('heal')
 
 const form = useForm({
-  validationSchema: z.object({ amount: z.int().min(0).max(1000) }),
+  validationSchema: z.object({
+    amount: z.int().min(0).max(maxHealthAndArmour),
+  }),
 })
 
 function predict(
@@ -21,12 +24,10 @@ function predict(
   if (!isDefined(props.row.hitPoints)) return {}
 
   if (hpType === 'heal') {
-    const healed = props.row.hitPoints + amount
+    if (!isDefined(props.row.maxHitPoints)) return {}
 
     return {
-      hitPoints: isDefined(props.row.maxHitPoints)
-        ? Math.min(healed, props.row.maxHitPoints)
-        : healed,
+      hitPoints: Math.min(props.row.hitPoints + amount, props.row.maxHitPoints),
     }
   }
 

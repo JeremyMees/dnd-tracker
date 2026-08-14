@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
+import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
   sheet: InitiativeSheet | undefined
@@ -15,7 +16,7 @@ const props = defineProps<{
 const selectedType = ref<DndAcType>('remove')
 
 const formSchema = z.object({
-  amount: z.int().min(0).max(1000),
+  amount: z.int().min(0).max(maxHealthAndArmour),
 })
 
 const form = useForm({

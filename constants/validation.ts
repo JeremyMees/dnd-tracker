@@ -1,3 +1,5 @@
+export const maxHealthAndArmour = 1000
+
 export const initiativeSpacingOptions = [
   'compact',
   'normal',
