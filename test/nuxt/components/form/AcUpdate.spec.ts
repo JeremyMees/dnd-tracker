@@ -123,4 +123,14 @@ describe('AcUpdate', () => {
 
     expect(component.text()).toContain('Update failed')
   })
+
+  it('Should show a generic error when the failure has no message', async () => {
+    updateRow.mockRejectedValue({})
+
+    const component = await mountAcUpdate()
+
+    await submitAs(component, 'add')
+
+    expect(component.text()).toContain('An error occurred while updating AC')
+  })
 })

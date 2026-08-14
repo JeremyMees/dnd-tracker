@@ -76,6 +76,7 @@ describe('RepeaterInput', () => {
 
     expect(add.attributes('disabled')).toBeDefined()
 
+    add.element.removeAttribute('disabled')
     await add.trigger('click')
     await flushPromises()
 
@@ -123,6 +124,34 @@ describe('RepeaterInput', () => {
     ).toBeUndefined()
   })
 
+  it('Should keep the order when moving up from the first item', async () => {
+    const { component, form } = await mountRepeaterInput({}, traits)
+
+    const moveUp = component.get('[test-id="move-up-0"]')
+    moveUp.element.removeAttribute('disabled')
+    await moveUp.trigger('click')
+    await flushPromises()
+
+    expect((form.values.traits as Trait[]).map(t => t.name)).toEqual([
+      'Keen Smell',
+      'Pack Tactics',
+    ])
+  })
+
+  it('Should keep the order when moving down from the last item', async () => {
+    const { component, form } = await mountRepeaterInput({}, traits)
+
+    const moveDown = component.get('[test-id="move-down-1"]')
+    moveDown.element.removeAttribute('disabled')
+    await moveDown.trigger('click')
+    await flushPromises()
+
+    expect((form.values.traits as Trait[]).map(t => t.name)).toEqual([
+      'Keen Smell',
+      'Pack Tactics',
+    ])
+  })
+
   it('Should remove the item at the clicked index', async () => {
     const { component, form } = await mountRepeaterInput({}, traits)
 
@@ -143,5 +172,16 @@ describe('RepeaterInput', () => {
     expect(
       component.get('[test-id="remove-1"]').attributes('disabled'),
     ).toBeDefined()
+  })
+
+  it('Should keep every item when removing at the minimum', async () => {
+    const { component, form } = await mountRepeaterInput({ min: 2 }, traits)
+
+    const remove = component.get('[test-id="remove-0"]')
+    remove.element.removeAttribute('disabled')
+    await remove.trigger('click')
+    await flushPromises()
+
+    expect(form.values.traits).toHaveLength(2)
   })
 })

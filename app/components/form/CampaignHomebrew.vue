@@ -147,6 +147,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
           <UiTableHead
             v-for="header in headerGroup.headers"
             :key="header.id"
+            :test-id="`header-${header.id}`"
             class="px-2"
             :class="
               cn(header.column.getCanSort() ? 'cursor-pointer select-none' : '')

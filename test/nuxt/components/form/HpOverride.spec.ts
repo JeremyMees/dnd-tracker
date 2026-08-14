@@ -155,4 +155,16 @@ describe('HpOverride', () => {
 
     expect(component.text()).toContain('Update failed')
   })
+
+  it('Should show a generic error when the failure has no message', async () => {
+    updateRow.mockRejectedValue({})
+
+    const component = await mountHpOverride()
+
+    await submitAmount(component, 150)
+
+    expect(component.text()).toContain(
+      'An error occurred while updating base HP',
+    )
+  })
 })

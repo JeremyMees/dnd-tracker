@@ -9,7 +9,7 @@ exports[`CampaignHomebrew > Should match snapshot 1`] = `
     <table class="w-full caption-bottom text-sm">
       <thead class="[&amp;_tr]:border-b">
         <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted">
-          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2">
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2" test-id="header-select">
             <div class="flex items-center gap-2 w-fit"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
               </button>
@@ -17,20 +17,20 @@ exports[`CampaignHomebrew > Should match snapshot 1`] = `
               <!--v-if-->
             </div>
           </th>
-          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2 cursor-pointer select-none">
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2 cursor-pointer select-none" test-id="header-name">
             <div class="flex items-center gap-2 w-fit bg-muted rounded-lg p-2 transition-all duration-300 text-foreground">general.name<span class="iconify i-tabler:sort-ascending size-4" aria-hidden="true"></span></div>
           </th>
-          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2 cursor-pointer select-none">
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2 cursor-pointer select-none" test-id="header-player">
             <div class="flex items-center gap-2 w-fit">general.player
               <!--v-if-->
             </div>
           </th>
-          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2">
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2" test-id="header-hitPoints">
             <div class="flex items-center gap-2 w-fit">general.hp
               <!--v-if-->
             </div>
           </th>
-          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2">
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2" test-id="header-armorClass">
             <div class="flex items-center gap-2 w-fit">general.ac
               <!--v-if-->
             </div>

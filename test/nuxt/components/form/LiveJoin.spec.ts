@@ -159,6 +159,20 @@ describe('LiveJoin', () => {
     )
   })
 
+  it('shows a not found error for a 404', async () => {
+    fetchMock.mockRejectedValue({ statusCode: 404 })
+
+    const component = await mountForm()
+
+    await fillForm(component, { name: 'Elara' })
+    await component.find('[test-id="row-row-1"]').trigger('click')
+    await submitForm(component)
+
+    expect(component.get('[test-id="error"]').text()).toBe(
+      'pages.live.errors.notFound',
+    )
+  })
+
   it('falls back to a generic error for anything else', async () => {
     fetchMock.mockRejectedValue(new Error('boom'))
 

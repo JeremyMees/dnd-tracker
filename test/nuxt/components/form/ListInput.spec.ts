@@ -76,7 +76,9 @@ describe('ListInput', () => {
   it('Should not remove past the minimum when clicked anyway', async () => {
     const { component, form } = await mountListInput({ min: 1 }, ['Elvish'])
 
-    await component.get('[test-id="remove"]').trigger('click')
+    const remove = component.get('[test-id="remove"]')
+    remove.element.removeAttribute('disabled')
+    await remove.trigger('click')
     await flushPromises()
 
     expect(form.values.languages).toEqual(['Elvish'])
@@ -92,6 +94,7 @@ describe('ListInput', () => {
 
     expect(add.attributes('disabled')).toBeDefined()
 
+    add.element.removeAttribute('disabled')
     await add.trigger('click')
     await flushPromises()
 

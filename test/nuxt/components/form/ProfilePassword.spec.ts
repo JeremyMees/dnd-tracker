@@ -64,6 +64,24 @@ describe('ProfilePassword', () => {
     expect(component.text()).toContain('zod.containsUppercase')
   })
 
+  it('Should not update without a lowercase character', async () => {
+    const component = await mountProfilePassword()
+
+    await submitPassword(component, 'SECRET1!')
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.text()).toContain('zod.containsLowercase')
+  })
+
+  it('Should not update with a disallowed character', async () => {
+    const component = await mountProfilePassword()
+
+    await submitPassword(component, 'Secret1!€')
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.text()).toContain('zod.allowedChars')
+  })
+
   it('Should not update without a number', async () => {
     const component = await mountProfilePassword()
 

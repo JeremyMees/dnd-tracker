@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import ActionInputs from '~/components/form/ActionInputs.vue'
 import { mountWithForm } from '~~/test/nuxt/stubs/form'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
 
 async function mountActionInputs(
   actionType: DndActionType = 'action',
@@ -108,6 +109,78 @@ describe('ActionInputs', () => {
         param: 2,
       })
       expect(component.html()).toContain('components.inputs.usageParamLabel')
+    })
+  })
+
+  describe('handleUsageTypeChange', () => {
+    it('Should clear usage limits when the type is set to none', async () => {
+      const component = await mountActionInputs('action', {
+        type: 'perDay',
+        param: 3,
+      })
+
+      await selectOption(component, 'none', { index: 1 })
+
+      expect(component.html()).not.toContain(
+        'components.inputs.usageParamLabel',
+      )
+    })
+
+    it('Should default the param to 1 when no usage limits existed before', async () => {
+      const component = await mountActionInputs('action', undefined)
+
+      await selectOption(component, 'perDay', { index: 1 })
+
+      expect(
+        (component.get('[test-id="usage-param"]').element as HTMLInputElement)
+          .value,
+      ).toBe('1')
+    })
+
+    it('Should keep the existing param when switching usage types', async () => {
+      const component = await mountActionInputs('action', {
+        type: 'perDay',
+        param: 5,
+      })
+
+      await selectOption(component, 'perRest', { index: 1 })
+
+      expect(
+        (component.get('[test-id="usage-param"]').element as HTMLInputElement)
+          .value,
+      ).toBe('5')
+    })
+  })
+
+  describe('handleUsageParamChange', () => {
+    it('Should update the usage param when the input changes', async () => {
+      const component = await mountActionInputs('action', {
+        type: 'perDay',
+        param: 3,
+      })
+
+      await component.get('[test-id="usage-param"]').setValue(7)
+
+      expect(
+        (component.get('[test-id="usage-param"]').element as HTMLInputElement)
+          .value,
+      ).toBe('7')
+    })
+  })
+
+  describe('Attacks repeater', () => {
+    it('Should render attack inputs for an existing attack', async () => {
+      const { component } = await mountWithForm(ActionInputs, {
+        props: { fieldName: 'action' },
+        initialValues: {
+          action: {
+            actionType: 'action',
+            attacks: [{ name: '', attackType: 'melee', distanceUnit: 'feet' }],
+          },
+        },
+      })
+
+      expect(component.html()).toContain('components.inputs.attackTypeLabel')
     })
   })
 })

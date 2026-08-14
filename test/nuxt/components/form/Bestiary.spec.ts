@@ -7,6 +7,8 @@ import SkeletonMonsterCard from '~/components/skeleton/MonsterCard.vue'
 import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { touchArgs } from '~~/test/nuxt/stubs/queries'
 
 const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
 
@@ -16,14 +18,49 @@ const data = ref<{ items: DndMonster[]; pages: number }>({
   items: [dndMonsterFixture],
   pages: 1,
 })
+const documents = ref<Open5eDocument[]>([])
+
+function createDocument(key: string, gamesystem: Open5eGameSystem = '5e-2024') {
+  return {
+    name: key,
+    key,
+    url: `https://api.open5e.com/v2/documents/${key}/`,
+    licenses: [],
+    publisher: {
+      name: 'Wizards of the Coast',
+      key: 'wizards-of-the-coast',
+      url: 'https://api.open5e.com/v2/publishers/wizards-of-the-coast/',
+    },
+    gamesystem: {
+      name: gamesystem,
+      key: gamesystem,
+      url: `https://api.open5e.com/v2/gamesystems/${gamesystem}/`,
+    },
+    display_name: key,
+    desc: '',
+    type: 'document',
+    author: 'Wizards of the Coast',
+    publication_date: '2014-01-01',
+    permalink: `https://example.com/${key}`,
+    distance_unit: 'ft',
+    weight_unit: 'lb',
+  } as Open5eDocument
+}
+
+const monsterListingArgs = vi.fn()
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
 }))
 
 vi.mock('~/queries/open5e', () => ({
-  useOpen5eMonsterListing: () => ({ data, status: monstersStatus }),
-  useOpen5eDocuments: () => ({ data: ref([]), status: documentsStatus }),
+  useOpen5eMonsterListing: (filters: ComputedRef<unknown>) => {
+    monsterListingArgs(filters)
+    touchArgs(filters)
+
+    return { data, status: monstersStatus }
+  },
+  useOpen5eDocuments: () => ({ data: documents, status: documentsStatus }),
 }))
 
 function mountBestiary(props: Record<string, unknown> = {}) {
@@ -35,6 +72,14 @@ function mountBestiary(props: Record<string, unknown> = {}) {
   }
 }
 
+function lastFilters(): Open5eFilters {
+  const arg = monsterListingArgs.mock.calls.at(-1)![0] as ComputedRef<{
+    filters: Open5eFilters
+  }>
+
+  return arg.value.filters
+}
+
 describe('Bestiary', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -42,6 +87,7 @@ describe('Bestiary', () => {
     monstersStatus.value = 'success'
     documentsStatus.value = 'success'
     data.value = { items: [dndMonsterFixture], pages: 1 }
+    documents.value = []
   })
 
   it('Should match snapshot', async () => {
@@ -189,5 +235,109 @@ describe('Bestiary', () => {
 
     expect(injected.update).not.toHaveBeenCalled()
     expect(toast).not.toHaveBeenCalled()
+  })
+
+  it('Should refetch with the search term once it settles', async () => {
+    vi.useFakeTimers()
+
+    const component = await mountBestiary().mount()
+
+    await component.get('input[name="search"]').setValue('goblin')
+    await vi.advanceTimersByTimeAsync(1000)
+    await flushPromises()
+
+    expect(lastFilters().name__icontains).toBe('goblin')
+
+    vi.useRealTimers()
+  })
+
+  it('Should refetch with the picked challenge rating', async () => {
+    const component = await mountBestiary().mount()
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(lastFilters().cr).toBe(5)
+  })
+
+  it('Should refetch with the picked sort order', async () => {
+    const component = await mountBestiary().mount()
+
+    await selectOption(component, '-hit_points', { index: 1 })
+
+    expect(lastFilters().ordering).toBe('-hit_points')
+  })
+
+  it('Should reset the search and refetch when the selected documents change', async () => {
+    documents.value = [
+      createDocument('srd-2024'),
+      createDocument('homebrew-2024'),
+    ]
+
+    const injected = createInitiativeSheetProvide()
+    const component = await mountSuspended(Bestiary, {
+      provide: injected.provide,
+      global: {
+        stubs: { PopoverContent: { template: '<div><slot /></div>' } },
+      },
+    })
+
+    await component.get('[test-id="checkbox-homebrew-2024"]').trigger('click')
+    await flushPromises()
+
+    expect(lastFilters().document__key__in).toContain('homebrew-2024')
+    expect(lastFilters().document__key__in).toContain('srd-2024')
+    expect(lastFilters().name__icontains).toBe('')
+  })
+
+  it('Should refetch when the selected game system changes', async () => {
+    const injected = createInitiativeSheetProvide()
+    const component = await mountSuspended(Bestiary, {
+      provide: injected.provide,
+      global: {
+        stubs: { PopoverContent: { template: '<div><slot /></div>' } },
+      },
+    })
+
+    await component.findAll('button[role="radio"]')[0]!.trigger('click')
+    await flushPromises()
+
+    expect(lastFilters().document__key__in).toBe('srd-2014')
+  })
+
+  it('Should refetch with the picked page from pagination', async () => {
+    data.value = { items: [dndMonsterFixture], pages: 3 }
+
+    const component = await mountBestiary().mount()
+
+    await component
+      .findComponent({ name: 'Pagination' })
+      .vm.$emit('update:page', 2)
+    await flushPromises()
+
+    expect(lastFilters().page).toBe(2)
+  })
+
+  it('Should scroll to the top card when paginating', async () => {
+    data.value = { items: [dndMonsterFixture], pages: 3 }
+
+    const component = await mountBestiary().mount()
+
+    document.body.appendChild(component.element)
+
+    const scrollIntoView = vi.fn()
+    const el = component.find('#el').element as HTMLElement
+    el.scrollIntoView = scrollIntoView
+
+    await component
+      .findComponent({ name: 'Pagination' })
+      .vm.$emit('paginate', 1)
+    await flushPromises()
+
+    expect(scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'smooth',
+      block: 'end',
+    })
+
+    component.element.remove()
   })
 })

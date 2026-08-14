@@ -73,6 +73,17 @@ describe('HomebrewInformation', () => {
       const component = await mountHomebrewInformation('summon', sheet)
       expect(component.html()).toContain('components.inputs.summonerLabel')
     })
+
+    it('Should render no summoner options when the sheet has no rows', async () => {
+      const rowlessSheet = {
+        ...sheet,
+        rows: undefined,
+      } as unknown as InitiativeSheet
+      const component = await mountHomebrewInformation('summon', rowlessSheet)
+
+      expect(component.html()).toContain('components.inputs.summonerLabel')
+      expect(component.html()).not.toContain(sheet.rows[0]!.name)
+    })
   })
 
   describe('Player field', () => {
@@ -119,6 +130,35 @@ describe('HomebrewInformation', () => {
 
       expect(html).not.toContain('components.inputs.acLabel')
       expect(html).not.toContain('components.inputs.hpLabel')
+    })
+  })
+
+  describe('Random generators', () => {
+    it('Should generate a random name when the name button is clicked', async () => {
+      const component = await mountHomebrewInformation('npc')
+
+      expect(
+        (component.get('input[name="name"]').element as HTMLInputElement).value,
+      ).toBe('')
+
+      await component.get('[test-id="generate-name"]').trigger('click')
+
+      expect(
+        (component.get('input[name="name"]').element as HTMLInputElement).value,
+      ).not.toBe('')
+    })
+
+    it('Should generate a random initiative roll when the roll button is clicked', async () => {
+      const component = await mountHomebrewInformation('npc', sheet)
+
+      await component.get('[test-id="generate-roll"]').trigger('click')
+
+      const value = (
+        component.get('input[name="initiative"]').element as HTMLInputElement
+      ).value
+
+      expect(Number(value)).toBeGreaterThanOrEqual(1)
+      expect(Number(value)).toBeLessThanOrEqual(20)
     })
   })
 

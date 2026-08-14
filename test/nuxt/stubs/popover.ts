@@ -19,9 +19,14 @@ export async function closePopover(
 
 export async function selectOption(
   component: VueWrapper,
-  value: string,
-  name = 'SelectRoot',
+  value: string | number | undefined,
+  options: { name?: string; index?: number } = {},
 ): Promise<void> {
-  component.findComponent({ name }).vm.$emit('update:modelValue', value)
+  const { name = 'SelectRoot', index = 0 } = options
+
+  component
+    .findAllComponents({ name })
+    .at(index)!
+    .vm.$emit('update:modelValue', value)
   await flushPromises()
 }

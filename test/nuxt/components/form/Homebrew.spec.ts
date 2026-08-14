@@ -6,6 +6,7 @@ import { mockCampaignFull } from '~~/test/fixtures/campaign'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
 
 const { createHomebrew, updateHomebrew } = vi.hoisted(() => ({
   createHomebrew: vi.fn(),
@@ -267,6 +268,109 @@ describe('Homebrew', () => {
         data: expect.objectContaining({ campaign: mockCampaignFull.id }),
       }),
     )
+  })
+
+  it('Should not submit with an invalid hit dice expression', async () => {
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component)
+    await component.get('[test-id="advanced-toggle"]').trigger('click')
+    await nextTick()
+    await component.get('input[name="hitDice"]').setValue('2x6')
+    await submitForm(component)
+
+    expect(createHomebrew).not.toHaveBeenCalled()
+    expect(component.text()).toContain('zod.hitDiceExpression')
+  })
+
+  it('Should require an amount for a monster in an encounter', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+    })
+
+    await fillName(component)
+    await selectOption(component, 'monster', { index: 0 })
+    await nextTick()
+    await submitForm(component)
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.text()).toContain('zod.required')
+  })
+
+  it('Should require a summoner for a summon in an encounter', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+    })
+
+    await fillName(component)
+    await selectOption(component, 'summon', { index: 0 })
+    await nextTick()
+    await component.get('input[name="amount"]').setValue(1)
+    await submitForm(component)
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.text()).toContain('zod.required')
+  })
+
+  it('Should not add to the sheet when the update handler is missing', async () => {
+    const component = await mountSuspended(Homebrew, {
+      props: {
+        count: 0,
+        sheet: { ...sheet },
+        update: undefined,
+      },
+    })
+
+    await fillName(component)
+    await submitForm(component)
+
+    expect(component.emitted('close')).toHaveLength(1)
+  })
+
+  it('Should attach the picked summoner to the new row', async () => {
+    const component = await mountHomebrew({ withSheet: true })
+
+    await fillName(component)
+    await selectOption(component, 'summon', { index: 0 })
+    await nextTick()
+    await selectOption(component, sheet.rows[0]!.id, { index: 1 })
+    await submitForm(component)
+
+    const rows = update.mock.calls[0]![0].rows
+
+    expect(rows.at(-1)!.summoner).toEqual({
+      name: sheet.rows[0]!.name,
+      id: sheet.rows[0]!.id,
+    })
+  })
+
+  it('Should not attach a summoner when the picked id does not match a row', async () => {
+    const component = await mountHomebrew({ withSheet: true })
+
+    await fillName(component)
+    await selectOption(component, 'summon', { index: 0 })
+    await nextTick()
+    await selectOption(component, 'unknown-id', { index: 1 })
+    await submitForm(component)
+
+    const rows = update.mock.calls[0]![0].rows
+
+    expect(rows.at(-1)!.summoner).toBeUndefined()
+  })
+
+  it('Should switch tabs when the tabs model is updated directly', async () => {
+    const component = await mountHomebrew()
+
+    await component
+      .findComponent({ name: 'TabsRoot' })
+      .vm.$emit('update:modelValue', 'traits')
+    await nextTick()
+
+    expect(
+      component.findAll('[role="tab"]')[2]!.attributes('aria-selected'),
+    ).toBe('true')
   })
 
   it('Should block saving to the campaign on a full sheet', async () => {

@@ -154,4 +154,14 @@ describe('HpUpdate', () => {
 
     expect(component.text()).toContain('Update failed')
   })
+
+  it('Should show a generic error when the failure has no message', async () => {
+    updateRow.mockRejectedValue({})
+
+    const component = await mountHpUpdate()
+
+    await submitAs(component, 'heal')
+
+    expect(component.text()).toContain('An error occurred while updating HP')
+  })
 })

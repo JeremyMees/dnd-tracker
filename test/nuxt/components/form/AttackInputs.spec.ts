@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import AttackInputs from '~/components/form/AttackInputs.vue'
 import { mountWithForm } from '~~/test/nuxt/stubs/form'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
 
 async function mountAttackInputs(attackType: DndAttackType = 'melee') {
   const { component } = await mountWithForm(AttackInputs, {
@@ -106,6 +107,29 @@ describe('AttackInputs', () => {
           'components.inputs.saveTypeLabel',
         )
       }
+    })
+
+    it('Should set the spell save type when an ability is picked', async () => {
+      const component = await mountAttackInputs('meleeSpell')
+
+      await selectOption(component, 'strength', { index: -1 })
+
+      expect(component.html()).toContain('Strength')
+    })
+
+    it('Should clear the spell save type when none is picked', async () => {
+      const { component } = await mountWithForm(AttackInputs, {
+        props: { fieldName: 'attack' },
+        initialValues: {
+          attack: { attackType: 'meleeSpell', spellSaveType: 'strength' },
+        },
+      })
+
+      expect(component.html()).toContain('Strength')
+
+      await selectOption(component, 'none', { index: -1 })
+
+      expect(component.html()).not.toContain('Strength')
     })
   })
 })

@@ -99,6 +99,16 @@ describe('ProfileData', () => {
     expect(component.text()).toContain('zod.alphaSpaces')
   })
 
+  it('Should not update when the username has invalid characters', async () => {
+    const component = await mountProfileData()
+
+    await component.get('input[name="username"]').setValue('bilbo123')
+    await submitForm(component)
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.text()).toContain('zod.alphaSpaces')
+  })
+
   it('Should not update when the email is invalid', async () => {
     const component = await mountProfileData()
 

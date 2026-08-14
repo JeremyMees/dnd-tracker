@@ -12,15 +12,21 @@ import {
 } from '~~/test/fixtures/homebrew'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { touchArgs } from '~~/test/nuxt/stubs/queries'
 
 const homebrews = ref<HomebrewItemRow[]>(mockHomebrewListing)
 const isPending = ref(false)
 
 vi.mock('~/queries/homebrews', () => ({
-  useHomebrewListing: () => ({
-    data: computed(() => ({ homebrews: homebrews.value })),
-    isPending,
-  }),
+  useHomebrewListing: (...args: unknown[]) => {
+    touchArgs(...args)
+
+    return {
+      data: computed(() => ({ homebrews: homebrews.value })),
+      isPending,
+    }
+  },
 }))
 
 const campaignSheet: InitiativeSheet = { ...sheet, campaign: mockSheetCampaign }
@@ -209,5 +215,95 @@ describe('CampaignHomebrew', () => {
       'components.campaignHomebrew.initiative.info',
     )
     expect(mockHomebrewSummon.type).toBe('summon')
+  })
+
+  it('Should work without a campaign on the sheet', async () => {
+    const component = await mountCampaignHomebrew(sheet).mount()
+
+    mockHomebrewListing.forEach(homebrew => {
+      expect(component.text()).toContain(homebrew.name)
+    })
+  })
+
+  it('Should render no summoner options when the sheet has no rows', async () => {
+    const { injected, mount } = mountCampaignHomebrew()
+    const component = await mount()
+
+    injected.sheet.value = {
+      ...injected.sheet.value!,
+      rows: undefined,
+    } as unknown as InitiativeSheet
+    await flushPromises()
+
+    await component.findAll('[role="checkbox"]')[3]!.trigger('click')
+    await flushPromises()
+
+    expect(component.text()).toContain('components.inputs.summonerLabel')
+    expect(component.text()).not.toContain(sheet.rows[0]!.name)
+  })
+
+  it('Should sort the rows when a sortable header is clicked', async () => {
+    const component = await mountCampaignHomebrew().mount()
+
+    const playerHeader = component.get('[test-id="header-player"]')
+
+    await playerHeader.trigger('click')
+    await flushPromises()
+
+    expect(playerHeader.find('.iconify').exists()).toBeTruthy()
+  })
+
+  it('Should add the selected homebrews when adding a selection', async () => {
+    const { injected, mount } = mountCampaignHomebrew()
+    const component = await mount()
+
+    await component.findAll('[role="checkbox"]')[1]!.trigger('click')
+    await flushPromises()
+
+    await component.get('[aria-label="actions.addSelected"]').trigger('click')
+    await flushPromises()
+
+    const added = rowsOf(injected.update).slice(sheet.rows.length)
+
+    expect(added).toHaveLength(1)
+    expect(added[0]!.name).toBe(mockHomebrewItem.name)
+  })
+
+  it('Should set the picked summoner on the added summon', async () => {
+    const { injected, mount } = mountCampaignHomebrew()
+    const component = await mount()
+
+    await component.findAll('[role="checkbox"]')[3]!.trigger('click')
+    await flushPromises()
+
+    await selectOption(component, sheet.rows[0]!.id)
+
+    await component
+      .get('[aria-label="components.campaignHomebrew.initiative.add"]')
+      .trigger('click')
+    await flushPromises()
+
+    const added = rowsOf(injected.update).slice(sheet.rows.length)
+
+    expect(added[0]!.summoner).toEqual({
+      name: sheet.rows[0]!.name,
+      id: sheet.rows[0]!.id,
+    })
+  })
+
+  it('Should not set a summoner for an unknown id', async () => {
+    const { mount } = mountCampaignHomebrew()
+    const component = await mount()
+
+    await component.findAll('[role="checkbox"]')[3]!.trigger('click')
+    await flushPromises()
+
+    await selectOption(component, 'unknown-id')
+
+    expect(
+      component
+        .get('[aria-label="components.campaignHomebrew.initiative.add"]')
+        .attributes('disabled'),
+    ).toBeDefined()
   })
 })

@@ -147,4 +147,16 @@ describe('AcOverride', () => {
 
     expect(component.text()).toContain('Update failed')
   })
+
+  it('Should show a generic error when the failure has no message', async () => {
+    updateRow.mockRejectedValue({})
+
+    const component = await mountAcOverride()
+
+    await submitAmount(component, 25)
+
+    expect(component.text()).toContain(
+      'An error occurred while updating base AC',
+    )
+  })
 })
