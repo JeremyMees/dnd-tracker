@@ -65,7 +65,10 @@ onMounted(() => {
   })
 })
 
-onBeforeUnmount(() => editor.value?.destroy())
+onBeforeUnmount(() => {
+  editor.value?.destroy()
+  editor.value = undefined
+})
 
 watchDebounced(
   () => props.content,

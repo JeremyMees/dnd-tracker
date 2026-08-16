@@ -29,6 +29,27 @@ describe('transformers/condition', () => {
       expect(condition.hasLevels).toBeTruthy()
       expect(condition.level).toBe(1)
     })
+
+    it('honours an explicit preferred document order', () => {
+      const condition = toCondition(open5eV2ConditionFixture, ['srd-2014'])
+
+      expect(condition.desc).toBe('The 2014 blinded desc.')
+    })
+
+    it('falls back to the first description when no preferred document matches', () => {
+      const condition = toCondition(open5eV2ConditionFixture, ['homebrew'])
+
+      expect(condition.desc).toBe('The 2014 blinded desc.')
+    })
+
+    it('returns an empty desc when there are no descriptions', () => {
+      const condition = toCondition({
+        ...open5eV2ConditionFixture,
+        descriptions: [],
+      })
+
+      expect(condition.desc).toBe('')
+    })
   })
 
   describe('toCondition (V1)', () => {
@@ -61,6 +82,15 @@ describe('transformers/condition', () => {
 
       expect(condition.hasLevels).toBeUndefined()
       expect(condition.level).toBeUndefined()
+    })
+
+    it('clamps a parsed level of 0 up to 1', () => {
+      const condition = toCondition({
+        ...open5eV1ExhaustionFixture,
+        level: '0',
+      })
+
+      expect(condition.level).toBe(1)
     })
   })
 })

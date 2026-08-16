@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   open5eV2MagicItemFixture,
+  open5eV2WeaponFixture,
   open5eV1MagicItemFixture,
   open5eV1MagicItemWeaponFixture,
 } from '~~/test/fixtures/open5e'
@@ -37,6 +38,76 @@ describe('transformers/magic-item', () => {
 
       expect(item.weight).toBe(20)
       expect(item.cost).toBe('0.00')
+    })
+
+    it('maps embedded weapon including property type and detail', () => {
+      const item = toMagicItem({
+        ...open5eV2MagicItemFixture,
+        armor: null,
+        weapon: open5eV2WeaponFixture,
+      })
+
+      expect(item.type).toBe('weapon')
+      expect(item.armor).toBeUndefined()
+      expect(item.weapon!.id).toBe('srd-2024_battleaxe')
+      expect(item.weapon!.damageType).toBe('slashing')
+      expect(item.weapon!.damageDice).toBe('1d8')
+      expect(item.weapon!.distanceUnit).toBe('feet')
+      expect(item.weapon!.isSimple).toBeFalsy()
+      expect(item.weapon!.properties).toEqual([
+        {
+          property: {
+            name: 'Topple',
+            type: 'Mastery',
+            desc: open5eV2WeaponFixture.properties[0]!.property.desc,
+          },
+        },
+        {
+          property: {
+            name: 'Versatile',
+            desc: open5eV2WeaponFixture.properties[1]!.property.desc,
+          },
+          detail: '1d10',
+        },
+      ])
+    })
+
+    it('maps armor optional fields when the api provides them', () => {
+      const item = toMagicItem({
+        ...open5eV2MagicItemFixture,
+        armor: {
+          ...open5eV2MagicItemFixture.armor!,
+          strength_score_required: 13,
+          ac_cap_dexmod: null,
+        },
+      })
+
+      expect(item.armor!.strengthScoreRequired).toBe(13)
+      expect(item.armor!.acCapDexMod).toBeUndefined()
+    })
+
+    it('maps attunement detail when attunement is required', () => {
+      const item = toMagicItem({
+        ...open5eV2MagicItemFixture,
+        requires_attunement: true,
+        attunement_detail: 'by a druid',
+      })
+
+      expect(item.requiresAttunement).toBeTruthy()
+      expect(item.attunementDetail).toBe('by a druid')
+    })
+
+    it('derives the type from the category when there is no weapon or armor', () => {
+      const item = toMagicItem({
+        ...open5eV2MagicItemFixture,
+        weapon: null,
+        armor: null,
+        category: { name: 'Potion', key: 'potion', url: '' },
+      })
+
+      expect(item.weapon).toBeUndefined()
+      expect(item.armor).toBeUndefined()
+      expect(item.type).toBe('potion')
     })
   })
 
@@ -92,6 +163,65 @@ describe('transformers/magic-item', () => {
 
       expect(item.requiresAttunement).toBeFalsy()
       expect(item.attunementDetail).toBe('requires attunement')
+    })
+
+    it('maps weapon properties into named property objects', () => {
+      const item = toMagicItem({
+        ...open5eV1MagicItemWeaponFixture,
+        properties: ['Versatile', 'Finesse'],
+      })
+
+      expect(item.weapon!.properties).toEqual([
+        { property: { name: 'Versatile', desc: '' } },
+        { property: { name: 'Finesse', desc: '' } },
+      ])
+    })
+
+    it('maps embedded armor when the item has an armor class', () => {
+      const item = toMagicItem({
+        ...open5eV1MagicItemFixture,
+        category: 'Medium Armor',
+        armor_class: 14,
+        stealth_disadvantage: 'true',
+        strength_requirement: 'Requires 13 Strength',
+      })
+
+      expect(item.type).toBe('armor')
+      expect(item.weapon).toBeUndefined()
+      expect(item.armor!.acBase).toBe(14)
+      expect(item.armor!.acDisplay).toBe('14')
+      expect(item.armor!.type).toBe('medium')
+      expect(item.armor!.acAddDexMod).toBeTruthy()
+      expect(item.armor!.acCapDexMod).toBe(2)
+      expect(item.armor!.strengthScoreRequired).toBe(13)
+      expect(item.armor!.grantsStealthDisadvantage).toBeTruthy()
+    })
+
+    it('prefers ac_string for the armor display and skips medium-only fields', () => {
+      const item = toMagicItem({
+        ...open5eV1MagicItemFixture,
+        category: 'Heavy Armor',
+        ac_string: '18',
+        armor_class: 18,
+      })
+
+      expect(item.armor!.acDisplay).toBe('18')
+      expect(item.armor!.acAddDexMod).toBeFalsy()
+      expect(item.armor!.acCapDexMod).toBeUndefined()
+      expect(item.armor!.strengthScoreRequired).toBeUndefined()
+    })
+
+    it('falls back to defaults when category, rarity and cost are missing', () => {
+      const item = toMagicItem({
+        ...open5eV1MagicItemFixture,
+        category: undefined,
+        rarity: undefined,
+        cost: undefined,
+      })
+
+      expect(item.type).toBe('wondrousItem')
+      expect(item.rarity.name).toBe('Common')
+      expect(item.cost).toBe('')
     })
   })
 })

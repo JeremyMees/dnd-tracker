@@ -59,6 +59,7 @@ describe('GET /api/stats', () => {
   })
 
   it('defaults a table to 0 when the query errors', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFrom({
       ...Object.fromEntries(
         TABLES.filter(t => t !== 'notes').map(table => [

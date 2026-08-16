@@ -47,6 +47,92 @@ describe('transformers/spell', () => {
       expect(spell.castingOptions.length).toBeGreaterThan(0)
       expect(spell.castingOptions[0]!.type).toBe('slot_level_3')
     })
+
+    it('omits casting option fields the api left null', () => {
+      const spell = toSpell(open5eV2SpellFixture)
+      const [option] = spell.castingOptions
+
+      expect(option!.damageRoll).toBe('5d4')
+      expect(option!.targetCount).toBeUndefined()
+      expect(option!.duration).toBeUndefined()
+      expect(option!.range).toBeUndefined()
+      expect(option!.concentration).toBeUndefined()
+      expect(option!.shapeSize).toBeUndefined()
+      expect(option!.desc).toBeUndefined()
+    })
+
+    it('maps every casting option field when the api provides them', () => {
+      const spell = toSpell({
+        ...open5eV2SpellFixture,
+        casting_options: [
+          {
+            type: 'slot_level_3',
+            damage_roll: '5d4',
+            target_count: 2,
+            duration: '1 minute',
+            range: 120,
+            concentration: true,
+            shape_size: 20,
+            desc: 'A wider spray of acid.',
+          },
+        ],
+      })
+
+      expect(spell.castingOptions[0]).toEqual({
+        type: 'slot_level_3',
+        damageRoll: '5d4',
+        targetCount: 2,
+        duration: '1 minute',
+        range: 120,
+        concentration: true,
+        shapeSize: 20,
+        desc: 'A wider spray of acid.',
+      })
+    })
+
+    it('omits an empty damage roll on a casting option', () => {
+      const spell = toSpell({
+        ...open5eV2SpellFixture,
+        casting_options: [
+          {
+            type: 'slot_level_3',
+            damage_roll: null,
+            target_count: null,
+            duration: null,
+            range: null,
+            concentration: null,
+            shape_size: null,
+            desc: null,
+          },
+        ],
+      })
+
+      expect(spell.castingOptions[0]!.damageRoll).toBeUndefined()
+    })
+
+    it('maps the optional top level fields when present', () => {
+      const spell = toSpell({
+        ...open5eV2SpellFixture,
+        reaction_condition: 'when you are hit by an attack',
+        material_cost: 50,
+        shape_type: 'cone',
+        shape_size: 15,
+      })
+
+      expect(spell.reactionCondition).toBe('when you are hit by an attack')
+      expect(spell.materialCost).toBe(50)
+      expect(spell.shapeType).toBe('cone')
+      expect(spell.shapeSize).toBe(15)
+    })
+
+    it('omits the optional top level fields when the api returns null', () => {
+      const spell = toSpell(open5eV2SpellFixture)
+
+      expect(spell.reactionCondition).toBeUndefined()
+      expect(spell.materialCost).toBeUndefined()
+      expect(spell.shapeType).toBeUndefined()
+      expect(spell.shapeSize).toBeUndefined()
+    })
   })
 
   describe('toSpell (V1)', () => {
@@ -83,6 +169,23 @@ describe('transformers/spell', () => {
       expect(spell.somatic).toBeTruthy()
       expect(spell.material).toBeTruthy()
       expect(spell.materialSpecified).toBe('powdered rhubarb leaf')
+    })
+
+    it('falls back to empty strings for absent text fields', () => {
+      const spell = toSpell({
+        ...open5eV1SpellFixture,
+        range: undefined,
+        casting_time: undefined,
+        material: undefined,
+        duration: undefined,
+        higher_level: undefined,
+      })
+
+      expect(spell.rangeText).toBe('')
+      expect(spell.castingTime).toBe('')
+      expect(spell.materialSpecified).toBe('')
+      expect(spell.duration).toBe('')
+      expect(spell.higherLevel).toBe('')
     })
   })
 })

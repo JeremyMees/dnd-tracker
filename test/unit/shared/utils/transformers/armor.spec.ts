@@ -24,6 +24,21 @@ describe('transformers/armor', () => {
 
       expect(armor.strengthScoreRequired).toBeUndefined()
     })
+
+    it('maps strengthScoreRequired when present', () => {
+      const armor = toArmor({
+        ...open5eV2ArmorFixture,
+        strength_score_required: 15,
+      })
+
+      expect(armor.strengthScoreRequired).toBe(15)
+    })
+
+    it('omits acCapDexMod when null', () => {
+      const armor = toArmor({ ...open5eV2ArmorFixture, ac_cap_dexmod: null })
+
+      expect(armor.acCapDexMod).toBeUndefined()
+    })
   })
 
   describe('toArmor (V1)', () => {
@@ -52,6 +67,35 @@ describe('transformers/armor', () => {
       const armor = toArmor(open5eV1ArmorFixture)
 
       expect(armor.strengthScoreRequired).toBe(13)
+    })
+
+    it('omits strengthScoreRequired when there is no requirement', () => {
+      const armor = toArmor({
+        ...open5eV1ArmorFixture,
+        strength_requirement: '',
+      })
+
+      expect(armor.strengthScoreRequired).toBeUndefined()
+    })
+
+    it('caps the dex modifier at 2 for medium armor', () => {
+      const armor = toArmor({
+        ...open5eV1ArmorFixture,
+        category: 'Medium Armor',
+      })
+
+      expect(armor.type).toBe('medium')
+      expect(armor.acAddDexMod).toBeTruthy()
+      expect(armor.acCapDexMod).toBe(2)
+    })
+
+    it('prefers ac_string over the numeric armor class for the display', () => {
+      const armor = toArmor({
+        ...open5eV1ArmorFixture,
+        ac_string: '16 (chain mail)',
+      })
+
+      expect(armor.acDisplay).toBe('16 (chain mail)')
     })
   })
 })
