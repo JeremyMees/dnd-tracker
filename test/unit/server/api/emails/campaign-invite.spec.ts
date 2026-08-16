@@ -112,6 +112,7 @@ describe('POST /api/emails/campaign-invite', () => {
   })
 
   it('throws when sending the email fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockTables()
     mockFetch.mockRejectedValue(new Error('network error'))
 

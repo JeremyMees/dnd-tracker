@@ -60,6 +60,7 @@ describe('POST /api/emails/feature-request', () => {
   })
 
   it('throws when sending the email fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFrom({
       profiles: mockChain({
         data: { username: 'Jeremy', email: 'jeremy@example.com' },

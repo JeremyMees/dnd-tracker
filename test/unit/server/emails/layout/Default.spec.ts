@@ -72,4 +72,13 @@ describe('Default email layout', () => {
     expect(html).not.toContain('mailto:jeremy@dnd-tracker.com')
     expect(html).toContain('<p>Slotted body content</p>')
   })
+
+  it('Should render as plain text', async () => {
+    const text = await render(host({ heading: 'Campaign invite' }), undefined, {
+      plainText: true,
+    })
+
+    expect(text.toLowerCase()).toContain('campaign invite')
+    expect(text).toContain('Slotted body content')
+  })
 })
