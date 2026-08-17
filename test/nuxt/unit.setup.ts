@@ -20,7 +20,7 @@ config.global.mocks = {
 
 config.global.directives = {
   tippy: {},
-  autoAnimate: {},
+  'auto-animate': {},
   dompurifyHtml: (el, binding) => {
     el.innerHTML = binding.value
   },

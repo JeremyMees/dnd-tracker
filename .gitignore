@@ -34,3 +34,7 @@ logs
 /supabase
 /coverage
 /coverage-raw
+
+.agents
+.claude
+skills-lock.json
