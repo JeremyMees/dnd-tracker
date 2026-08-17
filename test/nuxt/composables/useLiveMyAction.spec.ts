@@ -133,8 +133,12 @@ describe('useLiveMyAction', () => {
 
     const vm = await mountProbe()
 
-    await vm.apply({ type: 'hp', hpType: 'heal', amount: 5 }, { hitPoints: 15 })
+    const applied = await vm.apply(
+      { type: 'hp', hpType: 'heal', amount: 5 },
+      { hitPoints: 15 },
+    )
 
+    expect(applied).toBe(true)
     expect(fetchMock).toHaveBeenCalledWith('/api/live/action', {
       method: 'POST',
       body: {
@@ -169,10 +173,14 @@ describe('useLiveMyAction', () => {
 
     const vm = await mountProbe()
 
-    await vm.apply({ type: 'hp', hpType: 'heal', amount: 5 }, { hitPoints: 15 })
+    const applied = await vm.apply(
+      { type: 'hp', hpType: 'heal', amount: 5 },
+      { hitPoints: 15 },
+    )
 
     const lastCall = setQueryData.mock.calls.at(-1)!
 
+    expect(applied).toBe(false)
     expect(lastCall).toEqual([
       ['useLiveState', 'session-token', 'seat-token'],
       cachedState,
@@ -187,8 +195,9 @@ describe('useLiveMyAction', () => {
 
     const vm = await mountProbe()
 
-    await vm.apply({ type: 'concentration', value: true }, {})
+    const applied = await vm.apply({ type: 'concentration', value: true }, {})
 
+    expect(applied).toBe(false)
     expect(fetchMock).not.toHaveBeenCalled()
     expect(setQueryData).not.toHaveBeenCalled()
   })

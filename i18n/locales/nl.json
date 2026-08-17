@@ -80,6 +80,7 @@
     "copyLink": "Kopieer link"
   },
   "general": {
+    "waiting": "Wachten",
     "spectator": "Toeschouwer | Toeschouwers",
     "you": "Jij",
     "session": "Sessie | Sessies",
@@ -578,6 +579,9 @@
       "spectatorLabel": "Alleen kijken",
       "confirmed": "Kamercode bevestigd",
       "currentTurn": "Huidige beurt",
+      "yourTurn": "Jouw beurt",
+      "yourStatus": "Jouw status",
+      "waitingText": "De besturing opent automatisch zodra {name} aan de beurt is.",
       "errors": {
         "notFound": "We konden geen live sessie met die code vinden.",
         "expired": "Deze live sessie is beëindigd.",
@@ -897,6 +901,7 @@
         "init": "Init",
         "ac": "AC",
         "hp": "HP",
+        "status": "Status",
         "manage": "Acties",
         "conditions": "Condities",
         "note": "Notitie",

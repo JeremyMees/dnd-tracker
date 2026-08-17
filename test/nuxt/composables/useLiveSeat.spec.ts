@@ -41,6 +41,31 @@ describe('useLiveSeat', () => {
     expect(seat.value).toEqual(response)
   })
 
+  it('has no own row without a seat', () => {
+    const { ownRowId } = useLiveSeat()
+
+    expect(ownRowId.value).toBeUndefined()
+  })
+
+  it('exposes the claimed row id', () => {
+    localStorage.setItem('live-seat', JSON.stringify(response))
+
+    const { ownRowId } = useLiveSeat()
+
+    expect(ownRowId.value).toBe('row-1')
+  })
+
+  it('has no own row for a spectator seat', () => {
+    localStorage.setItem(
+      'live-seat',
+      JSON.stringify({ ...response, spectator: true }),
+    )
+
+    const { ownRowId } = useLiveSeat()
+
+    expect(ownRowId.value).toBeUndefined()
+  })
+
   it('clears the seat', async () => {
     const { seat, clear } = useLiveSeat()
 

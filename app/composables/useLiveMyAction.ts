@@ -32,11 +32,11 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
   async function apply(
     action: LiveAction,
     optimisticPatch: Partial<PlayerRow>,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const token = seat.value?.sessionToken
     const seatToken = seat.value?.seatToken
 
-    if (!token || !seatToken || !rowId.value) return
+    if (!token || !seatToken || !rowId.value) return false
 
     const key = liveStateQueryKey(token, seatToken)
     const previous = queryClient.getQueryData<LiveStateResponse>(key)
@@ -74,6 +74,8 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
           },
         })
       }
+
+      return true
     } catch {
       if (previous) queryClient.setQueryData(key, previous)
 
@@ -82,6 +84,8 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
         description: t('general.error.text'),
         variant: 'destructive',
       })
+
+      return false
     } finally {
       pending.value = false
     }

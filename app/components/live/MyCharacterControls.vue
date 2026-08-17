@@ -47,14 +47,14 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
 
 <template>
   <div test-id="my-character" class="flex flex-col gap-4">
-    <UiSeparator class="bg-muted" />
-
     <LiveMyCharacterHp
       v-if="isDefined(row.hitPoints)"
       :row="row"
       :pending="locked || !allow.hp"
       :apply="apply"
     />
+
+    <UiSeparator class="bg-muted" />
 
     <LiveMyCharacterAc
       v-if="isDefined(row.armorClass)"
@@ -71,56 +71,24 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
       <span class="text-xs font-bold text-muted-foreground">
         {{ $t('general.deathSaves') }}
       </span>
-      <div
-        class="grid gap-1 w-fit"
-        :class="{
-          'bg-success/20 p-2 rounded-lg':
-            row.deathSaves.save.every(Boolean) &&
-            !row.deathSaves.fail.every(Boolean),
-          'bg-destructive/20 p-2 rounded-lg':
-            row.deathSaves.fail.every(Boolean) &&
-            !row.deathSaves.save.every(Boolean),
-        }"
-      >
-        <div
-          v-for="(save, i) in [row.deathSaves.save, row.deathSaves.fail]"
-          :key="`save-${i}`"
-          class="grid grid-cols-3 gap-1 min-w-14"
-        >
-          <button
-            v-for="(value, j) in save"
-            :key="`${value}-${j}`"
-            :test-id="i === 0 ? 'save' : 'fail'"
-            :disabled="locked || !allow.deathSaves"
-            class="size-4 rounded border-2"
-            :class="{
-              'border-success bg-success/20': i === 0,
-              'border-destructive bg-destructive/20': i === 1,
-              'bg-success!': value && i === 0,
-              'bg-destructive!': value && i === 1,
-            }"
-            @click="toggleDeathSave(j, i === 0)"
-          />
-        </div>
-      </div>
+      <LiveDeathSaves
+        :saves="row.deathSaves"
+        :disabled="locked || !allow.deathSaves"
+        @toggle="toggleDeathSave"
+      />
     </div>
+
+    <UiSeparator class="bg-muted" />
 
     <button
       test-id="concentration"
       type="button"
       :disabled="locked || !allow.concentration"
       :data-active="row.concentration"
-      class="flex items-center gap-1 w-fit text-muted-foreground"
+      class="w-fit"
       @click="toggleConcentration"
     >
-      <Icon
-        :name="
-          row.concentration ? 'tabler:circle-filled' : 'tabler:circle-dotted'
-        "
-        class="size-4 min-w-4"
-        aria-hidden="true"
-      />
-      <span class="text-xs">{{ $t('general.concentration') }}</span>
+      <LiveStatConcentration :active="row.concentration" label />
     </button>
 
     <div class="flex flex-col gap-2">
@@ -134,7 +102,7 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
           test-id="condition"
           :variant="
             row.conditions.map(c => c.id).includes(condition.id)
-              ? 'default'
+              ? 'destructive'
               : 'outline'
           "
           class="cursor-pointer"

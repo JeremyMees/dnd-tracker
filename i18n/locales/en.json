@@ -80,6 +80,7 @@
     "copyLink": "Copy link"
   },
   "general": {
+    "waiting": "Waiting",
     "spectator": "Spectator | Spectators",
     "you": "You",
     "session": "Session | Sessions",
@@ -578,6 +579,9 @@
       "spectatorLabel": "Just watching",
       "confirmed": "Room code confirmed",
       "currentTurn": "Current turn",
+      "yourTurn": "Your turn",
+      "yourStatus": "Your status",
+      "waitingText": "The controls open automatically once {name} is up.",
       "errors": {
         "notFound": "We couldn't find a live session with that code.",
         "expired": "This live session has ended.",
@@ -897,6 +901,7 @@
         "init": "Init",
         "ac": "AC",
         "hp": "HP",
+        "status": "Status",
         "manage": "Actions",
         "conditions": "Conditions",
         "note": "Notes",

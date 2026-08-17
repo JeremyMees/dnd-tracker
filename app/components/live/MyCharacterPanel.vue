@@ -1,36 +1,60 @@
 <script setup lang="ts">
 const props = defineProps<{
   row: PlayerRow
-  active: boolean
   allow: LiveAllowActions
+  activeRow?: PlayerRow
 }>()
 
-const collapsed = ref(false)
+const active = computed(() => props.row.id === props.activeRow?.id)
+const collapsed = ref(!active.value)
 
-watch(
-  () => props.active,
-  value => {
-    collapsed.value = !value
-  },
-)
+watch(active, value => {
+  collapsed.value = !value
+})
+
+function toggle(): void {
+  if (!active.value) return
+
+  collapsed.value = !collapsed.value
+}
 </script>
 
 <template>
   <div
     test-id="my-character-panel"
-    class="flex flex-col bg-tertiary/50 border-t-4 border-tertiary pb-[env(safe-area-inset-bottom)]"
+    class="shrink-0 transition-all duration-300 bg-background pb-[env(safe-area-inset-bottom)]"
+    :class="
+      active
+        ? 'border-4 border-primary rounded-t-2xl tracker-shadow'
+        : 'border-t border-border'
+    "
   >
     <button
       test-id="toggle"
       type="button"
+      :disabled="!active"
       :aria-label="$t(collapsed ? 'actions.expand' : 'actions.collapse')"
-      class="flex items-center justify-between gap-2 p-3 shrink-0"
-      @click="collapsed = !collapsed"
+      class="w-full flex items-center justify-between gap-2 p-3"
+      @click="toggle"
     >
-      <div class="flex items-center gap-2 min-w-0">
-        <span test-id="name" class="font-bold truncate">{{ row.name }}</span>
-      </div>
+      <span class="flex items-center gap-2 min-w-0">
+        <Icon
+          :name="active ? 'tabler:sparkles' : 'tabler:clock'"
+          :class="active ? 'text-primary' : 'text-muted-foreground'"
+          class="size-5 min-w-5"
+          aria-hidden="true"
+        />
+        <span test-id="title" class="font-bold truncate">
+          <template v-if="active">
+            {{ $t('pages.live.yourTurn') }} &middot; {{ row.name }}
+          </template>
+          <template v-else>
+            {{ $t('general.waiting') }} &middot; {{ activeRow?.name }}
+          </template>
+        </span>
+      </span>
       <Icon
+        v-if="active"
         name="tabler:chevron-up"
         :class="{ 'rotate-180': collapsed }"
         class="size-5 min-w-5 shrink-0 transition-transform duration-200"

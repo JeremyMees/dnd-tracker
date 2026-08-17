@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import MyCharacterAc from '~/components/live/MyCharacterAc.vue'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
-const apply = vi.fn().mockResolvedValue(undefined)
+const apply = vi.fn().mockResolvedValue(true)
 
 const row: PlayerRow = {
   id: 'row-1',
@@ -123,6 +123,28 @@ describe('LiveMyCharacterAc', () => {
       { type: 'ac', acType: 'add', amount: 4 },
       {},
     )
+  })
+
+  it('clears the amount once the action is applied', async () => {
+    const component = await mountAc()
+
+    await submitAs(component, 'add', 4)
+
+    expect(
+      (component.get('input[name="amount"]').element as HTMLInputElement).value,
+    ).toBe('')
+  })
+
+  it('keeps the amount when the action could not be applied', async () => {
+    apply.mockResolvedValueOnce(false)
+
+    const component = await mountAc()
+
+    await submitAs(component, 'add', 4)
+
+    expect(
+      (component.get('input[name="amount"]').element as HTMLInputElement).value,
+    ).toBe('4')
   })
 
   it('disables the actions while pending', async () => {

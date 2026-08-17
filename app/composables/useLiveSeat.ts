@@ -5,9 +5,15 @@ export function useLiveSeat() {
     serializer: StorageSerializers.object,
   })
 
+  const ownRowId = computed(() => {
+    if (!seat.value || seat.value.spectator) return undefined
+
+    return seat.value.row
+  })
+
   function clear(): void {
     seat.value = null
   }
 
-  return { seat, clear }
+  return { seat, ownRowId, clear }
 }
