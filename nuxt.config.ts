@@ -140,7 +140,7 @@ export default defineNuxtConfig({
         'clsx',
         'dompurify',
         'driver.js',
-        'markdown-it',
+        'marked',
         'reka-ui',
         'tailwind-merge',
         'vee-validate',

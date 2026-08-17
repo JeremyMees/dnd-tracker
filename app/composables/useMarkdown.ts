@@ -1,16 +1,17 @@
-import type { MarkdownIt } from 'markdown-it'
+import type { Marked } from 'marked'
 
-const renderer = shallowRef<MarkdownIt>()
+const renderer = shallowRef<Marked>()
 let pending: Promise<void> | undefined
 
 export function useMarkdown() {
   if (import.meta.client && !renderer.value && !pending) {
-    pending = import('markdown-it').then(({ default: md }) => {
-      renderer.value = md()
+    pending = import('marked').then(({ Marked }) => {
+      renderer.value = new Marked()
     })
   }
 
   return {
-    renderMarkdown: (text: string) => renderer.value?.render(text) ?? '',
+    renderMarkdown: (text: string) =>
+      renderer.value?.parse(text, { async: false }) ?? '',
   }
 }
