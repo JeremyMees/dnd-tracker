@@ -42,19 +42,19 @@ jobs:
         run: npm run typecheck
 
   testing:
-    name: Testing ${{ matrix.shard }}/5
+    name: Testing ${{ matrix.shard }}/6
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
+        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run tests with coverage
-        run: npm run test:coverage -- --shard=${{ matrix.shard }}/5 --coverage.reporter=json --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
+        run: npm run test:coverage -- --shard=${{ matrix.shard }}/6 --coverage.reporter=json --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
       - name: Rename coverage report for this shard
         run: mv coverage/coverage-final.json coverage/coverage-final-${{ matrix.shard }}.json
       - name: Upload coverage artifact
