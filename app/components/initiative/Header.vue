@@ -5,9 +5,13 @@ defineEmits<{
   next: []
 }>()
 
-defineProps<{ data: InitiativeSheet | undefined }>()
+defineProps<{
+  data: InitiativeSheet | undefined
+  encounterId?: number
+}>()
 
 const resetOpen = ref<boolean>(false)
+const liveOpen = ref<boolean>(false)
 </script>
 
 <template>
@@ -48,6 +52,7 @@ const resetOpen = ref<boolean>(false)
         </UiPopoverTrigger>
         <UiPopoverContent class="flex flex-col gap-2">
           <button
+            test-id="reset-soft"
             :aria-label="$t('components.encounterTable.reset.soft.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
             @click="($emit('reset', false), (resetOpen = false))"
@@ -61,6 +66,7 @@ const resetOpen = ref<boolean>(false)
           </button>
           <UiSeparator />
           <button
+            test-id="reset-hard"
             :aria-label="$t('components.encounterTable.reset.hard.title')"
             class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
             @click="($emit('reset', true), (resetOpen = false))"
@@ -72,6 +78,27 @@ const resetOpen = ref<boolean>(false)
               {{ $t('components.encounterTable.reset.hard.description') }}
             </span>
           </button>
+        </UiPopoverContent>
+      </UiPopover>
+      <UiPopover v-if="encounterId" v-model:open="liveOpen">
+        <UiPopoverTrigger as-child>
+          <UiButton
+            v-tippy="$t('components.liveSession.title')"
+            test-id="live-session-trigger"
+            :aria-label="$t('components.liveSession.title')"
+            variant="success-ghost"
+            size="icon-sm"
+            class="group"
+          >
+            <Icon
+              name="tabler:broadcast"
+              class="text-success group-hover:text-foreground"
+              aria-hidden="true"
+            />
+          </UiButton>
+        </UiPopoverTrigger>
+        <UiPopoverContent>
+          <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
         </UiPopoverContent>
       </UiPopover>
     </div>

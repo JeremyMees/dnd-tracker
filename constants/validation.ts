@@ -1,3 +1,5 @@
+export const maxHealthAndArmour = 1000
+
 export const initiativeSpacingOptions = [
   'compact',
   'normal',
@@ -45,6 +47,11 @@ export const homebrewType = [
   'npc',
   'monster',
   'lair',
+] as const satisfies readonly HomebrewType[]
+
+export const claimableRowTypes = [
+  'player',
+  'npc',
 ] as const satisfies readonly HomebrewType[]
 
 export const abilityType = [

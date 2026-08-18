@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`app > Should match snapshot 1`] = `
+"<div><span class="nuxt-route-announcer" style="position: absolute;"><span role="status" aria-live="polite" aria-atomic="false" style="border: 0px; clip-path: inset(50%); height: 1px; width: 1px; overflow: hidden; position: absolute; white-space: nowrap; word-wrap: normal; margin: -1px; padding: 0px;">%siteName</span></span>
+  <div class="nuxt-loading-indicator" style="position: fixed; top: 0px; right: 0px; left: 0px; pointer-events: none; width: auto; height: 3px; opacity: 0; background: linear-gradient(to right, #7333E0 70%, #D926AA 100%); transform: scaleX(0%); transform-origin: left; transition: transform 0.1s, height 0.4s, opacity 0.4s; z-index: 999999;"></div>
+  <!--v-if-->
+  <div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events: none;">
+    <!--v-if-->
+    <ol tabindex="-1" class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"></ol>
+    <!--v-if-->
+  </div>
+  <div test-id="modal-group"></div>
+  <div class="flex flex-col min-h-screen">
+    <div test-id="nuxt-page"></div>
+  </div>
+</div>"
+`;

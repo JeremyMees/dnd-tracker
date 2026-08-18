@@ -9,7 +9,10 @@ interface Props {
 }
 
 type MockFunctions = {
-  onSubmit: (form: { name: string }) => Promise<void>
+  onSubmit: (e?: Event) => Promise<void>
+  popoverOpen: boolean
+  formError: string
+  form: { setValues: (values: { name: string }) => void }
 }
 
 const mockUpdate = vi.fn()
@@ -70,8 +73,83 @@ describe('Initiative table row name', async () => {
     })
 
     const vm = component.vm as unknown as MockFunctions
-    await vm.onSubmit({ name: 'New Name' })
+    vm.form.setValues({ name: 'New Name' })
+    await vm.onSubmit()
 
     expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('Should not update if the row is not found in the sheet', async () => {
+    const component = await mountSuspended(Name, {
+      props: {
+        item: { ...props.item, id: 'not-in-sheet' },
+      },
+      provide,
+    })
+
+    const vm = component.vm as unknown as MockFunctions
+    vm.form.setValues({ name: 'New Name' })
+    await vm.onSubmit()
+
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('Should update the row name and close the popover on successful submit', async () => {
+    const component = await mountSuspended(Name, { props, provide })
+
+    const vm = component.vm as unknown as MockFunctions
+    vm.popoverOpen = true
+    vm.form.setValues({ name: 'New Name' })
+    await vm.onSubmit()
+
+    expect(mockUpdate).toHaveBeenCalledWith({
+      rows: expect.arrayContaining([
+        expect.objectContaining({
+          id: props.item.id,
+          name: 'New Name',
+        }),
+      ]),
+    })
+    expect(vm.popoverOpen).toBeFalsy()
+  })
+
+  it('Should set formError when update throws', async () => {
+    mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
+
+    const component = await mountSuspended(Name, { props, provide })
+
+    const vm = component.vm as unknown as MockFunctions
+    vm.form.setValues({ name: 'New Name' })
+    await vm.onSubmit()
+
+    expect(vm.formError).toBe('Update failed')
+  })
+
+  it('Should set a fallback formError when update throws without a message', async () => {
+    mockUpdate.mockRejectedValueOnce({})
+
+    const component = await mountSuspended(Name, { props, provide })
+
+    const vm = component.vm as unknown as MockFunctions
+    vm.form.setValues({ name: 'New Name' })
+    await vm.onSubmit()
+
+    expect(vm.formError).toBe('An error occurred during name update')
+  })
+
+  it('Should render the rename popover content when opened', async () => {
+    const component = await mountSuspended(Name, { props, provide })
+
+    const vm = component.vm as unknown as MockFunctions
+    vm.popoverOpen = true
+    await nextTick()
+
+    expect(document.body.textContent).toContain(
+      'components.initiativeTableModals.name',
+    )
+    expect(document.body.querySelector('input[type="text"]')).toBeTruthy()
+    expect(
+      document.body.querySelector('button[aria-label="actions.save"]'),
+    ).toBeTruthy()
   })
 })

@@ -31,30 +31,18 @@ export function useAuthentication() {
   async function register(form: Register): Promise<void> {
     const { email, password, ...userData } = form
 
-    const { error, data } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: userData },
+    })
 
-    if (error) throw createError(error)
-
-    if (data?.user) {
-      const profile: ProfileInsert = {
-        ...userData,
-        avatarOptions: userData.avatarOptions as Record<
-          string,
-          string | number
-        >,
-        email,
-        id: data.user.id,
-      }
-
-      const { error } = await supabase.from('profiles').insert([profile])
-
-      if (error) {
-        throw createError(
-          error?.message.includes('duplicate key')
-            ? 'Email already in use'
-            : error,
-        )
-      }
+    if (error) {
+      throw createError(
+        error.message.includes('duplicate key')
+          ? 'Email already in use'
+          : error,
+      )
     }
   }
 

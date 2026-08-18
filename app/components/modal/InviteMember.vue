@@ -203,6 +203,7 @@ async function inviteNewUser(email: string): Promise<void> {
       <UiInputGroupInput
         id="search"
         v-model="search"
+        test-id="search"
         name="search"
         type="search"
       />
@@ -210,7 +211,11 @@ async function inviteNewUser(email: string): Promise<void> {
         <Icon name="tabler:search" :aria-hidden="true" />
       </UiInputGroupAddon>
     </UiInputGroup>
-    <p v-if="searchFormError" class="text-sm text-destructive">
+    <p
+      v-if="searchFormError"
+      test-id="search-error"
+      class="text-sm text-destructive"
+    >
       {{ searchFormError }}
     </p>
   </div>
@@ -227,6 +232,7 @@ async function inviteNewUser(email: string): Promise<void> {
       </p>
       <div class="flex justify-end">
         <UiButton
+          test-id="invite-new"
           variant="foreground"
           class="whitespace-nowrap"
           @click="inviteNewUser(noUser)"
@@ -244,6 +250,7 @@ async function inviteNewUser(email: string): Promise<void> {
         <div
           v-for="(foundUser, index) in foundUsers"
           :key="foundUser.id"
+          test-id="found-user"
           class="grid sm:grid-cols-3 items-center gap-4 border-t py-2 first:pt-0 first:border-t-0"
         >
           <div class="flex items-end gap-2">
@@ -294,6 +301,7 @@ async function inviteNewUser(email: string): Promise<void> {
             </UiFormField>
             <UiButton
               v-tippy="$t('actions.delete')"
+              test-id="remove"
               variant="destructive-ghost"
               size="icon-sm"
               type="button"
@@ -336,10 +344,10 @@ async function inviteNewUser(email: string): Promise<void> {
           />
         </div>
       </div>
-      <div v-if="formError" class="text-sm text-destructive">
+      <div v-if="formError" test-id="error" class="text-sm text-destructive">
         {{ formError }}
       </div>
-      <UiButton type="submit" class="w-full">
+      <UiButton test-id="submit" type="submit" class="w-full">
         {{ $t('components.inviteMember.invite') }}
       </UiButton>
     </UiFormWrapper>

@@ -28,10 +28,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
     </UiSidebarGroupLabel>
     <UiSidebarMenu>
       <UiSidebarMenuItem>
-        <UiDialog
-          :open="openModal === 'content'"
-          @close="openModal = undefined"
-        >
+        <UiDialog :open="openModal === 'content'">
           <UiDialogTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
@@ -41,6 +38,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                   placement: 'right',
                   onShow: () => !isExpanded,
                 }"
+                test-id="content"
                 :aria-label="`${$t('components.navbar.dnd-content')}`"
                 @click="openModal = 'content'"
               >
@@ -62,6 +60,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               <UiDialogTitle class="pb-4">
                 {{ $t('components.navbar.dnd-content') }}
               </UiDialogTitle>
+              <UiDialogDescription class="sr-only" />
             </UiDialogHeader>
             <FormPinContent />
           </UiDialogContent>
@@ -90,10 +89,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       </UiSidebarMenuItem>
       <template v-else>
         <UiSidebarMenuItem>
-          <UiDialog
-            :open="openModal === 'bestiary'"
-            @close="openModal = undefined"
-          >
+          <UiDialog :open="openModal === 'bestiary'">
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
                 <button
@@ -128,16 +124,14 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 <UiDialogTitle class="pb-4">
                   {{ $t('general.bestiary') }}
                 </UiDialogTitle>
+                <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
               <FormBestiary />
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>
         <UiSidebarMenuItem v-if="sheet?.campaign?.id">
-          <UiDialog
-            :open="openModal === 'addHomebrew'"
-            @close="openModal = undefined"
-          >
+          <UiDialog :open="openModal === 'addHomebrew'">
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
                 <button
@@ -172,16 +166,14 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 <UiDialogTitle class="pb-4">
                   {{ $t('general.campaignHomebrew') }}
                 </UiDialogTitle>
+                <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
               <FormCampaignHomebrew @close="openModal = undefined" />
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>
         <UiSidebarMenuItem>
-          <UiDialog
-            :open="openModal === 'newHomebrew'"
-            @close="openModal = undefined"
-          >
+          <UiDialog :open="openModal === 'newHomebrew'">
             <UiDialogTrigger as-child>
               <UiSidebarMenuButton as-child>
                 <button
@@ -216,6 +208,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 <UiDialogTitle>
                   {{ $t('general.newHomebrew') }}
                 </UiDialogTitle>
+                <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
               <div class="overflow-y-auto">
                 <FormHomebrew
@@ -232,10 +225,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiSidebarMenuItem>
       </template>
       <UiSidebarMenuItem>
-        <UiDialog
-          :open="openModal === 'settings'"
-          @close="openModal = undefined"
-        >
+        <UiDialog :open="openModal === 'settings'">
           <UiDialogTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
@@ -245,6 +235,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                   placement: 'right',
                   onShow: () => !isExpanded,
                 }"
+                test-id="settings"
                 :aria-label="$t('general.setting', 2)"
                 @click="openModal = 'settings'"
               >
@@ -266,6 +257,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               <UiDialogTitle>
                 {{ $t('general.setting', 2) }}
               </UiDialogTitle>
+              <UiDialogDescription class="sr-only" />
             </UiDialogHeader>
             <FormInitiativeSettings @close="openModal = undefined" />
           </UiDialogContent>

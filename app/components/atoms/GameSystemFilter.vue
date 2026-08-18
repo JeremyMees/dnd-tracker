@@ -61,6 +61,7 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
   <UiPopover v-model:open="popoverOpen">
     <UiPopoverTrigger as-child>
       <button
+        test-id="trigger"
         :disabled="disabled"
         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
@@ -104,10 +105,12 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
             <div
               v-for="option in documentOptions[selectedSystem]"
               :key="option.key"
+              :test-id="option.key"
               class="rounded-md border border-input bg-background px-3 py-2 flex flex-col gap-1"
             >
               <div class="flex flex-row items-center space-x-2">
                 <UiCheckbox
+                  :test-id="`checkbox-${option.key}`"
                   :model-value="(selectedDocuments ?? []).includes(option.key)"
                   @update:model-value="
                     (val: boolean | 'indeterminate') => {
@@ -133,6 +136,7 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
               <div class="text-muted-foreground text-2xs">
                 Published by
                 <NuxtLink
+                  :test-id="`publisher-${option.key}`"
                   :to="option.permalink"
                   target="_blank"
                   rel="noopener noreferrer"

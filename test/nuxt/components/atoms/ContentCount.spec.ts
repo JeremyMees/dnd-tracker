@@ -48,6 +48,14 @@ describe('ContentCount', async () => {
     expect(component.find('[test-id="skeleton"]').exists()).toBeTruthy()
   })
 
+  it('Should render a skeleton when count is undefined and not loading', async () => {
+    const component = await mountSuspended(ContentCount, {
+      props: { ...props, loading: false, count: undefined },
+    })
+
+    expect(component.find('[test-id="skeleton"]').exists()).toBeTruthy()
+  })
+
   it('Should render red text when count is greater or equal to max', async () => {
     const component = await mountSuspended(ContentCount, {
       props: { ...props, count: 2 },

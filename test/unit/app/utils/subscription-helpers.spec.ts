@@ -102,5 +102,13 @@ describe('subscription-helpers', () => {
       expect(getMax('campaign', 'upgrade to pro')).toBe(3)
       expect(getMax('team', 'upgrade to pro')).toBe(1)
     })
+
+    it('returns undefined for an unknown type', () => {
+      const unknownType = 'unknown' as unknown as 'encounter'
+
+      expect(getMax(unknownType, 'medior')).toBeUndefined()
+      expect(getMax(unknownType, 'pro')).toBeUndefined()
+      expect(getMax(unknownType, 'free')).toBeUndefined()
+    })
   })
 })

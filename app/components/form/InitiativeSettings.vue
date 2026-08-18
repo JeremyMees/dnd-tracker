@@ -21,6 +21,7 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     await update({
       settings: {
+        ...sheet.value.settings,
         ...values,
         modified: true,
       },

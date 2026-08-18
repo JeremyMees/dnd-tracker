@@ -1,4 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { createApp } from 'vue'
+import type { InjectionKey } from 'vue'
 import {
   sortByNumber,
   sortByString,
@@ -11,6 +13,11 @@ import {
   isDefined,
   validateParamId,
   animateTableUpdate,
+  kebabToCamel,
+  timeRemaining,
+  scrollToId,
+  formatDate,
+  validateInject,
 } from '~/utils/ui-helpers'
 
 beforeEach(() => {
@@ -212,6 +219,105 @@ describe('ui-helpers', () => {
 
       vi.runAllTimers()
       vi.useRealTimers()
+    })
+  })
+
+  describe('kebabToCamel', () => {
+    it('converts a kebab-case string to camelCase', () => {
+      expect(kebabToCamel('pro-required')).toBe('proRequired')
+      expect(kebabToCamel('no-active-session')).toBe('noActiveSession')
+    })
+
+    it('returns a string without dashes unchanged', () => {
+      expect(kebabToCamel('generic')).toBe('generic')
+    })
+
+    it('returns an empty string unchanged', () => {
+      expect(kebabToCamel('')).toBe('')
+    })
+  })
+
+  describe('scrollToId', () => {
+    it('scrolls the matching element into view', () => {
+      const scrollIntoView = vi.fn()
+      document.getElementById = vi.fn().mockReturnValue({ scrollIntoView })
+
+      scrollToId('some-id')
+
+      expect(document.getElementById).toHaveBeenCalledWith('some-id')
+      expect(scrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'end',
+      })
+    })
+
+    it('does nothing when no element matches the id', () => {
+      document.getElementById = vi.fn().mockReturnValue(null)
+
+      expect(() => scrollToId('missing')).not.toThrow()
+    })
+  })
+
+  describe('formatDate', () => {
+    it('formats a date using the current locale', () => {
+      expect(formatDate('2024-03-05')).toBe('03/05/24')
+      expect(formatDate(new Date('2024-12-25'))).toBe('12/25/24')
+    })
+  })
+
+  describe('validateInject', () => {
+    it('throws when the key was never provided', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const key = Symbol('missing') as InjectionKey<string>
+
+      expect(() => validateInject(key)).toThrow()
+
+      warn.mockRestore()
+    })
+
+    it('returns the provided value for the key', () => {
+      const key = Symbol('provided') as InjectionKey<string>
+      const app = createApp({})
+      app.provide(key, 'the value')
+
+      const result = app.runWithContext(() => validateInject(key))
+
+      expect(result).toBe('the value')
+    })
+  })
+
+  describe('timeRemaining', () => {
+    it('formats hours and minutes when more than an hour remains', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+      const expiresAt = new Date('2024-01-01T02:15:00.000Z')
+
+      expect(timeRemaining(expiresAt, now)).toBe('2h 15m')
+    })
+
+    it('formats only minutes when less than an hour remains', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+      const expiresAt = new Date('2024-01-01T00:42:00.000Z')
+
+      expect(timeRemaining(expiresAt, now)).toBe('42m')
+    })
+
+    it('accepts an ISO string for expiresAt', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+
+      expect(timeRemaining('2024-01-01T00:10:00.000Z', now)).toBe('10m')
+    })
+
+    it('returns an empty string when the time has already expired', () => {
+      const now = new Date('2024-01-01T00:10:00.000Z').getTime()
+      const expiresAt = new Date('2024-01-01T00:00:00.000Z')
+
+      expect(timeRemaining(expiresAt, now)).toBe('')
+    })
+
+    it('returns an empty string when expiring exactly now', () => {
+      const now = new Date('2024-01-01T00:00:00.000Z').getTime()
+
+      expect(timeRemaining(new Date(now), now)).toBe('')
     })
   })
 })

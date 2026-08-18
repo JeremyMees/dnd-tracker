@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     { path: '~/components/modal', prefix: 'Modal' },
     { path: '~/components/form', prefix: 'Form' },
     { path: '~/components/initiative', prefix: 'Initiative' },
+    { path: '~/components/live', prefix: 'Live' },
     { path: '~/components/skeleton', prefix: 'Skeleton' },
     { path: '~/components/animation', prefix: 'Animation' },
   ],
@@ -95,6 +96,7 @@ export default defineNuxtConfig({
     '/campaigns/join': { robots: false },
     '/style-guide': { robots: false },
     '/maintenance': { robots: false },
+    '/live': { robots: false },
   }),
 
   sourcemap: {
@@ -138,7 +140,7 @@ export default defineNuxtConfig({
         'clsx',
         'dompurify',
         'driver.js',
-        'markdown-it',
+        'marked',
         'reka-ui',
         'tailwind-merge',
         'vee-validate',
@@ -163,8 +165,6 @@ export default defineNuxtConfig({
 
   image: {
     quality: 90,
-    provider: 'imagekit',
-    imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
   },
 
   ogImage: { enabled: false },

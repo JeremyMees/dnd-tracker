@@ -35,10 +35,16 @@ withDefaults(
         </UiAlertDialogDescription>
       </UiAlertDialogHeader>
       <UiAlertDialogFooter>
-        <UiAlertDialogCancel @click="$emit('decline', uuid)">
+        <UiAlertDialogCancel
+          test-id="decline-button"
+          @click="$emit('decline', uuid)"
+        >
           {{ declineText }}
         </UiAlertDialogCancel>
-        <UiAlertDialogAction @click="$emit('confirm', uuid)">
+        <UiAlertDialogAction
+          test-id="confirm-button"
+          @click="$emit('confirm', uuid)"
+        >
           {{ confirmText }}
         </UiAlertDialogAction>
       </UiAlertDialogFooter>

@@ -37,7 +37,7 @@ withDefaults(
         <UiDialogTitle>
           {{ header }}
         </UiDialogTitle>
-        <UiDialogDescription v-if="subHeader">
+        <UiDialogDescription :class="{ 'sr-only': !subHeader }">
           {{ subHeader }}
         </UiDialogDescription>
       </UiDialogHeader>

@@ -207,4 +207,106 @@ describe('dnd/checks', () => {
       expect(concentrationDC(100)).toBe(30)
     })
   })
+
+  const spellShape = { castingOptions: {}, school: 'evocation' } as DndItem
+  const magicItemShape = { isMagicItem: true, rarity: {} } as DndItem
+  const weaponShape = { damageDice: '1d8', isSimple: true } as DndItem
+  const magicWeaponShape = {
+    ...weaponShape,
+    isMagicItem: true,
+  } as unknown as DndItem
+  const armorShape = { acDisplay: '14', acBase: 14 } as DndItem
+  const magicArmorShape = {
+    ...armorShape,
+    isMagicItem: true,
+  } as unknown as DndItem
+  const conditionShape = { desc: 'A Blinded creature cannot see.' } as DndItem
+  const monsterShape = { challengeRating: 1, abilityScores: {} } as DndItem
+
+  describe('isSpell', () => {
+    it('should return true for an item with castingOptions and school', () => {
+      expect(isSpell(spellShape)).toBeTruthy()
+    })
+
+    it('should return false for an item missing castingOptions or school', () => {
+      expect(isSpell(weaponShape)).toBeFalsy()
+      expect(isSpell(conditionShape)).toBeFalsy()
+    })
+  })
+
+  describe('isMagicItem', () => {
+    it('should return true for an item with isMagicItem and rarity', () => {
+      expect(isMagicItem(magicItemShape)).toBeTruthy()
+    })
+
+    it('should return false for an item missing isMagicItem or rarity', () => {
+      expect(isMagicItem(weaponShape)).toBeFalsy()
+    })
+  })
+
+  describe('isWeapon', () => {
+    it('should return true for an item with damageDice and isSimple', () => {
+      expect(isWeapon(weaponShape)).toBeTruthy()
+    })
+
+    it('should return false when the item is also a magic item', () => {
+      expect(isWeapon(magicWeaponShape)).toBeFalsy()
+    })
+
+    it('should return false for an item missing damageDice or isSimple', () => {
+      expect(isWeapon(armorShape)).toBeFalsy()
+    })
+  })
+
+  describe('isArmor', () => {
+    it('should return true for an item with acDisplay and acBase', () => {
+      expect(isArmor(armorShape)).toBeTruthy()
+    })
+
+    it('should return false when the item is also a magic item', () => {
+      expect(isArmor(magicArmorShape)).toBeFalsy()
+    })
+
+    it('should return false for an item missing acDisplay or acBase', () => {
+      expect(isArmor(weaponShape)).toBeFalsy()
+    })
+  })
+
+  describe('isCondition', () => {
+    it('should return true for a plain item with only a desc', () => {
+      expect(isCondition(conditionShape)).toBeTruthy()
+    })
+
+    it('should return false for an item missing desc', () => {
+      expect(isCondition(weaponShape)).toBeFalsy()
+    })
+
+    it('should return false when the item is a spell, magic item, weapon, or armor', () => {
+      expect(
+        isCondition({ ...conditionShape, ...spellShape } as DndItem),
+      ).toBeFalsy()
+      expect(
+        isCondition({ ...conditionShape, ...magicItemShape } as DndItem),
+      ).toBeFalsy()
+      expect(
+        isCondition({ ...conditionShape, ...monsterShape } as DndItem),
+      ).toBeFalsy()
+      expect(
+        isCondition({ ...conditionShape, ...weaponShape } as DndItem),
+      ).toBeFalsy()
+      expect(
+        isCondition({ ...conditionShape, ...armorShape } as DndItem),
+      ).toBeFalsy()
+    })
+  })
+
+  describe('isMonster', () => {
+    it('should return true for an item with challengeRating and abilityScores', () => {
+      expect(isMonster(monsterShape)).toBeTruthy()
+    })
+
+    it('should return false for an item missing challengeRating or abilityScores', () => {
+      expect(isMonster(weaponShape)).toBeFalsy()
+    })
+  })
 })

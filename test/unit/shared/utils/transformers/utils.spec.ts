@@ -1,5 +1,41 @@
 import { describe, expect, it } from 'vitest'
 
+function open5eAttack(overrides: Partial<Open5eAttack> = {}): Open5eAttack {
+  return {
+    name: 'Tentacle',
+    attack_type: 'MELEE_WEAPON',
+    to_hit_mod: 9,
+    reach: null,
+    range: null,
+    long_range: null,
+    target_creature_only: false,
+    damage_die_count: null,
+    damage_die_type: null,
+    damage_bonus: null,
+    damage_type: null,
+    extra_damage_die_count: null,
+    extra_damage_die_type: null,
+    extra_damage_bonus: null,
+    extra_damage_type: null,
+    distance_unit: 'feet',
+    ...overrides,
+  }
+}
+
+function open5eAction(overrides: Partial<Open5eAction> = {}): Open5eAction {
+  return {
+    name: 'Multiattack',
+    desc: 'The creature attacks twice.',
+    attacks: [],
+    action_type: 'ACTION',
+    order_in_statblock: 0,
+    legendary_action_cost: null,
+    limited_to_form: null,
+    usage_limits: null,
+    ...overrides,
+  }
+}
+
 describe('transformers/utils', () => {
   describe('mapDamageType', () => {
     it('maps known damage types case-insensitively', () => {
@@ -120,6 +156,10 @@ describe('transformers/utils', () => {
       const result = mapClasses('Wizard, Cleric')
       expect(result).toContain('wizard')
       expect(result).toContain('cleric')
+    })
+
+    it('skips entries that are not known classes', () => {
+      expect(mapClasses('Wizard, Notaclass')).toEqual(['wizard'])
     })
 
     it('returns empty array for null input', () => {
@@ -349,6 +389,259 @@ describe('transformers/utils', () => {
     it('returns empty string when both are empty', () => {
       expect(mapConditionDescription(null, null)).toBe('')
       expect(mapConditionDescription('', [])).toBe('')
+    })
+  })
+
+  describe('mapUsageLimits', () => {
+    it('maps a known usage type', () => {
+      expect(mapUsageLimits({ type: 'PER_DAY', param: 3 })).toEqual({
+        type: 'perDay',
+        param: 3,
+      })
+      expect(mapUsageLimits({ type: 'recharge', param: 5 })).toEqual({
+        type: 'recharge',
+        param: 5,
+      })
+    })
+
+    it('returns undefined for no usage limits', () => {
+      expect(mapUsageLimits(null)).toBeUndefined()
+    })
+
+    it('returns undefined for an unknown usage type', () => {
+      expect(mapUsageLimits({ type: 'per eclipse', param: 1 })).toBeUndefined()
+    })
+  })
+
+  describe('mapAttack', () => {
+    it('omits every optional field the api left null', () => {
+      expect(mapAttack(open5eAttack())).toEqual({
+        name: 'Tentacle',
+        attackType: 'melee',
+        toHitMod: 9,
+        distanceUnit: 'feet',
+      })
+    })
+
+    it('maps every optional field when present', () => {
+      const attack = mapAttack(
+        open5eAttack({
+          reach: 10,
+          range: 30,
+          long_range: 120,
+          target_creature_only: true,
+          damage_die_count: 2,
+          damage_die_type: 'D6',
+          damage_bonus: 5,
+          damage_type: { name: 'Bludgeoning', key: 'bludgeoning', url: '' },
+          extra_damage_die_count: 3,
+          extra_damage_die_type: 'D8',
+          extra_damage_bonus: 1,
+          extra_damage_type: { name: 'Acid', key: 'acid', url: '' },
+        }),
+      )
+
+      expect(attack).toEqual({
+        name: 'Tentacle',
+        attackType: 'melee',
+        toHitMod: 9,
+        distanceUnit: 'feet',
+        reach: 10,
+        range: 30,
+        longRange: 120,
+        targetCreatureOnly: true,
+        damageDieCount: 2,
+        damageDieType: 'd6',
+        damageBonus: 5,
+        damageType: 'bludgeoning',
+        extraDamageDieCount: 3,
+        extraDamageDieType: 'd8',
+        extraDamageBonus: 1,
+        extraDamageType: 'acid',
+      })
+    })
+  })
+
+  describe('mapActionsV2', () => {
+    it('omits optional fields that are absent', () => {
+      expect(mapActionsV2([open5eAction()])).toEqual([
+        {
+          name: 'Multiattack',
+          desc: 'The creature attacks twice.',
+          attacks: [],
+          actionType: 'action',
+        },
+      ])
+    })
+
+    it('maps legendary cost, form limit and usage limits', () => {
+      const [action] = mapActionsV2([
+        open5eAction({
+          action_type: 'LEGENDARY_ACTION',
+          legendary_action_cost: 2,
+          limited_to_form: 'Hybrid',
+          usage_limits: { type: 'PER_DAY', param: 3 },
+        }),
+      ])
+
+      expect(action!.actionType).toBe('legendaryAction')
+      expect(action!.legendaryActionCost).toBe(2)
+      expect(action!.limitedToForm).toBe('Hybrid')
+      expect(action!.usageLimits).toEqual({ type: 'perDay', param: 3 })
+    })
+
+    it('drops usage limits the api reports with an unknown type', () => {
+      const [action] = mapActionsV2([
+        open5eAction({ usage_limits: { type: 'per eclipse', param: 1 } }),
+      ])
+
+      expect(action!.usageLimits).toBeUndefined()
+    })
+
+    it('defaults to no attacks when the api omits the array', () => {
+      const [action] = mapActionsV2([
+        { ...open5eAction(), attacks: undefined } as unknown as Open5eAction,
+      ])
+
+      expect(action!.attacks).toEqual([])
+    })
+
+    it('maps nested attacks', () => {
+      const [action] = mapActionsV2([
+        open5eAction({ attacks: [open5eAttack({ reach: 10 })] }),
+      ])
+
+      expect(action!.attacks).toHaveLength(1)
+      expect(action!.attacks[0]!.reach).toBe(10)
+    })
+  })
+
+  describe('mapActionsV1', () => {
+    it('tags actions, legendary actions and reactions', () => {
+      const actions = mapActionsV1({
+        actions: [{ name: 'Bite', desc: 'Bites.' }],
+        legendary_actions: [{ name: 'Move', desc: 'Moves.' }],
+        reactions: [{ name: 'Parry', desc: 'Parries.' }],
+      } as unknown as Open5eV1Item)
+
+      expect(actions.map(action => action.actionType)).toEqual([
+        'action',
+        'legendaryAction',
+        'reaction',
+      ])
+    })
+
+    it('returns an empty list when every action array is missing', () => {
+      expect(mapActionsV1({} as unknown as Open5eV1Item)).toEqual([])
+    })
+
+    it('builds an attack from the attack bonus alone', () => {
+      const [action] = mapActionsV1({
+        actions: [{ name: 'Bite', desc: 'Bites.', attack_bonus: 4 }],
+      } as unknown as Open5eV1Item)
+
+      expect(action!.attacks).toEqual([
+        {
+          name: 'Bite',
+          attackType: 'melee',
+          toHitMod: 4,
+          distanceUnit: 'feet',
+        },
+      ])
+    })
+
+    it('builds an attack from the damage dice alone', () => {
+      const [action] = mapActionsV1({
+        actions: [
+          { name: 'Slam', desc: 'Slams.', damage_dice: '2d8', damage_bonus: 3 },
+        ],
+      } as unknown as Open5eV1Item)
+
+      expect(action!.attacks[0]).toEqual({
+        name: 'Slam',
+        attackType: 'melee',
+        toHitMod: 0,
+        distanceUnit: 'feet',
+        damageBonus: 3,
+        damageDieCount: 2,
+        damageDieType: 'd8',
+      })
+    })
+
+    it('produces no attacks for a descriptive action', () => {
+      const [action] = mapActionsV1({
+        actions: [{ name: 'Multiattack', desc: 'Attacks twice.' }],
+      } as unknown as Open5eV1Item)
+
+      expect(action!.attacks).toEqual([])
+    })
+  })
+
+  describe('mapTraitsV1', () => {
+    it('maps special abilities to traits', () => {
+      expect(
+        mapTraitsV1({
+          special_abilities: [{ name: 'Amphibious', desc: 'Breathes water.' }],
+        } as unknown as Open5eV1Item),
+      ).toEqual([{ name: 'Amphibious', desc: 'Breathes water.' }])
+    })
+
+    it('returns an empty list when special abilities are missing', () => {
+      expect(mapTraitsV1({} as unknown as Open5eV1Item)).toEqual([])
+    })
+  })
+
+  describe('mapSpeedV1', () => {
+    it('defaults walk to 0 and omits absent movement types', () => {
+      expect(mapSpeedV1({})).toEqual({ unit: 'feet', walk: 0 })
+    })
+
+    it('maps every movement type that is present', () => {
+      expect(
+        mapSpeedV1({ walk: 30, fly: 60, burrow: 10, climb: 20, swim: 40 }),
+      ).toEqual({
+        unit: 'feet',
+        walk: 30,
+        fly: 60,
+        burrow: 10,
+        climb: 20,
+        swim: 40,
+      })
+    })
+  })
+
+  describe('mapSkillBonusesV2', () => {
+    it('maps snake_case keys and passes unknown keys through', () => {
+      expect(mapSkillBonusesV2({ animal_handling: 5, telepathy: 2 })).toEqual({
+        animalHandling: 5,
+        telepathy: 2,
+      })
+    })
+
+    it('returns an empty object when there are no skills', () => {
+      expect(
+        mapSkillBonusesV2(null as unknown as Record<string, number>),
+      ).toEqual({})
+    })
+  })
+
+  describe('mapSkillBonusesV1', () => {
+    it('ignores keys that are not known skills', () => {
+      const bonuses = mapSkillBonusesV1({ stealth: 6, telepathy: 2 }, 9)
+
+      expect(bonuses.stealth).toBe(6)
+      expect(bonuses.perception).toBe(9)
+      expect(bonuses).not.toHaveProperty('telepathy')
+    })
+
+    it('falls back to zeroed bonuses when there are no skills', () => {
+      const bonuses = mapSkillBonusesV1(
+        null as unknown as Record<string, number>,
+        11,
+      )
+
+      expect(bonuses.stealth).toBe(0)
+      expect(bonuses.perception).toBe(11)
     })
   })
 })

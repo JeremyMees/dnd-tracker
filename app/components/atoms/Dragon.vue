@@ -3,6 +3,8 @@ import { Motion } from 'motion-v'
 
 defineExpose({ calculateEyes })
 
+const reduced = useReducedMotion()
+
 const anchor = ref<HTMLElement>()
 const eyeLeft = ref<HTMLElement>()
 const eyeRight = ref<HTMLElement>()
@@ -32,7 +34,7 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
 <template>
   <Motion
     ref="dragon"
-    :initial="{ y: '50%', x: '25%', rotate: '-45deg' }"
+    :initial="reduced ? undefined : { y: '50%', x: '25%', rotate: '-45deg' }"
     :while-in-view="{
       y: '0%',
       x: '0%',
@@ -53,21 +55,21 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
     class="dragon"
     @mousemove="calculateEyes"
   >
-    <div ref="eyeLeft" class="absolute top-[55%] left-[54%] pt-2">
-      <div class="rounded-full bg-black h-4 w-4" />
+    <div ref="eyeLeft" class="absolute top-[55%] left-[54%] z-1 pt-2">
+      <div class="h-4 w-4 rounded-full bg-black" />
     </div>
-    <div ref="eyeRight" class="absolute top-[55%] right-[61%] pt-2">
-      <div class="rounded-full bg-black h-4 w-4" />
+    <div ref="eyeRight" class="absolute top-[55%] right-[61%] z-1 pt-2">
+      <div class="h-4 w-4 rounded-full bg-black" />
     </div>
     <div ref="anchor">
       <NuxtImg
         src="/dragon.webp"
-        alt="Hero image"
+        alt="A dragon peeking in from the edge of the page"
         sizes="sm:500px md:500px lg:500px"
         loading="lazy"
         width="2475"
         height="2100"
-        class="w-full h-full object-cover"
+        class="h-full w-full object-cover"
       />
     </div>
   </Motion>
@@ -79,6 +81,6 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
 .dragon {
   left: calc(100vw - 450px);
 
-  @apply hidden lg:block absolute w-[600px];
+  @apply absolute top-0 hidden w-[600px] lg:block;
 }
 </style>

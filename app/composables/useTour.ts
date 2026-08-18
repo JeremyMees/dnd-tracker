@@ -75,7 +75,9 @@ export function useTour() {
 
   async function startTour(campaign: boolean = false): Promise<void> {
     if (user.value && !user.value.completedTour) {
-      await until(!!user.value.completedTour).toBe(true, { timeout: 1000 })
+      await until(() => !!user.value?.completedTour).toBe(true, {
+        timeout: 1000,
+      })
     }
 
     if (user.value?.completedTour || isTourCompleted.value) return

@@ -160,6 +160,14 @@ describe('useConsent', () => {
     expect(consent.consents.value.measurement).toBeTruthy()
   })
 
+  it('should not throw when saving preferences without any consents set', () => {
+    consent.consents.value =
+      undefined as unknown as typeof consent.consents.value
+
+    expect(() => consent.savePreferences()).not.toThrow()
+    expect(consent.showPopup.value).toBeFalsy()
+  })
+
   it('should return all necessary methods', () => {
     expect(typeof consent.toggleConsent).toBe('function')
     expect(typeof consent.acceptAll).toBe('function')

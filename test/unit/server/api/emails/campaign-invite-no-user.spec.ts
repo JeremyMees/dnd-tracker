@@ -52,6 +52,7 @@ describe('POST /api/emails/campaign-invite-no-user', () => {
   })
 
   it('throws when sending the email fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFrom({
       campaigns: mockChain({
         data: { id: 42, title: 'Curse of Strahd', createdBy: 'user-1' },

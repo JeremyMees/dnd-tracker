@@ -1,0 +1,96 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CampaignHomebrew > Should match snapshot 1`] = `
+"<div class="max-h-full flex flex-col gap-4">
+  <div data-slot="input-group" role="group" class="group/input-group bg-background border-input relative flex w-full items-center rounded-md border shadow-xs transition-[color,box-shadow] outline-none h-10 min-w-0 has-[>textarea]:h-auto has-[>[data-align=inline-start]]:[&amp;>input]:pl-2 has-[>[data-align=inline-end]]:[&amp;>input]:pr-2 has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&amp;>input]:pb-3 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&amp;>input]:pt-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-2 has-[[data-slot=input-group-control]:focus-visible]:ring-offset-background"><input data-slot="input-group-control" name="search" type="search" class="flex h-10 w-full border-input px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 rounded-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent ring-offset-transparent" value="">
+    <div role="group" data-slot="input-group-addon" data-align="inline-end" class="text-muted-foreground flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium select-none [&amp;>svg:not([class*='size-'])]:size-4 [&amp;>kbd]:rounded-[calc(var(--radius)-5px)] group-data-[disabled=true]/input-group:opacity-50 order-last pr-3 has-[>button]:mr-[-0.45rem] has-[>kbd]:mr-[-0.35rem]"><span class="iconify i-tabler:search size-3" aria-hidden="true"></span></div>
+  </div>
+  <div class="relative w-full overflow-auto">
+    <table class="w-full caption-bottom text-sm">
+      <thead class="[&amp;_tr]:border-b">
+        <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted">
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2" test-id="header-select">
+            <div class="flex items-center gap-2 w-fit"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+                <!---->
+              </button>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </th>
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2 cursor-pointer select-none" test-id="header-name">
+            <div class="flex items-center gap-2 w-fit bg-muted rounded-lg p-2 transition-all duration-300 text-foreground">general.name<span class="iconify i-tabler:sort-ascending size-4" aria-hidden="true"></span></div>
+          </th>
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2 cursor-pointer select-none" test-id="header-player">
+            <div class="flex items-center gap-2 w-fit">general.player
+              <!--v-if-->
+            </div>
+          </th>
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2" test-id="header-hitPoints">
+            <div class="flex items-center gap-2 w-fit">general.hp
+              <!--v-if-->
+            </div>
+          </th>
+          <th class="h-12 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 px-2" test-id="header-armorClass">
+            <div class="flex items-center gap-2 w-fit">general.ac
+              <!--v-if-->
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="[&amp;_tr:last-child]:border-0">
+        <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted" data-state="false">
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+              <!---->
+            </button>
+            <!--v-if-->
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+            <div class="flex gap-2 items-center">
+              <div class="text-xs bg-muted py-[2px] px-2 rounded-full w-fit h-fit flex items-center gap-2"><span class="iconify i-tabler:bat text-destructive size-4 min-w-4" aria-hidden="true" ariahidden="true"></span><span>general.monster</span></div><span>Goblin Boss</span>
+            </div>
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+            <!---->
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>21</span></span></td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>17</span></span></td>
+        </tr>
+        <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted" data-state="false">
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+              <!---->
+            </button>
+            <!--v-if-->
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+            <div class="flex gap-2 items-center">
+              <div class="text-xs bg-muted py-[2px] px-2 rounded-full w-fit h-fit flex items-center gap-2"><span class="iconify i-tabler:sword text-primary size-4 min-w-4" aria-hidden="true" ariahidden="true"></span><span>general.player</span></div><span>Kees</span>
+            </div>
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">Jeremy</td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>32</span></span></td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>15</span></span></td>
+        </tr>
+        <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted" data-state="false">
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+              <!---->
+            </button>
+            <!--v-if-->
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+            <div class="flex gap-2 items-center">
+              <div class="text-xs bg-muted py-[2px] px-2 rounded-full w-fit h-fit flex items-center gap-2"><span class="iconify i-tabler:wand text-tertiary size-4 min-w-4" aria-hidden="true" ariahidden="true"></span><span>general.summon</span></div><span>Spirit Wolf</span>
+            </div>
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+            <!---->
+          </td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>18</span></span></td>
+          <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>13</span></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!--v-if-->
+  <div class="flex gap-2 flex-wrap"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 flex-1" aria-label="actions.addSelected" disabled="">actions.addSelected (0) </button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-foreground/50 hover:bg-foreground/60 border-foreground text-background shadow-sm h-10 px-4 py-2 flex-1" aria-label="actions.addAll">actions.addAll</button></div>
+</div>"
+`;

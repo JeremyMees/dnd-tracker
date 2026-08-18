@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Dragon > Should match snapshot 1`] = `
+"<div data-v-071bb19c="" data-dragon="" class="dragon" style="transform: translateX(25%) translateY(50%) rotate(-45deg);">
+  <div data-v-071bb19c="" class="absolute top-[55%] left-[54%] z-1 pt-2">
+    <div data-v-071bb19c="" class="h-4 w-4 rounded-full bg-black"></div>
+  </div>
+  <div data-v-071bb19c="" class="absolute top-[55%] right-[61%] z-1 pt-2">
+    <div data-v-071bb19c="" class="h-4 w-4 rounded-full bg-black"></div>
+  </div>
+  <div data-v-071bb19c=""><img data-v-071bb19c="" width="2475" height="2100" data-nuxt-img="" sizes="(max-width: 767px) 500px, (max-width: 1023px) 500px, 500px" srcset="/_ipx/q_90&amp;s_500x424/dragon.webp 500w, /_ipx/q_90&amp;s_1000x848/dragon.webp 1000w" alt="A dragon peeking in from the edge of the page" loading="lazy" class="h-full w-full object-cover" src="/_ipx/q_90&amp;s_1000x848/dragon.webp"></div>
+</div>"
+`;

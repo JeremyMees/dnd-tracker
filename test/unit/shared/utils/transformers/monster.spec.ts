@@ -90,6 +90,97 @@ describe('transformers/monster', () => {
       expect(monster.skillBonuses.sleightOfHand).toBe(1)
       expect(monster.skillBonuses.stealth).toBe(5)
     })
+
+    it('maps resistances and immunities entries by name', () => {
+      const entry = (name: string) => ({ name, key: name, url: '' })
+
+      const monster = toMonster({
+        ...open5eV2MonsterFixture,
+        resistances_and_immunities: {
+          damage_immunities_display: 'fire',
+          damage_immunities: [entry('Fire')],
+          damage_resistances_display: 'cold, poison',
+          damage_resistances: [entry('Cold'), entry('Poison')],
+          damage_vulnerabilities_display: 'thunder',
+          damage_vulnerabilities: [entry('Thunder')],
+          condition_immunities_display: 'charmed, frightened',
+          condition_immunities: [entry('Charmed'), entry('Frightened')],
+        },
+      })
+
+      expect(monster.resistancesAndImmunities.damageImmunities).toEqual([
+        'fire',
+      ])
+      expect(monster.resistancesAndImmunities.damageResistances).toEqual([
+        'cold',
+        'poison',
+      ])
+      expect(monster.resistancesAndImmunities.damageVulnerabilities).toEqual([
+        'thunder',
+      ])
+      expect(monster.resistancesAndImmunities.conditionImmunities).toEqual([
+        'charmed',
+        'frightened',
+      ])
+    })
+
+    it('omits speed entries that are absent', () => {
+      const monster = toMonster({
+        ...open5eV2MonsterFixture,
+        speed_all: { unit: 'feet', walk: 30 },
+      })
+
+      expect(monster.speed.walk).toBe(30)
+      expect(monster.speed.fly).toBeUndefined()
+      expect(monster.speed.burrow).toBeUndefined()
+      expect(monster.speed.climb).toBeUndefined()
+      expect(monster.speed.swim).toBeUndefined()
+      expect(monster.speed.crawl).toBeUndefined()
+      expect(monster.speed.hover).toBeUndefined()
+    })
+
+    it('defaults sight ranges when the api returns null', () => {
+      const monster = toMonster({
+        ...open5eV2MonsterFixture,
+        normal_sight_range: null,
+        darkvision_range: null,
+        blindsight_range: null,
+      })
+
+      expect(monster.sight.normalSightRange).toBe(0)
+      expect(monster.sight.darkVisionRange).toBeUndefined()
+      expect(monster.sight.blindSightRange).toBeUndefined()
+    })
+
+    it('maps proficiency bonus when present', () => {
+      const monster = toMonster({
+        ...open5eV2MonsterFixture,
+        proficiency_bonus: 4,
+      })
+
+      expect(monster.proficiencyBonus).toBe(4)
+    })
+
+    it('falls back to category when the type has no name', () => {
+      const monster = toMonster({
+        ...open5eV2MonsterFixture,
+        type: { name: '', key: '', url: '' },
+        category: 'Beast',
+      })
+
+      expect(monster.type).toBe('beast')
+    })
+
+    it('tolerates missing actions and traits', () => {
+      const monster = toMonster({
+        ...open5eV2MonsterFixture,
+        actions: undefined,
+        traits: undefined,
+      } as unknown as Open5eMonster)
+
+      expect(monster.actions).toEqual([])
+      expect(monster.traits).toEqual([])
+    })
   })
 
   describe('toMonster (V1)', () => {
@@ -180,6 +271,22 @@ describe('transformers/monster', () => {
       expect(monster.skillBonuses.stealth).toBe(6)
       expect(monster.skillBonuses.animalHandling).toBe(0)
       expect(monster.skillBonuses.sleightOfHand).toBe(0)
+    })
+
+    it('falls back to category when type is empty', () => {
+      const monster = toMonster({
+        ...open5eV1MonsterFixture,
+        type: '' as Open5eType,
+        category: 'Dragon',
+      })
+
+      expect(monster.type).toBe('dragon')
+    })
+
+    it('defaults experience points to 0 when xp is absent', () => {
+      const monster = toMonster({ ...open5eV1MonsterFixture, xp: undefined })
+
+      expect(monster.experiencePoints).toBe(0)
     })
   })
 })

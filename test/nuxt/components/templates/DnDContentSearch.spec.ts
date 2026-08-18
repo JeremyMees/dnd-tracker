@@ -6,6 +6,7 @@ import {
   dndArmorFixture,
   open5eV2ArmorListingFixture,
 } from '~~/test/fixtures/open5e'
+import { selectOption } from '~~/test/nuxt/stubs/popover'
 
 interface Props {
   variant?: 'secondary' | 'background'
@@ -21,14 +22,33 @@ const mockToast = vi.fn()
 
 const mockItem = dndArmorFixture
 const status = ref('success')
-const data = ref({ items: open5eV2ArmorListingFixture, pages: 1 })
+const data = ref<{ items: unknown[]; pages: number }>({
+  items: open5eV2ArmorListingFixture,
+  pages: 1,
+})
+
+let filterRef:
+  ComputedRef<{ type: Open5eType; filters: Open5eFilters }> | undefined
+
+const { scrollToIdMock } = vi.hoisted(() => ({ scrollToIdMock: vi.fn() }))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast: mockToast }),
 }))
 
+vi.mock('~/utils/ui-helpers', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  scrollToId: scrollToIdMock,
+}))
+
 vi.mock('~/queries/open5e', () => ({
-  useOpen5eListing: () => ({ data, status }),
+  useOpen5eListing: (
+    filters: ComputedRef<{ type: Open5eType; filters: Open5eFilters }>,
+  ) => {
+    filterRef = filters
+
+    return { data, status }
+  },
   useOpen5eDocuments: () => ({ data: ref([]), status: ref('success') }),
 }))
 
@@ -179,5 +199,197 @@ describe('DnDContentSearch', async () => {
     const component = await mountSuspended(DnDContentSearch, { props })
 
     expect(component.find('[test-id="pagination"]').exists()).toBeFalsy()
+  })
+
+  it('Should not show pagination while pinned items are shown', async () => {
+    data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    vi.useFakeTimers()
+    await component.find('[test-id="pin-toggle"]').trigger('click')
+    await vi.advanceTimersByTimeAsync(600)
+
+    expect(component.find('[test-id="pagination"]').exists()).toBeFalsy()
+  })
+
+  it('Should use the background pagination styles for the background variant', async () => {
+    data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
+
+    const component = await mountSuspended(DnDContentSearch, {
+      props: { ...props, variant: 'background' },
+    })
+
+    expect(
+      component.findComponent({ name: 'Pagination' }).props('styles'),
+    ).toContain('bg-background')
+  })
+
+  it('Should scroll to the results anchor when paginating', async () => {
+    data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    await component.findComponent({ name: 'Pagination' }).vm.$emit('paginate')
+
+    expect(scrollToIdMock).toHaveBeenCalledWith('el')
+  })
+
+  it('Should update the page when the pagination emits a new page', async () => {
+    data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    await component
+      .findComponent({ name: 'Pagination' })
+      .vm.$emit('update:page', 1)
+
+    expect(filterRef?.value.filters.page).toBe(1)
+  })
+
+  it('Should show the not found message when the search has no results', async () => {
+    data.value = { items: [], pages: 0 }
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    await component.get('[test-id="search"]').setValue('nothing here')
+
+    expect(component.find('[test-id="not-found"]').exists()).toBeTruthy()
+  })
+
+  it('Should debounce the search query filters', async () => {
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    vi.useFakeTimers()
+    await component.get('[test-id="search"]').setValue('sword')
+    await vi.advanceTimersByTimeAsync(600)
+
+    expect(filterRef?.value.filters.name__icontains).toBe('sword')
+  })
+
+  it('Should reset the search and query filters when the content type changes', async () => {
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    vi.useFakeTimers()
+    await component.get('[test-id="search"]').setValue('sword')
+    await vi.advanceTimersByTimeAsync(600)
+
+    await selectOption(component, 'weapons')
+
+    expect(component.get('[test-id="search"]').element).toHaveProperty(
+      'value',
+      '',
+    )
+    expect(filterRef?.value.filters.name__icontains).toBe('')
+    expect(filterRef?.value.filters.ordering).toBe('name')
+    expect(filterRef?.value.type).toBe('weapons')
+  })
+
+  it('Should reset the query filters when the selected documents change', async () => {
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    await component
+      .findComponent({ name: 'GameSystemFilter' })
+      .vm.$emit('update:document', ['srd-2014'])
+
+    expect(filterRef?.value.filters.document__key__in).toBe('srd-2014')
+  })
+
+  it('Should reset the query filters when the selected game system changes', async () => {
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    await component
+      .findComponent({ name: 'GameSystemFilter' })
+      .vm.$emit('update:system', '5e-2014')
+
+    expect(filterRef?.value.filters.name__icontains).toBe('')
+    expect(filterRef?.value.filters.ordering).toBe('name')
+  })
+
+  it('Should mark a hit as pinned when it exists in the sheet infoCards', async () => {
+    data.value = {
+      items: [
+        { ...open5eV2ArmorListingFixture[0], id: mockItem.id },
+        ...open5eV2ArmorListingFixture.slice(1),
+      ],
+      pages: 1,
+    }
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+    const pinnedCard = component
+      .findAllComponents({ name: 'ContentCard' })
+      .find(card => (card.props('hit') as { id?: string }).id === mockItem.id)
+
+    expect(pinnedCard!.props('pinned')).toBe(true)
+  })
+
+  it('Should pin a new item when there is room left', async () => {
+    const component = await mountSuspended(DnDContentSearch, {
+      props: { ...props, allowPin: true },
+    })
+
+    vi.useFakeTimers()
+    const contentCard = component
+      .findAllComponents({ name: 'ContentCard' })
+      .find(
+        card =>
+          (card.props('hit') as { key?: string }).key ===
+          open5eV2ArmorListingFixture[1]!.key,
+      )
+    await contentCard!.vm.$emit('pin')
+    await vi.advanceTimersByTimeAsync(600)
+
+    expect(mockUpdate).toHaveBeenCalledWith({
+      infoCards: [mockItem, open5eV2ArmorListingFixture[1]],
+    })
+    expect(mockToast).not.toHaveBeenCalled()
+  })
+
+  it('Should unpin an item', async () => {
+    data.value = {
+      items: [
+        { ...open5eV2ArmorListingFixture[0], id: mockItem.id },
+        ...open5eV2ArmorListingFixture.slice(1),
+      ],
+      pages: 1,
+    }
+
+    const component = await mountSuspended(DnDContentSearch, {
+      props: { ...props, allowPin: true },
+    })
+
+    vi.useFakeTimers()
+    const contentCard = component
+      .findAllComponents({ name: 'ContentCard' })
+      .find(card => card.props('pinned') === true)
+    await contentCard!.vm.$emit('unpin')
+    await vi.advanceTimersByTimeAsync(600)
+
+    expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+  })
+
+  it('Should not pin or unpin without a sheet or update handler', async () => {
+    const component = await mountSuspended(DnDContentSearch, {
+      props: {},
+    })
+
+    const contentCard = component.findComponent({ name: 'ContentCard' })
+    await contentCard.vm.$emit('pin', open5eV2ArmorListingFixture[0])
+
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('Should not remove pins without a sheet or update handler', async () => {
+    const component = await mountSuspended(DnDContentSearch, {
+      props: {},
+    })
+
+    interface DnDContentSearchVm {
+      removePins: () => Promise<void>
+    }
+
+    await (component.vm as unknown as DnDContentSearchVm).removePins()
+
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 })

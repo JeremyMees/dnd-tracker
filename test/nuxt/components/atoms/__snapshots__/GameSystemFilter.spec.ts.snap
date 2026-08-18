@@ -1,0 +1,62 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GameSystemFilter > Should match snapshot 1`] = `
+"<button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" test-id="trigger" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">5e-2014 <span class="iconify i-tabler:chevron-down ml-auto my-auto size-4 text-muted-foreground" aria-hidden="true"></span></button>
+<div class="max-h-[600px]">
+  <div class="flex flex-col gap-y-2">
+    <div><label for="system" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.gameSystemLabel
+        <!--v-if-->
+      </label>
+      <div class="grid gap-2 sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2" id="system" tabindex="0" dir="ltr" style="outline-color: none; outline-style: none; outline-width: initial;" role="radiogroup" aria-required="false">
+        <div class="flex items-center space-y-0 gap-x-3"><button role="radio" type="button" aria-checked="true" data-state="checked" required="false" data-reka-collection-item="" tabindex="-1" data-active="" class="peer aspect-square size-4 min-w-4 rounded-full border border-foreground text-foreground ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" value="5e-2014"><span data-state="checked" class="flex items-center justify-center"><span class="iconify i-tabler:circle-filled size-3 min-w-3 text-primary relative bottom-0.25" aria-hidden="true"></span></span></button>
+          <!--v-if--><label required="false" class="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-normal">5e-2014
+            <!--v-if-->
+          </label>
+        </div>
+        <div class="flex items-center space-y-0 gap-x-3"><button role="radio" type="button" aria-checked="false" data-state="unchecked" required="false" data-reka-collection-item="" tabindex="-1" class="peer aspect-square size-4 min-w-4 rounded-full border border-foreground text-foreground ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" value="5e-2024">
+            <!---->
+          </button>
+          <!--v-if--><label required="false" class="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-normal">5e-2024
+            <!--v-if-->
+          </label>
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    <div><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.systemDocumentLabel
+        <!--v-if-->
+      </label>
+      <div class="grid gap-1">
+        <div test-id="srd-2014" class="rounded-md border border-input bg-background px-3 py-2 flex flex-col gap-1">
+          <div class="flex flex-row items-center space-x-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" test-id="checkbox-srd-2014" role="checkbox" type="button" aria-checked="true" aria-required="false" data-state="checked"><span data-state="checked" style="pointer-events: none;" class="grid place-content-center text-current"><span class="iconify i-tabler:check size-4 min-w-4" aria-hidden="true"></span></span></button>
+            <!--v-if--><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">SRD 2014
+              <!--v-if-->
+            </label>
+          </div>
+          <div class="text-muted-foreground text-2xs"> Published by <a href="https://example.com/srd-2014" test-id="publisher-srd-2014" target="_blank" rel="noopener noreferrer" class="underline">Wizards of the Coast</a></div>
+        </div>
+        <div test-id="green-ronin-2014" class="rounded-md border border-input bg-background px-3 py-2 flex flex-col gap-1">
+          <div class="flex flex-row items-center space-x-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" test-id="checkbox-green-ronin-2014" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+              <!---->
+            </button>
+            <!--v-if--><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Green Ronin 2014
+              <!--v-if-->
+            </label>
+          </div>
+          <div class="text-muted-foreground text-2xs"> Published by <a href="https://example.com/green-ronin-2014" test-id="publisher-green-ronin-2014" target="_blank" rel="noopener noreferrer" class="underline">Green Ronin</a></div>
+        </div>
+        <div test-id="kobold-2014" class="rounded-md border border-input bg-background px-3 py-2 flex flex-col gap-1">
+          <div class="flex flex-row items-center space-x-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" test-id="checkbox-kobold-2014" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+              <!---->
+            </button>
+            <!--v-if--><label required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Kobold Press 2014
+              <!--v-if-->
+            </label>
+          </div>
+          <div class="text-muted-foreground text-2xs"> Published by <a href="https://example.com/kobold-2014" test-id="publisher-kobold-2014" target="_blank" rel="noopener noreferrer" class="underline">Kobold Press</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>"
+`;

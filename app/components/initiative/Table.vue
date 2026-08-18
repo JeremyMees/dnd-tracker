@@ -9,7 +9,7 @@ import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
 import { prefetchConditionsListing } from '~/queries/open5e'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-defineProps<{ loading: boolean }>()
+defineProps<{ loading: boolean; encounterId?: number }>()
 
 const { activeRow, sheet, update } = validateInject(INITIATIVE_SHEET)
 
@@ -68,6 +68,7 @@ const table = useVueTable({
   <div class="flex flex-col gap-2">
     <InitiativeHeader
       :data="sheet"
+      :encounter-id="encounterId"
       @reset="reset($event)"
       @previous="previous"
       @next="next"
@@ -145,6 +146,6 @@ const table = useVueTable({
       </UiTable>
     </div>
 
-    <LazyInitiativeWidgets test-id="widgets" />
+    <LazyInitiativeWidgets test-id="widgets" :encounter-id="encounterId" />
   </div>
 </template>

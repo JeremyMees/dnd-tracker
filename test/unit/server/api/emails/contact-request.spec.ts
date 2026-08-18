@@ -40,6 +40,7 @@ describe('POST /api/emails/contact-request', () => {
   })
 
   it('throws when sending the email fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFetch.mockRejectedValue(new Error('network error'))
 
     await expect(

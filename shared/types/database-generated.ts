@@ -269,6 +269,60 @@ export type Database = {
           },
         ]
       }
+      live_sessions: {
+        Row: {
+          code: string
+          createdAt: string
+          createdBy: string
+          encounter: number
+          endedAt: string | null
+          expiresAt: string
+          id: number
+          seats: Json
+          uuid: string
+          version: number
+        }
+        Insert: {
+          code: string
+          createdAt?: string
+          createdBy: string
+          encounter: number
+          endedAt?: string | null
+          expiresAt: string
+          id?: number
+          seats?: Json
+          uuid?: string
+          version?: number
+        }
+        Update: {
+          code?: string
+          createdAt?: string
+          createdBy?: string
+          encounter?: number
+          endedAt?: string | null
+          expiresAt?: string
+          id?: number
+          seats?: Json
+          uuid?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'live_sessions_createdBy_fkey'
+            columns: ['createdBy']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'live_sessions_encounter_fkey'
+            columns: ['encounter']
+            isOneToOne: false
+            referencedRelation: 'initiative_sheets'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       notes: {
         Row: {
           campaign: number
@@ -390,9 +444,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_live_action: {
+        Args: { p_encounter: number; p_patch: Json; p_row_id: string }
+        Returns: Json
+      }
+      claim_live_seat: {
+        Args: {
+          p_name: string
+          p_row: string
+          p_session: string
+          p_spectator: boolean
+        }
+        Returns: Json
+      }
+      increment_live_version: { Args: { p_session: string }; Returns: number }
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }
       is_valid_resistances: { Args: { _j: Json }; Returns: boolean }
       is_valid_traits: { Args: { _j: Json }; Returns: boolean }
+      reassign_live_seat: {
+        Args: { p_row: string; p_seat: string; p_session: string }
+        Returns: Json
+      }
+      remove_live_seat: {
+        Args: { p_seat: string; p_session: string }
+        Returns: Json
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { '': string }; Returns: string[] }
     }

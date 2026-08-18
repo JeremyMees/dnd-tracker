@@ -1,14 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`CtaBanner > Should match snapshot 1`] = `
-"<div class="dnd-container max-w-[1600px] relative">
-  <div class="grid lg:grid-cols-2 gap-8 p-6 md:p-12 bg-primary/20 backdrop-blur-lg rounded-[32px] overflow-hidden transition-colors duration-300">
-    <div class="max-w-prose relative z-1">
-      <p class="head-1 mb-4 text-foreground">Test Title</p>
-      <p class="pb-8 text-muted-foreground">Test Subtitle</p><a href="/login" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-tertiary/50 hover:bg-tertiary/60 border-tertiary text-foreground shadow-sm h-10 px-4 py-2" test-id="link">Test Button</a>
-    </div>
-    <div class="relative -bottom-10 left-12 md:-bottom-16 flex justify-end"><img width="2978" height="1502" data-nuxt-img="" sizes="(max-width: 767px) 1000px, (max-width: 1023px) 1000px, 1000px" srcset="https://ik.imagekit.io/c2es1qasw/campaign.png?tr=w-1000,h-504,q-90 1000w, https://ik.imagekit.io/c2es1qasw/campaign.png?tr=w-2000,h-1008,q-90 2000w" alt="Cta Banner" class="rounded-lg" loading="lazy" src="https://ik.imagekit.io/c2es1qasw/campaign.png?tr=w-2000,h-1008,q-90"></div>
-    <div class="absolute inset-0 tracker-shadow-inset border-4 border-primary rounded-[32px]"></div>
+"<section class="dnd-container">
+  <div class="relative overflow-hidden rounded-[32px] border-4 border-secondary bg-secondary/50 px-6 py-14 text-center backdrop-blur-lg md:px-14 md:py-20">
+    <p class="mx-auto max-w-3xl text-2xl font-black tracking-tight text-balance text-foreground md:text-4xl" style="opacity: 0; transform: translateY(28px);">Test Title</p>
+    <p class="mx-auto mt-5 max-w-prose text-lg text-pretty text-muted-foreground" style="opacity: 0; transform: translateY(28px);">Test Subtitle</p>
+    <div class="mt-8 flex justify-center" style="opacity: 0; transform: translateY(28px);"><a href="/login" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-tertiary/50 hover:bg-tertiary/60 border-tertiary text-foreground shadow-sm h-11 rounded-md px-8 w-fit" test-id="link">Test Button</a></div>
+    <div data-v-7db5f6e4="" class="border-beam pointer-events-none absolute inset-0 [border:calc(var(--border-width)*1px)_solid_transparent] [mask-clip:padding-box,border-box]! mask-intersect! [mask:linear-gradient(transparent,transparent),linear-gradient(white,white)] after:absolute after:aspect-square after:w-[calc(var(--size)*1px)] animate-border-beam after:[animation-delay:var(--delay)] after:[background:linear-gradient(to_left,var(--color-from),var(--color-to),transparent)] after:[offset-anchor:calc(var(--anchor)*1%)_50%] after:[offset-path:rect(0_auto_auto_0_round_calc(var(--size)*1px))] rounded-[32px]"></div>
   </div>
-</div>"
+</section>"
 `;

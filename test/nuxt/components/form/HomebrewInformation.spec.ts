@@ -1,0 +1,227 @@
+import { describe, expect, it, vi } from 'vitest'
+import HomebrewInformation from '~/components/form/HomebrewInformation.vue'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithForm } from '~~/test/nuxt/stubs/form'
+
+async function mountHomebrewInformation(
+  type?: string,
+  initiativeSheet?: InitiativeSheet,
+) {
+  const { component } = await mountWithForm(HomebrewInformation, {
+    props: { type, sheet: initiativeSheet },
+    initialValues: { type },
+  })
+
+  return component
+}
+
+function isHidden(el: HTMLElement) {
+  return el.style.display === 'none'
+}
+
+describe('HomebrewInformation', () => {
+  it('Should match snapshot', async () => {
+    const component = await mountHomebrewInformation()
+
+    expect(component.html()).toMatchSnapshot()
+  })
+
+  it('Should always render the type, name, initiativeModifier and link fields', async () => {
+    const component = await mountHomebrewInformation()
+    const html = component.html()
+
+    expect(html).toContain('components.inputs.typeLabel')
+    expect(html).toContain('components.inputs.nameLabel')
+    expect(html).toContain(`${'components.inputs.initiativeLabel'} (MODIFIER)`)
+    expect(html).toContain('components.inputs.linkLabel')
+  })
+
+  describe('Amount field', () => {
+    it('Should not show amount without a sheet', async () => {
+      const component = await mountHomebrewInformation('monster')
+      expect(component.html()).not.toContain('components.inputs.amountLabel')
+    })
+
+    it('Should not show amount for types other than monster/summon', async () => {
+      const component = await mountHomebrewInformation('npc', sheet)
+      expect(component.html()).not.toContain('components.inputs.amountLabel')
+    })
+
+    it('Should show amount for monster with a sheet', async () => {
+      const component = await mountHomebrewInformation('monster', sheet)
+      expect(component.html()).toContain('components.inputs.amountLabel')
+    })
+
+    it('Should show amount for summon with a sheet', async () => {
+      const component = await mountHomebrewInformation('summon', sheet)
+      expect(component.html()).toContain('components.inputs.amountLabel')
+    })
+  })
+
+  describe('Summoner field', () => {
+    it('Should not show summoner without a sheet', async () => {
+      const component = await mountHomebrewInformation('summon')
+      expect(component.html()).not.toContain('components.inputs.summonerLabel')
+    })
+
+    it('Should not show summoner for types other than summon', async () => {
+      const component = await mountHomebrewInformation('npc', sheet)
+      expect(component.html()).not.toContain('components.inputs.summonerLabel')
+    })
+
+    it('Should show summoner for summon with a sheet', async () => {
+      const component = await mountHomebrewInformation('summon', sheet)
+      expect(component.html()).toContain('components.inputs.summonerLabel')
+    })
+
+    it('Should render no summoner options when the sheet has no rows', async () => {
+      const rowlessSheet = {
+        ...sheet,
+        rows: undefined,
+      } as unknown as InitiativeSheet
+      const component = await mountHomebrewInformation('summon', rowlessSheet)
+
+      expect(component.html()).toContain('components.inputs.summonerLabel')
+      expect(component.html()).not.toContain(sheet.rows[0]!.name)
+    })
+  })
+
+  describe('Player field', () => {
+    it('Should show player field for player type without a sheet', async () => {
+      const component = await mountHomebrewInformation('player')
+      expect(component.html()).toContain('components.inputs.playerLabel')
+    })
+
+    it('Should not show player field for player type with a sheet', async () => {
+      const component = await mountHomebrewInformation('player', sheet)
+      expect(component.html()).not.toContain('components.inputs.playerLabel')
+    })
+
+    it('Should not show player field for non-player types', async () => {
+      const component = await mountHomebrewInformation('npc')
+      expect(component.html()).not.toContain('components.inputs.playerLabel')
+    })
+  })
+
+  describe('Initiative field', () => {
+    it('Should not show initiative without a sheet', async () => {
+      const component = await mountHomebrewInformation('npc')
+      expect(component.find('input[name="initiative"]').exists()).toBeFalsy()
+    })
+
+    it('Should show initiative with a sheet', async () => {
+      const component = await mountHomebrewInformation('npc', sheet)
+      expect(component.find('input[name="initiative"]').exists()).toBeTruthy()
+    })
+  })
+
+  describe('AC and HP fields', () => {
+    it('Should show AC and HP for non-lair types', async () => {
+      const component = await mountHomebrewInformation('npc')
+      const html = component.html()
+
+      expect(html).toContain('components.inputs.acLabel')
+      expect(html).toContain('components.inputs.hpLabel')
+    })
+
+    it('Should not show AC and HP for lair type', async () => {
+      const component = await mountHomebrewInformation('lair')
+      const html = component.html()
+
+      expect(html).not.toContain('components.inputs.acLabel')
+      expect(html).not.toContain('components.inputs.hpLabel')
+    })
+  })
+
+  describe('Random generators', () => {
+    it('Should generate a random name when the name button is clicked', async () => {
+      const component = await mountHomebrewInformation('npc')
+
+      expect(
+        (component.get('input[name="name"]').element as HTMLInputElement).value,
+      ).toBe('')
+
+      await component.get('[test-id="generate-name"]').trigger('click')
+
+      expect(
+        (component.get('input[name="name"]').element as HTMLInputElement).value,
+      ).not.toBe('')
+    })
+
+    it('Should generate a random initiative roll when the roll button is clicked', async () => {
+      const component = await mountHomebrewInformation('npc', sheet)
+
+      await component.get('[test-id="generate-roll"]').trigger('click')
+
+      const value = (
+        component.get('input[name="initiative"]').element as HTMLInputElement
+      ).value
+
+      expect(Number(value)).toBeGreaterThanOrEqual(1)
+      expect(Number(value)).toBeLessThanOrEqual(20)
+    })
+  })
+
+  describe('Advanced fields', () => {
+    it('Should render the advanced toggle for non-lair types, collapsed by default', async () => {
+      const component = await mountHomebrewInformation('npc')
+      const toggle = component.find('[test-id="advanced-toggle"]')
+      const content = component.find('[test-id="advanced-content"]')
+
+      expect(toggle.exists()).toBeTruthy()
+      expect(toggle.attributes('aria-expanded')).toBe('false')
+      expect(content.exists()).toBeTruthy()
+      expect(isHidden(content.element as HTMLElement)).toBeTruthy()
+    })
+
+    it('Should not render the advanced toggle for lair type', async () => {
+      const component = await mountHomebrewInformation('lair')
+
+      expect(component.find('[test-id="advanced-toggle"]').exists()).toBeFalsy()
+      expect(
+        component.find('[test-id="advanced-content"]').exists(),
+      ).toBeFalsy()
+    })
+
+    it('Should reveal all advanced fields when the toggle is clicked', async () => {
+      const component = await mountHomebrewInformation('npc')
+      const toggle = component.find('[test-id="advanced-toggle"]')
+
+      await toggle.trigger('click')
+      await nextTick()
+
+      const content = component.find('[test-id="advanced-content"]')
+      expect(isHidden(content.element as HTMLElement)).toBeFalsy()
+      expect(toggle.attributes('aria-expanded')).toBe('true')
+
+      const html = component.html()
+
+      expect(html).toContain('components.inputs.hitDiceLabel')
+      expect(html).toContain('components.inputs.armorDetailLabel')
+      expect(html).toContain('general.proficiencyBonus')
+      expect(html).toContain('general.passivePerception')
+      expect(html).toContain('general.speed')
+      expect(html).toContain('general.sense')
+      expect(html).toContain('general.language')
+    })
+
+    it('Should hide the advanced fields again when the toggle is clicked twice', async () => {
+      vi.useFakeTimers()
+
+      const component = await mountHomebrewInformation('npc')
+      const toggle = component.find('[test-id="advanced-toggle"]')
+
+      await toggle.trigger('click')
+      await vi.advanceTimersByTimeAsync(50)
+      await toggle.trigger('click')
+      await vi.advanceTimersByTimeAsync(500)
+
+      const content = component.find('[test-id="advanced-content"]')
+
+      expect(isHidden(content.element as HTMLElement)).toBeTruthy()
+      expect(toggle.attributes('aria-expanded')).toBe('false')
+
+      vi.useRealTimers()
+    })
+  })
+})

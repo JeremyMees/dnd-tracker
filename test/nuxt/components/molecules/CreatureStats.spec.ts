@@ -88,9 +88,10 @@ describe('CreatureStats', () => {
   it('should hide sections when creature has no data for them', async () => {
     const creature = {
       ...dndMonsterFixture,
-      savingThrows: {} as DndSavingThrowBonuses,
+      savingThrows: undefined,
       speed: { ...dndMonsterFixture.speed, walk: 0, swim: undefined },
-      skillBonuses: {} as DndSkillBonuses,
+      skillBonuses: undefined,
+      resistancesAndImmunities: undefined,
       languages: [],
       traits: [],
     }
@@ -103,6 +104,7 @@ describe('CreatureStats', () => {
     expect(component.find('[test-id="skills"]').exists()).toBeFalsy()
     expect(component.find('[test-id="languages"]').exists()).toBeFalsy()
     expect(component.find('[test-id="traits"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="resistances"]').exists()).toBeFalsy()
   })
 
   it('should render languages from a string array (homebrew)', async () => {

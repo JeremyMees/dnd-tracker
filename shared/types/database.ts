@@ -63,6 +63,57 @@ interface DatabaseOverrides {
           avatarOptions?: Record<string, string | number>
         }
       }
+      live_sessions: {
+        Row: {
+          seats: LiveSeat[]
+        }
+        Insert: {
+          seats?: LiveSeat[]
+        }
+        Update: {
+          seats?: LiveSeat[]
+        }
+      }
+    }
+    Functions: {
+      claim_live_seat: {
+        Args: {
+          p_session: string
+          p_row: string | null
+          p_name: string
+          p_spectator: boolean
+        }
+        Returns: LiveSeat
+      }
+      apply_live_action: {
+        Args: {
+          p_encounter: number
+          p_row_id: string
+          p_patch: Partial<InitiativeSheetRow>
+        }
+        Returns: InitiativeSheetRow
+      }
+      increment_live_version: {
+        Args: {
+          p_session: string
+        }
+        Returns: number
+      }
+      remove_live_seat: {
+        Args: {
+          p_session: string
+          p_seat: string
+        }
+        Returns: { seat: string }
+      }
+      reassign_live_seat: {
+        Args: {
+          p_session: string
+          p_seat: string
+          p_row: string
+        }
+        Returns: LiveSeat
+      }
     }
   }
 }

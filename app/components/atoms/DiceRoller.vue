@@ -103,6 +103,7 @@ function calculateDndDiceRoll() {
           variant="background-ghost"
           size="icon-sm"
           :aria-label="$t('general.more')"
+          :test-id="`increment-${dice}`"
           :disabled="toRoll[dice] >= 100"
           @click="toRoll[dice] = toRoll[dice] ? toRoll[dice] + 1 : 1"
         >
@@ -116,7 +117,6 @@ function calculateDndDiceRoll() {
             sizes="sm:20px md:20px lg:20px"
             class="w-full h-full object-contain"
             format="webp"
-            provider="imagekit"
           />
         </div>
         <UiButton
@@ -124,18 +124,20 @@ function calculateDndDiceRoll() {
           variant="background-ghost"
           size="icon-sm"
           :aria-label="$t('general.less')"
+          :test-id="`decrement-${dice}`"
           :disabled="toRoll[dice] <= 0"
           @click="toRoll[dice] = toRoll[dice] ? toRoll[dice] - 1 : 0"
         >
           <Icon name="tabler:caret-down" class="size-5" />
         </UiButton>
-        <span class="text-xs">
+        <span class="text-xs" :test-id="`count-${dice}`">
           {{ toRoll[dice] }}
         </span>
       </div>
     </div>
     <UiButton
       type="button"
+      test-id="roll-dice"
       :disabled="Object.values(toRoll).every(value => value === 0)"
       class="mt-4 w-full"
       @click="calculateDndDiceRoll"

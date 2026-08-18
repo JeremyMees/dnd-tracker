@@ -3,6 +3,7 @@ import {
   campaignUrl,
   encounterUrl,
   shareEncounterUrl,
+  liveSessionUrl,
   generateParams,
   slugify,
 } from '~/utils/url-generators'
@@ -91,6 +92,24 @@ describe('url-generators', () => {
       const url = shareEncounterUrl('xyz789', 'nl')
 
       expect(url).toBe('https://dnd-tracker.com/nl/playground?token=xyz789')
+    })
+  })
+
+  describe('liveSessionUrl', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should generate a live session URL with English locale', () => {
+      const url = liveSessionUrl('AB12CD', 'en')
+
+      expect(url).toBe('https://dnd-tracker.com/live?code=AB12CD')
+    })
+
+    it('should generate a live session URL with Dutch locale', () => {
+      const url = liveSessionUrl('AB12CD', 'nl')
+
+      expect(url).toBe('https://dnd-tracker.com/nl/live?code=AB12CD')
     })
   })
 

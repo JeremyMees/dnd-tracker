@@ -61,7 +61,7 @@ const onSubmit = form.handleSubmit(async values => {
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput type="text" v-bind="componentField" />
+          <UiInput test-id="title" type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
@@ -76,10 +76,10 @@ const onSubmit = form.handleSubmit(async values => {
         </UiFormMessage>
       </UiFormItem>
     </UiFormField>
-    <div v-if="formError" class="text-sm text-destructive">
+    <div v-if="formError" test-id="error" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton type="submit" class="w-full">
+    <UiButton test-id="submit" type="submit" class="w-full">
       {{ $t(`components.noteModal.${note ? 'update' : 'add'}`) }}
     </UiButton>
   </UiFormWrapper>

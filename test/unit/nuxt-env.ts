@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
-import Unimport from 'unimport/unplugin'
+import MagicString from 'magic-string'
+import { createUnimport } from 'unimport'
 import type { Plugin } from 'vite'
 
 const root = resolve(import.meta.dirname, '../..')
@@ -11,7 +12,7 @@ export const nuxtAliases = {
 }
 
 export function nuxtAutoImports(): Plugin {
-  return Unimport.vite({
+  const ctx = createUnimport({
     dirs: [
       resolve(root, 'app/utils/**'),
       resolve(root, 'shared/utils/**'),
@@ -34,9 +35,33 @@ export function nuxtAutoImports(): Plugin {
         'getQuery',
         'getRequestHeader',
         'getHeader',
+        'getRequestIP',
       ].map(name => ({ name, from: 'h3' })),
+      { name: 'useStorage', from: 'nitropack/runtime' },
     ],
     presets: ['vue'],
-    dts: false,
-  }) as Plugin
+  })
+
+  return {
+    name: 'nuxt-auto-imports',
+    enforce: 'post',
+    async buildStart() {
+      await ctx.init()
+    },
+    async transform(code, id) {
+      if (
+        !/\.([jt]sx?|vue)($|\?)/.test(id) ||
+        /[\\/]node_modules[\\/]/.test(id)
+      )
+        return
+
+      const s = new MagicString(code)
+
+      await ctx.injectImports(s, id)
+
+      if (!s.hasChanged()) return
+
+      return { code: s.toString(), map: s.generateMap({ hires: true }) }
+    },
+  }
 }

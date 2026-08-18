@@ -37,7 +37,7 @@ const modalComponents: Record<ModalComponent, Component> = {
     <component
       :is="modalComponents[modal.component]"
       v-bind="modal.props"
-      v-on="modal.events"
+      v-on="modal.events ?? {}"
       @close="close(modal.uuid)"
     />
   </Modal>

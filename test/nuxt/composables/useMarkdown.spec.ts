@@ -13,14 +13,14 @@ async function loadUseMarkdown() {
 }
 
 describe('useMarkdown', () => {
-  it('Should return an empty string before markdown-it is loaded', async () => {
+  it('Should return an empty string before marked is loaded', async () => {
     const useMarkdown = await loadUseMarkdown()
     const { renderMarkdown } = useMarkdown()
 
     expect(renderMarkdown('**bold**')).toBe('')
   })
 
-  it('Should render markdown once markdown-it is loaded', async () => {
+  it('Should render markdown once marked is loaded', async () => {
     const useMarkdown = await loadUseMarkdown()
     const { renderMarkdown } = useMarkdown()
 

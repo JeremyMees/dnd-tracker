@@ -32,3 +32,9 @@ logs
 .vscode/mcp.json
 
 /supabase
+/coverage
+/coverage-raw
+
+.agents
+.claude
+skills-lock.json

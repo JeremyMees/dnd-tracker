@@ -75,9 +75,19 @@
     "moveDown": "Omlaag",
     "changeInitiative": "Initiatief wijzigen",
     "applyDamage": "Schade toepassen",
-    "generateName": "Naam genereren"
+    "generateName": "Naam genereren",
+    "kick": "Verwijder",
+    "copyLink": "Kopieer link"
   },
   "general": {
+    "waiting": "Wachten",
+    "spectator": "Toeschouwer | Toeschouwers",
+    "you": "Jij",
+    "session": "Sessie | Sessies",
+    "healthy": "Gezond",
+    "bloodied": "Gewond",
+    "critical": "Kritiek",
+    "deathSaves": "Death saves",
     "savingThrow": "Saving throw | Saving throws",
     "speed": "Speed",
     "sense": "Sense | Senses",
@@ -265,26 +275,9 @@
   },
   "pages": {
     "home": {
-      "textBlock1": {
-        "title": "Met liefde gemaakt",
-        "text": "Wat begon als een encounter tracker die we voor wat vrienden ineen hebben geknutseld, werd al gauw een project om GM's echt te ondersteunen in hun campagnes. We blijven de DND Tracker uitbreiden met meer en meer ideeën en input. Zo wordt D&D spelen nog spannender, mysterieuzer en vooral vlotter."
-      },
       "textBlock2": {
         "title": " Game Master zijn is al uitdagend genoeg",
         "text": "Het beheren van initiatieven, effecten, notities en homebrew kan chaotisch worden. Wij maken het eenvoudig, overzichtelijk en plezierig zodat jij je kunt focussen op het vertellen van geweldige verhalen."
-      },
-      "summary": {
-        "title": "Een tracker met unieke skills",
-        "item1": "Live synchronisatie tussen verschillende toestellen",
-        "item2": "Regelmatige optimalisaties en nieuwe functies",
-        "item3": "Alles op één handige plaats voor de GM",
-        "item4": "Samenwerking in Dungeon Mastering",
-        "item5": "Integratie van official content met de mogelijkheid om je eigen homebrew toe te voegen",
-        "item6": "Fantasie naam generator"
-      },
-      "containerScroll": {
-        "title": "Ontdek de kracht van",
-        "subtitle": "Encounter bouwen"
       },
       "faq": {
         "title": "Veelgestelde vragen",
@@ -299,15 +292,56 @@
         "item3": {
           "title": "Zijn betalingen echt eenmalig?",
           "content": "Ja, je betaalt eenmalig een bedrag voor een abonnement dat je voor altijd gebruikt."
+        },
+        "item4": {
+          "title": "Hebben mijn spelers een account nodig?",
+          "content": "Nee. Start een live sessie met een pro abonnement en deel de QR-code of de roomcode. Je spelers sluiten aan vanuit hun browser en houden hun eigen personage in handen."
         }
       },
       "ctaBanner": {
-        "title": "Klaar om je D&D ervaring te verbeteren?",
-        "text": "Laat je creativiteit de vrije loop met hulpmiddelen voor elk avontuur.",
-        "button": "Begin met creëren"
+        "title": "Je volgende sessie begint hier",
+        "text": "Bouw de encounter, zet je spelers klaar en speel de hele avond vanaf één scherm.",
+        "button": "Bekijk de plannen"
       },
-      "globe": {
-        "title": "Gemaakt in België"
+      "playerPortal": {
+        "title": "Je spelers krijgen hun eigen scherm",
+        "text": "Start een live sessie en toon de QR-code. Iedereen aan tafel volgt het initiatief op zijn eigen telefoon en past zelf schade en healing toe.",
+        "qr": "Scan om het joinscherm te openen",
+        "button": "Sluit aan bij een sessie",
+        "item1": {
+          "title": "Scannen en gaan",
+          "text": "Eén code voor maximaal twintig spelers. Ze kiezen een personage en zitten erin, zonder account."
+        },
+        "item2": {
+          "title": "Iedereen blijft mee",
+          "text": "Beurtvolgorde, condities en health verschijnen op elk scherm zodra jij ze aanpast."
+        },
+        "item3": {
+          "title": "Spelers rekenen zelf",
+          "text": "Schade, healing, tijdelijke HP, armor class, death saves en concentratie, alleen tijdens hun beurt."
+        }
+      },
+      "features": {
+        "item1": {
+          "title": "Campagnes die alles bijhouden",
+          "text": "Party, encounters, notities en homebrew staan samen, zodat er tussen twee sessies niets verloren gaat."
+        },
+        "item2": {
+          "title": "Initiatief zonder papierwerk",
+          "text": "Gooi, sorteer en volg condities in één tabel."
+        },
+        "item3": {
+          "title": "Officiële content en die van jou",
+          "text": "Doorzoek duizenden monsters en spreuken, of voeg je eigen homebrew toe."
+        },
+        "item4": {
+          "title": "Fantasie naam generator",
+          "text": "Namen voor taveernes, tieflings en alles daartussen."
+        },
+        "item5": {
+          "title": "Notities die bij het verhaal blijven",
+          "text": "Sessienotities en lore hangen aan de campagne, klaar wanneer je ze nodig hebt."
+        }
       }
     },
     "error": {
@@ -416,6 +450,15 @@
       "back": {
         "encounters": "Encounters lijst",
         "campaigns": "Campagne: {campaign}"
+      },
+      "liveSession": {
+        "errors": {
+          "proRequired": "Live sessies vereisen een pro-abonnement",
+          "noActiveSession": "Geen actieve live sessie",
+          "seatNotFound": "Die speler heeft de sessie al verlaten",
+          "rowNotFound": "Die rij bestaat niet meer",
+          "rowClaimed": "Die rij is al bezet door een andere speler"
+        }
       }
     },
     "register": {
@@ -550,9 +593,65 @@
     },
     "fantasyNameGenerator": {
       "tip": "Klik op een naam om deze naar het klembord te kopiëren"
+    },
+    "live": {
+      "title": "Deelnemen aan een live sessie",
+      "text": "Voer de kamercode in die je DM met je heeft gedeeld.",
+      "codeLabel": "Kamercode",
+      "nameLabel": "Jouw naam",
+      "rowLabel": "Speel als",
+      "spectatorLabel": "Alleen kijken",
+      "confirmed": "Kamercode bevestigd",
+      "currentTurn": "Huidige beurt",
+      "yourTurn": "Jouw beurt",
+      "yourStatus": "Jouw status",
+      "waitingText": "De besturing opent automatisch zodra {name} aan de beurt is.",
+      "errors": {
+        "notFound": "We konden geen live sessie met die code vinden.",
+        "expired": "Deze live sessie is beëindigd.",
+        "generic": "Er is iets misgegaan, probeer het opnieuw.",
+        "rowRequired": "Kies een personage of zet kijkmodus aan.",
+        "rowClaimed": "Dat personage is al bezet."
+      },
+      "ended": {
+        "title": "Sessie beëindigd",
+        "text": "Deze live sessie is niet meer beschikbaar. Vraag je DM om een nieuwe code om opnieuw deel te nemen.",
+        "action": "Voer een nieuwe code in"
+      }
     }
   },
   "components": {
+    "liveSession": {
+      "title": "Live sessie",
+      "start": "Start live sessie",
+      "code": "Kamercode",
+      "expiresIn": "Verloopt over {time}",
+      "end": "Beëindig sessie",
+      "endConfirm": {
+        "title": "Live sessie beëindigen?",
+        "text": "Spelers worden losgekoppeld en hun plekken worden gewist."
+      },
+      "upsell": "Laat spelers de initiatiefvolgorde volgen en op hun eigen beurt handelen vanaf hun telefoon, geen account nodig. Live sessies zijn een Pro-functie.",
+      "visibility": {
+        "title": "Zichtbaarheid monsters",
+        "hideMonsterNames": "Verberg namen",
+        "hideMonsterHealth": "Verberg HP",
+        "hideMonsterAc": "Verberg AC"
+      },
+      "allow": {
+        "title": "Speleracties"
+      },
+      "seats": {
+        "title": "Spelers",
+        "empty": "Nog niemand heeft zich aangesloten",
+        "playing": "Speelt als {row}",
+        "reassignPlaceholder": "Verplaats naar een andere rij",
+        "kickConfirm": {
+          "title": "{name} verwijderen?",
+          "text": "Diegene wordt losgekoppeld en de plek komt weer vrij."
+        }
+      }
+    },
     "actionsTable": {
       "cost": "Kost { cost } actie | Kost { cost } acties",
       "form": " Terwijl in { form } vorm.",
@@ -682,7 +781,7 @@
     },
     "hero": {
       "title": "Voer meeslepende D&D campagnes op jouw manier",
-      "description": "Een open-source platform om je campagnes te beheren, je party bij te houden en encounters uit te spelen. Gemaakt voor DM's die vrijheid, focus en flexibiliteit willen.",
+      "description": "Beheer campagnes, volg je party en speel encounters uit op één plek. Gemaakt voor DM's die focus en flexibiliteit willen.",
       "start": "Beginnen",
       "try": "Probeer zonder account"
     },
@@ -826,6 +925,7 @@
         "init": "Init",
         "ac": "AC",
         "hp": "HP",
+        "status": "Status",
         "manage": "Acties",
         "conditions": "Condities",
         "note": "Notitie",
@@ -991,7 +1091,6 @@
     }
   },
   "tour": {
-    "sure": "Ben je zeker dat je alle kennis al hebt van de DnD Tracker? 🧙‍♂️",
     "0": {
       "title": "Welkom bij je eerste encounter! 🐲",
       "description": "Welkom, avonturier! Fijn dat je er bent. We nemen je stap voor stap mee door onze tool. Klaar om samen op pad te gaan?"
@@ -1042,7 +1141,8 @@
     },
     "12": {
       "title": "Proficiat, je bent er helemaal klaar voor! 🎉"
-    }
+    },
+    "sure": "Ben je zeker dat je alle kennis al hebt van de DnD Tracker? 🧙‍♂️"
   },
   "zod": {
     "required": "Verplicht",

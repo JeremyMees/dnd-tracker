@@ -27,6 +27,11 @@ export type JoinCampaignInsert =
   DB['public']['Tables']['join_campaign']['Insert']
 export type JoinCampaignUpdate =
   DB['public']['Tables']['join_campaign']['Update']
+export type LiveSessionRow = DB['public']['Tables']['live_sessions']['Row']
+export type LiveSessionInsert =
+  DB['public']['Tables']['live_sessions']['Insert']
+export type LiveSessionUpdate =
+  DB['public']['Tables']['live_sessions']['Update']
 export type NoteRow = DB['public']['Tables']['notes']['Row']
 export type NoteInsert = DB['public']['Tables']['notes']['Insert']
 export type NoteUpdate = DB['public']['Tables']['notes']['Update']
@@ -120,6 +125,12 @@ export interface InitiativeSettings {
   widgets?: InitiativeWidget[]
   pet?: InitiativePet
   negative?: boolean
+  live?: {
+    hideMonsterNames?: boolean
+    hideMonsterHealth?: boolean
+    hideMonsterAc?: boolean
+    allow?: Partial<LiveAllowActions>
+  }
 }
 
 // Extended Types

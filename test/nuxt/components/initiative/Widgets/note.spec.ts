@@ -46,4 +46,22 @@ describe('Initiative note widget', async () => {
 
     expect(textEditor.props('content')).toBe('Test note')
   })
+
+  it('Should update the content when the value prop changes', async () => {
+    component = await mountSuspended(Note, { props })
+
+    await component.setProps({ value: 'Updated note' })
+
+    const textEditor = component.findComponent({ name: 'TextEditor' })
+    expect(textEditor.props('content')).toBe('Updated note')
+  })
+
+  it('Should fall back to an empty string when the value prop becomes falsy', async () => {
+    component = await mountSuspended(Note, { props })
+
+    await component.setProps({ value: '' })
+
+    const textEditor = component.findComponent({ name: 'TextEditor' })
+    expect(textEditor.props('content')).toBe('')
+  })
 })

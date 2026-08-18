@@ -1,6 +1,16 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ActionsTable from '~/components/atoms/ActionsTable.vue'
+import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { sheet } from '~~/test/fixtures/initiative-sheet'
+
+const provide = {
+  [INITIATIVE_SHEET]: {
+    sheet,
+    update: () => {},
+    activeRow: { value: undefined },
+  },
+}
 
 const baseAttack: DndAttack = {
   name: 'Test Attack',
@@ -228,6 +238,43 @@ describe('ActionsTable', async () => {
       },
     })
     expect(perRest.text()).toContain('2/rest')
+  })
+
+  it('Should render the roll button when allowRoll, id are set and the attack has a hit mod', async () => {
+    const component = await mountSuspended(ActionsTable, {
+      props: {
+        actions: [baseAction],
+        allowRoll: true,
+        id: 'test-id',
+      },
+      provide,
+    })
+
+    expect(
+      component.findComponent({ name: 'InitiativeActionRoll' }).exists(),
+    ).toBeTruthy()
+  })
+
+  it('Should not render the roll button when the attack has neither a hit mod nor damage dice', async () => {
+    const component = await mountSuspended(ActionsTable, {
+      props: {
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              { ...baseAttack, toHitMod: undefined, damageDieCount: undefined },
+            ],
+          },
+        ],
+        allowRoll: true,
+        id: 'test-id',
+      },
+      provide,
+    })
+
+    expect(
+      component.findComponent({ name: 'InitiativeActionRoll' }).exists(),
+    ).toBeFalsy()
   })
 
   it('Should show no actions message when actions array is empty', async () => {

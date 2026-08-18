@@ -63,3 +63,37 @@ export async function requireCampaignAccess(
 
   return { id: campaign.id, title: campaign.title, role }
 }
+
+export interface EncounterAccess {
+  id: number
+  campaign: number | null
+  createdBy: string
+}
+
+export async function requireEncounterAccess(
+  event: H3Event,
+  encounterId: number,
+  userId: string,
+): Promise<EncounterAccess> {
+  const supabase = serverSupabaseServiceRole<DB>(event)
+
+  const { data: encounter } = await supabase
+    .from('initiative_sheets')
+    .select('id, campaign, createdBy')
+    .eq('id', encounterId)
+    .single()
+
+  if (!encounter) {
+    throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
+  }
+
+  if (encounter.createdBy !== userId) {
+    if (!encounter.campaign) {
+      throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+    }
+
+    await requireCampaignAccess(event, encounter.campaign, userId)
+  }
+
+  return encounter
+}

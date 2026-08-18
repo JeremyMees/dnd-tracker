@@ -1,15 +1,29 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { openPopover } from '~~/test/nuxt/stubs/popover'
+
+interface HeaderVM {
+  resetOpen: boolean
+}
 
 interface Props {
   data: InitiativeSheet | undefined
+  encounterId?: number
 }
 
 const props: Props = {
   data: sheet,
 }
+
+vi.mock('~/components/live/SessionPanel.vue', () => ({
+  default: {
+    name: 'SessionPanelStub',
+    props: ['encounterId'],
+    template: '<div test-id="session-panel-stub" />',
+  },
+}))
 
 describe('Initiative header', () => {
   it('Should render correctly with required props', async () => {
@@ -124,5 +138,71 @@ describe('Initiative header', () => {
     await component.find('[test-id="previous"]').trigger('click')
 
     expect(component.emitted('previous')).toBeDefined()
+  })
+
+  it('Should not display the live session trigger without an encounterId', async () => {
+    const component = await mountSuspended(Header, { props })
+
+    expect(
+      component.find('[test-id="live-session-trigger"]').exists(),
+    ).toBeFalsy()
+  })
+
+  it('Should display the live session trigger when an encounterId is given', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+    })
+
+    expect(
+      component.find('[test-id="live-session-trigger"]').exists(),
+    ).toBeTruthy()
+  })
+
+  it('Should render the live session panel with the encounterId when opened', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+    })
+
+    await component.find('[test-id="live-session-trigger"]').trigger('click')
+    await nextTick()
+
+    const panel = component.findComponent({ name: 'SessionPanelStub' })
+
+    expect(panel.exists()).toBeTruthy()
+    expect(panel.props('encounterId')).toBe(42)
+  })
+
+  describe('Reset popover', () => {
+    it('Should emit a soft reset and close the popover when the soft option is clicked', async () => {
+      const component = await mountSuspended(Header, { props })
+      const vm = component.vm as unknown as HeaderVM
+
+      await openPopover(component)
+      ;(
+        document.body.querySelector(
+          '[test-id="reset-soft"]',
+        ) as HTMLButtonElement
+      ).click()
+      await nextTick()
+
+      expect(component.emitted('reset')?.[0]).toEqual([false])
+      expect(vm.resetOpen).toBe(false)
+    })
+
+    it('Should emit a hard reset and close the popover when the hard option is clicked', async () => {
+      const component = await mountSuspended(Header, { props })
+      const vm = component.vm as unknown as HeaderVM
+
+      await openPopover(component)
+      ;(
+        document.body.querySelector(
+          '[test-id="reset-hard"]',
+        ) as HTMLButtonElement
+      ).click()
+      await nextTick()
+
+      expect(component.emitted('reset')?.[0]).toEqual([true])
+      expect(vm.resetOpen).toBe(false)
+    })
   })
 })

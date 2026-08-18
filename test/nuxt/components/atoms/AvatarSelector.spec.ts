@@ -61,28 +61,72 @@ describe('AvatarSelector', async () => {
 
     expect(component.find(`[test-id="current"]`).text()).toBe(`1/${options}`)
 
-    // First click on next, should go to option 2
     await nextButton.trigger('click')
     let emitted = component.emitted('update')
+
     expect(emitted).toBeTruthy()
+
     component.setProps({ selected: emitted?.[0]?.[0] as string })
     await nextTick()
+
     expect(component.find(`[test-id="current"]`).text()).toBe(`2/${options}`)
 
-    // Second click on next, should wrap around to option 1
     await nextButton.trigger('click')
     emitted = component.emitted('update')
+
     expect(emitted).toBeTruthy()
+
     component.setProps({ selected: emitted?.[1]?.[0] as string })
     await nextTick()
+
     expect(component.find(`[test-id="current"]`).text()).toBe(`1/${options}`)
 
-    // Click on prev, should go to option 2
     await prevButton.trigger('click')
     emitted = component.emitted('update')
+
     expect(emitted).toBeTruthy()
     component.setProps({ selected: emitted?.[2]?.[0] as string })
+
     await nextTick()
+
     expect(component.find(`[test-id="current"]`).text()).toBe(`2/${options}`)
+  })
+
+  it('Should wrap around to the last option when prev is clicked at the first option', async () => {
+    const component = await mountSuspended(AvatarSelector, { props })
+
+    await component.find('[test-id="prev"]').trigger('click')
+
+    expect(component.emitted('update')).toEqual([[props.options[1]]])
+  })
+
+  it('Should go to the previous option without wrapping when not at the first option', async () => {
+    const component = await mountSuspended(AvatarSelector, {
+      props: { ...props, selected: props.options[1] },
+    })
+
+    await component.find('[test-id="prev"]').trigger('click')
+
+    expect(component.emitted('update')).toEqual([[props.options[0]]])
+  })
+
+  it('Should fall back to a generic icon and the raw identifier as label for unknown identifiers', async () => {
+    const component = await mountSuspended(AvatarSelector, {
+      props: { ...props, identifier: 'unknownIdentifier' },
+    })
+
+    const icon = component.find('[test-id="icon"]')
+    expect(icon.attributes('class')).toContain('tabler:palette')
+  })
+
+  it('Should not emit update when there are no options to select', async () => {
+    const component = await mountSuspended(AvatarSelector, {
+      props: { ...props, options: [] },
+    })
+
+    await component.find('[test-id="prev"]').trigger('click')
+    await component.find('[test-id="next"]').trigger('click')
+
+    expect(component.emitted('update')).toBeFalsy()
   })
 })

@@ -1,11 +1,14 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 import FeatureRequestCard from '~/components/molecules/FeatureRequestCard.vue'
 import SocialProfile from '~~/test/fixtures/social-profile.json'
 
+const mockUser = ref<{ id: string } | null>({ id: 'test-user-id' })
+
 vi.mock('~/composables/useAuthentication', () => ({
   useAuthentication: () => ({
-    user: ref({ id: 'test-user-id' }),
+    user: mockUser,
   }),
 }))
 
@@ -27,6 +30,10 @@ const props: Props = {
     title: 'title',
   },
 }
+
+afterEach(() => {
+  mockUser.value = { id: 'test-user-id' }
+})
 
 describe('FeatureRequestCard', async () => {
   it('Should match snapshot', async () => {
@@ -123,5 +130,88 @@ describe('FeatureRequestCard', async () => {
     expect(likeButton.attributes('class')).not.toContain(
       '!bg-primary/50 !border-primary',
     )
+  })
+
+  it('Should be able to toggle dislike vote', async () => {
+    const component = await mountSuspended(FeatureRequestCard, { props })
+    const dislikeButton = component.find('[test-id="dislike-button"]')
+
+    await dislikeButton.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('update')?.[0]).toEqual([
+      {
+        like: props.feature.voted.like,
+        dislike: [...props.feature.voted.dislike, 'test-user-id'],
+      },
+    ])
+
+    await component.setProps({
+      feature: {
+        ...props.feature,
+        voted: {
+          like: [...props.feature.voted.like],
+          dislike: [...props.feature.voted.dislike, 'test-user-id'],
+        },
+      },
+    })
+
+    expect(dislikeButton.attributes('class')).toContain('bg-primary/50!')
+
+    await dislikeButton.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('update')?.[1]).toEqual([
+      {
+        like: props.feature.voted.like,
+        dislike: props.feature.voted.dislike,
+      },
+    ])
+  })
+
+  it('Should move a like vote to dislike when the opposite is toggled', async () => {
+    const component = await mountSuspended(FeatureRequestCard, {
+      props: {
+        ...props,
+        feature: {
+          ...props.feature,
+          voted: {
+            like: [...props.feature.voted.like, 'test-user-id'],
+            dislike: [...props.feature.voted.dislike],
+          },
+        },
+      },
+    })
+    const dislikeButton = component.find('[test-id="dislike-button"]')
+
+    await dislikeButton.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('update')?.[0]).toEqual([
+      {
+        like: props.feature.voted.like,
+        dislike: [...props.feature.voted.dislike, 'test-user-id'],
+      },
+    ])
+  })
+
+  it('Should emit login instead of toggling a vote when there is no user', async () => {
+    mockUser.value = null
+
+    const component = await mountSuspended(FeatureRequestCard, { props })
+    const likeButton = component.find('[test-id="like-button"]')
+    const dislikeButton = component.find('[test-id="dislike-button"]')
+
+    await likeButton.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('login')?.[0]).toBeTruthy()
+    expect(component.emitted('update')).toBeFalsy()
+
+    await dislikeButton.trigger('click')
+    await nextTick()
+
+    expect(component.emitted('login')?.[1]).toBeTruthy()
+    expect(component.emitted('update')).toBeFalsy()
   })
 })

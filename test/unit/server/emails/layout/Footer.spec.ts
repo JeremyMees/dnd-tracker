@@ -44,4 +44,12 @@ describe('Footer email layout', () => {
       `border-top:1px solid ${colors.secondary}`,
     )
   })
+
+  it('Should render as plain text', async () => {
+    const text = await render(Footer, undefined, { plainText: true })
+
+    expect(text).toContain('DnD Tracker')
+    expect(text).toContain('Keep adventuring')
+    expect(text).toContain('jeremy@dnd-tracker.com')
+  })
 })

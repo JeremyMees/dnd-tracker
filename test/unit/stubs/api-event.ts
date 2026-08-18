@@ -14,6 +14,7 @@ export function mockEvent({
   return {
     path,
     method,
+    context: {},
     node: {
       req: {
         method,
@@ -21,6 +22,7 @@ export function mockEvent({
           ...(body !== undefined && { 'content-type': 'application/json' }),
           ...headers,
         },
+        socket: { remoteAddress: '127.0.0.1' },
       },
     },
     _requestBody: body,

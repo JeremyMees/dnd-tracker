@@ -3,10 +3,13 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Hp from '~/components/initiative/TableRow/Hp.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { openPopover } from '~~/test/nuxt/stubs/popover'
 
 interface HpTestMethods {
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
   updateBase: (form: { amount: number }, node: unknown) => Promise<void>
+  handleToasts: (toasts: ToastItem[]) => void
+  hasHp: boolean
 }
 
 interface Props {
@@ -114,5 +117,99 @@ describe('Initiative table row hp', async () => {
     expect(payload).toBeDefined()
     const resultRow = payload.rows[0]
     expect(resultRow?.hitPoints).toBe(15)
+  })
+
+  it('Should trigger toasts through the toast composable', async () => {
+    const component = await mountSuspended(Hp, { props, provide })
+
+    const vm = component.vm as unknown as HpTestMethods
+    vm.handleToasts([
+      {
+        title: ['toast.title'],
+        description: ['toast.description'],
+        variant: 'default',
+      },
+    ])
+
+    expect(mockToast).toHaveBeenCalledWith({
+      title: 'toast.title',
+      description: 'toast.description',
+      variant: 'default',
+    })
+  })
+
+  describe('Popover content', () => {
+    it('Should render the current, max and temp hitPoints breakdown when opened', async () => {
+      const component = await mountSuspended(Hp, {
+        props: {
+          item: {
+            ...props.item,
+            hitPoints: 10,
+            maxHitPoints: 20,
+            maxHitPointsOld: 15,
+            tempHitPoints: 5,
+          },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      expect(document.body.textContent).toContain('general.current')
+      expect(document.body.textContent).toContain('general.max')
+      expect(document.body.textContent).toContain('general.temp')
+      expect(document.body.textContent).toContain('(15)')
+    })
+
+    it('Should not show the previous max hitPoints when maxHitPointsOld is not defined', async () => {
+      const component = await mountSuspended(Hp, {
+        props: {
+          item: {
+            ...props.item,
+            hitPoints: 10,
+            maxHitPoints: 20,
+            maxHitPointsOld: undefined,
+          },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      expect(document.body.textContent).not.toContain('(undefined)')
+    })
+
+    it('Should apply destructive styling to the current hitPoints when below 1', async () => {
+      const component = await mountSuspended(Hp, {
+        props: {
+          item: { ...props.item, hitPoints: 0, maxHitPoints: 20 },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      const vm = component.vm as unknown as HpTestMethods
+      expect(vm.hasHp).toBe(true)
+    })
+
+    it('Should not show the hitPoints breakdown or forms when hitPoints are not defined', async () => {
+      const component = await mountSuspended(Hp, {
+        props: {
+          item: {
+            ...props.item,
+            hitPoints: undefined,
+            maxHitPoints: undefined,
+          },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      const vm = component.vm as unknown as HpTestMethods
+      expect(vm.hasHp).toBe(false)
+      expect(document.body.textContent).not.toContain('general.current')
+    })
   })
 })

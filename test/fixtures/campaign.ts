@@ -49,6 +49,19 @@ export const mockInvitedMember: TeamMemberFull = {
   },
 }
 
+export const mockProTeamMember: TeamMemberFull = {
+  id: 7,
+  role: 'Admin',
+  user: {
+    id: '4',
+    username: 'Pro Member',
+    avatar: 'avatar-url',
+    name: 'Pro Member',
+    email: 'pro.member@example.com',
+    subscriptionType: 'pro',
+  },
+}
+
 export const mockCampaignFull: CampaignFull = {
   id: 1,
   title: 'Test Campaign',

@@ -65,7 +65,10 @@ onMounted(() => {
   })
 })
 
-onBeforeUnmount(() => editor.value?.destroy())
+onBeforeUnmount(() => {
+  editor.value?.destroy()
+  editor.value = undefined
+})
 
 watchDebounced(
   () => props.content,
@@ -141,6 +144,7 @@ function setLink() {
   <ClientOnly>
     <div
       v-if="editor"
+      test-id="editor"
       class="py-2 px-0 rounded-lg"
       :class="{
         'border border-input bg-background': variant === 'input',
@@ -159,16 +163,21 @@ function setLink() {
         <div
           ref="dropdown"
           class="relative group w-fit"
+          test-id="dropdown-wrapper"
           @mouseleave="isOpen = false"
         >
           <button
             class="group-hover:bg-secondary px-1 pt-1 rounded-lg rounded-b-none flex flex-row items-center cursor-pointer duration-200 ease-in-out transition-all"
             aria-label="Text style dropdown"
             type="button"
+            test-id="text-style-dropdown"
             @mouseenter="isOpen = true"
             @click="isOpen = true"
           >
-            <span class="duration-200 font-bold text-sm min-w-10">
+            <span
+              class="duration-200 font-bold text-sm min-w-10"
+              test-id="heading-label"
+            >
               {{
                 editor.isActive('heading')
                   ? `H${editor.getAttributes('heading').level}`
@@ -182,7 +191,11 @@ function setLink() {
             />
           </button>
           <AnimationExpand>
-            <div v-if="isOpen" class="absolute z-1 block w-max left-0">
+            <div
+              v-if="isOpen"
+              class="absolute z-1 block w-max left-0"
+              test-id="dropdown-menu"
+            >
               <div
                 class="flex flex-col gap-y-1 p-2 relative rounded-b-lg rounded-tr-lg bg-secondary"
               >
@@ -193,6 +206,7 @@ function setLink() {
                     'bg-muted!': editor.isActive('paragraph'),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
+                  test-id="paragraph"
                   @click="
                     () => {
                       editor?.chain().focus().setParagraph().run()
@@ -218,6 +232,7 @@ function setLink() {
                     'bg-muted!': editor.isActive('heading', { level }),
                   }"
                   class="flex items-center gap-x-2 px-2 py-1 rounded-md hover:bg-foreground/50"
+                  :test-id="`heading-${level}`"
                   @click="
                     () => {
                       editor
@@ -256,6 +271,7 @@ function setLink() {
             variant="default-ghost"
             :class="{ 'bg-primary': buttonStates.isLink }"
             :aria-label="$t('general.link')"
+            test-id="link"
             @click="setLink"
           >
             <Icon name="tabler:link" aria-hidden="true" />
@@ -267,6 +283,7 @@ function setLink() {
             variant="default-ghost"
             :disabled="!buttonStates.isLink"
             :aria-label="$t('actions.unlink')"
+            test-id="unlink"
             @click="editor.chain().focus().unsetLink().run()"
           >
             <Icon name="tabler:unlink" aria-hidden="true" />
@@ -278,6 +295,7 @@ function setLink() {
             variant="default-ghost"
             :class="{ 'bg-primary!': buttonStates.isBulletList }"
             :aria-label="$t('general.unOrderedList')"
+            test-id="bullet-list"
             @click="editor.chain().focus().toggleBulletList().run()"
           >
             <Icon name="tabler:list" aria-hidden="true" />
@@ -289,6 +307,7 @@ function setLink() {
             variant="default-ghost"
             :class="{ 'bg-primary!': buttonStates.isOrderedList }"
             :aria-label="$t('general.orderedList')"
+            test-id="ordered-list"
             @click="editor.chain().focus().toggleOrderedList().run()"
           >
             <Icon name="tabler:list-numbers" aria-hidden="true" />
@@ -300,6 +319,7 @@ function setLink() {
             variant="default-ghost"
             :class="{ 'bg-primary!': buttonStates.isBlockquote }"
             :aria-label="$t('general.quote')"
+            test-id="blockquote"
             @click="editor.chain().focus().toggleBlockquote().run()"
           >
             <Icon name="tabler:blockquote" aria-hidden="true" />
@@ -310,6 +330,7 @@ function setLink() {
             size="icon-sm"
             variant="default-ghost"
             :aria-label="$t('general.horizontalRule')"
+            test-id="horizontal-rule"
             @click="editor.chain().focus().setHorizontalRule().run()"
           >
             <Icon name="tabler:separator" aria-hidden="true" />
@@ -330,6 +351,7 @@ function setLink() {
             :class="{ 'bg-primary!': buttonStates.isBold }"
             :disabled="!buttonStates.canBold"
             :aria-label="$t('general.bold')"
+            test-id="bold"
             @click="editor.chain().focus().toggleBold().run()"
           >
             <Icon name="tabler:bold" aria-hidden="true" />
@@ -342,6 +364,7 @@ function setLink() {
             :class="{ 'bg-primary!': buttonStates.isItalic }"
             :disabled="!buttonStates.canItalic"
             :aria-label="$t('general.italic')"
+            test-id="italic"
             @click="editor.chain().focus().toggleItalic().run()"
           >
             <Icon name="tabler:italic" aria-hidden="true" />
@@ -354,6 +377,7 @@ function setLink() {
             :class="{ 'bg-primary!': buttonStates.isStrike }"
             :disabled="!buttonStates.canStrike"
             :aria-label="$t('general.strikeThrough')"
+            test-id="strike"
             @click="editor.chain().focus().toggleStrike().run()"
           >
             <Icon name="tabler:strikethrough" aria-hidden="true" />
@@ -365,6 +389,7 @@ function setLink() {
             variant="default-ghost"
             :class="{ 'bg-primary!': buttonStates.isHighlight }"
             :aria-label="$t('actions.highlight')"
+            test-id="highlight"
             @click="editor.chain().focus().toggleHighlight().run()"
           >
             <Icon name="tabler:highlight" aria-hidden="true" />
@@ -375,6 +400,7 @@ function setLink() {
             size="icon-sm"
             variant="default-ghost"
             :aria-label="$t('actions.clearFormatting')"
+            test-id="clear-formatting"
             @click="editor.chain().focus().unsetAllMarks().run()"
           >
             <Icon name="tabler:clear-formatting" aria-hidden="true" />
@@ -388,6 +414,7 @@ function setLink() {
             variant="default-ghost"
             :disabled="!buttonStates.canUndo"
             :aria-label="$t('actions.undo')"
+            test-id="undo"
             @click="editor.chain().focus().undo().run()"
           >
             <Icon name="tabler:arrow-back" aria-hidden="true" />
@@ -399,6 +426,7 @@ function setLink() {
             variant="default-ghost"
             :disabled="!buttonStates.canRedo"
             :aria-label="$t('actions.redo')"
+            test-id="redo"
             @click="editor.chain().focus().redo().run()"
           >
             <Icon name="tabler:arrow-forward" aria-hidden="true" />
@@ -409,6 +437,7 @@ function setLink() {
         :editor="editor"
         :class="{ 'html-invalid': invalidHTML }"
         class="html-richtext"
+        test-id="editor-content"
       />
       <div class="flex items-center gap-2 px-2 pt-4">
         <PercentageDial :limit="charLimit" :value="characterStats.characters" />

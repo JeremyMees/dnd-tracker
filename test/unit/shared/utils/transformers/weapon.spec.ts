@@ -52,5 +52,14 @@ describe('transformers/weapon', () => {
 
       expect(weapon.range).toBe(5)
     })
+
+    it('defaults properties to an empty array when missing', () => {
+      const weapon = toWeapon({
+        ...open5eV1WeaponFixture,
+        properties: undefined,
+      })
+
+      expect(weapon.properties).toEqual([])
+    })
   })
 })

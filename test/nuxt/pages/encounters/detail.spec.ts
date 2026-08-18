@@ -19,6 +19,7 @@ const {
   removeChannel,
   setQueryData,
   subscribe,
+  syncLiveSession,
   toast,
   unsubscribe,
   update,
@@ -29,6 +30,7 @@ const {
   removeChannel: vi.fn(),
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
+  syncLiveSession: vi.fn(),
   toast: vi.fn(),
   unsubscribe: vi.fn(),
   update: vi.fn(),
@@ -74,6 +76,7 @@ mockNuxtImport('useSupabaseClient', () => () => ({
   channel: () => channel,
   removeChannel,
 }))
+mockNuxtImport('useLiveSession', () => () => ({ sync: syncLiveSession }))
 
 const SheetProbe = defineComponent({
   props: { loading: Boolean },
@@ -351,6 +354,24 @@ describe('Encounter detail page', () => {
     await probe.update({ title: 'Renamed' })
 
     expect(update).not.toHaveBeenCalled()
+  })
+
+  it('Should sync the live session after a successful update', async () => {
+    const { probe } = await mountPage()
+
+    await probe.update({ round: 2, activeIndex: 1 })
+
+    expect(syncLiveSession).toHaveBeenCalledWith({ round: 2, activeIndex: 1 })
+  })
+
+  it('Should not sync the live session when the update fails', async () => {
+    update.mockRejectedValueOnce(new Error('Boom'))
+
+    const { probe } = await mountPage()
+
+    await expect(probe.update({ title: 'Renamed' })).rejects.toThrow('Boom')
+
+    expect(syncLiveSession).not.toHaveBeenCalled()
   })
 
   it('Should leave the cache to realtime when the update settles', async () => {

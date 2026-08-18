@@ -116,6 +116,7 @@ const showAdvanced = ref(false)
               class="has-[>button]:mr-0 pr-2"
             >
               <UiInputGroupButton
+                test-id="generate-name"
                 :aria-label="$t('actions.generateName')"
                 @click="setValue(randomName())"
               >
@@ -161,6 +162,7 @@ const showAdvanced = ref(false)
               class="has-[>button]:mr-0 pr-2"
             >
               <UiInputGroupButton
+                test-id="generate-roll"
                 :aria-label="$t('actions.generateName')"
                 @click="setValue(randomRoll(20))"
               >

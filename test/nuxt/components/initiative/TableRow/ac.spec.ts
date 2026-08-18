@@ -3,6 +3,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Ac from '~/components/initiative/TableRow/Ac.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { openPopover } from '~~/test/nuxt/stubs/popover'
 
 interface AcTestMethods {
   handleAcChanges: (
@@ -10,6 +11,7 @@ interface AcTestMethods {
     type: 'add' | 'remove' | 'temp' | 'override' | 'override-reset',
   ) => InitiativeSheetRow
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  hasArmorClass: boolean
 }
 
 interface Props {
@@ -143,5 +145,125 @@ describe('Initiative table row ac', async () => {
     await vm.updateRow(updatedRow)
 
     expect(updatedRow.armorClass).toBe(-5)
+  })
+
+  describe('handleAcChanges', () => {
+    it('Should add to the armor class', async () => {
+      const component = await mountSuspended(Ac, {
+        props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
+        provide,
+      })
+
+      const vm = component.vm as unknown as AcTestMethods
+      const updatedRow = vm.handleAcChanges(5, 'add')
+
+      expect(updatedRow.armorClass).toBe(15)
+    })
+
+    it('Should set a temporary armor class', async () => {
+      const component = await mountSuspended(Ac, {
+        props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
+        provide,
+      })
+
+      const vm = component.vm as unknown as AcTestMethods
+      const updatedRow = vm.handleAcChanges(3, 'temp')
+
+      expect(updatedRow.tempArmorClass).toBe(3)
+    })
+
+    it('Should override the max armor class', async () => {
+      const component = await mountSuspended(Ac, {
+        props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
+        provide,
+      })
+
+      const vm = component.vm as unknown as AcTestMethods
+      const updatedRow = vm.handleAcChanges(25, 'override')
+
+      expect(updatedRow.maxArmorClass).toBe(25)
+      expect(updatedRow.maxArmorClassOld).toBe(20)
+    })
+
+    it('Should reset an overridden max armor class', async () => {
+      const component = await mountSuspended(Ac, {
+        props: {
+          item: {
+            ...props.item,
+            armorClass: 15,
+            maxArmorClass: 25,
+            maxArmorClassOld: 20,
+          },
+        },
+        provide,
+      })
+
+      const vm = component.vm as unknown as AcTestMethods
+      const updatedRow = vm.handleAcChanges(20, 'override-reset')
+
+      expect(updatedRow.maxArmorClass).toBe(20)
+      expect(updatedRow.maxArmorClassOld).toBeUndefined()
+    })
+  })
+
+  describe('Popover content', () => {
+    it('Should render the current, max and temp AC breakdown when opened', async () => {
+      const component = await mountSuspended(Ac, {
+        props: {
+          item: {
+            ...props.item,
+            armorClass: 10,
+            maxArmorClass: 20,
+            maxArmorClassOld: 15,
+            tempArmorClass: 5,
+          },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      expect(document.body.textContent).toContain('general.current')
+      expect(document.body.textContent).toContain('general.max')
+      expect(document.body.textContent).toContain('general.temp')
+      expect(document.body.textContent).toContain('(15)')
+    })
+
+    it('Should show the previous max armor class even when it is 0', async () => {
+      const component = await mountSuspended(Ac, {
+        props: {
+          item: {
+            ...props.item,
+            armorClass: 10,
+            maxArmorClass: 20,
+            maxArmorClassOld: 0,
+          },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      expect(document.body.textContent).toContain('(0)')
+    })
+
+    it('Should not show the AC breakdown or forms when armorClass is not defined', async () => {
+      const component = await mountSuspended(Ac, {
+        props: {
+          item: {
+            ...props.item,
+            armorClass: undefined,
+            maxArmorClass: undefined,
+          },
+        },
+        provide,
+      })
+
+      await openPopover(component)
+
+      const vm = component.vm as unknown as AcTestMethods
+      expect(vm.hasArmorClass).toBe(false)
+      expect(document.body.textContent).not.toContain('general.current')
+    })
   })
 })

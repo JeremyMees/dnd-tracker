@@ -84,6 +84,24 @@ describe('useConfirm', async () => {
     expect(confirmDialogs.dialogs.value.length).toBe(0)
   })
 
+  it('Should do nothing when confirming an unknown dialog', async () => {
+    confirm.ask(mockConfirm, mockCallback)
+
+    await confirmDialogs.handlers.confirm('unknown-uuid')
+
+    expect(mockCallback).not.toHaveBeenCalled()
+    expect(confirmDialogs.dialogs.value.length).toBe(1)
+  })
+
+  it('Should do nothing when declining an unknown dialog', async () => {
+    confirm.ask(mockConfirm, mockCallback)
+
+    await confirmDialogs.handlers.decline('unknown-uuid')
+
+    expect(mockCallback).not.toHaveBeenCalled()
+    expect(confirmDialogs.dialogs.value.length).toBe(1)
+  })
+
   it('Should handle errors during confirmation and set loading back to false', async () => {
     confirm.ask(mockConfirm, mockCallback)
 

@@ -165,6 +165,7 @@ const emptyAttack: DndAttack = {
           {{ $t('components.inputs.usageParamLabel') }}
         </UiFormLabel>
         <UiInput
+          test-id="usage-param"
           type="number"
           :model-value="usageLimits?.param"
           @update:model-value="v => handleUsageParamChange(parseInteger(v))"

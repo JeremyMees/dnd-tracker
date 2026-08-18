@@ -55,15 +55,15 @@ const onSubmit = form.handleSubmit(async values => {
           {{ $t('components.inputs.titleLabel') }}
         </UiFormLabel>
         <UiFormControl>
-          <UiInput type="text" v-bind="componentField" />
+          <UiInput test-id="title" type="text" v-bind="componentField" />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>
-    <div v-if="formError" class="text-sm text-destructive">
+    <div v-if="formError" test-id="error" class="text-sm text-destructive">
       {{ formError }}
     </div>
-    <UiButton type="submit" class="w-full">
+    <UiButton test-id="submit" type="submit" class="w-full">
       {{ campaign ? $t('pages.campaigns.update') : $t('pages.campaigns.add') }}
     </UiButton>
   </UiFormWrapper>

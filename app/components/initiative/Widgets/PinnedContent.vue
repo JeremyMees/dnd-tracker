@@ -31,6 +31,7 @@ defineProps<{ value: DndItem[] }>()
           <ContentCardArmor v-if="isArmor(item)" :content="item" />
           <div class="flex justify-end pt-4">
             <UiButton
+              test-id="remove"
               :aria-label="$t(`components.infoCard.remove`)"
               @click="
                 $emit(

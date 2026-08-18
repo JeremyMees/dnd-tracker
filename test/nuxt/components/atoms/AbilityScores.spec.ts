@@ -103,6 +103,24 @@ describe('AbilityScores', () => {
     expect(modifierTexts.filter(t => t === '_')).toHaveLength(4)
   })
 
+  it('should display _ for missing ability scores and raw values for present ones', async () => {
+    const partialAbilityScores = {
+      strength: 18,
+      dexterity: 14,
+    } as DndAbilityScores
+
+    const component = await mountSuspended(AbilityScores, {
+      props: { abilityScores: partialAbilityScores, modifiers },
+    })
+    const scoreTexts = component
+      .findAll('[test-id="ability-score"]')
+      .map(el => el.text())
+
+    expect(scoreTexts).toContain('18')
+    expect(scoreTexts).toContain('14')
+    expect(scoreTexts.filter(t => t === '_')).toHaveLength(4)
+  })
+
   it('should display 0 values when present and not _', async () => {
     const partialModifiers = {
       strength: 0,

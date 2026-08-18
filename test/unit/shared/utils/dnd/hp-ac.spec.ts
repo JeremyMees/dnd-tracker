@@ -82,6 +82,73 @@ describe('dnd/hp-ac', () => {
       hpFunctions.temp(mockRow, 8)
       expect(mockRow.tempHitPoints).toBe(8)
     })
+
+    it('should override maxHitPoints and clamp current hitPoints when it exceeds the new max', () => {
+      mockRow.hitPoints = 10
+      mockRow.maxHitPoints = 20
+
+      hpFunctions.override(mockRow, 5)
+
+      expect(mockRow.maxHitPoints).toBe(5)
+      expect(mockRow.hitPoints).toBe(5)
+      expect(mockRow.maxHitPointsOld).toBe(20)
+    })
+
+    it('should override maxHitPoints and keep the current/max difference when the new max is larger', () => {
+      mockRow.hitPoints = 10
+      mockRow.maxHitPoints = 20
+
+      hpFunctions.override(mockRow, 30)
+
+      expect(mockRow.maxHitPoints).toBe(30)
+      expect(mockRow.hitPoints).toBe(20)
+    })
+
+    it('should set hitPoints directly when there is no current hitPoints or max', () => {
+      const row = { ...mockRow, hitPoints: undefined, maxHitPoints: undefined }
+
+      hpFunctions.override(row, 15)
+
+      expect(row.hitPoints).toBe(15)
+      expect(row.maxHitPoints).toBe(15)
+    })
+
+    it('should restore the previous max on overrideReset when it fits under the current max', () => {
+      mockRow.hitPoints = 5
+      mockRow.maxHitPoints = 5
+      mockRow.maxHitPointsOld = 20
+
+      hpFunctions.overrideReset(mockRow, 30)
+
+      expect(mockRow.hitPoints).toBe(20)
+      expect(mockRow.maxHitPoints).toBe(30)
+      expect(mockRow.maxHitPointsOld).toBeUndefined()
+    })
+
+    it('should keep the current/max difference on overrideReset when the old max exceeds the new max', () => {
+      mockRow.hitPoints = 5
+      mockRow.maxHitPoints = 30
+      mockRow.maxHitPointsOld = 40
+
+      hpFunctions.overrideReset(mockRow, 10)
+
+      expect(mockRow.hitPoints).toBe(15)
+      expect(mockRow.maxHitPoints).toBe(10)
+    })
+
+    it('should not touch hitPoints on overrideReset when there is no old max', () => {
+      const row = {
+        ...mockRow,
+        hitPoints: 5,
+        maxHitPoints: 30,
+        maxHitPointsOld: undefined,
+      }
+
+      hpFunctions.overrideReset(row, 10)
+
+      expect(row.hitPoints).toBe(5)
+      expect(row.maxHitPoints).toBe(10)
+    })
   })
 
   describe('acFunctions', () => {
@@ -132,6 +199,20 @@ describe('dnd/hp-ac', () => {
 
       expect(getAC(row)).toBe(15)
       expect(getAC(monster)).toBe(18)
+    })
+  })
+
+  describe('getHealthBand', () => {
+    it.each([
+      [80, 100, 'healthy'],
+      [40, 100, 'bloodied'],
+      [10, 100, 'critical'],
+      [0, 100, 'critical'],
+      [5, 0, 'healthy'],
+      [0, 0, 'critical'],
+      [undefined, undefined, 'critical'],
+    ])('bands %s/%s hp as %s', (hitPoints, maxHitPoints, band) => {
+      expect(getHealthBand(hitPoints, maxHitPoints)).toBe(band)
     })
   })
 })

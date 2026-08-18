@@ -42,16 +42,42 @@ jobs:
         run: npm run typecheck
 
   testing:
-    name: Testing ${{ matrix.shard }}/3
+    name: Testing ${{ matrix.shard }}/6
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Run tests
-        run: npm run test -- --shard=${{ matrix.shard }}/3
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --shard=${{ matrix.shard }}/6 --coverage.reporter=json --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
+      - name: Rename coverage report for this shard
+        run: mv coverage/coverage-final.json coverage/coverage-final-${{ matrix.shard }}.json
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-shard-${{ matrix.shard }}
+          path: coverage/coverage-final-${{ matrix.shard }}.json
+          retention-days: 1
+
+  coverage-gate:
+    name: Coverage Gate
+    needs: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Download all coverage artifacts
+        uses: actions/download-artifact@v6
+        with:
+          path: coverage-raw
+          pattern: coverage-shard-*
+          merge-multiple: true
+      - name: Merge reports and enforce thresholds
+        run: npm run test:coverage:gate

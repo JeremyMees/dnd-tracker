@@ -45,6 +45,7 @@ async function logoutUser(): Promise<void> {
 
 <template>
   <nav
+    test-id="nav"
     :class="[
       isScrolled
         ? 'bg-background/80 backdrop-blur-lg'
@@ -78,6 +79,7 @@ async function logoutUser(): Promise<void> {
                     custom
                   >
                     <UiNavigationMenuLink
+                      test-id="nav-route"
                       :active="isActive"
                       :href="href"
                       :class="navigationMenuTriggerStyle()"
@@ -89,6 +91,7 @@ async function logoutUser(): Promise<void> {
                 </UiNavigationMenuItem>
                 <UiNavigationMenuItem>
                   <UiNavigationMenuTrigger
+                    test-id="play-trigger"
                     class="mx-1 border-primary border-4 py-1 bg-primary/50 focus:bg-primary hover:bg-primary/60 data-active:bg-primary/50 data-[state=open]:hover:bg-primary/50 data-[state=open]:focus:bg-primary/50 data-[state=open]:bg-primary/50"
                   >
                     {{ $t('components.navbar.play') }}
@@ -102,6 +105,7 @@ async function logoutUser(): Promise<void> {
                       custom
                     >
                       <UiNavigationMenuLink
+                        test-id="nav-play-route"
                         :active="isActive"
                         :href="href"
                         class="flex flex-row gap-2 items-center w-full"
@@ -119,6 +123,7 @@ async function logoutUser(): Promise<void> {
                 </UiNavigationMenuItem>
                 <UiNavigationMenuItem>
                   <UiNavigationMenuTrigger
+                    test-id="avatar-trigger"
                     :icon="false"
                     :styled="false"
                     class="size-12"
@@ -154,6 +159,7 @@ async function logoutUser(): Promise<void> {
                         custom
                       >
                         <UiNavigationMenuLink
+                          test-id="nav-profile-route"
                           :active="isActive"
                           :href="href"
                           class="flex flex-row gap-2 items-center"
@@ -181,6 +187,7 @@ async function logoutUser(): Promise<void> {
                     <template v-if="user">
                       <UiDropdownMenuSeparator />
                       <button
+                        test-id="nav-logout"
                         class="text-destructive flex items-center gap-2"
                         :class="navigationMenuContentStyle()"
                         @click="logoutUser"
@@ -197,13 +204,17 @@ async function logoutUser(): Promise<void> {
         </div>
         <ClientOnly>
           <UiDropdownMenu>
-            <UiDropdownMenuTrigger class="md:hidden">
+            <UiDropdownMenuTrigger test-id="mobile-trigger" class="md:hidden">
               <UiButton size="icon" aria-label="Open menu">
                 <Icon name="tabler:menu-2" />
               </UiButton>
             </UiDropdownMenuTrigger>
             <UiDropdownMenuContent class="w-60" align="end">
-              <UiDropdownMenuItem v-for="route in routes" :key="route.label">
+              <UiDropdownMenuItem
+                v-for="route in routes"
+                :key="route.label"
+                test-id="mobile-route"
+              >
                 <NuxtLinkLocale :to="route.url" class="flex items-center gap-2">
                   <Icon
                     v-if="route.icon"
@@ -217,6 +228,7 @@ async function logoutUser(): Promise<void> {
               <UiDropdownMenuItem
                 v-for="route in playRoutes"
                 :key="route.label"
+                test-id="mobile-play-route"
               >
                 <NuxtLinkLocale :to="route.url" class="flex items-center gap-2">
                   <Icon
@@ -229,7 +241,10 @@ async function logoutUser(): Promise<void> {
               </UiDropdownMenuItem>
               <UiDropdownMenuSeparator />
               <template v-for="route in profileRoutes" :key="route.label">
-                <UiDropdownMenuItem v-if="route.requireAuth ? !!user : true">
+                <UiDropdownMenuItem
+                  v-if="route.requireAuth ? !!user : true"
+                  test-id="mobile-profile-route"
+                >
                   <NuxtLinkLocale
                     :to="route.url"
                     class="flex items-center gap-2"
@@ -255,6 +270,7 @@ async function logoutUser(): Promise<void> {
                 <UiDropdownMenuSeparator />
                 <UiDropdownMenuItem>
                   <button
+                    test-id="mobile-logout"
                     class="text-destructive flex items-center gap-2"
                     @click="logoutUser"
                   >

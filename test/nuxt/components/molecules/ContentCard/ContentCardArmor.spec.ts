@@ -27,4 +27,38 @@ describe('ContentCardArmor', async () => {
     expect(component.text()).not.toContain('Strength Required')
     expect(component.text()).toContain('Stealth Disadvantage: general.no')
   })
+
+  it('Should hide optional fields when they are not present', async () => {
+    const content = {
+      ...dndArmorFixture,
+      type: undefined,
+      acDisplay: undefined,
+      acBase: undefined,
+      grantsStealthDisadvantage: undefined,
+    } as unknown as DndArmor
+
+    const component = await mountSuspended(ContentCardArmor, {
+      props: { content },
+    })
+
+    expect(component.text()).not.toContain('Category')
+    expect(component.text()).not.toContain('Armor Class')
+    expect(component.text()).not.toContain('Base AC')
+    expect(component.text()).not.toContain('Stealth Disadvantage')
+  })
+
+  it('Should show alternate optional field values when present', async () => {
+    const content: DndArmor = {
+      ...dndArmorFixture,
+      strengthScoreRequired: 13,
+      grantsStealthDisadvantage: true,
+    }
+
+    const component = await mountSuspended(ContentCardArmor, {
+      props: { content },
+    })
+
+    expect(component.text()).toContain('Strength Required: 13')
+    expect(component.text()).toContain('Stealth Disadvantage: general.yes')
+  })
 })

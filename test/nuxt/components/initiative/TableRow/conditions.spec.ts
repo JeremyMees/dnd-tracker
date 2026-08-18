@@ -1,6 +1,9 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Conditions from '~/components/initiative/TableRow/Conditions.vue'
+import Badge from '~/components/ui/badge/Badge.vue'
+import Button from '~/components/ui/button/Button.vue'
+import NumberField from '~/components/ui/number-field/NumberField.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import conditions from '~~/test/fixtures/conditions.json'
@@ -11,8 +14,16 @@ interface Props {
 
 type Condition = InitiativeSheetRow['conditions'][0]
 
+interface ConditionsVM {
+  selected: Condition[]
+  popoverOpen: boolean
+  removeCondition: (name: string) => void
+  updateCondition: (conditions: Condition[]) => void
+  toggleSelected: (item: Condition) => void
+}
+
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet>(sheet)
+const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -116,5 +127,371 @@ describe('Initiative table row conditions', async () => {
     expect(component.find('[test-id="badge"]').text()).toBe(
       `${conditions[0]!.name} (2)`,
     )
+  })
+
+  describe('removeCondition', () => {
+    it('Should not call update when sheet is undefined', async () => {
+      mockSheet.value = undefined
+
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.removeCondition('Paralyzed')
+
+      expect(mockUpdate).not.toHaveBeenCalled()
+    })
+
+    it('Should remove the matching condition from the correct row only', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.removeCondition('Paralyzed')
+
+      expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+      const untouchedRow = payload.rows.find(
+        row => row.id === sheet.rows[1]!.id,
+      )
+
+      expect(updatedRow?.conditions).toHaveLength(0)
+      expect(untouchedRow?.conditions).toHaveLength(
+        sheet.rows[1]!.conditions.length,
+      )
+    })
+
+    it('Should leave conditions unchanged when the name does not match', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.removeCondition('Unknown condition')
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+
+      expect(updatedRow?.conditions).toHaveLength(props.item.conditions.length)
+    })
+
+    it('Should remove a condition through the remove button in the popover', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+
+      await component.findComponent(Badge).trigger('click')
+
+      const removeButton = component
+        .findAllComponents(Button)
+        .find(button => button.attributes('test-id') === 'remove')
+
+      await removeButton!.trigger('click')
+
+      expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+
+      expect(updatedRow?.conditions).toHaveLength(0)
+    })
+  })
+
+  describe('updateCondition', () => {
+    it('Should not call update when sheet is undefined', async () => {
+      mockSheet.value = undefined
+
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.updateCondition([conditions[0] as Condition])
+
+      expect(mockUpdate).not.toHaveBeenCalled()
+    })
+
+    it('Should not call update when the row cannot be found in the sheet', async () => {
+      const component = await mountSuspended(Conditions, {
+        props: { item: { ...props.item, id: 'missing-row-id' } },
+        provide,
+      })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.updateCondition([conditions[0] as Condition])
+
+      expect(mockUpdate).not.toHaveBeenCalled()
+    })
+
+    it('Should update the conditions for the correct row and close the popover', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      vm.updateCondition([conditions[2] as Condition])
+
+      expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+
+      expect(updatedRow?.conditions).toEqual([conditions[2]])
+      expect(vm.popoverOpen).toBeFalsy()
+    })
+  })
+
+  describe('Add condition trigger', () => {
+    it('Should open the popover when the trigger button is clicked', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      await component.get('[test-id="trigger"]').trigger('click')
+
+      expect(vm.popoverOpen).toBeTruthy()
+    })
+  })
+
+  describe('toggleSelected', () => {
+    it('Should add a condition to selected when not already present', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.toggleSelected(conditions[0] as Condition)
+
+      expect(vm.selected.map(c => c.id)).toEqual([conditions[0]!.id])
+    })
+
+    it('Should remove a condition from selected when toggled again', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.toggleSelected(conditions[0] as Condition)
+      vm.toggleSelected(conditions[0] as Condition)
+
+      expect(vm.selected).toHaveLength(0)
+    })
+  })
+
+  describe('popoverOpen watcher', () => {
+    it('Should populate selected with the item conditions when the popover opens', async () => {
+      const component = await mountSuspended(Conditions, {
+        props: {
+          item: {
+            ...props.item,
+            conditions: [
+              conditions[0] as Condition,
+              conditions[1] as Condition,
+            ],
+          },
+        },
+        provide,
+      })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      expect(vm.selected.map(c => c.id)).toEqual([
+        conditions[0]!.id,
+        conditions[1]!.id,
+      ])
+    })
+
+    it('Should clear selected when the popover closes', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+      vm.popoverOpen = false
+      await nextTick()
+
+      expect(vm.selected).toHaveLength(0)
+    })
+  })
+
+  describe('Add condition popover', () => {
+    it('Should render an option for every available condition', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      const options = component
+        .findAllComponents(Badge)
+        .filter(badge => badge.attributes('test-id') === 'option')
+
+      expect(options).toHaveLength(conditions.length)
+    })
+
+    it('Should select and update a condition through the popover UI', async () => {
+      const component = await mountSuspended(Conditions, {
+        props: { item: { ...props.item, conditions: [] } },
+        provide,
+      })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      const option = component
+        .findAllComponents(Badge)
+        .find(badge => badge.text() === conditions[0]!.name)
+
+      await option!.trigger('click')
+
+      const updateButton = component
+        .findAllComponents(Button)
+        .find(button => button.attributes('test-id') === 'update')
+
+      await updateButton!.trigger('click')
+
+      expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+
+      expect(updatedRow?.conditions.map(c => c.id)).toEqual([conditions[0]!.id])
+      expect(vm.popoverOpen).toBeFalsy()
+    })
+
+    it('Should deselect a condition when its option is clicked twice', async () => {
+      const component = await mountSuspended(Conditions, {
+        props: {
+          item: { ...props.item, conditions: [conditions[0] as Condition] },
+        },
+        provide,
+      })
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      const option = component
+        .findAllComponents(Badge)
+        .find(badge => badge.text() === conditions[0]!.name)
+
+      await option!.trigger('click')
+
+      expect(vm.selected).toHaveLength(0)
+    })
+  })
+
+  describe('Existing condition popover', () => {
+    it('Should show the condition title, description and remove button when opened', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(component.text()).toContain(props.item.conditions[0]!.name)
+      expect(component.findComponent(NumberField).exists()).toBeFalsy()
+
+      const removeButton = component
+        .findAllComponents(Button)
+        .find(button => button.attributes('test-id') === 'remove')
+
+      expect(removeButton).toBeTruthy()
+    })
+
+    it('Should remove the condition when the remove button is clicked', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+
+      await component.findComponent(Badge).trigger('click')
+
+      const removeButton = component
+        .findAllComponents(Button)
+        .find(button => button.attributes('test-id') === 'remove')
+
+      await removeButton!.trigger('click')
+
+      expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+
+      expect(updatedRow?.conditions).toHaveLength(0)
+    })
+  })
+
+  describe('Condition with levels', () => {
+    const levelCondition: Condition = {
+      id: 'custom_exhaustion',
+      name: 'Exhaustion',
+      desc: 'Exhaustion description',
+      hasLevels: true,
+      level: 2,
+    }
+
+    it('Should show the number field when the condition has levels', async () => {
+      const component = await mountSuspended(Conditions, {
+        props: { item: { ...props.item, conditions: [levelCondition] } },
+        provide,
+      })
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(component.findComponent(NumberField).exists()).toBeTruthy()
+    })
+
+    it('Should not show the number field when the condition has no levels', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(component.findComponent(NumberField).exists()).toBeFalsy()
+    })
+
+    it('Should default the level to 1 when not provided', async () => {
+      const component = await mountSuspended(Conditions, {
+        props: {
+          item: {
+            ...props.item,
+            conditions: [{ ...levelCondition, level: undefined }],
+          },
+        },
+        provide,
+      })
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(component.findComponent(NumberField).props('defaultValue')).toBe(1)
+    })
+
+    it('Should update the condition level when the number field value changes', async () => {
+      const otherCondition = conditions[0] as Condition
+      const component = await mountSuspended(Conditions, {
+        props: {
+          item: { ...props.item, conditions: [levelCondition, otherCondition] },
+        },
+        provide,
+      })
+
+      await component.findComponent(Badge).trigger('click')
+
+      const numberField = component.findComponent(NumberField)
+      await numberField.vm.$emit('update:modelValue', 4)
+
+      expect(mockUpdate).toHaveBeenCalledTimes(1)
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      const updatedRow = payload.rows.find(row => row.id === props.item.id)
+
+      expect(
+        updatedRow?.conditions.find(c => c.id === otherCondition.id)?.level,
+      ).toBeUndefined()
+
+      expect(updatedRow?.conditions[0]?.level).toBe(4)
+    })
   })
 })

@@ -154,6 +154,23 @@ describe('useTour', () => {
     expect(tourData.value).toBeUndefined()
   })
 
+  it('Should wait for an in-flight profile fetch before deciding whether to start', async () => {
+    user.value = { id: 'user-1', completedTour: false }
+
+    const { startTour, isTourActive } = useTour()
+
+    const promise = startTour()
+
+    await nextTick()
+
+    user.value = { id: 'user-1', completedTour: true }
+
+    await promise
+
+    expect(driverMock).not.toHaveBeenCalled()
+    expect(isTourActive.value).toBe(false)
+  })
+
   it('Should not start when the profile marks the tour as completed', async () => {
     user.value = { id: 'user-1', completedTour: true }
 

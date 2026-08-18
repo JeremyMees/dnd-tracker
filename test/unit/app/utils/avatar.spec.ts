@@ -94,6 +94,42 @@ describe('avatar', () => {
       expect(options.headVariant?.hasProbability).toBe(false)
       expect(options.headVariant?.values[0]).toBe('afro')
     })
+
+    it('should treat a variant without a matching component as always drawn', async () => {
+      vi.resetModules()
+
+      vi.doMock('@dicebear/core', async importOriginal => {
+        const core = await importOriginal<typeof import('@dicebear/core')>()
+
+        return {
+          ...core,
+          OptionsDescriptor: class extends core.OptionsDescriptor {
+            override toJSON(): ReturnType<
+              InstanceType<typeof core.OptionsDescriptor>['toJSON']
+            > {
+              return {
+                ...super.toJSON(),
+                ghostVariant: { type: 'enum', values: ['a', 'b'] },
+              }
+            }
+          },
+        }
+      })
+
+      try {
+        const avatar = await import('~/utils/avatar')
+        const options = avatar.getStyleOptions()
+
+        expect(options.ghostVariant).toEqual({
+          isColor: false,
+          hasProbability: false,
+          values: ['a', 'b'],
+        })
+      } finally {
+        vi.doUnmock('@dicebear/core')
+        vi.resetModules()
+      }
+    })
   })
 
   describe('normalizeStyleOptions', () => {

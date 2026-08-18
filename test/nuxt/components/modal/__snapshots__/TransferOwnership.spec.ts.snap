@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TransferOwnership modal > Should match snapshot 1`] = `
+"<form class="space-y-4">
+  <div class="space-y-2" test-id="role"><label for="reka-v-0-0-0-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.newRoleLabel<span class="text-destructive">*</span>
+      <!--v-if-->
+    </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-0-form-item" aria-describedby="reka-v-0-0-0-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-1" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder="components.inputs.nothing">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+    <!--teleport start-->
+    <!--teleport end--><select aria-hidden="true" tabindex="-1" style="position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; word-wrap: normal; top: -1px; left: -1px;" name="role">
+      <option value=""></option>
+      <option value="Admin">general.roles.Admin.title</option>
+      <option value="Viewer">general.roles.Viewer.title</option>
+      <option value="Remove">components.transferOwnershipModal.removed</option>
+    </select>
+    <!---->
+  </div>
+  <div class="space-y-2" test-id="user"><label for="reka-v-0-0-2-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.newOwnerLabel<span class="text-destructive">*</span>
+      <!--v-if-->
+    </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-2-form-item" aria-describedby="reka-v-0-0-2-form-item-description" aria-invalid="false" role="combobox" type="button" aria-controls="reka-select-content-v-0-0-3" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""><span style="pointer-events: none;" data-placeholder="components.inputs.nothing">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+    <!--teleport start-->
+    <!--teleport end--><select aria-hidden="true" tabindex="-1" style="position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; word-wrap: normal; top: -1px; left: -1px;" name="user">
+      <option value=""></option>
+      <option value="2">Team Member (Team Member)</option>
+      <option value="4">Pro Member (Pro Member)</option>
+    </select>
+    <!---->
+  </div>
+  <!--v-if-->
+  <p class="text-sm">Are you certain about transferring ownership from the <span class="font-bold text-destructive">Test Campaign</span> campaign? Please note that this action is irreversible unless the new owner decides to revert it. If you are absolutely sure, Enter <span class="font-bold text-destructive">Test Campaign</span> in the input field and then proceed to transfer.</p>
+  <div class="space-y-2"><label for="reka-v-0-0-4-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.titleLabel<span class="text-destructive">*</span>
+      <!--v-if-->
+    </label><input id="reka-v-0-0-4-form-item" aria-describedby="reka-v-0-0-4-form-item-description" aria-invalid="false" test-id="title" name="title" placeholder="Test Campaign" type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+    <!---->
+  </div>
+  <!--v-if--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-destructive/50 hover:bg-destructive/60 border-destructive text-foreground shadow-sm h-10 px-4 py-2 w-full" test-id="submit" type="submit">actions.transfer</button>
+</form>"
+`;

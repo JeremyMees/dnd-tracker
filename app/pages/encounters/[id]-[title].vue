@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import {
   useInitiativeSheetDetail,
@@ -16,91 +14,24 @@ definePageMeta({
 const route = useRoute()
 useSeo(route.params.title as string)
 
-const localePath = useLocalePath()
-const user = useAuthenticatedUser()
-const { toast } = useToast()
-const { t } = useI18n()
 const { startTour } = useTour()
 
-const supabase = useSupabaseClient<DB>()
-const channel = supabase.channel('initiative_sheets')
-const subscription = ref()
-const queryClient = useQueryClient()
-
 const id = validateParamId(route.params.id)
-const realtimeData = computed(() => {
-  if (!data.value) return false
-
-  const campaignEncounter = data.value?.campaign
-  const correctSubscription = hasCorrectSubscription(
-    user.value.subscriptionType,
-    'medior',
-  )
-
-  return correctSubscription && !!campaignEncounter
-})
-
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
+const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
+  id,
+  data,
+)
+const { sync: syncLiveSession } = useLiveSession(id)
 
 const activeRow = ref<InitiativeSheetRow>()
 
 onMounted(() => {
-  if (realtimeData.value) {
-    subscription.value = channel
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'initiative_sheets',
-          filter: `id=eq.${id}`,
-        },
-        payload => {
-          if (payload.eventType === 'DELETE') {
-            toast({
-              title: t('pages.encounter.toasts.removed.title'),
-              description: t('pages.encounter.toasts.removed.text'),
-              variant: 'warning',
-            })
-
-            navigateTo(localePath('/encounters'))
-          } else if (payload.new && Object.keys(payload.new).length > 0) {
-            updateQueryData(payload.new)
-          }
-        },
-      )
-      .subscribe()
-  }
-
   startTour(!!data.value?.campaign)
 })
 
-onBeforeUnmount(() => {
-  if (channel) {
-    channel.unsubscribe()
-    supabase.removeChannel(channel)
-  }
-})
-
-type UpdateQueryData = Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>
-
-function updateQueryData(payload: UpdateQueryData): void {
-  queryClient.setQueryData(
-    ['useInitiativeSheetDetail', id],
-    (old: InitiativeSheet) => {
-      if (!old) return old
-
-      return {
-        ...old,
-        ...payload,
-        ...(old?.campaign ? { campaign: old.campaign } : {}),
-      }
-    },
-  )
-}
-
-async function handleUpdate(payload: UpdateQueryData): Promise<void> {
+async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   if (!data.value) return
 
   await update({
@@ -110,6 +41,8 @@ async function handleUpdate(payload: UpdateQueryData): Promise<void> {
       if (!realtimeData.value && !error) updateQueryData(payload)
     },
   })
+
+  syncLiveSession(payload)
 }
 
 provide(INITIATIVE_SHEET, {
@@ -197,7 +130,7 @@ provide(INITIATIVE_SHEET, {
       </div>
     </template>
 
-    <InitiativeTable v-if="!isError" :loading="isPending" />
+    <InitiativeTable v-if="!isError" :loading="isPending" :encounter-id="id" />
     <Card
       v-else
       test-id="error"

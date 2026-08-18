@@ -5,7 +5,13 @@ import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
+const props = defineProps<{ encounterId?: number }>()
+
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
+
+const liveActive = props.encounterId
+  ? useLiveSession(props.encounterId).active
+  : ref(false)
 
 const definitions = initiativeWidgets.map(id => ({ id }))
 
@@ -118,6 +124,13 @@ function removeWidget(id: InitiativeWidget) {
       </UiPopover>
     </div>
 
+    <LazyInitiativeWidgetsLiveConnected
+      v-if="props.encounterId"
+      hydrate-on-idle
+      :encounter-id="props.encounterId"
+      :rows="sheet?.rows ?? []"
+    />
+
     <VueDraggable
       v-if="localWidgets.length"
       v-model="localWidgets"
@@ -133,6 +146,7 @@ function removeWidget(id: InitiativeWidget) {
       >
         <DragAndDropHeader :title="$t(widgetLabels[widget])">
           <UiButton
+            test-id="remove-widget"
             variant="destructive-ghost"
             size="icon-sm"
             :aria-label="$t('actions.remove')"
@@ -165,7 +179,7 @@ function removeWidget(id: InitiativeWidget) {
       </div>
     </VueDraggable>
 
-    <p v-else class="text-muted-foreground text-sm">
+    <p v-else-if="!liveActive" class="text-muted-foreground text-sm">
       {{ $t('components.initiativeSettings.noActiveWidgets') }}
     </p>
   </div>

@@ -35,4 +35,40 @@ describe('ContentCardWeapon', async () => {
     expect(component.text()).toContain('Topple')
     expect(component.text()).toContain('Versatile')
   })
+
+  it('Should hide optional fields when they are not present', async () => {
+    const content = {
+      ...dndWeaponFixture,
+      damageType: undefined,
+      distanceUnit: undefined,
+      isSimple: undefined,
+      isImprovised: undefined,
+    } as unknown as DndWeapon
+
+    const component = await mountSuspended(ContentCardWeapon, {
+      props: { content, isOpen: false },
+    })
+
+    expect(component.text()).not.toContain('(slashing)')
+    expect(component.text()).not.toContain('feet')
+    expect(component.text()).not.toContain('Simple Weapon')
+    expect(component.text()).not.toContain('Improvised')
+  })
+
+  it('Should show alternate optional field values when present', async () => {
+    const content: DndWeapon = {
+      ...dndWeaponFixture,
+      longRange: 20,
+      isSimple: true,
+      isImprovised: true,
+    }
+
+    const component = await mountSuspended(ContentCardWeapon, {
+      props: { content, isOpen: false },
+    })
+
+    expect(component.text()).toContain('Range: 0/20')
+    expect(component.text()).toContain('Simple Weapon: Yes')
+    expect(component.text()).toContain('Improvised: Yes')
+  })
 })
