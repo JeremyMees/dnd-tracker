@@ -108,7 +108,9 @@ export default defineNuxtConfig({
 
   hooks: {
     close: nuxt => {
-      if (!nuxt.options.dev && !nuxt.options._prepare) process.exit(0)
+      if (!nuxt.options.dev && !nuxt.options.test && !nuxt.options._prepare) {
+        process.exit(0)
+      }
     },
   },
 
