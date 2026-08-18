@@ -99,22 +99,17 @@ describe('useAuthentication', () => {
         error: null,
       })
 
-      mockSupabaseFrom().insert.mockResolvedValue({ error: null })
-
       const userData = { email, password, ...user }
 
       await auth.register(userData)
 
-      expect(mockSignUp).toHaveBeenCalledWith({ email, password })
+      expect(mockSignUp).toHaveBeenCalledWith({
+        email,
+        password,
+        options: { data: user },
+      })
 
-      expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
-      expect(mockSupabaseFrom().insert).toHaveBeenCalledWith([
-        {
-          ...user,
-          email,
-          id: 'new-user-id',
-        },
-      ])
+      expect(mockSupabaseFrom().insert).not.toHaveBeenCalled()
     })
 
     it('should throw error if registration fails', async () => {
@@ -131,11 +126,7 @@ describe('useAuthentication', () => {
 
     it('should throw a friendly error when the profile already exists', async () => {
       mockSignUp.mockResolvedValue({
-        data: { user: { id: 'new-user-id' } },
-        error: null,
-      })
-
-      mockSupabaseFrom().insert.mockResolvedValue({
+        data: null,
         error: { message: 'duplicate key value violates unique constraint' },
       })
 
@@ -146,13 +137,9 @@ describe('useAuthentication', () => {
       )
     })
 
-    it('should throw the original error for an unrelated profile insert failure', async () => {
+    it('should throw the original error for an unrelated failure', async () => {
       mockSignUp.mockResolvedValue({
-        data: { user: { id: 'new-user-id' } },
-        error: null,
-      })
-
-      mockSupabaseFrom().insert.mockResolvedValue({
+        data: null,
         error: { message: 'connection reset' },
       })
 
