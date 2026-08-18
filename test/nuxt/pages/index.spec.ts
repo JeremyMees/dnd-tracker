@@ -39,19 +39,46 @@ describe('Index page', () => {
     )
   })
 
-  it('Should render both text blocks with their title and text', async () => {
+  it('Should render the player portal section', async () => {
     const component = await mountPage()
 
-    const blocks = component.findAll('[test-id="text-block"]')
+    const portal = component.get('[test-id="player-portal"]')
 
-    expect(blocks).toHaveLength(2)
-    expect(blocks[0]!.get('h2').text()).toBe('pages.home.textBlock1.title')
-    expect(blocks[0]!.get('p').text()).toBe('pages.home.textBlock1.text')
-    expect(blocks[1]!.get('h2').text()).toBe('pages.home.textBlock2.title')
-    expect(blocks[1]!.get('p').text()).toBe('pages.home.textBlock2.text')
+    expect(portal.text()).toContain('pages.home.playerPortal.title')
+    expect(portal.findAll('[test-id="portal-item"]')).toHaveLength(3)
+    expect(portal.get('[test-id="portal-link"]').attributes('href')).toBe(
+      '/live',
+    )
   })
 
-  it('Should render the dragon next to the text blocks', async () => {
+  it('Should render every feature cell', async () => {
+    const component = await mountPage()
+
+    const cells = component
+      .get('[test-id="features"]')
+      .findAll('[test-id="feature-cell"]')
+
+    expect(cells).toHaveLength(5)
+    cells.forEach((cell, index) => {
+      expect(cell.text()).toContain(
+        `pages.home.features.item${index + 1}.title`,
+      )
+    })
+  })
+
+  it('Should render the cta banner copy', async () => {
+    const component = await mountPage()
+
+    const banner = component.get('[test-id="cta-banner"]')
+
+    expect(banner.text()).toContain('pages.home.ctaBanner.title')
+    expect(banner.text()).toContain('pages.home.ctaBanner.text')
+    expect(banner.get('[test-id="link"]').text()).toBe(
+      'pages.home.ctaBanner.button',
+    )
+  })
+
+  it('Should render the dragon', async () => {
     const component = await mountPage()
 
     expect(component.find('[test-id="dragon"]').exists()).toBe(true)
@@ -71,59 +98,6 @@ describe('Index page', () => {
     expect(eye().attributes('style')).toContain('rotate(')
   })
 
-  it('Should render the summary with all its items', async () => {
-    const component = await mountPage()
-
-    const summary = component.get('[test-id="summary"]')
-
-    expect(summary.get('h2').text()).toBe('pages.home.summary.title')
-    expect(summary.findAll('li').map(item => item.text())).toEqual([
-      'pages.home.summary.item1',
-      'pages.home.summary.item2',
-      'pages.home.summary.item3',
-      'pages.home.summary.item4',
-      'pages.home.summary.item5',
-      'pages.home.summary.item6',
-    ])
-  })
-
-  it('Should render the flame artwork next to the summary', async () => {
-    const component = await mountPage()
-
-    const flame = component.get('[test-id="flame"]')
-
-    expect(flame.attributes('src')).toBe('/art/flame.svg')
-    expect(flame.attributes('alt')).toBe('Hearth')
-  })
-
-  it('Should render the scroll container with the initiative sheet', async () => {
-    const component = await mountPage()
-
-    const container = component.get('[test-id="container-scroll"]')
-
-    expect(container.get('[test-id="container-scroll-title"]').text()).toBe(
-      'pages.home.containerScroll.title',
-    )
-    expect(container.get('[test-id="container-scroll-subtitle"]').text()).toBe(
-      'pages.home.containerScroll.subtitle',
-    )
-    expect(
-      container.get('[test-id="container-scroll-image"]').attributes('src'),
-    ).toContain('initiative-sheet.png')
-  })
-
-  it('Should render the cta banner copy', async () => {
-    const component = await mountPage()
-
-    const banner = component.get('[test-id="cta-banner"]')
-
-    expect(banner.text()).toContain('pages.home.ctaBanner.title')
-    expect(banner.text()).toContain('pages.home.ctaBanner.text')
-    expect(banner.get('[test-id="link"]').text()).toBe(
-      'pages.home.ctaBanner.button',
-    )
-  })
-
   it('Should render the faq with all its questions', async () => {
     const component = await mountPage()
 
@@ -132,6 +106,7 @@ describe('Index page', () => {
     expect(faq.get('h2').text()).toBe('pages.home.faq.title')
     expect(faq.findAll('button').map(question => question.text())).toEqual([
       'pages.home.faq.item1.title',
+      'pages.home.faq.item4.title',
       'pages.home.faq.item2.title',
       'pages.home.faq.item3.title',
     ])
@@ -142,11 +117,11 @@ describe('Index page', () => {
 
     const faq = component.get('[test-id="faq"]')
 
-    expect(faq.text()).not.toContain('pages.home.faq.item2.content')
+    expect(faq.text()).not.toContain('pages.home.faq.item4.content')
 
     await faq.findAll('button')[1]!.trigger('click')
     await flushPromises()
 
-    expect(faq.text()).toContain('pages.home.faq.item2.content')
+    expect(faq.text()).toContain('pages.home.faq.item4.content')
   })
 })

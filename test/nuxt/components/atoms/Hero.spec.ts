@@ -38,6 +38,15 @@ describe('Hero', async () => {
     expect(startLink?.attributes('href')).toBe('/campaigns')
   })
 
+  it('Should render the campaign preview under the hero copy', async () => {
+    const component = await mountSuspended(Hero)
+
+    const preview = component.get('[test-id="hero-preview"]')
+
+    expect(preview.get('img').attributes('src')).toContain('campaign.png')
+    expect(preview.get('img').attributes('alt')).toBeTruthy()
+  })
+
   it('Should link the try button to /playground', async () => {
     const component = await mountSuspended(Hero)
 

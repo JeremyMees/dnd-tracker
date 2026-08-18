@@ -54,6 +54,27 @@ describe('CtaBanner', async () => {
     expect(link.attributes('href')).toBe('/login')
   })
 
+  it('Should keep the page container on the section and stay full width by default', async () => {
+    const component = await mountSuspended(CtaBanner, { props })
+
+    expect(component.get('section').classes()).toContain('dnd-container')
+    expect(component.get('section > div').classes()).not.toContain(
+      'lg:max-w-md',
+    )
+  })
+
+  it('Should merge a given class onto the card instead of the section', async () => {
+    const component = await mountSuspended(CtaBanner, {
+      props: { ...props, class: 'lg:max-w-md' },
+    })
+
+    const card = component.get('section > div')
+
+    expect(card.classes()).toContain('lg:max-w-md')
+    expect(card.classes()).toContain('rounded-[32px]')
+    expect(component.get('section').classes()).not.toContain('lg:max-w-md')
+  })
+
   it('Should link to /pricing when user is logged in', async () => {
     userRef.value = { id: '123' }
 

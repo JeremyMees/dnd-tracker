@@ -275,26 +275,9 @@
   },
   "pages": {
     "home": {
-      "textBlock1": {
-        "title": "Met liefde gemaakt",
-        "text": "Wat begon als een encounter tracker die we voor wat vrienden ineen hebben geknutseld, werd al gauw een project om GM's echt te ondersteunen in hun campagnes. We blijven de DND Tracker uitbreiden met meer en meer ideeën en input. Zo wordt D&D spelen nog spannender, mysterieuzer en vooral vlotter."
-      },
       "textBlock2": {
         "title": " Game Master zijn is al uitdagend genoeg",
         "text": "Het beheren van initiatieven, effecten, notities en homebrew kan chaotisch worden. Wij maken het eenvoudig, overzichtelijk en plezierig zodat jij je kunt focussen op het vertellen van geweldige verhalen."
-      },
-      "summary": {
-        "title": "Een tracker met unieke skills",
-        "item1": "Live synchronisatie tussen verschillende toestellen",
-        "item2": "Regelmatige optimalisaties en nieuwe functies",
-        "item3": "Alles op één handige plaats voor de GM",
-        "item4": "Samenwerking in Dungeon Mastering",
-        "item5": "Integratie van official content met de mogelijkheid om je eigen homebrew toe te voegen",
-        "item6": "Fantasie naam generator"
-      },
-      "containerScroll": {
-        "title": "Ontdek de kracht van",
-        "subtitle": "Encounter bouwen"
       },
       "faq": {
         "title": "Veelgestelde vragen",
@@ -309,15 +292,56 @@
         "item3": {
           "title": "Zijn betalingen echt eenmalig?",
           "content": "Ja, je betaalt eenmalig een bedrag voor een abonnement dat je voor altijd gebruikt."
+        },
+        "item4": {
+          "title": "Hebben mijn spelers een account nodig?",
+          "content": "Nee. Start een live sessie met een pro abonnement en deel de QR-code of de roomcode. Je spelers sluiten aan vanuit hun browser en houden hun eigen personage in handen."
         }
       },
       "ctaBanner": {
-        "title": "Klaar om je D&D ervaring te verbeteren?",
-        "text": "Laat je creativiteit de vrije loop met hulpmiddelen voor elk avontuur.",
-        "button": "Begin met creëren"
+        "title": "Je volgende sessie begint hier",
+        "text": "Bouw de encounter, zet je spelers klaar en speel de hele avond vanaf één scherm.",
+        "button": "Bekijk de plannen"
       },
-      "globe": {
-        "title": "Gemaakt in België"
+      "playerPortal": {
+        "title": "Je spelers krijgen hun eigen scherm",
+        "text": "Start een live sessie en toon de QR-code. Iedereen aan tafel volgt het initiatief op zijn eigen telefoon en past zelf schade en healing toe.",
+        "qr": "Scan om het joinscherm te openen",
+        "button": "Sluit aan bij een sessie",
+        "item1": {
+          "title": "Scannen en gaan",
+          "text": "Eén code voor maximaal twintig spelers. Ze kiezen een personage en zitten erin, zonder account."
+        },
+        "item2": {
+          "title": "Iedereen blijft mee",
+          "text": "Beurtvolgorde, condities en health verschijnen op elk scherm zodra jij ze aanpast."
+        },
+        "item3": {
+          "title": "Spelers rekenen zelf",
+          "text": "Schade, healing, tijdelijke HP, armor class, death saves en concentratie, alleen tijdens hun beurt."
+        }
+      },
+      "features": {
+        "item1": {
+          "title": "Campagnes die alles bijhouden",
+          "text": "Party, encounters, notities en homebrew staan samen, zodat er tussen twee sessies niets verloren gaat."
+        },
+        "item2": {
+          "title": "Initiatief zonder papierwerk",
+          "text": "Gooi, sorteer en volg condities in één tabel."
+        },
+        "item3": {
+          "title": "Officiële content en die van jou",
+          "text": "Doorzoek duizenden monsters en spreuken, of voeg je eigen homebrew toe."
+        },
+        "item4": {
+          "title": "Fantasie naam generator",
+          "text": "Namen voor taveernes, tieflings en alles daartussen."
+        },
+        "item5": {
+          "title": "Notities die bij het verhaal blijven",
+          "text": "Sessienotities en lore hangen aan de campagne, klaar wanneer je ze nodig hebt."
+        }
       }
     },
     "error": {
@@ -757,7 +781,7 @@
     },
     "hero": {
       "title": "Voer meeslepende D&D campagnes op jouw manier",
-      "description": "Een open-source platform om je campagnes te beheren, je party bij te houden en encounters uit te spelen. Gemaakt voor DM's die vrijheid, focus en flexibiliteit willen.",
+      "description": "Beheer campagnes, volg je party en speel encounters uit op één plek. Gemaakt voor DM's die focus en flexibiliteit willen.",
       "start": "Beginnen",
       "try": "Probeer zonder account"
     },
@@ -1067,7 +1091,6 @@
     }
   },
   "tour": {
-    "sure": "Ben je zeker dat je alle kennis al hebt van de DnD Tracker? 🧙‍♂️",
     "0": {
       "title": "Welkom bij je eerste encounter! 🐲",
       "description": "Welkom, avonturier! Fijn dat je er bent. We nemen je stap voor stap mee door onze tool. Klaar om samen op pad te gaan?"
@@ -1118,7 +1141,8 @@
     },
     "12": {
       "title": "Proficiat, je bent er helemaal klaar voor! 🎉"
-    }
+    },
+    "sure": "Ben je zeker dat je alle kennis al hebt van de DnD Tracker? 🧙‍♂️"
   },
   "zod": {
     "required": "Verplicht",

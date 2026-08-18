@@ -275,31 +275,14 @@
   },
   "pages": {
     "home": {
-      "textBlock1": {
-        "title": "Made with love",
-        "text": "At dnd-tracker, we are not of many words. We let the product speak for itself. What was an encounter tracker as a main idea quickly turned into a much bigger thing. With more and more ideas coming forward, we are currently expanding the dnd-tracker. This will make playing even more exciting, mysterious, easier AND more enjoyable."
-      },
       "textBlock2": {
         "title": "Game Mastering is already challenging enough",
         "text": "Managing initiative, effects, notes and homebrew can get chaotic. We make it easy, organized and fun so you can focus on telling great stories."
       },
-      "summary": {
-        "title": "A tracker with unique skills",
-        "item1": "Live updating between different devices",
-        "item2": "We are constantly working to optimize the product",
-        "item3": "Everything in 1 convenient place for the DM",
-        "item4": "Collaborative Dungeon Mastering",
-        "item5": "Plenty of information you can get your hands on",
-        "item6": "Fantasy name generator"
-      },
-      "containerScroll": {
-        "title": "Unleash the power of",
-        "subtitle": "Encounter building"
-      },
       "ctaBanner": {
-        "title": "Ready to upgrade your D&D experience?",
-        "text": "Unleash Your Creativity with Tools and Resources for Every Adventure.",
-        "button": "Start creating"
+        "title": "Your next session starts here",
+        "text": "Build the encounter, seat your players and run the whole night from one screen.",
+        "button": "View the plans"
       },
       "faq": {
         "title": "Frequently Asked Questions",
@@ -314,10 +297,51 @@
         "item3": {
           "title": "Are payments really one-time?",
           "content": "Yes, you pay a one-time amount for a subscription that you can use forever."
+        },
+        "item4": {
+          "title": "Do my players need an account?",
+          "content": "No. Start a live session on a pro subscription and share the QR code or the room code. Your players join straight from their browser and keep control of their own character."
         }
       },
-      "globe": {
-        "title": "Made in Belgium"
+      "playerPortal": {
+        "title": "Your players get a screen of their own",
+        "text": "Start a live session and show the QR code. Everyone at the table follows initiative on their own phone and applies their own damage and healing.",
+        "qr": "Scan to open the join screen",
+        "button": "Join a session",
+        "item1": {
+          "title": "Scan and sit down",
+          "text": "One code seats up to twenty players. They pick a character and they are in, no account needed."
+        },
+        "item2": {
+          "title": "Everyone stays in sync",
+          "text": "Turn order, conditions and health land on every screen the moment you change them."
+        },
+        "item3": {
+          "title": "Players do their own math",
+          "text": "Damage, healing, temp HP, armour class, death saves and concentration, on their turn only."
+        }
+      },
+      "features": {
+        "item1": {
+          "title": "Campaigns that hold everything",
+          "text": "Party, encounters, notes and homebrew live together, so nothing gets lost between two sessions."
+        },
+        "item2": {
+          "title": "Initiative without paperwork",
+          "text": "Roll, sort and track conditions in one table."
+        },
+        "item3": {
+          "title": "Official content and your own",
+          "text": "Search thousands of monsters and spells, or bring your own homebrew."
+        },
+        "item4": {
+          "title": "Fantasy name generator",
+          "text": "Names for taverns, tieflings and everything in between."
+        },
+        "item5": {
+          "title": "Notes that stay with the story",
+          "text": "Session notes and lore attached to the campaign, there when you need them."
+        }
       }
     },
     "error": {
@@ -757,7 +781,7 @@
     },
     "hero": {
       "title": "Run immersive D&D campaigns your way",
-      "description": "An open-source platform to manage your campaigns, track your parties, and play out encounters all in one place. Built for DMs who want freedom, focus, and flexibility.",
+      "description": "Manage campaigns, track your party and run encounters in one place. Built for DMs who want focus and flexibility.",
       "start": "Get started",
       "try": "Try without account"
     },
@@ -1067,7 +1091,6 @@
     }
   },
   "tour": {
-    "sure": "Are you sure that you have all the knowledge about the DnD Tracker? 🧙‍♂️",
     "0": {
       "title": "Welcome to your first encounter! 🐲",
       "description": "Welcome, adventurer! Glad to have you here. We’ll guide you through the tool step by step. Ready to begin the journey?"
@@ -1118,7 +1141,8 @@
     },
     "12": {
       "title": "Congrats, you're ready to go! 🎉"
-    }
+    },
+    "sure": "Are you sure that you have all the knowledge about the DnD Tracker? 🧙‍♂️"
   },
   "zod": {
     "required": "Required",
