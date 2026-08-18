@@ -29,21 +29,7 @@ export function useAuthentication() {
   })
 
   async function register(form: Register): Promise<void> {
-    const { email, password, ...userData } = form
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: userData },
-    })
-
-    if (error) {
-      throw createError(
-        error.message.includes('duplicate key')
-          ? 'Email already in use'
-          : error,
-      )
-    }
+    await $fetch('/api/user/create', { method: 'POST', body: form })
   }
 
   async function login(credentials: Credentials): Promise<void> {

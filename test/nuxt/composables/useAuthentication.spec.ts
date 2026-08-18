@@ -1,4 +1,5 @@
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport, registerEndpoint } from '@nuxt/test-utils/runtime'
+import { createError as createH3Error, readBody } from 'h3'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   useAuthenticatedUser,
@@ -6,6 +7,7 @@ import {
 } from '~/composables/useAuthentication'
 
 const mockSignUp = vi.fn()
+const mockCreateUser = vi.fn()
 const mockSignInWithPassword = vi.fn()
 const mockSignOut = vi.fn()
 const mockOnAuthStateChange = vi.fn()
@@ -21,6 +23,11 @@ const mockGetUser = vi.fn().mockReturnValue({
 })
 
 let authStateChangeCallback: ((event: string) => void) | null = null
+
+registerEndpoint('/api/user/create', {
+  method: 'POST',
+  handler: async event => mockCreateUser(await readBody(event)),
+})
 
 mockNuxtImport('useSupabaseClient', () => () => ({
   auth: {
@@ -93,44 +100,32 @@ describe('useAuthentication', () => {
   })
 
   describe('register', () => {
-    it('should successfully register a user', async () => {
-      mockSignUp.mockResolvedValue({
-        data: { user: { id: 'new-user-id' } },
-        error: null,
-      })
+    const userData = { email, password, ...user }
 
-      const userData = { email, password, ...user }
+    it('posts the registration to the server route', async () => {
+      mockCreateUser.mockReturnValue({ id: 'new-user-id' })
 
       await auth.register(userData)
 
-      expect(mockSignUp).toHaveBeenCalledWith({
-        email,
-        password,
-        options: { data: user },
-      })
-
+      expect(mockCreateUser).toHaveBeenCalledWith(userData)
       expect(mockSupabaseFrom().insert).not.toHaveBeenCalled()
     })
 
-    it('should throw error if registration fails', async () => {
-      mockSignUp.mockResolvedValue({
-        data: null,
-        error: { message: 'Registration failed' },
-      })
+    it('never signs the user up from the client', async () => {
+      mockCreateUser.mockReturnValue({ id: 'new-user-id' })
 
-      const userData = { email, password, ...user }
+      await auth.register(userData)
 
-      await expect(auth.register(userData)).rejects.toThrow()
-      expect(mockSignUp).toHaveBeenCalled()
+      expect(mockSignUp).not.toHaveBeenCalled()
     })
 
-    it('should throw a friendly error when the profile already exists', async () => {
-      mockSignUp.mockResolvedValue({
-        data: null,
-        error: { message: 'duplicate key value violates unique constraint' },
+    it('should throw a friendly error when the email is already in use', async () => {
+      mockCreateUser.mockImplementation(() => {
+        throw createH3Error({
+          statusCode: 409,
+          statusMessage: 'Email already in use',
+        })
       })
-
-      const userData = { email, password, ...user }
 
       await expect(auth.register(userData)).rejects.toThrow(
         'Email already in use',
@@ -138,12 +133,12 @@ describe('useAuthentication', () => {
     })
 
     it('should throw the original error for an unrelated failure', async () => {
-      mockSignUp.mockResolvedValue({
-        data: null,
-        error: { message: 'connection reset' },
+      mockCreateUser.mockImplementation(() => {
+        throw createH3Error({
+          statusCode: 400,
+          statusMessage: 'connection reset',
+        })
       })
-
-      const userData = { email, password, ...user }
 
       await expect(auth.register(userData)).rejects.toThrow('connection reset')
     })
