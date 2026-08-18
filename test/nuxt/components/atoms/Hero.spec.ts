@@ -43,7 +43,7 @@ describe('Hero', async () => {
 
     const preview = component.get('[test-id="hero-preview"]')
 
-    expect(preview.get('img').attributes('src')).toContain('campaign.png')
+    expect(preview.get('img').attributes('src')).toContain('campaign.webp')
     expect(preview.get('img').attributes('alt')).toBeTruthy()
   })
 

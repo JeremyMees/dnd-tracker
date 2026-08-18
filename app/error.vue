@@ -48,7 +48,7 @@ withDefaults(
       >
         <div class="max-w-[300px] md:max-w-[500px] mx-auto">
           <NuxtImg
-            src="/peeker.png"
+            src="/peeker.webp"
             alt="Dragon peeking from the bottom"
             sizes="sm:300px md:300px lg:300px"
             width="2468"

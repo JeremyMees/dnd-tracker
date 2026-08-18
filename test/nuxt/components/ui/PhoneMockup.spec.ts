@@ -41,18 +41,18 @@ describe('PhoneMockup', () => {
 
   it('Should render the source on the screen when one is given', async () => {
     wrapper = await mountSuspended(PhoneMockup, {
-      props: { src: '/player-portal.png' },
+      props: { src: '/player-portal.webp' },
     })
 
     const image = wrapper.get('image')
 
-    expect(image.attributes('href')).toBe('/player-portal.png')
+    expect(image.attributes('href')).toBe('/player-portal.webp')
     expect(image.attributes('preserveAspectRatio')).toBe('xMidYMid slice')
   })
 
   it('Should clip the screen to the rounded corners of the frame', async () => {
     wrapper = await mountSuspended(PhoneMockup, {
-      props: { src: '/player-portal.png' },
+      props: { src: '/player-portal.webp' },
     })
 
     expect(wrapper.get('image').attributes('style')).toContain(

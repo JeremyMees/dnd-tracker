@@ -37,7 +37,7 @@ const enter = computed(() =>
     >
       <div class="lg:col-span-5">
         <Motion
-          as="h3"
+          as="p"
           :initial="enter"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true, amount: 0.4 }"
@@ -119,7 +119,7 @@ const enter = computed(() =>
 
         <UiPhoneMockup
           test-id="portal-image"
-          src="/player-portal.png"
+          src="/player-portal.webp"
           class="h-auto w-[240px] shrink-0 rotate-2 drop-shadow-2xl md:w-[280px]"
         />
       </Motion>

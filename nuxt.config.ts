@@ -165,8 +165,6 @@ export default defineNuxtConfig({
 
   image: {
     quality: 90,
-    provider: 'imagekit',
-    imagekit: { baseURL: 'https://ik.imagekit.io/c2es1qasw' },
   },
 
   ogImage: { enabled: false },

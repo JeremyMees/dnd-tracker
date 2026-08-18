@@ -80,7 +80,7 @@ describe('PlayerPortal', () => {
 
     expect(mockup.element.tagName.toLowerCase()).toBe('svg')
     expect(mockup.get('image').attributes('href')).toContain(
-      'player-portal.png',
+      'player-portal.webp',
     )
   })
 })

@@ -3,7 +3,7 @@
 exports[`Footer > Should match snapshot 1`] = `
 "<div class="bg-muted/50 backdrop-blur-lg border-4 border-muted m-4 rounded-lg pt-10 pb-2">
   <div class="container-max px-4 flex flex-col gap-20">
-    <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20"><a href="/" class="mt-2" test-id="footer-home" aria-label="components.navbar.home"><img width="201" height="62" data-nuxt-img="" srcset="https://ik.imagekit.io/c2es1qasw/text-logo.svg?tr=w-201,h-62,q-90 1x, https://ik.imagekit.io/c2es1qasw/text-logo.svg?tr=w-402,h-124,q-90 2x" alt="DnD Tracker logo" src="https://ik.imagekit.io/c2es1qasw/text-logo.svg?tr=w-201,h-62,q-90"></a>
+    <div class="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-20"><a href="/" class="mt-2" test-id="footer-home" aria-label="components.navbar.home"><img width="201" height="62" data-nuxt-img="" srcset="/_ipx/q_90&amp;s_201x62/text-logo.svg 1x, /_ipx/q_90&amp;s_402x124/text-logo.svg 2x" alt="DnD Tracker logo" src="/_ipx/q_90&amp;s_201x62/text-logo.svg"></a>
       <div class="mt-4 lg:mt-0">
         <p class="mb-4 head-3">components.navbar.contact</p>
         <div class="flex flex-col gap-4"><a href="mailto:jeremy@dnd-tracker.com" class="flex items-center" test-id="footer-email"><span class="iconify i-tabler:mail min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Email </a><a href="/contact" class="flex items-center" test-id="footer-contact"><span class="iconify i-tabler:forms min-w-6 min-h-6 mr-2" aria-hidden="true"></span> Form </a></div>

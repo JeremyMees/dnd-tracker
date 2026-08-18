@@ -8,6 +8,6 @@ exports[`Dragon > Should match snapshot 1`] = `
   <div data-v-071bb19c="" class="absolute top-[55%] right-[61%] z-1 pt-2">
     <div data-v-071bb19c="" class="h-4 w-4 rounded-full bg-black"></div>
   </div>
-  <div data-v-071bb19c=""><img data-v-071bb19c="" width="2475" height="2100" data-nuxt-img="" sizes="(max-width: 767px) 500px, (max-width: 1023px) 500px, 500px" srcset="https://ik.imagekit.io/c2es1qasw/dragon.webp?tr=w-500,h-424,q-90 500w, https://ik.imagekit.io/c2es1qasw/dragon.webp?tr=w-1000,h-848,q-90 1000w" alt="A dragon peeking in from the edge of the page" loading="lazy" class="h-full w-full object-cover" src="https://ik.imagekit.io/c2es1qasw/dragon.webp?tr=w-1000,h-848,q-90"></div>
+  <div data-v-071bb19c=""><img data-v-071bb19c="" width="2475" height="2100" data-nuxt-img="" sizes="(max-width: 767px) 500px, (max-width: 1023px) 500px, 500px" srcset="/_ipx/q_90&amp;s_500x424/dragon.webp 500w, /_ipx/q_90&amp;s_1000x848/dragon.webp 1000w" alt="A dragon peeking in from the edge of the page" loading="lazy" class="h-full w-full object-cover" src="/_ipx/q_90&amp;s_1000x848/dragon.webp"></div>
 </div>"
 `;

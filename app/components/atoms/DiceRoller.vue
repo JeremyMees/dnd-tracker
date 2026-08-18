@@ -117,7 +117,6 @@ function calculateDndDiceRoll() {
             sizes="sm:20px md:20px lg:20px"
             class="w-full h-full object-contain"
             format="webp"
-            provider="imagekit"
           />
         </div>
         <UiButton

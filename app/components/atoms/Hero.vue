@@ -86,11 +86,11 @@ function step(index: number) {
         class="relative h-full rounded-t-[32px] border-4 border-b-0 border-border bg-border/50 p-2 mask-[linear-gradient(to_bottom,black_60%,transparent)]"
       >
         <NuxtImg
-          src="/campaign.png"
+          src="/campaign.webp"
           alt="A campaign overview in DnD Tracker"
-          sizes="md:1000px lg:1200px"
-          width="2978"
-          height="1502"
+          sizes="md:968px"
+          width="1686"
+          height="988"
           class="h-full w-full rounded-t-2xl object-cover object-top"
         />
         <UiBorderBeam

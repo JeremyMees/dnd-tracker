@@ -10,7 +10,7 @@ exports[`error > Should match snapshot 1`] = `
   </div>
   <div class="fixed bottom-0 w-full">
     <div style="transform: translateY(100%);">
-      <div class="max-w-[300px] md:max-w-[500px] mx-auto"><img width="2468" height="1398" data-nuxt-img="" sizes="(max-width: 767px) 300px, (max-width: 1023px) 300px, 300px" srcset="https://ik.imagekit.io/c2es1qasw/peeker.png?tr=w-300,h-170,q-90 300w, https://ik.imagekit.io/c2es1qasw/peeker.png?tr=w-600,h-340,q-90 600w" alt="Dragon peeking from the bottom" class="w-full h-full object-cover" src="https://ik.imagekit.io/c2es1qasw/peeker.png?tr=w-600,h-340,q-90"></div>
+      <div class="max-w-[300px] md:max-w-[500px] mx-auto"><img width="2468" height="1398" data-nuxt-img="" sizes="(max-width: 767px) 300px, (max-width: 1023px) 300px, 300px" srcset="/_ipx/q_90&amp;s_300x170/peeker.webp 300w, /_ipx/q_90&amp;s_600x340/peeker.webp 600w" alt="Dragon peeking from the bottom" class="w-full h-full object-cover" src="/_ipx/q_90&amp;s_600x340/peeker.webp"></div>
     </div>
   </div>
 </div>"
