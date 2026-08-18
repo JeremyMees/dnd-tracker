@@ -7,8 +7,23 @@ import {
   QueryClient,
   hydrate,
   dehydrate,
+  timeoutManager,
 } from '@tanstack/vue-query'
 import { FIVE_MINUTES, ONE_MINUTE } from '~~/constants/time'
+
+function detach<T>(timer: T): T {
+  ;(timer as { unref?: () => void }).unref?.()
+  return timer
+}
+
+if (import.meta.server) {
+  timeoutManager.setTimeoutProvider({
+    setTimeout: (callback, delay) => detach(setTimeout(callback, delay)),
+    clearTimeout: timeoutId => clearTimeout(timeoutId),
+    setInterval: (callback, delay) => detach(setInterval(callback, delay)),
+    clearInterval: intervalId => clearInterval(intervalId),
+  })
+}
 
 export default defineNuxtPlugin({
   name: 'vue-query',

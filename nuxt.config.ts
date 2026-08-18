@@ -106,6 +106,14 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2026-08-03',
 
+  hooks: {
+    close: nuxt => {
+      if (!nuxt.options.dev && !nuxt.options.test && !nuxt.options._prepare) {
+        process.exit(0)
+      }
+    },
+  },
+
   nitro: {
     externals: {
       inline: ['sanitize-html'],
