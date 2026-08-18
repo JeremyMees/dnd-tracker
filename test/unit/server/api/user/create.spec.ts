@@ -147,6 +147,20 @@ describe('POST /api/user/create', () => {
     })
   })
 
+  it('defaults marketing to false when it is omitted', async () => {
+    mockSignUp(newUser())
+    const from = mockProfiles({ error: null })
+
+    const { marketing: _marketing, ...withoutMarketing } = body
+
+    await handler(mockEvent({ method: 'POST', body: withoutMarketing }))
+
+    const chain = from.mock.results[0]!.value
+    expect(chain.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ marketing: false }),
+    )
+  })
+
   it('throws a validation error for an invalid body', async () => {
     await expect(
       handler(mockEvent({ method: 'POST', body: { ...body, email: 'nope' } })),

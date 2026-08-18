@@ -40,6 +40,7 @@ const formSchema = z.object({
 
 const form = useForm({
   validationSchema: formSchema,
+  initialValues: { marketing: false },
 })
 
 const formError = ref<string>('')

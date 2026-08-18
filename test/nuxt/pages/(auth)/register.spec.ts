@@ -127,6 +127,21 @@ describe('Register page', () => {
     })
   })
 
+  it('Should register with marketing off when the switch is untouched', async () => {
+    const { component, submit } = await mountPage()
+
+    await fillForm(component, account)
+    await flushPromises()
+    await submit()
+
+    expect(register).toHaveBeenCalledWith({
+      ...account,
+      marketing: false,
+      avatar: defaultAvatar.url,
+      avatarOptions: defaultAvatar.extra,
+    })
+  })
+
   it('Should register the user with the avatar of the picker', async () => {
     const { component, fillAccount, submit } = await mountPage()
 
