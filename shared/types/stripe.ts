@@ -1,30 +1,15 @@
-export type StripeSubscriptionType =
-  'medior' | 'pro' | 'free' | 'upgrade to pro'
+export type StripeFields =
+  | 'subscriptionType'
+  | 'stripeSessionId'
+  | 'stripeId'
+  | 'stripeSubscriptionId'
+  | 'billingInterval'
+  | 'subscriptionStatus'
+  | 'subscriptionPeriodEnd'
 
-export type StripeFields = 'subscriptionType' | 'stripeSessionId' | 'stripeId'
-
-export interface Stripe {
-  subscriptionType: StripeSubscriptionType
-  stripeSessionId?: string
-  stripeId?: string
-}
-
-export interface StripeProduct {
-  name: string
-  price: number
+export interface StripePrice {
   id: string
-}
-
-export interface ProductPricing {
-  type: StripeSubscriptionType
-  title: string
-  description: string
-  price?: number
-  id?: string
-  isPopular: boolean
-  items: {
-    icon: string
-    label?: string
-    number?: number
-  }[]
+  lookupKey: string
+  price: number
+  interval: BillingInterval
 }

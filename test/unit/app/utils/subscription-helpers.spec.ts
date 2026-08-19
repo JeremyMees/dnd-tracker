@@ -5,11 +5,10 @@ import {
   hasCorrectSubscription,
   getMax,
 } from '~/utils/subscription-helpers'
-import type { StripeSubscriptionType } from '~~/shared/types/stripe'
 
 // These helpers only read subscriptionType, so a partial row is enough; the cast
 // lives here once rather than at every call site.
-const profileWith = (subscriptionType: StripeSubscriptionType) =>
+const profileWith = (subscriptionType: SubscriptionType) =>
   ({ subscriptionType }) as unknown as ProfileRow
 
 describe('subscription-helpers', () => {
@@ -77,7 +76,7 @@ describe('subscription-helpers', () => {
   describe('getMax', () => {
     const testCases: Array<{
       type: 'encounter' | 'campaign' | 'team'
-      subscription: StripeSubscriptionType
+      subscription: SubscriptionType
       expected: number
     }> = [
       { type: 'encounter', subscription: 'pro', expected: 250 },

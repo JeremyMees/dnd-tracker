@@ -9,8 +9,8 @@ export function isMedior(profile: ProfileRow): boolean {
 }
 
 export function hasCorrectSubscription(
-  subscription: StripeSubscriptionType,
-  expected: StripeSubscriptionType,
+  subscription: SubscriptionType,
+  expected: SubscriptionType,
 ): boolean {
   if (
     subscription === 'pro' ||
@@ -23,7 +23,7 @@ export function hasCorrectSubscription(
 
 export function getMax(
   type: 'encounter' | 'campaign' | 'team',
-  subscription: StripeSubscriptionType,
+  subscription: SubscriptionType,
 ): number {
   switch (subscription) {
     case 'medior':
