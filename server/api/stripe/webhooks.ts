@@ -7,6 +7,7 @@ const HANDLED_TYPES = [
   'checkout.session.async_payment_failed',
   'customer.subscription.updated',
   'customer.subscription.deleted',
+  'invoice.paid',
   'invoice.payment_failed',
 ] as const
 
@@ -78,6 +79,25 @@ export default defineEventHandler(async event => {
     if (subscriptionId !== stripeSubscriptionId) return 'stale subscription'
   }
 
+  async function syncSubscription(subscription: Stripe.Subscription) {
+    const status = resolveStatus(subscription.status)
+    const values: ProfileUpdate = {
+      subscriptionPeriodEnd: resolvePeriodEnd(subscription),
+    }
+
+    if (status) {
+      values.subscriptionStatus = status
+
+      if (!isEntitled(status)) {
+        values.subscriptionType = 'free'
+      } else if (subscriptionType === 'free') {
+        values.subscriptionType = await resolveSubscriptionTier(subscription)
+      }
+    }
+
+    await updateProfile(values)
+  }
+
   switch (stripeEvent.type) {
     case 'checkout.session.completed':
     case 'checkout.session.async_payment_succeeded': {
@@ -133,22 +153,7 @@ export default defineEventHandler(async event => {
 
       if (ignored) return ignored
 
-      const status = resolveStatus(subscription.status)
-      const values: ProfileUpdate = {
-        subscriptionPeriodEnd: resolvePeriodEnd(subscription),
-      }
-
-      if (status) {
-        values.subscriptionStatus = status
-
-        if (!isEntitled(status)) {
-          values.subscriptionType = 'free'
-        } else if (subscriptionType === 'free') {
-          values.subscriptionType = await resolveSubscriptionTier(subscription)
-        }
-      }
-
-      await updateProfile(values)
+      await syncSubscription(subscription)
       break
     }
     case 'customer.subscription.deleted': {
@@ -163,6 +168,20 @@ export default defineEventHandler(async event => {
         subscriptionStatus: null,
         subscriptionPeriodEnd: null,
       })
+      break
+    }
+    case 'invoice.paid': {
+      const subscriptionId = resolveInvoiceSubscription(stripeEvent.data.object)
+
+      if (!subscriptionId) return 'Ignoring invoice without a subscription'
+
+      const ignored = guardSubscription(subscriptionId)
+
+      if (ignored) return ignored
+
+      await syncSubscription(
+        await stripe.subscriptions.retrieve(subscriptionId),
+      )
       break
     }
     case 'invoice.payment_failed': {

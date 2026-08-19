@@ -53,9 +53,12 @@ function subscriptionEvent(
   }
 }
 
-function paymentFailedEvent(subscription: unknown = 'sub_1') {
+function invoiceEvent(
+  type: 'invoice.paid' | 'invoice.payment_failed',
+  subscription: unknown = 'sub_1',
+) {
   return {
-    type: 'invoice.payment_failed',
+    type,
     data: {
       object: {
         id: 'in_1',
@@ -477,9 +480,9 @@ describe('POST /api/stripe/webhooks', () => {
     it('marks the subscription past due without touching entitlement', async () => {
       const update = mockProfile(monthlyProfile)
 
-      await expect(handler(webhookEvent(paymentFailedEvent()))).resolves.toBe(
-        'handled invoice.payment_failed',
-      )
+      await expect(
+        handler(webhookEvent(invoiceEvent('invoice.payment_failed'))),
+      ).resolves.toBe('handled invoice.payment_failed')
 
       expect(update.update).toHaveBeenCalledWith({
         subscriptionStatus: 'past_due',
@@ -489,7 +492,9 @@ describe('POST /api/stripe/webhooks', () => {
     it('reads the subscription from an expanded parent', async () => {
       const update = mockProfile(monthlyProfile)
 
-      await handler(webhookEvent(paymentFailedEvent({ id: 'sub_1' })))
+      await handler(
+        webhookEvent(invoiceEvent('invoice.payment_failed', { id: 'sub_1' })),
+      )
 
       expect(update.update).toHaveBeenCalledWith({
         subscriptionStatus: 'past_due',
@@ -500,16 +505,81 @@ describe('POST /api/stripe/webhooks', () => {
       mockProfile(monthlyProfile)
 
       await expect(
-        handler(webhookEvent(paymentFailedEvent(null))),
+        handler(webhookEvent(invoiceEvent('invoice.payment_failed', null))),
       ).resolves.toBe('Ignoring invoice without a subscription')
     })
 
     it('ignores invoices for a lifetime profile', async () => {
       mockProfile(lifetimeProfile)
 
-      await expect(handler(webhookEvent(paymentFailedEvent()))).resolves.toBe(
-        'lifetime, ignoring',
-      )
+      await expect(
+        handler(webhookEvent(invoiceEvent('invoice.payment_failed'))),
+      ).resolves.toBe('lifetime, ignoring')
+    })
+  })
+
+  describe('invoice.paid', () => {
+    it('resyncs the subscription after a renewal is paid', async () => {
+      const retrieve = mockSubscription()
+      const update = mockProfile(monthlyProfile)
+
+      await expect(
+        handler(webhookEvent(invoiceEvent('invoice.paid'))),
+      ).resolves.toBe('handled invoice.paid')
+
+      expect(retrieve).toHaveBeenCalledWith('sub_1')
+      expect(update.update).toHaveBeenCalledWith({
+        subscriptionStatus: 'active',
+        subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+      })
+    })
+
+    it('restores the tier when a lapsed subscription is paid off', async () => {
+      mockSubscription({
+        items: {
+          data: [
+            { current_period_end: 1893456000, price: { product: 'prod_1' } },
+          ],
+        },
+      })
+      const product = mockProduct()
+      const update = mockProfile(lapsedProfile)
+
+      await handler(webhookEvent(invoiceEvent('invoice.paid')))
+
+      expect(product).toHaveBeenCalledWith('prod_1')
+      expect(update.update).toHaveBeenCalledWith({
+        subscriptionType: 'pro',
+        subscriptionStatus: 'active',
+        subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+      })
+    })
+
+    it('ignores invoices that belong to no subscription', async () => {
+      mockProfile(monthlyProfile)
+
+      await expect(
+        handler(webhookEvent(invoiceEvent('invoice.paid', null))),
+      ).resolves.toBe('Ignoring invoice without a subscription')
+    })
+
+    it('ignores the first invoice of a checkout that is not stored yet', async () => {
+      const retrieve = mockSubscription()
+      mockProfile(freeProfile)
+
+      await expect(
+        handler(webhookEvent(invoiceEvent('invoice.paid'))),
+      ).resolves.toBe('stale subscription')
+
+      expect(retrieve).not.toHaveBeenCalled()
+    })
+
+    it('ignores invoices for a lifetime profile', async () => {
+      mockProfile(lifetimeProfile)
+
+      await expect(
+        handler(webhookEvent(invoiceEvent('invoice.paid'))),
+      ).resolves.toBe('lifetime, ignoring')
     })
   })
 
