@@ -15,12 +15,16 @@ export default defineEventHandler(async event => {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, email, stripeId, subscriptionType')
+    .select('id, email, stripeId, stripeSubscriptionId, billingInterval')
     .eq('id', user.id)
     .single()
 
   if (!profile) {
     throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
+  }
+
+  if (profile.billingInterval === 'lifetime') {
+    throw createError({ statusCode: 403, statusMessage: 'Already lifetime' })
   }
 
   const price = await stripe.prices.retrieve(body.lookup, {
@@ -31,21 +35,30 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 400, statusMessage: 'Inactive price' })
   }
 
-  const product = resolveProduct(price.product)
+  resolveTier(resolveProduct(price.product))
 
-  resolveTier(product.name)
+  const interval = resolveInterval(price)
 
-  if (isUpgradeProduct(product.name) && profile.subscriptionType !== 'medior') {
+  if (interval === 'month' && profile.stripeSubscriptionId) {
     throw createError({
-      statusCode: 403,
-      statusMessage: 'Upgrade price not available for this account',
+      statusCode: 409,
+      statusMessage: 'Use the billing portal',
     })
   }
 
-  let customer
+  let customerId = profile.stripeId
 
-  if (!profile.stripeId) {
-    customer = await stripe.customers.create({ email: profile.email })
+  if (!customerId) {
+    const customer = await stripe.customers.create({ email: profile.email })
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ stripeId: customer.id })
+      .eq('id', profile.id)
+
+    if (error) throw createError('Failed to start checkout.')
+
+    customerId = customer.id
   }
 
   const lang = localeParam(body.locale)
@@ -54,18 +67,15 @@ export default defineEventHandler(async event => {
     allow_promotion_codes: true,
     billing_address_collection: 'auto',
     line_items: [{ price: price.id, quantity: 1 }],
-    mode: 'payment',
+    mode: interval === 'month' ? 'subscription' : 'payment',
     success_url: `${config.public.appDomain}${lang}/subscribe-success`,
     cancel_url: `${config.public.appDomain}${lang}/pricing`,
-    customer: profile.stripeId || customer?.id,
+    customer: customerId,
   })
 
   const { error } = await supabase
     .from('profiles')
-    .update({
-      ...(customer && { stripeId: customer.id }),
-      stripeSessionId: session.id,
-    })
+    .update({ stripeSessionId: session.id })
     .eq('id', profile.id)
 
   if (error) throw createError('Failed to start checkout.')
