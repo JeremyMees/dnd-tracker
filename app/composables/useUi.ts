@@ -97,7 +97,7 @@ export function useUi() {
       requireAuth: false,
       icon: 'tabler:bulb',
     },
-    ...(user.value?.subscriptionType !== 'pro' ? updateProfileRoutes : []),
+    ...(user.value && !isPro(user.value) ? updateProfileRoutes : []),
   ])
 
   const homeRoute = {

@@ -86,7 +86,7 @@ describe('useRealTimeInitiativeSheet', () => {
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)
 
-    user.value = { ...authUser, subscriptionType: 'medior' }
+    user.value = { ...authUser, subscriptionType: 'pro' }
     data.value = { ...sheet, campaign: mockSheetCampaign }
   })
 

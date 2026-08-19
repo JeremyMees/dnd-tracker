@@ -56,6 +56,12 @@ const handleUpdateProfile = useThrottleFn(
   1000,
 )
 
+async function manageBilling(): Promise<void> {
+  const { data } = await useFetch('/api/stripe/portal', { method: 'POST' })
+
+  if (data.value) navigateTo(data.value.url, { external: true })
+}
+
 async function handleRemoveUser(): Promise<void> {
   ask(
     {
@@ -102,12 +108,47 @@ async function handleRemoveUser(): Promise<void> {
       </div>
       <UiSeparator />
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
-        <div class="flex gap-4">
-          {{ $t('pages.profile.subscription.current') }}:
-          <span test-id="subscription" class="font-bold capitalize">
-            {{ user.subscriptionType }}
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span>
+            {{ $t('pages.profile.subscription.current') }}:
+            <span test-id="subscription" class="font-bold capitalize">
+              {{ user.subscriptionType }}
+            </span>
+          </span>
+          <span
+            v-if="user.billingInterval === 'lifetime'"
+            test-id="lifetime"
+            class="text-muted-foreground"
+          >
+            {{ $t('pages.profile.subscription.lifetime') }}
+          </span>
+          <span
+            v-else-if="user.billingInterval === 'month'"
+            test-id="renews"
+            :class="
+              user.subscriptionStatus === 'past_due'
+                ? 'text-destructive'
+                : 'text-muted-foreground'
+            "
+          >
+            {{
+              user.subscriptionStatus === 'past_due'
+                ? $t('pages.profile.subscription.pastDue')
+                : $t('pages.profile.subscription.renews', {
+                    date: user.subscriptionPeriodEnd
+                      ? formatDate(user.subscriptionPeriodEnd)
+                      : '',
+                  })
+            }}
           </span>
         </div>
+        <UiButton
+          v-if="user.stripeId"
+          test-id="manage-billing"
+          @click="manageBilling"
+        >
+          {{ $t('pages.profile.subscription.handle') }}
+        </UiButton>
       </div>
       <UiSeparator />
       <div

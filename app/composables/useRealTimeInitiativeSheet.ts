@@ -22,12 +22,7 @@ export function useRealTimeInitiativeSheet(
   const enabled = computed(() => {
     if (!data.value) return false
 
-    const correctSubscription = hasCorrectSubscription(
-      user.value.subscriptionType,
-      'medior',
-    )
-
-    return correctSubscription && !!data.value.campaign
+    return isPro(user.value) && !!data.value.campaign
   })
 
   function updateQueryData(payload: UpdateInitiativeSheetData): void {

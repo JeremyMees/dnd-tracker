@@ -192,6 +192,8 @@
     "monthly": "Maandelijks",
     "annually": "Jaarlijks",
     "oneTime": "Eenmalig",
+    "perMonth": "maand",
+    "free": "Gratis",
     "forever": "Voor altijd",
     "noSelected": "Niets geselecteerd",
     "or": "of",
@@ -290,8 +292,8 @@
           "content": "Ja, je kan je eigen homebrew toevoegen aan de tracker. Je kan ook homebrew aan een campagne toevoegen zodat iedere encounter hier toegang tot heeft."
         },
         "item3": {
-          "title": "Zijn betalingen echt eenmalig?",
-          "content": "Ja, je betaalt eenmalig een bedrag voor een abonnement dat je voor altijd gebruikt."
+          "title": "Kan ik eenmalig betalen in plaats van een abonnement?",
+          "content": "Ja, Pro is beschikbaar als eenmalige levenslange aankoop, of als maandelijks abonnement als je liever periodiek betaalt."
         },
         "item4": {
           "title": "Hebben mijn spelers een account nodig?",
@@ -504,7 +506,9 @@
       "subscription": {
         "current": "Huidige abonnement",
         "handle": "Abonnement beheren",
-        "upgrade": "Abonnement upgraden"
+        "lifetime": "Levenslange toegang",
+        "renews": "Verlengt op {date}",
+        "pastDue": "Betaling mislukt, werk je betaalmethode bij"
       },
       "data": {
         "title": "Persoonlijke data",
@@ -536,14 +540,19 @@
       "title": "Gemaakt voor de beste dungeon masters, zoals jij.",
       "description": "Kies een budgetvriendelijk plan vol met premium functies om je D&D encounters te verrijken, je spelers te betrekken, en epische momenten te creëren.",
       "starter": "De perfecte keuze voor beginners en dungeon masters met 1-3 actieve campagnes.",
-      "medior": "De ideale keuze voor ervaren dungeon masters die gelijktijdig meerdere campagnes leiden.",
       "pro": "De ultieme keuze voor professionele dungeon masters en voor diegenen die samenwerken met meerdere DM's.",
-      "popular": "Populairste",
+      "lifetime": "Levenslang",
+      "cancelAnytime": "Elk moment opzegbaar",
+      "payOnceForever": "Eenmalig betalen, voor altijd van jou",
       "multiple": "Meerdere campagne beheerders",
-      "live": "Real-time updates tussen schermen",
+      "live": "Player Portal voor live sessies",
       "update": "Updates altijd gratis",
       "cta": "Start nu",
-      "text": "DnD Tracker wordt niet beheerd door een groot bedrijf, maar eerder door een gepassioneerde individu met liefde voor zowel D&D als coderen (en laten we vooral de katten en koffie niet vergeten). Het doel is niet om er rijk van te worden, daarom is dit geen website met abonnementskosten. Een eenmalige steunbetuiging is al het grootste compliment dat je mij kunt geven. Mocht je echter nog meer willen bijdragen, kun je altijd overwegen om mij een virtueel kopje koffie te doneren."
+      "subscribe": "Abonneren",
+      "buy": "Kopen",
+      "switchToLifetime": "Overstappen naar levenslang",
+      "paymentFailed": "Betaling mislukt",
+      "text": "DnD Tracker wordt niet beheerd door een groot bedrijf, maar eerder door een gepassioneerde individu met liefde voor zowel D&D als coderen (en laten we vooral de katten en koffie niet vergeten). Het doel is niet om er rijk van te worden, daarom is Pro zowel als eenmalige levenslange aankoop als als maandelijks abonnement beschikbaar. Mocht je echter nog meer willen bijdragen, kun je altijd overwegen om mij een virtueel kopje koffie te doneren."
     },
     "contact": {
       "title": "Hoor graag van je, neem contact op",
