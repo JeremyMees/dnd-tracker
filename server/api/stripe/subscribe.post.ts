@@ -64,6 +64,7 @@ export default defineEventHandler(async event => {
   const lang = localeParam(body.locale)
 
   const session = await stripe.checkout.sessions.create({
+    integration_identifier: CHECKOUT_INTEGRATION_ID,
     allow_promotion_codes: true,
     billing_address_collection: 'auto',
     line_items: [{ price: price.id, quantity: 1 }],

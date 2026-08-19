@@ -48,6 +48,8 @@ export type FeatureRequestStatus =
 export type HomebrewType = Database['public']['Enums']['homebrew_type']
 export type InitiativePet = Database['public']['Enums']['initiative_pet']
 export type SubscriptionType = Database['public']['Enums']['subscription_type']
+export type SubscriptionStatus =
+  Database['public']['Enums']['subscription_status']
 export type BillingInterval = Database['public']['Enums']['billing_interval']
 export type TableSpacing = Database['public']['Enums']['table_spacing']
 export type UserRole = Database['public']['Enums']['user_role']

@@ -1,9 +1,15 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Stripe } from 'stripe'
 import {
   resolveProduct,
   resolveTier,
   resolveInterval,
+  resolveStatus,
+  isEntitled,
+  resolvePeriodEnd,
+  resolveInvoiceSubscription,
+  resolveSubscriptionTier,
+  stripe,
 } from '~~/server/utils/stripe'
 
 vi.mock('#app', async importOriginal => ({
@@ -109,6 +115,156 @@ describe('stripe', () => {
 
     it('resolves a lifetime interval for one time prices', () => {
       expect(resolveInterval(createPrice('one_time'))).toBe('lifetime')
+    })
+  })
+
+  describe('resolveStatus', () => {
+    it.each([
+      ['active', 'active'],
+      ['trialing', 'trialing'],
+      ['past_due', 'past_due'],
+      ['canceled', 'canceled'],
+      ['unpaid', 'unpaid'],
+      ['incomplete', 'incomplete'],
+    ] as const)('keeps %s as is', (status, expected) => {
+      expect(resolveStatus(status)).toBe(expected)
+    })
+
+    it.each(['incomplete_expired', 'paused'] as const)(
+      'maps %s to canceled because the database has no such status',
+      status => {
+        expect(resolveStatus(status)).toBe('canceled')
+      },
+    )
+
+    it('returns null for a status the SDK does not know yet', () => {
+      expect(resolveStatus('some_future_status')).toBeNull()
+    })
+  })
+
+  describe('isEntitled', () => {
+    it.each(['active', 'trialing', 'past_due'] as const)(
+      'grants access while %s',
+      status => {
+        expect(isEntitled(status)).toBe(true)
+      },
+    )
+
+    it.each(['canceled', 'unpaid', 'incomplete'] as const)(
+      'denies access while %s',
+      status => {
+        expect(isEntitled(status)).toBe(false)
+      },
+    )
+  })
+
+  describe('resolvePeriodEnd', () => {
+    it('reads the period end off the first subscription item', () => {
+      const subscription = {
+        items: { data: [{ current_period_end: 1893456000 }] },
+      } as Stripe.Subscription
+
+      expect(resolvePeriodEnd(subscription)).toBe('2030-01-01T00:00:00.000Z')
+    })
+
+    it('ignores a period end on the subscription itself', () => {
+      const subscription = {
+        current_period_end: 1000000000,
+        items: { data: [{ current_period_end: 1893456000 }] },
+      } as unknown as Stripe.Subscription
+
+      expect(resolvePeriodEnd(subscription)).toBe('2030-01-01T00:00:00.000Z')
+    })
+
+    it('returns null when the subscription has no items', () => {
+      const subscription = {
+        items: { data: [] },
+      } as unknown as Stripe.Subscription
+
+      expect(resolvePeriodEnd(subscription)).toBeNull()
+    })
+  })
+
+  describe('resolveInvoiceSubscription', () => {
+    it('reads the id from a string reference', () => {
+      const invoice = {
+        parent: { subscription_details: { subscription: 'sub_1' } },
+      } as Stripe.Invoice
+
+      expect(resolveInvoiceSubscription(invoice)).toBe('sub_1')
+    })
+
+    it('reads the id from an expanded subscription', () => {
+      const invoice = {
+        parent: { subscription_details: { subscription: { id: 'sub_1' } } },
+      } as unknown as Stripe.Invoice
+
+      expect(resolveInvoiceSubscription(invoice)).toBe('sub_1')
+    })
+
+    it('returns null for an invoice without a subscription parent', () => {
+      expect(
+        resolveInvoiceSubscription({ parent: null } as Stripe.Invoice),
+      ).toBeNull()
+      expect(
+        resolveInvoiceSubscription({
+          parent: { subscription_details: null },
+        } as Stripe.Invoice),
+      ).toBeNull()
+    })
+  })
+
+  describe('resolveSubscriptionTier', () => {
+    beforeEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    function subscription(product: unknown): Stripe.Subscription {
+      return {
+        items: { data: [{ price: { product } }] },
+      } as Stripe.Subscription
+    }
+
+    it('retrieves the product when the price only holds its id', async () => {
+      const retrieve = vi
+        .spyOn(stripe.products, 'retrieve')
+        .mockResolvedValue({ name: 'Pro', metadata: { tier: 'pro' } } as never)
+
+      await expect(
+        resolveSubscriptionTier(subscription('prod_123')),
+      ).resolves.toBe('pro')
+      expect(retrieve).toHaveBeenCalledWith('prod_123')
+    })
+
+    it('uses an already expanded product without a lookup', async () => {
+      const retrieve = vi.spyOn(stripe.products, 'retrieve')
+
+      await expect(
+        resolveSubscriptionTier(subscription(createProduct({ tier: 'pro' }))),
+      ).resolves.toBe('pro')
+      expect(retrieve).not.toHaveBeenCalled()
+    })
+
+    it('throws a 400 when the subscription has no items', async () => {
+      const empty = { items: { data: [] } } as unknown as Stripe.Subscription
+
+      await expect(resolveSubscriptionTier(empty)).rejects.toThrow(
+        expect.objectContaining({
+          statusCode: 400,
+          statusMessage: 'Unknown product',
+        }),
+      )
+    })
+
+    it('throws a 400 when the product is not purchasable', async () => {
+      vi.spyOn(stripe.products, 'retrieve').mockResolvedValue({
+        name: 'Pro',
+        metadata: {},
+      } as never)
+
+      await expect(
+        resolveSubscriptionTier(subscription('prod_123')),
+      ).rejects.toThrow(expect.objectContaining({ statusCode: 400 }))
     })
   })
 })

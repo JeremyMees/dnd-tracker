@@ -6,7 +6,7 @@ import {
   mockFrom,
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
-import { stripe } from '~~/server/utils/stripe'
+import { stripe, CHECKOUT_INTEGRATION_ID } from '~~/server/utils/stripe'
 import handler from '~~/server/api/stripe/subscribe.post'
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -69,6 +69,20 @@ describe('POST /api/stripe/subscribe', () => {
 
     expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
       expect.objectContaining({ mode: 'payment', customer: 'cus_1' }),
+    )
+  })
+
+  it('tags the session with the integration identifier', async () => {
+    mockFrom({ profiles: mockChain({ data: profile(), error: null }) })
+    mockPrice()
+    mockCheckoutSession()
+
+    await handler(mockEvent({ method: 'POST', body: body() }))
+
+    expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        integration_identifier: CHECKOUT_INTEGRATION_ID,
+      }),
     )
   })
 
