@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import type { Stripe } from 'stripe'
 import {
   resolveProduct,
-  isUpgradeProduct,
   resolveTier,
+  resolveInterval,
 } from '~~/server/utils/stripe'
 
 vi.mock('#app', async importOriginal => ({
@@ -11,21 +11,35 @@ vi.mock('#app', async importOriginal => ({
   useRuntimeConfig: () => ({ stripeSk: 'sk_test_stub' }),
 }))
 
-const product = {
-  id: 'prod_123',
-  object: 'product',
-  name: 'Pro',
-  active: true,
-} as Stripe.Product
+function createProduct(metadata: Record<string, string> = {}): Stripe.Product {
+  return {
+    id: 'prod_123',
+    object: 'product',
+    name: 'Pro',
+    active: true,
+    metadata,
+  } as Stripe.Product
+}
+
+function createPrice(type: Stripe.Price.Type): Stripe.Price {
+  return {
+    id: 'price_123',
+    object: 'price',
+    active: true,
+    type,
+  } as Stripe.Price
+}
 
 describe('stripe', () => {
   describe('resolveProduct', () => {
     it('returns the product when it is expanded', () => {
+      const product = createProduct()
+
       expect(resolveProduct(product)).toBe(product)
     })
 
     it('throws a 400 when the product is not expanded', () => {
-      expect(() => resolveProduct('prod_123')).toThrowError(
+      expect(() => resolveProduct('prod_123')).toThrow(
         expect.objectContaining({
           statusCode: 400,
           statusMessage: 'Unknown product',
@@ -34,10 +48,10 @@ describe('stripe', () => {
     })
 
     it('throws a 400 when the product is missing', () => {
-      expect(() => resolveProduct(null)).toThrowError(
+      expect(() => resolveProduct(null)).toThrow(
         expect.objectContaining({ statusCode: 400 }),
       )
-      expect(() => resolveProduct(undefined)).toThrowError(
+      expect(() => resolveProduct(undefined)).toThrow(
         expect.objectContaining({ statusCode: 400 }),
       )
     })
@@ -49,47 +63,52 @@ describe('stripe', () => {
         deleted: true,
       } as Stripe.DeletedProduct
 
-      expect(() => resolveProduct(deleted)).toThrowError(
+      expect(() => resolveProduct(deleted)).toThrow(
         expect.objectContaining({ statusCode: 400 }),
       )
     })
   })
 
-  describe('isUpgradeProduct', () => {
-    it('matches the upgrade product regardless of casing or padding', () => {
-      expect(isUpgradeProduct('Upgrade to Pro')).toBe(true)
-      expect(isUpgradeProduct('  UPGRADE TO PRO  ')).toBe(true)
+  describe('resolveTier', () => {
+    it('resolves the pro tier from the product metadata', () => {
+      expect(resolveTier(createProduct({ tier: 'pro' }))).toBe('pro')
     })
 
-    it('does not match other products', () => {
-      expect(isUpgradeProduct('Pro')).toBe(false)
-      expect(isUpgradeProduct('Medior')).toBe(false)
-      expect(isUpgradeProduct('')).toBe(false)
+    it('throws a 400 when the metadata holds another tier', () => {
+      expect(() => resolveTier(createProduct({ tier: 'free' }))).toThrow(
+        expect.objectContaining({
+          statusCode: 400,
+          statusMessage: 'Product "Pro" is not purchasable',
+        }),
+      )
+    })
+
+    it('throws a 400 when the tier metadata is missing', () => {
+      expect(() => resolveTier(createProduct())).toThrow(
+        expect.objectContaining({
+          statusCode: 400,
+          statusMessage: 'Product "Pro" is not purchasable',
+        }),
+      )
+    })
+
+    it('does not normalise casing or padding', () => {
+      expect(() => resolveTier(createProduct({ tier: 'Pro' }))).toThrow(
+        expect.objectContaining({ statusCode: 400 }),
+      )
+      expect(() => resolveTier(createProduct({ tier: ' pro ' }))).toThrow(
+        expect.objectContaining({ statusCode: 400 }),
+      )
     })
   })
 
-  describe('resolveTier', () => {
-    it('resolves the medior tier', () => {
-      expect(resolveTier('Medior')).toBe('medior')
-      expect(resolveTier(' medior ')).toBe('medior')
+  describe('resolveInterval', () => {
+    it('resolves a monthly interval for recurring prices', () => {
+      expect(resolveInterval(createPrice('recurring'))).toBe('month')
     })
 
-    it('resolves the pro tier', () => {
-      expect(resolveTier('Pro')).toBe('pro')
-      expect(resolveTier('PRO')).toBe('pro')
-    })
-
-    it('resolves the upgrade product as the pro tier', () => {
-      expect(resolveTier('Upgrade to Pro')).toBe('pro')
-    })
-
-    it('throws a 400 for products that are not purchasable', () => {
-      expect(() => resolveTier('Free')).toThrowError(
-        expect.objectContaining({
-          statusCode: 400,
-          statusMessage: 'Product "Free" is not purchasable',
-        }),
-      )
+    it('resolves a lifetime interval for one time prices', () => {
+      expect(resolveInterval(createPrice('one_time'))).toBe('lifetime')
     })
   })
 })

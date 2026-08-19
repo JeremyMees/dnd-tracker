@@ -15,21 +15,19 @@ export function resolveProduct(
   return product
 }
 
-export function isUpgradeProduct(name: string): boolean {
-  return name.trim().toLowerCase() === 'upgrade to pro'
+export function resolveTier(product: Stripe.Product): SubscriptionType {
+  const tier = product.metadata.tier
+
+  if (tier !== 'pro') {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Product "${product.name}" is not purchasable`,
+    })
+  }
+
+  return tier
 }
 
-export function resolveTier(name: string): 'medior' | 'pro' {
-  switch (name.trim().toLowerCase()) {
-    case 'medior':
-      return 'medior'
-    case 'pro':
-    case 'upgrade to pro':
-      return 'pro'
-    default:
-      throw createError({
-        statusCode: 400,
-        statusMessage: `Product "${name}" is not purchasable`,
-      })
-  }
+export function resolveInterval(price: Stripe.Price): BillingInterval {
+  return price.type === 'recurring' ? 'month' : 'lifetime'
 }
