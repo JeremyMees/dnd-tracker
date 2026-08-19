@@ -359,6 +359,8 @@ export type Database = {
         Row: {
           avatar: string
           avatarOptions: Json | null
+          billingInterval:
+            Database['public']['Enums']['billing_interval'] | null
           completedTour: boolean
           createdAt: string
           email: string
@@ -367,12 +369,18 @@ export type Database = {
           name: string
           stripeId: string | null
           stripeSessionId: string | null
+          stripeSubscriptionId: string | null
+          subscriptionPeriodEnd: string | null
+          subscriptionStatus:
+            Database['public']['Enums']['subscription_status'] | null
           subscriptionType: Database['public']['Enums']['subscription_type']
           username: string
         }
         Insert: {
           avatar: string
           avatarOptions?: Json | null
+          billingInterval?:
+            Database['public']['Enums']['billing_interval'] | null
           completedTour?: boolean
           createdAt?: string
           email: string
@@ -381,12 +389,18 @@ export type Database = {
           name: string
           stripeId?: string | null
           stripeSessionId?: string | null
+          stripeSubscriptionId?: string | null
+          subscriptionPeriodEnd?: string | null
+          subscriptionStatus?:
+            Database['public']['Enums']['subscription_status'] | null
           subscriptionType?: Database['public']['Enums']['subscription_type']
           username: string
         }
         Update: {
           avatar?: string
           avatarOptions?: Json | null
+          billingInterval?:
+            Database['public']['Enums']['billing_interval'] | null
           completedTour?: boolean
           createdAt?: string
           email?: string
@@ -395,6 +409,10 @@ export type Database = {
           name?: string
           stripeId?: string | null
           stripeSessionId?: string | null
+          stripeSubscriptionId?: string | null
+          subscriptionPeriodEnd?: string | null
+          subscriptionStatus?:
+            Database['public']['Enums']['subscription_status'] | null
           subscriptionType?: Database['public']['Enums']['subscription_type']
           username?: string
         }
@@ -473,6 +491,7 @@ export type Database = {
       show_trgm: { Args: { '': string }; Returns: string[] }
     }
     Enums: {
+      billing_interval: 'month' | 'lifetime'
       feature_request_status: 'review' | 'accepted' | 'progress' | 'added'
       homebrew_type: 'player' | 'summon' | 'npc' | 'monster' | 'lair'
       initiative_pet:
@@ -484,7 +503,14 @@ export type Database = {
         | 'fairy'
         | 'redcap'
         | 'wolf-rider'
-      subscription_type: 'free' | 'medior' | 'pro'
+      subscription_status:
+        | 'active'
+        | 'trialing'
+        | 'past_due'
+        | 'canceled'
+        | 'unpaid'
+        | 'incomplete'
+      subscription_type: 'pro' | 'free'
       table_spacing: 'compact' | 'normal' | 'cozy'
       user_role: 'Viewer' | 'Admin' | 'Owner' | 'Player'
     }
@@ -611,6 +637,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      billing_interval: ['month', 'lifetime'],
       feature_request_status: ['review', 'accepted', 'progress', 'added'],
       homebrew_type: ['player', 'summon', 'npc', 'monster', 'lair'],
       initiative_pet: [
@@ -623,7 +650,15 @@ export const Constants = {
         'redcap',
         'wolf-rider',
       ],
-      subscription_type: ['free', 'medior', 'pro'],
+      subscription_status: [
+        'active',
+        'trialing',
+        'past_due',
+        'canceled',
+        'unpaid',
+        'incomplete',
+      ],
+      subscription_type: ['pro', 'free'],
       table_spacing: ['compact', 'normal', 'cozy'],
       user_role: ['Viewer', 'Admin', 'Owner', 'Player'],
     },
