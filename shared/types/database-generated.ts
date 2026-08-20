@@ -361,6 +361,7 @@ export type Database = {
           avatarOptions: Json | null
           billingInterval:
             Database['public']['Enums']['billing_interval'] | null
+          cancelAtPeriodEnd: boolean
           completedTour: boolean
           createdAt: string
           email: string
@@ -381,6 +382,7 @@ export type Database = {
           avatarOptions?: Json | null
           billingInterval?:
             Database['public']['Enums']['billing_interval'] | null
+          cancelAtPeriodEnd?: boolean
           completedTour?: boolean
           createdAt?: string
           email: string
@@ -401,6 +403,7 @@ export type Database = {
           avatarOptions?: Json | null
           billingInterval?:
             Database['public']['Enums']['billing_interval'] | null
+          cancelAtPeriodEnd?: boolean
           completedTour?: boolean
           createdAt?: string
           email?: string

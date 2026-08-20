@@ -92,6 +92,21 @@ async function handleRemoveUser(): Promise<void> {
     },
   )
 }
+
+function subscriptionState(user: AuthUser): string {
+  if (user.subscriptionStatus === 'past_due') {
+    return t('pages.profile.subscription.pastDue')
+  }
+
+  const label = user.cancelAtPeriodEnd
+    ? 'pages.profile.subscription.endsOn'
+    : 'pages.profile.subscription.renews'
+  const date = user.subscriptionPeriodEnd
+    ? formatDate(user.subscriptionPeriodEnd)
+    : ''
+
+  return t(label, { date })
+}
 </script>
 
 <template>
@@ -108,7 +123,7 @@ async function handleRemoveUser(): Promise<void> {
       </div>
       <UiSeparator />
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div class="flex flex-col">
           <span>
             {{ $t('pages.profile.subscription.current') }}:
             <span test-id="subscription" class="font-bold capitalize">
@@ -118,28 +133,24 @@ async function handleRemoveUser(): Promise<void> {
           <span
             v-if="user.billingInterval === 'lifetime'"
             test-id="lifetime"
-            class="text-muted-foreground"
+            class="text-muted-foreground text-sm"
           >
             {{ $t('pages.profile.subscription.lifetime') }}
           </span>
           <span
-            v-else-if="user.billingInterval === 'month'"
+            v-else-if="
+              user.subscriptionType === 'pro' &&
+              user.billingInterval === 'month'
+            "
             test-id="renews"
+            class="text-sm"
             :class="
               user.subscriptionStatus === 'past_due'
                 ? 'text-destructive'
                 : 'text-muted-foreground'
             "
           >
-            {{
-              user.subscriptionStatus === 'past_due'
-                ? $t('pages.profile.subscription.pastDue')
-                : $t('pages.profile.subscription.renews', {
-                    date: user.subscriptionPeriodEnd
-                      ? formatDate(user.subscriptionPeriodEnd)
-                      : '',
-                  })
-            }}
+            {{ subscriptionState(user) }}
           </span>
         </div>
         <UiButton

@@ -508,6 +508,7 @@
         "handle": "Abonnement beheren",
         "lifetime": "Levenslange toegang",
         "renews": "Verlengt op {date}",
+        "endsOn": "Stopt op {date}",
         "pastDue": "Betaling mislukt, werk je betaalmethode bij"
       },
       "data": {

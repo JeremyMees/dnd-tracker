@@ -80,6 +80,14 @@ export function resolveInvoiceSubscription(
   return typeof subscription === 'string' ? subscription : subscription.id
 }
 
+export async function cancelSubscriptionIfActive(id: string): Promise<void> {
+  const subscription = await stripe.subscriptions.retrieve(id)
+
+  if (subscription.status === 'canceled') return
+
+  await stripe.subscriptions.cancel(id)
+}
+
 export async function resolveSubscriptionTier(
   subscription: Stripe.Subscription,
 ): Promise<SubscriptionType> {

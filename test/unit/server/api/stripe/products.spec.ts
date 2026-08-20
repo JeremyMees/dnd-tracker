@@ -43,6 +43,7 @@ describe('GET /api/stripe/products', () => {
 
     expect(list).toHaveBeenCalledWith({
       active: true,
+      lookup_keys: ['pro_monthly', 'pro_lifetime'],
       expand: ['data.product'],
     })
   })

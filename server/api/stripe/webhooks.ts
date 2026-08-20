@@ -85,6 +85,7 @@ export default defineEventHandler(async event => {
     const status = resolveStatus(subscription.status)
     const values: ProfileUpdate = {
       subscriptionPeriodEnd: resolvePeriodEnd(subscription),
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
     }
 
     if (status) {
@@ -92,6 +93,9 @@ export default defineEventHandler(async event => {
 
       if (!isEntitled(status)) {
         values.subscriptionType = 'free'
+        values.billingInterval = null
+        values.subscriptionPeriodEnd = null
+        values.cancelAtPeriodEnd = false
       } else if (subscriptionType === 'free') {
         values.subscriptionType = await resolveSubscriptionTier(subscription)
       }
@@ -120,13 +124,14 @@ export default defineEventHandler(async event => {
         await updateProfile({
           subscriptionType: tier,
           billingInterval: 'lifetime',
-          stripeSubscriptionId: null,
           subscriptionStatus: null,
           subscriptionPeriodEnd: null,
+          cancelAtPeriodEnd: false,
         })
 
         if (stripeSubscriptionId) {
-          await stripe.subscriptions.cancel(stripeSubscriptionId)
+          await cancelSubscriptionIfActive(stripeSubscriptionId)
+          await updateProfile({ stripeSubscriptionId: null })
         }
       } else if (session.mode === 'subscription') {
         const subscription = await stripe.subscriptions.retrieve(
@@ -139,6 +144,7 @@ export default defineEventHandler(async event => {
           stripeSubscriptionId: subscription.id,
           subscriptionStatus: resolveStatus(subscription.status),
           subscriptionPeriodEnd: resolvePeriodEnd(subscription),
+          cancelAtPeriodEnd: subscription.cancel_at_period_end,
         })
       } else {
         return `Ignoring session with mode ${session.mode}`
@@ -169,6 +175,7 @@ export default defineEventHandler(async event => {
         stripeSubscriptionId: null,
         subscriptionStatus: null,
         subscriptionPeriodEnd: null,
+        cancelAtPeriodEnd: false,
       })
       break
     }

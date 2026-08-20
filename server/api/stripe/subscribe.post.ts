@@ -66,7 +66,9 @@ export default defineEventHandler(async event => {
   const session = await stripe.checkout.sessions.create({
     integration_identifier: CHECKOUT_INTEGRATION_ID,
     allow_promotion_codes: true,
-    billing_address_collection: 'auto',
+    billing_address_collection: 'required',
+    customer_update: { address: 'auto' },
+    automatic_tax: { enabled: true },
     line_items: [{ price: price.id, quantity: 1 }],
     mode: interval === 'month' ? 'subscription' : 'payment',
     success_url: `${config.public.appDomain}${lang}/subscribe-success`,

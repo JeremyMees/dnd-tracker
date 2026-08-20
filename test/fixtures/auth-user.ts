@@ -12,6 +12,7 @@ export const authUser: AuthUser = {
   stripeSessionId: null,
   stripeSubscriptionId: null,
   billingInterval: null,
+  cancelAtPeriodEnd: false,
   subscriptionStatus: null,
   subscriptionPeriodEnd: null,
   subscriptionType: 'free',

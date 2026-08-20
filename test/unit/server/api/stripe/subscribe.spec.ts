@@ -88,6 +88,22 @@ describe('POST /api/stripe/subscribe', () => {
     )
   })
 
+  it('enables automatic tax and collects a billing address', async () => {
+    mockFrom({ profiles: mockChain({ data: profile(), error: null }) })
+    mockPrice()
+    mockCheckoutSession()
+
+    await handler(mockEvent({ method: 'POST', body: body() }))
+
+    expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        automatic_tax: { enabled: true },
+        billing_address_collection: 'required',
+        customer_update: { address: 'auto' },
+      }),
+    )
+  })
+
   it('opens a subscription checkout for a recurring price', async () => {
     mockFrom({ profiles: mockChain({ data: profile(), error: null }) })
     mockPrice({ type: 'recurring' })

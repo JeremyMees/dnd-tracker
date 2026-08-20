@@ -52,6 +52,7 @@ function subscriptionEvent(
         id: 'sub_1',
         customer: 'cus_1',
         status: 'active',
+        cancel_at_period_end: false,
         items: { data: [{ current_period_end: 1893456000 }] },
         ...overrides,
       },
@@ -101,6 +102,7 @@ function mockSubscription(overrides: Record<string, unknown> = {}) {
   return vi.spyOn(stripe.subscriptions, 'retrieve').mockResolvedValue({
     id: 'sub_1',
     status: 'active',
+    cancel_at_period_end: false,
     items: { data: [{ current_period_end: 1893456000 }] },
     ...overrides,
   } as never)
@@ -110,7 +112,7 @@ function mockProfile(profile: Record<string, unknown> | null) {
   const update = mockChain({ error: null })
 
   mockFrom({
-    profiles: [mockChain({ data: profile, error: null }), update],
+    profiles: [mockChain({ data: profile, error: null }), update, update],
   })
 
   return update
@@ -175,6 +177,7 @@ describe('POST /api/stripe/webhooks', () => {
         stripeSubscriptionId: 'sub_1',
         subscriptionStatus: 'active',
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -189,14 +192,15 @@ describe('POST /api/stripe/webhooks', () => {
       expect(update.update).toHaveBeenCalledWith({
         subscriptionType: 'pro',
         billingInterval: 'lifetime',
-        stripeSubscriptionId: null,
         subscriptionStatus: null,
         subscriptionPeriodEnd: null,
+        cancelAtPeriodEnd: false,
       })
     })
 
     it('cancels an active subscription after the lifetime row is written', async () => {
       mockLineItems()
+      mockSubscription()
       const cancel = vi
         .spyOn(stripe.subscriptions, 'cancel')
         .mockResolvedValue({} as never)
@@ -215,7 +219,41 @@ describe('POST /api/stripe/webhooks', () => {
       await handler(webhookEvent(checkoutCompletedEvent()))
 
       expect(cancel).toHaveBeenCalledWith('sub_1')
-      expect(calls).toStrictEqual(['update', 'cancel'])
+      expect(calls).toStrictEqual(['update', 'cancel', 'update'])
+      expect(update.update).toHaveBeenLastCalledWith({
+        stripeSubscriptionId: null,
+      })
+    })
+
+    it('keeps the subscription id when the cancel fails so a retry can finish', async () => {
+      mockLineItems()
+      mockSubscription()
+      vi.spyOn(stripe.subscriptions, 'cancel').mockRejectedValue(
+        new Error('stripe unavailable'),
+      )
+      const update = mockProfile(monthlyProfile)
+
+      await expect(
+        handler(webhookEvent(checkoutCompletedEvent())),
+      ).rejects.toThrow('stripe unavailable')
+
+      expect(update.update).not.toHaveBeenCalledWith({
+        stripeSubscriptionId: null,
+      })
+    })
+
+    it('clears the subscription id when it was already canceled', async () => {
+      mockLineItems()
+      mockSubscription({ status: 'canceled' })
+      const cancel = vi.spyOn(stripe.subscriptions, 'cancel')
+      const update = mockProfile(monthlyProfile)
+
+      await handler(webhookEvent(checkoutCompletedEvent()))
+
+      expect(cancel).not.toHaveBeenCalled()
+      expect(update.update).toHaveBeenLastCalledWith({
+        stripeSubscriptionId: null,
+      })
     })
 
     it('does not cancel anything when there is no subscription', async () => {
@@ -271,9 +309,9 @@ describe('POST /api/stripe/webhooks', () => {
       expect(update.update).toHaveBeenCalledWith({
         subscriptionType: 'pro',
         billingInterval: 'lifetime',
-        stripeSubscriptionId: null,
         subscriptionStatus: null,
         subscriptionPeriodEnd: null,
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -314,6 +352,7 @@ describe('POST /api/stripe/webhooks', () => {
       expect(update.update).toHaveBeenCalledWith({
         subscriptionStatus: 'active',
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -331,6 +370,7 @@ describe('POST /api/stripe/webhooks', () => {
       expect(update.update).toHaveBeenCalledWith({
         subscriptionStatus: 'past_due',
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -348,7 +388,9 @@ describe('POST /api/stripe/webhooks', () => {
       expect(update.update).toHaveBeenCalledWith({
         subscriptionType: 'free',
         subscriptionStatus: 'unpaid',
-        subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        billingInterval: null,
+        subscriptionPeriodEnd: null,
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -376,6 +418,7 @@ describe('POST /api/stripe/webhooks', () => {
         subscriptionType: 'pro',
         subscriptionStatus: 'active',
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -403,10 +446,11 @@ describe('POST /api/stripe/webhooks', () => {
 
       expect(update.update).toHaveBeenCalledWith({
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 
-    it('maps statuses the database does not know to canceled', async () => {
+    it('maps statuses the database does not know to canceled and clears billing', async () => {
       const update = mockProfile(monthlyProfile)
 
       await handler(
@@ -417,9 +461,13 @@ describe('POST /api/stripe/webhooks', () => {
         ),
       )
 
-      expect(update.update).toHaveBeenCalledWith(
-        expect.objectContaining({ subscriptionStatus: 'canceled' }),
-      )
+      expect(update.update).toHaveBeenCalledWith({
+        subscriptionType: 'free',
+        subscriptionStatus: 'canceled',
+        billingInterval: null,
+        subscriptionPeriodEnd: null,
+        cancelAtPeriodEnd: false,
+      })
     })
 
     it('ignores the event for a lifetime profile', async () => {
@@ -459,6 +507,7 @@ describe('POST /api/stripe/webhooks', () => {
         stripeSubscriptionId: null,
         subscriptionStatus: null,
         subscriptionPeriodEnd: null,
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -538,6 +587,7 @@ describe('POST /api/stripe/webhooks', () => {
       expect(update.update).toHaveBeenCalledWith({
         subscriptionStatus: 'active',
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 
@@ -559,6 +609,7 @@ describe('POST /api/stripe/webhooks', () => {
         subscriptionType: 'pro',
         subscriptionStatus: 'active',
         subscriptionPeriodEnd: '2030-01-01T00:00:00.000Z',
+        cancelAtPeriodEnd: false,
       })
     })
 

@@ -6,6 +6,7 @@ export type StripeFields =
   | 'billingInterval'
   | 'subscriptionStatus'
   | 'subscriptionPeriodEnd'
+  | 'cancelAtPeriodEnd'
 
 export interface StripePrice {
   id: string

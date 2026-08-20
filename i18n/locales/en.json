@@ -508,6 +508,7 @@
         "handle": "Handle subscription",
         "lifetime": "Lifetime access",
         "renews": "Renews on {date}",
+        "endsOn": "Ends on {date}",
         "pastDue": "Payment failed, update your payment method"
       },
       "data": {

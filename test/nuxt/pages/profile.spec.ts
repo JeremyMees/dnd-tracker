@@ -154,6 +154,23 @@ describe('Profile page', () => {
     expect(component.find('[test-id="lifetime"]').exists()).toBe(false)
   })
 
+  it('Should show the end date for a monthly subscriber who cancelled', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'active',
+      subscriptionPeriodEnd: '2026-09-01T00:00:00.000Z',
+      cancelAtPeriodEnd: true,
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.get('[test-id="renews"]').text()).toBe(
+      'pages.profile.subscription.endsOn',
+    )
+  })
+
   it('Should show a payment failed warning for a past due monthly subscriber', async () => {
     user.value = {
       ...authUser,
@@ -179,6 +196,19 @@ describe('Profile page', () => {
     const { component } = await mountPage()
 
     expect(component.find('[test-id="lifetime"]').exists()).toBe(false)
+    expect(component.find('[test-id="renews"]').exists()).toBe(false)
+  })
+
+  it('Should not show a renewal date for a free user with a stale billing interval', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'free',
+      billingInterval: 'month',
+      subscriptionPeriodEnd: '2026-09-30T00:00:00.000Z',
+    }
+
+    const { component } = await mountPage()
+
     expect(component.find('[test-id="renews"]').exists()).toBe(false)
   })
 
