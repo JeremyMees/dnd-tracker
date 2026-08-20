@@ -1,0 +1,45 @@
+{
+  "version": "v3.2.0",
+  "date": "2026-08-20",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Players can now manage their own stats while playing an encounter"
+        },
+        {
+          "text": "New homepage design"
+        },
+        {
+          "text": "Added a monthly subscription to Pro to allow players to try out the Pro version before committing to a lifetime subscription"
+        },
+        {
+          "text": "Small animated transition between page changes"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Faster asset loading"
+        },
+        {
+          "text": "Faster table component"
+        },
+        {
+          "text": "Faster markdown renderer"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Marketing field was required instead of optional"
+        }
+      ]
+    }
+  ]
+}
