@@ -1,4 +1,5 @@
-import type { Table } from '@tanstack/vue-table'
+import type { RowData, Table } from '@tanstack/vue-table'
+import type { ListingFeatures } from '~/tables/features'
 import type { ToastProps } from '~/components/ui/toast'
 
 export interface Toast {
@@ -37,8 +38,8 @@ export interface Modal {
 
 export type ConfirmCallback = (confirmed: boolean) => unknown
 
-export interface DataTableExposed<TData = { id: number }> {
-  vueTable: Table<TData>
+export interface DataTableExposed<TData extends RowData = { id: number }> {
+  vueTable: Table<ListingFeatures, TData>
 }
 
 export interface TableHeader {

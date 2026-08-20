@@ -15,27 +15,27 @@ exports[`DataTable > Should match snapshot 1`] = `
       <table class="w-full caption-bottom text-sm">
         <thead class="[&amp;_tr]:border-b">
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary">
-            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">
               <div class="flex items-center gap-2 w-fit">
                 <!--v-if-->
               </div>
             </th>
-            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">
               <div class="flex items-center gap-2 w-fit">
                 <!--v-if-->
               </div>
             </th>
-            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0 cursor-pointer select-none" data-pinned="false">
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 end-0 cursor-pointer select-none" data-pinned="false">
               <div class="flex items-center gap-2 w-fit">ID
                 <!--v-if-->
               </div>
             </th>
-            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0 cursor-pointer select-none" data-pinned="false">
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 end-0 cursor-pointer select-none" data-pinned="false">
               <div class="flex items-center gap-2 w-fit">Name
                 <!--v-if-->
               </div>
             </th>
-            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 right-0 cursor-pointer select-none" data-pinned="false">
+            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 end-0 cursor-pointer select-none" data-pinned="false">
               <div class="flex items-center gap-2 w-fit">Age
                 <!--v-if-->
               </div>
@@ -44,39 +44,39 @@ exports[`DataTable > Should match snapshot 1`] = `
         </thead>
         <tbody class="[&amp;_tr:last-child]:border-0">
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
               </button>
               <!--v-if-->
             </td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">1</td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">John Doe</td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">30</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">1</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">John Doe</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">30</td>
           </tr>
           <!--v-if-->
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
               </button>
               <!--v-if-->
             </td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">2</td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">Jane Smith</td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">25</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">2</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">Jane Smith</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">25</td>
           </tr>
           <!--v-if-->
           <tr class="border-b border-secondary transition-colors data-[state=selected]:bg-secondary" data-state="false">
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
                 <!---->
               </button>
               <!--v-if-->
             </td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">3</td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">Bob Johnson</td>
-            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 right-0" data-pinned="false">40</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false"><span data-v-tippy=""><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-primary hover:text-primary-foreground size-7" arialabel="actions.show"><span class="iconify i-tabler:chevron-right transition-transform duration-200 ease-in-out" aria-hidden="true" style="transform: rotate(0deg);" ariahidden="true"></span></button></span></td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">3</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">Bob Johnson</td>
+            <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 end-0" data-pinned="false">40</td>
           </tr>
           <!--v-if-->
         </tbody>

@@ -1,13 +1,14 @@
 import {
   createColumnHelper,
-  type InitialTableState,
+  type TableState,
   type Row,
 } from '@tanstack/vue-table'
+import type { ListingFeatures } from './features'
 
 import { expandButton, iconButton, selectButton } from './generate-functions'
 import { NuxtTime } from '#components'
 
-const columnHelper = createColumnHelper<NoteRow>()
+const columnHelper = createColumnHelper<ListingFeatures, NoteRow>()
 
 interface ColumnOptions {
   onUpdate: (item: NoteRow) => void
@@ -26,7 +27,7 @@ export function generateColumns({
 }: ColumnOptions) {
   const { t } = useI18n()
 
-  return [
+  return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
@@ -101,16 +102,16 @@ export function generateColumns({
         ])
       },
     }),
-  ]
+  ])
 }
 
-export function expandedMarkup(row: Row<NoteRow>) {
+export function expandedMarkup(row: Row<ListingFeatures, NoteRow>) {
   return h('div', {
     class: 'html-richtext max-h-[350px] sm:max-h-[600px] overflow-y-auto',
     innerHTML: row.original.text,
   })
 }
 
-export const initialState: InitialTableState = {
+export const initialState: Partial<TableState<ListingFeatures>> = {
   sorting: [{ id: 'createdAt', desc: true }],
 }

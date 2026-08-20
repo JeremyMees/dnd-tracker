@@ -1,4 +1,5 @@
-import { createColumnHelper, type InitialTableState } from '@tanstack/vue-table'
+import { createColumnHelper, type TableState } from '@tanstack/vue-table'
+import type { ListingFeatures } from './features'
 import {
   iconButton,
   linkButton,
@@ -7,7 +8,7 @@ import {
 } from './generate-functions'
 import { NuxtTime } from '#components'
 
-const columnHelper = createColumnHelper<EncounterItem>()
+const columnHelper = createColumnHelper<ListingFeatures, EncounterItem>()
 
 interface ColumnOptions {
   isCampaign: boolean
@@ -29,7 +30,7 @@ export function generateColumns({
   const { t } = useI18n()
   const user = useAuthenticatedUser()
 
-  return [
+  return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
@@ -138,9 +139,9 @@ export function generateColumns({
         ])
       },
     }),
-  ]
+  ])
 }
 
-export const initialState: InitialTableState = {
+export const initialState: Partial<TableState<ListingFeatures>> = {
   sorting: [{ id: 'createdAt', desc: true }],
 }

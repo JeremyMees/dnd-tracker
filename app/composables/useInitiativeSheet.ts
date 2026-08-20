@@ -1,3 +1,5 @@
+import type { RowSelectionState } from '@tanstack/vue-table'
+
 export function useInitiativeSheet(
   sheet: ComputedRef<InitiativeSheet | undefined>,
   update: (
@@ -16,7 +18,7 @@ export function useInitiativeSheet(
   ]
 
   const expanded = ref<Record<string, boolean>>({})
-  const selected = ref<Record<string, boolean>>({})
+  const selected = ref<RowSelectionState>({})
 
   const active = computed(() => {
     const selectedRowId = Object.keys(selected.value).find(
