@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 import { defaultLocale, locales, localized } from './shared/utils/locale'
 
 export default defineNuxtConfig({
+  experimental: {
+    viewTransition: true,
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
