@@ -6,6 +6,7 @@ import {
   mockFrom,
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { mockStorage } from '~~/test/unit/stubs/storage'
 import { stripe } from '~~/server/utils/stripe'
 import handler from '~~/server/api/stripe/portal.post'
 
@@ -20,6 +21,7 @@ function mockPortalSession(overrides: Record<string, unknown> = {}) {
 describe('POST /api/stripe/portal', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockStorage()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ public: { appDomain: 'https://dnd-tracker.com' } })
   })

@@ -6,6 +6,7 @@ import {
   mockFrom,
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { mockStorage } from '~~/test/unit/stubs/storage'
 import { stripe, CHECKOUT_INTEGRATION_ID } from '~~/server/utils/stripe'
 import handler from '~~/server/api/stripe/subscribe.post'
 
@@ -54,6 +55,7 @@ function mockCheckoutSession(overrides: Record<string, unknown> = {}) {
 describe('POST /api/stripe/subscribe', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockStorage()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ public: { appDomain: 'https://dnd-tracker.com/' } })
   })

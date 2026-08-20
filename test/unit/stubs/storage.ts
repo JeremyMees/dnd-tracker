@@ -5,7 +5,7 @@ const hoisted = vi.hoisted(() => {
 
   return {
     store,
-    useStorage: vi.fn(() => ({
+    useStorage: vi.fn((_base?: string) => ({
       getItem: vi.fn((key: string) => Promise.resolve(store.get(key) ?? null)),
       setItem: vi.fn((key: string, value: unknown) => {
         store.set(key, value)

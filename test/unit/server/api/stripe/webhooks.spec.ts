@@ -2,8 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { mockStorage } from '~~/test/unit/stubs/storage'
 import { stripe } from '~~/server/utils/stripe'
 import handler from '~~/server/api/stripe/webhooks'
+
+vi.mock('~~/server/utils/stripe', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  assertStripeIp: vi.fn().mockResolvedValue(undefined),
+}))
 
 function webhookEvent(stripeEvent: Record<string, unknown>) {
   vi.spyOn(stripe.webhooks, 'constructEvent').mockReturnValue(
@@ -142,6 +148,7 @@ describe('POST /api/stripe/webhooks', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.restoreAllMocks()
+    mockStorage()
     mockRuntimeConfig({ stripeWebhook: 'whsec_test' })
   })
 

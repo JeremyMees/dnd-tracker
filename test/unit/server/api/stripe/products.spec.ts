@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { mockStorage } from '~~/test/unit/stubs/storage'
 import { stripe } from '~~/server/utils/stripe'
 import handler from '~~/server/api/stripe/products.get'
 
@@ -24,7 +25,8 @@ function price(overrides: Record<string, unknown> = {}) {
 describe('GET /api/stripe/products', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockRuntimeConfig({ stripeSk: 'sk_test_stub' })
+    mockStorage()
+    mockRuntimeConfig({ stripeApiKey: 'sk_test_stub' })
   })
 
   it('returns the active prices with their expanded product', async () => {

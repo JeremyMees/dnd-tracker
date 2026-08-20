@@ -1,5 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Stripe } from 'stripe'
+import { mockEvent } from '~~/test/unit/stubs/api-event'
+import { mockStorage, useStorage } from '~~/test/unit/stubs/storage'
 import {
   resolveProduct,
   resolveTier,
@@ -9,12 +11,20 @@ import {
   resolvePeriodEnd,
   resolveInvoiceSubscription,
   resolveSubscriptionTier,
+  assertStripeIp,
   stripe,
 } from '~~/server/utils/stripe'
 
+function mockFetchOk(ips: string[]) {
+  return vi.fn(async () => ({
+    ok: true,
+    json: async () => ({ WEBHOOKS: ips }),
+  }))
+}
+
 vi.mock('#app', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useRuntimeConfig: () => ({ stripeSk: 'sk_test_stub' }),
+  useRuntimeConfig: () => ({ stripeApiKey: 'sk_test_stub' }),
 }))
 
 function createProduct(metadata: Record<string, string> = {}): Stripe.Product {
@@ -265,6 +275,68 @@ describe('stripe', () => {
       await expect(
         resolveSubscriptionTier(subscription('prod_123')),
       ).rejects.toThrow(expect.objectContaining({ statusCode: 400 }))
+    })
+  })
+
+  describe('assertStripeIp', () => {
+    beforeEach(() => {
+      mockStorage()
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('allows a request from an IP on the published list', async () => {
+      vi.stubGlobal('fetch', mockFetchOk(['1.2.3.4']))
+      const event = mockEvent({ headers: { 'x-forwarded-for': '1.2.3.4' } })
+
+      await expect(assertStripeIp(event)).resolves.toBeUndefined()
+    })
+
+    it('throws a 403 for an IP not on the published list', async () => {
+      vi.stubGlobal('fetch', mockFetchOk(['1.2.3.4']))
+      const event = mockEvent({ headers: { 'x-forwarded-for': '9.9.9.9' } })
+
+      await expect(assertStripeIp(event)).rejects.toMatchObject({
+        statusCode: 403,
+        statusMessage: 'Forbidden',
+      })
+    })
+
+    it('caches the published list instead of fetching on every request', async () => {
+      const fetchMock = mockFetchOk(['1.2.3.4'])
+      vi.stubGlobal('fetch', fetchMock)
+      const event = mockEvent({ headers: { 'x-forwarded-for': '1.2.3.4' } })
+
+      await assertStripeIp(event)
+      await assertStripeIp(event)
+
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('falls back to a stale cached list when a refetch fails', async () => {
+      await useStorage('stripe-ips').setItem('webhooks', {
+        ips: ['1.2.3.4'],
+        expiresAt: Date.now() - 1,
+      })
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() => Promise.reject(new Error('network down'))),
+      )
+      const event = mockEvent({ headers: { 'x-forwarded-for': '1.2.3.4' } })
+
+      await expect(assertStripeIp(event)).resolves.toBeUndefined()
+    })
+
+    it('fails open when the list cannot be resolved at all', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() => Promise.reject(new Error('network down'))),
+      )
+      const event = mockEvent({ headers: { 'x-forwarded-for': '9.9.9.9' } })
+
+      await expect(assertStripeIp(event)).resolves.toBeUndefined()
     })
   })
 })

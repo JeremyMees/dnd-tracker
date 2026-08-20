@@ -21,6 +21,8 @@ function isHandled(stripeEvent: Stripe.Event): stripeEvent is HandledEvent {
 }
 
 export default defineEventHandler(async event => {
+  await assertStripeIp(event)
+
   const raw = (await readRawBody(event)) as string
   const signature = getHeader(event, 'stripe-signature') || ''
   const config = useRuntimeConfig()

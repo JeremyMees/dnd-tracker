@@ -70,7 +70,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
-    stripeSk: process.env.STRIPE_SK,
+    stripeApiKey: process.env.STRIPE_KEY,
     plunkApiKey: process.env.PLUNK_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,
