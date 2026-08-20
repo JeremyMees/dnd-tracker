@@ -1,16 +1,20 @@
-import { createColumnHelper, type InitialTableState } from '@tanstack/vue-table'
+import { createColumnHelper, type TableState } from '@tanstack/vue-table'
+import type { HomebrewSelectFeatures } from './features'
 import {
   iconLabelElement,
   homebrewTag,
   selectButton,
 } from './generate-functions'
 
-const columnHelper = createColumnHelper<HomebrewItemRow>()
+const columnHelper = createColumnHelper<
+  HomebrewSelectFeatures,
+  HomebrewItemRow
+>()
 
 export function generateColumns() {
   const { t } = useI18n()
 
-  return [
+  return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
       enableSorting: false,
@@ -66,9 +70,9 @@ export function generateColumns() {
           color: 'text-help',
         }),
     }),
-  ]
+  ])
 }
 
-export const initialState: InitialTableState = {
+export const initialState: Partial<TableState<HomebrewSelectFeatures>> = {
   sorting: [{ id: 'name', desc: false }],
 }

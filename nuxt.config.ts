@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 import { defaultLocale, locales, localized } from './shared/utils/locale'
 
 export default defineNuxtConfig({
+  experimental: {
+    viewTransition: true,
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -70,7 +74,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     stripeWebhook: process.env.STRIPE_WEBHOOK,
-    stripeSk: process.env.STRIPE_SK,
+    stripeApiKey: process.env.STRIPE_KEY,
     plunkApiKey: process.env.PLUNK_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,

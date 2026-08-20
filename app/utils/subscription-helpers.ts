@@ -2,40 +2,11 @@ export function isPro(profile: ProfileRow): boolean {
   return profile.subscriptionType === 'pro'
 }
 
-export function isMedior(profile: ProfileRow): boolean {
-  return (
-    profile.subscriptionType === 'pro' || profile.subscriptionType === 'medior'
-  )
-}
-
-export function hasCorrectSubscription(
-  subscription: StripeSubscriptionType,
-  expected: StripeSubscriptionType,
-): boolean {
-  if (
-    subscription === 'pro' ||
-    subscription === expected ||
-    (subscription === 'medior' && expected === 'free')
-  )
-    return true
-  else return false
-}
-
 export function getMax(
   type: 'encounter' | 'campaign' | 'team',
-  subscription: StripeSubscriptionType,
+  subscription: SubscriptionType,
 ): number {
   switch (subscription) {
-    case 'medior':
-      switch (type) {
-        case 'encounter':
-          return 50
-        case 'campaign':
-          return 10
-        case 'team':
-          return 3
-      }
-      break
     case 'pro':
       switch (type) {
         case 'encounter':

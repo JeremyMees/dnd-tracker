@@ -5,15 +5,23 @@ import Profile from '~/pages/profile.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const { ask, navigateTo, removeProfile, toast, updateProfile, useSeo } =
-  vi.hoisted(() => ({
-    ask: vi.fn(),
-    navigateTo: vi.fn(),
-    removeProfile: vi.fn(),
-    toast: vi.fn(),
-    updateProfile: vi.fn(),
-    useSeo: vi.fn(),
-  }))
+const {
+  ask,
+  navigateTo,
+  removeProfile,
+  toast,
+  updateProfile,
+  useFetch,
+  useSeo,
+} = vi.hoisted(() => ({
+  ask: vi.fn(),
+  navigateTo: vi.fn(),
+  removeProfile: vi.fn(),
+  toast: vi.fn(),
+  updateProfile: vi.fn(),
+  useFetch: vi.fn(),
+  useSeo: vi.fn(),
+}))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
@@ -44,6 +52,7 @@ mockNuxtImport('useAuthenticatedUser', () => () => user)
 mockNuxtImport('useConfirm', () => () => ({ ask }))
 mockNuxtImport('navigateTo', () => navigateTo)
 mockNuxtImport('useThrottleFn', () => (fn: unknown) => fn)
+mockNuxtImport('useFetch', () => useFetch)
 
 const DataFormStub = defineComponent({
   props: ['update', 'initialValues'],
@@ -96,6 +105,7 @@ describe('Profile page', () => {
 
     updateProfile.mockResolvedValue(undefined)
     removeProfile.mockResolvedValue(undefined)
+    useFetch.mockResolvedValue({ data: ref(null) })
   })
 
   it('Should set the page seo', async () => {
@@ -110,6 +120,125 @@ describe('Profile page', () => {
     const { component } = await mountPage()
 
     expect(component.get('[test-id="subscription"]').text()).toBe('pro')
+  })
+
+  it('Should show lifetime access for a lifetime subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'lifetime',
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.get('[test-id="lifetime"]').text()).toBe(
+      'pages.profile.subscription.lifetime',
+    )
+    expect(component.find('[test-id="renews"]').exists()).toBe(false)
+  })
+
+  it('Should show the renewal date for an active monthly subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'active',
+      subscriptionPeriodEnd: '2026-09-01T00:00:00.000Z',
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.get('[test-id="renews"]').text()).toBe(
+      'pages.profile.subscription.renews',
+    )
+    expect(component.find('[test-id="lifetime"]').exists()).toBe(false)
+  })
+
+  it('Should show the end date for a monthly subscriber who cancelled', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'active',
+      subscriptionPeriodEnd: '2026-09-01T00:00:00.000Z',
+      cancelAtPeriodEnd: true,
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.get('[test-id="renews"]').text()).toBe(
+      'pages.profile.subscription.endsOn',
+    )
+  })
+
+  it('Should show a payment failed warning for a past due monthly subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'past_due',
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.get('[test-id="renews"]').text()).toBe(
+      'pages.profile.subscription.pastDue',
+    )
+  })
+
+  it('Should not show a billing interval for a free user', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'free',
+      billingInterval: null,
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.find('[test-id="lifetime"]').exists()).toBe(false)
+    expect(component.find('[test-id="renews"]').exists()).toBe(false)
+  })
+
+  it('Should not show a renewal date for a free user with a stale billing interval', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'free',
+      billingInterval: 'month',
+      subscriptionPeriodEnd: '2026-09-30T00:00:00.000Z',
+    }
+
+    const { component } = await mountPage()
+
+    expect(component.find('[test-id="renews"]').exists()).toBe(false)
+  })
+
+  it('Should only show the manage billing button for a stripe customer', async () => {
+    user.value = { ...authUser, stripeId: null }
+
+    const { component } = await mountPage()
+
+    expect(component.find('[test-id="manage-billing"]').exists()).toBe(false)
+  })
+
+  it('Should open the billing portal from the manage billing button', async () => {
+    user.value = { ...authUser, stripeId: 'cus_123' }
+    useFetch.mockResolvedValue({
+      data: ref({ url: 'https://stripe.test/portal' }),
+    })
+
+    const { component } = await mountPage()
+
+    await component.get('[test-id="manage-billing"]').trigger('click')
+    await flushPromises()
+
+    expect(useFetch).toHaveBeenCalledWith(
+      '/api/stripe/portal',
+      { method: 'POST' },
+      expect.any(String),
+    )
+    expect(navigateTo).toHaveBeenCalledWith('https://stripe.test/portal', {
+      external: true,
+    })
   })
 
   it('Should seed the avatar picker with the avatar of the user', async () => {

@@ -10,7 +10,7 @@ const bodySchema = z.object({
   password: z.string().min(6).max(50),
   name: z.string().min(3).max(30),
   username: z.string().min(5).max(50),
-  marketing: z.boolean(),
+  marketing: z.boolean().default(false),
   avatar: z.string().min(1),
   avatarOptions: z.record(z.string(), z.union([z.string(), z.number()])),
 })

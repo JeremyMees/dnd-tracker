@@ -137,7 +137,7 @@ describe('Encounter detail page', () => {
     subscribe.mockReturnValue(channel)
     update.mockResolvedValue(undefined)
 
-    user.value = { ...authUser, subscriptionType: 'medior' }
+    user.value = { ...authUser, subscriptionType: 'pro' }
     data.value = { ...sheet, campaign: mockSheetCampaign }
     isPending.value = false
     isError.value = false

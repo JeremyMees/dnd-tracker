@@ -191,6 +191,8 @@
     "monthly": "Monthly",
     "annually": "Annually",
     "oneTime": "One-time",
+    "perMonth": "month",
+    "free": "Free",
     "forever": "Forever",
     "link": "Link | links",
     "noSelected": "Nothing selected",
@@ -295,8 +297,8 @@
           "content": "Yes, you can add your own homebrew to the tracker. You can also add homebrew to a campaign so that every encounter has access to it."
         },
         "item3": {
-          "title": "Are payments really one-time?",
-          "content": "Yes, you pay a one-time amount for a subscription that you can use forever."
+          "title": "Can I pay once instead of a subscription?",
+          "content": "Yes, Pro is available as a one-time lifetime purchase, or as a monthly subscription if you'd rather pay as you go."
         },
         "item4": {
           "title": "Do my players need an account?",
@@ -504,7 +506,10 @@
       "subscription": {
         "current": "Current subscription",
         "handle": "Handle subscription",
-        "upgrade": "Upgrade subscription"
+        "lifetime": "Lifetime access",
+        "renews": "Renews on {date}",
+        "endsOn": "Ends on {date}",
+        "pastDue": "Payment failed, update your payment method"
       },
       "data": {
         "title": "Personal data",
@@ -536,14 +541,19 @@
       "title": "Designed for the best dungeon masters, like you.",
       "description": "Choose a budget-friendly plan loaded with premium features to enrich your D&D encounters, engage your players, and create epic moments.",
       "starter": "The perfect choice for beginners and dungeon masters with 1-3 active campaigns.",
-      "medior": "The ideal choice for experienced dungeon masters who run multiple campaigns simultaneously.",
       "pro": "The ultimate choice for professional dungeon masters and for those collaborating with multiple DMs.",
-      "popular": "Most popular",
+      "lifetime": "Lifetime",
+      "cancelAnytime": "Cancel anytime",
+      "payOnceForever": "Pay once, yours forever",
       "multiple": "Multiple campaign admins",
-      "live": "Real-time updates between screens",
+      "live": "Player Portal for live sessions",
       "update": "Updates: always free",
       "cta": "Get started",
-      "text": "DnD Tracker is not managed by a large company but rather by a passionate individual with a love for both D&D and coding (and let's not forget about cats and coffee). The goal is not to get rich, which is why this is not a website with subscription fees. A one-time show of support is the greatest compliment you can give me. However, if you'd like to contribute even more, you can always consider donating a virtual cup of coffee."
+      "subscribe": "Subscribe",
+      "buy": "Buy",
+      "switchToLifetime": "Switch to lifetime",
+      "paymentFailed": "Payment failed",
+      "text": "DnD Tracker is not managed by a large company but rather by a passionate individual with a love for both D&D and coding (and let's not forget about cats and coffee). The goal is not to get rich, which is why Pro is available as a one-time lifetime purchase as well as a monthly subscription. However, if you'd like to contribute even more, you can always consider donating a virtual cup of coffee."
     },
     "contact": {
       "title": "Love to hear from you, Get in touch",

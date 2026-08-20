@@ -4,6 +4,7 @@ import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { describe, expect, it, vi } from 'vitest'
 import DataTable from '~/components/atoms/DataTable.vue'
+import type { ListingFeatures } from '~/tables/features'
 import { expandButton, selectButton } from '~/tables/generate-functions'
 
 interface TestData {
@@ -20,9 +21,9 @@ const mockData: TestData[] = [
 
 const TypedDataTable = DataTable<TestData>
 
-const columnHelper = createColumnHelper<TestData>()
+const columnHelper = createColumnHelper<ListingFeatures, TestData>()
 
-const mockColumns: ColumnDef<TestData>[] = [
+const mockColumns = columnHelper.columns([
   columnHelper.display({
     id: 'checkbox',
     header: '',
@@ -48,25 +49,26 @@ const mockColumns: ColumnDef<TestData>[] = [
   columnHelper.accessor('id', {
     header: 'ID',
     cell: ({ row }) => row.getValue('id'),
-  }) as ColumnDef<TestData>,
+  }),
   columnHelper.accessor('name', {
     header: 'Name',
     cell: ({ row }) => row.getValue('name'),
-  }) as ColumnDef<TestData>,
+  }),
   columnHelper.accessor('age', {
     header: 'Age',
     cell: ({ row }) => row.getValue('age'),
-  }) as ColumnDef<TestData>,
-]
+  }),
+])
 
 type Props = {
-  columns: ColumnDef<TestData>[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: ColumnDef<ListingFeatures, TestData, any>[]
   data: TestData[]
   loading: boolean
-  options?: Partial<TableOptions<TestData>>
+  options?: Partial<TableOptions<ListingFeatures, TestData>>
   emptyMessage?: string
   permission?: boolean | ((item: TestData) => Promise<boolean>)
-  expandedMarkup?: (row: Row<TestData>) => VNode
+  expandedMarkup?: (row: Row<ListingFeatures, TestData>) => VNode
 }
 
 const props: Props = {
@@ -292,31 +294,31 @@ describe('DataTable', () => {
         options: {
           ...props.options,
           initialState: {
-            columnPinning: { left: ['id'] },
+            columnPinning: { start: ['id'], end: [] },
           },
         },
       },
     })
 
-    const pinnedHeader = component.find('th[data-pinned="left"]')
+    const pinnedHeader = component.find('th[data-pinned="start"]')
     expect(pinnedHeader.exists()).toBeTruthy()
-    expect(pinnedHeader.classes()).toContain('left-0')
+    expect(pinnedHeader.classes()).toContain('start-0')
 
-    const pinnedCell = component.find('td[data-pinned="left"]')
+    const pinnedCell = component.find('td[data-pinned="start"]')
     expect(pinnedCell.exists()).toBeTruthy()
-    expect(pinnedCell.classes()).toContain('left-0')
+    expect(pinnedCell.classes()).toContain('start-0')
   })
 
   it('Should render placeholder header cells for ungrouped columns alongside a grouped column', async () => {
-    const groupedColumns: ColumnDef<TestData>[] = [
+    const groupedColumns = columnHelper.columns([
       columnHelper.accessor('id', {
         header: 'ID',
         cell: ({ row }) => row.getValue('id'),
-      }) as ColumnDef<TestData>,
+      }),
       columnHelper.group({
         id: 'group',
         header: 'Info',
-        columns: [
+        columns: columnHelper.columns([
           columnHelper.accessor('name', {
             header: 'Name',
             cell: ({ row }) => row.getValue('name'),
@@ -325,9 +327,9 @@ describe('DataTable', () => {
             header: 'Age',
             cell: ({ row }) => row.getValue('age'),
           }),
-        ],
-      }) as unknown as ColumnDef<TestData>,
-    ]
+        ]),
+      }),
+    ])
 
     const component = await mountSuspended(TypedDataTable, {
       props: { ...props, columns: groupedColumns },

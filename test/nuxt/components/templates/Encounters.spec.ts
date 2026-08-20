@@ -298,11 +298,11 @@ describe('Encounters', () => {
   })
 
   it('Should raise the maximum for a paid subscription', async () => {
-    user.value = { ...authUser, subscriptionType: 'medior' }
+    user.value = { ...authUser, subscriptionType: 'pro' }
 
     const { contentCount } = await mountEncounters()
 
-    expect(contentCount.props('max')).toBe(50)
+    expect(contentCount.props('max')).toBe(250)
   })
 
   it('Should show the limit cta once the maximum is reached', async () => {

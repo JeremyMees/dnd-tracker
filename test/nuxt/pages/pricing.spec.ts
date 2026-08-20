@@ -25,11 +25,12 @@ const products = ref<ProductPricing[] | undefined>()
 const isPending = ref(false)
 
 const starter: ProductPricing = {
-  type: 'free',
+  key: 'free',
+  tier: 'free',
+  interval: null,
   title: 'Starter',
   description: 'pages.pricing.starter',
   price: 0,
-  isPopular: false,
   items: [
     { label: 'pages.pricing.update', icon: 'check' },
     { number: 10, label: 'general.encounter', icon: 'check' },
@@ -37,33 +38,25 @@ const starter: ProductPricing = {
   ],
 }
 
-const medior: ProductPricing = {
-  type: 'medior',
-  title: 'Medior',
-  description: 'pages.pricing.medior',
-  price: 5,
-  id: 'medior-lookup',
-  isPopular: true,
-  items: [{ number: 50, label: 'general.encounter', icon: 'check' }],
-}
-
-const pro: ProductPricing = {
-  type: 'pro',
+const proMonthly: ProductPricing = {
+  key: 'pro_monthly',
+  tier: 'pro',
+  interval: 'month',
   title: 'Pro',
   description: 'pages.pricing.pro',
-  price: 10,
-  id: 'pro-lookup',
-  isPopular: false,
+  price: 5,
+  id: 'pro-monthly-lookup',
   items: [{ number: 250, label: 'general.encounter', icon: 'check' }],
 }
 
-const upgrade: ProductPricing = {
-  type: 'upgrade to pro',
-  title: 'Upgrade to Pro',
+const proLifetime: ProductPricing = {
+  key: 'pro_lifetime',
+  tier: 'pro',
+  interval: 'lifetime',
+  title: 'Pro',
   description: 'pages.pricing.pro',
-  price: 5,
-  id: 'upgrade-lookup',
-  isPopular: false,
+  price: 50,
+  id: 'pro-lifetime-lookup',
   items: [{ number: 250, label: 'general.encounter', icon: 'check' }],
 }
 
@@ -84,14 +77,23 @@ async function mountPage() {
         .findAll('[test-id="product-title"]')
         .map(title => title.text())
     },
-    card(title: string) {
-      const card = component
-        .findAll('[test-id="product"]')
-        .find(item => item.get('[test-id="product-title"]').text() === title)
+    card(index: number) {
+      const cards = component.findAll('[test-id="product"]')
+      const card = cards[index]
 
-      if (!card) throw new Error(`No pricing card found for "${title}"`)
+      if (!card) throw new Error(`No pricing card found at index ${index}`)
 
       return card
+    },
+    get freeCard() {
+      return this.card(0)
+    },
+    get proCard() {
+      return this.card(1)
+    },
+    async selectInterval(value: 'month' | 'lifetime') {
+      await component.get(`[test-id="interval-${value}"]`).trigger('mousedown')
+      await flushPromises()
     },
   }
 }
@@ -101,7 +103,7 @@ describe('Pricing page', () => {
     vi.clearAllMocks()
 
     user.value = null
-    products.value = [starter, medior, pro, upgrade]
+    products.value = [starter, proMonthly, proLifetime]
     isPending.value = false
 
     useFetch.mockResolvedValue({
@@ -145,56 +147,75 @@ describe('Pricing page', () => {
     expect(component.findAll('[test-id="product"]')).toHaveLength(0)
   })
 
-  it('Should hide the upgrade product for users without a medior subscription', async () => {
+  it('Should render exactly a free card and a pro card', async () => {
     const { titles } = await mountPage()
 
-    expect(titles).toEqual(['Starter', 'Medior', 'Pro'])
+    expect(titles).toEqual(['Starter', 'Pro'])
   })
 
-  it('Should swap the pro product for the upgrade product for medior users', async () => {
-    user.value = { ...authUser, subscriptionType: 'medior' }
+  it('Should default the interval toggle to lifetime for a visitor', async () => {
+    const { proCard } = await mountPage()
 
-    const { titles } = await mountPage()
-
-    expect(titles).toEqual(['Starter', 'Medior', 'Upgrade to Pro'])
-  })
-
-  it('Should render the title, description and price of a product', async () => {
-    const { card } = await mountPage()
-
-    const product = card('Medior')
-
-    expect(product.get('[test-id="product-description"]').text()).toBe(
-      'pages.pricing.medior',
+    expect(proCard.get('[test-id="price"]').text()).toBe('€50')
+    expect(proCard.text()).toContain('general.oneTime')
+    expect(proCard.get('[test-id="interval-caption"]').text()).toBe(
+      'pages.pricing.payOnceForever',
     )
-    expect(product.get('[test-id="price"]').text()).toBe('€5')
-    expect(product.text()).toContain('general.oneTime')
+  })
+
+  it('Should default the interval toggle to the subscriber current plan', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+    }
+
+    const { proCard } = await mountPage()
+
+    expect(proCard.get('[test-id="price"]').text()).toBe('€5')
+    expect(proCard.text()).toContain('general.perMonth')
+  })
+
+  it('Should swap the price, suffix and caption when the toggle changes', async () => {
+    const { proCard, selectInterval } = await mountPage()
+
+    await selectInterval('month')
+
+    expect(proCard.get('[test-id="price"]').text()).toBe('€5')
+    expect(proCard.text()).toContain('general.perMonth')
+    expect(proCard.get('[test-id="interval-caption"]').text()).toBe(
+      'pages.pricing.cancelAnytime',
+    )
+
+    await selectInterval('lifetime')
+
+    expect(proCard.get('[test-id="price"]').text()).toBe('€50')
+    expect(proCard.text()).toContain('general.oneTime')
+    expect(proCard.get('[test-id="interval-caption"]').text()).toBe(
+      'pages.pricing.payOnceForever',
+    )
+  })
+
+  it('Should show free instead of a price on the starter card', async () => {
+    const { freeCard } = await mountPage()
+
+    expect(freeCard.get('[test-id="price"]').text()).toBe('general.free')
   })
 
   it('Should show a skeleton instead of the price when the product has none', async () => {
-    products.value = [{ ...medior, price: undefined }]
+    products.value = [starter, { ...proMonthly, price: undefined }, proLifetime]
 
-    const { card } = await mountPage()
+    const { proCard, selectInterval } = await mountPage()
+    await selectInterval('month')
 
-    const product = card('Medior')
-
-    expect(product.find('[test-id="price"]').exists()).toBe(false)
-    expect(product.get('[test-id="price-loading"]').text()).toBe('€')
-  })
-
-  it('Should mark only the popular product with a badge', async () => {
-    const { card, component } = await mountPage()
-
-    expect(component.findAll('[test-id="popular"]')).toHaveLength(1)
-    expect(card('Medior').get('[test-id="popular"]').text()).toBe(
-      'pages.pricing.popular',
-    )
+    expect(proCard.find('[test-id="price"]').exists()).toBe(false)
+    expect(proCard.get('[test-id="price-loading"]').text()).toBe('€')
   })
 
   it('Should render the benefits of a product with their icons', async () => {
-    const { card } = await mountPage()
+    const { freeCard } = await mountPage()
 
-    const benefits = card('Starter').findAll('[test-id="benefit"]')
+    const benefits = freeCard.findAll('[test-id="benefit"]')
 
     expect(benefits).toHaveLength(3)
     expect(benefits[0]!.text()).toBe('pages.pricing.update')
@@ -210,19 +231,17 @@ describe('Pricing page', () => {
   it('Should show a skeleton instead of the cta while the products load', async () => {
     isPending.value = true
 
-    const { card } = await mountPage()
+    const { proCard } = await mountPage()
 
-    const product = card('Medior')
-
-    expect(product.find('[test-id="cta-loading"]').exists()).toBe(true)
-    expect(product.find('[test-id="subscribe"]').exists()).toBe(false)
-    expect(product.find('[test-id="current"]').exists()).toBe(false)
+    expect(proCard.find('[test-id="cta-loading"]').exists()).toBe(true)
+    expect(proCard.find('[test-id="subscribe"]').exists()).toBe(false)
+    expect(proCard.find('[test-id="current"]').exists()).toBe(false)
   })
 
   it('Should offer every product to a visitor without an account', async () => {
     const { component } = await mountPage()
 
-    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(3)
+    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(2)
     expect(component.findAll('[test-id="current"]')).toHaveLength(0)
     expect(component.get('[test-id="subscribe"]').text()).toBe(
       'pages.pricing.cta',
@@ -230,62 +249,126 @@ describe('Pricing page', () => {
   })
 
   it('Should mark the free product as current for a user without a subscription', async () => {
-    user.value = {
-      ...authUser,
-      subscriptionType: undefined,
-    } as unknown as AuthUser
+    user.value = { ...authUser, subscriptionType: 'free' }
 
-    const { card } = await mountPage()
+    const { freeCard, proCard } = await mountPage()
 
-    expect(card('Starter').get('[test-id="current"]').text()).toBe(
-      'general.current',
-    )
-    expect(card('Medior').find('[test-id="subscribe"]').exists()).toBe(true)
-    expect(card('Pro').find('[test-id="subscribe"]').exists()).toBe(true)
-  })
-
-  it('Should only offer the upgrade product to a medior user', async () => {
-    user.value = { ...authUser, subscriptionType: 'medior' }
-
-    const { card, component } = await mountPage()
-
-    expect(card('Medior').find('[test-id="current"]').exists()).toBe(true)
-    expect(card('Starter').find('[test-id="subscribe"]').exists()).toBe(false)
-    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(1)
-    expect(card('Upgrade to Pro').find('[test-id="subscribe"]').exists()).toBe(
-      true,
+    expect(freeCard.get('[test-id="current"]').text()).toBe('general.current')
+    expect(proCard.get('[test-id="subscribe"]').text()).toBe(
+      'pages.pricing.buy',
     )
   })
 
-  it('Should offer no products to a pro user', async () => {
-    user.value = { ...authUser, subscriptionType: 'pro' }
+  it('Should offer subscribe on the monthly interval and buy on the lifetime interval for a free user', async () => {
+    user.value = { ...authUser, subscriptionType: 'free' }
 
-    const { card, component } = await mountPage()
+    const { proCard, selectInterval } = await mountPage()
 
-    expect(card('Pro').find('[test-id="current"]').exists()).toBe(true)
-    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(0)
+    await selectInterval('month')
+    expect(proCard.get('[test-id="subscribe"]').text()).toBe(
+      'pages.pricing.subscribe',
+    )
+
+    await selectInterval('lifetime')
+    expect(proCard.get('[test-id="subscribe"]').text()).toBe(
+      'pages.pricing.buy',
+    )
   })
 
   it('Should not offer a product that has no stripe id', async () => {
     user.value = { ...authUser, subscriptionType: 'free' }
-    products.value = [{ ...medior, id: undefined }]
+    products.value = [starter, { ...proMonthly, id: undefined }, proLifetime]
 
-    const { card } = await mountPage()
+    const { proCard, selectInterval } = await mountPage()
+    await selectInterval('month')
 
-    expect(card('Medior').find('[test-id="subscribe"]').exists()).toBe(false)
+    expect(proCard.find('[test-id="subscribe"]').exists()).toBe(false)
+  })
+
+  it('Should show current and a manage button for an active monthly subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'active',
+    }
+
+    const { freeCard, proCard } = await mountPage()
+
+    expect(proCard.get('[test-id="current"]').text()).toBe('general.current')
+    expect(proCard.get('[test-id="manage"]').text()).toBe(
+      'pages.profile.subscription.handle',
+    )
+    expect(freeCard.find('[test-id="subscribe"]').exists()).toBe(false)
+    expect(freeCard.find('[test-id="current"]').exists()).toBe(false)
+  })
+
+  it('Should offer switching to lifetime for an active monthly subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'active',
+    }
+
+    const { proCard, selectInterval } = await mountPage()
+    await selectInterval('lifetime')
+
+    expect(proCard.get('[test-id="subscribe"]').text()).toBe(
+      'pages.pricing.switchToLifetime',
+    )
+  })
+
+  it('Should show a payment failed state and a manage button for a past due subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'past_due',
+    }
+
+    const { proCard } = await mountPage()
+
+    expect(proCard.get('[test-id="payment-failed"]').text()).toBe(
+      'pages.pricing.paymentFailed',
+    )
+    expect(proCard.find('[test-id="current"]').exists()).toBe(false)
+    expect(proCard.get('[test-id="manage"]').text()).toBe(
+      'pages.profile.subscription.handle',
+    )
+  })
+
+  it('Should offer no products to a lifetime subscriber', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'lifetime',
+    }
+
+    const { freeCard, proCard, component } = await mountPage()
+
+    expect(proCard.get('[test-id="current"]').text()).toBe('general.current')
+    expect(proCard.find('[test-id="manage"]').exists()).toBe(false)
+    expect(freeCard.find('[test-id="current"]').exists()).toBe(false)
+    expect(freeCard.find('[test-id="subscribe"]').exists()).toBe(false)
+    expect(component.findAll('[test-id="subscribe"]')).toHaveLength(0)
   })
 
   it('Should start a stripe checkout for the clicked product', async () => {
     user.value = { ...authUser, subscriptionType: 'free' }
 
-    const { card } = await mountPage()
+    const { proCard, selectInterval } = await mountPage()
+    await selectInterval('month')
 
-    await card('Pro').get('[test-id="subscribe"]').trigger('click')
+    await proCard.get('[test-id="subscribe"]').trigger('click')
     await flushPromises()
 
     expect(useFetch).toHaveBeenCalledWith(
       '/api/stripe/subscribe',
-      { method: 'POST', body: { lookup: 'pro-lookup', locale: 'en' } },
+      {
+        method: 'POST',
+        body: { lookup: 'pro-monthly-lookup', locale: 'en' },
+      },
       expect.any(String),
     )
     expect(navigateTo).toHaveBeenCalledWith('https://stripe.test/pay', {
@@ -298,21 +381,47 @@ describe('Pricing page', () => {
 
     useFetch.mockResolvedValue({ data: ref(null) })
 
-    const { card } = await mountPage()
+    const { proCard } = await mountPage()
 
-    await card('Pro').get('[test-id="subscribe"]').trigger('click')
+    await proCard.get('[test-id="subscribe"]').trigger('click')
     await flushPromises()
 
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
   it('Should send the visitor to the login page when they are not signed in', async () => {
-    const { card } = await mountPage()
+    const { proCard } = await mountPage()
 
-    await card('Pro').get('[test-id="subscribe"]').trigger('click')
+    await proCard.get('[test-id="subscribe"]').trigger('click')
     await flushPromises()
 
     expect(navigateTo).toHaveBeenCalledWith('/login')
     expect(useFetch).not.toHaveBeenCalled()
+  })
+
+  it('Should open the billing portal from the manage button', async () => {
+    user.value = {
+      ...authUser,
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      subscriptionStatus: 'active',
+    }
+    useFetch.mockResolvedValue({
+      data: ref({ url: 'https://stripe.test/portal' }),
+    })
+
+    const { proCard } = await mountPage()
+
+    await proCard.get('[test-id="manage"]').trigger('click')
+    await flushPromises()
+
+    expect(useFetch).toHaveBeenCalledWith(
+      '/api/stripe/portal',
+      { method: 'POST' },
+      expect.any(String),
+    )
+    expect(navigateTo).toHaveBeenCalledWith('https://stripe.test/portal', {
+      external: true,
+    })
   })
 })

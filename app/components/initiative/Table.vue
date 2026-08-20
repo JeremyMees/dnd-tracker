@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {
-  FlexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  useVueTable,
-} from '@tanstack/vue-table'
+import { FlexRender, useTable } from '@tanstack/vue-table'
+import { initiativeFeatures } from '~/tables/features'
 import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
 import { prefetchConditionsListing } from '~/queries/open5e'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
@@ -41,12 +37,12 @@ watch(
   { immediate: true },
 )
 
-const table = useVueTable({
+const table = useTable({
+  features: initiativeFeatures,
   data: tableData,
   columns,
-  getCoreRowModel: getCoreRowModel(),
-  getExpandedRowModel: getExpandedRowModel(),
-  getRowId: row => row.id.toString(),
+  getRowId: (row: InitiativeSheetRow) => row.id.toString(),
+  getRowCanExpand: () => true,
   onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
   onRowSelectionChange: updaterOrValue =>
     valueUpdater(updaterOrValue, selected),
@@ -88,11 +84,7 @@ const table = useVueTable({
               test-id="header"
               :class="tablePadding"
             >
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
+              <FlexRender v-if="!header.isPlaceholder" :header="header" />
             </UiTableHead>
           </UiTableRow>
         </UiTableHeader>
@@ -114,10 +106,7 @@ const table = useVueTable({
                   :key="cell.id"
                   :class="tablePadding"
                 >
-                  <FlexRender
-                    :render="cell.column.columnDef.cell"
-                    :props="cell.getContext()"
-                  />
+                  <FlexRender :cell="cell" />
                 </UiTableCell>
               </UiTableRow>
               <UiTableRow v-if="row.getIsExpanded()" test-id="expanded">

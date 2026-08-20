@@ -1,7 +1,21 @@
+<script setup lang="ts">
+const anchor = ref<HTMLElement | null>(null)
+const colorMode = useColorMode()
+
+function update(preference: string): void {
+  revealTransition(() => {
+    colorMode.preference = preference
+  }, anchor.value)
+}
+</script>
+
 <template>
-  <div class="flex items-center justify-between gap-2">
+  <div ref="anchor" class="flex items-center justify-between gap-2">
     <Icon name="tabler:palette" class="size-3 min-w-3" />
-    <UiSelect v-model="$colorMode.preference">
+    <UiSelect
+      :model-value="colorMode.preference"
+      @update:model-value="update($event as string)"
+    >
       <UiSelectTrigger>
         <UiSelectValue />
       </UiSelectTrigger>

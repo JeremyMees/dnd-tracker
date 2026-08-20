@@ -34,7 +34,15 @@ export function createListingStubs({
     ],
     emits: ['remove', 'invalidate'],
     setup(props, { expose, slots }) {
-      expose({ vueTable: { getState: () => state.value } })
+      expose({
+        vueTable: {
+          atoms: {
+            globalFilter: { get: () => state.value.globalFilter },
+            pagination: { get: () => state.value.pagination },
+            sorting: { get: () => state.value.sorting },
+          },
+        },
+      })
 
       return () =>
         h('div', { 'test-id': 'table' }, [

@@ -40,9 +40,9 @@ const { data: count } = useHomebrewCount(props.campaignId, enableDateFetching)
 
 const { data, status } = useHomebrewListing(
   computed(() => {
-    const pagination = table.value?.vueTable.getState().pagination
-    const sorting = table.value?.vueTable.getState().sorting
-    const search = table.value?.vueTable.getState().globalFilter
+    const pagination = table.value?.vueTable.atoms.pagination.get()
+    const sorting = table.value?.vueTable.atoms.sorting.get()
+    const search = table.value?.vueTable.atoms.globalFilter.get()
 
     return {
       search,

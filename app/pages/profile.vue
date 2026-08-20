@@ -56,6 +56,12 @@ const handleUpdateProfile = useThrottleFn(
   1000,
 )
 
+async function manageBilling(): Promise<void> {
+  const { data } = await useFetch('/api/stripe/portal', { method: 'POST' })
+
+  if (data.value) navigateTo(data.value.url, { external: true })
+}
+
 async function handleRemoveUser(): Promise<void> {
   ask(
     {
@@ -86,6 +92,21 @@ async function handleRemoveUser(): Promise<void> {
     },
   )
 }
+
+function subscriptionState(user: AuthUser): string {
+  if (user.subscriptionStatus === 'past_due') {
+    return t('pages.profile.subscription.pastDue')
+  }
+
+  const label = user.cancelAtPeriodEnd
+    ? 'pages.profile.subscription.endsOn'
+    : 'pages.profile.subscription.renews'
+  const date = user.subscriptionPeriodEnd
+    ? formatDate(user.subscriptionPeriodEnd)
+    : ''
+
+  return t(label, { date })
+}
 </script>
 
 <template>
@@ -102,12 +123,43 @@ async function handleRemoveUser(): Promise<void> {
       </div>
       <UiSeparator />
       <div class="flex flex-wrap gap-4 items-center justify-between py-6">
-        <div class="flex gap-4">
-          {{ $t('pages.profile.subscription.current') }}:
-          <span test-id="subscription" class="font-bold capitalize">
-            {{ user.subscriptionType }}
+        <div class="flex flex-col">
+          <span>
+            {{ $t('pages.profile.subscription.current') }}:
+            <span test-id="subscription" class="font-bold capitalize">
+              {{ user.subscriptionType }}
+            </span>
+          </span>
+          <span
+            v-if="user.billingInterval === 'lifetime'"
+            test-id="lifetime"
+            class="text-muted-foreground text-sm"
+          >
+            {{ $t('pages.profile.subscription.lifetime') }}
+          </span>
+          <span
+            v-else-if="
+              user.subscriptionType === 'pro' &&
+              user.billingInterval === 'month'
+            "
+            test-id="renews"
+            class="text-sm"
+            :class="
+              user.subscriptionStatus === 'past_due'
+                ? 'text-destructive'
+                : 'text-muted-foreground'
+            "
+          >
+            {{ subscriptionState(user) }}
           </span>
         </div>
+        <UiButton
+          v-if="user.stripeId"
+          test-id="manage-billing"
+          @click="manageBilling"
+        >
+          {{ $t('pages.profile.subscription.handle') }}
+        </UiButton>
       </div>
       <UiSeparator />
       <div

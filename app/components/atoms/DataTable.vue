@@ -6,12 +6,8 @@ import type {
   SortingState,
   TableOptions,
 } from '@tanstack/vue-table'
-import {
-  FlexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  useVueTable,
-} from '@tanstack/vue-table'
+import { FlexRender, useTable } from '@tanstack/vue-table'
+import { type ListingFeatures, listingFeatures } from '~/tables/features'
 
 const emit = defineEmits<{
   remove: [number[]]
@@ -27,13 +23,13 @@ const props = withDefaults(
     // cannot be typed with `unknown`. TanStack's own docs and shadcn-vue use
     // `any` here for the same reason. TData below is fully typed.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    columns: ColumnDef<TData, any>[]
+    columns: ColumnDef<ListingFeatures, TData, any>[]
     data: TData[]
     loading: boolean
-    options?: Partial<TableOptions<TData>>
+    options?: Partial<TableOptions<ListingFeatures, TData>>
     emptyMessage?: string
     permission?: boolean | PermissionFunc
-    expandedMarkup?: (row: Row<TData>) => VNode
+    expandedMarkup?: (row: Row<ListingFeatures, TData>) => VNode
     pageSize?: number
   }>(),
   {
@@ -81,18 +77,18 @@ watch(
   { immediate: true },
 )
 
-const table = useVueTable({
+const table = useTable({
   ...props.options,
+  features: listingFeatures,
   data: computed(() => props.data),
   columns: props.columns,
   manualPagination: true,
   manualSorting: true,
   manualFiltering: true,
-  enableRowSelection: (row: Row<TData>) =>
+  enableRowSelection: (row: Row<ListingFeatures, TData>) =>
     rowSelectionPermissions.value[row.original.id] ?? false,
-  getCoreRowModel: getCoreRowModel(),
-  getExpandedRowModel: getExpandedRowModel(),
-  getRowId: row => String(row.id),
+  getRowId: (row: TData) => String(row.id),
+  getRowCanExpand: () => true,
   onSortingChange: updaterOrValue => {
     valueUpdater(updaterOrValue, sorting)
     pagination.value.pageIndex = 0
@@ -118,7 +114,7 @@ const table = useVueTable({
 
 defineExpose({ vueTable: table })
 
-const search = ref(table.getState().globalFilter)
+const search = ref(table.atoms.globalFilter.get())
 watch(search, newValue => table.setGlobalFilter(newValue))
 
 async function fetchPermissions() {
@@ -196,7 +192,7 @@ async function fetchPermissions() {
               :class="
                 cn(
                   { 'sticky bg-background/95': header.column.getIsPinned() },
-                  header.column.getIsPinned() === 'left' ? 'left-0' : 'right-0',
+                  header.column.getIsPinned() === 'start' ? 'start-0' : 'end-0',
                   header.column.getCanSort()
                     ? 'cursor-pointer select-none'
                     : '',
@@ -212,11 +208,7 @@ async function fetchPermissions() {
                       header.column.getIsSorted(),
                   }"
                 >
-                  <FlexRender
-                    v-if="!header.isPlaceholder"
-                    :render="header.column.columnDef.header"
-                    :props="header.getContext()"
-                  />
+                  <FlexRender v-if="!header.isPlaceholder" :header="header" />
                   <Icon
                     v-if="header.column.getIsSorted()"
                     :name="
@@ -229,11 +221,7 @@ async function fetchPermissions() {
                 </div>
 
                 <template #fallback>
-                  <FlexRender
-                    v-if="!header.isPlaceholder"
-                    :render="header.column.columnDef.header"
-                    :props="header.getContext()"
-                  />
+                  <FlexRender v-if="!header.isPlaceholder" :header="header" />
                 </template>
               </ClientOnly>
             </UiTableHead>
@@ -254,16 +242,13 @@ async function fetchPermissions() {
                         {
                           'sticky bg-background/95': cell.column.getIsPinned(),
                         },
-                        cell.column.getIsPinned() === 'left'
-                          ? 'left-0'
-                          : 'right-0',
+                        cell.column.getIsPinned() === 'start'
+                          ? 'start-0'
+                          : 'end-0',
                       )
                     "
                   >
-                    <FlexRender
-                      :render="cell.column.columnDef.cell"
-                      :props="cell.getContext()"
-                    />
+                    <FlexRender :cell="cell" />
                   </UiTableCell>
                 </UiTableRow>
                 <UiTableRow v-if="expandedMarkup && row.getIsExpanded()">

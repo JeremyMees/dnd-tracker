@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import type { Row, SortingState } from '@tanstack/vue-table'
+import type { Row, RowSelectionState, SortingState } from '@tanstack/vue-table'
+import { FlexRender, useTable } from '@tanstack/vue-table'
 import {
-  FlexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useVueTable,
-} from '@tanstack/vue-table'
+  type HomebrewSelectFeatures,
+  homebrewSelectFeatures,
+} from '~/tables/features'
 import { generateColumns, initialState } from '~/tables/homebrew-select-listing'
 import { useHomebrewListing } from '~/queries/homebrews'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
@@ -17,7 +15,7 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
-const rowSelection = ref<Record<string, boolean>>({})
+const rowSelection = ref<RowSelectionState>({})
 const summoner = ref<{ name: string; id: string }>()
 
 const selected = computed<HomebrewItemRow[]>(
@@ -51,15 +49,13 @@ const summonersOptions = computed<Option<string>[]>(() => {
 
 const columns = generateColumns()
 
-const table = useVueTable({
+const table = useTable({
+  features: homebrewSelectFeatures,
   data: computed(() => data.value?.homebrews || []),
   columns,
-  enableRowSelection: (row: Row<HomebrewItemRow>) =>
+  enableRowSelection: (row: Row<HomebrewSelectFeatures, HomebrewItemRow>) =>
     summons.value.length ? row.original.type === 'summon' : true,
-  getCoreRowModel: getCoreRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getRowId: row => row.id.toString(),
+  getRowId: (row: HomebrewItemRow) => row.id.toString(),
   onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
   onGlobalFilterChange: updaterOrValue =>
     valueUpdater(updaterOrValue, globalFilter),
@@ -73,7 +69,9 @@ const table = useVueTable({
     const summons = selection.filter(s => s.type === 'summon')
 
     rowSelection.value = summons.length
-      ? Object.fromEntries(summons.map(s => [s.id, value[s.id] || false]))
+      ? Object.fromEntries(
+          summons.filter(s => value[s.id]).map(s => [s.id, true]),
+        )
       : value
   },
   state: {
@@ -161,11 +159,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
                   header.column.getIsSorted(),
               }"
             >
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
+              <FlexRender v-if="!header.isPlaceholder" :header="header" />
               <Icon
                 v-if="header.column.getIsSorted()"
                 :name="
@@ -192,10 +186,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
                 :key="cell.id"
                 class="p-2"
               >
-                <FlexRender
-                  :render="cell.column.columnDef.cell"
-                  :props="cell.getContext()"
-                />
+                <FlexRender :cell="cell" />
               </UiTableCell>
             </UiTableRow>
           </template>

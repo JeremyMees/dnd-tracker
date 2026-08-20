@@ -1,8 +1,9 @@
 import {
   createColumnHelper,
-  type InitialTableState,
+  type TableState,
   type Row,
 } from '@tanstack/vue-table'
+import type { ListingFeatures } from './features'
 import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   actionsTable,
@@ -18,7 +19,7 @@ import {
 } from './generate-functions'
 import { NuxtTime } from '#components'
 
-const columnHelper = createColumnHelper<HomebrewItemRow>()
+const columnHelper = createColumnHelper<ListingFeatures, HomebrewItemRow>()
 
 interface ColumnOptions {
   onUpdate: (item: HomebrewItemRow) => void
@@ -28,7 +29,7 @@ interface ColumnOptions {
 export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
   const { t } = useI18n()
 
-  return [
+  return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
       id: 'select',
@@ -100,10 +101,10 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
         ])
       },
     }),
-  ]
+  ])
 }
 
-export function expandedMarkup(row: Row<HomebrewItemRow>) {
+export function expandedMarkup(row: Row<ListingFeatures, HomebrewItemRow>) {
   const { t } = useI18n()
 
   return h(
@@ -166,6 +167,6 @@ export function expandedMarkup(row: Row<HomebrewItemRow>) {
   )
 }
 
-export const initialState: InitialTableState = {
+export const initialState: Partial<TableState<ListingFeatures>> = {
   sorting: [{ id: 'createdAt', desc: true }],
 }

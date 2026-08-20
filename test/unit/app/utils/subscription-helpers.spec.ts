@@ -1,15 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import {
-  isPro,
-  isMedior,
-  hasCorrectSubscription,
-  getMax,
-} from '~/utils/subscription-helpers'
-import type { StripeSubscriptionType } from '~~/shared/types/stripe'
+import { isPro, getMax } from '~/utils/subscription-helpers'
 
-// These helpers only read subscriptionType, so a partial row is enough; the cast
-// lives here once rather than at every call site.
-const profileWith = (subscriptionType: StripeSubscriptionType) =>
+const profileWith = (subscriptionType: SubscriptionType) =>
   ({ subscriptionType }) as unknown as ProfileRow
 
 describe('subscription-helpers', () => {
@@ -20,72 +12,21 @@ describe('subscription-helpers', () => {
     })
 
     it('returns false for non-pro subscription', () => {
-      const mediorProfile = profileWith('medior')
       const freeProfile = profileWith('free')
 
-      expect(isPro(mediorProfile)).toBeFalsy()
       expect(isPro(freeProfile)).toBeFalsy()
-    })
-  })
-
-  describe('isMedior', () => {
-    it('returns true for medior subscription', () => {
-      const profile = profileWith('medior')
-      expect(isMedior(profile)).toBeTruthy()
-    })
-
-    it('returns true for pro subscription', () => {
-      const profile = profileWith('pro')
-      expect(isMedior(profile)).toBeTruthy()
-    })
-
-    it('returns false for free subscription', () => {
-      const profile = profileWith('free')
-      expect(isMedior(profile)).toBeFalsy()
-    })
-  })
-
-  describe('hasCorrectSubscription', () => {
-    it('returns true when subscription is pro regardless of expected', () => {
-      expect(hasCorrectSubscription('pro', 'free')).toBeTruthy()
-      expect(hasCorrectSubscription('pro', 'medior')).toBeTruthy()
-      expect(hasCorrectSubscription('pro', 'pro')).toBeTruthy()
-    })
-
-    it('returns true when subscription matches expected', () => {
-      expect(hasCorrectSubscription('free', 'free')).toBeTruthy()
-      expect(hasCorrectSubscription('medior', 'medior')).toBeTruthy()
-    })
-
-    it('returns true when subscription is medior and expected is free', () => {
-      expect(hasCorrectSubscription('medior', 'free')).toBeTruthy()
-    })
-
-    it('returns false when subscription is free and expected is medior', () => {
-      expect(hasCorrectSubscription('free', 'medior')).toBeFalsy()
-    })
-
-    it('returns false when subscription is free and expected is pro', () => {
-      expect(hasCorrectSubscription('free', 'pro')).toBeFalsy()
-    })
-
-    it('returns false when subscription is medior and expected is pro', () => {
-      expect(hasCorrectSubscription('medior', 'pro')).toBeFalsy()
     })
   })
 
   describe('getMax', () => {
     const testCases: Array<{
       type: 'encounter' | 'campaign' | 'team'
-      subscription: StripeSubscriptionType
+      subscription: SubscriptionType
       expected: number
     }> = [
       { type: 'encounter', subscription: 'pro', expected: 250 },
       { type: 'campaign', subscription: 'pro', expected: 25 },
       { type: 'team', subscription: 'pro', expected: 15 },
-      { type: 'encounter', subscription: 'medior', expected: 50 },
-      { type: 'campaign', subscription: 'medior', expected: 10 },
-      { type: 'team', subscription: 'medior', expected: 3 },
       { type: 'encounter', subscription: 'free', expected: 10 },
       { type: 'campaign', subscription: 'free', expected: 3 },
       { type: 'team', subscription: 'free', expected: 1 },
@@ -97,16 +38,9 @@ describe('subscription-helpers', () => {
       })
     })
 
-    it('handles "upgrade to pro" subscription type as free (default)', () => {
-      expect(getMax('encounter', 'upgrade to pro')).toBe(10)
-      expect(getMax('campaign', 'upgrade to pro')).toBe(3)
-      expect(getMax('team', 'upgrade to pro')).toBe(1)
-    })
-
     it('returns undefined for an unknown type', () => {
       const unknownType = 'unknown' as unknown as 'encounter'
 
-      expect(getMax(unknownType, 'medior')).toBeUndefined()
       expect(getMax(unknownType, 'pro')).toBeUndefined()
       expect(getMax(unknownType, 'free')).toBeUndefined()
     })

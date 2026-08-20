@@ -9,6 +9,7 @@ export const nuxtAliases = {
   '~': resolve(root, 'app'),
   '~~': root,
   '#app': resolve(import.meta.dirname, 'stubs/nuxt.ts'),
+  '#nitro': resolve(import.meta.dirname, 'stubs/nitro.ts'),
 }
 
 export function nuxtAutoImports(): Plugin {
@@ -38,6 +39,7 @@ export function nuxtAutoImports(): Plugin {
         'getRequestIP',
       ].map(name => ({ name, from: 'h3' })),
       { name: 'useStorage', from: 'nitropack/runtime' },
+      { name: 'defineCachedEventHandler', from: '#nitro' },
     ],
     presets: ['vue'],
   })

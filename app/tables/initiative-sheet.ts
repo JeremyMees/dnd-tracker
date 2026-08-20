@@ -1,8 +1,9 @@
 import {
   createColumnHelper,
-  type InitialTableState,
+  type TableState,
   type Row,
 } from '@tanstack/vue-table'
+import type { InitiativeFeatures } from './features'
 import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   abilityScoresElement,
@@ -25,14 +26,16 @@ import {
   InitiativeTableHeaderInit,
 } from '#components'
 
-const columnHelper = createColumnHelper<InitiativeSheetRow>()
+const columnHelper = createColumnHelper<
+  InitiativeFeatures,
+  InitiativeSheetRow
+>()
 
 export function generateColumns() {
   const { t } = useI18n()
 
-  return [
+  return columnHelper.columns([
     columnHelper.display({
-      enableGlobalFilter: false,
       id: 'index',
       cell: ({ row }) =>
         h(
@@ -110,18 +113,18 @@ export function generateColumns() {
         }),
     }),
     columnHelper.display({
-      enableGlobalFilter: false,
-      enableSorting: false,
       id: 'modify',
       cell: ({ row }) =>
         h(InitiativeTableRowModify, {
           item: row.original,
         }),
     }),
-  ]
+  ])
 }
 
-export function expandedMarkup(row: Row<InitiativeSheetRow>) {
+export function expandedMarkup(
+  row: Row<InitiativeFeatures, InitiativeSheetRow>,
+) {
   return h(
     'div',
     {
@@ -149,4 +152,4 @@ export function expandedMarkup(row: Row<InitiativeSheetRow>) {
   )
 }
 
-export const initialState: InitialTableState = {}
+export const initialState: Partial<TableState<InitiativeFeatures>> = {}

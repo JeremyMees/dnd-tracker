@@ -1,13 +1,22 @@
 import { useQuery } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
+const proItems: ProductPricingItem[] = [
+  { label: 'pages.pricing.update', icon: 'check' },
+  { number: 250, label: 'general.encounter', icon: 'check' },
+  { number: 25, label: 'general.campaign', icon: 'check' },
+  { label: 'pages.pricing.multiple', icon: 'check' },
+  { label: 'pages.pricing.live', icon: 'check' },
+]
+
 const productDefaults: ProductPricing[] = [
   {
-    type: 'free',
+    key: 'free',
+    tier: 'free',
+    interval: null,
     title: 'Starter',
     description: 'pages.pricing.starter',
     price: 0,
-    isPopular: false,
     items: [
       { label: 'pages.pricing.update', icon: 'check' },
       { number: 10, label: 'general.encounter', icon: 'check' },
@@ -17,43 +26,20 @@ const productDefaults: ProductPricing[] = [
     ],
   },
   {
-    type: 'medior',
-    title: 'Medior',
-    description: 'pages.pricing.medior',
-    isPopular: true,
-    items: [
-      { label: 'pages.pricing.update', icon: 'check' },
-      { number: 50, label: 'general.encounter', icon: 'check' },
-      { number: 10, label: 'general.campaign', icon: 'check' },
-      { label: 'pages.pricing.multiple', icon: 'x' },
-      { label: 'pages.pricing.live', icon: 'x' },
-    ],
-  },
-  {
-    type: 'pro',
+    key: 'pro_monthly',
+    tier: 'pro',
+    interval: 'month',
     title: 'Pro',
     description: 'pages.pricing.pro',
-    isPopular: false,
-    items: [
-      { label: 'pages.pricing.update', icon: 'check' },
-      { number: 250, label: 'general.encounter', icon: 'check' },
-      { number: 25, label: 'general.campaign', icon: 'check' },
-      { label: 'pages.pricing.multiple', icon: 'check' },
-      { label: 'pages.pricing.live', icon: 'check' },
-    ],
+    items: proItems,
   },
   {
-    type: 'upgrade to pro',
-    title: 'Upgrade to Pro',
+    key: 'pro_lifetime',
+    tier: 'pro',
+    interval: 'lifetime',
+    title: 'Pro',
     description: 'pages.pricing.pro',
-    isPopular: false,
-    items: [
-      { label: 'pages.pricing.update', icon: 'check' },
-      { number: 250, label: 'general.encounter', icon: 'check' },
-      { number: 25, label: 'general.campaign', icon: 'check' },
-      { label: 'pages.pricing.multiple', icon: 'check' },
-      { label: 'pages.pricing.live', icon: 'check' },
-    ],
+    items: proItems,
   },
 ]
 
@@ -65,12 +51,11 @@ export function usePricingListing() {
     queryKey: ['usePricingListing'],
     queryFn: async () => {
       try {
-        const response = await $fetch<StripeProduct[]>('/api/stripe/products')
+        const response = await $fetch<StripePrice[]>('/api/stripe/products')
         const products = [...productDefaults]
 
-        response.forEach(product => {
-          const { name, price, id } = product
-          const index = products.findIndex(p => p.type === name.toLowerCase())
+        response.forEach(({ lookupKey, price, id }) => {
+          const index = products.findIndex(p => p.key === lookupKey)
 
           if (index >= 0 && products[index])
             products[index] = { ...products[index], price, id }
