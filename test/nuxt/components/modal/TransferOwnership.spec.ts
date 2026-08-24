@@ -1,4 +1,4 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import TransferOwnershipModal from '~/components/modal/TransferOwnership.vue'
 import {
@@ -9,26 +9,22 @@ import {
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
-const { createTeamMember, removeTeamMember, toast, updateCampaign } =
-  vi.hoisted(() => ({
-    createTeamMember: vi.fn(),
-    removeTeamMember: vi.fn(),
-    toast: vi.fn(),
-    updateCampaign: vi.fn(),
-  }))
-
-vi.mock('~/queries/team-members', () => ({
-  useTeamMemberCreate: () => ({ mutateAsync: createTeamMember }),
-  useTeamMemberRemove: () => ({ mutateAsync: removeTeamMember }),
+const { fetchMock, invalidateQueries, toast } = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
+  invalidateQueries: vi.fn(),
+  toast: vi.fn(),
 }))
 
-vi.mock('~/queries/campaigns', () => ({
-  useCampaignUpdate: () => ({ mutateAsync: updateCampaign }),
+vi.mock('@tanstack/vue-query', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useQueryClient: () => ({ invalidateQueries }),
 }))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
 }))
+
+mockNuxtImport('$fetch', () => fetchMock)
 
 const current = {
   ...mockCampaignFull,
@@ -49,21 +45,14 @@ async function fillForm(
   await component.get('[test-id="title"]').setValue(current.title)
 }
 
-function removeOptions() {
-  return removeTeamMember.mock.calls[0]![0]
-}
-
-function updateOptions() {
-  return updateCampaign.mock.calls[0]![0]
+function requestBody() {
+  return fetchMock.mock.calls[0]![1].body
 }
 
 describe('TransferOwnership modal', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-
-    createTeamMember.mockResolvedValue(undefined)
-    removeTeamMember.mockResolvedValue(undefined)
-    updateCampaign.mockResolvedValue(undefined)
+    fetchMock.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -109,62 +98,51 @@ describe('TransferOwnership modal', () => {
     await component.get('[test-id="title"]').setValue('Wrong title')
     await submitForm(component)
 
-    expect(removeTeamMember).not.toHaveBeenCalled()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('Should give the old owner the picked role when transferring to a pro member', async () => {
+  it('Should post the campaign, new owner and role to the transfer endpoint', async () => {
     const component = await mountTransferOwnershipModal()
 
     await fillForm(component, 'Admin', mockProTeamMember.user.id)
     await submitForm(component)
 
-    expect(createTeamMember).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: {
-          role: 'Admin',
-          user: current.createdBy.id,
-          campaign: current.id,
-        },
-      }),
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/campaign/transfer-ownership',
+      expect.objectContaining({ method: 'POST' }),
     )
+    expect(requestBody()).toEqual({
+      campaign: current.id,
+      user: mockProTeamMember.user.id,
+      role: 'Admin',
+    })
   })
 
-  it('Should not give the old owner a role when transferring to a free member', async () => {
-    const component = await mountTransferOwnershipModal()
-
-    await fillForm(component, 'Admin', mockTeamMember.user.id)
-    await submitForm(component)
-
-    expect(createTeamMember).not.toHaveBeenCalled()
-  })
-
-  it('Should not give the old owner a role when removing the new owner', async () => {
-    const component = await mountTransferOwnershipModal()
-
-    await fillForm(component, 'Remove', mockProTeamMember.user.id)
-    await submitForm(component)
-
-    expect(createTeamMember).not.toHaveBeenCalled()
-  })
-
-  it('Should remove the picked member and set them as the new owner', async () => {
+  it('Should pass the Remove role through unchanged', async () => {
     const component = await mountTransferOwnershipModal()
 
     await fillForm(component, 'Remove', mockTeamMember.user.id)
     await submitForm(component)
 
-    expect(removeOptions()).toEqual(
-      expect.objectContaining({
-        member: mockTeamMember.id,
-        campaign: current.id,
-      }),
-    )
-    expect(updateOptions()).toEqual(
-      expect.objectContaining({
-        data: { createdBy: mockTeamMember.user.id },
-        id: current.id,
-      }),
-    )
+    expect(requestBody()).toEqual({
+      campaign: current.id,
+      user: mockTeamMember.user.id,
+      role: 'Remove',
+    })
+  })
+
+  it('Should invalidate the campaign queries on success', async () => {
+    const component = await mountTransferOwnershipModal()
+
+    await fillForm(component, 'Remove', mockTeamMember.user.id)
+    await submitForm(component)
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignDetail', current.id],
+    })
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignListing'],
+    })
   })
 
   it('Should toast and emit finished and close on success', async () => {
@@ -180,15 +158,17 @@ describe('TransferOwnership modal', () => {
     expect(component.emitted('close')).toBeTruthy()
   })
 
-  it('Should show the error a mutation reports', async () => {
+  it('Should show the error the request reports and not emit', async () => {
+    fetchMock.mockRejectedValue(new Error('Transfer failed'))
+
     const component = await mountTransferOwnershipModal()
 
     await fillForm(component, 'Remove', mockTeamMember.user.id)
     await submitForm(component)
-
-    removeOptions().onError('Removal failed')
     await nextTick()
 
-    expect(component.get('[test-id="error"]').text()).toBe('Removal failed')
+    expect(component.get('[test-id="error"]').text()).toBe('Transfer failed')
+    expect(toast).not.toHaveBeenCalled()
+    expect(component.emitted('finished')).toBeFalsy()
   })
 })
