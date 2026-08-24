@@ -167,6 +167,7 @@ async function sendNoteAsMail(
             :max="max"
           />
           <CreateButton
+            v-if="hasRights"
             :allow-create="isDefined(count) ? count < max : false"
             :disabled="status === 'pending'"
             :loading="data?.notes === null"

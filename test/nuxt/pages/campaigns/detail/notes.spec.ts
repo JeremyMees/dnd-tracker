@@ -279,7 +279,7 @@ describe('Campaign notes page', () => {
   })
 
   it('Should count the notes against the maximum', async () => {
-    const { contentCount, createButton } = await mountPage()
+    const { contentCount, createButton } = await mountPage({ isAdmin: true })
 
     expect(contentCount.props('count')).toBe(1)
     expect(contentCount.props('max')).toBe(100)
@@ -289,7 +289,7 @@ describe('Campaign notes page', () => {
   it('Should not allow creating a note on the maximum', async () => {
     count.value = 100
 
-    const { createButton } = await mountPage()
+    const { createButton } = await mountPage({ isAdmin: true })
 
     expect(createButton.props('allowCreate')).toBe(false)
   })
@@ -297,13 +297,19 @@ describe('Campaign notes page', () => {
   it('Should not allow creating a note while the count is unknown', async () => {
     count.value = undefined
 
-    const { createButton } = await mountPage()
+    const { createButton } = await mountPage({ isAdmin: true })
 
     expect(createButton.props('allowCreate')).toBe(false)
   })
 
+  it('Should hide the create button without owner or admin rights', async () => {
+    const { createButton } = await mountPage()
+
+    expect(createButton.exists()).toBe(false)
+  })
+
   it('Should open the new note modal when creating', async () => {
-    const { create } = await mountPage()
+    const { create } = await mountPage({ isAdmin: true })
 
     await create()
 

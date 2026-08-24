@@ -1,16 +1,18 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Homebrew from '~/components/form/Homebrew.vue'
+import { authUser } from '~~/test/fixtures/auth-user'
 import { mockCampaignFull } from '~~/test/fixtures/campaign'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
-const { createHomebrew, updateHomebrew } = vi.hoisted(() => ({
+const { createHomebrew, updateHomebrew, currentUser } = vi.hoisted(() => ({
   createHomebrew: vi.fn(),
   updateHomebrew: vi.fn(),
+  currentUser: { value: null as { id: string } | null },
 }))
 
 vi.mock('~/queries/homebrews', () => ({
@@ -18,7 +20,20 @@ vi.mock('~/queries/homebrews', () => ({
   useHomebrewUpdate: () => ({ mutateAsync: updateHomebrew }),
 }))
 
+mockNuxtImport('useAuthentication', () => () => ({ user: currentUser }))
+
 const update = vi.fn()
+
+const ownedCampaign: NonNullable<InitiativeSheet['campaign']> = {
+  id: mockCampaignFull.id,
+  title: mockCampaignFull.title,
+  createdBy: {
+    id: authUser.id,
+    username: authUser.username,
+    avatar: authUser.avatar,
+  },
+  team: [],
+}
 
 interface MountOptions {
   campaignId?: number
@@ -26,6 +41,7 @@ interface MountOptions {
   isEncounter?: boolean
   withSheet?: boolean
   rows?: InitiativeSheetRow[]
+  campaign?: InitiativeSheet['campaign'] | null
 }
 
 function mountHomebrew({
@@ -34,6 +50,7 @@ function mountHomebrew({
   isEncounter = false,
   withSheet = false,
   rows = sheet.rows,
+  campaign = ownedCampaign,
 }: MountOptions = {}) {
   return mountSuspended(Homebrew, {
     props: {
@@ -41,7 +58,9 @@ function mountHomebrew({
       campaignId,
       item,
       isEncounter,
-      sheet: withSheet ? { ...sheet, rows } : undefined,
+      sheet: withSheet
+        ? { ...sheet, rows, campaign: campaign ?? undefined }
+        : undefined,
       update: withSheet ? update : undefined,
     },
   })
@@ -67,6 +86,7 @@ describe('Homebrew', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
+    currentUser.value = { id: authUser.id }
     createHomebrew.mockResolvedValue(undefined)
     updateHomebrew.mockResolvedValue(undefined)
     update.mockResolvedValue(undefined)
@@ -249,6 +269,78 @@ describe('Homebrew', () => {
       component.get('#saveToCampaign').attributes('disabled'),
     ).toBeUndefined()
     expect(component.text()).toContain('components.homebrewModal.save')
+  })
+
+  it('Should offer to save to the campaign to an admin', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+      campaign: {
+        ...ownedCampaign,
+        createdBy: { ...ownedCampaign.createdBy, id: 'someone-else' },
+        team: [
+          {
+            id: 1,
+            role: 'Admin',
+            user: {
+              id: authUser.id,
+              username: authUser.username,
+              avatar: authUser.avatar,
+            },
+          },
+        ],
+      },
+    })
+
+    expect(component.find('#saveToCampaign').exists()).toBe(true)
+  })
+
+  it('Should not offer to save to the campaign to a plain member', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+      campaign: {
+        ...ownedCampaign,
+        createdBy: { ...ownedCampaign.createdBy, id: 'someone-else' },
+        team: [
+          {
+            id: 1,
+            role: 'Viewer',
+            user: {
+              id: authUser.id,
+              username: authUser.username,
+              avatar: authUser.avatar,
+            },
+          },
+        ],
+      },
+    })
+
+    expect(component.find('#saveToCampaign').exists()).toBe(false)
+  })
+
+  it('Should not offer to save to the campaign on a personal encounter', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaign: null,
+    })
+
+    expect(component.find('#saveToCampaign').exists()).toBe(false)
+  })
+
+  it('Should not offer to save to the campaign without a signed in user', async () => {
+    currentUser.value = null
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    expect(component.find('#saveToCampaign').exists()).toBe(false)
   })
 
   it('Should also save to the campaign when the switch is on', async () => {
