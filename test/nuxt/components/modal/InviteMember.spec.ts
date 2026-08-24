@@ -34,7 +34,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useQueryClient: () => ({
-    fetchQuery: (config: { queryFn: () => unknown }) => config.queryFn(),
+    query: (config: { queryFn: () => unknown }) => config.queryFn(),
     invalidateQueries,
   }),
 }))

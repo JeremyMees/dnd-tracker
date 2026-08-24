@@ -74,13 +74,13 @@ async function handleSearch(): Promise<void> {
 
     if (error) throw createError(error)
 
-    const user = await queryClient.fetchQuery({
+    const user = await queryClient.query({
       queryKey: ['useProfileDetailMinimal', { email }],
       queryFn: async () => {
         const { data, error } = await supabase
           .from('profiles')
           .select('id, username, name, avatar, email')
-          .ilike('email', `%${email}%`)
+          .ilike('email', email ?? '')
           .maybeSingle()
 
         if (error) throw createError(error)
