@@ -49,6 +49,10 @@ vi.mock('~/plugins/session.client', () => ({
   default: () => {},
 }))
 
+vi.mock('@formkit/auto-animate/vue', () => ({
+  vAutoAnimate: {},
+}))
+
 mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
   locale: { value: 'en' },
