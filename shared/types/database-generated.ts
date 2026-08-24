@@ -469,10 +469,6 @@ export type Database = {
         Args: { p_encounter: number; p_patch: Json; p_row_id: string }
         Returns: Json
       }
-      campaign_role: {
-        Args: { p_campaign: number }
-        Returns: Database['public']['Enums']['user_role']
-      }
       claim_live_seat: {
         Args: {
           p_name: string
@@ -486,6 +482,10 @@ export type Database = {
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }
       is_valid_resistances: { Args: { _j: Json }; Returns: boolean }
       is_valid_traits: { Args: { _j: Json }; Returns: boolean }
+      profile_cards: {
+        Args: { p_ids: string[] }
+        Returns: { avatar: string; id: string; username: string }[]
+      }
       reassign_live_seat: {
         Args: { p_row: string; p_seat: string; p_session: string }
         Returns: Json
@@ -504,6 +504,10 @@ export type Database = {
           p_old_owner_role: string
         }
         Returns: undefined
+      }
+      vote_feature: {
+        Args: { p_feature: number; p_vote: string | null }
+        Returns: Json
       }
     }
     Enums: {

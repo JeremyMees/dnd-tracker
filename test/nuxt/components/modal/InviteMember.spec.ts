@@ -16,12 +16,7 @@ const { createJoinCampaignToken, fetchMock, invalidateQueries, toast } =
     toast: vi.fn(),
   }))
 
-const maybeSingle = vi.fn()
-const supabase = {
-  from: vi.fn(() => ({
-    select: vi.fn(() => ({ ilike: vi.fn(() => ({ maybeSingle })) })),
-  })),
-}
+const lookup = vi.fn()
 
 vi.mock('~/queries/team-members', () => ({
   useJoinTokenCreate: () => ({ mutateAsync: createJoinCampaignToken }),
@@ -42,16 +37,15 @@ vi.mock('@tanstack/vue-query', async importOriginal => ({
 const user = ref<AuthUser>({ ...authUser, email: 'me@shire.com' })
 
 mockNuxtImport('useAuthenticatedUser', () => () => user)
-mockNuxtImport('useSupabaseClient', () => () => supabase)
 mockNuxtImport('$fetch', () => fetchMock)
 
 const foundProfile = {
   id: 'p1',
   username: 'bilbo',
-  name: 'Bilbo Baggins',
   avatar: 'avatar-url',
-  email: 'bilbo@shire.com',
 }
+
+const foundEmail = 'bilbo@shire.com'
 
 function mountInviteMemberModal(current = mockCampaignFull) {
   return mountSuspended(InviteMemberModal, { props: { current } })
@@ -76,9 +70,11 @@ describe('InviteMember modal', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    maybeSingle.mockResolvedValue({ data: null, error: null })
+    lookup.mockResolvedValue(null)
     createJoinCampaignToken.mockResolvedValue('join-token')
-    fetchMock.mockResolvedValue(undefined)
+    fetchMock.mockImplementation((url: string) =>
+      url === '/api/campaign/member-lookup' ? lookup() : undefined,
+    )
   })
 
   it('Should match snapshot', async () => {
@@ -103,7 +99,7 @@ describe('InviteMember modal', () => {
     expect(component.get('[test-id="search-error"]').text()).toBe(
       'zod.invalidEmail',
     )
-    expect(maybeSingle).not.toHaveBeenCalled()
+    expect(lookup).not.toHaveBeenCalled()
   })
 
   it('Should not invite yourself', async () => {
@@ -114,7 +110,7 @@ describe('InviteMember modal', () => {
     expect(component.get('[test-id="search-error"]').text()).toBe(
       'components.inviteMember.errors.self',
     )
-    expect(maybeSingle).not.toHaveBeenCalled()
+    expect(lookup).not.toHaveBeenCalled()
   })
 
   it('Should not invite someone already invited to the campaign', async () => {
@@ -176,11 +172,11 @@ describe('InviteMember modal', () => {
   })
 
   it('Should not search for the same profile twice', async () => {
-    maybeSingle.mockResolvedValue({ data: foundProfile, error: null })
+    lookup.mockResolvedValue(foundProfile)
     const component = await mountInviteMemberModal()
 
-    await search(component, foundProfile.email)
-    await search(component, foundProfile.email)
+    await search(component, foundEmail)
+    await search(component, foundEmail)
 
     expect(component.get('[test-id="search-error"]').text()).toBe(
       'components.inviteMember.errors.alreadySelected',
@@ -188,14 +184,26 @@ describe('InviteMember modal', () => {
   })
 
   it('Should add the found profile to the invite list', async () => {
-    maybeSingle.mockResolvedValue({ data: foundProfile, error: null })
+    lookup.mockResolvedValue(foundProfile)
     const component = await mountInviteMemberModal()
 
-    await search(component, foundProfile.email)
+    await search(component, foundEmail)
 
     const foundUser = component.get('[test-id="found-user"]')
     expect(foundUser.text()).toContain(foundProfile.username)
     expect(component.find('[test-id="submit"]').exists()).toBe(true)
+  })
+
+  it('Should look the address up through the campaign scoped route', async () => {
+    lookup.mockResolvedValue(foundProfile)
+    const component = await mountInviteMemberModal()
+
+    await search(component, foundEmail)
+
+    expect(fetchMock).toHaveBeenCalledWith('/api/campaign/member-lookup', {
+      method: 'POST',
+      body: { campaign: mockCampaignFull.id, email: foundEmail },
+    })
   })
 
   it('Should show a cta to invite an email that has no profile', async () => {
@@ -223,11 +231,8 @@ describe('InviteMember modal', () => {
     )
   })
 
-  it('Should show the supabase error message from the search', async () => {
-    maybeSingle.mockResolvedValue({
-      data: null,
-      error: { message: 'Search failed' },
-    })
+  it('Should show the error message from the search', async () => {
+    lookup.mockRejectedValue(new Error('Search failed'))
     const component = await mountInviteMemberModal()
 
     await search(component, 'oops@shire.com')
@@ -238,20 +243,20 @@ describe('InviteMember modal', () => {
   })
 
   it('Should remove a found user from the invite list', async () => {
-    maybeSingle.mockResolvedValue({ data: foundProfile, error: null })
+    lookup.mockResolvedValue(foundProfile)
     const component = await mountInviteMemberModal()
 
-    await search(component, foundProfile.email)
+    await search(component, foundEmail)
     await component.get('[test-id="remove"]').trigger('click')
 
     expect(component.find('[test-id="found-user"]').exists()).toBe(false)
   })
 
   it('Should invite every found user with their picked role', async () => {
-    maybeSingle.mockResolvedValue({ data: foundProfile, error: null })
+    lookup.mockResolvedValue(foundProfile)
     const component = await mountInviteMemberModal()
 
-    await search(component, foundProfile.email)
+    await search(component, foundEmail)
     await selectOption(component, 'Admin')
     await submitForm(component)
     await flushPromises()
@@ -273,10 +278,10 @@ describe('InviteMember modal', () => {
   })
 
   it('Should toast, invalidate and close after a successful invite', async () => {
-    maybeSingle.mockResolvedValue({ data: foundProfile, error: null })
+    lookup.mockResolvedValue(foundProfile)
     const component = await mountInviteMemberModal()
 
-    await search(component, foundProfile.email)
+    await search(component, foundEmail)
     await submitForm(component)
     await flushPromises()
 
@@ -288,7 +293,7 @@ describe('InviteMember modal', () => {
   })
 
   it('Should show the error when creating the join token fails', async () => {
-    maybeSingle.mockResolvedValue({ data: foundProfile, error: null })
+    lookup.mockResolvedValue(foundProfile)
     createJoinCampaignToken.mockImplementation(
       async ({ onError }: { onError: (message: string) => void }) => {
         onError('Invite failed')
@@ -296,7 +301,7 @@ describe('InviteMember modal', () => {
     )
     const component = await mountInviteMemberModal()
 
-    await search(component, foundProfile.email)
+    await search(component, foundEmail)
     await submitForm(component)
     await flushPromises()
 

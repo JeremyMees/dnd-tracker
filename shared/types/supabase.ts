@@ -155,7 +155,7 @@ export type Profile = Pick<
 >
 
 export type FeatureRequest = Omit<FeatureRow, 'createdBy' | 'voted'> & {
-  createdBy: SocialProfile
+  createdBy: MinimalProfile
   voted: FeatureVotes
 }
 
