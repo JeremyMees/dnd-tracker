@@ -13,6 +13,7 @@ export default defineEventHandler(async event => {
     'campaigns',
     'homebrew_items',
     'initiative_sheets',
+    'live_sessions',
     'notes',
     'profiles',
     'team',
@@ -38,6 +39,37 @@ export default defineEventHandler(async event => {
               : (count ?? 0)
         }
       }),
+    )
+
+    const [liveSessions, proProfiles, sheets] = await Promise.all([
+      supabase
+        .from('live_sessions')
+        .select('*', { count: 'exact', head: true })
+        .is('endedAt', null)
+        .gt('expiresAt', new Date().toISOString()),
+      supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('subscriptionType', 'pro'),
+      supabase.from('initiative_sheets').select('rows'),
+    ])
+
+    if (liveSessions.error) {
+      console.error('Error fetching currently live count:', liveSessions.error)
+    }
+    if (proProfiles.error) {
+      console.error('Error fetching pro subscriber count:', proProfiles.error)
+    }
+    if (sheets.error) {
+      console.error('Error fetching combatants tracked:', sheets.error)
+    }
+
+    counts.currentlyLive = liveSessions.count ?? 0
+    counts.proSubscribers = proProfiles.count ?? 0
+    counts.combatantsTracked = (sheets.data ?? []).reduce(
+      (total, sheet) =>
+        total + (Array.isArray(sheet.rows) ? sheet.rows.length : 0),
+      0,
     )
 
     return counts
