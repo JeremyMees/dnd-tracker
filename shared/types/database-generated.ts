@@ -469,6 +469,10 @@ export type Database = {
         Args: { p_encounter: number; p_patch: Json; p_row_id: string }
         Returns: Json
       }
+      campaign_role: {
+        Args: { p_campaign: number }
+        Returns: Database['public']['Enums']['user_role']
+      }
       claim_live_seat: {
         Args: {
           p_name: string
@@ -492,6 +496,15 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { '': string }; Returns: string[] }
+      transfer_campaign_ownership: {
+        Args: {
+          p_caller: string
+          p_campaign: number
+          p_new_owner: string
+          p_old_owner_role: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       billing_interval: 'month' | 'lifetime'

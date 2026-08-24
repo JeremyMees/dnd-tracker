@@ -1,10 +1,6 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
-import {
-  useTeamMemberCreate,
-  useTeamMemberRemove,
-} from '~/queries/team-members'
-import { useCampaignUpdate } from '~/queries/campaigns'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { campaignTransferRole } from '~~/constants/validation'
@@ -18,10 +14,7 @@ const props = defineProps<{ current: CampaignFull }>()
 
 const { toast } = useToast()
 const { t } = useI18n()
-
-const { mutateAsync: createTeamMember } = useTeamMemberCreate()
-const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
-const { mutateAsync: updateCampaign } = useCampaignUpdate()
+const queryClient = useQueryClient()
 
 const formSchema = z.object({
   role: z.enum(campaignTransferRole),
@@ -51,37 +44,27 @@ const currentTeamMemberSubscription = computed<SubscriptionType | undefined>(
 const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
-  const oldOwner = props.current.createdBy
   const newOwner = props.current.team?.find(t => t.user.id === values.user)
   const campaignId = props.current.id
 
   if (!newOwner) return
 
-  if (
-    currentTeamMemberSubscription.value === 'pro' &&
-    values.role !== 'Remove'
-  ) {
-    await createTeamMember({
-      data: {
-        role: values.role,
-        user: oldOwner.id,
+  try {
+    await $fetch('/api/campaign/transfer-ownership', {
+      method: 'POST',
+      body: {
         campaign: campaignId,
+        user: newOwner.user.id,
+        role: values.role,
       },
-      onError: (err: string) => (formError.value = err),
     })
+  } catch (err) {
+    formError.value = getErrorMessage(err) || t('general.error.text')
+    return
   }
 
-  await removeTeamMember({
-    member: newOwner.id,
-    campaign: campaignId,
-    onError: (err: string) => (formError.value = err),
-  })
-
-  await updateCampaign({
-    data: { createdBy: newOwner.user.id },
-    id: campaignId,
-    onError: (err: string) => (formError.value = err),
-  })
+  queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', campaignId] })
+  queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
 
   toast({
     description: t('components.transferOwnershipModal.toast.success.title', {
