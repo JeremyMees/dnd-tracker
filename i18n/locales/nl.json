@@ -222,6 +222,7 @@
     "type": "Type | Types",
     "row": "Rij | Rijen",
     "concentration": "Concentratie",
+    "endTurn": "Beurt beëindigen",
     "none": "Geen",
     "stats": "Stats",
     "backgroundColor": "Achtergrondkleur",

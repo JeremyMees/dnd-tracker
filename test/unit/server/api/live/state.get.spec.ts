@@ -87,6 +87,7 @@ describe('GET /api/live/state', () => {
           deathSaves: true,
           concentration: true,
           conditions: true,
+          endTurn: true,
         },
       },
       session: {

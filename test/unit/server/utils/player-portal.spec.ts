@@ -230,6 +230,7 @@ describe('toPlayerSheet', () => {
       deathSaves: true,
       concentration: true,
       conditions: true,
+      endTurn: true,
     })
   })
 
@@ -250,6 +251,7 @@ describe('toPlayerSheet', () => {
       deathSaves: true,
       concentration: true,
       conditions: false,
+      endTurn: true,
     })
   })
 })

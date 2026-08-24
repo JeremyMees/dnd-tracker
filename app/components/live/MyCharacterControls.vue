@@ -7,7 +7,9 @@ const props = defineProps<{
   allow: LiveAllowActions
 }>()
 
-const { apply, pending } = useLiveMyAction(computed(() => props.row.id))
+const { apply, pending, endTurn } = useLiveMyAction(
+  computed(() => props.row.id),
+)
 const { data: conditionsList, isPending: conditionsPending } =
   useConditionsListing()
 
@@ -47,6 +49,17 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
 
 <template>
   <div test-id="my-character" class="flex flex-col gap-4">
+    <UiButton
+      test-id="end-turn"
+      :disabled="locked || !allow.endTurn"
+      class="w-full"
+      @click="endTurn"
+    >
+      {{ $t('general.endTurn') }}
+      <Icon name="tabler:chevron-right" aria-hidden="true" />
+    </UiButton>
+
+    <UiSeparator class="bg-muted" />
     <LiveMyCharacterHp
       v-if="isDefined(row.hitPoints)"
       :row="row"

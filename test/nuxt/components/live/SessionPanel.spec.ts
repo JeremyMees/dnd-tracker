@@ -408,6 +408,9 @@ describe('LiveSessionPanel', () => {
     expect(
       component.find('[test-id="allow-conditions"]').attributes('data-state'),
     ).toBe('unchecked')
+    expect(
+      component.find('[test-id="allow-end-turn"]').attributes('data-state'),
+    ).toBe('checked')
   })
 
   it('Should toggle the remaining visibility and allow switches', async () => {
@@ -461,6 +464,12 @@ describe('LiveSessionPanel', () => {
         ...sheet.settings,
         live: { allow: { concentration: false } },
       },
+    })
+
+    await component.find('[test-id="allow-end-turn"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { allow: { endTurn: false } } },
     })
   })
 

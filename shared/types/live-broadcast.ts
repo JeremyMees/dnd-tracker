@@ -48,6 +48,7 @@ export type LiveAction =
   | { type: 'deathSaves'; value: DndDeathSaves }
   | { type: 'concentration'; value: boolean }
   | { type: 'conditions'; value: DndCondition[] }
+  | { type: 'endTurn' }
 
 export type LiveAllowActions = Record<LiveAction['type'], boolean>
 

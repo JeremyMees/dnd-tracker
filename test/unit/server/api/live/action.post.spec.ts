@@ -294,6 +294,136 @@ describe('POST /api/live/action', () => {
     })
   })
 
+  it('advances to the next row and broadcasts a full sync for an endTurn action', async () => {
+    const token = await seatToken()
+    const otherRow = { ...row, id: 'row-2' }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: [
+          mockChain({
+            data: {
+              activeIndex: 0,
+              round: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+        ],
+      },
+      { rpc: mockChain({ data: 9, error: null }) },
+    )
+
+    const result = await handler(
+      actionEvent({ seatToken: token, action: { type: 'endTurn' } }),
+    )
+
+    expect(result).toEqual({ synced: true })
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
+      p_session: 'session-uuid',
+    })
+
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith(
+      'sync',
+      expect.objectContaining({
+        version: 9,
+        sheet: expect.objectContaining({ round: 1, activeIndex: 1 }),
+      }),
+    )
+  })
+
+  it('wraps to the first row and increments the round when ending the last turn', async () => {
+    const token = await seatToken()
+    const otherRow = { ...row, id: 'row-2' }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: [
+          mockChain({
+            data: {
+              activeIndex: 1,
+              round: 1,
+              rows: [otherRow, row],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 2,
+              activeIndex: 0,
+              rows: [otherRow, row],
+              settings: {},
+            },
+            error: null,
+          }),
+        ],
+      },
+      { rpc: mockChain({ data: 1, error: null }) },
+    )
+
+    const result = await handler(
+      actionEvent({ seatToken: token, action: { type: 'endTurn' } }),
+    )
+
+    expect(result).toEqual({ synced: true })
+
+    const supabase = serverSupabaseServiceRole({} as never)
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith(
+      'sync',
+      expect.objectContaining({
+        sheet: expect.objectContaining({ round: 2, activeIndex: 0 }),
+      }),
+    )
+  })
+
+  it('throws a 403 when the DM has disabled ending turns', async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: {
+          activeIndex: 0,
+          round: 1,
+          rows: [row],
+          settings: { live: { allow: { endTurn: false } } },
+        },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(actionEvent({ seatToken: token, action: { type: 'endTurn' } })),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'Action not allowed',
+    })
+  })
+
   it('throws a 403 when the seat is a spectator', async () => {
     const token = await seatToken({ seat: 'seat-2', spectator: true })
 

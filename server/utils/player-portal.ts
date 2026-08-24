@@ -78,6 +78,7 @@ export function toPlayerSheet(
       deathSaves: allow?.deathSaves ?? true,
       concentration: allow?.concentration ?? true,
       conditions: allow?.conditions ?? true,
+      endTurn: allow?.endTurn ?? true,
     },
   }
 }

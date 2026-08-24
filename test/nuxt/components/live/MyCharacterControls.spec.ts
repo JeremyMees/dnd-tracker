@@ -18,9 +18,10 @@ const row: PlayerRow = {
 }
 
 const apply = vi.fn().mockResolvedValue(undefined)
+const endTurn = vi.fn().mockResolvedValue(undefined)
 const pending = ref(false)
 
-mockNuxtImport('useLiveMyAction', () => () => ({ apply, pending }))
+mockNuxtImport('useLiveMyAction', () => () => ({ apply, pending, endTurn }))
 
 vi.mock('~/queries/open5e', () => ({
   useConditionsListing: () => ({
@@ -35,6 +36,7 @@ const defaultAllow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  endTurn: true,
 }
 
 function mountControls(
@@ -298,5 +300,29 @@ describe('LiveMyCharacterControls', () => {
     await component.get('[test-id="condition"]').trigger('click')
 
     expect(apply).not.toHaveBeenCalled()
+  })
+
+  it('ends the turn when the end turn button is clicked', async () => {
+    const component = await mountControls()
+
+    await component.get('[test-id="end-turn"]').trigger('click')
+
+    expect(endTurn).toHaveBeenCalled()
+  })
+
+  it("disables the end turn button when it is not the row's turn", async () => {
+    const component = await mountControls({}, false)
+
+    expect(
+      component.get('[test-id="end-turn"]').attributes('disabled'),
+    ).toBeDefined()
+  })
+
+  it('disables the end turn button when the DM has disallowed it', async () => {
+    const component = await mountControls({}, true, { endTurn: false })
+
+    expect(
+      component.get('[test-id="end-turn"]').attributes('disabled'),
+    ).toBeDefined()
   })
 })

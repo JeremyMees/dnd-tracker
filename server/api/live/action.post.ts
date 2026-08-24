@@ -55,16 +55,39 @@ export default defineEventHandler(async event => {
 
   const { data: sheet } = await supabase
     .from('initiative_sheets')
-    .select('activeIndex, rows, settings')
+    .select('activeIndex, round, rows, settings')
     .eq('id', payload.encounter)
     .single()
 
-  if (sheet?.rows[sheet.activeIndex]?.id !== seat.row) {
+  if (!sheet) {
+    throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
+  }
+
+  if (sheet.rows[sheet.activeIndex]?.id !== seat.row) {
     throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
   }
 
-  if (sheet?.settings?.live?.allow?.[body.action.type] === false) {
+  if (sheet.settings?.live?.allow?.[body.action.type] === false) {
     throw createError({ statusCode: 403, statusMessage: 'Action not allowed' })
+  }
+
+  if (body.action.type === 'endTurn') {
+    const isAtEnd = sheet.activeIndex + 1 >= sheet.rows.length
+    const activeIndex = isAtEnd ? 0 : sheet.activeIndex + 1
+    const round = isAtEnd ? sheet.round + 1 : sheet.round
+
+    const { data: updated, error } = await supabase
+      .from('initiative_sheets')
+      .update({ activeIndex, round })
+      .eq('id', payload.encounter)
+      .select('id, title, round, activeIndex, rows, settings')
+      .single()
+
+    if (error) throw createError(postgresErrorToH3Error(error))
+
+    await broadcastLiveState(supabase, payload.session, toPlayerSheet(updated))
+
+    return { synced: true }
   }
 
   let patch

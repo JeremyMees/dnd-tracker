@@ -204,6 +204,10 @@ describe('live-broadcast', () => {
     it('rejects an unknown action type', () => {
       expect(() => liveActionSchema.parse({ type: 'teleport' })).toThrow()
     })
+
+    it('accepts a valid endTurn action', () => {
+      expect(() => liveActionSchema.parse({ type: 'endTurn' })).not.toThrow()
+    })
   })
 
   describe('buildHpPatch', () => {

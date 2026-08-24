@@ -96,6 +96,7 @@ export const liveActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('deathSaves'), value: deathSavesSchema }),
   z.object({ type: z.literal('concentration'), value: z.boolean() }),
   z.object({ type: z.literal('conditions'), value: z.array(conditionSchema) }),
+  z.object({ type: z.literal('endTurn') }),
 ])
 
 export async function buildHpPatch(

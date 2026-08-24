@@ -17,6 +17,7 @@ const allow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  endTurn: true,
 }
 
 const ownRow: PlayerRow = {
