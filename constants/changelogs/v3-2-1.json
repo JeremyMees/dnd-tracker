@@ -1,0 +1,33 @@
+{
+  "version": "v3.2.1",
+  "date": "2026-08-24",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "End turn button for player portal users"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Database performance updates"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Content overflow for add campaign homebrew modal"
+        },
+        {
+          "text": "Player portal table showed -1 initiative"
+        }
+      ]
+    }
+  ]
+}
