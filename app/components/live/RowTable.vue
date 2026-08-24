@@ -118,8 +118,13 @@ const columns = computed(() => {
                 </div>
               </UiTableCell>
 
-              <UiTableCell test-id="initiative" class="p-2">
-                {{ row.initiative }}
+              <UiTableCell class="p-2">
+                <span v-if="row.initiative < 0" test-id="initiative-empty">
+                  —
+                </span>
+                <span v-else test-id="initiative">
+                  {{ row.initiative }}
+                </span>
               </UiTableCell>
 
               <UiTableCell v-if="columns.hp" class="p-2">

@@ -32,7 +32,8 @@ const own = computed(() => ownRowId.value === props.row.id)
           </UiBadge>
         </div>
         <UiBadge test-id="initiative" variant="outline" class="shrink-0">
-          {{ $t('general.initiative') }}: {{ row.initiative }}
+          {{ $t('general.initiative') }}:
+          {{ row.initiative >= 0 ? row.initiative : '—' }}
         </UiBadge>
       </div>
     </UiCardHeader>
