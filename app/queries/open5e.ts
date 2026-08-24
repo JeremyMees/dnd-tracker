@@ -145,23 +145,25 @@ export function useOpen5eDocuments() {
 export async function prefetchConditionsListing() {
   const queryClient = useQueryClient()
 
-  return queryClient.prefetchQuery({
-    queryKey: ['useConditionsListing'],
-    queryFn: async () => {
-      const query = generateParams({
-        page: 1,
-        document__key__in: 'core',
-        exclude: excludeMap.get('conditions'),
-      })
+  return queryClient
+    .query({
+      queryKey: ['useConditionsListing'],
+      queryFn: async () => {
+        const query = generateParams({
+          page: 1,
+          document__key__in: 'core',
+          exclude: excludeMap.get('conditions'),
+        })
 
-      const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
-        `https://api.open5e.com/v2/conditions/?${query}`,
-      )
-      return results.map(c => toCondition(c, ['srd-2024']))
-    },
-    staleTime: ONE_DAY,
-    gcTime: ONE_DAY,
-  })
+        const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
+          `https://api.open5e.com/v2/conditions/?${query}`,
+        )
+        return results.map(c => toCondition(c, ['srd-2024']))
+      },
+      staleTime: ONE_DAY,
+      gcTime: ONE_DAY,
+    })
+    .catch(() => undefined)
 }
 
 export function useConditionsListing() {

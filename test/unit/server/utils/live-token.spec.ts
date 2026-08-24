@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createJWT } from 'oslo/jwt'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { signJWT } from '~~/server/utils/jwt'
 import {
   signLiveRowToken,
   signLiveSeatToken,
@@ -10,14 +10,13 @@ import {
   verifyLiveSessionToken,
 } from '~~/server/utils/live-token'
 
-const secret = new TextEncoder().encode('test-secret')
-
-function rawToken(payload: Record<string, unknown>) {
-  return createJWT('HS256', secret, payload)
-}
-
+const secret = 'test-secret'
 const future = new Date(Date.now() + 60_000)
 const past = new Date(Date.now() - 1000)
+
+function rawToken(payload: Record<string, unknown>) {
+  return signJWT(secret, payload, future)
+}
 
 describe('live-token', () => {
   beforeEach(() => {
@@ -58,12 +57,11 @@ describe('live-token', () => {
     })
 
     it('throws a 401 for a token signed with a different secret', async () => {
-      const otherSecret = new TextEncoder().encode('other-secret')
-      const token = await createJWT('HS256', otherSecret, {
-        kind: 'session',
-        session: 'ABC123',
-        encounter: 7,
-      })
+      const token = await signJWT(
+        'other-secret',
+        { kind: 'session', session: 'ABC123', encounter: 7 },
+        future,
+      )
 
       await expect(verifyLiveSessionToken(token)).rejects.toMatchObject({
         statusCode: 401,

@@ -10,6 +10,11 @@ export default defineEventHandler(async event => {
   const user = await requireUser(event)
   const { token } = await readValidatedBody(event, bodySchema.parse)
 
+  const invite = await verifyInviteToken(token)
+
+  if (invite.user !== user.id)
+    throw createError('Join campaign token not found')
+
   const { data: joinCampaign, error: joinError } = await supabase
     .from('join_campaign')
     .select('id, campaign, role, user')
@@ -19,12 +24,18 @@ export default defineEventHandler(async event => {
   if (joinError || !joinCampaign)
     throw createError('Join campaign token not found')
 
+  if (
+    joinCampaign.campaign !== invite.campaign ||
+    joinCampaign.role !== invite.role
+  )
+    throw createError('Join campaign token not found')
+
   const { data: member, error: teamError } = await supabase
     .from('team')
     .insert({
-      campaign: joinCampaign.campaign,
-      role: joinCampaign.role,
-      user: joinCampaign.user,
+      campaign: invite.campaign,
+      role: invite.role,
+      user: user.id,
     })
     .select('id, role, user')
 

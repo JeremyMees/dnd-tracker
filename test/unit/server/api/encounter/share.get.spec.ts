@@ -1,14 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createJWT } from 'oslo/jwt'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { signJWT } from '~~/server/utils/jwt'
 import handler from '~~/server/api/encounter/share.get'
 
-const secret = new TextEncoder().encode('test-secret')
+const secret = 'test-secret'
+const future = new Date(Date.now() + 60_000)
 
 function signShare(payload: Record<string, unknown>) {
-  return createJWT('HS256', secret, payload)
+  return signJWT(secret, payload, future)
 }
 
 function eventWithToken(token: string) {

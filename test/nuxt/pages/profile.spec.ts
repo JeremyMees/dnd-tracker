@@ -396,7 +396,7 @@ describe('Profile page', () => {
 
     expect(toast).toHaveBeenCalledWith({
       title: 'general.error.title',
-      description: 'New password should be different from the old password.',
+      description: 'pages.profile.password.same',
       variant: 'destructive',
     })
   })

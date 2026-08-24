@@ -1,8 +1,5 @@
-import { createJWT, validateJWT } from 'oslo/jwt'
-import { TimeSpan } from 'oslo'
-
-function liveTokenSecret() {
-  return new TextEncoder().encode(useRuntimeConfig().jwtSecret)
+function liveTokenSecret(): string {
+  return useRuntimeConfig().jwtSecret
 }
 
 function invalidLiveToken(cause?: unknown) {
@@ -17,22 +14,14 @@ async function signLivePayload(
   payload: LiveSessionTokenPayload | LiveSeatTokenPayload | LiveRowTokenPayload,
   expiresAt: Date,
 ): Promise<string> {
-  return await createJWT('HS256', liveTokenSecret(), payload, {
-    expiresIn: new TimeSpan(
-      Math.max(expiresAt.getTime() - Date.now(), 0),
-      'ms',
-    ),
-    includeIssuedTimestamp: true,
-  })
+  return await signJWT(liveTokenSecret(), payload, expiresAt)
 }
 
 async function verifyLivePayload(
   token: string,
 ): Promise<Record<string, unknown>> {
   try {
-    const jwt = await validateJWT('HS256', liveTokenSecret(), token)
-
-    return jwt.payload as Record<string, unknown>
+    return await verifyJWT(liveTokenSecret(), token)
   } catch (cause) {
     throw invalidLiveToken(cause)
   }

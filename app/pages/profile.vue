@@ -45,7 +45,7 @@ const handleUpdateProfile = useThrottleFn(
 
         toast({
           title: t('general.error.title'),
-          description: error || t('general.error.text'),
+          description: message || t('general.error.text'),
           variant: 'destructive',
         })
 

@@ -1,6 +1,5 @@
-import { TimeSpan } from 'oslo'
-import { createJWT } from 'oslo/jwt'
 import * as z from 'zod'
+import { ONE_WEEK } from '~~/constants/time'
 
 const bodySchema = z.object({
   campaign: z.number().int().positive(),
@@ -18,16 +17,12 @@ export default defineEventHandler(async event => {
     'Admin',
   ])
 
-  return await createJWT(
-    'HS256',
-    new TextEncoder().encode(secret),
+  return await signJWT(
+    secret,
     {
       user: caller.id,
       data: body,
     },
-    {
-      expiresIn: new TimeSpan(1, 'w'),
-      includeIssuedTimestamp: true,
-    },
+    new Date(Date.now() + ONE_WEEK),
   )
 })

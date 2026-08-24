@@ -45,10 +45,8 @@ const backgroundColors = [
   '6b7280', // gray
 ]
 
-const blackListedKeys = ['headContrastColor', 'maskVariant']
+const blackListedKeys = ['headContrastColor', 'inkColor', 'maskVariant']
 
-// DiceBear v9 stored avatar options under different names, map them so
-// avatars saved before the v10 upgrade keep rendering the same way.
 const legacyKeys: Record<string, string> = {
   accessories: 'accessoriesVariant',
   face: 'expressionVariant',
