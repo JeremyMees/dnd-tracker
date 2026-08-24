@@ -7,17 +7,41 @@ import {
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useFeatureListing(data: ComputedRef<SbFilter>) {
+  const supabase = useSupabaseClient<DB>()
+
   return useQuery({
     queryKey: ['useFeatureListing', data],
-    queryFn: () =>
-      sbQuery<FeatureRequest>({
+    queryFn: async () => {
+      const result = await sbQuery<FeatureRow & { voted: FeatureVotes }>({
         table: 'features',
-        select: '*, createdBy(id, avatar, username)',
+        select: '*',
         filters: data.value,
         page: data.value.page,
         perPage: 10,
         fuzzy: true,
-      }),
+      })
+
+      const ids = [...new Set(result.data.map(({ createdBy }) => createdBy))]
+
+      if (!ids.length) return { ...result, data: [] as FeatureRequest[] }
+
+      const { data: cards, error } = await supabase.rpc('profile_cards', {
+        p_ids: ids,
+      })
+
+      if (error) throw createError(error)
+
+      const byId = new Map(cards.map(card => [card.id, card]))
+
+      return {
+        ...result,
+        data: result.data.flatMap(feature => {
+          const createdBy = byId.get(feature.createdBy)
+
+          return createdBy ? [{ ...feature, createdBy }] : []
+        }),
+      }
+    },
     select: ({ data, count, totalPages }) => ({
       amount: count,
       pages: totalPages,
@@ -89,12 +113,12 @@ export function useFeatureVote() {
   return useMutation({
     mutationFn: async ({
       id,
-      votes,
-    }: { id: number; votes: FeatureVotes } & QueryDefaults) => {
-      const { error } = await supabase
-        .from('features')
-        .update({ voted: votes } as never)
-        .eq('id', id)
+      vote,
+    }: { id: number; vote: FeatureVote | null } & QueryDefaults) => {
+      const { error } = await supabase.rpc('vote_feature', {
+        p_feature: id,
+        p_vote: vote,
+      })
 
       if (error) throw createError(error)
     },

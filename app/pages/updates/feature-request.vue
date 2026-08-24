@@ -116,7 +116,7 @@ const { data, status } = useFeatureListing(
               (feature.status === 'review' && feature.createdBy.id === user?.id)
             "
             :feature="feature"
-            @update="vote({ id: feature.id, votes: $event })"
+            @update="vote({ id: feature.id, vote: $event })"
             @login="navigateTo(localePath('/login'))"
           />
         </template>

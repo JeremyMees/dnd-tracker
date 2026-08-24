@@ -14,7 +14,6 @@ const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const queryClient = useQueryClient()
-const supabase = useSupabaseClient<DB>()
 
 const { mutateAsync: createJoinCampaignToken } = useJoinTokenCreate()
 
@@ -33,7 +32,6 @@ const formSchema = z.object({
         profile: z.object({
           id: z.string(),
           username: z.string(),
-          name: z.string(),
           avatar: z.string(),
           email: z.email(),
         }),
@@ -52,7 +50,7 @@ const form = useForm({
 interface FoundUser {
   id: string
   role: string
-  profile: Profile
+  profile: MinimalProfile & { email: string }
 }
 
 watch(foundUsers, newUsers => form.setValues({ users: newUsers }), {
@@ -75,24 +73,19 @@ async function handleSearch(): Promise<void> {
     if (error) throw createError(error)
 
     const user = await queryClient.query({
-      queryKey: ['useProfileDetailMinimal', { email }],
-      queryFn: async () => {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id, username, name, avatar, email')
-          .ilike('email', email ?? '')
-          .maybeSingle()
-
-        if (error) throw createError(error)
-        return data
-      },
+      queryKey: ['useCampaignMemberLookup', { email }],
+      queryFn: async () =>
+        await $fetch<MinimalProfile | null>('/api/campaign/member-lookup', {
+          method: 'POST',
+          body: { campaign: props.current.id, email },
+        }),
     })
 
     if (user) {
       foundUsers.value.push({
         id: user.id,
         role: 'Viewer',
-        profile: user,
+        profile: { ...user, email: email ?? '' },
       })
 
       noUser.value = undefined
@@ -331,11 +324,6 @@ async function inviteNewUser(email: string): Promise<void> {
             type="hidden"
             :name="`users.${index}.profile.email`"
             :value="foundUser.profile.email"
-          />
-          <input
-            type="hidden"
-            :name="`users.${index}.profile.name`"
-            :value="foundUser.profile.name"
           />
           <input
             type="hidden"

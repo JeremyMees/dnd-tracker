@@ -139,12 +139,7 @@ describe('FeatureRequestCard', async () => {
     await dislikeButton.trigger('click')
     await nextTick()
 
-    expect(component.emitted('update')?.[0]).toEqual([
-      {
-        like: props.feature.voted.like,
-        dislike: [...props.feature.voted.dislike, 'test-user-id'],
-      },
-    ])
+    expect(component.emitted('update')?.[0]).toEqual(['dislike'])
 
     await component.setProps({
       feature: {
@@ -161,12 +156,7 @@ describe('FeatureRequestCard', async () => {
     await dislikeButton.trigger('click')
     await nextTick()
 
-    expect(component.emitted('update')?.[1]).toEqual([
-      {
-        like: props.feature.voted.like,
-        dislike: props.feature.voted.dislike,
-      },
-    ])
+    expect(component.emitted('update')?.[1]).toEqual([null])
   })
 
   it('Should move a like vote to dislike when the opposite is toggled', async () => {
@@ -187,12 +177,7 @@ describe('FeatureRequestCard', async () => {
     await dislikeButton.trigger('click')
     await nextTick()
 
-    expect(component.emitted('update')?.[0]).toEqual([
-      {
-        like: props.feature.voted.like,
-        dislike: [...props.feature.voted.dislike, 'test-user-id'],
-      },
-    ])
+    expect(component.emitted('update')?.[0]).toEqual(['dislike'])
   })
 
   it('Should emit login instead of toggling a vote when there is no user', async () => {

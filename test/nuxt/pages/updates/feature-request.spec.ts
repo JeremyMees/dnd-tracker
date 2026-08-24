@@ -36,12 +36,8 @@ const status = ref<'pending' | 'success' | 'error'>('success')
 
 const defaultCreatedBy: FeatureRequest['createdBy'] = {
   id: authUser.id,
-  email: authUser.email,
-  name: authUser.name,
   username: authUser.username,
   avatar: authUser.avatar,
-  completedTour: authUser.completedTour,
-  createdAt: authUser.createdAt,
 }
 
 function makeFeature(overrides: Partial<FeatureRequest> = {}): FeatureRequest {
@@ -239,11 +235,11 @@ describe('Feature request page', () => {
 
     const { card } = await mountPage()
 
-    await card.vm.$emit('update', { like: [authUser.id], dislike: [] })
+    await card.vm.$emit('update', 'like')
 
     expect(vote).toHaveBeenCalledWith({
       id: 5,
-      votes: { like: [authUser.id], dislike: [] },
+      vote: 'like',
     })
   })
 

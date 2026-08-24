@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const emit = defineEmits<{
-  update: [FeatureVotes]
+  update: [FeatureVote | null]
   login: []
 }>()
 
@@ -19,21 +19,7 @@ const hasVoted = computed<FeatureVote | undefined>(() => {
 function toggleVote(vote: FeatureVote): void {
   if (!user.value) return
 
-  const userId = user.value.id
-  const votes = {
-    like: [...props.feature.voted.like],
-    dislike: [...props.feature.voted.dislike],
-  }
-
-  if (hasVoted.value === vote) {
-    votes[vote] = votes[vote].filter(id => id !== userId)
-  } else {
-    const oppositeVote: FeatureVote = vote === 'like' ? 'dislike' : 'like'
-    if (!votes[vote].includes(userId)) votes[vote].push(userId)
-    votes[oppositeVote] = votes[oppositeVote].filter(id => id !== userId)
-  }
-
-  emit('update', votes)
+  emit('update', hasVoted.value === vote ? null : vote)
 }
 </script>
 

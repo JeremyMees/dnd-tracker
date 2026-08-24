@@ -7,3 +7,7 @@ export function sanitizeServerHTML(dirty: string): string {
     allowedAttributes: { '*': allowedHTMLAttr },
   })
 }
+
+export function escapeLikePattern(value: string): string {
+  return value.replace(/([\\%_])/g, '\\$1')
+}
