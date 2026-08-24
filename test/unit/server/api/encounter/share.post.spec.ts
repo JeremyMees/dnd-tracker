@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { validateJWT } from 'oslo/jwt'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockAuthedUser,
@@ -7,9 +6,10 @@ import {
   mockFrom,
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { verifyJWT } from '~~/server/utils/jwt'
 import handler from '~~/server/api/encounter/share.post'
 
-const secret = new TextEncoder().encode('test-secret')
+const secret = 'test-secret'
 
 describe('POST /api/encounter/share', () => {
   beforeEach(() => {
@@ -30,9 +30,9 @@ describe('POST /api/encounter/share', () => {
       mockEvent({ method: 'POST', body: { encounter: 7 } }),
     )
 
-    const jwt = await validateJWT('HS256', secret, token as string)
+    const claims = await verifyJWT(secret, token as string)
 
-    expect(jwt.payload).toMatchObject({ user: 'user-1', encounter: 7 })
+    expect(claims).toMatchObject({ user: 'user-1', encounter: 7 })
   })
 
   it('signs a share JWT when the caller has campaign access', async () => {
@@ -52,9 +52,9 @@ describe('POST /api/encounter/share', () => {
       mockEvent({ method: 'POST', body: { encounter: 7 } }),
     )
 
-    const jwt = await validateJWT('HS256', secret, token as string)
+    const claims = await verifyJWT(secret, token as string)
 
-    expect(jwt.payload).toMatchObject({ user: 'user-1', encounter: 7 })
+    expect(claims).toMatchObject({ user: 'user-1', encounter: 7 })
   })
 
   it('throws a 403 when the encounter has no campaign and the caller is not the owner', async () => {

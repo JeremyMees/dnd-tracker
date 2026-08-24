@@ -1,4 +1,3 @@
-import { validateJWT } from 'oslo/jwt'
 import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async event => {
@@ -13,16 +12,12 @@ export default defineEventHandler(async event => {
   let payload: { encounter: number; user: string }
 
   try {
-    const jwt = await validateJWT(
-      'HS256',
-      new TextEncoder().encode(secret),
-      token,
-    )
+    const claims = await verifyJWT(secret, token)
 
-    if (!('encounter' in jwt.payload) || !('user' in jwt.payload))
+    if (!('encounter' in claims) || !('user' in claims))
       throw new Error('Missing encounter or user claim')
 
-    payload = jwt.payload as { encounter: number; user: string }
+    payload = claims as { encounter: number; user: string }
   } catch (cause) {
     throw createError({ statusCode: 401, statusMessage: 'Invalid JWT', cause })
   }

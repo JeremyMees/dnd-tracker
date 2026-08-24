@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createJWT } from 'oslo/jwt'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { signJWT } from '~~/server/utils/jwt'
 import handler from '~~/server/api/campaign/validate-join.post'
 
 const secretString = 'test-secret'
-const secret = new TextEncoder().encode(secretString)
+const future = new Date(Date.now() + 60_000)
 
-function signInvite(data: Record<string, unknown>, key = secret) {
-  return createJWT('HS256', key, { data })
+function signInvite(data: Record<string, unknown>, key = secretString) {
+  return signJWT(key, { data }, future)
 }
 
 describe('POST /api/campaign/validate-join', () => {
@@ -35,7 +35,7 @@ describe('POST /api/campaign/validate-join', () => {
   it('throws when the token signature is invalid', async () => {
     const token = await signInvite(
       { campaign: 42, user: 'user-1', role: 'Player' },
-      new TextEncoder().encode('wrong-secret'),
+      'wrong-secret',
     )
 
     await expect(

@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { validateJWT } from 'oslo/jwt'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockAuthedUser,
@@ -7,9 +6,10 @@ import {
   mockFrom,
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
+import { verifyJWT } from '~~/server/utils/jwt'
 import handler from '~~/server/api/campaign/join.post'
 
-const secret = new TextEncoder().encode('test-secret')
+const secret = 'test-secret'
 const invitedUser = '11111111-1111-4111-8111-111111111111'
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -38,9 +38,9 @@ describe('POST /api/campaign/join', () => {
 
     const token = await handler(mockEvent({ method: 'POST', body: body() }))
 
-    const jwt = await validateJWT('HS256', secret, token as string)
+    const claims = await verifyJWT(secret, token as string)
 
-    expect(jwt.payload).toMatchObject({
+    expect(claims).toMatchObject({
       user: 'user-1',
       data: body(),
     })
@@ -57,9 +57,9 @@ describe('POST /api/campaign/join', () => {
 
     const token = await handler(mockEvent({ method: 'POST', body: body() }))
 
-    const jwt = await validateJWT('HS256', secret, token as string)
+    const claims = await verifyJWT(secret, token as string)
 
-    expect(jwt.payload).toMatchObject({ user: 'user-1' })
+    expect(claims).toMatchObject({ user: 'user-1' })
   })
 
   it('throws a 403 when the caller only has viewer access', async () => {
