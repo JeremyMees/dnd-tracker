@@ -131,6 +131,7 @@ function invalidateQueries(): void {
             :max="max"
           />
           <CreateButton
+            v-if="hasRights"
             :allow-create="isDefined(count) ? count < max : false"
             :disabled="status === 'pending'"
             :loading="data?.homebrews === null"

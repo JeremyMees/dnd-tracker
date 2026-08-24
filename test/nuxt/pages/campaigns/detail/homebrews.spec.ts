@@ -269,7 +269,7 @@ describe('Campaign homebrews page', () => {
   it('Should show the limit cta once the maximum is reached', async () => {
     count.value = 100
 
-    const { component, createButton } = await mountPage()
+    const { component, createButton } = await mountPage({ isAdmin: true })
 
     expect(component.find('[test-id="limit"]').exists()).toBe(true)
     expect(createButton.props('allowCreate')).toBe(false)
@@ -280,7 +280,7 @@ describe('Campaign homebrews page', () => {
   })
 
   it('Should hide the limit cta below the maximum', async () => {
-    const { component, createButton } = await mountPage()
+    const { component, createButton } = await mountPage({ isAdmin: true })
 
     expect(component.find('[test-id="limit"]').exists()).toBe(false)
     expect(createButton.props('allowCreate')).toBe(true)
@@ -289,13 +289,19 @@ describe('Campaign homebrews page', () => {
   it('Should not allow creating a homebrew while the count is unknown', async () => {
     count.value = undefined
 
-    const { createButton } = await mountPage()
+    const { createButton } = await mountPage({ isAdmin: true })
 
     expect(createButton.props('allowCreate')).toBe(false)
   })
 
+  it('Should hide the create button without owner or admin rights', async () => {
+    const { createButton } = await mountPage()
+
+    expect(createButton.exists()).toBe(false)
+  })
+
   it('Should open the new homebrew modal when creating', async () => {
-    const { create } = await mountPage()
+    const { create } = await mountPage({ isAdmin: true })
 
     await create()
 

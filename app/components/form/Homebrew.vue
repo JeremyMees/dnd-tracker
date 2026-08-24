@@ -27,6 +27,18 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+const { user } = useAuthentication()
+
+const canSaveToCampaign = computed(() => {
+  const id = user.value?.id
+
+  if (!id) return false
+
+  return (
+    props.sheet?.campaign?.createdBy.id === id ||
+    isAdmin(props.sheet?.campaign?.team || [], id)
+  )
+})
 
 const tabs = ['info', 'stats', 'traits', 'actions'] as const
 
@@ -289,7 +301,12 @@ async function addInitiative(options: {
 
     <div class="flex flex-col gap-y-4">
       <div
-        v-if="isEncounter && sheet && !$route.path.includes('playground')"
+        v-if="
+          isEncounter &&
+          sheet &&
+          canSaveToCampaign &&
+          !$route.path.includes('playground')
+        "
         class="flex flex-col gap-2"
       >
         <div class="flex items-center gap-2">
