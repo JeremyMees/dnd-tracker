@@ -127,7 +127,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
 </script>
 
 <template>
-  <div class="max-h-full flex flex-col gap-4">
+  <div class="min-h-0 flex-1 flex flex-col gap-4">
     <UiInputGroup>
       <UiInputGroupInput v-model="globalFilter" name="search" type="search" />
       <UiInputGroupAddon align="inline-end">
@@ -135,78 +135,84 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       </UiInputGroupAddon>
     </UiInputGroup>
 
-    <UiTable>
-      <UiTableHeader>
-        <UiTableRow
-          v-for="headerGroup in table.getHeaderGroups()"
-          :key="headerGroup.id"
-          class="border-b border-muted"
-        >
-          <UiTableHead
-            v-for="header in headerGroup.headers"
-            :key="header.id"
-            :test-id="`header-${header.id}`"
-            class="px-2"
-            :class="
-              cn(header.column.getCanSort() ? 'cursor-pointer select-none' : '')
-            "
-            @click="header.column.getToggleSortingHandler()?.($event)"
+    <div class="min-h-0 flex-1 overflow-y-auto">
+      <UiTable>
+        <UiTableHeader>
+          <UiTableRow
+            v-for="headerGroup in table.getHeaderGroups()"
+            :key="headerGroup.id"
+            class="border-b border-muted"
           >
-            <div
-              class="flex items-center gap-2 w-fit"
-              :class="{
-                'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground':
-                  header.column.getIsSorted(),
-              }"
+            <UiTableHead
+              v-for="header in headerGroup.headers"
+              :key="header.id"
+              :test-id="`header-${header.id}`"
+              class="px-2"
+              :class="
+                cn(
+                  header.column.getCanSort()
+                    ? 'cursor-pointer select-none'
+                    : '',
+                )
+              "
+              @click="header.column.getToggleSortingHandler()?.($event)"
             >
-              <FlexRender v-if="!header.isPlaceholder" :header="header" />
-              <Icon
-                v-if="header.column.getIsSorted()"
-                :name="
-                  header.column.getIsSorted() === 'asc'
-                    ? 'tabler:sort-ascending'
-                    : 'tabler:sort-descending'
-                "
-                class="size-4"
-              />
-            </div>
-          </UiTableHead>
-        </UiTableRow>
-      </UiTableHeader>
-
-      <UiTableBody>
-        <template v-if="table.getRowModel().rows?.length">
-          <template v-for="row in table.getRowModel().rows" :key="row.id">
-            <UiTableRow
-              :data-state="row.getIsSelected() && 'selected'"
-              class="border-b border-muted"
-            >
-              <UiTableCell
-                v-for="cell in row.getVisibleCells()"
-                :key="cell.id"
-                class="p-2"
+              <div
+                class="flex items-center gap-2 w-fit"
+                :class="{
+                  'bg-muted rounded-lg p-2 transition-all duration-300 text-foreground':
+                    header.column.getIsSorted(),
+                }"
               >
-                <FlexRender :cell="cell" />
-              </UiTableCell>
-            </UiTableRow>
+                <FlexRender v-if="!header.isPlaceholder" :header="header" />
+                <Icon
+                  v-if="header.column.getIsSorted()"
+                  :name="
+                    header.column.getIsSorted() === 'asc'
+                      ? 'tabler:sort-ascending'
+                      : 'tabler:sort-descending'
+                  "
+                  class="size-4"
+                />
+              </div>
+            </UiTableHead>
+          </UiTableRow>
+        </UiTableHeader>
+
+        <UiTableBody>
+          <template v-if="table.getRowModel().rows?.length">
+            <template v-for="row in table.getRowModel().rows" :key="row.id">
+              <UiTableRow
+                :data-state="row.getIsSelected() && 'selected'"
+                class="border-b border-muted"
+              >
+                <UiTableCell
+                  v-for="cell in row.getVisibleCells()"
+                  :key="cell.id"
+                  class="p-2"
+                >
+                  <FlexRender :cell="cell" />
+                </UiTableCell>
+              </UiTableRow>
+            </template>
           </template>
-        </template>
 
-        <template v-else-if="isPending">
-          <SkeletonHomebrewSelectTableRow v-for="i in 10" :key="i" />
-        </template>
+          <template v-else-if="isPending">
+            <SkeletonHomebrewSelectTableRow v-for="i in 10" :key="i" />
+          </template>
 
-        <UiTableRow v-else>
-          <UiTableCell :colspan="columns.length" class="h-24 text-center">
-            {{
-              $t('components.table.nothing', {
-                item: $t('general.homebrew', 2).toLowerCase(),
-              })
-            }}
-          </UiTableCell>
-        </UiTableRow>
-      </UiTableBody>
-    </UiTable>
+          <UiTableRow v-else>
+            <UiTableCell :colspan="columns.length" class="h-24 text-center">
+              {{
+                $t('components.table.nothing', {
+                  item: $t('general.homebrew', 2).toLowerCase(),
+                })
+              }}
+            </UiTableCell>
+          </UiTableRow>
+        </UiTableBody>
+      </UiTable>
+    </div>
 
     <div v-if="!!summons.length" class="space-y-2">
       <UiLabel for="summoner" required>

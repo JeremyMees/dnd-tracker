@@ -91,5 +91,37 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
     }
   }
 
-  return { apply, pending }
+  async function endTurn(): Promise<boolean> {
+    const token = seat.value?.sessionToken
+    const seatToken = seat.value?.seatToken
+
+    if (!token || !seatToken) return false
+
+    pending.value = true
+
+    try {
+      await $fetch('/api/live/action', {
+        method: 'POST',
+        body: { seatToken, action: { type: 'endTurn' } },
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: liveStateQueryKey(token, seatToken),
+      })
+
+      return true
+    } catch {
+      toast({
+        title: t('general.error.title'),
+        description: t('general.error.text'),
+        variant: 'destructive',
+      })
+
+      return false
+    } finally {
+      pending.value = false
+    }
+  }
+
+  return { apply, pending, endTurn }
 }

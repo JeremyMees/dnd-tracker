@@ -264,6 +264,17 @@ async function toggleLiveAllow(
 
           <div class="flex items-center justify-between gap-2">
             <span class="text-sm">
+              {{ $t('general.endTurn') }}
+            </span>
+            <UiSwitch
+              test-id="allow-end-turn"
+              :model-value="isAllowed('endTurn')"
+              @update:model-value="toggleLiveAllow('endTurn', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
               {{ $t('general.hp') }}
             </span>
             <UiSwitch

@@ -48,6 +48,20 @@ describe('LiveRowTable', () => {
     expect(rows[1]!.get('[test-id="name"]').text()).toBe('Goblin 1')
   })
 
+  it('shows a placeholder dash when initiative has not been rolled', async () => {
+    const component = await mountSuspended(LiveRowTable, {
+      props: {
+        sheet: sheetWith([{ ...ownRow, initiative: -1 }, monsterRow]),
+        loading: false,
+      },
+    })
+
+    const row = component.findAll('[test-id="row"]')[0]!
+
+    expect(row.get('[test-id="initiative-empty"]').text()).toBe('—')
+    expect(row.find('[test-id="initiative"]').exists()).toBe(false)
+  })
+
   it('marks the row taking its turn as active', async () => {
     const component = await mountSuspended(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow], 1), loading: false },

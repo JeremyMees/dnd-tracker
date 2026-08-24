@@ -21,7 +21,7 @@ exports[`Footer > Should match snapshot 1`] = `
         <div class="flex flex-col gap-4"><a href="/policies/cookie" class="flex items-center" test-id="footer-cookie"><span class="iconify i-tabler:cookie min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.cookie</a><a href="/policies/privacy" class="flex items-center" test-id="footer-privacy"><span class="iconify i-tabler:spy min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.privacy</a><a href="/policies/legal" class="flex items-center" test-id="footer-legal"><span class="iconify i-tabler:gavel min-w-6 min-h-6 mr-2" aria-hidden="true"></span> components.navbar.legal</a></div>
       </div>
     </div>
-    <div class="flex flex-wrap justify-between gap-x-20 gap-y-4"><a href="https://www.instagram.com/mount_lazarus/" target="_blank" class="text-muted-foreground text-sm" test-id="footer-illustration">components.navbar.illustrations Mount Lazarus </a><a href="/updates/changelog" class="text-muted-foreground text-sm" test-id="footer-version"> V3.2.0</a>
+    <div class="flex flex-wrap justify-between gap-x-20 gap-y-4"><a href="https://www.instagram.com/mount_lazarus/" target="_blank" class="text-muted-foreground text-sm" test-id="footer-illustration">components.navbar.illustrations Mount Lazarus </a><a href="/updates/changelog" class="text-muted-foreground text-sm" test-id="footer-version"> V3.2.1</a>
       <p class="text-tertiary text-sm" test-id="footer-copyright"> ©2026 dnd-tracker </p>
     </div>
   </div>

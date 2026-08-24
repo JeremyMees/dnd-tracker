@@ -163,6 +163,7 @@ describe('LivePlayerView', () => {
       deathSaves: true,
       concentration: true,
       conditions: true,
+      endTurn: true,
     })
   })
 })

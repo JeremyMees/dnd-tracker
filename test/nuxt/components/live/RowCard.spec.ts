@@ -34,6 +34,14 @@ describe('LiveRowCard', () => {
     expect(component.get('[test-id="initiative"]').text()).toContain('15')
   })
 
+  it('shows a placeholder dash when initiative has not been rolled', async () => {
+    const component = await mountSuspended(LiveRowCard, {
+      props: { row: { ...baseRow, initiative: -1 }, active: false },
+    })
+
+    expect(component.get('[test-id="initiative"]').text()).toContain('—')
+  })
+
   it('highlights the card when active', async () => {
     const component = await mountSuspended(LiveRowCard, {
       props: { row: baseRow, active: true },

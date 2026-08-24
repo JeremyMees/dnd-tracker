@@ -15,6 +15,7 @@ const defaultAllow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  endTurn: true,
 }
 
 const allow = computed(() => props.sheet?.allow ?? defaultAllow)

@@ -222,6 +222,7 @@
     "type": "Type | Types",
     "row": "Row | Rows",
     "concentration": "Concentration",
+    "endTurn": "End turn",
     "none": "None",
     "stats": "Stats",
     "backgroundColor": "Background color",
