@@ -6,12 +6,9 @@ import { authUser } from '~~/test/fixtures/auth-user'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 
-type RealtimePayload = {
-  eventType: string
-  new?: Record<string, unknown>
-}
-
 const {
+  getQueryData,
+  invalidateQueries,
   navigateTo,
   on,
   removeChannel,
@@ -20,6 +17,8 @@ const {
   toast,
   unsubscribe,
 } = vi.hoisted(() => ({
+  getQueryData: vi.fn(),
+  invalidateQueries: vi.fn(),
   navigateTo: vi.fn(),
   on: vi.fn(),
   removeChannel: vi.fn(),
@@ -40,7 +39,7 @@ vi.mock('~/components/ui/toast', () => ({
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ setQueryData }),
+  useQueryClient: () => ({ getQueryData, setQueryData, invalidateQueries }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -73,10 +72,13 @@ async function mountProbe() {
   return { component, vm: component.vm as unknown as Probe }
 }
 
-function emitRealtime(payload: RealtimePayload): void {
-  const handler = on.mock.calls[0]![2] as (payload: RealtimePayload) => void
+function emitBroadcast(event: string, payload: unknown): void {
+  const call = on.mock.calls.find(
+    call => call[0] === 'broadcast' && call[1].event === event,
+  )
+  const handler = call![2] as (arg: { payload: unknown }) => void
 
-  handler(payload)
+  handler({ payload })
 }
 
 describe('useRealTimeInitiativeSheet', () => {
@@ -120,17 +122,22 @@ describe('useRealTimeInitiativeSheet', () => {
     expect(vm.enabled).toBe(false)
   })
 
-  it('Should subscribe to the changes of the encounter when enabled', async () => {
+  it('Should subscribe to the sheet broadcast channel when enabled', async () => {
     await mountProbe()
 
     expect(on).toHaveBeenCalledWith(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'initiative_sheets',
-        filter: 'id=eq.2',
-      },
+      'broadcast',
+      { event: 'action' },
+      expect.any(Function),
+    )
+    expect(on).toHaveBeenCalledWith(
+      'broadcast',
+      { event: 'sync' },
+      expect.any(Function),
+    )
+    expect(on).toHaveBeenCalledWith(
+      'broadcast',
+      { event: 'deleted' },
       expect.any(Function),
     )
     expect(subscribe).toHaveBeenCalled()
@@ -144,75 +151,169 @@ describe('useRealTimeInitiativeSheet', () => {
     expect(on).not.toHaveBeenCalled()
   })
 
-  it('Should update the cached encounter with a realtime change', async () => {
-    await mountProbe()
+  describe('action broadcast', () => {
+    it('Should merge a sequential action into the cached row and bump the version', async () => {
+      const current = { ...sheet, version: 3 }
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+      getQueryData.mockReturnValue(current)
 
-    expect(setQueryData).toHaveBeenCalledWith(
-      ['useInitiativeSheetDetail', 2],
-      expect.any(Function),
-    )
-  })
+      await mountProbe()
 
-  it('Should keep the campaign when merging a realtime change', async () => {
-    await mountProbe()
+      emitBroadcast('action', {
+        version: 4,
+        row: current.rows[0]!.id,
+        patch: { hitPoints: 3 },
+      })
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+      expect(setQueryData).toHaveBeenCalledWith(
+        ['useInitiativeSheetDetail', 2],
+        {
+          ...current,
+          version: 4,
+          rows: [
+            { ...current.rows[0], hitPoints: 3 },
+            ...current.rows.slice(1),
+          ],
+        },
+      )
+      expect(invalidateQueries).not.toHaveBeenCalled()
+    })
 
-    const merge = setQueryData.mock.calls[0]![1]
+    it('Should invalidate instead of merging on a version gap', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 3 })
 
-    expect(merge({ ...sheet, campaign: mockSheetCampaign })).toEqual({
-      ...sheet,
-      title: 'Renamed',
-      campaign: mockSheetCampaign,
+      await mountProbe()
+
+      emitBroadcast('action', {
+        version: 6,
+        row: sheet.rows[0]!.id,
+        patch: {},
+      })
+
+      expect(setQueryData).not.toHaveBeenCalled()
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['useInitiativeSheetDetail', 2],
+      })
+    })
+
+    it('Should ignore an already-applied or stale action broadcast', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 5 })
+
+      await mountProbe()
+
+      emitBroadcast('action', { version: 5, row: sheet.rows[0]!.id, patch: {} })
+
+      expect(setQueryData).not.toHaveBeenCalled()
+      expect(invalidateQueries).not.toHaveBeenCalled()
+    })
+
+    it('Should ignore an action broadcast when there is no cached state yet', async () => {
+      getQueryData.mockReturnValue(undefined)
+
+      await mountProbe()
+
+      expect(() =>
+        emitBroadcast('action', {
+          version: 1,
+          row: sheet.rows[0]!.id,
+          patch: {},
+        }),
+      ).not.toThrow()
+      expect(setQueryData).not.toHaveBeenCalled()
+      expect(invalidateQueries).not.toHaveBeenCalled()
     })
   })
 
-  it('Should merge a realtime change without a campaign to keep', async () => {
-    await mountProbe()
+  describe('sync broadcast', () => {
+    it('Should replace the sheet on a newer sync broadcast while keeping the campaign', async () => {
+      const current = { ...sheet, version: 2, campaign: mockSheetCampaign }
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+      getQueryData.mockReturnValue(current)
 
-    const merge = setQueryData.mock.calls[0]![1]
+      await mountProbe()
 
-    expect(merge({ ...sheet, campaign: undefined })).toEqual({
-      ...sheet,
-      title: 'Renamed',
-      campaign: undefined,
+      const newSheet = { ...sheet, title: 'Renamed' }
+
+      emitBroadcast('sync', { version: 3, sheet: newSheet })
+
+      expect(setQueryData).toHaveBeenCalledWith(
+        ['useInitiativeSheetDetail', 2],
+        expect.any(Function),
+      )
+
+      const updater = setQueryData.mock.calls[0]![1] as (
+        old: unknown,
+      ) => unknown
+
+      expect(updater(current)).toEqual({
+        ...current,
+        ...newSheet,
+        version: 3,
+        campaign: mockSheetCampaign,
+      })
+    })
+
+    it('Should merge a sync broadcast without a campaign to keep', async () => {
+      const current = { ...sheet, version: 2, campaign: undefined }
+
+      getQueryData.mockReturnValue(current)
+
+      await mountProbe()
+
+      emitBroadcast('sync', {
+        version: 3,
+        sheet: { ...sheet, title: 'Renamed' },
+      })
+
+      const updater = setQueryData.mock.calls[0]![1] as (
+        old: unknown,
+      ) => unknown
+
+      expect(updater(undefined)).toEqual({
+        ...sheet,
+        title: 'Renamed',
+        version: 3,
+      })
+    })
+
+    it('Should ignore a stale sync broadcast', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 5 })
+
+      await mountProbe()
+
+      emitBroadcast('sync', { version: 5, sheet })
+
+      expect(setQueryData).not.toHaveBeenCalled()
+    })
+
+    it('Should accept a sync broadcast even with no cached state yet', async () => {
+      getQueryData.mockReturnValue(undefined)
+
+      await mountProbe()
+
+      emitBroadcast('sync', { version: 1, sheet })
+
+      expect(setQueryData).toHaveBeenCalledWith(
+        ['useInitiativeSheetDetail', 2],
+        expect.any(Function),
+      )
     })
   })
 
-  it('Should not merge a realtime change into a missing cache entry', async () => {
-    await mountProbe()
+  describe('deleted broadcast', () => {
+    it('Should redirect and warn when the encounter is removed', async () => {
+      await mountProbe()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+      emitBroadcast('deleted', {})
 
-    const merge = setQueryData.mock.calls[0]![1]
-
-    expect(merge(undefined)).toBeUndefined()
-  })
-
-  it('Should ignore a realtime change without data', async () => {
-    await mountProbe()
-
-    emitRealtime({ eventType: 'UPDATE', new: {} })
-
-    expect(setQueryData).not.toHaveBeenCalled()
-  })
-
-  it('Should redirect and warn when the encounter is removed', async () => {
-    await mountProbe()
-
-    emitRealtime({ eventType: 'DELETE' })
-
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.encounter.toasts.removed.title',
-      description: 'pages.encounter.toasts.removed.text',
-      variant: 'warning',
+      expect(toast).toHaveBeenCalledWith({
+        title: 'pages.encounter.toasts.removed.title',
+        description: 'pages.encounter.toasts.removed.text',
+        variant: 'warning',
+      })
+      expect(navigateTo).toHaveBeenCalledWith('/encounters')
+      expect(setQueryData).not.toHaveBeenCalled()
     })
-    expect(navigateTo).toHaveBeenCalledWith('/encounters')
-    expect(setQueryData).not.toHaveBeenCalled()
   })
 
   it('Should leave the channel when unmounted', async () => {

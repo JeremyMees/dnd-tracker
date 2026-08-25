@@ -1,3 +1,4 @@
+import type { RealtimeChannel } from '@supabase/supabase-js'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
@@ -5,6 +6,17 @@ export type UpdateInitiativeSheetData = Omit<
   Partial<InitiativeSheet>,
   NotUpdatable | 'campaign'
 >
+
+interface SheetActionEvent {
+  version: number
+  row: string
+  patch: Partial<InitiativeSheetRow>
+}
+
+interface SheetSyncEvent {
+  version: number
+  sheet: Partial<InitiativeSheet>
+}
 
 export function useRealTimeInitiativeSheet(
   id: number,
@@ -17,7 +29,7 @@ export function useRealTimeInitiativeSheet(
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
-  const channel = supabase.channel('initiative_sheets')
+  let channel: RealtimeChannel | undefined
 
   const enabled = computed(() => {
     if (!data.value) return false
@@ -25,54 +37,95 @@ export function useRealTimeInitiativeSheet(
     return isPro(user.value) && !!data.value.campaign
   })
 
-  function updateQueryData(payload: UpdateInitiativeSheetData): void {
-    queryClient.setQueryData(
-      ['useInitiativeSheetDetail', id],
-      (old: InitiativeSheet) => {
-        if (!old) return old
+  function queryKey(): unknown[] {
+    return ['useInitiativeSheetDetail', id]
+  }
 
-        return {
-          ...old,
-          ...payload,
-          ...(old?.campaign ? { campaign: old.campaign } : {}),
-        }
-      },
-    )
+  function refetch(): void {
+    queryClient.invalidateQueries({ queryKey: queryKey() })
+  }
+
+  function updateQueryData(payload: UpdateInitiativeSheetData): void {
+    queryClient.setQueryData(queryKey(), (old: InitiativeSheet) => {
+      if (!old) return old
+
+      return {
+        ...old,
+        ...payload,
+        ...(old?.campaign ? { campaign: old.campaign } : {}),
+      }
+    })
+  }
+
+  function applyAction(payload: SheetActionEvent): void {
+    const current = queryClient.getQueryData<InitiativeSheet>(queryKey())
+
+    if (!current || current.version >= payload.version) return
+
+    if (current.version !== payload.version - 1) {
+      refetch()
+      return
+    }
+
+    queryClient.setQueryData<InitiativeSheet>(queryKey(), {
+      ...current,
+      version: payload.version,
+      rows: current.rows.map(row =>
+        row.id === payload.row ? { ...row, ...payload.patch } : row,
+      ),
+    })
+  }
+
+  function applySync(payload: SheetSyncEvent): void {
+    const current = queryClient.getQueryData<InitiativeSheet>(queryKey())
+
+    if (current && current.version >= payload.version) return
+
+    queryClient.setQueryData<InitiativeSheet>(queryKey(), old => {
+      if (!old)
+        return { ...payload.sheet, version: payload.version } as InitiativeSheet
+
+      return { ...old, ...payload.sheet, version: payload.version }
+    })
+  }
+
+  function applyDeleted(): void {
+    toast({
+      title: t('pages.encounter.toasts.removed.title'),
+      description: t('pages.encounter.toasts.removed.text'),
+      variant: 'warning',
+    })
+
+    navigateTo(localePath('/encounters'))
+  }
+
+  function subscribe(): void {
+    channel = supabase.channel(`sheet:${id}`)
+
+    channel
+      .on('broadcast', { event: 'action' }, ({ payload }) =>
+        applyAction(payload as SheetActionEvent),
+      )
+      .on('broadcast', { event: 'sync' }, ({ payload }) =>
+        applySync(payload as SheetSyncEvent),
+      )
+      .on('broadcast', { event: 'deleted' }, applyDeleted)
+      .subscribe()
+  }
+
+  function unsubscribe(): void {
+    if (!channel) return
+
+    channel.unsubscribe()
+    supabase.removeChannel(channel)
+    channel = undefined
   }
 
   onMounted(() => {
-    if (!enabled.value) return
-
-    channel
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'initiative_sheets',
-          filter: `id=eq.${id}`,
-        },
-        payload => {
-          if (payload.eventType === 'DELETE') {
-            toast({
-              title: t('pages.encounter.toasts.removed.title'),
-              description: t('pages.encounter.toasts.removed.text'),
-              variant: 'warning',
-            })
-
-            navigateTo(localePath('/encounters'))
-          } else if (payload.new && Object.keys(payload.new).length > 0) {
-            updateQueryData(payload.new)
-          }
-        },
-      )
-      .subscribe()
+    if (enabled.value) subscribe()
   })
 
-  onBeforeUnmount(() => {
-    channel.unsubscribe()
-    supabase.removeChannel(channel)
-  })
+  onBeforeUnmount(unsubscribe)
 
   return {
     enabled,

@@ -8,12 +8,9 @@ import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-type RealtimePayload = {
-  eventType: string
-  new?: Record<string, unknown>
-}
-
 const {
+  getQueryData,
+  invalidateQueries,
   navigateTo,
   on,
   removeChannel,
@@ -26,6 +23,8 @@ const {
   patch,
   useSeo,
 } = vi.hoisted(() => ({
+  getQueryData: vi.fn(),
+  invalidateQueries: vi.fn(),
   navigateTo: vi.fn(),
   on: vi.fn(),
   removeChannel: vi.fn(),
@@ -50,7 +49,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ setQueryData }),
+  useQueryClient: () => ({ getQueryData, setQueryData, invalidateQueries }),
 }))
 
 const data = ref<InitiativeSheet | undefined>()
@@ -127,10 +126,13 @@ async function mountPage() {
   }
 }
 
-function emitRealtime(payload: RealtimePayload): void {
-  const handler = on.mock.calls[0]![2] as (payload: RealtimePayload) => void
+function emitBroadcast(event: string, payload: unknown): void {
+  const call = on.mock.calls.find(
+    call => call[0] === 'broadcast' && call[1].event === event,
+  )
+  const handler = call![2] as (arg: { payload: unknown }) => void
 
-  handler(payload)
+  handler({ payload })
 }
 
 describe('Encounter detail page', () => {
@@ -243,13 +245,18 @@ describe('Encounter detail page', () => {
     await mountPage()
 
     expect(on).toHaveBeenCalledWith(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'initiative_sheets',
-        filter: 'id=eq.2',
-      },
+      'broadcast',
+      { event: 'action' },
+      expect.any(Function),
+    )
+    expect(on).toHaveBeenCalledWith(
+      'broadcast',
+      { event: 'sync' },
+      expect.any(Function),
+    )
+    expect(on).toHaveBeenCalledWith(
+      'broadcast',
+      { event: 'deleted' },
       expect.any(Function),
     )
     expect(subscribe).toHaveBeenCalled()
@@ -271,53 +278,62 @@ describe('Encounter detail page', () => {
     expect(on).not.toHaveBeenCalled()
   })
 
-  it('Should update the cached encounter with a realtime change', async () => {
+  it('Should merge a sequential action broadcast into the cached row', async () => {
+    const current = { ...sheet, version: 3, campaign: mockSheetCampaign }
+
+    getQueryData.mockReturnValue(current)
+
     await mountPage()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+    emitBroadcast('action', {
+      version: 4,
+      row: current.rows[0]!.id,
+      patch: { hitPoints: 3 },
+    })
 
-    expect(setQueryData).toHaveBeenCalledWith(
-      ['useInitiativeSheetDetail', 2],
-      expect.any(Function),
-    )
+    expect(setQueryData).toHaveBeenCalledWith(['useInitiativeSheetDetail', 2], {
+      ...current,
+      version: 4,
+      rows: [{ ...current.rows[0], hitPoints: 3 }, ...current.rows.slice(1)],
+    })
   })
 
-  it('Should keep the campaign when merging a realtime change', async () => {
+  it('Should keep the campaign when merging a sync broadcast', async () => {
+    const current = { ...sheet, version: 2, campaign: mockSheetCampaign }
+
+    getQueryData.mockReturnValue(current)
+
     await mountPage()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+    emitBroadcast('sync', { version: 3, sheet: { ...sheet, title: 'Renamed' } })
 
-    const merge = setQueryData.mock.calls[0]![1]
+    const updater = setQueryData.mock.calls[0]![1] as (old: unknown) => unknown
 
-    expect(merge({ ...sheet, campaign: mockSheetCampaign })).toEqual({
-      ...sheet,
+    expect(updater(current)).toEqual({
+      ...current,
       title: 'Renamed',
+      version: 3,
       campaign: mockSheetCampaign,
     })
   })
 
-  it('Should not merge a realtime change into a missing cache entry', async () => {
+  it('Should ignore an action broadcast on a version gap and refetch instead', async () => {
+    getQueryData.mockReturnValue({ ...sheet, version: 1 })
+
     await mountPage()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
-
-    const merge = setQueryData.mock.calls[0]![1]
-
-    expect(merge(undefined)).toBeUndefined()
-  })
-
-  it('Should ignore a realtime change without data', async () => {
-    await mountPage()
-
-    emitRealtime({ eventType: 'UPDATE', new: {} })
+    emitBroadcast('action', { version: 5, row: sheet.rows[0]!.id, patch: {} })
 
     expect(setQueryData).not.toHaveBeenCalled()
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useInitiativeSheetDetail', 2],
+    })
   })
 
   it('Should redirect and warn when the encounter is removed', async () => {
     await mountPage()
 
-    emitRealtime({ eventType: 'DELETE' })
+    emitBroadcast('deleted', {})
 
     expect(toast).toHaveBeenCalledWith({
       title: 'pages.encounter.toasts.removed.title',
