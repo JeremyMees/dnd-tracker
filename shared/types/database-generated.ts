@@ -79,6 +79,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: 'combat_events_created_by_fkey'
+            columns: ['createdBy']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
             foreignKeyName: 'combat_events_encounter_id_fkey'
             columns: ['encounterId']
             isOneToOne: false

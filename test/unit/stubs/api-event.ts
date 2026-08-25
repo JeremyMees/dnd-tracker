@@ -5,16 +5,18 @@ export function mockEvent({
   body,
   path = '/',
   headers = {},
+  params,
 }: {
   method?: string
   body?: unknown
   path?: string
   headers?: Record<string, string>
+  params?: Record<string, string>
 } = {}): H3Event {
   return {
     path,
     method,
-    context: {},
+    context: { params },
     node: {
       req: {
         method,

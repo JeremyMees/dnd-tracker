@@ -71,6 +71,7 @@ describe('POST /api/live/action', () => {
           data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
         }),
+        combat_events: mockChain({ data: null, error: null }),
       },
       {
         rpc: mockChain({ data: { ...row, hitPoints: 15 }, error: null }),
@@ -87,6 +88,73 @@ describe('POST /api/live/action', () => {
     expect(result).toEqual({ row: { ...row, hitPoints: 15 } })
   })
 
+  it('logs a combat event and broadcasts to the sheet channel for a heal action', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, round: 3, rows: [row], settings: {} },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, hitPoints: 15 }, error: null }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 8, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'hp', hpType: 'heal', amount: 5 },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      {
+        encounterId: 7,
+        rowId: 'row-1',
+        round: 3,
+        type: 'hp',
+        payload: {
+          rowName: 'Elara',
+          kind: 'heal',
+          amount: 5,
+          before: 10,
+          after: 15,
+        },
+        createdBy: null,
+        actorName: 'Elara',
+      },
+    ])
+
+    expect(supabase.rpc).toHaveBeenCalledWith('increment_sheet_version', {
+      p_encounter: 7,
+    })
+
+    const channel = supabase.channel('sheet:7')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 8,
+      row: 'row-1',
+      patch: {
+        hitPoints: 15,
+        tempHitPoints: undefined,
+        deathSaves: undefined,
+        concentration: undefined,
+        conditions: [],
+      },
+    })
+  })
+
   it('broadcasts a health band instead of raw hp for a player row hp action', async () => {
     const token = await seatToken()
 
@@ -97,11 +165,13 @@ describe('POST /api/live/action', () => {
           data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
         }),
+        combat_events: mockChain({ data: null, error: null }),
       },
       {
         rpc: [
           mockChain({ data: { ...row, hitPoints: 7 }, error: null }),
           mockChain({ data: 4, error: null }),
+          mockChain({ data: 8, error: null }),
         ],
       },
     )
@@ -137,11 +207,13 @@ describe('POST /api/live/action', () => {
           data: { activeIndex: 0, rows: [row] },
           error: null,
         }),
+        combat_events: mockChain({ data: null, error: null }),
       },
       {
         rpc: [
           mockChain({ data: { ...row, deathSaves: undefined }, error: null }),
           mockChain({ data: 5, error: null }),
+          mockChain({ data: 9, error: null }),
         ],
       },
     )
@@ -180,11 +252,13 @@ describe('POST /api/live/action', () => {
           data: { activeIndex: 0, rows: [npcRow], settings: {} },
           error: null,
         }),
+        combat_events: mockChain({ data: null, error: null }),
       },
       {
         rpc: [
           mockChain({ data: { ...npcRow, hitPoints: 15 }, error: null }),
           mockChain({ data: 6, error: null }),
+          mockChain({ data: 10, error: null }),
         ],
       },
     )
@@ -222,11 +296,13 @@ describe('POST /api/live/action', () => {
           data: { activeIndex: 0, rows: [row] },
           error: null,
         }),
+        combat_events: mockChain({ data: null, error: null }),
       },
       {
         rpc: [
           mockChain({ data: { ...row, concentration: true }, error: null }),
           mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
         ],
       },
     )
@@ -274,6 +350,7 @@ describe('POST /api/live/action', () => {
           },
           error: null,
         }),
+        combat_events: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: { ...row, armorClass: 18 }, error: null }) },
     )

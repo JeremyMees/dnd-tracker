@@ -63,7 +63,9 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
   }
 
-  if (sheet.rows[sheet.activeIndex]?.id !== seat.row) {
+  const activeRow = sheet.rows[sheet.activeIndex]
+
+  if (activeRow?.id !== seat.row) {
     throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
   }
 
@@ -86,6 +88,7 @@ export default defineEventHandler(async event => {
     if (error) throw createError(postgresErrorToH3Error(error))
 
     await broadcastLiveState(supabase, payload.session, toPlayerSheet(updated))
+    await broadcastSheetSync(supabase, payload.encounter, updated)
 
     return { synced: true }
   }
@@ -118,9 +121,22 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
+  await logCombatEvents(supabase, {
+    encounterId: payload.encounter,
+    rowId: seat.row,
+    round: sheet.round,
+    actorName: seat.name,
+    events: diffRow(activeRow, row),
+  })
+
   await broadcastLiveAction(supabase, payload.session, {
     row: seat.row,
     patch: sanitizeBroadcastPatch(row, body.action.type, patch),
+  })
+
+  await broadcastSheetAction(supabase, payload.encounter, {
+    row: seat.row,
+    patch,
   })
 
   return { row }
