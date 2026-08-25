@@ -35,6 +35,7 @@ export function useInitiativeSheetDetail(id: number) {
 export function useInitiativeSheetDetailUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const { mutateAsync: sync } = useInitiativeSheetSync()
 
   return useMutation({
     mutationFn: async ({
@@ -82,12 +83,87 @@ export function useInitiativeSheetDetailUpdate() {
 
       return { previous }
     },
-    onSuccess: (_data, { onSuccess }) => {
+    onSuccess: (_data, { id, onSuccess }) => {
+      sync({ id }).catch(() => {})
+
       if (onSuccess) onSuccess()
     },
     onError: (error, { onError, id }, context) => {
       if (context?.previous) {
         // roll back the optimistic update
+        queryClient.setQueryData(
+          ['useInitiativeSheetDetail', id],
+          context.previous,
+        )
+      }
+
+      if (onError) onError(error.message)
+    },
+    onSettled: (_data, error, { onSettled }) => {
+      if (onSettled) onSettled(error?.message)
+    },
+  })
+}
+
+export function useInitiativeSheetSync() {
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      await $fetch(`/api/encounter/${id}/sync`, { method: 'POST' })
+    },
+  })
+}
+
+export function useInitiativeSheetPatch() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      rowId,
+      patch,
+    }: {
+      id: number
+      rowId: string
+      patch: Partial<InitiativeSheetRow>
+    } & QueryDefaults) => {
+      const { row } = await $fetch<{ row: InitiativeSheetRow }>(
+        `/api/encounter/${id}/patch-row`,
+        { method: 'POST', body: { rowId, patch } },
+      )
+
+      return row
+    },
+    onMutate: async ({ id, rowId, patch }) => {
+      await queryClient.cancelQueries({
+        queryKey: ['useInitiativeSheetDetail', id],
+      })
+
+      const previous = queryClient.getQueryData<InitiativeSheet>([
+        'useInitiativeSheetDetail',
+        id,
+      ])
+
+      queryClient.setQueryData(
+        ['useInitiativeSheetDetail', id],
+        (old: InitiativeSheet) => {
+          if (!old) return old
+
+          return {
+            ...old,
+            rows: old.rows.map(row =>
+              row.id === rowId ? { ...row, ...patch } : row,
+            ),
+          }
+        },
+      )
+
+      return { previous }
+    },
+    onSuccess: (_data, { onSuccess }) => {
+      if (onSuccess) onSuccess()
+    },
+    onError: (error, { onError, id }, context) => {
+      if (context?.previous) {
         queryClient.setQueryData(
           ['useInitiativeSheetDetail', id],
           context.previous,

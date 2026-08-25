@@ -154,16 +154,31 @@ export function useEncounterUpdate() {
   })
 }
 
+export function useEncounterDeleteNotify() {
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      await $fetch(`/api/encounter/${id}/notify-deleted`, { method: 'POST' })
+    },
+  })
+}
+
 export function useEncounterRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
+  const { mutateAsync: notifyDeleted } = useEncounterDeleteNotify()
 
   const type = t('general.encounter').toLowerCase()
 
   return useMutation({
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
+      const ids = Array.isArray(id) ? id : [id]
+
+      await Promise.all(
+        ids.map(single => notifyDeleted({ id: single }).catch(() => {})),
+      )
+
       let query = supabase.from('initiative_sheets').delete()
 
       query = Array.isArray(id) ? query.in('id', id) : query.eq('id', id)
