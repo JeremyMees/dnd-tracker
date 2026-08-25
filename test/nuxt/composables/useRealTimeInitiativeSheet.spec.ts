@@ -106,12 +106,12 @@ describe('useRealTimeInitiativeSheet', () => {
     expect(vm.enabled).toBe(false)
   })
 
-  it('Should not be enabled for a personal encounter', async () => {
+  it('Should be enabled for a personal encounter with a high enough subscription', async () => {
     data.value = { ...sheet, campaign: undefined }
 
     const { vm } = await mountProbe()
 
-    expect(vm.enabled).toBe(false)
+    expect(vm.enabled).toBe(true)
   })
 
   it('Should not be enabled when the subscription is too low', async () => {
@@ -144,7 +144,7 @@ describe('useRealTimeInitiativeSheet', () => {
   })
 
   it('Should not subscribe when disabled', async () => {
-    data.value = { ...sheet, campaign: undefined }
+    user.value = { ...authUser, subscriptionType: 'free' }
 
     await mountProbe()
 

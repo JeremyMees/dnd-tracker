@@ -34,7 +34,7 @@ export function useRealTimeInitiativeSheet(
   const enabled = computed(() => {
     if (!data.value) return false
 
-    return isPro(user.value) && !!data.value.campaign
+    return isPro(user.value)
   })
 
   function queryKey(): unknown[] {
