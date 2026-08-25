@@ -48,7 +48,6 @@ export default defineConfig({
         'constants/**',
         'i18n/**',
         'app/assets/**',
-        'app/queries/**',
         'app/tables/**',
         'app/components/ui/**',
         'app/components/animation/**',

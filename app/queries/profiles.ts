@@ -1,28 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useMutation } from '@tanstack/vue-query'
 import type { UserAttributes } from '@supabase/supabase-js'
-
-export function useProfileDetail(id: string) {
-  const supabase = useSupabaseClient<DB>()
-  const { logout } = useAuthentication()
-
-  return useQuery({
-    queryKey: ['useProfileDetail', id],
-    queryFn: async () =>
-      await supabase.from('profiles').select('*').eq('id', id).single(),
-    select: async ({ data, error }) => {
-      if (error?.details.includes('Results contain 0 rows')) {
-        await logout()
-      }
-      if (error) throw createError(error)
-
-      return data
-    },
-  })
-}
 
 export function useProfileUpdate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
   const user = useState<ProfileRow | null>('auth-user', () => null)
 
   return useMutation({
@@ -55,13 +35,11 @@ export function useProfileUpdate() {
         if (error) throw createError(error)
       }
     },
-    onSuccess: (_data, { data, id, onSuccess }) => {
+    onSuccess: (_data, { data, onSuccess }) => {
       if (onSuccess) onSuccess()
 
       const { password: _password, ...rest } = data
       user.value = { ...user.value!, ...rest }
-
-      queryClient.invalidateQueries({ queryKey: ['useProfileDetail', id] })
     },
     onError: (error, { onError }) => {
       if (onError) onError(error.message)
@@ -74,7 +52,6 @@ export function useProfileUpdate() {
 
 export function useProfileRemove() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
   const { logout } = useAuthentication()
 
   return useMutation({
@@ -92,10 +69,8 @@ export function useProfileRemove() {
 
       await logout()
     },
-    onSuccess: (_data, { id, onSuccess }) => {
+    onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useProfileDetail', id] })
     },
     onError: (error, { onError }) => {
       if (onError) onError(error.message)

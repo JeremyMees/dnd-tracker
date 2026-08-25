@@ -68,8 +68,11 @@ export function usePricingListing() {
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     placeholderData: () => productDefaults,
+    retry: false,
   })
 }

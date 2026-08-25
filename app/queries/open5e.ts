@@ -91,6 +91,8 @@ export function useOpen5eListing(
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     select: (response): Open5eListingResult | undefined => {
@@ -105,6 +107,7 @@ export function useOpen5eListing(
     },
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
+    retry: false,
   })
 }
 
@@ -134,11 +137,14 @@ export function useOpen5eDocuments() {
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     placeholderData: keepPreviousData,
     staleTime: ONE_DAY,
     gcTime: ONE_DAY,
+    retry: false,
   })
 }
 
@@ -191,10 +197,13 @@ export function useConditionsListing() {
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     staleTime: ONE_DAY,
     gcTime: ONE_DAY,
+    retry: false,
   })
 }
 
@@ -232,6 +241,8 @@ export function useOpen5eMonsterListing(
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     select: (response): { items: DndMonster[]; pages: number } | undefined => {
@@ -244,5 +255,6 @@ export function useOpen5eMonsterListing(
     },
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
+    retry: false,
   })
 }
