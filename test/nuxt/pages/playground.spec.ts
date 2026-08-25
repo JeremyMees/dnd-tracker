@@ -41,6 +41,7 @@ const stubs = {
 interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
+  patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
 }
 
 async function mountPlayground() {
@@ -184,5 +185,33 @@ describe('Playground page', () => {
     await nextTick()
 
     expect(probe.sheet?.title).toBe('Renamed')
+  })
+
+  it('Should apply a patchRow purely locally, without touching other rows', async () => {
+    startTour.mockImplementation(async () => {
+      isTourActive.value = true
+      tourData.value = { ...tourSheet }
+    })
+
+    const { probe } = await mountPlayground()
+    const untouched = tourSheet.rows.find(row => row.id !== '1')!
+
+    await probe.patchRow('1', { hitPoints: 50 })
+    await nextTick()
+
+    expect(probe.sheet?.rows.find(row => row.id === '1')?.hitPoints).toBe(50)
+    expect(
+      probe.sheet?.rows.find(row => row.id === untouched.id)?.hitPoints,
+    ).toBe(untouched.hitPoints)
+    expect(tourData.value?.rows.find(row => row.id === '1')?.hitPoints).toBe(50)
+  })
+
+  it('Should no-op patchRow for a row that does not exist', async () => {
+    const { probe } = await mountPlayground()
+
+    await probe.patchRow('missing-row', { hitPoints: 50 })
+    await nextTick()
+
+    expect(probe.sheet?.rows).toEqual(playgroundSheet.rows)
   })
 })

@@ -104,6 +104,7 @@ const stubs = {
 interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
+  patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   activeRow: InitiativeSheetRow | undefined
 }
 
@@ -409,5 +410,32 @@ describe('Encounter detail page', () => {
     await update.mock.calls[0]![0].onSettled('Boom')
 
     expect(setQueryData).not.toHaveBeenCalled()
+  })
+
+  it('Should patch a single row through the generic update, leaving other rows untouched', async () => {
+    const { probe } = await mountPage()
+
+    await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
+
+    const patchedRows = update.mock.calls[0]![0].data.rows
+
+    expect(
+      patchedRows.find((row: InitiativeSheetRow) => row.id === 'ylqr4a611g')
+        ?.hitPoints,
+    ).toBe(3)
+    expect(
+      patchedRows.find((row: InitiativeSheetRow) => row.id === 'zywxbg0xy9'),
+    ).toEqual(sheet.rows.find(row => row.id === 'zywxbg0xy9'))
+  })
+
+  it('Should not patch a row when there is no encounter', async () => {
+    data.value = undefined
+
+    const { component } = await mountPage()
+    const probe = component.findComponent(SheetProbe).vm as unknown as Probe
+
+    await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
+
+    expect(update).not.toHaveBeenCalled()
   })
 })
