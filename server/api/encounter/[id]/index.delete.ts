@@ -8,11 +8,18 @@ export default defineEventHandler(async event => {
   const user = await requireUser(event)
   const { id } = await getValidatedRouterParams(event, paramsSchema.parse)
 
-  await requireEncounterAccess(event, id, user.id)
+  await requireEncounterAccess(event, id, user.id, ['Owner', 'Admin'])
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
+  const { error } = await supabase
+    .from('initiative_sheets')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw createError(postgresErrorToH3Error(error))
+
   await broadcastSheetDeleted(supabase, id)
 
-  return { notified: true }
+  return { deleted: true }
 })

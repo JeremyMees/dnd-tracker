@@ -74,6 +74,7 @@ export async function requireEncounterAccess(
   event: H3Event,
   encounterId: number,
   userId: string,
+  allowedRoles: UserRole[] = ['Owner', 'Admin', 'Player', 'Viewer'],
 ): Promise<EncounterAccess> {
   const supabase = serverSupabaseServiceRole<DB>(event)
 
@@ -92,7 +93,7 @@ export async function requireEncounterAccess(
       throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
     }
 
-    await requireCampaignAccess(event, encounter.campaign, userId)
+    await requireCampaignAccess(event, encounter.campaign, userId, allowedRoles)
   }
 
   return encounter

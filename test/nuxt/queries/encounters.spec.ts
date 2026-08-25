@@ -12,7 +12,6 @@ import {
   useEncounterCopy,
   useEncounterCount,
   useEncounterCreate,
-  useEncounterDeleteNotify,
   useEncounterListing,
   useEncounterRemove,
   useEncounterUpdate,
@@ -204,89 +203,47 @@ describe('encounters queries', () => {
   })
 
   describe('useEncounterRemove', () => {
-    it('notifies the sheet channel before deleting a single encounter', async () => {
-      fetchMock.mockResolvedValue(undefined)
-
-      const from = mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
+    it('deletes a single encounter through the server route', async () => {
+      fetchMock.mockResolvedValue({ deleted: true })
 
       const { vm } = await mountHook(() => useEncounterRemove())
 
       await vm.mutateAsync({ id: 3 })
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/api/encounter/3/notify-deleted',
-        {
-          method: 'POST',
-        },
-      )
-
-      const chain = from.mock.results[0]!.value
-
-      expect(chain.eq).toHaveBeenCalledWith('id', 3)
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/3', {
+        method: 'DELETE',
+      })
     })
 
-    it('notifies for every id and deletes in bulk', async () => {
-      fetchMock.mockResolvedValue(undefined)
-
-      const from = mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
+    it('deletes every id in bulk through the server route', async () => {
+      fetchMock.mockResolvedValue({ deleted: true })
 
       const { vm } = await mountHook(() => useEncounterRemove())
 
       await vm.mutateAsync({ id: [3, 4] })
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/api/encounter/3/notify-deleted',
-        {
-          method: 'POST',
-        },
-      )
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/api/encounter/4/notify-deleted',
-        {
-          method: 'POST',
-        },
-      )
-
-      const chain = from.mock.results[0]!.value
-
-      expect(chain.in).toHaveBeenCalledWith('id', [3, 4])
-    })
-
-    it('still deletes when the notify call fails', async () => {
-      fetchMock.mockRejectedValue(new Error('network down'))
-
-      const from = mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/3', {
+        method: 'DELETE',
       })
-
-      const { vm } = await mountHook(() => useEncounterRemove())
-
-      await vm.mutateAsync({ id: 3 })
-
-      const chain = from.mock.results[0]!.value
-
-      expect(chain.eq).toHaveBeenCalledWith('id', 3)
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/4', {
+        method: 'DELETE',
+      })
     })
-  })
 
-  describe('useEncounterDeleteNotify', () => {
-    it('posts to the notify-deleted endpoint for the given id', async () => {
-      fetchMock.mockResolvedValue(undefined)
+    it('reports an error and does not invalidate the listing when the delete fails', async () => {
+      fetchMock.mockRejectedValue(new Error('boom'))
 
-      const { vm } = await mountHook(() => useEncounterDeleteNotify())
+      const { vm } = await mountHook(() => ({
+        ...useEncounterRemove(),
+        queryClient: useQueryClient(),
+      }))
+      const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
+      const onError = vi.fn()
 
-      await vm.mutateAsync({ id: 9 })
+      await expect(vm.mutateAsync({ id: 3, onError })).rejects.toThrow('boom')
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        '/api/encounter/9/notify-deleted',
-        {
-          method: 'POST',
-        },
-      )
+      expect(onError).toHaveBeenCalled()
+      expect(invalidateSpy).not.toHaveBeenCalled()
     })
   })
 
