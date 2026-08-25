@@ -117,7 +117,9 @@ describe('Initiative table row ac', async () => {
     await vm.updateRow(updatedRow)
 
     expect(updatedRow.armorClass).toBe(0)
-    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, updatedRow)
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      armorClass: 0,
+    })
   })
 
   it('Should allow negative AC when negative values are allowed', async () => {

@@ -74,6 +74,8 @@ export function useRealTimeInitiativeSheet(
         row.id === payload.row ? { ...row, ...payload.patch } : row,
       ),
     })
+
+    queryClient.invalidateQueries({ queryKey: ['useCombatEvents', id] })
   }
 
   function applySync(payload: SheetSyncEvent): void {

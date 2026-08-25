@@ -26,7 +26,9 @@ function handleToasts(toasts: ToastItem[]): void {
 }
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  await patchRow(props.item.id, row)
+  const patch = buildCombatPatch(props.item, { ...props.item, ...row })
+
+  await patchRow(props.item.id, patch)
   popoverOpen.value = false
 }
 </script>

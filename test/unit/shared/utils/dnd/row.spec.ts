@@ -143,4 +143,70 @@ describe('dnd/row', () => {
       expect(row.passivePerception).toBe(12)
     })
   })
+
+  describe('buildCombatPatch', () => {
+    const baseRow: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'player',
+      conditions: [],
+      hitPoints: 20,
+      maxHitPoints: 20,
+      tempHitPoints: 0,
+      armorClass: 15,
+      maxArmorClass: 20,
+      tempArmorClass: 0,
+      concentration: false,
+      deathSaves: {
+        fail: [false, false, false],
+        save: [false, false, false],
+      },
+    }
+
+    it('returns an empty patch when nothing changed', () => {
+      expect(buildCombatPatch(baseRow, { ...baseRow })).toEqual({})
+    })
+
+    it('only includes fields that changed', () => {
+      const after = { ...baseRow, hitPoints: 12, armorClass: 18 }
+
+      expect(buildCombatPatch(baseRow, after)).toEqual({
+        hitPoints: 12,
+        armorClass: 18,
+      })
+    })
+
+    it('ignores non-combat fields such as name or initiative', () => {
+      const after = { ...baseRow, name: 'Renamed', initiative: 99 }
+
+      expect(buildCombatPatch(baseRow, after)).toEqual({})
+    })
+
+    it('includes conditions when the array contents differ', () => {
+      const condition = { id: 'blinded', name: 'Blinded', desc: '' }
+      const after = { ...baseRow, conditions: [condition] }
+
+      expect(buildCombatPatch(baseRow, after)).toEqual({
+        conditions: [condition],
+      })
+    })
+
+    it('includes deathSaves when they differ', () => {
+      const deathSaves = {
+        fail: [true, false, false] as [boolean, boolean, boolean],
+        save: [false, false, false] as [boolean, boolean, boolean],
+      }
+      const after = { ...baseRow, deathSaves }
+
+      expect(buildCombatPatch(baseRow, after)).toEqual({ deathSaves })
+    })
+
+    it('includes concentration when it changed', () => {
+      const after = { ...baseRow, concentration: true }
+
+      expect(buildCombatPatch(baseRow, after)).toEqual({ concentration: true })
+    })
+  })
 })

@@ -3,11 +3,13 @@ defineEmits<{
   reset: [boolean]
   previous: []
   next: []
+  toggleHistory: []
 }>()
 
 defineProps<{
   data: InitiativeSheet | undefined
   encounterId?: number
+  historyOpen?: boolean
 }>()
 
 const resetOpen = ref<boolean>(false)
@@ -101,6 +103,24 @@ const liveOpen = ref<boolean>(false)
           <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
         </UiPopoverContent>
       </UiPopover>
+      <UiButton
+        v-if="encounterId"
+        v-tippy="$t('general.combatLog')"
+        test-id="history-trigger"
+        :aria-label="$t('general.combatLog')"
+        :aria-pressed="historyOpen"
+        variant="info-ghost"
+        size="icon-sm"
+        class="group"
+        @click="$emit('toggleHistory')"
+      >
+        <Icon
+          name="tabler:history"
+          class="group-hover:text-foreground"
+          :class="{ 'text-info': historyOpen }"
+          aria-hidden="true"
+        />
+      </UiButton>
     </div>
     <div
       id="tour-1"

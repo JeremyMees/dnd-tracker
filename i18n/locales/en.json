@@ -209,6 +209,7 @@
     "infoPins": "Info pins",
     "fantasyNameGenerator": "Fantasy name generator",
     "diceRoll": "Dice roller",
+    "combatLog": "Combat log",
     "globally": "Globally",
     "synced": "Synced",
     "syncing": "Syncing",
@@ -686,6 +687,32 @@
     },
     "diceRoll": {
       "rolled": "Rolled {amount} {dice}|Rolled multiple dice"
+    },
+    "combatLog": {
+      "empty": "No combat events yet",
+      "round": "Round {round}",
+      "hp": {
+        "heal": "{rowName} healed for {amount} HP",
+        "damage": "{rowName} took {amount} damage",
+        "temp": "{rowName} gained {amount} temporary HP",
+        "override": "{rowName}'s HP was set to {after}"
+      },
+      "ac": {
+        "add": "{rowName}'s AC increased by {amount}",
+        "remove": "{rowName}'s AC decreased by {amount}",
+        "temp": "{rowName} gained {amount} temporary AC",
+        "override": "{rowName}'s AC was set to {after}"
+      },
+      "conditionAdded": "{rowName} gained {condition}",
+      "conditionRemoved": "{rowName} lost {condition}",
+      "concentrationBroken": "{rowName} lost concentration",
+      "concentrationStarted": "{rowName} started concentrating",
+      "deathSave": {
+        "save": "{rowName} succeeded a death save|{rowName} succeeded {amount} death saves",
+        "fail": "{rowName} failed a death save|{rowName} failed {amount} death saves"
+      },
+      "stabilized": "{rowName} stabilized",
+      "died": "{rowName} died"
     },
     "initiativeTableModals": {
       "name": "Change name",

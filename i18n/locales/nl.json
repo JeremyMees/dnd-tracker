@@ -209,6 +209,7 @@
     "infoPins": "Info pins",
     "fantasyNameGenerator": "Fantasy name generator",
     "diceRoll": "Dobbelsteen roller",
+    "combatLog": "Gevechtslog",
     "globally": "Globaal",
     "synced": "Gesynchroniseerd",
     "syncing": "Synchroniseren",
@@ -686,6 +687,32 @@
     },
     "diceRoll": {
       "rolled": "Rolde {amount} {dice}|Rolde meerdere dobbelstenen"
+    },
+    "combatLog": {
+      "empty": "Nog geen gevechtsgebeurtenissen",
+      "round": "Ronde {round}",
+      "hp": {
+        "heal": "{rowName} genas {amount} HP",
+        "damage": "{rowName} kreeg {amount} schade",
+        "temp": "{rowName} kreeg {amount} tijdelijke HP",
+        "override": "{rowName}'s HP werd ingesteld op {after}"
+      },
+      "ac": {
+        "add": "{rowName}'s AC steeg met {amount}",
+        "remove": "{rowName}'s AC daalde met {amount}",
+        "temp": "{rowName} kreeg {amount} tijdelijke AC",
+        "override": "{rowName}'s AC werd ingesteld op {after}"
+      },
+      "conditionAdded": "{rowName} kreeg {condition}",
+      "conditionRemoved": "{rowName} verloor {condition}",
+      "concentrationBroken": "{rowName} verloor concentratie",
+      "concentrationStarted": "{rowName} begon te concentreren",
+      "deathSave": {
+        "save": "{rowName} slaagde een death save|{rowName} slaagde {amount} death saves",
+        "fail": "{rowName} faalde een death save|{rowName} faalde {amount} death saves"
+      },
+      "stabilized": "{rowName} stabiliseerde",
+      "died": "{rowName} stierf"
     },
     "initiativeTableModals": {
       "name": "Naam wijzigen",

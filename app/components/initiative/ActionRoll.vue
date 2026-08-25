@@ -11,7 +11,7 @@ const props = defineProps<{
   id: string
 }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 const { toast } = useToast()
@@ -99,24 +99,22 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     if (!sheet.value) return
 
-    const index = getCurrentRowIndex(sheet.value, values.target)
-    const rows = [...sheet.value.rows]
+    const target = sheet.value.rows.find(row => row.id === values.target)
 
-    if (index === -1 || !rows[index] || !isDefined(rows[index].hitPoints))
-      return
+    if (!target || !isDefined(target.hitPoints)) return
 
     const { row, toasts } = handleHpChanges(
       result.value?.totalDamage ?? 0,
       'damage',
-      rows[index],
+      target,
       sheet.value?.settings?.negative ?? false,
     )
 
     handleToasts(toasts)
 
-    rows[index] = { ...rows[index], ...row }
+    const patch = buildCombatPatch(target, row)
 
-    await update({ rows })
+    await patchRow(values.target, patch)
     popoverOpen.value = false
 
     animateTableUpdate(`${values.target}-hp`, 'red')

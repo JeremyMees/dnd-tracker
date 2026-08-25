@@ -6,6 +6,7 @@ exports[`Initiative header > Should render correctly with required props 1`] = `
     <!--teleport start-->
     <!--teleport end-->
     <!--v-if-->
+    <!--v-if-->
   </div>
   <div id="tour-1" class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"><button test-id="previous" disabled="" aria-label="actions.prev" class="group disabled:cursor-not-allowed duration-300 ease-in-out p-1 border-r-4 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-left group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>
     <p class="text-sm font-medium">components.inputs.initiativeLabel</p><button test-id="next" aria-label="actions.next" class="group disabled:cursor-not-allowed p-1 border-l-4 border-primary flex flex-col items-center"><span class="iconify i-tabler:chevron-right group-disabled:opacity-50 size-6" aria-hidden="true"></span></button>

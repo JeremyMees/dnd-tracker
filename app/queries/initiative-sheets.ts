@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { diffRow } from '~~/shared/utils/dnd/combat-events'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
@@ -142,6 +143,7 @@ export function useInitiativeSheetPatch() {
         'useInitiativeSheetDetail',
         id,
       ])
+      const before = previous?.rows.find(row => row.id === rowId)
 
       queryClient.setQueryData(
         ['useInitiativeSheetDetail', id],
@@ -157,7 +159,40 @@ export function useInitiativeSheetPatch() {
         },
       )
 
-      return { previous }
+      let previousEvents: CombatEventRow[] | undefined
+
+      if (before) {
+        const drafts = diffRow(before, { ...before, ...patch })
+
+        if (drafts.length) {
+          previousEvents = queryClient.getQueryData<CombatEventRow[]>([
+            'useCombatEvents',
+            id,
+          ])
+
+          const optimisticEvents = drafts
+            .slice()
+            .reverse()
+            .map((draft, index): CombatEventRow => ({
+              id: -(Date.now() + index),
+              encounterId: id,
+              rowId,
+              round: previous?.round ?? 1,
+              type: draft.type,
+              payload: draft.payload as Json,
+              createdBy: null,
+              actorName: null,
+              createdAt: new Date().toISOString(),
+            }))
+
+          queryClient.setQueryData<CombatEventRow[]>(
+            ['useCombatEvents', id],
+            (old = []) => [...optimisticEvents, ...old],
+          )
+        }
+      }
+
+      return { previous, previousEvents }
     },
     onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
@@ -167,6 +202,13 @@ export function useInitiativeSheetPatch() {
         queryClient.setQueryData(
           ['useInitiativeSheetDetail', id],
           context.previous,
+        )
+      }
+
+      if (context?.previousEvents !== undefined) {
+        queryClient.setQueryData(
+          ['useCombatEvents', id],
+          context.previousEvents,
         )
       }
 

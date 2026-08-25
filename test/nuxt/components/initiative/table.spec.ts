@@ -29,6 +29,10 @@ const props: Props = {
   loading: false,
 }
 
+vi.mock('~/queries/combat-events', () => ({
+  useCombatEvents: () => ({ data: ref([]), isPending: ref(false) }),
+}))
+
 vi.mock('~/queries/open5e', () => ({
   prefetchConditionsListing: () => Promise.resolve(),
   useConditionsListing: () => ({
@@ -145,6 +149,37 @@ describe('Initiative table', () => {
     })
 
     expect(component.find('[test-id="empty-state"]').exists()).toBeTruthy()
+  })
+
+  describe('History panel', () => {
+    it('Should not render the history panel by default', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+      })
+
+      expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
+    })
+
+    it('Should show the history panel after toggling it from the header', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+      })
+
+      await component.find('[test-id="history-trigger"]').trigger('click')
+      await new Promise(resolve => setTimeout(resolve, 10))
+      await nextTick()
+
+      expect(component.find('[test-id="history-panel"]').exists()).toBeTruthy()
+    })
+
+    it('Should not render the history panel without an encounterId even when toggled', async () => {
+      const component = await mountSuspended(Table, { props, provide })
+
+      expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
+      expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
+    })
   })
 
   describe('Table padding', () => {

@@ -176,7 +176,9 @@ describe('useRealTimeInitiativeSheet', () => {
           ],
         },
       )
-      expect(invalidateQueries).not.toHaveBeenCalled()
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['useCombatEvents', 2],
+      })
     })
 
     it('Should invalidate instead of merging on a version gap', async () => {

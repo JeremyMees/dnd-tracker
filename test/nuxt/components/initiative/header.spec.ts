@@ -172,6 +172,40 @@ describe('Initiative header', () => {
     expect(panel.props('encounterId')).toBe(42)
   })
 
+  it('Should not display the history trigger without an encounterId', async () => {
+    const component = await mountSuspended(Header, { props })
+
+    expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
+  })
+
+  it('Should display the history trigger when an encounterId is given', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+    })
+
+    expect(component.find('[test-id="history-trigger"]').exists()).toBeTruthy()
+  })
+
+  it('Should emit toggleHistory when the history trigger is clicked', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+    })
+
+    await component.find('[test-id="history-trigger"]').trigger('click')
+
+    expect(component.emitted('toggleHistory')).toBeTruthy()
+  })
+
+  it('Should reflect the historyOpen prop on the history trigger', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42, historyOpen: true },
+    })
+
+    expect(
+      component.find('[test-id="history-trigger"]').attributes('aria-pressed'),
+    ).toBe('true')
+  })
+
   describe('Reset popover', () => {
     it('Should emit a soft reset and close the popover when the soft option is clicked', async () => {
       const component = await mountSuspended(Header, { props })

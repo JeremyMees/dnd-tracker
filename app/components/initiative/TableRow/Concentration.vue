@@ -3,19 +3,10 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { patchRow } = validateInject(INITIATIVE_SHEET)
 
 function updateConcentration(): void {
-  if (!sheet.value) return
-
-  const index = getCurrentRowIndex(sheet.value, props.item.id)
-  const rows = [...sheet.value.rows]
-
-  if (index === -1 || !rows[index]) return
-
-  rows[index] = { ...rows[index], concentration: !props.item.concentration }
-
-  update({ rows })
+  patchRow(props.item.id, { concentration: !props.item.concentration })
 }
 </script>
 

@@ -27,7 +27,7 @@ interface ActionRollVM {
   form: { setFieldValue: (field: string, value: unknown) => void }
 }
 
-const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
@@ -41,7 +41,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    patchRow: mockPatchRow,
     activeRow: mockActiveRow,
   },
 }
@@ -57,7 +57,7 @@ let component: VueWrapper<InstanceType<typeof ActionRoll>>
 
 describe('ActionRoll component', () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
+    mockPatchRow.mockClear()
     mockToast.mockClear()
     mockSheet.value = sheet
   })
@@ -215,7 +215,7 @@ describe('ActionRoll component', () => {
       const vm = component.vm as unknown as ActionRollVM
       await vm.onSubmit()
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockPatchRow).not.toHaveBeenCalled()
     })
   })
 
@@ -383,11 +383,7 @@ describe('ActionRoll component', () => {
       vm.form.setFieldValue('target', targetId)
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: expect.arrayContaining([
-          expect.objectContaining({ id: targetId, tempHitPoints: 3 }),
-        ]),
-      })
+      expect(mockPatchRow).toHaveBeenCalledWith(targetId, { tempHitPoints: 3 })
       expect(mockToast).toHaveBeenCalledWith({
         title: expect.stringMatching(
           'components.initiativeTable.concentration.title',
@@ -417,7 +413,7 @@ describe('ActionRoll component', () => {
 
       await vm.onSubmit()
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockPatchRow).not.toHaveBeenCalled()
     })
 
     it('Should not update when the sheet becomes undefined before submit', async () => {
@@ -434,11 +430,11 @@ describe('ActionRoll component', () => {
 
       await vm.onSubmit()
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockPatchRow).not.toHaveBeenCalled()
     })
 
     it('Should set the thrown error message on the form when the update fails', async () => {
-      mockUpdate.mockRejectedValueOnce(new Error('boom'))
+      mockPatchRow.mockRejectedValueOnce(new Error('boom'))
 
       component = await mountSuspended(ActionRoll, {
         props: submitProps,
@@ -459,7 +455,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should set a generic error message when the thrown error has no message', async () => {
-      mockUpdate.mockRejectedValueOnce('')
+      mockPatchRow.mockRejectedValueOnce('')
 
       component = await mountSuspended(ActionRoll, {
         props: submitProps,

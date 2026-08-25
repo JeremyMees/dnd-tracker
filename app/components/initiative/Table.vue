@@ -28,6 +28,7 @@ const tablePadding = computed(() => {
 
 const columns = generateColumns()
 const tableData = shallowRef<InitiativeSheetRow[]>([])
+const historyOpen = shallowRef<boolean>(false)
 
 watch(
   () => sheet.value?.rows,
@@ -65,76 +66,88 @@ const table = useTable({
     <InitiativeHeader
       :data="sheet"
       :encounter-id="encounterId"
+      :history-open="historyOpen"
       @reset="reset($event)"
       @previous="previous"
       @next="next"
+      @toggle-history="historyOpen = !historyOpen"
     />
 
-    <div class="rounded-lg border-4 border-secondary bg-secondary/50">
-      <UiTable>
-        <UiTableHeader>
-          <UiTableRow
-            v-for="headerGroup in table.getHeaderGroups()"
-            :key="headerGroup.id"
-            class="hover:bg-transparent"
-          >
-            <UiTableHead
-              v-for="header in headerGroup.headers"
-              :key="header.id"
-              test-id="header"
-              :class="tablePadding"
-            >
-              <FlexRender v-if="!header.isPlaceholder" :header="header" />
-            </UiTableHead>
-          </UiTableRow>
-        </UiTableHeader>
-
-        <UiTableBody>
-          <template v-if="table.getRowModel().rows?.length">
-            <template
-              v-for="(row, index) in table.getRowModel().rows"
-              :key="row.id"
-            >
+    <div class="flex flex-col lg:flex-row gap-4">
+      <div class="flex flex-col gap-2 flex-1 min-w-0">
+        <div class="rounded-lg border-4 border-secondary bg-secondary/50">
+          <UiTable>
+            <UiTableHeader>
               <UiTableRow
-                :id="index === 0 ? 'tour-9' : ''"
-                test-id="row"
-                :data-state="selected[row.id] && 'selected'"
-                class="data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300"
+                v-for="headerGroup in table.getHeaderGroups()"
+                :key="headerGroup.id"
+                class="hover:bg-transparent"
               >
-                <UiTableCell
-                  v-for="cell in row.getVisibleCells()"
-                  :key="cell.id"
+                <UiTableHead
+                  v-for="header in headerGroup.headers"
+                  :key="header.id"
+                  test-id="header"
                   :class="tablePadding"
                 >
-                  <FlexRender :cell="cell" />
+                  <FlexRender v-if="!header.isPlaceholder" :header="header" />
+                </UiTableHead>
+              </UiTableRow>
+            </UiTableHeader>
+
+            <UiTableBody>
+              <template v-if="table.getRowModel().rows?.length">
+                <template
+                  v-for="(row, index) in table.getRowModel().rows"
+                  :key="row.id"
+                >
+                  <UiTableRow
+                    :id="index === 0 ? 'tour-9' : ''"
+                    test-id="row"
+                    :data-state="selected[row.id] && 'selected'"
+                    class="data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300"
+                  >
+                    <UiTableCell
+                      v-for="cell in row.getVisibleCells()"
+                      :key="cell.id"
+                      :class="tablePadding"
+                    >
+                      <FlexRender :cell="cell" />
+                    </UiTableCell>
+                  </UiTableRow>
+                  <UiTableRow v-if="row.getIsExpanded()" test-id="expanded">
+                    <UiTableCell :colspan="row.getAllCells().length">
+                      <FlexRender :render="expandedMarkup(row)" />
+                    </UiTableCell>
+                  </UiTableRow>
+                </template>
+              </template>
+
+              <template v-else-if="loading">
+                <SkeletonInitiativeTableRow
+                  v-for="i in 10"
+                  :key="i"
+                  test-id="loading"
+                  :class="tablePadding"
+                />
+              </template>
+
+              <UiTableRow v-else test-id="empty-state">
+                <UiTableCell :colspan="columns.length" class="md:p-10">
+                  <InitiativeTableEmptyState :campaign="!!sheet?.campaign" />
                 </UiTableCell>
               </UiTableRow>
-              <UiTableRow v-if="row.getIsExpanded()" test-id="expanded">
-                <UiTableCell :colspan="row.getAllCells().length">
-                  <FlexRender :render="expandedMarkup(row)" />
-                </UiTableCell>
-              </UiTableRow>
-            </template>
-          </template>
+            </UiTableBody>
+          </UiTable>
+        </div>
 
-          <template v-else-if="loading">
-            <SkeletonInitiativeTableRow
-              v-for="i in 10"
-              :key="i"
-              test-id="loading"
-              :class="tablePadding"
-            />
-          </template>
+        <LazyInitiativeWidgets test-id="widgets" :encounter-id="encounterId" />
+      </div>
 
-          <UiTableRow v-else test-id="empty-state">
-            <UiTableCell :colspan="columns.length" class="md:p-10">
-              <InitiativeTableEmptyState :campaign="!!sheet?.campaign" />
-            </UiTableCell>
-          </UiTableRow>
-        </UiTableBody>
-      </UiTable>
+      <LazyInitiativeHistoryPanel
+        v-if="historyOpen && encounterId"
+        hydrate-on-idle
+        :encounter-id="encounterId"
+      />
     </div>
-
-    <LazyInitiativeWidgets test-id="widgets" :encounter-id="encounterId" />
   </div>
 </template>

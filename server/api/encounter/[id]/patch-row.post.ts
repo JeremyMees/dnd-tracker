@@ -1,4 +1,5 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
+import { diffRow } from '~~/shared/utils/dnd/combat-events'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { getValidatedRouterParams } from 'h3'
 import { z } from 'zod'

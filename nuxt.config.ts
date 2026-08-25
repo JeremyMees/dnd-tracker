@@ -68,7 +68,21 @@ export default defineNuxtConfig({
       scan: {
         globInclude: ['{app,tables,queries,constants,shared}/**/*.{vue,ts}'],
       },
-      icons: ['tabler:h-1', 'tabler:h-2', 'tabler:h-3'],
+      icons: [
+        'tabler:h-1',
+        'tabler:h-2',
+        'tabler:h-3',
+        'tabler:heart',
+        'tabler:shield',
+        'tabler:bolt',
+        'tabler:bolt-off',
+        'tabler:circle-dotted',
+        'tabler:circle-filled',
+        'tabler:skull',
+        'tabler:heart-bolt',
+        'tabler:grave',
+        'tabler:point',
+      ],
     },
   },
 

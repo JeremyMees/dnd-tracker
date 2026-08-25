@@ -141,6 +141,132 @@ describe('initiative-sheets queries', () => {
 
       expect(cached?.rows[0]?.hitPoints).toBe(10)
     })
+
+    it('optimistically prepends a combat event derived from the patch', async () => {
+      fetchMock.mockResolvedValue({ row: { ...row, hitPoints: 6 } })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        round: 2,
+        rows: [row],
+      })
+
+      await vm.mutateAsync({ id: 7, rowId: 'row-1', patch: { hitPoints: 6 } })
+
+      const events = vm.queryClient.getQueryData<CombatEventRow[]>([
+        'useCombatEvents',
+        7,
+      ])
+
+      expect(events).toHaveLength(1)
+      expect(events?.[0]).toMatchObject({
+        encounterId: 7,
+        rowId: 'row-1',
+        round: 2,
+        type: 'hp',
+        payload: {
+          rowName: 'Elara',
+          kind: 'damage',
+          amount: 4,
+          before: 10,
+          after: 6,
+        },
+      })
+    })
+
+    it('orders multiple optimistic events so the last-caused event appears first', async () => {
+      const deathRow: InitiativeSheetRow = {
+        ...row,
+        deathSaves: { fail: [true, true, false], save: [false, false, false] },
+      }
+
+      fetchMock.mockResolvedValue({
+        row: {
+          ...deathRow,
+          deathSaves: { fail: [true, true, true], save: [false, false, false] },
+        },
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        round: 1,
+        rows: [deathRow],
+      })
+
+      await vm.mutateAsync({
+        id: 7,
+        rowId: 'row-1',
+        patch: {
+          deathSaves: { fail: [true, true, true], save: [false, false, false] },
+        },
+      })
+
+      const events = vm.queryClient.getQueryData<CombatEventRow[]>([
+        'useCombatEvents',
+        7,
+      ])
+
+      expect(events?.map(event => event.type)).toEqual(['died', 'death_save'])
+    })
+
+    it('does not touch the combat events cache when the patch has no combat effect', async () => {
+      fetchMock.mockResolvedValue({ row })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        rows: [row],
+      })
+
+      await vm.mutateAsync({
+        id: 7,
+        rowId: 'row-1',
+        patch: { hitPoints: row.hitPoints },
+      })
+
+      expect(
+        vm.queryClient.getQueryData(['useCombatEvents', 7]),
+      ).toBeUndefined()
+    })
+
+    it('rolls back the optimistic combat event when the request fails', async () => {
+      fetchMock.mockRejectedValue(new Error('boom'))
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        rows: [row],
+      })
+      vm.queryClient.setQueryData(['useCombatEvents', 7], [])
+
+      await expect(
+        vm.mutateAsync({ id: 7, rowId: 'row-1', patch: { hitPoints: 6 } }),
+      ).rejects.toThrow('boom')
+
+      expect(vm.queryClient.getQueryData(['useCombatEvents', 7])).toEqual([])
+    })
   })
 
   describe('useInitiativeSheetDetailUpdate', () => {

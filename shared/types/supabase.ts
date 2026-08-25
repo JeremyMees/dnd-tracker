@@ -69,6 +69,7 @@ export type CombatEventType =
   | 'condition_removed'
   | 'death_save'
   | 'concentration_broken'
+  | 'concentration_started'
   | 'stabilized'
   | 'died'
 export type InitiativeRowField =
