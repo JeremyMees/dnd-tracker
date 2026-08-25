@@ -4,7 +4,7 @@ import { useToast } from '~/components/ui/toast/use-toast'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { patchRow } = validateInject(INITIATIVE_SHEET)
 
 const { toast } = useToast()
 const { t } = useI18n()
@@ -12,12 +12,7 @@ const { t } = useI18n()
 const { checkDeathSaves } = deathSavesFunctions
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
-  if (!sheet.value) return
-
-  const index = getCurrentRowIndex(sheet.value, props.item.id)
-  const rows = [...sheet.value.rows]
-
-  if (index === -1 || !rows[index] || !props.item.deathSaves) return
+  if (!props.item.deathSaves) return
 
   const deathSaves = {
     save: [...props.item.deathSaves.save] as [boolean, boolean, boolean],
@@ -26,14 +21,6 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
 
   if (save) deathSaves.save[saveIndex] = !deathSaves.save[saveIndex]
   else deathSaves.fail[saveIndex] = !deathSaves.fail[saveIndex]
-
-  rows[index] = {
-    ...rows[index],
-    deathSaves: {
-      save: deathSaves.save,
-      fail: deathSaves.fail,
-    },
-  }
 
   const { failed, saved } = checkDeathSaves(deathSaves)
 
@@ -51,7 +38,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
     })
   }
 
-  update({ rows })
+  patchRow(props.item.id, { deathSaves })
 }
 </script>
 

@@ -3,6 +3,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
+  useInitiativeSheetPatch,
 } from '~/queries/initiative-sheets'
 
 definePageMeta({
@@ -19,6 +20,7 @@ const { startTour } = useTour()
 const id = validateParamId(route.params.id)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
+const { mutateAsync: patch } = useInitiativeSheetPatch()
 const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
   id,
   data,
@@ -47,15 +49,11 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
 
 async function handlePatchRow(
   rowId: string,
-  patch: Partial<InitiativeSheetRow>,
+  rowPatch: Partial<InitiativeSheetRow>,
 ): Promise<void> {
   if (!data.value) return
 
-  await handleUpdate({
-    rows: data.value.rows.map(row =>
-      row.id === rowId ? { ...row, ...patch } : row,
-    ),
-  })
+  await patch({ id, rowId, patch: rowPatch })
 }
 
 provide(INITIATIVE_SHEET, {

@@ -23,6 +23,7 @@ const {
   toast,
   unsubscribe,
   update,
+  patch,
   useSeo,
 } = vi.hoisted(() => ({
   navigateTo: vi.fn(),
@@ -34,6 +35,7 @@ const {
   toast: vi.fn(),
   unsubscribe: vi.fn(),
   update: vi.fn(),
+  patch: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -58,6 +60,7 @@ const isError = ref(false)
 vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
+  useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -412,20 +415,16 @@ describe('Encounter detail page', () => {
     expect(setQueryData).not.toHaveBeenCalled()
   })
 
-  it('Should patch a single row through the generic update, leaving other rows untouched', async () => {
+  it('Should patch a single row through useInitiativeSheetPatch', async () => {
     const { probe } = await mountPage()
 
     await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
 
-    const patchedRows = update.mock.calls[0]![0].data.rows
-
-    expect(
-      patchedRows.find((row: InitiativeSheetRow) => row.id === 'ylqr4a611g')
-        ?.hitPoints,
-    ).toBe(3)
-    expect(
-      patchedRows.find((row: InitiativeSheetRow) => row.id === 'zywxbg0xy9'),
-    ).toEqual(sheet.rows.find(row => row.id === 'zywxbg0xy9'))
+    expect(patch).toHaveBeenCalledWith({
+      id: 2,
+      rowId: 'ylqr4a611g',
+      patch: { hitPoints: 3 },
+    })
   })
 
   it('Should not patch a row when there is no encounter', async () => {
@@ -436,6 +435,6 @@ describe('Encounter detail page', () => {
 
     await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
 
-    expect(update).not.toHaveBeenCalled()
+    expect(patch).not.toHaveBeenCalled()
   })
 })

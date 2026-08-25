@@ -16,7 +16,7 @@ interface Props {
   item: InitiativeSheetRow
 }
 
-const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
 
@@ -29,7 +29,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -39,7 +39,7 @@ const props: Props = {
 
 describe('Initiative table row hp', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
+    mockPatchRow.mockClear()
     mockSheet.value = sheet
   })
 
@@ -110,13 +110,7 @@ describe('Initiative table row hp', async () => {
     const vm = component.vm as unknown as HpTestMethods
     await vm.updateRow({ hitPoints: 15 })
 
-    expect(mockUpdate).toHaveBeenCalled()
-    const payload = mockUpdate.mock.calls[0]?.[0] as {
-      rows: InitiativeSheetRow[]
-    }
-    expect(payload).toBeDefined()
-    const resultRow = payload.rows[0]
-    expect(resultRow?.hitPoints).toBe(15)
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, { hitPoints: 15 })
   })
 
   it('Should trigger toasts through the toast composable', async () => {
