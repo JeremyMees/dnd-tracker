@@ -8,7 +8,7 @@ import {
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockStorage } from '~~/test/unit/stubs/storage'
 import { signLiveSeatToken } from '~~/server/utils/live-token'
-import handler from '~~/server/api/live/action.post'
+import handler from '~~/server/api/encounter/live/action.post'
 
 const future = new Date(Date.now() + 60_000).toISOString()
 
@@ -54,7 +54,7 @@ function seatToken(overrides: Partial<Record<string, unknown>> = {}) {
   )
 }
 
-describe('POST /api/live/action', () => {
+describe('POST /api/encounter/live/action', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })

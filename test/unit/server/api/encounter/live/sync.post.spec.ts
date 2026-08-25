@@ -6,50 +6,79 @@ import {
   mockFrom,
   serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
-import handler from '~~/server/api/live/stop.post'
+import { toPlayerSheet } from '~~/server/utils/player-portal'
+import handler from '~~/server/api/encounter/live/sync.post'
 
-const encounter = { id: 7, campaign: null, createdBy: 'user-1' }
+const future = new Date(Date.now() + 60_000).toISOString()
 
-describe('POST /api/live/stop', () => {
+const sheet = {
+  id: 7,
+  campaign: null,
+  createdBy: 'user-1',
+  title: 'Ambush',
+  round: 2,
+  activeIndex: 1,
+  rows: [
+    {
+      id: 'row-1',
+      index: 0,
+      initiative: 12,
+      name: 'Elara',
+      type: 'player',
+      conditions: [],
+      hitPoints: 10,
+      maxHitPoints: 20,
+    },
+  ],
+  settings: { spacing: 'normal', modified: false },
+} as unknown as InitiativeSheet
+
+describe('POST /api/encounter/live/sync', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
   })
 
-  it('ends the active session for the encounter and broadcasts it', async () => {
-    mockFrom({
-      initiative_sheets: mockChain({ data: encounter, error: null }),
-      live_sessions: mockChain({
-        data: { id: 3, uuid: 'session-uuid' },
-        error: null,
-      }),
-    })
+  it('broadcasts the sanitized sheet and increments the version', async () => {
+    mockFrom(
+      {
+        initiative_sheets: mockChain({ data: sheet, error: null }),
+        live_sessions: mockChain({
+          data: { uuid: 'session-uuid', expiresAt: future },
+          error: null,
+        }),
+      },
+      { rpc: mockChain({ data: 5, error: null }) },
+    )
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { encounter: 7 } })),
-    ).resolves.toEqual({ success: true })
+    ).resolves.toEqual({ synced: true })
 
     const supabase = serverSupabaseServiceRole({} as never)
 
+    expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
+      p_session: 'session-uuid',
+    })
     expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
-    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
-      'ended',
-      {},
-    )
+
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('sync', {
+      version: 5,
+      sheet: toPlayerSheet(sheet),
+    })
   })
 
-  it('throws a 404 when there is no active session', async () => {
+  it('returns synced: false when there is no active session', async () => {
     mockFrom({
-      initiative_sheets: mockChain({ data: encounter, error: null }),
+      initiative_sheets: mockChain({ data: sheet, error: null }),
       live_sessions: mockChain({ data: null, error: null }),
     })
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { encounter: 7 } })),
-    ).rejects.toMatchObject({
-      statusCode: 404,
-      statusMessage: 'no-active-session',
-    })
+    ).resolves.toEqual({ synced: false })
   })
 
   it('throws a 404 when the encounter does not exist', async () => {
@@ -68,7 +97,7 @@ describe('POST /api/live/stop', () => {
   it('throws a 403 when the caller has no access', async () => {
     mockFrom({
       initiative_sheets: mockChain({
-        data: { id: 7, campaign: null, createdBy: 'user-2' },
+        data: { ...sheet, createdBy: 'user-2' },
         error: null,
       }),
     })

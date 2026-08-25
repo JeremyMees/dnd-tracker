@@ -6,7 +6,7 @@ import {
   signLiveSeatToken,
   signLiveSessionToken,
 } from '~~/server/utils/live-token'
-import handler from '~~/server/api/live/state.get'
+import handler from '~~/server/api/encounter/live/state.get'
 
 const future = new Date(Date.now() + 60_000)
 const past = new Date(Date.now() - 1000)
@@ -39,7 +39,7 @@ function eventWithToken(token: string, seatToken?: string) {
   return mockEvent({ method: 'GET', path: `/?${query}` })
 }
 
-describe('GET /api/live/state', () => {
+describe('GET /api/encounter/live/state', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })

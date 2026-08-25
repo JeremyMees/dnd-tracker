@@ -6,7 +6,7 @@ import {
   mockFrom,
   serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
-import handler from '~~/server/api/live/reassign.post'
+import handler from '~~/server/api/encounter/live/reassign.post'
 
 const encounter = { id: 7, campaign: null, createdBy: 'user-1' }
 const sheet = { rows: [{ id: 'row-1' }, { id: 'row-2' }] }
@@ -15,7 +15,7 @@ function reassignEvent(body: Record<string, unknown>) {
   return mockEvent({ method: 'POST', body })
 }
 
-describe('POST /api/live/reassign', () => {
+describe('POST /api/encounter/live/reassign', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })

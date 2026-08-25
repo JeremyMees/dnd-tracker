@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware(async to => {
 
   try {
     const session = await $fetch<{ code: string; expiresAt: string }>(
-      '/api/live/code',
+      '/api/encounter/live/code',
       { query: { code } },
     )
 

@@ -11,7 +11,7 @@ import {
   verifyLiveSeatToken,
   verifyLiveSessionToken,
 } from '~~/server/utils/live-token'
-import handler from '~~/server/api/live/join.post'
+import handler from '~~/server/api/encounter/live/join.post'
 
 const future = new Date(Date.now() + 60_000).toISOString()
 
@@ -39,7 +39,7 @@ function joinEvent(body: Record<string, unknown>) {
   })
 }
 
-describe('POST /api/live/join', () => {
+describe('POST /api/encounter/live/join', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })

@@ -139,7 +139,7 @@ describe('useLiveMyAction', () => {
     )
 
     expect(applied).toBe(true)
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/action', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/action', {
       method: 'POST',
       body: {
         seatToken: 'seat-token',

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
-import handler from '~~/server/api/live/code.get'
+import handler from '~~/server/api/encounter/live/code.get'
 
 const future = new Date(Date.now() + 60_000).toISOString()
 
@@ -60,7 +60,7 @@ function eventWithCode(code: string) {
   })
 }
 
-describe('GET /api/live/code', () => {
+describe('GET /api/encounter/live/code', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })

@@ -41,7 +41,7 @@ describe('getErrorMessage', () => {
   describe('ofetch FetchError instances', () => {
     it('prefers the server statusMessage over the generic ofetch message', () => {
       const error = Object.assign(
-        new Error('[POST] "/api/live/start": 403 Forbidden'),
+        new Error('[POST] "/api/encounter/live/start": 403 Forbidden'),
         {
           data: {
             statusCode: 403,

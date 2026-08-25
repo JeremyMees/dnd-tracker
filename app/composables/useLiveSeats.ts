@@ -96,7 +96,7 @@ function _useLiveSeats(
 
   async function kick(seat: string): Promise<void> {
     try {
-      await $fetch('/api/live/kick', {
+      await $fetch('/api/encounter/live/kick', {
         method: 'POST',
         body: { encounter: encounterId, seat },
       })
@@ -113,7 +113,7 @@ function _useLiveSeats(
 
   async function reassign(seat: string, row: string): Promise<void> {
     try {
-      await $fetch('/api/live/reassign', {
+      await $fetch('/api/encounter/live/reassign', {
         method: 'POST',
         body: { encounter: encounterId, seat, row },
       })

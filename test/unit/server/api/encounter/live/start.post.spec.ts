@@ -7,12 +7,12 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { verifyLiveSessionToken } from '~~/server/utils/live-token'
-import handler from '~~/server/api/live/start.post'
+import handler from '~~/server/api/encounter/live/start.post'
 
 const encounter = { id: 7, campaign: null, createdBy: 'user-1' }
 const future = new Date(Date.now() + 60_000).toISOString()
 
-describe('POST /api/live/start', () => {
+describe('POST /api/encounter/live/start', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
