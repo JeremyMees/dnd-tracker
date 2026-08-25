@@ -43,6 +43,50 @@ export type Database = {
           },
         ]
       }
+      combat_events: {
+        Row: {
+          actorName: string | null
+          createdAt: string
+          createdBy: string | null
+          encounterId: number
+          id: number
+          payload: Json
+          round: number
+          rowId: string
+          type: string
+        }
+        Insert: {
+          actorName?: string | null
+          createdAt?: string
+          createdBy?: string | null
+          encounterId: number
+          id?: never
+          payload?: Json
+          round?: number
+          rowId: string
+          type: string
+        }
+        Update: {
+          actorName?: string | null
+          createdAt?: string
+          createdBy?: string | null
+          encounterId?: number
+          id?: never
+          payload?: Json
+          round?: number
+          rowId?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'combat_events_encounter_id_fkey'
+            columns: ['encounterId']
+            isOneToOne: false
+            referencedRelation: 'initiative_sheets'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       features: {
         Row: {
           createdAt: string
@@ -183,6 +227,7 @@ export type Database = {
           rows: Json
           settings: Json | null
           title: string
+          version: number
         }
         Insert: {
           activeIndex?: number
@@ -196,6 +241,7 @@ export type Database = {
           rows: Json
           settings?: Json | null
           title: string
+          version?: number
         }
         Update: {
           activeIndex?: number
@@ -209,6 +255,7 @@ export type Database = {
           rows?: Json
           settings?: Json | null
           title?: string
+          version?: number
         }
         Relationships: [
           {
@@ -479,12 +526,20 @@ export type Database = {
         Returns: Json
       }
       increment_live_version: { Args: { p_session: string }; Returns: number }
+      increment_sheet_version: {
+        Args: { p_encounter: number }
+        Returns: number
+      }
       is_valid_languages: { Args: { _j: Json }; Returns: boolean }
       is_valid_resistances: { Args: { _j: Json }; Returns: boolean }
       is_valid_traits: { Args: { _j: Json }; Returns: boolean }
       profile_cards: {
         Args: { p_ids: string[] }
-        Returns: { avatar: string; id: string; username: string }[]
+        Returns: {
+          avatar: string
+          id: string
+          username: string
+        }[]
       }
       reassign_live_seat: {
         Args: { p_row: string; p_seat: string; p_session: string }
@@ -506,7 +561,7 @@ export type Database = {
         Returns: undefined
       }
       vote_feature: {
-        Args: { p_feature: number; p_vote: string | null }
+        Args: { p_feature: number; p_vote: string }
         Returns: Json
       }
     }

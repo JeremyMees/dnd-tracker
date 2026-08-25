@@ -51,9 +51,26 @@ async function handleUpdate(
   }
 }
 
+async function handlePatchRow(
+  rowId: string,
+  patch: Partial<InitiativeSheetRow>,
+): Promise<void> {
+  const target = isTourActive.value ? tourData : data
+
+  if (!target.value) return
+
+  target.value = {
+    ...target.value,
+    rows: target.value.rows.map(row =>
+      row.id === rowId ? { ...row, ...patch } : row,
+    ),
+  }
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: computed(() => (isTourActive.value ? tourData.value : data.value)),
   update: handleUpdate,
+  patchRow: handlePatchRow,
   activeRow,
 })
 </script>

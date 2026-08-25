@@ -4,6 +4,7 @@ export const mockEncounterItem: EncounterItem = {
   createdAt: '2026-01-01T00:00:00.000Z',
   round: 1,
   activeIndex: 0,
+  version: 0,
   rows: [],
   info: null,
   infoCards: [],

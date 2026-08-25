@@ -45,9 +45,23 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   syncLiveSession(payload)
 }
 
+async function handlePatchRow(
+  rowId: string,
+  patch: Partial<InitiativeSheetRow>,
+): Promise<void> {
+  if (!data.value) return
+
+  await handleUpdate({
+    rows: data.value.rows.map(row =>
+      row.id === rowId ? { ...row, ...patch } : row,
+    ),
+  })
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: data,
   update: handleUpdate,
+  patchRow: handlePatchRow,
   activeRow,
 })
 </script>

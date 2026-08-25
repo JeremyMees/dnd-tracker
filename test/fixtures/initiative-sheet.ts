@@ -5,6 +5,7 @@ export const sheet: InitiativeSheet = {
   title: 'Sandbox',
   round: 1,
   activeIndex: 0,
+  version: 0,
   rows: [
     {
       armorClass: 1,
