@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { LocationQuery } from 'vue-router'
+import { flushNavigation, goto, spyOnReplace } from '~~/test/nuxt/stubs/router'
 import type { MockInstance } from 'vitest'
 
 const defaults = {
@@ -11,7 +11,6 @@ const defaults = {
 
 const scopes: ReturnType<typeof effectScope>[] = []
 
-let router: ReturnType<typeof useRouter>
 let route: ReturnType<typeof useRoute>
 let replace: MockInstance
 
@@ -27,24 +26,17 @@ function setup<T extends Record<string, unknown>>(
   return scope.run(() => useFilterState(key, values, options))!
 }
 
-async function goto(query: LocationQuery): Promise<void> {
-  await router.replace({ path: '/', query })
-}
-
 async function flush(): Promise<void> {
-  await nextTick()
-  await Promise.all(replace.mock.results.map(result => result.value))
-  await nextTick()
+  await flushNavigation(replace)
 }
 
 describe('useFilterState', () => {
   beforeEach(async () => {
-    router = useRouter()
     route = useRoute()
 
-    await goto({})
+    await goto()
 
-    replace = vi.spyOn(router, 'replace')
+    replace = spyOnReplace()
   })
 
   afterEach(() => {

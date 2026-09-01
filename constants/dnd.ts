@@ -30,6 +30,8 @@ export const crOptions = [
   { label: '30', value: 30.0 },
 ]
 
+export const gameSystems: Open5eGameSystem[] = ['5e-2014', '5e-2024']
+
 export const abilityTypes = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
 
 export const abilityTypeMap: Record<(typeof abilityTypes)[number], DndAbility> =

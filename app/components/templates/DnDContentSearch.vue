@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useOpen5eListing, useOpen5eDocuments } from '~/queries/open5e'
+import { gameSystems } from '~~/constants/dnd'
 
 const props = withDefaults(
   defineProps<{
@@ -12,6 +13,7 @@ const props = withDefaults(
     allowPin?: boolean
     system?: Open5eGameSystem
     preSelectedDocuments?: string[]
+    persist?: FilterPersistence
   }>(),
   {
     variant: 'secondary',
@@ -21,6 +23,7 @@ const props = withDefaults(
     class: '',
     sheet: undefined,
     update: undefined,
+    persist: 'none',
   },
 )
 
@@ -28,42 +31,61 @@ const { toast } = useToast()
 const { t } = useI18n()
 
 const showPinned = ref<boolean>(false)
-const sortBy = ref<Open5eSortBy>('name')
-const type = ref<Open5eType>('spells')
 const limit = 20
-const search = ref<string>('')
-const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
-const selectedSystem = ref<Open5eGameSystem>(props.system)
-const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
-const queryFilters = ref<Open5eFilters>({
-  page: 0,
-  name__icontains: debouncedSearch.value,
-  ordering: sortBy.value,
-  document__key__in: selectedDocuments.value.join(','),
-})
+const typeOptions = computed<{ value: Open5eType; label: string }[]>(() => [
+  { value: 'spells', label: t('general.spell', 2) },
+  { value: 'conditions', label: t('general.condition', 2) },
+  { value: 'magicitems', label: t('general.magicItem', 2) },
+  { value: 'weapons', label: t('general.weapon', 2) },
+  { value: 'armor', label: t('general.armor') },
+])
 
-watch([debouncedSearch, sortBy], () => {
-  queryFilters.value = {
+const { state } = useFilterState(
+  'dnd-content-search',
+  {
+    search: '',
+    type: 'spells' as Open5eType,
+    system: props.system,
+    documents: props.preSelectedDocuments,
     page: 0,
-    name__icontains: debouncedSearch.value,
-    ordering: sortBy.value,
-    document__key__in: selectedDocuments.value.join(','),
-  }
+  },
+  {
+    persist: props.persist,
+    codecs: {
+      type: oneOfFilterCodec(typeOptions.value.map(option => option.value)),
+      system: oneOfFilterCodec(gameSystems),
+    },
+  },
+)
+
+const appliedSearch = ref<string>(state.search)
+
+watchDebounced(
+  () => state.search,
+  value => (appliedSearch.value = value),
+  { debounce: 500, maxWait: 1000 },
+)
+
+watch([() => state.type, () => state.documents, appliedSearch], () => {
+  state.page = 0
 })
 
-watch([type, selectedDocuments], () => {
-  queryFilters.value = {
-    page: 0,
-    name__icontains: '',
-    ordering: 'name',
-    document__key__in: selectedDocuments.value.join(','),
-  }
-})
+const queryFilters = computed<Open5eFilters>(() => ({
+  page: state.page,
+  name__icontains: appliedSearch.value,
+  ordering: 'name',
+  document__key__in: state.documents.join(','),
+}))
+
+function handleTypeChange(): void {
+  state.search = ''
+  appliedSearch.value = ''
+}
 
 const { data, status: listingStatus } = useOpen5eListing(
   computed(() => ({
-    type: type.value,
+    type: state.type,
     filters: queryFilters.value,
   })),
 )
@@ -118,7 +140,7 @@ async function removePins(): Promise<void> {
           <UiInputGroup>
             <UiInputGroupInput
               id="search"
-              v-model="search"
+              v-model="state.search"
               test-id="search"
               :disabled="showPinned"
               name="search"
@@ -135,10 +157,10 @@ async function removePins(): Promise<void> {
           </UiLabel>
           <UiSelect
             id="type"
-            v-model="type"
+            v-model="state.type"
             name="type"
             :disabled="showPinned || isLoading"
-            @update:model-value="search = ''"
+            @update:model-value="handleTypeChange"
           >
             <UiSelectTrigger test-id="type">
               <UiSelectValue />
@@ -146,13 +168,7 @@ async function removePins(): Promise<void> {
             <UiSelectContent>
               <UiSelectGroup>
                 <UiSelectItem
-                  v-for="option in [
-                    { value: 'spells', label: $t('general.spell', 2) },
-                    { value: 'conditions', label: $t('general.condition', 2) },
-                    { value: 'magicitems', label: $t('general.magicItem', 2) },
-                    { value: 'weapons', label: $t('general.weapon', 2) },
-                    { value: 'armor', label: $t('general.armor') },
-                  ]"
+                  v-for="option in typeOptions"
                   :key="option.value"
                   :value="option.value"
                 >
@@ -168,8 +184,8 @@ async function removePins(): Promise<void> {
           </UiLabel>
           <GameSystemFilter
             id="system"
-            v-model:document="selectedDocuments"
-            v-model:system="selectedSystem"
+            v-model:document="state.documents"
+            v-model:system="state.system"
             :documents="documents || []"
             :disabled="showPinned || isLoading"
           />
@@ -230,7 +246,7 @@ async function removePins(): Promise<void> {
           v-for="(hit, j) in column"
           :id="j === 0 ? 'el' : ''"
           :key="hit.id"
-          :type="type"
+          :type="state.type"
           :hit="hit"
           :variant="variant"
           :allow-pin="allowPin"
@@ -249,7 +265,7 @@ async function removePins(): Promise<void> {
         data?.items?.length &&
         !showPinned
       "
-      v-model:page="queryFilters.page"
+      v-model:page="state.page"
       test-id="pagination"
       :pages="data.pages"
       :per-page="limit"
@@ -269,7 +285,7 @@ async function removePins(): Promise<void> {
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
-      v-if="!isLoading && !data?.items?.length && search !== ''"
+      v-if="!isLoading && !data?.items?.length && state.search !== ''"
       test-id="not-found"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >

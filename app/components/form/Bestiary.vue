@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { crOptions } from '~~/constants/dnd'
+import { crOptions, gameSystems } from '~~/constants/dnd'
 import { useOpen5eDocuments, useOpen5eMonsterListing } from '~/queries/open5e'
 
 const props = withDefaults(
   defineProps<{
     system?: Open5eGameSystem
     preSelectedDocuments?: string[]
+    persist?: FilterPersistence
   }>(),
   {
     system: '5e-2024',
     preSelectedDocuments: () => ['srd-2024'],
+    persist: 'none',
   },
 )
 
@@ -21,40 +23,84 @@ const { toast } = useToast()
 const { t } = useI18n()
 
 const limit = 20
-const sortBy = ref<Open5eSortBy>('name')
-const cr = ref<number | string>('all')
-const search = ref<string>('')
-const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
-const selectedSystem = ref<Open5eGameSystem>(props.system)
-const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
-const queryFilters = ref<Open5eFilters>({
-  page: 0,
-  name__icontains: debouncedSearch.value,
-  cr: typeof cr.value === 'string' ? undefined : cr.value,
-  ordering: sortBy.value,
-  document__key__in: selectedDocuments.value.join(','),
-})
+const crFilterOptions = computed<{ label: string; value: number | string }[]>(
+  () => [{ label: t('general.all'), value: 'all' }, ...crOptions],
+)
 
-watch([debouncedSearch, cr, sortBy], () => {
-  queryFilters.value = {
+const sortOptions = computed<{ label: string; value: Open5eSortBy }[]>(() => [
+  {
+    label: t('components.addInitiativeMonster.sort.options.alphabet'),
+    value: 'name',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.mostHP'),
+    value: '-hit_points',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.leastHP'),
+    value: 'hit_points',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.mostAC'),
+    value: '-armor_class',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.leastAC'),
+    value: 'armor_class',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.mostCR'),
+    value: '-challenge_rating',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.leastCR'),
+    value: 'challenge_rating',
+  },
+])
+
+const { state } = useFilterState(
+  'bestiary',
+  {
+    search: '',
+    cr: 'all' as number | string,
+    sortBy: 'name' as Open5eSortBy,
+    system: props.system,
+    documents: props.preSelectedDocuments,
     page: 0,
-    name__icontains: debouncedSearch.value,
-    cr: typeof cr.value === 'string' ? undefined : cr.value,
-    ordering: sortBy.value,
-    document__key__in: selectedDocuments.value.join(','),
-  }
-})
+  },
+  {
+    persist: props.persist,
+    codecs: {
+      cr: oneOfFilterCodec(crFilterOptions.value.map(option => option.value)),
+      sortBy: oneOfFilterCodec(sortOptions.value.map(option => option.value)),
+      system: oneOfFilterCodec(gameSystems),
+    },
+  },
+)
 
-watch(selectedDocuments, () => {
-  queryFilters.value = {
-    page: 0,
-    name__icontains: '',
-    cr: typeof cr.value === 'string' ? undefined : cr.value,
-    ordering: sortBy.value,
-    document__key__in: selectedDocuments.value.join(','),
-  }
-})
+const appliedSearch = ref<string>(state.search)
+
+watchDebounced(
+  () => state.search,
+  value => (appliedSearch.value = value),
+  { debounce: 500, maxWait: 1000 },
+)
+
+watch(
+  [() => state.cr, () => state.sortBy, () => state.documents, appliedSearch],
+  () => {
+    state.page = 0
+  },
+)
+
+const queryFilters = computed<Open5eFilters>(() => ({
+  page: state.page,
+  name__icontains: appliedSearch.value,
+  cr: typeof state.cr === 'string' ? undefined : state.cr,
+  ordering: state.sortBy,
+  document__key__in: state.documents.join(','),
+}))
 
 const { data, status: monstersStatus } = useOpen5eMonsterListing(
   computed(() => ({
@@ -125,7 +171,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
         <UiInputGroup>
           <UiInputGroupInput
             id="search"
-            v-model="search"
+            v-model="state.search"
             name="search"
             type="search"
           />
@@ -138,17 +184,14 @@ async function addMonster(monster: DndMonster): Promise<void> {
         <UiLabel for="cr">
           {{ $t('components.inputs.challengeLabel') }}
         </UiLabel>
-        <UiSelect id="cr" v-model="cr" name="cr" :disabled="isLoading">
+        <UiSelect id="cr" v-model="state.cr" name="cr" :disabled="isLoading">
           <UiSelectTrigger>
             <UiSelectValue />
           </UiSelectTrigger>
           <UiSelectContent>
             <UiSelectGroup>
               <UiSelectItem
-                v-for="option in [
-                  { label: $t('general.all'), value: 'all' },
-                  ...crOptions,
-                ]"
+                v-for="option in crFilterOptions"
                 :key="option.value"
                 :value="option.value"
               >
@@ -164,7 +207,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
         </UiLabel>
         <UiSelect
           id="sortBy"
-          v-model="sortBy"
+          v-model="state.sortBy"
           name="sortBy"
           :disabled="isLoading"
         >
@@ -174,50 +217,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
           <UiSelectContent>
             <UiSelectGroup>
               <UiSelectItem
-                v-for="option in [
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.alphabet',
-                    ),
-                    value: 'name',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.mostHP',
-                    ),
-                    value: '-hit_points',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.leastHP',
-                    ),
-                    value: 'hit_points',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.mostAC',
-                    ),
-                    value: '-armor_class',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.leastAC',
-                    ),
-                    value: 'armor_class',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.mostCR',
-                    ),
-                    value: '-challenge_rating',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.leastCR',
-                    ),
-                    value: 'challenge_rating',
-                  },
-                ]"
+                v-for="option in sortOptions"
                 :key="option.value"
                 :value="option.value"
               >
@@ -233,8 +233,8 @@ async function addMonster(monster: DndMonster): Promise<void> {
         </UiLabel>
         <GameSystemFilter
           id="system"
-          v-model:document="selectedDocuments"
-          v-model:system="selectedSystem"
+          v-model:document="state.documents"
+          v-model:system="state.system"
           :documents="documents || []"
           :disabled="isLoading"
         />
@@ -267,7 +267,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
 
     <Pagination
       v-if="data?.pages && data.pages > 1 && !isLoading && data?.items?.length"
-      v-model:page="queryFilters.page"
+      v-model:page="state.page"
       :pages="data.pages"
       :per-page="limit"
       styles="bg-background/50 border-4 border-background px-4 py-2 rounded-lg"
@@ -281,7 +281,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
-      v-if="!isLoading && !data?.items?.length && search !== ''"
+      v-if="!isLoading && !data?.items?.length && state.search !== ''"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.notFound') }}

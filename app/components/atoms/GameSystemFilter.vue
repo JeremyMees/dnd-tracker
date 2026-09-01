@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { gameSystems } from '~~/constants/dnd'
+
 const props = defineProps<{
   documents: Open5eDocument[]
   disabled?: boolean
@@ -85,7 +87,7 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
             class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
           >
             <div
-              v-for="option in ['5e-2014', '5e-2024']"
+              v-for="option in gameSystems"
               :key="option"
               class="flex items-center space-y-0 gap-x-3"
             >

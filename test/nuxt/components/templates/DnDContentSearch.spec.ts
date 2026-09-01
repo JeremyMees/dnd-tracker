@@ -1,5 +1,5 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import {
@@ -7,6 +7,8 @@ import {
   open5eV2ArmorListingFixture,
 } from '~~/test/fixtures/open5e'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { spyOnReplace } from '~~/test/nuxt/stubs/router'
+import type { LocationQuery } from 'vue-router'
 
 interface Props {
   variant?: 'secondary' | 'background'
@@ -15,7 +17,18 @@ interface Props {
     payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
   ) => Promise<void>
   allowPin?: boolean
+  persist?: FilterPersistence
 }
+
+const storageKey = 'dnd-tracker:filters:dnd-content-search'
+
+const routeQuery = ref<LocationQuery>({})
+
+mockNuxtImport('useRoute', () => () => ({
+  get query() {
+    return routeQuery.value
+  },
+}))
 
 const mockUpdate = vi.fn()
 const mockToast = vi.fn()
@@ -63,11 +76,18 @@ const props: Props = {
 }
 
 describe('DnDContentSearch', async () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     status.value = 'success'
     data.value = { items: open5eV2ArmorListingFixture, pages: 1 }
     mockUpdate.mockClear()
     mockToast.mockClear()
+    vi.useRealTimers()
+    localStorage.clear()
+    routeQuery.value = {}
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('Should match snapshot', async () => {
@@ -391,5 +411,153 @@ describe('DnDContentSearch', async () => {
     await (component.vm as unknown as DnDContentSearchVm).removePins()
 
     expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  it('Should not persist the filters by default', async () => {
+    const component = await mountSuspended(DnDContentSearch, { props })
+    const replace = spyOnReplace()
+
+    await component.get('[test-id="search"]').setValue('sword')
+
+    expect(replace).not.toHaveBeenCalled()
+    expect(localStorage.getItem(storageKey)).toBeNull()
+  })
+
+  describe('url persistence', () => {
+    it('Should restore the filters from the query', async () => {
+      routeQuery.value = {
+        search: 'fire',
+        type: 'weapons',
+        documents: 'srd-2014',
+        page: '2',
+      }
+
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'url' },
+      })
+
+      expect(component.get('[test-id="search"]').element).toHaveProperty(
+        'value',
+        'fire',
+      )
+      expect(filterRef?.value.type).toBe('weapons')
+      expect(filterRef?.value.filters.name__icontains).toBe('fire')
+      expect(filterRef?.value.filters.document__key__in).toBe('srd-2014')
+      expect(filterRef?.value.filters.page).toBe(2)
+    })
+
+    it('Should ignore a content type the search does not offer', async () => {
+      routeQuery.value = { type: 'monsters' }
+
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'url' },
+      })
+
+      expect(component.exists()).toBeTruthy()
+      expect(filterRef?.value.type).toBe('spells')
+    })
+
+    it('Should write the filters to the query', async () => {
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'url' },
+      })
+      const replace = spyOnReplace()
+
+      await selectOption(component, 'weapons')
+
+      expect(replace).toHaveBeenLastCalledWith({
+        query: { type: 'weapons' },
+      })
+
+      routeQuery.value = { type: 'weapons' }
+      await component.get('[test-id="search"]').setValue('sword')
+
+      expect(replace).toHaveBeenLastCalledWith({
+        query: { type: 'weapons', search: 'sword' },
+      })
+    })
+
+    it('Should write the page to the query', async () => {
+      data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
+
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'url' },
+      })
+      const replace = spyOnReplace()
+
+      await component
+        .findComponent({ name: 'Pagination' })
+        .vm.$emit('update:page', 1)
+
+      expect(replace).toHaveBeenLastCalledWith({ query: { page: '1' } })
+    })
+
+    it('Should follow the query when the browser navigates', async () => {
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'url' },
+      })
+
+      routeQuery.value = { search: 'fire', type: 'weapons' }
+      await nextTick()
+
+      expect(component.get('[test-id="search"]').element).toHaveProperty(
+        'value',
+        'fire',
+      )
+      expect(filterRef?.value.type).toBe('weapons')
+    })
+  })
+
+  describe('storage persistence', () => {
+    it('Should restore the filters from the storage', async () => {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ search: 'fire', type: 'weapons', page: 2 }),
+      )
+
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'local' },
+      })
+
+      expect(component.get('[test-id="search"]').element).toHaveProperty(
+        'value',
+        'fire',
+      )
+      expect(filterRef?.value.type).toBe('weapons')
+      expect(filterRef?.value.filters.name__icontains).toBe('fire')
+      expect(filterRef?.value.filters.page).toBe(2)
+    })
+
+    it('Should write the filters to the storage', async () => {
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, persist: 'local' },
+      })
+      const replace = spyOnReplace()
+
+      await selectOption(component, 'weapons')
+
+      expect(
+        JSON.parse(localStorage.getItem(storageKey) ?? '{}'),
+      ).toMatchObject({ type: 'weapons' })
+      expect(replace).not.toHaveBeenCalled()
+    })
+  })
+
+  it('Should reset the page when the filters change', async () => {
+    data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    await component
+      .findComponent({ name: 'Pagination' })
+      .vm.$emit('update:page', 1)
+
+    expect(filterRef?.value.filters.page).toBe(1)
+
+    await component
+      .findComponent({ name: 'GameSystemFilter' })
+      .vm.$emit('update:document', ['srd-2014'])
+
+    expect(filterRef?.value.filters.page).toBe(0)
   })
 })

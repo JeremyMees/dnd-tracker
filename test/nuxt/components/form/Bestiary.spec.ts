@@ -80,6 +80,8 @@ function lastFilters(): Open5eFilters {
   return arg.value.filters
 }
 
+const storageKey = 'dnd-tracker:filters:bestiary'
+
 describe('Bestiary', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -88,6 +90,7 @@ describe('Bestiary', () => {
     documentsStatus.value = 'success'
     data.value = { items: [dndMonsterFixture], pages: 1 }
     documents.value = []
+    localStorage.clear()
   })
 
   it('Should match snapshot', async () => {
@@ -315,6 +318,72 @@ describe('Bestiary', () => {
     await flushPromises()
 
     expect(lastFilters().page).toBe(2)
+  })
+
+  it('Should reset the page when the filters change', async () => {
+    data.value = { items: [dndMonsterFixture], pages: 3 }
+
+    const component = await mountBestiary().mount()
+
+    await component
+      .findComponent({ name: 'Pagination' })
+      .vm.$emit('update:page', 2)
+    await flushPromises()
+
+    expect(lastFilters().page).toBe(2)
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(lastFilters().page).toBe(0)
+  })
+
+  it('Should not persist the filters by default', async () => {
+    const component = await mountBestiary().mount()
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(localStorage.getItem(storageKey)).toBeNull()
+  })
+
+  it('Should restore the filters from the storage', async () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        search: 'goblin',
+        cr: 5,
+        sortBy: '-hit_points',
+        page: 2,
+      }),
+    )
+
+    const component = await mountBestiary({ persist: 'local' }).mount()
+
+    expect(component.get('input[name="search"]').element).toHaveProperty(
+      'value',
+      'goblin',
+    )
+    expect(lastFilters().name__icontains).toBe('goblin')
+    expect(lastFilters().cr).toBe(5)
+    expect(lastFilters().ordering).toBe('-hit_points')
+    expect(lastFilters().page).toBe(2)
+  })
+
+  it('Should drop a stored challenge rating that is not an option', async () => {
+    localStorage.setItem(storageKey, JSON.stringify({ cr: 999 }))
+
+    await mountBestiary({ persist: 'local' }).mount()
+
+    expect(lastFilters().cr).toBeUndefined()
+  })
+
+  it('Should write the filters to the storage', async () => {
+    const component = await mountBestiary({ persist: 'local' }).mount()
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(JSON.parse(localStorage.getItem(storageKey) ?? '{}')).toMatchObject({
+      cr: 5,
+    })
   })
 
   it('Should scroll to the top card when paginating', async () => {

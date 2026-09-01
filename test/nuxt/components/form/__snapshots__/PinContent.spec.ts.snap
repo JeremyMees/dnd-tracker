@@ -1,3 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PinContent > Should match snapshot 1`] = `"<div test-id="content-search"></div>"`;
+exports[`PinContent > Should match snapshot 1`] = `"<div test-id="content-search" persist="local"></div>"`;
