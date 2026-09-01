@@ -270,12 +270,12 @@ describe('Encounter detail page', () => {
     expect(on).not.toHaveBeenCalled()
   })
 
-  it('Should not subscribe for a personal encounter', async () => {
+  it('Should subscribe for a personal encounter', async () => {
     data.value = { ...sheet, campaign: undefined }
 
     await mountPage()
 
-    expect(on).not.toHaveBeenCalled()
+    expect(subscribe).toHaveBeenCalled()
   })
 
   it('Should merge a sequential action broadcast into the cached row', async () => {

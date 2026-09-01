@@ -168,8 +168,9 @@ describe('Initiative table', () => {
       })
 
       await component.find('[test-id="history-trigger"]').trigger('click')
-      await new Promise(resolve => setTimeout(resolve, 10))
-      await nextTick()
+      await vi.waitUntil(() =>
+        component.find('[test-id="history-panel"]').exists(),
+      )
 
       expect(component.find('[test-id="history-panel"]').exists()).toBeTruthy()
     })
