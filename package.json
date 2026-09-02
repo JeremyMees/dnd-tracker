@@ -96,7 +96,7 @@
     "vue-router": "latest",
     "vue-tippy": "^6.7.1",
     "ybug-vue": "^1.2.0",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@golar/vue": "^0.1.10",
@@ -125,5 +125,13 @@
     "nostics": "^1.2.0",
     "parse5": "^6.0.1",
     "vue": "latest"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "@sentry/cli@2.58.6": true,
+    "fsevents@2.3.3": true,
+    "unrs-resolver@1.12.2": true,
+    "vue-demi@0.14.10": true
   }
 }

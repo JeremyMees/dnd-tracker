@@ -133,6 +133,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    moduleSideEffects: ['zod/compile'],
     externals: {
       inline: ['sanitize-html'],
     },
