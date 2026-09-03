@@ -29,11 +29,9 @@ export function useSeo(title?: string): void {
   })
 
   useSeoMeta({
-    ogUrl: seo.url,
     ogImage: seo.socials,
-    twitterImage: seo.socials,
-    twitterTitle: seo.title,
-    twitterDescription: seo.description,
+    ogImageWidth: seo.socialsWidth,
+    ogImageHeight: seo.socialsHeight,
   })
 
   useSchemaOrg([

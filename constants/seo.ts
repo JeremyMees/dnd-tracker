@@ -4,6 +4,8 @@ const description =
   'Track your DnD encounters effortlessly with our website. Get real-time updates, manage players & battles, and never miss a beat. Try it now!'
 const logo = '/logo.png'
 const socials = '/socials.png'
+const socialsWidth = 1200
+const socialsHeight = 630
 const name = 'DnD Tracker'
 const email = 'jeremy@dnd-tracker.com'
 
@@ -12,6 +14,8 @@ export default {
   title,
   logo,
   socials,
+  socialsWidth,
+  socialsHeight,
   description,
   name,
   email,

@@ -11,6 +11,7 @@ const {
   useHead,
   useSchemaOrg,
   useSeoMeta,
+  withSiteUrl,
 } = vi.hoisted(() => ({
   defineOrganization: vi.fn((options: unknown) => ({
     type: 'organization',
@@ -21,6 +22,7 @@ const {
   useHead: vi.fn(),
   useSchemaOrg: vi.fn(),
   useSeoMeta: vi.fn(),
+  withSiteUrl: vi.fn((path: string) => `https://dnd-tracker.com${path}`),
 }))
 
 mockNuxtImport('useHead', () => useHead)
@@ -29,6 +31,7 @@ mockNuxtImport('useSchemaOrg', () => useSchemaOrg)
 mockNuxtImport('defineOrganization', () => defineOrganization)
 mockNuxtImport('defineWebPage', () => defineWebPage)
 mockNuxtImport('defineWebSite', () => defineWebSite)
+mockNuxtImport('withSiteUrl', () => withSiteUrl)
 
 const locale = ref('en')
 const availableLocales = ['en', 'nl']
@@ -122,16 +125,36 @@ describe('useSeo', () => {
     expect(options.titleTemplate(undefined)).toBe(seo.name)
   })
 
-  it('sets the social meta tags from the seo constants', async () => {
+  it('sets the open graph image with its dimensions from the seo constants', async () => {
     await mountProbe('Profile')
 
     expect(useSeoMeta).toHaveBeenCalledWith({
-      ogUrl: seo.url,
-      ogImage: seo.socials,
-      twitterImage: seo.socials,
-      twitterTitle: seo.title,
-      twitterDescription: seo.description,
+      ogImage: `${seo.url}${seo.socials}`,
+      ogImageWidth: seo.socialsWidth,
+      ogImageHeight: seo.socialsHeight,
     })
+  })
+
+  it('leaves og:url and the twitter card tags to the seo module defaults', async () => {
+    await mountProbe('Profile')
+
+    const options = useSeoMeta.mock.calls[0]![0] as Record<string, unknown>
+
+    expect(Object.keys(options)).toEqual([
+      'ogImage',
+      'ogImageWidth',
+      'ogImageHeight',
+    ])
+  })
+
+  it('resolves the open graph image against the site url', async () => {
+    await mountProbe('Profile')
+
+    expect(withSiteUrl).toHaveBeenCalledWith(seo.socials)
+
+    const { ogImage } = useSeoMeta.mock.calls[0]![0] as { ogImage: unknown }
+
+    expect(ogImage).toBe(`${seo.url}${seo.socials}`)
   })
 
   it('registers the organization, webpage and website schema', async () => {
