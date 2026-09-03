@@ -185,7 +185,7 @@ async function logoutUser(): Promise<void> {
         <div class="flex items-center gap-2 px-4 min-w-0">
           <UiSidebarTrigger class="-ml-1 shrink-0" />
           <UiSeparator orientation="vertical" class="mr-2 h-4 shrink-0" />
-          <h1 class="text-2xl font-bold truncate min-w-0">
+          <h1 class="text-xl font-bold truncate min-w-0">
             <slot name="header">
               {{ header || '' }}
             </slot>
