@@ -180,12 +180,12 @@ async function logoutUser(): Promise<void> {
     </UiSidebar>
     <UiSidebarInset class="max-w-full max-h-dvh overflow-hidden">
       <header
-        class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
+        class="flex h-10 shrink-0 items-center gap-2 overflow-hidden transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
       >
-        <div class="flex items-center gap-2 px-4">
-          <UiSidebarTrigger class="-ml-1" />
-          <UiSeparator orientation="vertical" class="mr-2 h-4" />
-          <h1 class="text-2xl font-bold truncate">
+        <div class="flex items-center gap-2 px-4 min-w-0">
+          <UiSidebarTrigger class="-ml-1 shrink-0" />
+          <UiSeparator orientation="vertical" class="mr-2 h-4 shrink-0" />
+          <h1 class="text-2xl font-bold truncate min-w-0">
             <slot name="header">
               {{ header || '' }}
             </slot>
@@ -193,7 +193,7 @@ async function logoutUser(): Promise<void> {
         </div>
       </header>
       <div
-        class="w-full h-full pt-1 pb-3 px-7 mx-auto overflow-auto no-scrollbar"
+        class="w-full h-full pt-1 pb-4 px-4 md:px-6 lg:px-10 mx-auto overflow-auto no-scrollbar"
       >
         <slot />
       </div>

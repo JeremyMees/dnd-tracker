@@ -149,10 +149,22 @@ describe('Encounter detail page', () => {
     isError.value = false
   })
 
-  it('Should set the page seo with the title of the route', async () => {
+  it('Should set the page seo with the title of the encounter', async () => {
     await mountPage()
 
-    expect(useSeo).toHaveBeenCalledWith('Sandbox')
+    const title = useSeo.mock.calls[0]![0] as () => string | undefined
+
+    expect(title()).toBe(sheet.title)
+  })
+
+  it('Should keep the page seo title in sync with the encounter', async () => {
+    await mountPage()
+
+    const title = useSeo.mock.calls[0]![0] as () => string | undefined
+
+    data.value = { ...sheet, title: 'Renamed encounter' }
+
+    expect(title()).toBe('Renamed encounter')
   })
 
   it('Should render inside the sidebar layout', async () => {

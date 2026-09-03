@@ -18,7 +18,7 @@ const liveOpen = ref<boolean>(false)
 
 <template>
   <div
-    class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"
+    class="relative flex flex-col min-[400px]:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"
   >
     <InitiativePet
       v-if="data?.settings?.pet"
@@ -124,7 +124,7 @@ const liveOpen = ref<boolean>(false)
     </div>
     <div
       id="tour-1"
-      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"
+      class="w-full min-[400px]:w-auto flex gap-2 items-center justify-between bg-primary/50 rounded-lg border-4 border-primary"
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"
