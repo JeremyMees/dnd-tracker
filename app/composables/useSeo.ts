@@ -1,10 +1,11 @@
 import seo from '~~/constants/seo'
 
-export function useSeo(title?: string): void {
+export function useSeo(title?: MaybeRefOrGetter<string | undefined>): void {
   const { locale, availableLocales } = useI18n({ useScope: 'global' })
+  const pageTitle = computed(() => toValue(title))
 
   useHead({
-    ...(title ? { title } : {}),
+    ...(title ? { title: pageTitle } : {}),
     titleTemplate: (title?: string) => {
       const lowered = title?.toLowerCase()
       const isHome = availableLocales.some(locale => locale === lowered)
@@ -29,7 +30,7 @@ export function useSeo(title?: string): void {
   })
 
   useSeoMeta({
-    ogImage: seo.socials,
+    ogImage: withSiteUrl(seo.socials),
     ogImageWidth: seo.socialsWidth,
     ogImageHeight: seo.socialsHeight,
   })
@@ -48,7 +49,7 @@ export function useSeo(title?: string): void {
       sameAs: ['https://www.instagram.com/dnd.tracker/'],
     }),
     defineWebPage({
-      name: title || 'DnD Tracker',
+      name: pageTitle.value || 'DnD Tracker',
     }),
     defineWebSite({
       name: seo.name,

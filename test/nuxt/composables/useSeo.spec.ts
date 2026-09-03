@@ -41,22 +41,27 @@ mockNuxtImport('useI18n', () => () => ({
   availableLocales,
 }))
 
-const Probe = defineComponent({
-  props: { title: { type: String, required: false, default: undefined } },
-  setup(props) {
-    useSeo(props.title)
+async function mountProbe(title?: MaybeRefOrGetter<string | undefined>) {
+  const component = await mountSuspended(
+    defineComponent({
+      setup() {
+        useSeo(title)
 
-    return {}
-  },
-  template: '<div />',
-})
-
-async function mountProbe(title?: string) {
-  const component = await mountSuspended(Probe, { props: { title } })
+        return {}
+      },
+      template: '<div />',
+    }),
+  )
 
   await flushPromises()
 
   return component
+}
+
+function headTitle(call = 0): unknown {
+  const options = useHead.mock.calls[call]![0] as { title?: unknown }
+
+  return toValue(options.title)
 }
 
 describe('useSeo', () => {
@@ -78,13 +83,31 @@ describe('useSeo', () => {
   it('passes the title through and sets the favicon and keywords', async () => {
     await mountProbe('Profile')
 
+    expect(headTitle()).toBe('Profile')
     expect(useHead).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: 'Profile',
         link: [{ rel: 'icon', type: 'image/ico', href: '/favicon.ico' }],
         meta: [{ name: 'keywords', content: seo.keywords }],
       }),
     )
+  })
+
+  it('tracks a reactive title so a renamed page updates the document title', async () => {
+    const title = ref<string | undefined>('Sandbox')
+
+    await mountProbe(() => title.value)
+
+    expect(headTitle()).toBe('Sandbox')
+
+    title.value = 'Renamed encounter'
+
+    expect(headTitle()).toBe('Renamed encounter')
+  })
+
+  it('accepts a ref as the title', async () => {
+    await mountProbe(ref('Profile'))
+
+    expect(headTitle()).toBe('Profile')
   })
 
   it('omits the title key entirely when no title is given', async () => {
@@ -182,5 +205,11 @@ describe('useSeo', () => {
     await mountProbe()
 
     expect(defineWebPage).toHaveBeenCalledWith({ name: 'DnD Tracker' })
+  })
+
+  it('resolves a reactive title for the webpage schema', async () => {
+    await mountProbe(() => 'Sandbox')
+
+    expect(defineWebPage).toHaveBeenCalledWith({ name: 'Sandbox' })
   })
 })
