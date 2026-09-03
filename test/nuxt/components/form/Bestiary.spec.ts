@@ -409,4 +409,114 @@ describe('Bestiary', () => {
 
     component.element.remove()
   })
+
+  describe('reset filters', () => {
+    it('Should not show the reset button while the filters are untouched', async () => {
+      const component = await mountBestiary().mount()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+    })
+
+    it('Should show the reset button when the search changes', async () => {
+      const component = await mountBestiary().mount()
+
+      await component.get('input[name="search"]').setValue('goblin')
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the challenge rating changes', async () => {
+      const component = await mountBestiary().mount()
+
+      await selectOption(component, 5, { index: 0 })
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the sort order changes', async () => {
+      const component = await mountBestiary().mount()
+
+      await selectOption(component, '-hit_points', { index: 1 })
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the selected documents change', async () => {
+      documents.value = [
+        createDocument('srd-2024'),
+        createDocument('homebrew-2024'),
+      ]
+
+      const injected = createInitiativeSheetProvide()
+      const component = await mountSuspended(Bestiary, {
+        provide: injected.provide,
+        global: {
+          stubs: { PopoverContent: { template: '<div><slot /></div>' } },
+        },
+      })
+
+      await component.get('[test-id="checkbox-homebrew-2024"]').trigger('click')
+      await flushPromises()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the game system changes', async () => {
+      const injected = createInitiativeSheetProvide()
+      const component = await mountSuspended(Bestiary, {
+        provide: injected.provide,
+        global: {
+          stubs: { PopoverContent: { template: '<div><slot /></div>' } },
+        },
+      })
+
+      await component.findAll('button[role="radio"]')[0]!.trigger('click')
+      await flushPromises()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should restore every filter to its initial value', async () => {
+      vi.useFakeTimers()
+
+      const component = await mountBestiary().mount()
+
+      await component.get('input[name="search"]').setValue('goblin')
+      await selectOption(component, 5, { index: 0 })
+      await selectOption(component, '-hit_points', { index: 1 })
+      await vi.advanceTimersByTimeAsync(1000)
+      await flushPromises()
+
+      await component.get('[test-id="reset-filters"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(1000)
+      await flushPromises()
+
+      expect(component.get('input[name="search"]').element).toHaveProperty(
+        'value',
+        '',
+      )
+      expect(lastFilters().name__icontains).toBe('')
+      expect(lastFilters().cr).toBeUndefined()
+      expect(lastFilters().ordering).toBe('name')
+      expect(lastFilters().document__key__in).toBe('srd-2024')
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+
+      vi.useRealTimers()
+    })
+
+    it('Should clear a pending debounced search when resetting', async () => {
+      vi.useFakeTimers()
+
+      const component = await mountBestiary().mount()
+
+      await component.get('input[name="search"]').setValue('goblin')
+      await component.get('[test-id="reset-filters"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(1000)
+      await flushPromises()
+
+      expect(lastFilters().name__icontains).toBe('')
+
+      vi.useRealTimers()
+    })
+  })
 })

@@ -560,4 +560,110 @@ describe('DnDContentSearch', async () => {
 
     expect(filterRef?.value.filters.page).toBe(0)
   })
+
+  describe('reset filters', () => {
+    it('Should not show the reset button while the filters are untouched', async () => {
+      const component = await mountSuspended(DnDContentSearch, { props })
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+    })
+
+    it('Should show the reset button when the search changes', async () => {
+      const component = await mountSuspended(DnDContentSearch, { props })
+
+      await component.get('[test-id="search"]').setValue('sword')
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the content type changes', async () => {
+      const component = await mountSuspended(DnDContentSearch, { props })
+
+      await selectOption(component, 'weapons')
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the selected documents change', async () => {
+      const component = await mountSuspended(DnDContentSearch, { props })
+
+      await component
+        .findComponent({ name: 'GameSystemFilter' })
+        .vm.$emit('update:document', ['srd-2014'])
+      await nextTick()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the game system changes', async () => {
+      const component = await mountSuspended(DnDContentSearch, { props })
+
+      await component
+        .findComponent({ name: 'GameSystemFilter' })
+        .vm.$emit('update:system', '5e-2014')
+      await nextTick()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should not show the reset button when the documents match the pre selected ones', async () => {
+      const component = await mountSuspended(DnDContentSearch, {
+        props: { ...props, preSelectedDocuments: ['srd-2024', 'srd-2014'] },
+      })
+
+      await component
+        .findComponent({ name: 'GameSystemFilter' })
+        .vm.$emit('update:document', ['srd-2024', 'srd-2014'])
+      await nextTick()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+    })
+
+    it('Should restore every filter to its initial value', async () => {
+      const component = await mountSuspended(DnDContentSearch, {
+        props: {
+          ...props,
+          system: '5e-2024',
+          preSelectedDocuments: ['srd-2024'],
+        },
+      })
+
+      vi.useFakeTimers()
+      await selectOption(component, 'weapons')
+      await component.get('[test-id="search"]').setValue('sword')
+      await component
+        .findComponent({ name: 'GameSystemFilter' })
+        .vm.$emit('update:system', '5e-2014')
+      await component
+        .findComponent({ name: 'GameSystemFilter' })
+        .vm.$emit('update:document', ['srd-2014'])
+      await vi.advanceTimersByTimeAsync(600)
+
+      await component.get('[test-id="reset-filters"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(600)
+
+      expect(component.get('[test-id="search"]').element).toHaveProperty(
+        'value',
+        '',
+      )
+      expect(filterRef?.value.type).toBe('spells')
+      expect(filterRef?.value.filters.name__icontains).toBe('')
+      expect(filterRef?.value.filters.document__key__in).toBe('srd-2024')
+      expect(
+        component.findComponent({ name: 'GameSystemFilter' }).props('system'),
+      ).toBe('5e-2024')
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+    })
+
+    it('Should clear a pending debounced search when resetting', async () => {
+      const component = await mountSuspended(DnDContentSearch, { props })
+
+      vi.useFakeTimers()
+      await component.get('[test-id="search"]').setValue('sword')
+      await component.get('[test-id="reset-filters"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(600)
+
+      expect(filterRef?.value.filters.name__icontains).toBe('')
+    })
+  })
 })

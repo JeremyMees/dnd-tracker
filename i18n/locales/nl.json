@@ -77,7 +77,8 @@
     "applyDamage": "Schade toepassen",
     "generateName": "Naam genereren",
     "kick": "Verwijder",
-    "copyLink": "Kopieer link"
+    "copyLink": "Kopieer link",
+    "resetFilter": "Reset filter | Reset filters"
   },
   "general": {
     "waiting": "Wachten",

@@ -127,12 +127,29 @@ async function removePins(): Promise<void> {
 
   showPinned.value = false
 }
+
+const showResetButton = computed<boolean>(() => {
+  return (
+    state.search !== '' ||
+    state.type !== 'spells' ||
+    state.system !== props.system ||
+    !isEqualArray(state.documents, props.preSelectedDocuments)
+  )
+})
+
+function resetFilters(): void {
+  state.search = ''
+  state.type = 'spells'
+  state.system = props.system
+  state.documents = props.preSelectedDocuments
+  appliedSearch.value = ''
+}
 </script>
 
 <template>
   <div class="max-h-full flex flex-col gap-4">
     <div class="flex flex-col gap-2">
-      <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
+      <div class="flex flex-col sm:flex-row items-end gap-x-4 gap-y-2">
         <div class="space-y-2 w-full sm:w-auto sm:flex-1">
           <UiLabel for="search">
             {{ $t('components.inputs.nameLabel') }}
@@ -191,32 +208,49 @@ async function removePins(): Promise<void> {
           />
         </div>
       </div>
-      <AnimationReveal>
-        <div v-if="sheet?.infoCards?.length" class="flex gap-2">
+      <div class="flex gap-2">
+        <AnimationReveal>
+          <div v-if="sheet?.infoCards?.length" class="flex gap-2">
+            <UiButton
+              test-id="pin-toggle"
+              :aria-label="
+                $t(
+                  `components.dndContentSearch.${showPinned ? 'hide' : 'show'}`,
+                )
+              "
+              variant="foreground-ghost"
+              @click="showPinned = !showPinned"
+            >
+              <Icon name="tabler:pin" />
+              {{
+                $t(
+                  `components.dndContentSearch.${showPinned ? 'hide' : 'show'}`,
+                )
+              }}
+            </UiButton>
+            <UiButton
+              test-id="remove-pins"
+              :aria-label="$t('components.dndContentSearch.remove')"
+              variant="destructive-ghost"
+              @click="removePins"
+            >
+              <Icon name="tabler:trash" />
+              {{ $t('components.dndContentSearch.remove') }}
+            </UiButton>
+          </div>
+        </AnimationReveal>
+        <AnimationExpand axis="width">
           <UiButton
-            test-id="pin-toggle"
-            :aria-label="
-              $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)
-            "
+            v-if="showResetButton"
+            test-id="reset-filters"
             variant="foreground-ghost"
-            @click="showPinned = !showPinned"
+            @click="resetFilters"
           >
-            <Icon name="tabler:pin" />
-            {{
-              $t(`components.dndContentSearch.${showPinned ? 'hide' : 'show'}`)
-            }}
+            <Icon name="tabler:filter-x" />
+            {{ $t('actions.resetFilter', 2) }}
           </UiButton>
-          <UiButton
-            test-id="remove-pins"
-            :aria-label="$t('components.dndContentSearch.remove')"
-            variant="destructive-ghost"
-            @click="removePins"
-          >
-            <Icon name="tabler:trash" />
-            {{ $t('components.dndContentSearch.remove') }}
-          </UiButton>
-        </div>
-      </AnimationReveal>
+        </AnimationExpand>
+      </div>
     </div>
 
     <div class="overflow-y-auto">

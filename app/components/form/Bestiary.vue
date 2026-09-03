@@ -118,6 +118,25 @@ const isError = computed(
   () => monstersStatus.value === 'error' || documentsStatus.value === 'error',
 )
 
+const showResetButton = computed<boolean>(() => {
+  return (
+    state.search !== '' ||
+    state.cr !== 'all' ||
+    state.sortBy !== 'name' ||
+    state.system !== props.system ||
+    !isEqualArray(state.documents, props.preSelectedDocuments)
+  )
+})
+
+function resetFilters(): void {
+  state.search = ''
+  state.cr = 'all'
+  state.sortBy = 'name'
+  state.system = props.system
+  state.documents = props.preSelectedDocuments
+  appliedSearch.value = ''
+}
+
 async function addMonster(monster: DndMonster): Promise<void> {
   if (!sheet.value) return
 
@@ -163,81 +182,96 @@ async function addMonster(monster: DndMonster): Promise<void> {
 
 <template>
   <div class="max-h-full flex flex-col gap-4">
-    <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="search">
-          {{ $t('actions.search') }}
-        </UiLabel>
-        <UiInputGroup>
-          <UiInputGroupInput
-            id="search"
-            v-model="state.search"
-            name="search"
-            type="search"
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col sm:flex-row items-end gap-x-4 gap-y-2">
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="search">
+            {{ $t('actions.search') }}
+          </UiLabel>
+          <UiInputGroup>
+            <UiInputGroupInput
+              id="search"
+              v-model="state.search"
+              name="search"
+              type="search"
+            />
+            <UiInputGroupAddon align="inline-end">
+              <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
+            </UiInputGroupAddon>
+          </UiInputGroup>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="cr">
+            {{ $t('components.inputs.challengeLabel') }}
+          </UiLabel>
+          <UiSelect id="cr" v-model="state.cr" name="cr" :disabled="isLoading">
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in crFilterOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="sortBy">
+            {{ $t('components.addInitiativeMonster.sort.title') }}
+          </UiLabel>
+          <UiSelect
+            id="sortBy"
+            v-model="state.sortBy"
+            name="sortBy"
+            :disabled="isLoading"
+          >
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in sortOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="system">
+            {{ $t('components.inputs.gameSystemLabel') }}
+          </UiLabel>
+          <GameSystemFilter
+            id="system"
+            v-model:document="state.documents"
+            v-model:system="state.system"
+            :documents="documents || []"
+            :disabled="isLoading"
           />
-          <UiInputGroupAddon align="inline-end">
-            <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
-          </UiInputGroupAddon>
-        </UiInputGroup>
+        </div>
       </div>
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="cr">
-          {{ $t('components.inputs.challengeLabel') }}
-        </UiLabel>
-        <UiSelect id="cr" v-model="state.cr" name="cr" :disabled="isLoading">
-          <UiSelectTrigger>
-            <UiSelectValue />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem
-                v-for="option in crFilterOptions"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="sortBy">
-          {{ $t('components.addInitiativeMonster.sort.title') }}
-        </UiLabel>
-        <UiSelect
-          id="sortBy"
-          v-model="state.sortBy"
-          name="sortBy"
-          :disabled="isLoading"
-        >
-          <UiSelectTrigger>
-            <UiSelectValue />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem
-                v-for="option in sortOptions"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="system">
-          {{ $t('components.inputs.gameSystemLabel') }}
-        </UiLabel>
-        <GameSystemFilter
-          id="system"
-          v-model:document="state.documents"
-          v-model:system="state.system"
-          :documents="documents || []"
-          :disabled="isLoading"
-        />
+      <div class="flex gap-2">
+        <AnimationExpand axis="width">
+          <UiButton
+            v-if="showResetButton"
+            test-id="reset-filters"
+            variant="foreground-ghost"
+            @click="resetFilters"
+          >
+            <Icon name="tabler:filter-x" />
+            {{ $t('actions.resetFilter', 2) }}
+          </UiButton>
+        </AnimationExpand>
       </div>
     </div>
 

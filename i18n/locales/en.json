@@ -77,7 +77,8 @@
     "applyDamage": "Apply damage",
     "generateName": "Generate name",
     "kick": "Remove",
-    "copyLink": "Copy link"
+    "copyLink": "Copy link",
+    "resetFilter": "Reset filter | Reset filters"
   },
   "general": {
     "waiting": "Waiting",
