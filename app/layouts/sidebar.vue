@@ -32,24 +32,30 @@ async function logoutUser(): Promise<void> {
   <UiSidebarProvider class="min-h-full">
     <UiSidebar ref="sidebar" collapsible="icon">
       <UiSidebarHeader>
-        <NuxtLinkLocale to="/" class="group-data-[collapsible=icon]:py-0 py-2">
-          <NuxtImg
-            src="/logo.svg"
-            alt="DnD Tracker logo"
-            width="356"
-            height="125"
-            sizes="sm:150px"
-            class="h-10 group-data-[collapsible=icon]:hidden"
-          />
-          <NuxtImg
-            src="/icon-logo.svg"
-            alt="DnD Tracker logo"
-            width="147"
-            height="125"
-            sizes="sm:150px"
-            class="h-10 hidden group-data-[collapsible=icon]:block"
-          />
-        </NuxtLinkLocale>
+        <div class="flex items-center gap-2 min-w-0">
+          <NuxtLinkLocale
+            to="/"
+            class="group-data-[collapsible=icon]:py-0 py-2 min-w-0"
+          >
+            <NuxtImg
+              src="/logo.svg"
+              alt="DnD Tracker logo"
+              width="356"
+              height="125"
+              sizes="sm:150px"
+              class="h-10 group-data-[collapsible=icon]:hidden"
+            />
+            <NuxtImg
+              src="/icon-logo.svg"
+              alt="DnD Tracker logo"
+              width="147"
+              height="125"
+              sizes="sm:150px"
+              class="h-10 hidden group-data-[collapsible=icon]:block"
+            />
+          </NuxtLinkLocale>
+          <UiSidebarClose class="ml-auto" />
+        </div>
       </UiSidebarHeader>
       <UiSidebarSeparator class="mx-0" />
       <UiSidebarContent>

@@ -9,6 +9,7 @@ export interface SidebarProps {
 }
 
 export { default as Sidebar } from './Sidebar.vue'
+export { default as SidebarClose } from './SidebarClose.vue'
 export { default as SidebarContent } from './SidebarContent.vue'
 export { default as SidebarFooter } from './SidebarFooter.vue'
 export { default as SidebarGroup } from './SidebarGroup.vue'
