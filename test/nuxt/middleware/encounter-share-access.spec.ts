@@ -21,7 +21,6 @@ mockNuxtImport('createError', () => vi.fn(message => new Error(message)))
 
 describe('Encounter share access middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 

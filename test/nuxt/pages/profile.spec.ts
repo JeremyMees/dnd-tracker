@@ -99,8 +99,6 @@ function confirmCallback(): (confirmed: boolean) => Promise<void> {
 
 describe('Profile page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     user.value = { ...authUser }
 
     updateProfile.mockResolvedValue(undefined)

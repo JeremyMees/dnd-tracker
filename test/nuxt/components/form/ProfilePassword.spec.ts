@@ -19,8 +19,6 @@ async function submitPassword(
 
 describe('ProfilePassword', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     update.mockResolvedValue(undefined)
   })
 

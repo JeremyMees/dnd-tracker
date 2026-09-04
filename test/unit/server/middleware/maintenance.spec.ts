@@ -27,7 +27,6 @@ function mockEvent(path: string) {
 
 describe('Maintenance server middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     isMaintenanceEnabled.mockReturnValue(true)
     isUnderMaintenance.mockReturnValue(true)
   })

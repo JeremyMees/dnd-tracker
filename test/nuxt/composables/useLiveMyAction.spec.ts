@@ -83,7 +83,6 @@ const cachedState = {
 
 describe('useLiveMyAction', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     localStorage.clear()
     localStorage.setItem('live-seat', JSON.stringify(seat))
     rowId.value = 'row-1'

@@ -48,7 +48,6 @@ vi.mock('~/queries/open5e', () => ({
 
 describe('Initiative table row conditions', async () => {
   beforeEach(() => {
-    mockPatchRow.mockClear()
     mockSheet.value = sheet
   })
 

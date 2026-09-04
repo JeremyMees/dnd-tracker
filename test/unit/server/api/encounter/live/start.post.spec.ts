@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockAuthedUser,
@@ -14,7 +14,6 @@ const future = new Date(Date.now() + 60_000).toISOString()
 
 describe('POST /api/encounter/live/start', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ jwtSecret: 'test-secret' })
   })

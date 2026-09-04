@@ -16,7 +16,6 @@ import {
 
 describe('homebrews queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     await clearQueryCache()
   })
 

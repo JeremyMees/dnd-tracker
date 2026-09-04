@@ -19,7 +19,6 @@ mockNuxtImport('$fetch', () => fetchMock)
 
 describe('Live access middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 

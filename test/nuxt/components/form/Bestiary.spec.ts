@@ -84,8 +84,6 @@ const storageKey = 'dnd-tracker:filters:bestiary'
 
 describe('Bestiary', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     monstersStatus.value = 'success'
     documentsStatus.value = 'success'
     data.value = { items: [dndMonsterFixture], pages: 1 }

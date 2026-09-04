@@ -57,8 +57,6 @@ let component: VueWrapper<InstanceType<typeof ActionRoll>>
 
 describe('ActionRoll component', () => {
   beforeEach(() => {
-    mockPatchRow.mockClear()
-    mockToast.mockClear()
     mockSheet.value = sheet
   })
 

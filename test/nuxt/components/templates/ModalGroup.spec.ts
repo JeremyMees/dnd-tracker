@@ -59,7 +59,6 @@ async function mount(): Promise<Awaited<ReturnType<typeof mountSuspended>>> {
 describe('ModalGroup', () => {
   beforeEach(() => {
     modalsRef.value = []
-    closeMock.mockClear()
   })
 
   it('Should render nothing when there are no open modals', async () => {

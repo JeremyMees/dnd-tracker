@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import MyCharacterHp from '~/components/live/MyCharacterHp.vue'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
@@ -40,10 +40,6 @@ async function submitAs(
 }
 
 describe('LiveMyCharacterHp', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('matches the snapshot', async () => {
     const component = await mountHp()
 

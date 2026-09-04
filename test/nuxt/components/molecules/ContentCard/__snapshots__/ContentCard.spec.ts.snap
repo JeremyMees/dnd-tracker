@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContentCard - 'armor' > Should match snapshot 1`] = `
+exports[`ContentCard - armor > Should match snapshot 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="armor">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -23,7 +23,7 @@ exports[`ContentCard - 'armor' > Should match snapshot 1`] = `
 </div>"
 `;
 
-exports[`ContentCard - 'condition' (expanded) > Should match snapshot when expanded 1`] = `
+exports[`ContentCard - condition (expanded) > Should match snapshot when expanded 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="conditions">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -46,7 +46,7 @@ exports[`ContentCard - 'condition' (expanded) > Should match snapshot when expan
 </div>"
 `;
 
-exports[`ContentCard - 'condition' > Should match snapshot 1`] = `
+exports[`ContentCard - condition > Should match snapshot 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="conditions">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -69,7 +69,7 @@ exports[`ContentCard - 'condition' > Should match snapshot 1`] = `
 </div>"
 `;
 
-exports[`ContentCard - 'magic item' (expanded) > Should match snapshot when expanded 1`] = `
+exports[`ContentCard - magic item (expanded) > Should match snapshot when expanded 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="magicitems">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -106,7 +106,7 @@ exports[`ContentCard - 'magic item' (expanded) > Should match snapshot when expa
 </div>"
 `;
 
-exports[`ContentCard - 'magic item' > Should match snapshot 1`] = `
+exports[`ContentCard - magic item > Should match snapshot 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="magicitems">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -131,7 +131,7 @@ exports[`ContentCard - 'magic item' > Should match snapshot 1`] = `
 </div>"
 `;
 
-exports[`ContentCard - 'spell' (expanded) > Should match snapshot when expanded 1`] = `
+exports[`ContentCard - spell (expanded) > Should match snapshot when expanded 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="spells">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -180,7 +180,7 @@ exports[`ContentCard - 'spell' (expanded) > Should match snapshot when expanded 
 </div>"
 `;
 
-exports[`ContentCard - 'spell' > Should match snapshot 1`] = `
+exports[`ContentCard - spell > Should match snapshot 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="spells">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -205,7 +205,7 @@ exports[`ContentCard - 'spell' > Should match snapshot 1`] = `
 </div>"
 `;
 
-exports[`ContentCard - 'weapon' (expanded) > Should match snapshot when expanded 1`] = `
+exports[`ContentCard - weapon (expanded) > Should match snapshot when expanded 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="weapons">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->
@@ -240,7 +240,7 @@ exports[`ContentCard - 'weapon' (expanded) > Should match snapshot when expanded
 </div>"
 `;
 
-exports[`ContentCard - 'weapon' > Should match snapshot 1`] = `
+exports[`ContentCard - weapon > Should match snapshot 1`] = `
 "<div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" type="weapons">
   <div class="flex flex-col gap-y-1.5 p-4">
     <!--v-if-->

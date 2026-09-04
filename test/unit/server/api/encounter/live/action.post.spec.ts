@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockChain,
@@ -56,7 +56,6 @@ function seatToken(overrides: Partial<Record<string, unknown>> = {}) {
 
 describe('POST /api/encounter/live/action', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })
     mockStorage()
   })

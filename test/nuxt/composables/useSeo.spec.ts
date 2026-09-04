@@ -66,7 +66,6 @@ function headTitle(call = 0): unknown {
 
 describe('useSeo', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     locale.value = 'en'
   })
 

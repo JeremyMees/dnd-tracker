@@ -45,7 +45,6 @@ async function mountProbe() {
 
 describe('useLiveSession', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 

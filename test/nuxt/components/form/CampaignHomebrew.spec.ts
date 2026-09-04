@@ -49,8 +49,6 @@ function rowsOf(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
 
 describe('CampaignHomebrew', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     homebrews.value = mockHomebrewListing
     isPending.value = false
   })

@@ -41,8 +41,6 @@ async function mountPage() {
 
 describe('Reset password page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     query.value = {}
     updateUser.mockResolvedValue({ error: null })
   })

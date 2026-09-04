@@ -16,7 +16,6 @@ function mountForm(
 
 describe('LiveJoinCode', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 

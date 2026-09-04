@@ -9,7 +9,6 @@ import { usePricingListing } from '~/queries/pricing'
 
 describe('pricing queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

@@ -24,7 +24,6 @@ const props: Props = {
 
 describe('Initiative table row concentration', async () => {
   beforeEach(() => {
-    mockPatchRow.mockClear()
     mockSheet.value = sheet
   })
 

@@ -19,7 +19,6 @@ import {
 
 describe('open5e queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

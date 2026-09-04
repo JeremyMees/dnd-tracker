@@ -87,8 +87,6 @@ function modalEvents(): { finished: () => void } {
 
 describe('Campaign danger zone page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     isOwner.value = true
 
     removeCampaign.mockResolvedValue(undefined)

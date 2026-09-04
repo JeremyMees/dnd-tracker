@@ -24,6 +24,7 @@ mockNuxtImport('useHealthCheck', () => useHealthCheckMock)
 mockNuxtImport('useRoute', () => () => routeMock)
 
 const stubs = {
+  NuxtRouteAnnouncer: { template: '<div test-id="route-announcer" />' },
   NuxtPage: { template: '<div test-id="nuxt-page" />' },
   ModalGroup: { template: '<div test-id="modal-group" />' },
 }

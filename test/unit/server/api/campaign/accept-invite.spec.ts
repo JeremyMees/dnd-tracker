@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import {
@@ -53,7 +53,6 @@ function mockTables({
 
 describe('POST /api/campaign/accept-invite', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: secretString })
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
   })

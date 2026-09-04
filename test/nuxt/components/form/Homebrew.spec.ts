@@ -84,8 +84,6 @@ function updateOptions() {
 
 describe('Homebrew', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     currentUser.value = { id: authUser.id }
     createHomebrew.mockResolvedValue(undefined)
     updateHomebrew.mockResolvedValue(undefined)

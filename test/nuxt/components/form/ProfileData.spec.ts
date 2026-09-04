@@ -20,8 +20,6 @@ function mountProfileData(overrides: Partial<typeof initialValues> = {}) {
 
 describe('ProfileData', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     update.mockResolvedValue(undefined)
   })
 

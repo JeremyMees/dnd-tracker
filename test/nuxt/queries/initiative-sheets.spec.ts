@@ -26,7 +26,6 @@ const row: InitiativeSheetRow = {
 
 describe('initiative-sheets queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

@@ -22,7 +22,6 @@ const props = { encounterId: 1, rows: [] }
 
 describe('LiveConnected', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     user.value = { ...authUser, subscriptionType: 'free' }
     session.value = undefined
     active.value = false

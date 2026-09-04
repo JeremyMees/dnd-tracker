@@ -85,7 +85,6 @@ function emitBroadcast(event: string, payload: unknown): void {
 
 describe('useLiveRealtime', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)
     isOnline.value = true

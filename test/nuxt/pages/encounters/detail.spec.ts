@@ -137,8 +137,6 @@ function emitBroadcast(event: string, payload: unknown): void {
 
 describe('Encounter detail page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)
     update.mockResolvedValue(undefined)

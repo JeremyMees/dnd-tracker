@@ -59,8 +59,6 @@ async function mountPlayground() {
 
 describe('Playground page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     isTourActive.value = false
     tourData.value = undefined
     token.value = undefined

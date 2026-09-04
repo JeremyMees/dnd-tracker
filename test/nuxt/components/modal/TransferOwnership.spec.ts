@@ -51,7 +51,6 @@ function requestBody() {
 
 describe('TransferOwnership modal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockResolvedValue(undefined)
   })
 

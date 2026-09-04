@@ -62,8 +62,6 @@ async function selectCampaign(
 
 describe('Encounter modal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     campaigns.value = [
       { id: 1, title: 'The Sunless Citadel' },
       { id: 2, title: 'The Lost Mine' },

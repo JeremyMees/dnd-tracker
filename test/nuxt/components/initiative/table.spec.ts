@@ -99,7 +99,6 @@ vi.mock('~~/composables/initiative-sheet', () => ({
 describe('Initiative table', () => {
   beforeEach(() => {
     mockSheet.value = sheet
-    mockUpdate.mockClear()
   })
 
   it('Should match snapshot', async () => {

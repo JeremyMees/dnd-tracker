@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import handler from '~~/server/api/encounter/live/code.get'
@@ -61,10 +61,6 @@ function eventWithCode(code: string) {
 }
 
 describe('GET /api/encounter/live/code', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('returns the code, expiry and claimable player/npc rows for an active session', async () => {
     mockFrom({
       live_sessions: mockChain({ data: session, error: null }),

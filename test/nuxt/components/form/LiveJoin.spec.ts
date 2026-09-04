@@ -20,7 +20,6 @@ function mountForm(props: { code?: string; rows?: typeof rows } = {}) {
 
 describe('LiveJoin', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 

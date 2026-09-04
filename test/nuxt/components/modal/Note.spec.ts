@@ -39,8 +39,6 @@ function updateOptions() {
 
 describe('Note modal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     createNote.mockResolvedValue(undefined)
     updateNote.mockResolvedValue(undefined)
   })

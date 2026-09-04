@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
@@ -21,7 +21,6 @@ function eventWithToken(token: string) {
 
 describe('GET /api/encounter/share', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })
   })
 

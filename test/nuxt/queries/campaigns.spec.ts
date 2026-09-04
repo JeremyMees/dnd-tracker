@@ -20,7 +20,6 @@ import {
 
 describe('campaigns queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     await clearQueryCache()
   })
 

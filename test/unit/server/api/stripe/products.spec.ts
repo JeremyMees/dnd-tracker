@@ -24,7 +24,6 @@ function price(overrides: Record<string, unknown> = {}) {
 
 describe('GET /api/stripe/products', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockStorage()
     mockRuntimeConfig({ stripeApiKey: 'sk_test_stub' })
   })

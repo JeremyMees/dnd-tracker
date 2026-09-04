@@ -30,8 +30,6 @@ async function submitAmount(
 
 describe('AcUpdateBase', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     updateRow.mockResolvedValue(undefined)
   })
 

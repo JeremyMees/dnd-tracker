@@ -47,7 +47,6 @@ const props = {
 
 describe('Initiative TableHeader Init', () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
   })
 

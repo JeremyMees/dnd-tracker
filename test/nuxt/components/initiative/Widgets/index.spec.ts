@@ -50,7 +50,6 @@ let component: VueWrapper<InstanceType<typeof Widgets>>
 
 describe('Initiative widgets wrapper', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
     liveActive.value = false
   })

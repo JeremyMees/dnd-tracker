@@ -39,8 +39,6 @@ async function submitAmount(
 
 describe('AcOverride', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     handleAcChanges.mockReturnValue(updatedRow)
     updateRow.mockResolvedValue(undefined)
   })

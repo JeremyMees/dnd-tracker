@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockChain,
@@ -41,7 +41,6 @@ function joinEvent(body: Record<string, unknown>) {
 
 describe('POST /api/encounter/live/join', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })
     mockStorage()
   })

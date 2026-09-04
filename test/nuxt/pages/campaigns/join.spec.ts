@@ -61,8 +61,6 @@ async function mountPage() {
 
 describe('Campaign join page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     fetchMock.mockResolvedValue(undefined)
     getQueryData.mockReturnValue({ ...invite })
   })

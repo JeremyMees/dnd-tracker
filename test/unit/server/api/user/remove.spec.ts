@@ -21,7 +21,6 @@ function mockDeleteUser(result: Record<string, unknown>) {
 
 describe('POST /api/user/remove', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockAuthedUser({ sub: callerId, email: 'dm@example.com' })
   })
 

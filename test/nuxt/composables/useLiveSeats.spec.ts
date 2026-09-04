@@ -91,7 +91,6 @@ function presenceHandler() {
 
 describe('useLiveSeats', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)

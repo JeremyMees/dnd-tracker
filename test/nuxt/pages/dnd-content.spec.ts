@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import DnDContentPage from '~/pages/dnd-content.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
@@ -19,10 +19,6 @@ function mountPage() {
 }
 
 describe('DnD content page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should render the content search', async () => {
     const component = await mountPage()
 

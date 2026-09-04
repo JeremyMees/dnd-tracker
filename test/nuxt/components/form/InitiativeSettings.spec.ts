@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import InitiativeSettings from '~/components/form/InitiativeSettings.vue'
 import {
   initiativeDefaultRows,
@@ -20,10 +20,6 @@ function mountSettings({ withSheet = true } = {}) {
 }
 
 describe('InitiativeSettings', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should match snapshot', async () => {
     const component = await mountSettings().mount()
 

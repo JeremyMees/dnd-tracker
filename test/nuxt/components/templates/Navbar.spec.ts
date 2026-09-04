@@ -68,8 +68,6 @@ async function mountNavbar() {
 
 describe('Navbar', () => {
   beforeEach(() => {
-    logoutMock.mockClear()
-    toastMock.mockClear()
     isSmallMock.value = false
     userMock.value = { name: 'Test User', avatar: '/avatar.png' }
   })
@@ -105,7 +103,7 @@ describe('Navbar', () => {
     const component = await mountSuspended(Navbar)
     const vm = component.vm as unknown as NavbarVm
 
-    window.scrollY = 20
+    window.scrollTo(0, 20)
     // @ts-expect-error - Error is expected to be thrown
     window?.onscroll?.()
     await nextTick()
@@ -114,7 +112,7 @@ describe('Navbar', () => {
       'bg-background/80',
     )
 
-    window.scrollY = 0
+    window.scrollTo(0, 0)
     // @ts-expect-error - Error is expected to be thrown
     window?.onscroll?.()
     await nextTick()

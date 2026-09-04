@@ -4,7 +4,6 @@ import { liveStateQueryKey, useLiveState } from '~/queries/live'
 
 describe('live queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

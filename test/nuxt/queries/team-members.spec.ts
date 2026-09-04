@@ -18,7 +18,6 @@ import {
 
 describe('team-members queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

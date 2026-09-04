@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import Index from '~/pages/index.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
@@ -21,10 +21,6 @@ async function mountPage() {
 }
 
 describe('Index page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should set the page seo without a title', async () => {
     await mountPage()
 

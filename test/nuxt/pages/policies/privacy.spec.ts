@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import PrivacyPage from '~/pages/policies/privacy.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
@@ -16,10 +16,6 @@ function mountPage() {
 }
 
 describe('Privacy policy page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should set the page seo', async () => {
     await mountPage()
 

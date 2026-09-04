@@ -35,8 +35,6 @@ const props: Props = {
 
 describe('Initiative table row death saves', async () => {
   beforeEach(() => {
-    mockPatchRow.mockClear()
-    mockToast.mockClear()
     mockSheet.value = sheet
   })
 

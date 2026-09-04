@@ -83,8 +83,6 @@ function emitBroadcast(event: string, payload: unknown): void {
 
 describe('useRealTimeInitiativeSheet', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)
 

@@ -16,7 +16,6 @@ import {
 
 describe('notes queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     await clearQueryCache()
   })
 

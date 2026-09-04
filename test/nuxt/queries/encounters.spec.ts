@@ -47,7 +47,6 @@ const encounterItem: EncounterItem = {
 
 describe('encounters queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

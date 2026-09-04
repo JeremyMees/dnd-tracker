@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { H3Event } from 'h3'
 import {
   requireUser,
@@ -37,10 +37,6 @@ function mockServiceRole({
 }
 
 describe('auth', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('requireUser', () => {
     it('returns the session user for authenticated claims', async () => {
       serverSupabaseUser.mockResolvedValue({

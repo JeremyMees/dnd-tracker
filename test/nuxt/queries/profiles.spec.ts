@@ -16,7 +16,6 @@ mockNuxtImport('useAuthentication', () => () => ({ logout }))
 
 describe('profiles queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     await clearQueryCache()
   })

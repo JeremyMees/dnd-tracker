@@ -37,7 +37,6 @@ async function settleRedirect(): Promise<void> {
 
 describe('Login page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.useFakeTimers()
 
     redirect.value = ''

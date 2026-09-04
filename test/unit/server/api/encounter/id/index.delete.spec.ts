@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockChain,
@@ -18,7 +18,6 @@ function deleteEvent() {
 
 describe('DELETE /api/encounter/[id]', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     serverSupabaseUser.mockResolvedValue({
       sub: 'user-1',
       email: 'dm@test.com',

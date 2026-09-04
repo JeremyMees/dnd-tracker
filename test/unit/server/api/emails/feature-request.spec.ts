@@ -19,7 +19,6 @@ function body(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/emails/feature-request', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockFetch.mockReset()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ plunkApiKey: 'plunk-key' })

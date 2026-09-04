@@ -39,8 +39,6 @@ async function submitAs(
 
 describe('AcUpdate', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     handleAcChanges.mockReturnValue(updatedRow)
     updateRow.mockResolvedValue(undefined)
   })

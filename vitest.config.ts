@@ -1,4 +1,4 @@
-import { coverageConfigDefaults, defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import vue from '@vitejs/plugin-vue'
 import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
@@ -10,6 +10,9 @@ const ignoredLogs = [
 ]
 
 export default defineConfig({
+  resolve: {
+    alias: { 'vitest/environments': 'vitest/runtime' },
+  },
   test: {
     projects: [
       {
@@ -42,7 +45,6 @@ export default defineConfig({
         statements: 80,
       },
       exclude: [
-        ...coverageConfigDefaults.exclude,
         'sentry.client.config.ts',
         'test/**',
         'constants/**',

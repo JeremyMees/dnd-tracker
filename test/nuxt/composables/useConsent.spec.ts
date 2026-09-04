@@ -55,7 +55,6 @@ describe('useConsent', () => {
 
     const { useConsent } = await import('~/composables/useConsent')
     consent = useConsent()
-    vi.clearAllMocks()
   })
 
   afterEach(() => {

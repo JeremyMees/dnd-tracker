@@ -79,8 +79,6 @@ describe('DnDContentSearch', async () => {
   beforeEach(async () => {
     status.value = 'success'
     data.value = { items: open5eV2ArmorListingFixture, pages: 1 }
-    mockUpdate.mockClear()
-    mockToast.mockClear()
     vi.useRealTimers()
     localStorage.clear()
     routeQuery.value = {}

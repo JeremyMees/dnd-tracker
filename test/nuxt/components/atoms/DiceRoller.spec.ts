@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import DiceRoller from '~/components/atoms/DiceRoller.vue'
 
 interface Props {
@@ -33,10 +33,6 @@ async function renderDescription(node: unknown) {
 }
 
 describe('DiceRoller', () => {
-  beforeEach(() => {
-    mockToast.mockClear()
-  })
-
   it('Should match snapshot', async () => {
     const component = await mountSuspended(DiceRoller, { props })
     expect(component.html()).toMatchSnapshot()

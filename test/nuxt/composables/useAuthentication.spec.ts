@@ -78,7 +78,6 @@ describe('useAuthentication', () => {
   let auth: ReturnType<typeof useAuthentication>
 
   beforeEach(() => {
-    vi.clearAllMocks()
     clearNuxtState()
     stateMap.clear()
 

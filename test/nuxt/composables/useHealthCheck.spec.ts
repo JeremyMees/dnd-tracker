@@ -43,7 +43,6 @@ async function mountProbe() {
 
 describe('useHealthCheck', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.useFakeTimers()
     isOnline.value = true
     fetchMock.mockResolvedValue({ status: 'ok' })

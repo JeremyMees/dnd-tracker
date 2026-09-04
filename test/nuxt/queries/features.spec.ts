@@ -16,7 +16,6 @@ import {
 
 describe('features queries', () => {
   beforeEach(async () => {
-    vi.clearAllMocks()
     await clearQueryCache()
   })
 

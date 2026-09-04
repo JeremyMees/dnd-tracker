@@ -148,7 +148,6 @@ const lifetimeProfile = {
 
 describe('POST /api/stripe/webhooks', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.restoreAllMocks()
     mockStorage()
     mockRuntimeConfig({ stripeWebhook: 'whsec_test' })

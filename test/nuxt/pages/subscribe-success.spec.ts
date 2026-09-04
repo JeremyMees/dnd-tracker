@@ -20,7 +20,6 @@ function mountPage() {
 
 describe('Subscribe success page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.useFakeTimers()
   })
 

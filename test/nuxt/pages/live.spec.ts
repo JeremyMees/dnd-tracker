@@ -87,7 +87,6 @@ const joinedSession = {
 
 describe('Live page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     query.value = {}
     localStorage.clear()
     liveState.value = undefined

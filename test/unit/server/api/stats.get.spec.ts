@@ -49,7 +49,6 @@ function authed(header = 'Bearer trmnl-secret') {
 
 describe('GET /api/stats', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ trmnl: 'trmnl-secret' })
   })
 

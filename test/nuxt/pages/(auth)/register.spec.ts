@@ -61,8 +61,6 @@ async function mountPage() {
 
 describe('Register page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     register.mockResolvedValue(undefined)
   })
 

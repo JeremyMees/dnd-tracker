@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
   mockChain,
   mockFrom,
@@ -12,10 +12,6 @@ import {
 } from '~~/server/utils/combat-events'
 
 describe('combat-events', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('logCombatEvents', () => {
     it('inserts one row per event with the actor and encounter context', async () => {
       mockFrom({ combat_events: mockChain({ data: null, error: null }) })

@@ -106,7 +106,7 @@
     "@tanstack/eslint-plugin-query": "^5.102.2",
     "@types/node": "^26.2.0",
     "@types/sanitize-html": "^2.16.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.0.0",
     "@vue/test-utils": "^2.4.11",
     "golar": "^0.1.10",
     "happy-dom": "^20.11.6",
@@ -118,20 +118,13 @@
     "prettier": "^3.9.6",
     "typescript": "^5.9.3",
     "unimport": "^6.4.0",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "overrides": {
     "@vercel/nft": "^0.27.10",
     "nostics": "^1.2.0",
     "parse5": "^6.0.1",
-    "vue": "latest"
-  },
-  "allowScripts": {
-    "esbuild@0.25.12": true,
-    "esbuild@0.28.2": true,
-    "@sentry/cli@2.58.6": true,
-    "fsevents@2.3.3": true,
-    "unrs-resolver@1.12.2": true,
-    "vue-demi@0.14.10": true
+    "vue": "latest",
+    "vitest": "^5.0.0"
   }
 }

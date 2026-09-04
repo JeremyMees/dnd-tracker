@@ -62,7 +62,6 @@ function closeTour(hook: keyof Config): Promise<void> {
 
 describe('useTour', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     clearNuxtState()
 
     user.value = undefined
