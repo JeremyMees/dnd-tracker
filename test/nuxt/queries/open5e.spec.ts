@@ -1,7 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
 import {
-  open5eV2ConditionFixture,
-  open5eV2MonsterFixture,
+  dndConditionFixture,
+  dndMonsterFixture,
+  dndSpellFixture,
+  open5eDocumentFixture,
 } from '~~/test/fixtures/open5e'
 import {
   clearQueryCache,
@@ -17,23 +20,49 @@ import {
   useOpen5eMonsterListing,
 } from '~/queries/open5e'
 
+let mounted: VueWrapper | undefined
+
+async function mount<T extends Record<string, unknown>>(
+  setupFn: () => T | Promise<T>,
+) {
+  const result = await mountHook(setupFn)
+
+  mounted = result.component as unknown as VueWrapper
+
+  return result
+}
+
+function request() {
+  const [url, options] = fetchMock.mock.calls[0]!
+
+  return { url, query: options?.query as Record<string, unknown> | undefined }
+}
+
 describe('open5e queries', () => {
   beforeEach(async () => {
     fetchMock.mockReset()
     await clearQueryCache()
   })
 
-  describe('useOpen5eListing', () => {
-    it('fetches, transforms, and narrows the listing to the requested type', async () => {
-      fetchMock.mockResolvedValue({
-        count: 25,
-        results: [open5eV2MonsterFixture],
-      })
+  afterEach(() => {
+    mounted?.unmount()
+    mounted = undefined
+  })
 
-      const { vm } = await mountHook(() =>
+  describe('useOpen5eListing', () => {
+    it('passes the already narrowed listing through untouched', async () => {
+      const listing = {
+        type: 'spells' as const,
+        items: [dndSpellFixture],
+        pages: 2,
+      }
+
+      fetchMock.mockResolvedValue(listing)
+
+      const { vm } = await mount(() =>
         useOpen5eListing(
           computed(() => ({
-            type: 'monsters' as const,
+            type: 'spells' as const,
             filters: { page: 0 } as Open5eFilters,
           })),
         ),
@@ -41,20 +70,75 @@ describe('open5e queries', () => {
 
       await vi.waitFor(() => expect(vm.data).toBeDefined())
 
-      expect(vm.data?.type).toBe('monsters')
-      expect(vm.data?.items).toHaveLength(1)
-      expect(vm.data?.pages).toBe(2)
+      expect(vm.data).toEqual(listing)
+    })
 
-      const [url] = fetchMock.mock.calls[0]!
+    it('calls our own endpoint rather than open5e directly', async () => {
+      fetchMock.mockResolvedValue({ type: 'spells', items: [], pages: 0 })
 
-      expect(url).toContain('https://api.open5e.com/v2/creatures/?')
-      expect(url).toContain('page=1')
+      await mount(() =>
+        useOpen5eListing(
+          computed(() => ({
+            type: 'spells' as const,
+            filters: { page: 0 } as Open5eFilters,
+          })),
+        ),
+      )
+
+      expect(request().url).toBe('/api/open5e/listing')
+      expect(fetchMock.mock.calls[0]![0]).not.toContain('api.open5e.com')
+    })
+
+    it('maps the open5e filter names onto the endpoint contract', async () => {
+      fetchMock.mockResolvedValue({ type: 'spells', items: [], pages: 0 })
+
+      await mount(() =>
+        useOpen5eListing(
+          computed(() => ({
+            type: 'spells' as const,
+            filters: {
+              page: 2,
+              name__icontains: 'fire',
+              ordering: 'name',
+              document__key__in: 'srd-2024,srd-2014',
+            } as Open5eFilters,
+          })),
+        ),
+      )
+
+      expect(request().query).toEqual({
+        type: 'spells',
+        page: 2,
+        search: 'fire',
+        documents: 'srd-2024,srd-2014',
+        ordering: 'name',
+      })
+    })
+
+    it('sends empty strings rather than omitting unset filters', async () => {
+      fetchMock.mockResolvedValue({ type: 'spells', items: [], pages: 0 })
+
+      await mount(() =>
+        useOpen5eListing(
+          computed(() => ({
+            type: 'spells' as const,
+            filters: { page: 0 } as Open5eFilters,
+          })),
+        ),
+      )
+
+      expect(request().query).toMatchObject({
+        search: '',
+        documents: '',
+        ordering: 'name',
+      })
+      expect(request().query).not.toHaveProperty('cr')
     })
 
     it('toasts an error and settles the query into an error state', async () => {
       fetchMock.mockRejectedValue(new Error('network down'))
 
-      const { vm } = await mountHook(() =>
+      const { vm } = await mount(() =>
         useOpen5eListing(
           computed(() => ({
             type: 'monsters' as const,
@@ -72,33 +156,21 @@ describe('open5e queries', () => {
   })
 
   describe('useOpen5eDocuments', () => {
-    it('keeps only 5e-2014/5e-2024 documents, ordered by publication date', async () => {
-      fetchMock.mockResolvedValue({
-        results: [
-          { gamesystem: { key: '5e-2024' } },
-          { gamesystem: { key: 'a5e' } },
-          { gamesystem: { key: '5e-2014' } },
-        ],
-      })
+    it('passes the already filtered documents through untouched', async () => {
+      fetchMock.mockResolvedValue([open5eDocumentFixture])
 
-      const { vm } = await mountHook(() => useOpen5eDocuments())
+      const { vm } = await mount(() => useOpen5eDocuments())
 
       await vi.waitFor(() => expect(vm.data).toBeDefined())
 
-      expect(vm.data).toEqual([
-        { gamesystem: { key: '5e-2024' } },
-        { gamesystem: { key: '5e-2014' } },
-      ])
-
-      const [url] = fetchMock.mock.calls[0]!
-
-      expect(url).toContain('ordering=-publication_date')
+      expect(vm.data).toEqual([open5eDocumentFixture])
+      expect(request().url).toBe('/api/open5e/documents')
     })
 
     it('toasts an error and settles the query into an error state', async () => {
       fetchMock.mockRejectedValue(new Error('network down'))
 
-      const { vm } = await mountHook(() => useOpen5eDocuments())
+      const { vm } = await mount(() => useOpen5eDocuments())
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
@@ -109,24 +181,21 @@ describe('open5e queries', () => {
   })
 
   describe('useConditionsListing', () => {
-    it('fetches and transforms the srd-2024 condition list', async () => {
-      fetchMock.mockResolvedValue({ results: [open5eV2ConditionFixture] })
+    it('requests the conditions endpoint', async () => {
+      fetchMock.mockResolvedValue([dndConditionFixture])
 
-      const { vm } = await mountHook(() => useConditionsListing())
+      const { vm } = await mount(() => useConditionsListing())
 
       await vi.waitFor(() => expect(vm.data).toBeDefined())
 
       expect(vm.data?.[0]?.id).toBe('blinded')
-
-      const [url] = fetchMock.mock.calls[0]!
-
-      expect(url).toContain('document__key__in=core')
+      expect(request().url).toBe('/api/open5e/conditions')
     })
 
     it('toasts an error and settles the query into an error state', async () => {
       fetchMock.mockRejectedValue(new Error('network down'))
 
-      const { vm } = await mountHook(() => useConditionsListing())
+      const { vm } = await mount(() => useConditionsListing())
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
@@ -137,20 +206,21 @@ describe('open5e queries', () => {
   })
 
   describe('prefetchConditionsListing', () => {
-    it('resolves with the transformed conditions', async () => {
-      fetchMock.mockResolvedValue({ results: [open5eV2ConditionFixture] })
+    it('resolves with the conditions and shares the listing query key', async () => {
+      fetchMock.mockResolvedValue([dndConditionFixture])
 
-      const { vm } = await mountHook(async () => ({
+      const { vm } = await mount(async () => ({
         result: await prefetchConditionsListing(),
       }))
 
       expect(vm.result?.[0]?.id).toBe('blinded')
+      expect(request().url).toBe('/api/open5e/conditions')
     })
 
     it('resolves to undefined instead of throwing when the fetch fails', async () => {
       fetchMock.mockRejectedValue(new Error('network down'))
 
-      const { vm } = await mountHook(async () => ({
+      const { vm } = await mount(async () => ({
         result: await prefetchConditionsListing(),
       }))
 
@@ -159,13 +229,14 @@ describe('open5e queries', () => {
   })
 
   describe('useOpen5eMonsterListing', () => {
-    it('adds a challenge rating range filter when cr is provided', async () => {
+    it('forwards the challenge rating and narrows away the listing type', async () => {
       fetchMock.mockResolvedValue({
-        count: 5,
-        results: [open5eV2MonsterFixture],
+        type: 'monsters',
+        items: [dndMonsterFixture],
+        pages: 1,
       })
 
-      const { vm } = await mountHook(() =>
+      const { vm } = await mount(() =>
         useOpen5eMonsterListing(
           computed(() => ({ filters: { page: 0, cr: 5 } as Open5eFilters })),
         ),
@@ -173,19 +244,44 @@ describe('open5e queries', () => {
 
       await vi.waitFor(() => expect(vm.data).toBeDefined())
 
-      expect(vm.data?.items).toHaveLength(1)
-      expect(vm.data?.pages).toBe(1)
+      expect(vm.data).toEqual({ items: [dndMonsterFixture], pages: 1 })
+      expect(request().query).toMatchObject({ type: 'monsters', cr: 5 })
+    })
 
-      const [url] = fetchMock.mock.calls[0]!
+    it('keeps a zero challenge rating as a real filter', async () => {
+      fetchMock.mockResolvedValue({ type: 'monsters', items: [], pages: 0 })
 
-      expect(url).toContain('challenge_rating__gte=5')
-      expect(url).toContain('challenge_rating__lte=5')
+      await mount(() =>
+        useOpen5eMonsterListing(
+          computed(() => ({ filters: { page: 0, cr: 0 } as Open5eFilters })),
+        ),
+      )
+
+      expect(request().query).toMatchObject({ cr: 0 })
+    })
+
+    it('discards a listing that came back as another type', async () => {
+      fetchMock.mockResolvedValue({
+        type: 'spells',
+        items: [dndSpellFixture],
+        pages: 1,
+      })
+
+      const { vm } = await mount(() =>
+        useOpen5eMonsterListing(
+          computed(() => ({ filters: { page: 0 } as Open5eFilters })),
+        ),
+      )
+
+      await vi.waitFor(() => expect(vm.isSuccess).toBe(true))
+
+      expect(vm.data).toBeUndefined()
     })
 
     it('toasts an error and settles the query into an error state', async () => {
       fetchMock.mockRejectedValue(new Error('network down'))
 
-      const { vm } = await mountHook(() =>
+      const { vm } = await mount(() =>
         useOpen5eMonsterListing(
           computed(() => ({ filters: { page: 0 } as Open5eFilters })),
         ),
