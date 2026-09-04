@@ -94,6 +94,7 @@ export default defineNuxtConfig({
     trmnl: process.env.TRMNL,
     open5eCacheUrl: process.env.OPEN5E_UPSTASH_STORAGE_KV_REST_API_URL,
     open5eCacheToken: process.env.OPEN5E_UPSTASH_STORAGE_KV_REST_API_TOKEN,
+    cronSecret: process.env.CRON_SECRET,
     public: {
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
