@@ -14,7 +14,6 @@ vi.mock('~/components/ui/toast', () => ({
 }))
 
 mockNuxtImport('$fetch', () => fetchMock)
-mockNuxtImport('onNuxtReady', () => (callback: () => void) => callback())
 
 const isOnline = ref(true)
 
@@ -45,7 +44,7 @@ describe('useHealthCheck', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     isOnline.value = true
-    fetchMock.mockResolvedValue({ status: 'ok' })
+    fetchMock.mockReset()
   })
 
   afterEach(() => {
@@ -54,65 +53,29 @@ describe('useHealthCheck', () => {
     vi.useRealTimers()
   })
 
-  it('checks Open5e as soon as the app is ready', async () => {
+  it('never reaches out to open5e itself', async () => {
     await mountProbe()
 
-    expect(fetchMock).toHaveBeenCalledWith('https://api.open5e.com/v2')
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('starts no polling interval', async () => {
+    await mountProbe()
+
+    await vi.advanceTimersByTimeAsync(600000)
+
+    expect(fetchMock).not.toHaveBeenCalled()
     expect(toast).not.toHaveBeenCalled()
-  })
-
-  it('warns when Open5e cannot be reached', async () => {
-    fetchMock.mockRejectedValue(new Error('network error'))
-
-    await mountProbe()
-
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.healthCheck.open5e.title',
-      description: 'components.healthCheck.open5e.text',
-      variant: 'warning',
-    })
-  })
-
-  it('warns when Open5e responds with a falsy payload', async () => {
-    fetchMock.mockResolvedValue(null)
-
-    await mountProbe()
-
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.healthCheck.open5e.title',
-      description: 'components.healthCheck.open5e.text',
-      variant: 'warning',
-    })
-  })
-
-  it('re-checks Open5e on the polling interval', async () => {
-    await mountProbe()
-
-    expect(fetchMock).toHaveBeenCalledTimes(1)
-
-    await vi.advanceTimersByTimeAsync(300000)
-
-    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
   it('does not toast about connectivity on initial mount', async () => {
     await mountProbe()
 
-    expect(toast).not.toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: expect.stringContaining('healthCheck.online'),
-      }),
-    )
-    expect(toast).not.toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: expect.stringContaining('healthCheck.offline'),
-      }),
-    )
+    expect(toast).not.toHaveBeenCalled()
   })
 
   it('toasts when the connection goes offline', async () => {
     await mountProbe()
-    vi.clearAllMocks()
 
     isOnline.value = false
     await flushPromises()
@@ -128,7 +91,6 @@ describe('useHealthCheck', () => {
     isOnline.value = false
 
     await mountProbe()
-    vi.clearAllMocks()
 
     isOnline.value = true
     await flushPromises()
