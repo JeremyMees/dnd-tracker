@@ -164,6 +164,29 @@ describe('open5e queries', () => {
         expect.objectContaining({ variant: 'destructive' }),
       )
     })
+
+    it('errors rather than caching an empty body', async () => {
+      fetchRawMock.mockResolvedValue({
+        _data: undefined,
+        headers: new Headers(),
+      })
+
+      const { vm } = await mount(() =>
+        useOpen5eListing(
+          computed(() => ({
+            type: 'spells' as const,
+            filters: { page: 0 } as Open5eFilters,
+          })),
+        ),
+      )
+
+      await vi.waitFor(() => expect(vm.isError).toBe(true))
+
+      expect(vm.data).toBeUndefined()
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
+    })
   })
 
   describe('useOpen5eDocuments', () => {

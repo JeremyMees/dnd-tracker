@@ -1,4 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { useOpen5eStatus } from '~/composables/useOpen5eStatus'
 import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -85,6 +86,7 @@ describe('DnDContentSearch', async () => {
   })
 
   afterEach(() => {
+    clearNuxtState()
     vi.restoreAllMocks()
   })
 
@@ -663,5 +665,19 @@ describe('DnDContentSearch', async () => {
 
       expect(filterRef?.value.filters.search).toBe('')
     })
+  })
+
+  it('Should not warn about stale content while open5e is healthy', async () => {
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    expect(component.find('[test-id="open5e-stale"]').exists()).toBeFalsy()
+  })
+
+  it('Should warn when the content came from our own cache', async () => {
+    useOpen5eStatus().trackOpen5eFreshness('2026-09-04T12:00:00.000Z')
+
+    const component = await mountSuspended(DnDContentSearch, { props })
+
+    expect(component.find('[test-id="open5e-stale"]').exists()).toBeTruthy()
   })
 })

@@ -1,4 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { useOpen5eStatus } from '~/composables/useOpen5eStatus'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Bestiary from '~/components/form/Bestiary.vue'
@@ -84,6 +85,7 @@ const storageKey = 'dnd-tracker:filters:bestiary'
 
 describe('Bestiary', () => {
   beforeEach(() => {
+    clearNuxtState()
     monstersStatus.value = 'success'
     documentsStatus.value = 'success'
     data.value = { items: [dndMonsterFixture], pages: 1 }
@@ -516,5 +518,19 @@ describe('Bestiary', () => {
 
       vi.useRealTimers()
     })
+  })
+
+  it('Should not warn about stale content while open5e is healthy', async () => {
+    const component = await mountBestiary().mount()
+
+    expect(component.find('[test-id="open5e-stale"]').exists()).toBeFalsy()
+  })
+
+  it('Should warn when the content came from our own cache', async () => {
+    useOpen5eStatus().trackOpen5eFreshness('2026-09-04T12:00:00.000Z')
+
+    const component = await mountBestiary().mount()
+
+    expect(component.find('[test-id="open5e-stale"]').exists()).toBeTruthy()
   })
 })
