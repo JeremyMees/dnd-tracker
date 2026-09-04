@@ -81,5 +81,7 @@ const activeRow = computed(() => props.sheet?.rows[props.sheet.activeIndex])
       :active-row="activeRow"
       :allow="allow"
     />
+
+    <LiveSummary />
   </div>
 </template>

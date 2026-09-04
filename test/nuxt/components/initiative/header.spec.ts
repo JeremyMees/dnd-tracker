@@ -2,11 +2,8 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
-import { openPopover } from '~~/test/nuxt/stubs/popover'
-
-interface HeaderVM {
-  resetOpen: boolean
-}
+import { dropdownStubs } from '~~/test/nuxt/stubs/dropdown-menu'
+import { closeDialog, dialogIsOpen } from '~~/test/nuxt/stubs/dialog'
 
 interface Props {
   data: InitiativeSheet | undefined
@@ -16,6 +13,8 @@ interface Props {
 const props: Props = {
   data: sheet,
 }
+
+const global = { stubs: dropdownStubs }
 
 vi.mock('~/components/live/SessionPanel.vue', () => ({
   default: {
@@ -27,13 +26,13 @@ vi.mock('~/components/live/SessionPanel.vue', () => ({
 
 describe('Initiative header', () => {
   it('Should render correctly with required props', async () => {
-    const component = await mountSuspended(Header, { props })
+    const component = await mountSuspended(Header, { props, global })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display pet when its active in the settings', async () => {
-    const component = await mountSuspended(Header, { props })
+    const component = await mountSuspended(Header, { props, global })
 
     expect(component.find('[test-id="pet"]').exists()).toBeTruthy()
   })
@@ -49,6 +48,7 @@ describe('Initiative header', () => {
           },
         },
       },
+      global,
     })
 
     expect(component.find('[test-id="pet"]').exists()).toBeFalsy()
@@ -62,6 +62,7 @@ describe('Initiative header', () => {
           round: 5,
         },
       },
+      global,
     })
 
     expect(component.find('[test-id="round"]').text()).toBe('5')
@@ -75,6 +76,7 @@ describe('Initiative header', () => {
           round: 0,
         },
       },
+      global,
     })
 
     expect(component.find('[test-id="round"]').text()).toBe('1')
@@ -89,6 +91,7 @@ describe('Initiative header', () => {
           activeIndex: 0,
         },
       },
+      global,
     })
 
     expect(
@@ -104,6 +107,7 @@ describe('Initiative header', () => {
           rows: [],
         },
       },
+      global,
     })
 
     expect(
@@ -118,7 +122,7 @@ describe('Initiative header', () => {
   })
 
   it('Should emit next event when next button is clicked', async () => {
-    const component = await mountSuspended(Header, { props })
+    const component = await mountSuspended(Header, { props, global })
 
     await component.find('[test-id="next"]').trigger('click')
 
@@ -133,6 +137,7 @@ describe('Initiative header', () => {
           activeIndex: 2,
         },
       },
+      global,
     })
 
     await component.find('[test-id="previous"]').trigger('click')
@@ -141,7 +146,7 @@ describe('Initiative header', () => {
   })
 
   it('Should not display the live session trigger without an encounterId', async () => {
-    const component = await mountSuspended(Header, { props })
+    const component = await mountSuspended(Header, { props, global })
 
     expect(
       component.find('[test-id="live-session-trigger"]').exists(),
@@ -151,6 +156,7 @@ describe('Initiative header', () => {
   it('Should display the live session trigger when an encounterId is given', async () => {
     const component = await mountSuspended(Header, {
       props: { ...props, encounterId: 42 },
+      global,
     })
 
     expect(
@@ -161,6 +167,7 @@ describe('Initiative header', () => {
   it('Should render the live session panel with the encounterId when opened', async () => {
     const component = await mountSuspended(Header, {
       props: { ...props, encounterId: 42 },
+      global,
     })
 
     await component.find('[test-id="live-session-trigger"]').trigger('click')
@@ -172,8 +179,24 @@ describe('Initiative header', () => {
     expect(panel.props('encounterId')).toBe(42)
   })
 
+  it('Should close the live session dialog when it is dismissed', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+      global,
+    })
+
+    await component.find('[test-id="live-session-trigger"]').trigger('click')
+    await nextTick()
+
+    expect(dialogIsOpen(component)).toBe(true)
+
+    await closeDialog(component)
+
+    expect(dialogIsOpen(component)).toBe(false)
+  })
+
   it('Should not display the history trigger without an encounterId', async () => {
-    const component = await mountSuspended(Header, { props })
+    const component = await mountSuspended(Header, { props, global })
 
     expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
   })
@@ -181,6 +204,7 @@ describe('Initiative header', () => {
   it('Should display the history trigger when an encounterId is given', async () => {
     const component = await mountSuspended(Header, {
       props: { ...props, encounterId: 42 },
+      global,
     })
 
     expect(component.find('[test-id="history-trigger"]').exists()).toBeTruthy()
@@ -189,6 +213,7 @@ describe('Initiative header', () => {
   it('Should emit toggleHistory when the history trigger is clicked', async () => {
     const component = await mountSuspended(Header, {
       props: { ...props, encounterId: 42 },
+      global,
     })
 
     await component.find('[test-id="history-trigger"]').trigger('click')
@@ -196,47 +221,84 @@ describe('Initiative header', () => {
     expect(component.emitted('toggleHistory')).toBeTruthy()
   })
 
-  it('Should reflect the historyOpen prop on the history trigger', async () => {
+  it('Should label the history trigger with the open action when the log is closed', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+      global,
+    })
+
+    expect(component.find('[test-id="history-trigger"]').text()).toBe(
+      'actions.openCombatLog',
+    )
+  })
+
+  it('Should label the history trigger with the close action when the log is open', async () => {
     const component = await mountSuspended(Header, {
       props: { ...props, encounterId: 42, historyOpen: true },
+      global,
+    })
+
+    expect(component.find('[test-id="history-trigger"]').text()).toBe(
+      'actions.closeCombatLog',
+    )
+  })
+
+  it('Should not display the end encounter button without an encounterId', async () => {
+    const component = await mountSuspended(Header, { props, global })
+
+    expect(component.find('[test-id="end-encounter"]').exists()).toBeFalsy()
+  })
+
+  it('Should display the end encounter button when an encounterId is given', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+      global,
+    })
+
+    expect(component.find('[test-id="end-encounter"]').exists()).toBeTruthy()
+  })
+
+  it('Should emit endEncounter when the end encounter button is clicked', async () => {
+    const component = await mountSuspended(Header, {
+      props: { ...props, encounterId: 42 },
+      global,
+    })
+
+    await component.find('[test-id="end-encounter"]').trigger('click')
+
+    expect(component.emitted('endEncounter')).toHaveLength(1)
+  })
+
+  it('Should disable the end encounter button when the sheet has no rows', async () => {
+    const component = await mountSuspended(Header, {
+      props: {
+        ...props,
+        encounterId: 42,
+        data: { ...props.data, rows: [] } as InitiativeSheet,
+      },
+      global,
     })
 
     expect(
-      component.find('[test-id="history-trigger"]').attributes('aria-pressed'),
-    ).toBe('true')
+      component.find('[test-id="end-encounter"]').attributes('disabled'),
+    ).toBeDefined()
   })
 
-  describe('Reset popover', () => {
-    it('Should emit a soft reset and close the popover when the soft option is clicked', async () => {
-      const component = await mountSuspended(Header, { props })
-      const vm = component.vm as unknown as HeaderVM
+  describe('Reset submenu', () => {
+    it('Should emit a soft reset when the soft option is clicked', async () => {
+      const component = await mountSuspended(Header, { props, global })
 
-      await openPopover(component)
-      ;(
-        document.body.querySelector(
-          '[test-id="reset-soft"]',
-        ) as HTMLButtonElement
-      ).click()
-      await nextTick()
+      await component.find('[test-id="reset-soft"]').trigger('click')
 
       expect(component.emitted('reset')?.[0]).toEqual([false])
-      expect(vm.resetOpen).toBe(false)
     })
 
-    it('Should emit a hard reset and close the popover when the hard option is clicked', async () => {
-      const component = await mountSuspended(Header, { props })
-      const vm = component.vm as unknown as HeaderVM
+    it('Should emit a hard reset when the hard option is clicked', async () => {
+      const component = await mountSuspended(Header, { props, global })
 
-      await openPopover(component)
-      ;(
-        document.body.querySelector(
-          '[test-id="reset-hard"]',
-        ) as HTMLButtonElement
-      ).click()
-      await nextTick()
+      await component.find('[test-id="reset-hard"]').trigger('click')
 
       expect(component.emitted('reset')?.[0]).toEqual([true])
-      expect(vm.resetOpen).toBe(false)
     })
   })
 })

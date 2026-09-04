@@ -3,9 +3,10 @@ import { FlexRender, useTable } from '@tanstack/vue-table'
 import { initiativeFeatures } from '~/tables/features'
 import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
 import { prefetchConditionsListing } from '~/queries/open5e'
+import { useCombatEventsClear } from '~/queries/combat-events'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-defineProps<{ loading: boolean; encounterId?: number }>()
+const props = defineProps<{ loading: boolean; encounterId?: number }>()
 
 const { activeRow, sheet, update } = validateInject(INITIATIVE_SHEET)
 
@@ -26,9 +27,20 @@ const tablePadding = computed(() => {
   else return 'p-2'
 })
 
+const { mutateAsync: clearCombatEvents } = useCombatEventsClear()
+
 const columns = generateColumns()
 const tableData = shallowRef<InitiativeSheetRow[]>([])
 const historyOpen = shallowRef<boolean>(false)
+const summaryOpen = shallowRef<boolean>(false)
+
+async function handleReset(hard: boolean): Promise<void> {
+  reset(hard)
+  summaryOpen.value = false
+
+  if (props.encounterId)
+    await clearCombatEvents({ encounterId: props.encounterId })
+}
 
 watch(
   () => sheet.value?.rows,
@@ -67,10 +79,22 @@ const table = useTable({
       :data="sheet"
       :encounter-id="encounterId"
       :history-open="historyOpen"
-      @reset="reset($event)"
+      @reset="handleReset($event)"
       @previous="previous"
       @next="next"
       @toggle-history="historyOpen = !historyOpen"
+      @end-encounter="summaryOpen = true"
+    />
+
+    <LazyInitiativeSummary
+      v-if="encounterId"
+      :encounter-id="encounterId"
+      :rows="sheet?.rows"
+      :rounds="sheet?.round ?? 1"
+      :open="summaryOpen"
+      @update:open="summaryOpen = $event"
+      @reset="handleReset($event)"
+      @keep-playing="summaryOpen = false"
     />
 
     <div class="flex flex-col lg:flex-row gap-4">

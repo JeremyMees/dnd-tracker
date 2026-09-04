@@ -1,16 +1,6 @@
 <script setup lang="ts">
 import { useCombatEvents } from '~/queries/combat-events'
 
-interface CombatEventPayload {
-  rowName?: string
-  kind?: string
-  amount?: number
-  before?: number
-  after?: number
-  condition?: { id: string; name: string }
-  result?: 'save' | 'fail'
-}
-
 const props = defineProps<{ encounterId: number }>()
 
 const { t } = useI18n()

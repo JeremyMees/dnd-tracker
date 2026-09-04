@@ -78,7 +78,10 @@
     "generateName": "Generate name",
     "kick": "Remove",
     "copyLink": "Copy link",
-    "resetFilter": "Reset filter | Reset filters"
+    "resetFilter": "Reset filter | Reset filters",
+    "encounterStats": "Encounter statistics",
+    "openCombatLog": "Open combat log",
+    "closeCombatLog": "Close combat log"
   },
   "general": {
     "waiting": "Waiting",
@@ -715,6 +718,57 @@
       "stabilized": "{rowName} stabilized",
       "died": "{rowName} died"
     },
+    "combatSummary": {
+      "title": "Encounter summary",
+      "description": "How the fight went for everyone involved",
+      "empty": "Nothing happened this encounter yet, so there is nothing to summarize.",
+      "totals": {
+        "rounds": "Rounds",
+        "damage": "Damage dealt",
+        "healing": "Healing done",
+        "downed": "Times downed",
+        "deaths": "Deaths",
+        "deathSaves": "Death saves",
+        "conditions": "Conditions applied",
+        "concentration": "Concentration broken"
+      },
+      "deathSavesValue": "{made} made / {failed} failed",
+      "awards": {
+        "title": "Standouts",
+        "exclusive": {
+          "died": "Fell in battle after {value} damage",
+          "mostDamageTaken": "Took the most punishment: {value} damage",
+          "mostTimesDowned": "Hit the floor the most: {value}x",
+          "biggestHit": "Took the single biggest hit: {value} damage",
+          "mostDeathSavesFailed": "Closest to death: {value} failed saves",
+          "mostHealingReceived": "Patched up the most: {value} HP",
+          "mostDeathSavesMade": "Clawed back the most: {value} saves made",
+          "mostConditions": "Most afflicted: {value} conditions",
+          "mostConcentrationBroken": "Lost focus the most: {value}x",
+          "mostTempHitPoints": "Best shielded: {value} temporary HP",
+          "unscathed": "Walked away without a scratch"
+        },
+        "plain": {
+          "died": "Fell in battle after {value} damage",
+          "mostDamageTaken": "Took {value} damage",
+          "mostTimesDowned": "Went down {value}x",
+          "biggestHit": "Biggest hit taken: {value} damage",
+          "mostDeathSavesFailed": "Failed {value} death saves",
+          "mostHealingReceived": "Healed for {value} HP",
+          "mostDeathSavesMade": "Made {value} death saves",
+          "mostConditions": "Suffered {value} conditions",
+          "mostConcentrationBroken": "Lost concentration {value}x",
+          "mostTempHitPoints": "Gained {value} temporary HP",
+          "unscathed": "Walked away without a scratch"
+        }
+      },
+      "actions": {
+        "share": "Show players",
+        "shared": "Shown to players",
+        "keepPlaying": "Keep playing",
+        "reset": "Reset encounter"
+      }
+    },
     "initiativeTableModals": {
       "name": "Change name",
       "init": "Change initiative",
@@ -1176,7 +1230,7 @@
     },
     "11": {
       "title": "Time for a fresh start? 🔄",
-      "description": "Finished your encounter? One click resets it so you can dive into the next one right away."
+      "description": "Finished your encounter? Open this menu to reset the rounds, share a live session, end the encounter or peek at the combat log."
     },
     "12": {
       "title": "Congrats, you're ready to go! 🎉"

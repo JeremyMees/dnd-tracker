@@ -278,3 +278,13 @@ export type SbFilter = RequireAtLeastOne<{
   page?: number
   eq?: SbEq
 }>
+
+export interface CombatEventPayload {
+  rowName?: string
+  kind?: 'heal' | 'damage' | 'temp' | 'override' | 'add' | 'remove'
+  amount?: number
+  before?: number
+  after?: number
+  condition?: { id: string; name: string }
+  result?: 'save' | 'fail'
+}
