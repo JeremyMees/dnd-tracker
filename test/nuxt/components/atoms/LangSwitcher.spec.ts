@@ -29,8 +29,6 @@ mockNuxtImport('navigateTo', () => navigateToMock)
 describe('LangSwitcher', async () => {
   beforeEach(() => {
     localeRef.value = 'en'
-    navigateToMock.mockClear()
-    switchLocalePathMock.mockClear()
   })
 
   afterEach(() => {

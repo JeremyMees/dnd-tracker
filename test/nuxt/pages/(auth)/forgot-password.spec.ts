@@ -36,8 +36,6 @@ async function mountPage() {
 
 describe('Forgot password page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     resetPasswordForEmail.mockResolvedValue({ error: null })
   })
 

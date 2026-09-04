@@ -22,13 +22,13 @@ interface ConditionsVM {
   toggleSelected: (item: Condition) => void
 }
 
-const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -48,7 +48,6 @@ vi.mock('~/queries/open5e', () => ({
 
 describe('Initiative table row conditions', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
   })
 
@@ -130,37 +129,16 @@ describe('Initiative table row conditions', async () => {
   })
 
   describe('removeCondition', () => {
-    it('Should not call update when sheet is undefined', async () => {
-      mockSheet.value = undefined
-
+    it('Should patch the row with the matching condition removed', async () => {
       const component = await mountSuspended(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
 
       vm.removeCondition('Paralyzed')
 
-      expect(mockUpdate).not.toHaveBeenCalled()
-    })
-
-    it('Should remove the matching condition from the correct row only', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.removeCondition('Paralyzed')
-
-      expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-      const untouchedRow = payload.rows.find(
-        row => row.id === sheet.rows[1]!.id,
-      )
-
-      expect(updatedRow?.conditions).toHaveLength(0)
-      expect(untouchedRow?.conditions).toHaveLength(
-        sheet.rows[1]!.conditions.length,
-      )
+      expect(mockPatchRow).toHaveBeenCalledTimes(1)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: props.item.conditions.filter(c => c.name !== 'Paralyzed'),
+      })
     })
 
     it('Should leave conditions unchanged when the name does not match', async () => {
@@ -169,12 +147,9 @@ describe('Initiative table row conditions', async () => {
 
       vm.removeCondition('Unknown condition')
 
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-
-      expect(updatedRow?.conditions).toHaveLength(props.item.conditions.length)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: props.item.conditions,
+      })
     })
 
     it('Should remove a condition through the remove button in the popover', async () => {
@@ -188,42 +163,15 @@ describe('Initiative table row conditions', async () => {
 
       await removeButton!.trigger('click')
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-
-      expect(updatedRow?.conditions).toHaveLength(0)
+      expect(mockPatchRow).toHaveBeenCalledTimes(1)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [],
+      })
     })
   })
 
   describe('updateCondition', () => {
-    it('Should not call update when sheet is undefined', async () => {
-      mockSheet.value = undefined
-
-      const component = await mountSuspended(Conditions, { props, provide })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.updateCondition([conditions[0] as Condition])
-
-      expect(mockUpdate).not.toHaveBeenCalled()
-    })
-
-    it('Should not call update when the row cannot be found in the sheet', async () => {
-      const component = await mountSuspended(Conditions, {
-        props: { item: { ...props.item, id: 'missing-row-id' } },
-        provide,
-      })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.updateCondition([conditions[0] as Condition])
-
-      expect(mockUpdate).not.toHaveBeenCalled()
-    })
-
-    it('Should update the conditions for the correct row and close the popover', async () => {
+    it('Should patch the row with the new conditions and close the popover', async () => {
       const component = await mountSuspended(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
 
@@ -232,14 +180,10 @@ describe('Initiative table row conditions', async () => {
 
       vm.updateCondition([conditions[2] as Condition])
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-
-      expect(updatedRow?.conditions).toEqual([conditions[2]])
+      expect(mockPatchRow).toHaveBeenCalledTimes(1)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [conditions[2]],
+      })
       expect(vm.popoverOpen).toBeFalsy()
     })
   })
@@ -351,14 +295,15 @@ describe('Initiative table row conditions', async () => {
 
       await updateButton!.trigger('click')
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-
-      expect(updatedRow?.conditions.map(c => c.id)).toEqual([conditions[0]!.id])
+      expect(mockPatchRow).toHaveBeenCalledTimes(1)
+      expect(mockPatchRow).toHaveBeenCalledWith(
+        props.item.id,
+        expect.objectContaining({
+          conditions: expect.arrayContaining([
+            expect.objectContaining({ id: conditions[0]!.id }),
+          ]),
+        }),
+      )
       expect(vm.popoverOpen).toBeFalsy()
     })
 
@@ -411,14 +356,10 @@ describe('Initiative table row conditions', async () => {
 
       await removeButton!.trigger('click')
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-
-      expect(updatedRow?.conditions).toHaveLength(0)
+      expect(mockPatchRow).toHaveBeenCalledTimes(1)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [],
+      })
     })
   })
 
@@ -480,18 +421,10 @@ describe('Initiative table row conditions', async () => {
       const numberField = component.findComponent(NumberField)
       await numberField.vm.$emit('update:modelValue', 4)
 
-      expect(mockUpdate).toHaveBeenCalledTimes(1)
-
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
-      }
-      const updatedRow = payload.rows.find(row => row.id === props.item.id)
-
-      expect(
-        updatedRow?.conditions.find(c => c.id === otherCondition.id)?.level,
-      ).toBeUndefined()
-
-      expect(updatedRow?.conditions[0]?.level).toBe(4)
+      expect(mockPatchRow).toHaveBeenCalledTimes(1)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [{ ...levelCondition, level: 4 }, otherCondition],
+      })
     })
   })
 })

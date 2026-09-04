@@ -91,7 +91,6 @@ function presenceHandler() {
 
 describe('useLiveSeats', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)
@@ -210,7 +209,7 @@ describe('useLiveSeats', () => {
 
     await vm.kick('seat-1')
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/kick', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/kick', {
       method: 'POST',
       body: { encounter: 1, seat: 'seat-1' },
     })
@@ -220,9 +219,12 @@ describe('useLiveSeats', () => {
   it('Should toast the translated error when kicking fails with a known slug', async () => {
     session.value = { uuid: 'session-uuid', seats: [seatA] }
     fetchMock.mockRejectedValue(
-      Object.assign(new Error('[POST] "/api/live/kick": 404 Not Found'), {
-        data: { statusCode: 404, statusMessage: 'seat-not-found' },
-      }),
+      Object.assign(
+        new Error('[POST] "/api/encounter/live/kick": 404 Not Found'),
+        {
+          data: { statusCode: 404, statusMessage: 'seat-not-found' },
+        },
+      ),
     )
 
     const { vm } = await mountProbe()
@@ -241,7 +243,9 @@ describe('useLiveSeats', () => {
     session.value = { uuid: 'session-uuid', seats: [seatA] }
     fetchMock.mockRejectedValue(
       Object.assign(
-        new Error('[POST] "/api/live/kick": 500 Internal Server Error'),
+        new Error(
+          '[POST] "/api/encounter/live/kick": 500 Internal Server Error',
+        ),
         { data: { statusCode: 500, statusMessage: 'something-unexpected' } },
       ),
     )
@@ -265,7 +269,7 @@ describe('useLiveSeats', () => {
 
     await vm.reassign('seat-1', 'row-2')
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/reassign', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/reassign', {
       method: 'POST',
       body: { encounter: 1, seat: 'seat-1', row: 'row-2' },
     })
@@ -275,9 +279,12 @@ describe('useLiveSeats', () => {
   it('Should toast the translated error when reassigning fails with a known slug', async () => {
     session.value = { uuid: 'session-uuid', seats: [seatA] }
     fetchMock.mockRejectedValue(
-      Object.assign(new Error('[POST] "/api/live/reassign": 409 Conflict'), {
-        data: { statusCode: 409, statusMessage: 'row-claimed' },
-      }),
+      Object.assign(
+        new Error('[POST] "/api/encounter/live/reassign": 409 Conflict'),
+        {
+          data: { statusCode: 409, statusMessage: 'row-claimed' },
+        },
+      ),
     )
 
     const { vm } = await mountProbe()

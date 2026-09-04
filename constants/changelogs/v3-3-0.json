@@ -1,0 +1,42 @@
+{
+  "version": "v3.3.0",
+  "date": "2026-09-04",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Initiative sheet statistics"
+        },
+        {
+          "text": "History for initiative sheet changes"
+        },
+        {
+          "text": "Filter state of bestiary and dnd content is now saved in local storage"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Cache layer for open5e content to reduce API calls and improve performance"
+        },
+        {
+          "text": "Faster loading of initiative sheets"
+        },
+        {
+          "text": "Reset filter button for bestiary and dnd content"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Very small mobile devices could not close the sidebar"
+        }
+      ]
+    }
+  ]
+}

@@ -104,8 +104,6 @@ function removeOptions() {
 
 describe('Campaign settings page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     user.value = { ...authUser }
 
     removeTeamMember.mockResolvedValue(undefined)

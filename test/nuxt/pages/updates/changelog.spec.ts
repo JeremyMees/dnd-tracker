@@ -1,6 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Select } from '~/components/ui/select'
 import Changelog from '~/pages/updates/changelog.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
@@ -54,10 +54,6 @@ async function mountPage() {
 }
 
 describe('Changelog page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should set the page seo', async () => {
     await mountPage()
 

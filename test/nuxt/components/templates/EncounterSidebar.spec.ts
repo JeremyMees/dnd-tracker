@@ -78,7 +78,6 @@ let component: VueWrapper<InstanceType<typeof EncounterSidebar>>
 
 describe('EncounterSidebar', () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
   })
 

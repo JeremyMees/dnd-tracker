@@ -8,12 +8,9 @@ import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-type RealtimePayload = {
-  eventType: string
-  new?: Record<string, unknown>
-}
-
 const {
+  getQueryData,
+  invalidateQueries,
   navigateTo,
   on,
   removeChannel,
@@ -23,8 +20,11 @@ const {
   toast,
   unsubscribe,
   update,
+  patch,
   useSeo,
 } = vi.hoisted(() => ({
+  getQueryData: vi.fn(),
+  invalidateQueries: vi.fn(),
   navigateTo: vi.fn(),
   on: vi.fn(),
   removeChannel: vi.fn(),
@@ -34,6 +34,7 @@ const {
   toast: vi.fn(),
   unsubscribe: vi.fn(),
   update: vi.fn(),
+  patch: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -48,7 +49,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ setQueryData }),
+  useQueryClient: () => ({ getQueryData, setQueryData, invalidateQueries }),
 }))
 
 const data = ref<InitiativeSheet | undefined>()
@@ -58,6 +59,7 @@ const isError = ref(false)
 vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
+  useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -104,6 +106,7 @@ const stubs = {
 interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
+  patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   activeRow: InitiativeSheetRow | undefined
 }
 
@@ -123,16 +126,17 @@ async function mountPage() {
   }
 }
 
-function emitRealtime(payload: RealtimePayload): void {
-  const handler = on.mock.calls[0]![2] as (payload: RealtimePayload) => void
+function emitBroadcast(event: string, payload: unknown): void {
+  const call = on.mock.calls.find(
+    call => call[0] === 'broadcast' && call[1].event === event,
+  )
+  const handler = call![2] as (arg: { payload: unknown }) => void
 
-  handler(payload)
+  handler({ payload })
 }
 
 describe('Encounter detail page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     on.mockReturnValue(channel)
     subscribe.mockReturnValue(channel)
     update.mockResolvedValue(undefined)
@@ -143,10 +147,22 @@ describe('Encounter detail page', () => {
     isError.value = false
   })
 
-  it('Should set the page seo with the title of the route', async () => {
+  it('Should set the page seo with the title of the encounter', async () => {
     await mountPage()
 
-    expect(useSeo).toHaveBeenCalledWith('Sandbox')
+    const title = useSeo.mock.calls[0]![0] as () => string | undefined
+
+    expect(title()).toBe(sheet.title)
+  })
+
+  it('Should keep the page seo title in sync with the encounter', async () => {
+    await mountPage()
+
+    const title = useSeo.mock.calls[0]![0] as () => string | undefined
+
+    data.value = { ...sheet, title: 'Renamed encounter' }
+
+    expect(title()).toBe('Renamed encounter')
   })
 
   it('Should render inside the sidebar layout', async () => {
@@ -239,13 +255,18 @@ describe('Encounter detail page', () => {
     await mountPage()
 
     expect(on).toHaveBeenCalledWith(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'initiative_sheets',
-        filter: 'id=eq.2',
-      },
+      'broadcast',
+      { event: 'action' },
+      expect.any(Function),
+    )
+    expect(on).toHaveBeenCalledWith(
+      'broadcast',
+      { event: 'sync' },
+      expect.any(Function),
+    )
+    expect(on).toHaveBeenCalledWith(
+      'broadcast',
+      { event: 'deleted' },
       expect.any(Function),
     )
     expect(subscribe).toHaveBeenCalled()
@@ -259,61 +280,70 @@ describe('Encounter detail page', () => {
     expect(on).not.toHaveBeenCalled()
   })
 
-  it('Should not subscribe for a personal encounter', async () => {
+  it('Should subscribe for a personal encounter', async () => {
     data.value = { ...sheet, campaign: undefined }
 
     await mountPage()
 
-    expect(on).not.toHaveBeenCalled()
+    expect(subscribe).toHaveBeenCalled()
   })
 
-  it('Should update the cached encounter with a realtime change', async () => {
+  it('Should merge a sequential action broadcast into the cached row', async () => {
+    const current = { ...sheet, version: 3, campaign: mockSheetCampaign }
+
+    getQueryData.mockReturnValue(current)
+
     await mountPage()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+    emitBroadcast('action', {
+      version: 4,
+      row: current.rows[0]!.id,
+      patch: { hitPoints: 3 },
+    })
 
-    expect(setQueryData).toHaveBeenCalledWith(
-      ['useInitiativeSheetDetail', 2],
-      expect.any(Function),
-    )
+    expect(setQueryData).toHaveBeenCalledWith(['useInitiativeSheetDetail', 2], {
+      ...current,
+      version: 4,
+      rows: [{ ...current.rows[0], hitPoints: 3 }, ...current.rows.slice(1)],
+    })
   })
 
-  it('Should keep the campaign when merging a realtime change', async () => {
+  it('Should keep the campaign when merging a sync broadcast', async () => {
+    const current = { ...sheet, version: 2, campaign: mockSheetCampaign }
+
+    getQueryData.mockReturnValue(current)
+
     await mountPage()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
+    emitBroadcast('sync', { version: 3, sheet: { ...sheet, title: 'Renamed' } })
 
-    const merge = setQueryData.mock.calls[0]![1]
+    const updater = setQueryData.mock.calls[0]![1] as (old: unknown) => unknown
 
-    expect(merge({ ...sheet, campaign: mockSheetCampaign })).toEqual({
-      ...sheet,
+    expect(updater(current)).toEqual({
+      ...current,
       title: 'Renamed',
+      version: 3,
       campaign: mockSheetCampaign,
     })
   })
 
-  it('Should not merge a realtime change into a missing cache entry', async () => {
+  it('Should ignore an action broadcast on a version gap and refetch instead', async () => {
+    getQueryData.mockReturnValue({ ...sheet, version: 1 })
+
     await mountPage()
 
-    emitRealtime({ eventType: 'UPDATE', new: { title: 'Renamed' } })
-
-    const merge = setQueryData.mock.calls[0]![1]
-
-    expect(merge(undefined)).toBeUndefined()
-  })
-
-  it('Should ignore a realtime change without data', async () => {
-    await mountPage()
-
-    emitRealtime({ eventType: 'UPDATE', new: {} })
+    emitBroadcast('action', { version: 5, row: sheet.rows[0]!.id, patch: {} })
 
     expect(setQueryData).not.toHaveBeenCalled()
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useInitiativeSheetDetail', 2],
+    })
   })
 
   it('Should redirect and warn when the encounter is removed', async () => {
     await mountPage()
 
-    emitRealtime({ eventType: 'DELETE' })
+    emitBroadcast('deleted', {})
 
     expect(toast).toHaveBeenCalledWith({
       title: 'pages.encounter.toasts.removed.title',
@@ -409,5 +439,28 @@ describe('Encounter detail page', () => {
     await update.mock.calls[0]![0].onSettled('Boom')
 
     expect(setQueryData).not.toHaveBeenCalled()
+  })
+
+  it('Should patch a single row through useInitiativeSheetPatch', async () => {
+    const { probe } = await mountPage()
+
+    await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
+
+    expect(patch).toHaveBeenCalledWith({
+      id: 2,
+      rowId: 'ylqr4a611g',
+      patch: { hitPoints: 3 },
+    })
+  })
+
+  it('Should not patch a row when there is no encounter', async () => {
+    data.value = undefined
+
+    const { component } = await mountPage()
+    const probe = component.findComponent(SheetProbe).vm as unknown as Probe
+
+    await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
+
+    expect(patch).not.toHaveBeenCalled()
   })
 })

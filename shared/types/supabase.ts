@@ -9,6 +9,11 @@ export type DatabaseEnum = keyof DB['public']['Enums']
 export type CampaignRow = DB['public']['Tables']['campaigns']['Row']
 export type CampaignInsert = DB['public']['Tables']['campaigns']['Insert']
 export type CampaignUpdate = DB['public']['Tables']['campaigns']['Update']
+export type CombatEventRow = DB['public']['Tables']['combat_events']['Row']
+export type CombatEventInsert =
+  DB['public']['Tables']['combat_events']['Insert']
+export type CombatEventUpdate =
+  DB['public']['Tables']['combat_events']['Update']
 export type FeatureRow = DB['public']['Tables']['features']['Row']
 export type FeatureInsert = DB['public']['Tables']['features']['Insert']
 export type FeatureUpdate = DB['public']['Tables']['features']['Update']
@@ -57,6 +62,16 @@ export type UserRole = Database['public']['Enums']['user_role']
 // Additional Enums
 export type InitiativeWidget =
   'note' | 'info-pins' | 'fantasy-name-generator' | 'dice-roll'
+export type CombatEventType =
+  | 'hp'
+  | 'ac'
+  | 'condition_added'
+  | 'condition_removed'
+  | 'death_save'
+  | 'concentration_broken'
+  | 'concentration_started'
+  | 'stabilized'
+  | 'died'
 export type InitiativeRowField =
   | 'armorClass'
   | 'hitPoints'
@@ -137,7 +152,7 @@ export interface InitiativeSettings {
 }
 
 // Extended Types
-export type NotUpdatable = 'id' | 'createdAt' | 'updated_at'
+export type NotUpdatable = 'id' | 'createdAt' | 'updated_at' | 'version'
 
 export type SocialProfile = Required<
   Omit<ProfileRow, StripeFields | 'marketing' | 'role' | 'avatarOptions'>
@@ -263,3 +278,13 @@ export type SbFilter = RequireAtLeastOne<{
   page?: number
   eq?: SbEq
 }>
+
+export interface CombatEventPayload {
+  rowName?: string
+  kind?: 'heal' | 'damage' | 'temp' | 'override' | 'add' | 'remove'
+  amount?: number
+  before?: number
+  after?: number
+  condition?: { id: string; name: string }
+  result?: 'save' | 'fail'
+}

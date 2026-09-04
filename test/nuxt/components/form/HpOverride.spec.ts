@@ -42,8 +42,6 @@ function updatedRow(): InitiativeSheetRow {
 
 describe('HpOverride', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     updateRow.mockResolvedValue(undefined)
   })
 

@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { crOptions } from '~~/constants/dnd'
+import { crOptions, gameSystems } from '~~/constants/dnd'
 import { useOpen5eDocuments, useOpen5eMonsterListing } from '~/queries/open5e'
 
 const props = withDefaults(
   defineProps<{
     system?: Open5eGameSystem
     preSelectedDocuments?: string[]
+    persist?: FilterPersistence
   }>(),
   {
     system: '5e-2024',
     preSelectedDocuments: () => ['srd-2024'],
+    persist: 'none',
   },
 )
 
@@ -21,40 +23,84 @@ const { toast } = useToast()
 const { t } = useI18n()
 
 const limit = 20
-const sortBy = ref<Open5eSortBy>('name')
-const cr = ref<number | string>('all')
-const search = ref<string>('')
-const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
-const selectedSystem = ref<Open5eGameSystem>(props.system)
-const selectedDocuments = ref<string[]>(props.preSelectedDocuments)
 
-const queryFilters = ref<Open5eFilters>({
-  page: 0,
-  name__icontains: debouncedSearch.value,
-  cr: typeof cr.value === 'string' ? undefined : cr.value,
-  ordering: sortBy.value,
-  document__key__in: selectedDocuments.value.join(','),
-})
+const crFilterOptions = computed<{ label: string; value: number | string }[]>(
+  () => [{ label: t('general.all'), value: 'all' }, ...crOptions],
+)
 
-watch([debouncedSearch, cr, sortBy], () => {
-  queryFilters.value = {
+const sortOptions = computed<{ label: string; value: Open5eSortBy }[]>(() => [
+  {
+    label: t('components.addInitiativeMonster.sort.options.alphabet'),
+    value: 'name',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.mostHP'),
+    value: '-hit_points',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.leastHP'),
+    value: 'hit_points',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.mostAC'),
+    value: '-armor_class',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.leastAC'),
+    value: 'armor_class',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.mostCR'),
+    value: '-challenge_rating',
+  },
+  {
+    label: t('components.addInitiativeMonster.sort.options.leastCR'),
+    value: 'challenge_rating',
+  },
+])
+
+const { state } = useFilterState(
+  'bestiary',
+  {
+    search: '',
+    cr: 'all' as number | string,
+    sortBy: 'name' as Open5eSortBy,
+    system: props.system,
+    documents: props.preSelectedDocuments,
     page: 0,
-    name__icontains: debouncedSearch.value,
-    cr: typeof cr.value === 'string' ? undefined : cr.value,
-    ordering: sortBy.value,
-    document__key__in: selectedDocuments.value.join(','),
-  }
-})
+  },
+  {
+    persist: props.persist,
+    codecs: {
+      cr: oneOfFilterCodec(crFilterOptions.value.map(option => option.value)),
+      sortBy: oneOfFilterCodec(sortOptions.value.map(option => option.value)),
+      system: oneOfFilterCodec(gameSystems),
+    },
+  },
+)
 
-watch(selectedDocuments, () => {
-  queryFilters.value = {
-    page: 0,
-    name__icontains: '',
-    cr: typeof cr.value === 'string' ? undefined : cr.value,
-    ordering: sortBy.value,
-    document__key__in: selectedDocuments.value.join(','),
-  }
-})
+const appliedSearch = ref<string>(state.search)
+
+watchDebounced(
+  () => state.search,
+  value => (appliedSearch.value = value),
+  { debounce: 500, maxWait: 1000 },
+)
+
+watch(
+  [() => state.cr, () => state.sortBy, () => state.documents, appliedSearch],
+  () => {
+    state.page = 0
+  },
+)
+
+const queryFilters = computed<Open5eFilters>(() => ({
+  page: state.page,
+  search: appliedSearch.value,
+  cr: typeof state.cr === 'string' ? undefined : state.cr,
+  ordering: state.sortBy,
+  documents: state.documents,
+}))
 
 const { data, status: monstersStatus } = useOpen5eMonsterListing(
   computed(() => ({
@@ -64,6 +110,8 @@ const { data, status: monstersStatus } = useOpen5eMonsterListing(
 
 const { data: documents, status: documentsStatus } = useOpen5eDocuments()
 
+const { isStale: isOpen5eStale } = useOpen5eStatus()
+
 const isLoading = computed(
   () =>
     monstersStatus.value === 'pending' || documentsStatus.value === 'pending',
@@ -71,6 +119,25 @@ const isLoading = computed(
 const isError = computed(
   () => monstersStatus.value === 'error' || documentsStatus.value === 'error',
 )
+
+const showResetButton = computed<boolean>(() => {
+  return (
+    state.search !== '' ||
+    state.cr !== 'all' ||
+    state.sortBy !== 'name' ||
+    state.system !== props.system ||
+    !isEqualArray(state.documents, props.preSelectedDocuments)
+  )
+})
+
+function resetFilters(): void {
+  state.search = ''
+  state.cr = 'all'
+  state.sortBy = 'name'
+  state.system = props.system
+  state.documents = props.preSelectedDocuments
+  appliedSearch.value = ''
+}
 
 async function addMonster(monster: DndMonster): Promise<void> {
   if (!sheet.value) return
@@ -117,129 +184,106 @@ async function addMonster(monster: DndMonster): Promise<void> {
 
 <template>
   <div class="max-h-full flex flex-col gap-4">
-    <div class="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="search">
-          {{ $t('actions.search') }}
-        </UiLabel>
-        <UiInputGroup>
-          <UiInputGroupInput
-            id="search"
-            v-model="search"
-            name="search"
-            type="search"
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col sm:flex-row items-end gap-x-4 gap-y-2">
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="search">
+            {{ $t('actions.search') }}
+          </UiLabel>
+          <UiInputGroup>
+            <UiInputGroupInput
+              id="search"
+              v-model="state.search"
+              name="search"
+              type="search"
+            />
+            <UiInputGroupAddon align="inline-end">
+              <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
+            </UiInputGroupAddon>
+          </UiInputGroup>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="cr">
+            {{ $t('components.inputs.challengeLabel') }}
+          </UiLabel>
+          <UiSelect id="cr" v-model="state.cr" name="cr" :disabled="isLoading">
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in crFilterOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="sortBy">
+            {{ $t('components.addInitiativeMonster.sort.title') }}
+          </UiLabel>
+          <UiSelect
+            id="sortBy"
+            v-model="state.sortBy"
+            name="sortBy"
+            :disabled="isLoading"
+          >
+            <UiSelectTrigger>
+              <UiSelectValue />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectGroup>
+                <UiSelectItem
+                  v-for="option in sortOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </UiSelectItem>
+              </UiSelectGroup>
+            </UiSelectContent>
+          </UiSelect>
+        </div>
+        <div class="space-y-2 w-full sm:w-auto sm:flex-1">
+          <UiLabel for="system">
+            {{ $t('components.inputs.gameSystemLabel') }}
+          </UiLabel>
+          <GameSystemFilter
+            id="system"
+            v-model:document="state.documents"
+            v-model:system="state.system"
+            :documents="documents || []"
+            :disabled="isLoading"
           />
-          <UiInputGroupAddon align="inline-end">
-            <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
-          </UiInputGroupAddon>
-        </UiInputGroup>
+        </div>
       </div>
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="cr">
-          {{ $t('components.inputs.challengeLabel') }}
-        </UiLabel>
-        <UiSelect id="cr" v-model="cr" name="cr" :disabled="isLoading">
-          <UiSelectTrigger>
-            <UiSelectValue />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem
-                v-for="option in [
-                  { label: $t('general.all'), value: 'all' },
-                  ...crOptions,
-                ]"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="sortBy">
-          {{ $t('components.addInitiativeMonster.sort.title') }}
-        </UiLabel>
-        <UiSelect
-          id="sortBy"
-          v-model="sortBy"
-          name="sortBy"
-          :disabled="isLoading"
-        >
-          <UiSelectTrigger>
-            <UiSelectValue />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectGroup>
-              <UiSelectItem
-                v-for="option in [
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.alphabet',
-                    ),
-                    value: 'name',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.mostHP',
-                    ),
-                    value: '-hit_points',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.leastHP',
-                    ),
-                    value: 'hit_points',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.mostAC',
-                    ),
-                    value: '-armor_class',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.leastAC',
-                    ),
-                    value: 'armor_class',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.mostCR',
-                    ),
-                    value: '-challenge_rating',
-                  },
-                  {
-                    label: $t(
-                      'components.addInitiativeMonster.sort.options.leastCR',
-                    ),
-                    value: 'challenge_rating',
-                  },
-                ]"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </UiSelectItem>
-            </UiSelectGroup>
-          </UiSelectContent>
-        </UiSelect>
-      </div>
-      <div class="space-y-2 w-full sm:w-auto sm:flex-1">
-        <UiLabel for="system">
-          {{ $t('components.inputs.gameSystemLabel') }}
-        </UiLabel>
-        <GameSystemFilter
-          id="system"
-          v-model:document="selectedDocuments"
-          v-model:system="selectedSystem"
-          :documents="documents || []"
-          :disabled="isLoading"
-        />
+      <div class="flex gap-2">
+        <AnimationExpand axis="width">
+          <UiButton
+            v-if="showResetButton"
+            test-id="reset-filters"
+            variant="foreground-ghost"
+            @click="resetFilters"
+          >
+            <Icon name="tabler:filter-x" />
+            {{ $t('actions.resetFilter', 2) }}
+          </UiButton>
+        </AnimationExpand>
       </div>
     </div>
+
+    <p
+      v-if="isOpen5eStale"
+      test-id="open5e-stale"
+      class="rounded-md border border-warning bg-warning/10 px-3 py-2 text-center text-sm"
+    >
+      {{ $t('components.open5eStatus.stale') }}
+    </p>
 
     <div class="overflow-y-auto">
       <MasonryGrid
@@ -267,7 +311,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
 
     <Pagination
       v-if="data?.pages && data.pages > 1 && !isLoading && data?.items?.length"
-      v-model:page="queryFilters.page"
+      v-model:page="state.page"
       :pages="data.pages"
       :per-page="limit"
       styles="bg-background/50 border-4 border-background px-4 py-2 rounded-lg"
@@ -281,7 +325,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
       {{ $t('components.dndContentSearch.error') }}
     </p>
     <p
-      v-if="!isLoading && !data?.items?.length && search !== ''"
+      v-if="!isLoading && !data?.items?.length && state.search !== ''"
       class="text-center max-w-prose mx-auto text-muted-foreground"
     >
       {{ $t('components.dndContentSearch.notFound') }}

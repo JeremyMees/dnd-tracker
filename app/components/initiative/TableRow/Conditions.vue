@@ -4,7 +4,7 @@ import { useConditionsListing } from '~/queries/open5e'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { patchRow } = validateInject(INITIATIVE_SHEET)
 const { renderMarkdown } = useMarkdown()
 
 const selected = ref<DndCondition[]>([])
@@ -15,31 +15,13 @@ const { data: conditions, isPending } = useConditionsListing()
 watch(popoverOpen, open => (selected.value = open ? props.item.conditions : []))
 
 function removeCondition(name: string): void {
-  if (!sheet.value) return
-
-  const rows = sheet.value.rows
-
-  update({
-    rows: rows.map(row =>
-      row.id === props.item.id
-        ? { ...row, conditions: row.conditions.filter(r => r.name !== name) }
-        : row,
-    ),
+  patchRow(props.item.id, {
+    conditions: props.item.conditions.filter(r => r.name !== name),
   })
 }
 
 function updateCondition(conditions: DndCondition[]): void {
-  if (!sheet.value) return
-
-  const index = getCurrentRowIndex(sheet.value, props.item.id)
-  const rows = [...sheet.value.rows]
-
-  if (index === -1 || !rows[index]) return
-
-  rows[index] = { ...rows[index], conditions }
-
-  update({ rows })
-
+  patchRow(props.item.id, { conditions })
   popoverOpen.value = false
 }
 

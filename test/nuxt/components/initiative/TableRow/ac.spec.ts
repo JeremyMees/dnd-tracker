@@ -18,13 +18,13 @@ interface Props {
   item: InitiativeSheetRow
 }
 
-const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -117,6 +117,9 @@ describe('Initiative table row ac', async () => {
     await vm.updateRow(updatedRow)
 
     expect(updatedRow.armorClass).toBe(0)
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      armorClass: 0,
+    })
   })
 
   it('Should allow negative AC when negative values are allowed', async () => {

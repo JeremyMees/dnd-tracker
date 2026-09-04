@@ -155,8 +155,6 @@ function mailSend(): (addresses: string[]) => Promise<void> {
 
 describe('Campaign notes page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     count.value = 1
     data.value = { notes: [mockNote], pages: 3, amount: 1 }
     status.value = 'success'

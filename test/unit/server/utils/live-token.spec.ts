@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { signJWT } from '~~/server/utils/jwt'
 import {
@@ -20,7 +20,6 @@ function rawToken(payload: Record<string, unknown>) {
 
 describe('live-token', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: 'test-secret' })
   })
 

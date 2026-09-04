@@ -47,7 +47,6 @@ function mockTables({
 
 describe('POST /api/emails/campaign-invite', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockFetch.mockReset()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ plunkApiKey: 'plunk-key', public: { appDomain } })

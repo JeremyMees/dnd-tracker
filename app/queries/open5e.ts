@@ -2,67 +2,33 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 import { TEN_MINUTES, ONE_DAY } from '~~/constants/time'
 
-const urlMap = new Map<Open5eType, string>([
-  ['monsters', 'https://api.open5e.com/v2/creatures'],
-  ['spells', 'https://api.open5e.com/v2/spells'],
-  ['conditions', 'https://api.open5e.com/v2/conditions'],
-  ['magicitems', 'https://api.open5e.com/v2/magicitems'],
-  ['weapons', 'https://api.open5e.com/v2/weapons'],
-  ['armor', 'https://api.open5e.com/v2/armor'],
-])
+const STALE_HEADER = 'x-open5e-stale-at'
 
-const excludeMap = new Map<Open5eType, string>([
-  [
-    'monsters',
-    'document,speed,saving_throws,skill_bonuses,subcategory,creaturesets,environments,illustration',
-  ],
-  ['spells', 'document'],
-  ['conditions', 'document'],
-  ['magicitems', 'document'],
-  ['weapons', 'document'],
-  ['armor', 'document'],
-])
-
-function transformOpen5eItem(type: Open5eType, item: Open5eItem): DndItem {
-  switch (type) {
-    case 'spells':
-      return toSpell(item as Open5eSpell)
-    case 'monsters':
-      return toMonster(item as Open5eMonster)
-    case 'conditions':
-      return toCondition(item as Open5eCondition)
-    case 'magicitems':
-      return toMagicItem(item as Open5eMagicItem)
-    case 'weapons':
-      return toWeapon(item as Open5eWeapon)
-    case 'armor':
-      return toArmor(item as Open5eArmor)
-    default:
-      throw new Error(`Unsupported open5e type: ${type}`)
+function listingQuery(type: Open5eType, filters: Open5eFilters) {
+  return {
+    type,
+    page: filters.page,
+    search: filters.search ?? '',
+    documents: filters.documents?.join(',') ?? '',
+    ordering: filters.ordering ?? 'name',
+    ...(filters.cr === undefined ? {} : { cr: filters.cr }),
   }
 }
 
-function narrowListing(
-  type: Open5eType,
-  items: DndItem[],
-  pages: number,
-): Open5eListingResult {
-  switch (type) {
-    case 'spells':
-      return { type, items: items.filter(isSpell), pages }
-    case 'monsters':
-      return { type, items: items.filter(isMonster), pages }
-    case 'conditions':
-      return { type, items: items.filter(isCondition), pages }
-    case 'magicitems':
-      return { type, items: items.filter(isMagicItem), pages }
-    case 'weapons':
-      return { type, items: items.filter(isWeapon), pages }
-    case 'armor':
-      return { type, items: items.filter(isArmor), pages }
-    default:
-      throw new Error(`Unsupported open5e type: ${type}`)
+async function readOpen5e<T>(
+  url: string,
+  query?: Record<string, unknown>,
+): Promise<{ data: T; staleAt: string | null }> {
+  const response = await $fetch.raw<T>(url, { query })
+
+  if (response._data === undefined) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'Open5e returned an empty response',
+    })
   }
+
+  return { data: response._data, staleAt: response.headers.get(STALE_HEADER) }
 }
 
 export function useOpen5eListing(
@@ -70,75 +36,66 @@ export function useOpen5eListing(
 ) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useOpen5e', data],
     queryFn: async () => {
       try {
-        const query = generateParams({
-          ...data.value.filters,
-          limit: 20,
-          page: data.value.filters.page + 1, // Open5e uses 1-based indexing
-          exclude: excludeMap.get(data.value.type),
-        })
-
-        return await $fetch<Open5eResponse<Open5eItem>>(
-          `${urlMap.get(data.value.type)}/?${query}`,
+        const listing = await readOpen5e<Open5eListingResult>(
+          '/api/open5e/listing',
+          listingQuery(data.value.type, data.value.filters),
         )
+
+        trackOpen5eFreshness(listing.staleAt)
+
+        return listing.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
-    },
-    select: (response): Open5eListingResult | undefined => {
-      if (!response) return
-
-      const type = data.value.type
-      const items = response.results.map(item =>
-        transformOpen5eItem(type, item),
-      )
-
-      return narrowListing(type, items, Math.ceil(response.count / 20))
     },
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
+    retry: false,
   })
 }
 
 export function useOpen5eDocuments() {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useOpen5eDocuments'],
     queryFn: async () => {
       try {
-        const query = generateParams({
-          page: 1,
-          ordering: '-publication_date',
-        })
-
-        const { results } = await $fetch<Open5eResponse<Open5eDocument>>(
-          `https://api.open5e.com/v2/documents/?${query}`,
+        const documents = await readOpen5e<Open5eDocument[]>(
+          '/api/open5e/documents',
         )
 
-        return results.filter(doc =>
-          ['5e-2014', '5e-2024'].includes(doc.gamesystem.key),
-        )
+        trackOpen5eFreshness(documents.staleAt)
+
+        return documents.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     placeholderData: keepPreviousData,
     staleTime: ONE_DAY,
     gcTime: ONE_DAY,
+    retry: false,
   })
 }
 
@@ -148,18 +105,7 @@ export async function prefetchConditionsListing() {
   return queryClient
     .query({
       queryKey: ['useConditionsListing'],
-      queryFn: async () => {
-        const query = generateParams({
-          page: 1,
-          document__key__in: 'core',
-          exclude: excludeMap.get('conditions'),
-        })
-
-        const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
-          `https://api.open5e.com/v2/conditions/?${query}`,
-        )
-        return results.map(c => toCondition(c, ['srd-2024']))
-      },
+      queryFn: () => $fetch<DndCondition[]>('/api/open5e/conditions'),
       staleTime: ONE_DAY,
       gcTime: ONE_DAY,
     })
@@ -169,32 +115,32 @@ export async function prefetchConditionsListing() {
 export function useConditionsListing() {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useConditionsListing'],
     queryFn: async () => {
       try {
-        const query = generateParams({
-          page: 1,
-          document__key__in: 'core',
-          exclude: excludeMap.get('conditions'),
-        })
-
-        const { results } = await $fetch<Open5eResponse<Open5eCondition>>(
-          `https://api.open5e.com/v2/conditions/?${query}`,
+        const conditions = await readOpen5e<DndCondition[]>(
+          '/api/open5e/conditions',
         )
 
-        return results.map(c => toCondition(c, ['srd-2024']))
+        trackOpen5eFreshness(conditions.staleAt)
+
+        return conditions.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     staleTime: ONE_DAY,
     gcTime: ONE_DAY,
+    retry: false,
   })
 }
 
@@ -203,46 +149,37 @@ export function useOpen5eMonsterListing(
 ) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useOpen5eMonsterListing', data],
     queryFn: async () => {
       try {
-        const { page, cr, ...filters } = data.value.filters
-
-        const query = generateParams({
-          ...filters,
-          ...(cr
-            ? {
-                challenge_rating__gte: cr,
-                challenge_rating__lte: cr,
-              }
-            : {}),
-          limit: 20,
-          page: page + 1, // Open5e uses 1-based indexing
-          exclude: excludeMap.get('monsters'),
-        })
-
-        return await $fetch<Open5eResponse<Open5eMonster>>(
-          `${urlMap.get('monsters')}/?${query}`,
+        const listing = await readOpen5e<Open5eListingResult>(
+          '/api/open5e/listing',
+          listingQuery('monsters', data.value.filters),
         )
+
+        trackOpen5eFreshness(listing.staleAt)
+
+        return listing.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
           description: getErrorMessage(error),
           variant: 'destructive',
         })
+
+        throw error
       }
     },
     select: (response): { items: DndMonster[]; pages: number } | undefined => {
-      if (response) {
-        return {
-          items: response.results.map(toMonster),
-          pages: Math.ceil(response.count / 20),
-        }
-      }
+      if (response?.type !== 'monsters') return
+
+      return { items: response.items, pages: response.pages }
     },
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
+    retry: false,
   })
 }

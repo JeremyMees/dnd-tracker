@@ -68,8 +68,6 @@ function tokenOptions() {
 
 describe('InviteMember modal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     lookup.mockResolvedValue(null)
     createJoinCampaignToken.mockResolvedValue('join-token')
     fetchMock.mockImplementation((url: string) =>

@@ -111,8 +111,6 @@ async function mountPage() {
 
 describe('Feature request page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     user.value = null
     data.value = undefined
     status.value = 'success'

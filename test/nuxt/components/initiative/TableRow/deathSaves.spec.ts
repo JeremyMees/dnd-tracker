@@ -8,7 +8,11 @@ interface Props {
   item: InitiativeSheetRow
 }
 
-const mockUpdate = vi.fn()
+interface DeathSavesTestMethods {
+  updateDeathSave: (saveIndex: number, save: boolean) => void
+}
+
+const mockPatchRow = vi.fn()
 const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
@@ -21,7 +25,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -31,8 +35,6 @@ const props: Props = {
 
 describe('Initiative table row death saves', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
-    mockToast.mockClear()
     mockSheet.value = sheet
   })
 
@@ -147,15 +149,11 @@ describe('Initiative table row death saves', async () => {
     const buttons = component.findAll('[test-id="save"]')
     await buttons[0]!.trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
-        expect.objectContaining({
-          deathSaves: {
-            save: [true, false, false],
-            fail: [false, false, false],
-          },
-        }),
-      ]),
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      deathSaves: {
+        save: [true, false, false],
+        fail: [false, false, false],
+      },
     })
   })
 
@@ -177,39 +175,30 @@ describe('Initiative table row death saves', async () => {
     const buttons = component.findAll('[test-id="fail"]')
     await buttons[0]!.trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
-        expect.objectContaining({
-          deathSaves: {
-            save: [false, false, false],
-            fail: [true, false, false],
-          },
-        }),
-      ]),
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      deathSaves: {
+        save: [false, false, false],
+        fail: [true, false, false],
+      },
     })
   })
 
-  it('Should not call update when sheet is undefined', async () => {
-    mockSheet.value = undefined
-
+  it('Should not call patchRow when the item has no death saves', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
         item: {
           ...props.item,
           type: 'player',
-          deathSaves: {
-            save: [false, false, false],
-            fail: [false, false, false],
-          },
+          deathSaves: undefined,
         },
       },
       provide,
     })
 
-    const buttons = component.findAll('[test-id]')
-    await buttons[0]!.trigger('click')
+    const vm = component.vm as unknown as DeathSavesTestMethods
+    vm.updateDeathSave(0, true)
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockPatchRow).not.toHaveBeenCalled()
   })
 
   it('Should show stable toast when all saves are successful', async () => {

@@ -16,7 +16,6 @@ function mountForm(
 
 describe('LiveJoinCode', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 
@@ -30,7 +29,7 @@ describe('LiveJoinCode', () => {
     await fillForm(component, { code: 'abc234' })
     await submitForm(component)
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/code', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/code', {
       query: { code: 'ABC234' },
     })
     expect(component.emitted('validated')).toEqual([[session]])
@@ -109,7 +108,7 @@ describe('LiveJoinCode', () => {
       await flushPromises()
     }
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/code', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/code', {
       query: { code: 'ABC234' },
     })
     expect(component.emitted('validated')).toEqual([[session]])

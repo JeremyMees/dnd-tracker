@@ -146,8 +146,6 @@ function confirmCallback(): (confirmed: boolean) => Promise<void> {
 
 describe('Encounters', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     count.value = 1
     listing.value = { encounters: [mockEncounterItem], amount: 1, pages: 3 }
     status.value = 'success'

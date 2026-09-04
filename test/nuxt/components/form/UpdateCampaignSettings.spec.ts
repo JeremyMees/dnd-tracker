@@ -25,8 +25,6 @@ function updateOptions() {
 
 describe('UpdateCampaignSettings', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     updateCampaign.mockResolvedValue(undefined)
   })
 

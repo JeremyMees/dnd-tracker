@@ -42,6 +42,10 @@ export interface LiveSyncEvent {
   sheet: PlayerSheet
 }
 
+export interface LiveSummaryEvent {
+  stats: CombatStats
+}
+
 export type LiveAction =
   | { type: 'hp'; hpType: 'heal' | 'damage' | 'temp'; amount: number }
   | { type: 'ac'; acType: 'add' | 'remove' | 'temp'; amount: number }

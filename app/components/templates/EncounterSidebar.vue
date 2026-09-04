@@ -126,7 +126,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 </UiDialogTitle>
                 <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
-              <FormBestiary />
+              <FormBestiary persist="local" />
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>

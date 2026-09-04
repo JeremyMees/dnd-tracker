@@ -117,7 +117,7 @@ export function useFeatureVote() {
     }: { id: number; vote: FeatureVote | null } & QueryDefaults) => {
       const { error } = await supabase.rpc('vote_feature', {
         p_feature: id,
-        p_vote: vote,
+        p_vote: vote ?? '',
       })
 
       if (error) throw createError(error)

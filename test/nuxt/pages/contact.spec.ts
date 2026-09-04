@@ -33,8 +33,6 @@ async function mountPage() {
 
 describe('Contact page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     fetchMock.mockResolvedValue(undefined)
   })
 

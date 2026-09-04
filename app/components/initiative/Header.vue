@@ -3,20 +3,22 @@ defineEmits<{
   reset: [boolean]
   previous: []
   next: []
+  toggleHistory: []
+  endEncounter: []
 }>()
 
 defineProps<{
   data: InitiativeSheet | undefined
   encounterId?: number
+  historyOpen?: boolean
 }>()
 
-const resetOpen = ref<boolean>(false)
 const liveOpen = ref<boolean>(false)
 </script>
 
 <template>
   <div
-    class="relative flex flex-col sm:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"
+    class="relative flex flex-col min-[400px]:flex-row gap-x-4 gap-y-2 items-center justify-end container-max w-full"
   >
     <InitiativePet
       v-if="data?.settings?.pet"
@@ -24,87 +26,126 @@ const liveOpen = ref<boolean>(false)
       :pet="data.settings.pet"
       class="max-[350px]:hidden absolute top-13 sm:top-5 left-4"
     />
-    <div class="flex gap-2 items-center">
+    <div class="flex gap-4 items-center">
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
         <span test-id="round" class="font-bold text-foreground">
           {{ data?.round || 1 }}
         </span>
       </span>
-      <UiPopover v-model:open="resetOpen">
-        <UiPopoverTrigger as-child>
+      <UiDropdownMenu>
+        <UiDropdownMenuTrigger as-child>
           <UiButton
             id="tour-11"
-            v-tippy="$t('actions.reset')"
-            test-id="reset"
-            aria-label="Reset rounds"
-            :disabled="!data?.rows.length"
-            variant="destructive-ghost"
-            size="icon-sm"
+            test-id="options-trigger"
+            :aria-label="$t('general.action', 2)"
+            variant="secondary"
+            size="sm"
             class="group"
           >
+            {{ $t('general.action', 2) }}
             <Icon
-              name="tabler:refresh"
-              class="text-destructive group-hover:text-foreground"
+              name="tabler:chevron-down"
               aria-hidden="true"
+              class="group-data-[state=open]:rotate-180 transition-transform"
             />
           </UiButton>
-        </UiPopoverTrigger>
-        <UiPopoverContent class="flex flex-col gap-2">
-          <button
-            test-id="reset-soft"
-            :aria-label="$t('components.encounterTable.reset.soft.title')"
-            class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
-            @click="($emit('reset', false), (resetOpen = false))"
-          >
-            <span class="font-bold">
-              {{ $t('components.encounterTable.reset.soft.title') }}
-            </span>
-            <span class="text-muted-foreground text-sm">
-              {{ $t('components.encounterTable.reset.soft.description') }}
-            </span>
-          </button>
-          <UiSeparator />
-          <button
-            test-id="reset-hard"
-            :aria-label="$t('components.encounterTable.reset.hard.title')"
-            class="flex flex-col gap-2 text-left hover:bg-muted-foreground/10 p-2 rounded-md transition-colors duration-300 ease-in-out"
-            @click="($emit('reset', true), (resetOpen = false))"
-          >
-            <span class="font-bold">
-              {{ $t('components.encounterTable.reset.hard.title') }}
-            </span>
-            <span class="text-muted-foreground text-sm">
-              {{ $t('components.encounterTable.reset.hard.description') }}
-            </span>
-          </button>
-        </UiPopoverContent>
-      </UiPopover>
-      <UiPopover v-if="encounterId" v-model:open="liveOpen">
-        <UiPopoverTrigger as-child>
-          <UiButton
-            v-tippy="$t('components.liveSession.title')"
+        </UiDropdownMenuTrigger>
+        <UiDropdownMenuContent align="end" class="min-w-52">
+          <UiDropdownMenuItem
+            v-if="encounterId"
             test-id="live-session-trigger"
-            :aria-label="$t('components.liveSession.title')"
-            variant="success-ghost"
-            size="icon-sm"
-            class="group"
+            @select="liveOpen = true"
           >
             <Icon
               name="tabler:broadcast"
-              class="text-success group-hover:text-foreground"
+              class="text-success"
               aria-hidden="true"
             />
-          </UiButton>
-        </UiPopoverTrigger>
-        <UiPopoverContent>
+            {{ $t('components.liveSession.title') }}
+          </UiDropdownMenuItem>
+          <UiDropdownMenuItem
+            v-if="encounterId"
+            test-id="history-trigger"
+            @select="$emit('toggleHistory')"
+          >
+            <Icon name="tabler:history" class="text-info" aria-hidden="true" />
+            {{
+              historyOpen
+                ? $t('actions.closeCombatLog')
+                : $t('actions.openCombatLog')
+            }}
+          </UiDropdownMenuItem>
+          <UiDropdownMenuItem
+            v-if="encounterId"
+            test-id="end-encounter"
+            :disabled="!data?.rows.length"
+            @select="$emit('endEncounter')"
+          >
+            <Icon
+              name="tabler:trophy"
+              class="text-warning"
+              aria-hidden="true"
+            />
+            {{ $t('actions.encounterStats') }}
+          </UiDropdownMenuItem>
+          <UiDropdownMenuSub>
+            <UiDropdownMenuSubTrigger
+              test-id="reset"
+              :disabled="!data?.rows.length"
+              class="gap-2 data-disabled:pointer-events-none data-disabled:opacity-50"
+            >
+              <Icon
+                name="tabler:refresh"
+                class="text-destructive size-4 min-w-4"
+                aria-hidden="true"
+              />
+              {{ $t('actions.reset') }}
+            </UiDropdownMenuSubTrigger>
+            <UiDropdownMenuSubContent class="max-w-64">
+              <UiDropdownMenuItem
+                test-id="reset-soft"
+                class="flex-col items-start gap-1"
+                @select="$emit('reset', false)"
+              >
+                <span class="font-bold">
+                  {{ $t('components.encounterTable.reset.soft.title') }}
+                </span>
+                <span class="text-muted-foreground text-xs text-wrap">
+                  {{ $t('components.encounterTable.reset.soft.description') }}
+                </span>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuSeparator />
+              <UiDropdownMenuItem
+                test-id="reset-hard"
+                class="flex-col items-start gap-1"
+                @select="$emit('reset', true)"
+              >
+                <span class="font-bold">
+                  {{ $t('components.encounterTable.reset.hard.title') }}
+                </span>
+                <span class="text-muted-foreground text-xs text-wrap">
+                  {{ $t('components.encounterTable.reset.hard.description') }}
+                </span>
+              </UiDropdownMenuItem>
+            </UiDropdownMenuSubContent>
+          </UiDropdownMenuSub>
+        </UiDropdownMenuContent>
+      </UiDropdownMenu>
+      <UiDialog v-if="encounterId" v-model:open="liveOpen">
+        <UiDialogScrollContent test-id="live-session-dialog" class="max-w-md">
+          <UiDialogHeader class="sr-only">
+            <UiDialogTitle>
+              {{ $t('components.liveSession.title') }}
+            </UiDialogTitle>
+          </UiDialogHeader>
           <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
-        </UiPopoverContent>
-      </UiPopover>
+        </UiDialogScrollContent>
+      </UiDialog>
     </div>
     <div
       id="tour-1"
-      class="flex gap-2 items-center bg-primary/50 rounded-lg border-4 border-primary"
+      class="w-full min-[400px]:w-auto flex gap-2 items-center justify-between bg-primary/50 rounded-lg border-4 border-primary"
     >
       <button
         v-tippy="{ content: $t('actions.prev') }"

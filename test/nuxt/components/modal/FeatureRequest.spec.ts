@@ -29,8 +29,6 @@ function createOptions() {
 
 describe('Feature request modal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     user.value = { ...authUser }
     create.mockResolvedValue(undefined)
     fetchMock.mockResolvedValue(undefined)

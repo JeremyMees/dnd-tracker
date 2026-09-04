@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { diffRow } from '~~/shared/utils/dnd/combat-events'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
@@ -35,6 +36,7 @@ export function useInitiativeSheetDetail(id: number) {
 export function useInitiativeSheetDetailUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const { mutateAsync: sync } = useInitiativeSheetSync()
 
   return useMutation({
     mutationFn: async ({
@@ -82,7 +84,9 @@ export function useInitiativeSheetDetailUpdate() {
 
       return { previous }
     },
-    onSuccess: (_data, { onSuccess }) => {
+    onSuccess: (_data, { id, onSuccess }) => {
+      sync({ id }).catch(() => {})
+
       if (onSuccess) onSuccess()
     },
     onError: (error, { onError, id }, context) => {
@@ -91,6 +95,120 @@ export function useInitiativeSheetDetailUpdate() {
         queryClient.setQueryData(
           ['useInitiativeSheetDetail', id],
           context.previous,
+        )
+      }
+
+      if (onError) onError(error.message)
+    },
+    onSettled: (_data, error, { onSettled }) => {
+      if (onSettled) onSettled(error?.message)
+    },
+  })
+}
+
+export function useInitiativeSheetSync() {
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      await $fetch(`/api/encounter/${id}/sync`, { method: 'POST' })
+    },
+  })
+}
+
+export function useInitiativeSheetPatch() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      rowId,
+      patch,
+    }: {
+      id: number
+      rowId: string
+      patch: Partial<InitiativeSheetRow>
+    } & QueryDefaults) => {
+      const { row } = await $fetch<{ row: InitiativeSheetRow }>(
+        `/api/encounter/${id}/patch-row`,
+        { method: 'POST', body: { rowId, patch } },
+      )
+
+      return row
+    },
+    onMutate: async ({ id, rowId, patch }) => {
+      await queryClient.cancelQueries({
+        queryKey: ['useInitiativeSheetDetail', id],
+      })
+
+      const previous = queryClient.getQueryData<InitiativeSheet>([
+        'useInitiativeSheetDetail',
+        id,
+      ])
+      const before = previous?.rows.find(row => row.id === rowId)
+
+      queryClient.setQueryData(
+        ['useInitiativeSheetDetail', id],
+        (old: InitiativeSheet) => {
+          if (!old) return old
+
+          return {
+            ...old,
+            rows: old.rows.map(row =>
+              row.id === rowId ? { ...row, ...patch } : row,
+            ),
+          }
+        },
+      )
+
+      let previousEvents: CombatEventRow[] | undefined
+
+      if (before) {
+        const drafts = diffRow(before, { ...before, ...patch })
+
+        if (drafts.length) {
+          previousEvents = queryClient.getQueryData<CombatEventRow[]>([
+            'useCombatEvents',
+            id,
+          ])
+
+          const optimisticEvents = drafts
+            .slice()
+            .reverse()
+            .map((draft, index): CombatEventRow => ({
+              id: -(Date.now() + index),
+              encounterId: id,
+              rowId,
+              round: previous?.round ?? 1,
+              type: draft.type,
+              payload: draft.payload as Json,
+              createdBy: null,
+              actorName: null,
+              createdAt: new Date().toISOString(),
+            }))
+
+          queryClient.setQueryData<CombatEventRow[]>(
+            ['useCombatEvents', id],
+            (old = []) => [...optimisticEvents, ...old],
+          )
+        }
+      }
+
+      return { previous, previousEvents }
+    },
+    onSuccess: (_data, { onSuccess }) => {
+      if (onSuccess) onSuccess()
+    },
+    onError: (error, { onError, id }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(
+          ['useInitiativeSheetDetail', id],
+          context.previous,
+        )
+      }
+
+      if (context?.previousEvents !== undefined) {
+        queryClient.setQueryData(
+          ['useCombatEvents', id],
+          context.previousEvents,
         )
       }
 

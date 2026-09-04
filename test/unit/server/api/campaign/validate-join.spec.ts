@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { signJWT } from '~~/server/utils/jwt'
@@ -13,7 +13,6 @@ function signInvite(data: Record<string, unknown>, key = secretString) {
 
 describe('POST /api/campaign/validate-join', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockRuntimeConfig({ jwtSecret: secretString })
   })
 

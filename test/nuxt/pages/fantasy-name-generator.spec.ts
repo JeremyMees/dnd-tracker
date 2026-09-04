@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import FantasyNameGeneratorPage from '~/pages/fantasy-name-generator.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
@@ -22,10 +22,6 @@ function mountPage() {
 }
 
 describe('Fantasy name generator page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should render the generator', async () => {
     const component = await mountPage()
 

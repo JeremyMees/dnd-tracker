@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockAuthedUser,
@@ -23,7 +23,6 @@ function body(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/campaign/join', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ jwtSecret: 'test-secret' })
   })

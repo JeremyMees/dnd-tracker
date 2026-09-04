@@ -1,4 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { useOpen5eStatus } from '~/composables/useOpen5eStatus'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Bestiary from '~/components/form/Bestiary.vue'
@@ -80,14 +81,16 @@ function lastFilters(): Open5eFilters {
   return arg.value.filters
 }
 
+const storageKey = 'dnd-tracker:filters:bestiary'
+
 describe('Bestiary', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
+    clearNuxtState()
     monstersStatus.value = 'success'
     documentsStatus.value = 'success'
     data.value = { items: [dndMonsterFixture], pages: 1 }
     documents.value = []
+    localStorage.clear()
   })
 
   it('Should match snapshot', async () => {
@@ -246,7 +249,7 @@ describe('Bestiary', () => {
     await vi.advanceTimersByTimeAsync(1000)
     await flushPromises()
 
-    expect(lastFilters().name__icontains).toBe('goblin')
+    expect(lastFilters().search).toBe('goblin')
 
     vi.useRealTimers()
   })
@@ -284,9 +287,9 @@ describe('Bestiary', () => {
     await component.get('[test-id="checkbox-homebrew-2024"]').trigger('click')
     await flushPromises()
 
-    expect(lastFilters().document__key__in).toContain('homebrew-2024')
-    expect(lastFilters().document__key__in).toContain('srd-2024')
-    expect(lastFilters().name__icontains).toBe('')
+    expect(lastFilters().documents).toContain('homebrew-2024')
+    expect(lastFilters().documents).toContain('srd-2024')
+    expect(lastFilters().search).toBe('')
   })
 
   it('Should refetch when the selected game system changes', async () => {
@@ -301,7 +304,7 @@ describe('Bestiary', () => {
     await component.findAll('button[role="radio"]')[0]!.trigger('click')
     await flushPromises()
 
-    expect(lastFilters().document__key__in).toBe('srd-2014')
+    expect(lastFilters().documents).toEqual(['srd-2014'])
   })
 
   it('Should refetch with the picked page from pagination', async () => {
@@ -315,6 +318,72 @@ describe('Bestiary', () => {
     await flushPromises()
 
     expect(lastFilters().page).toBe(2)
+  })
+
+  it('Should reset the page when the filters change', async () => {
+    data.value = { items: [dndMonsterFixture], pages: 3 }
+
+    const component = await mountBestiary().mount()
+
+    await component
+      .findComponent({ name: 'Pagination' })
+      .vm.$emit('update:page', 2)
+    await flushPromises()
+
+    expect(lastFilters().page).toBe(2)
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(lastFilters().page).toBe(0)
+  })
+
+  it('Should not persist the filters by default', async () => {
+    const component = await mountBestiary().mount()
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(localStorage.getItem(storageKey)).toBeNull()
+  })
+
+  it('Should restore the filters from the storage', async () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        search: 'goblin',
+        cr: 5,
+        sortBy: '-hit_points',
+        page: 2,
+      }),
+    )
+
+    const component = await mountBestiary({ persist: 'local' }).mount()
+
+    expect(component.get('input[name="search"]').element).toHaveProperty(
+      'value',
+      'goblin',
+    )
+    expect(lastFilters().search).toBe('goblin')
+    expect(lastFilters().cr).toBe(5)
+    expect(lastFilters().ordering).toBe('-hit_points')
+    expect(lastFilters().page).toBe(2)
+  })
+
+  it('Should drop a stored challenge rating that is not an option', async () => {
+    localStorage.setItem(storageKey, JSON.stringify({ cr: 999 }))
+
+    await mountBestiary({ persist: 'local' }).mount()
+
+    expect(lastFilters().cr).toBeUndefined()
+  })
+
+  it('Should write the filters to the storage', async () => {
+    const component = await mountBestiary({ persist: 'local' }).mount()
+
+    await selectOption(component, 5, { index: 0 })
+
+    expect(JSON.parse(localStorage.getItem(storageKey) ?? '{}')).toMatchObject({
+      cr: 5,
+    })
   })
 
   it('Should scroll to the top card when paginating', async () => {
@@ -339,5 +408,129 @@ describe('Bestiary', () => {
     })
 
     component.element.remove()
+  })
+
+  describe('reset filters', () => {
+    it('Should not show the reset button while the filters are untouched', async () => {
+      const component = await mountBestiary().mount()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+    })
+
+    it('Should show the reset button when the search changes', async () => {
+      const component = await mountBestiary().mount()
+
+      await component.get('input[name="search"]').setValue('goblin')
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the challenge rating changes', async () => {
+      const component = await mountBestiary().mount()
+
+      await selectOption(component, 5, { index: 0 })
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the sort order changes', async () => {
+      const component = await mountBestiary().mount()
+
+      await selectOption(component, '-hit_points', { index: 1 })
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the selected documents change', async () => {
+      documents.value = [
+        createDocument('srd-2024'),
+        createDocument('homebrew-2024'),
+      ]
+
+      const injected = createInitiativeSheetProvide()
+      const component = await mountSuspended(Bestiary, {
+        provide: injected.provide,
+        global: {
+          stubs: { PopoverContent: { template: '<div><slot /></div>' } },
+        },
+      })
+
+      await component.get('[test-id="checkbox-homebrew-2024"]').trigger('click')
+      await flushPromises()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should show the reset button when the game system changes', async () => {
+      const injected = createInitiativeSheetProvide()
+      const component = await mountSuspended(Bestiary, {
+        provide: injected.provide,
+        global: {
+          stubs: { PopoverContent: { template: '<div><slot /></div>' } },
+        },
+      })
+
+      await component.findAll('button[role="radio"]')[0]!.trigger('click')
+      await flushPromises()
+
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
+    })
+
+    it('Should restore every filter to its initial value', async () => {
+      vi.useFakeTimers()
+
+      const component = await mountBestiary().mount()
+
+      await component.get('input[name="search"]').setValue('goblin')
+      await selectOption(component, 5, { index: 0 })
+      await selectOption(component, '-hit_points', { index: 1 })
+      await vi.advanceTimersByTimeAsync(1000)
+      await flushPromises()
+
+      await component.get('[test-id="reset-filters"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(1000)
+      await flushPromises()
+
+      expect(component.get('input[name="search"]').element).toHaveProperty(
+        'value',
+        '',
+      )
+      expect(lastFilters().search).toBe('')
+      expect(lastFilters().cr).toBeUndefined()
+      expect(lastFilters().ordering).toBe('name')
+      expect(lastFilters().documents).toEqual(['srd-2024'])
+      expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
+
+      vi.useRealTimers()
+    })
+
+    it('Should clear a pending debounced search when resetting', async () => {
+      vi.useFakeTimers()
+
+      const component = await mountBestiary().mount()
+
+      await component.get('input[name="search"]').setValue('goblin')
+      await component.get('[test-id="reset-filters"]').trigger('click')
+      await vi.advanceTimersByTimeAsync(1000)
+      await flushPromises()
+
+      expect(lastFilters().search).toBe('')
+
+      vi.useRealTimers()
+    })
+  })
+
+  it('Should not warn about stale content while open5e is healthy', async () => {
+    const component = await mountBestiary().mount()
+
+    expect(component.find('[test-id="open5e-stale"]').exists()).toBeFalsy()
+  })
+
+  it('Should warn when the content came from our own cache', async () => {
+    useOpen5eStatus().trackOpen5eFreshness('2026-09-04T12:00:00.000Z')
+
+    const component = await mountBestiary().mount()
+
+    expect(component.find('[test-id="open5e-stale"]').exists()).toBeTruthy()
   })
 })

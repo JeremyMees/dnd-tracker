@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import NoAccess from '~/pages/no-access.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
@@ -14,10 +14,6 @@ function mountPage() {
 }
 
 describe('No access page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should render the title and text', async () => {
     const component = await mountPage()
 

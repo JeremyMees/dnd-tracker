@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
   mockChain,
   mockFrom,
@@ -20,10 +20,6 @@ function supabaseWithSheet(data: Record<string, unknown>) {
 }
 
 describe('live-broadcast', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('broadcastLiveAction', () => {
     it('increments the session version and broadcasts the patch over the session channel', async () => {
       mockFrom({}, { rpc: mockChain({ data: 4, error: null }) })

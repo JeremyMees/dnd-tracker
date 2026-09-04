@@ -20,7 +20,6 @@ function mockPortalSession(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/stripe/portal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockStorage()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ public: { appDomain: 'https://dnd-tracker.com' } })

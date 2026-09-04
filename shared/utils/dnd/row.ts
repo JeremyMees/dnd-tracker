@@ -46,6 +46,35 @@ export function sanitizeRowNumbers(
   return sanitized
 }
 
+const COMBAT_PATCH_FIELDS = [
+  'hitPoints',
+  'maxHitPoints',
+  'maxHitPointsOld',
+  'tempHitPoints',
+  'armorClass',
+  'maxArmorClass',
+  'maxArmorClassOld',
+  'tempArmorClass',
+  'conditions',
+  'deathSaves',
+  'concentration',
+] as const satisfies readonly (keyof InitiativeSheetRow)[]
+
+export function buildCombatPatch(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): Partial<InitiativeSheetRow> {
+  const patch: Partial<InitiativeSheetRow> = {}
+
+  for (const field of COMBAT_PATCH_FIELDS) {
+    if (JSON.stringify(before[field]) !== JSON.stringify(after[field])) {
+      patch[field] = after[field] as never
+    }
+  }
+
+  return patch
+}
+
 export const createInitiativeRow = (
   formData: Partial<InitiativeSheetRow> & { name: string },
   type: HomebrewType,

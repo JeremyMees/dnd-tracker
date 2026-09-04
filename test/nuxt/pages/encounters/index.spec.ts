@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import EncountersPage from '~/pages/encounters/index.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
@@ -22,10 +22,6 @@ function mountPage() {
 }
 
 describe('Encounters page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should render the encounters listing', async () => {
     const component = await mountPage()
 

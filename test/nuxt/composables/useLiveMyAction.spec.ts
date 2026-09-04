@@ -83,7 +83,6 @@ const cachedState = {
 
 describe('useLiveMyAction', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     localStorage.clear()
     localStorage.setItem('live-seat', JSON.stringify(seat))
     rowId.value = 'row-1'
@@ -139,7 +138,7 @@ describe('useLiveMyAction', () => {
     )
 
     expect(applied).toBe(true)
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/action', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/action', {
       method: 'POST',
       body: {
         seatToken: 'seat-token',

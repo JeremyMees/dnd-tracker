@@ -40,7 +40,6 @@ describe('POST /api/user/create', () => {
   let deleteUser: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    vi.clearAllMocks()
     mockStorage()
     deleteUser = vi.fn().mockResolvedValue({ data: {}, error: null })
   })

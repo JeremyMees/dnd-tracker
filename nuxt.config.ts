@@ -68,7 +68,21 @@ export default defineNuxtConfig({
       scan: {
         globInclude: ['{app,tables,queries,constants,shared}/**/*.{vue,ts}'],
       },
-      icons: ['tabler:h-1', 'tabler:h-2', 'tabler:h-3'],
+      icons: [
+        'tabler:h-1',
+        'tabler:h-2',
+        'tabler:h-3',
+        'tabler:heart',
+        'tabler:shield',
+        'tabler:bolt',
+        'tabler:bolt-off',
+        'tabler:circle-dotted',
+        'tabler:circle-filled',
+        'tabler:skull',
+        'tabler:heart-bolt',
+        'tabler:grave',
+        'tabler:point',
+      ],
     },
   },
 
@@ -78,6 +92,9 @@ export default defineNuxtConfig({
     plunkApiKey: process.env.PLUNK_API_KEY,
     jwtSecret: process.env.JWT_SECRET,
     trmnl: process.env.TRMNL,
+    open5eCacheUrl: process.env.OPEN5E_UPSTASH_STORAGE_KV_REST_API_URL,
+    open5eCacheToken: process.env.OPEN5E_UPSTASH_STORAGE_KV_REST_API_TOKEN,
+    cronSecret: process.env.CRON_SECRET,
     public: {
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
@@ -119,6 +136,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    moduleSideEffects: ['zod/compile'],
     externals: {
       inline: ['sanitize-html'],
     },

@@ -53,7 +53,6 @@ function mountPanel(sheetOverride: InitiativeSheet = sheet) {
 
 describe('LiveSessionPanel', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     user.value = { ...authUser, subscriptionType: 'free' }
     session.value = undefined
     active.value = false

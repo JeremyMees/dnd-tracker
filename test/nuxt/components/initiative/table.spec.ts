@@ -5,6 +5,7 @@ import { sheet } from '~~/test/fixtures/initiative-sheet'
 import conditions from '~~/test/fixtures/conditions.json'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { dropdownStubs } from '~~/test/nuxt/stubs/dropdown-menu'
 
 mockNuxtImport('useAuthenticatedUser', () => () => ref({ ...authUser }))
 
@@ -28,6 +29,17 @@ const provide = {
 const props: Props = {
   loading: false,
 }
+
+const global = { stubs: dropdownStubs }
+
+const { clearCombatEvents } = vi.hoisted(() => ({
+  clearCombatEvents: vi.fn(() => Promise.resolve()),
+}))
+
+vi.mock('~/queries/combat-events', () => ({
+  useCombatEvents: () => ({ data: ref([]), isPending: ref(false) }),
+  useCombatEventsClear: () => ({ mutateAsync: clearCombatEvents }),
+}))
 
 vi.mock('~/queries/open5e', () => ({
   prefetchConditionsListing: () => Promise.resolve(),
@@ -95,17 +107,17 @@ vi.mock('~~/composables/initiative-sheet', () => ({
 describe('Initiative table', () => {
   beforeEach(() => {
     mockSheet.value = sheet
-    mockUpdate.mockClear()
+    clearCombatEvents.mockClear()
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Table, { props, provide })
+    const component = await mountSuspended(Table, { props, provide, global })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display table rows when data is available and widgets section', async () => {
-    const component = await mountSuspended(Table, { props, provide })
+    const component = await mountSuspended(Table, { props, provide, global })
 
     expect(component.findAll('[test-id="row"]').length).toBe(sheet.rows.length)
     expect(component.find('[test-id="widgets"]').exists()).toBeTruthy()
@@ -120,6 +132,7 @@ describe('Initiative table', () => {
     const component = await mountSuspended(Table, {
       props: { loading: true },
       provide,
+      global,
     })
 
     expect(component.findAll('[test-id="loading"]').length).toBe(10)
@@ -129,6 +142,7 @@ describe('Initiative table', () => {
     const component = await mountSuspended(Table, {
       props: { ...props, encounterId: 42 },
       provide,
+      global,
     })
 
     expect(
@@ -142,15 +156,181 @@ describe('Initiative table', () => {
     const component = await mountSuspended(Table, {
       props: { ...props },
       provide,
+      global,
     })
 
     expect(component.find('[test-id="empty-state"]').exists()).toBeTruthy()
   })
 
+  describe('History panel', () => {
+    it('Should not render the history panel by default', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
+    })
+
+    it('Should show the history panel after toggling it from the header', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      await component.find('[test-id="history-trigger"]').trigger('click')
+      await vi.waitUntil(() =>
+        component.find('[test-id="history-panel"]').exists(),
+      )
+
+      expect(component.find('[test-id="history-panel"]').exists()).toBeTruthy()
+    })
+
+    it('Should not render the history panel without an encounterId even when toggled', async () => {
+      const component = await mountSuspended(Table, { props, provide, global })
+
+      expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
+      expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
+    })
+  })
+
+  describe('Encounter summary', () => {
+    it('Should not render the summary dialog without an encounterId', async () => {
+      const component = await mountSuspended(Table, { props, provide, global })
+
+      expect(component.find('[test-id="end-encounter"]').exists()).toBeFalsy()
+      expect(
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      ).toBeFalsy()
+    })
+
+    it('Should mount the summary dialog closed when an encounterId is given', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      )
+
+      expect(
+        component.findComponent({ name: 'InitiativeSummary' }).props('open'),
+      ).toBe(false)
+    })
+
+    it('Should open the summary from the header button', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      await component.find('[test-id="end-encounter"]').trigger('click')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      )
+
+      expect(
+        component.findComponent({ name: 'InitiativeSummary' }).props('open'),
+      ).toBe(true)
+    })
+
+    it('Should close the summary when it is dismissed', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      await component.find('[test-id="end-encounter"]').trigger('click')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      )
+
+      const summary = component.findComponent({ name: 'InitiativeSummary' })
+
+      summary.vm.$emit('update:open', false)
+      await nextTick()
+
+      expect(summary.props('open')).toBe(false)
+    })
+
+    it('Should close the summary when the players keep playing', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      await component.find('[test-id="end-encounter"]').trigger('click')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      )
+
+      const summary = component.findComponent({ name: 'InitiativeSummary' })
+
+      summary.vm.$emit('keepPlaying')
+      await nextTick()
+
+      expect(summary.props('open')).toBe(false)
+    })
+
+    it('Should close the summary and clear the events when it is reset', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      await component.find('[test-id="end-encounter"]').trigger('click')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      )
+
+      const summary = component.findComponent({ name: 'InitiativeSummary' })
+
+      summary.vm.$emit('reset', true)
+      await vi.waitUntil(() => clearCombatEvents.mock.calls.length > 0)
+
+      expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
+      expect(summary.props('open')).toBe(false)
+    })
+
+    it('Should clear the logged events when the encounter is reset', async () => {
+      const component = await mountSuspended(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      component
+        .findComponent({ name: 'InitiativeHeader' })
+        .vm.$emit('reset', true)
+      await vi.waitUntil(() => clearCombatEvents.mock.calls.length > 0)
+
+      expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
+    })
+
+    it('Should not try to clear events when there is no encounterId', async () => {
+      const component = await mountSuspended(Table, { props, provide, global })
+
+      component
+        .findComponent({ name: 'InitiativeHeader' })
+        .vm.$emit('reset', true)
+      await nextTick()
+
+      expect(clearCombatEvents).not.toHaveBeenCalled()
+    })
+  })
+
   describe('Table padding', () => {
     it('Should handle all spacing variants', async () => {
       // Test normal spacing (default)
-      const component = await mountSuspended(Table, { props, provide })
+      const component = await mountSuspended(Table, { props, provide, global })
       expect(component.findAll('.p-2').length).toBeGreaterThan(0)
 
       // Test compact spacing
@@ -179,7 +359,7 @@ describe('Initiative table', () => {
 
   describe('Column visibility', () => {
     it('Should show all columns by default and update when settings change', async () => {
-      const component = await mountSuspended(Table, { props, provide })
+      const component = await mountSuspended(Table, { props, provide, global })
 
       expect(component.findAll('[test-id="header"]').length).toBe(10)
 
@@ -207,7 +387,7 @@ describe('Initiative table', () => {
         } as InitiativeSheet['settings'],
       }
 
-      const component = await mountSuspended(Table, { props, provide })
+      const component = await mountSuspended(Table, { props, provide, global })
 
       expect(component.findAll('[test-id="header"]').length).toBe(5)
     })
@@ -222,7 +402,7 @@ describe('Initiative table', () => {
         } as InitiativeSheet['settings'],
       }
 
-      const component = await mountSuspended(Table, { props, provide })
+      const component = await mountSuspended(Table, { props, provide, global })
 
       const firstRow = component.find('[test-id="row"]')
       const expandButton = firstRow.find('button[arialabel="actions.show"]')
@@ -235,7 +415,7 @@ describe('Initiative table', () => {
   })
 
   it('Should handle row selection and expansion', async () => {
-    const component = await mountSuspended(Table, { props, provide })
+    const component = await mountSuspended(Table, { props, provide, global })
 
     // Test row selection
     const firstRow = component.find('[test-id="row"]')

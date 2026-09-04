@@ -32,7 +32,6 @@ mockNuxtImport('navigateTo', () => vi.fn())
 
 describe('Valid Token middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     singleMock.mockReset()
     fetchMock.mockReset()
   })

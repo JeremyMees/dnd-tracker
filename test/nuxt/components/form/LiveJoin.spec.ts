@@ -20,7 +20,6 @@ function mountForm(props: { code?: string; rows?: typeof rows } = {}) {
 
 describe('LiveJoin', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 
@@ -58,7 +57,7 @@ describe('LiveJoin', () => {
     await component.find('[test-id="row-row-1"]').trigger('click')
     await submitForm(component)
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/join', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/join', {
       method: 'POST',
       body: { code: 'ABC234', name: 'Elara', row: 'row-1', spectator: false },
     })
@@ -84,7 +83,7 @@ describe('LiveJoin', () => {
     await component.find('[test-id="spectator"]').trigger('click')
     await submitForm(component)
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/join', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/join', {
       method: 'POST',
       body: {
         code: 'ABC234',
@@ -102,7 +101,7 @@ describe('LiveJoin', () => {
     await fillForm(component, { name: 'Watcher' })
     await submitForm(component)
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/join', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/join', {
       method: 'POST',
       body: {
         code: 'ABC234',

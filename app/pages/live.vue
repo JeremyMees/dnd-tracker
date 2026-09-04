@@ -9,6 +9,7 @@ useSeo('Live')
 const route = useRoute()
 const queryClient = useQueryClient()
 const { seat, clear } = useLiveSeat()
+const { clear: clearSummary } = useLiveSummary()
 
 const validated = ref<LiveCodeSession>()
 const initialErrorStatus = ref<number>()
@@ -60,6 +61,7 @@ onMounted(() => {
 })
 
 function showSessionEnded(): void {
+  clearSummary()
   clear()
   joined.value = undefined
   validated.value = undefined

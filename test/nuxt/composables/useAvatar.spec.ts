@@ -9,7 +9,6 @@ describe('useAvatar', () => {
   let avatar: ReturnType<typeof useAvatarCreator>
 
   beforeEach(() => {
-    vi.clearAllMocks()
     avatar = useAvatarCreator()
   })
 

@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
 import middleware from '~/middleware/authenticated.global'
 
@@ -9,10 +9,6 @@ mockNuxtImport('useSupabaseUser', () => vi.fn(() => userValue))
 mockNuxtImport('navigateTo', () => vi.fn())
 
 describe('Authenticated middleware', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should redirect to login when authentication is needed and user is not authenticated', async () => {
     userValue.value = null
 

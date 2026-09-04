@@ -23,6 +23,8 @@ const foundUsers = ref<FoundUser[]>([])
 const noUser = ref<string>()
 const search = ref<string>()
 
+const emailSchema = z.email()
+
 const formSchema = z.object({
   users: z
     .array(
@@ -62,7 +64,7 @@ async function handleSearch(): Promise<void> {
   searchFormError.value = ''
   const email = search.value
 
-  if (z.email().safeParse(email).success === false) {
+  if (!z.validate(emailSchema, email)) {
     searchFormError.value = t('zod.invalidEmail')
     return
   }

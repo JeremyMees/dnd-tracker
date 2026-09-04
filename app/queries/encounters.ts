@@ -155,7 +155,6 @@ export function useEncounterUpdate() {
 }
 
 export function useEncounterRemove() {
-  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { t } = useI18n()
@@ -164,13 +163,13 @@ export function useEncounterRemove() {
 
   return useMutation({
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
-      let query = supabase.from('initiative_sheets').delete()
+      const ids = Array.isArray(id) ? id : [id]
 
-      query = Array.isArray(id) ? query.in('id', id) : query.eq('id', id)
-
-      const { error } = await query
-
-      if (error) throw createError(error)
+      await Promise.all(
+        ids.map(single =>
+          $fetch(`/api/encounter/${single}`, { method: 'DELETE' }),
+        ),
+      )
     },
     onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()

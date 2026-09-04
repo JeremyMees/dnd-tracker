@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockStorage } from '~~/test/unit/stubs/storage'
 import {
@@ -45,7 +45,6 @@ function mockTables({
 
 describe('POST /api/campaign/member-lookup', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockStorage()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
   })

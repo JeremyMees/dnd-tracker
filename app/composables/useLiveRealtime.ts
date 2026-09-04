@@ -13,6 +13,7 @@ export function useLiveRealtime(
   const queryClient = useQueryClient()
   const isOnline = useOnline()
   const visibility = useDocumentVisibility()
+  const { show: showSummary } = useLiveSummary()
 
   let channel: RealtimeChannel | undefined
 
@@ -88,6 +89,9 @@ export function useLiveRealtime(
       )
       .on('broadcast', { event: 'seats' }, ({ payload }) =>
         applySeats(payload as LiveSeatsBroadcast),
+      )
+      .on('broadcast', { event: 'summary' }, ({ payload }) =>
+        showSummary((payload as LiveSummaryEvent).stats),
       )
       .on('broadcast', { event: 'ended' }, refetch)
       .subscribe(status => {

@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mockFrom, mockTo } from '~~/test/fixtures/middleware'
 import middleware from '~/middleware/abort-authenticated'
 
@@ -9,10 +9,6 @@ mockNuxtImport('useSupabaseUser', () => vi.fn(() => userValue))
 mockNuxtImport('navigateTo', () => vi.fn())
 
 describe('Abort authenticated middleware', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should redirect to home page when user is authenticated', () => {
     userValue.value = { id: '1' }
 

@@ -134,8 +134,6 @@ function modalEvents(): { finished: () => void } {
 
 describe('Campaigns page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     count.value = 1
     listing.value = { campaigns: [mockCampaignItem], pages: 3 }
     status.value = 'success'

@@ -19,7 +19,6 @@ mockNuxtImport('$fetch', () => fetchMock)
 
 describe('Live access middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 
@@ -37,7 +36,7 @@ describe('Live access middleware', () => {
 
     await middleware({ ...mockTo, query: { code: 'ABC234' } }, mockFrom)
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/code', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/code', {
       query: { code: 'ABC234' },
     })
     expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(

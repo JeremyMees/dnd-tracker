@@ -14,7 +14,7 @@ export function useLiveState(
   return useQuery({
     queryKey: computed(() => liveStateQueryKey(token.value, seatToken.value)),
     queryFn: () =>
-      $fetch<LiveStateResponse>('/api/live/state', {
+      $fetch<LiveStateResponse>('/api/encounter/live/state', {
         query: { token: token.value, seatToken: seatToken.value },
       }),
     enabled: computed(() => !!token.value),

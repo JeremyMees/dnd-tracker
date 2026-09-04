@@ -43,7 +43,7 @@ function _useLiveSession(encounterId: number) {
 
     try {
       const response = await $fetch<LiveSessionResponse | null>(
-        '/api/live/start',
+        '/api/encounter/live/start',
         {
           method: 'POST',
           body: { encounter: encounterId, createIfMissing },
@@ -71,7 +71,7 @@ function _useLiveSession(encounterId: number) {
 
     if (!relevant) return
 
-    $fetch('/api/live/sync', {
+    $fetch('/api/encounter/live/sync', {
       method: 'POST',
       body: { encounter: encounterId },
     }).catch(() => undefined)
@@ -81,7 +81,7 @@ function _useLiveSession(encounterId: number) {
     loading.value = true
 
     try {
-      await $fetch('/api/live/stop', {
+      await $fetch('/api/encounter/live/stop', {
         method: 'POST',
         body: { encounter: encounterId },
       })

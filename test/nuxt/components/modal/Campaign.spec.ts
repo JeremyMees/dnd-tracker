@@ -33,8 +33,6 @@ function updateOptions() {
 
 describe('Campaign modal', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     createCampaign.mockResolvedValue(undefined)
     updateCampaign.mockResolvedValue(undefined)
   })

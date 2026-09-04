@@ -100,8 +100,6 @@ async function mountPage() {
 
 describe('Pricing page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     user.value = null
     products.value = [starter, proMonthly, proLifetime]
     isPending.value = false

@@ -36,7 +36,7 @@ const onSubmit = form.handleSubmit(async values => {
   isLoading.value = true
 
   try {
-    const session = await $fetch<LiveCodeSession>('/api/live/code', {
+    const session = await $fetch<LiveCodeSession>('/api/encounter/live/code', {
       query: { code: values.code.toUpperCase() },
     })
 

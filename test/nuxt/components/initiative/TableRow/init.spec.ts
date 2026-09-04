@@ -38,7 +38,6 @@ const props: Props = {
 
 describe('Initiative table row init', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
   })
 

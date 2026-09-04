@@ -5,11 +5,6 @@ export function useHealthCheck() {
   const { toast } = useToast()
 
   const isOnline = useOnline()
-  const isOpen5eOnline = ref(true)
-
-  onNuxtReady(() => checkOpen5e())
-
-  useInterval(300000, { callback: checkOpen5e })
 
   watch(
     () => isOnline.value,
@@ -25,21 +20,4 @@ export function useHealthCheck() {
       })
     },
   )
-
-  async function checkOpen5e() {
-    try {
-      const res = await $fetch('https://api.open5e.com/v2')
-      isOpen5eOnline.value = !!res
-    } catch {
-      isOpen5eOnline.value = false
-    }
-
-    if (!isOpen5eOnline.value) {
-      toast({
-        title: t(`components.healthCheck.open5e.title`),
-        description: t(`components.healthCheck.open5e.text`),
-        variant: 'warning',
-      })
-    }
-  }
 }

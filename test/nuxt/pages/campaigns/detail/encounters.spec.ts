@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import CampaignEncounters from '~/pages/campaigns/[id]-[title]/encounters.vue'
 import { mockCampaignFull } from '~~/test/fixtures/campaign'
 
@@ -32,10 +32,6 @@ function mountPage(overrides: Partial<typeof props> = {}) {
 }
 
 describe('Campaign encounters page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('Should set the page seo', async () => {
     await mountPage()
 

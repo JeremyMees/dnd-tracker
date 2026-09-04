@@ -39,8 +39,6 @@ function updateOptions() {
 
 describe('RoleUpdate', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     updateTeamMember.mockResolvedValue(undefined)
   })
 

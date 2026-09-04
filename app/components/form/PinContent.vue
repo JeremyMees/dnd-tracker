@@ -7,6 +7,7 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 <template>
   <DnDContentSearch
     variant="secondary"
+    persist="local"
     :sheet="sheet"
     :update="update"
     allow-pin

@@ -43,7 +43,6 @@ let mockUser: AuthUser | null = null
 
 describe('Campaign member middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     mockUser = null
     mockSupabaseResponse = { data: null, error: null }
     mockQueryClient.getQueryData.mockReturnValue(null)

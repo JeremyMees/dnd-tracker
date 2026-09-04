@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen relative overflow-hidden">
+  <UiAuroraBackground class="min-h-screen relative overflow-hidden">
     <NuxtLinkLocale
       class="absolute inset-0 bg-transparent cursor-pointer"
       to="/"
@@ -9,9 +9,8 @@
     <div
       class="sm:dnd-container absolute w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
     >
-      <div class="inset-0 z-[-1] fancy-shadow" />
       <div
-        class="max-w-prose bg-background py-4 px-2 sm:p-6 sm:rounded-2xl relative border-4 border-muted mx-auto"
+        class="max-w-prose bg-secondary/50 py-4 px-2 sm:p-6 sm:rounded-2xl relative border-4 border-secondary mx-auto"
       >
         <img
           src="/gifs/wolf-rider.gif"
@@ -34,5 +33,5 @@
         </section>
       </div>
     </div>
-  </div>
+  </UiAuroraBackground>
 </template>

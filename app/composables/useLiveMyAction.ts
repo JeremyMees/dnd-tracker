@@ -57,7 +57,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
 
     try {
       const { row } = await $fetch<{ row: InitiativeSheetRow }>(
-        '/api/live/action',
+        '/api/encounter/live/action',
         { method: 'POST', body: { seatToken, action } },
       )
 
@@ -100,7 +100,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
     pending.value = true
 
     try {
-      await $fetch('/api/live/action', {
+      await $fetch('/api/encounter/live/action', {
         method: 'POST',
         body: { seatToken, action: { type: 'endTurn' } },
       })

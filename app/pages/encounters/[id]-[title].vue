@@ -3,6 +3,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
+  useInitiativeSheetPatch,
 } from '~/queries/initiative-sheets'
 
 definePageMeta({
@@ -12,18 +13,19 @@ definePageMeta({
 })
 
 const route = useRoute()
-useSeo(route.params.title as string)
-
 const { startTour } = useTour()
 
 const id = validateParamId(route.params.id)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
+const { mutateAsync: patch } = useInitiativeSheetPatch()
 const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
   id,
   data,
 )
 const { sync: syncLiveSession } = useLiveSession(id)
+
+useSeo(() => data.value?.title)
 
 const activeRow = ref<InitiativeSheetRow>()
 
@@ -45,9 +47,19 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   syncLiveSession(payload)
 }
 
+async function handlePatchRow(
+  rowId: string,
+  rowPatch: Partial<InitiativeSheetRow>,
+): Promise<void> {
+  if (!data.value) return
+
+  await patch({ id, rowId, patch: rowPatch })
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: data,
   update: handleUpdate,
+  patchRow: handlePatchRow,
   activeRow,
 })
 </script>
@@ -55,12 +67,13 @@ provide(INITIATIVE_SHEET, {
 <template>
   <NuxtLayout name="sidebar">
     <template #header>
-      <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
+      <div class="flex gap-x-4 items-center min-w-0">
         <UiButton
           v-if="!data?.campaign"
           as-child
           variant="foreground-ghost"
           size="icon-sm"
+          class="shrink-0"
         >
           <NuxtLinkLocale
             v-if="!data?.campaign"
@@ -76,6 +89,7 @@ provide(INITIATIVE_SHEET, {
             <UiButton
               variant="foreground-ghost"
               size="icon-sm"
+              class="shrink-0"
               :aria-label="$t('actions.back')"
             >
               <Icon name="tabler:arrow-left" :aria-hidden="true" />
@@ -108,24 +122,22 @@ provide(INITIATIVE_SHEET, {
             </UiDropdownMenuItem>
           </UiDropdownMenuContent>
         </UiDropdownMenu>
-        <h2 class="text-muted-foreground flex gap-2">
-          <span class="hidden md:block"> {{ $t('general.encounter') }}: </span>
-          <ClientOnly>
-            <span v-if="data?.title" test-id="title" class="text-foreground">
-              {{ data.title }}
-            </span>
-            <UiSkeleton
-              v-else
-              test-id="title-loader"
-              class="w-[150px] h-9 rounded-full"
-            />
-            <template #fallback>
-              <UiSkeleton
-                test-id="title-loader"
-                class="w-[150px] h-9 rounded-full"
-              />
-            </template>
-          </ClientOnly>
+        <h2 class="text-xl text-muted-foreground flex gap-2 min-w-0">
+          <span class="hidden md:block shrink-0">
+            {{ $t('general.encounter') }}:
+          </span>
+          <span
+            v-if="data?.title"
+            test-id="title"
+            class="text-foreground truncate"
+          >
+            {{ data.title }}
+          </span>
+          <UiSkeleton
+            v-else
+            test-id="title-loader"
+            class="w-[150px] h-9 rounded-full shrink-0"
+          />
         </h2>
       </div>
     </template>

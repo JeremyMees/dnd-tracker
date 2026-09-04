@@ -24,7 +24,6 @@ const props: Props = {
 
 describe('Initiative table row notes', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
   })
 

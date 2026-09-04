@@ -3,7 +3,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 const { add, remove, temp, override, overrideReset } = acFunctions
 
 const popoverOpen = shallowRef<boolean>(false)
@@ -13,16 +13,9 @@ const hasArmorClass = computed(
 )
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  if (!sheet.value) return
+  const patch = buildCombatPatch(props.item, { ...props.item, ...row })
 
-  const index = getCurrentRowIndex(sheet.value, props.item.id)
-  const rows = [...sheet.value.rows]
-
-  if (index === -1 || !rows[index]) return
-
-  rows[index] = { ...rows[index], ...row }
-
-  await update({ rows })
+  await patchRow(props.item.id, patch)
   popoverOpen.value = false
 }
 

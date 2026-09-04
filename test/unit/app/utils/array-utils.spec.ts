@@ -140,4 +140,40 @@ describe('array-utils', () => {
       expect(result).not.toContainEqual(item)
     })
   })
+
+  describe('isEqualArray', () => {
+    it('should return true for arrays with the same items in the same order', () => {
+      expect(isEqualArray([1, 2, 3], [1, 2, 3])).toBe(true)
+      expect(isEqualArray(['a', 'b'], ['a', 'b'])).toBe(true)
+    })
+
+    it('should return true for two empty arrays', () => {
+      expect(isEqualArray([], [])).toBe(true)
+    })
+
+    it('should return false when the lengths differ', () => {
+      expect(isEqualArray([1, 2, 3], [1, 2])).toBe(false)
+      expect(isEqualArray([], [1])).toBe(false)
+    })
+
+    it('should return false when the same items are in a different order', () => {
+      expect(isEqualArray([1, 2, 3], [3, 2, 1])).toBe(false)
+    })
+
+    it('should return false when a single item differs', () => {
+      expect(isEqualArray(['srd-2024'], ['srd-2014'])).toBe(false)
+    })
+
+    it('should compare objects by reference', () => {
+      const a = { id: 1 }
+      const b = { id: 2 }
+
+      expect(isEqualArray([a, b], [a, b])).toBe(true)
+      expect(isEqualArray([{ id: 1 }], [{ id: 1 }])).toBe(false)
+    })
+
+    it('should treat NaN items as unequal', () => {
+      expect(isEqualArray([Number.NaN], [Number.NaN])).toBe(false)
+    })
+  })
 })

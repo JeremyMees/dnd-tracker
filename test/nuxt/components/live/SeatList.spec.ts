@@ -39,7 +39,6 @@ const props = {
 
 describe('LiveSeatList', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     seats.value = []
     connected.value = new Set()
   })

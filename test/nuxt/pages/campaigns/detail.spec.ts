@@ -81,8 +81,6 @@ async function mountPage() {
 
 describe('Campaign detail page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-
     data.value = { ...mockCampaignFull }
     isPending.value = false
     isError.value = false

@@ -45,7 +45,6 @@ async function mountProbe() {
 
 describe('useLiveSession', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     fetchMock.mockReset()
   })
 
@@ -74,7 +73,7 @@ describe('useLiveSession', () => {
 
     await vm.start()
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/start', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/start', {
       method: 'POST',
       body: { encounter: 1, createIfMissing: true },
     })
@@ -90,7 +89,7 @@ describe('useLiveSession', () => {
 
     await vm.start({ createIfMissing: false })
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/start', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/start', {
       method: 'POST',
       body: { encounter: 1, createIfMissing: false },
     })
@@ -132,9 +131,12 @@ describe('useLiveSession', () => {
 
   it('Should toast the translated error when starting fails with a known slug', async () => {
     fetchMock.mockRejectedValue(
-      Object.assign(new Error('[POST] "/api/live/start": 403 Forbidden'), {
-        data: { statusCode: 403, statusMessage: 'pro-required' },
-      }),
+      Object.assign(
+        new Error('[POST] "/api/encounter/live/start": 403 Forbidden'),
+        {
+          data: { statusCode: 403, statusMessage: 'pro-required' },
+        },
+      ),
     )
 
     const { vm } = await mountProbe()
@@ -167,7 +169,9 @@ describe('useLiveSession', () => {
   it('Should fall back to a generic error for an unrecognized slug', async () => {
     fetchMock.mockRejectedValue(
       Object.assign(
-        new Error('[POST] "/api/live/start": 500 Internal Server Error'),
+        new Error(
+          '[POST] "/api/encounter/live/start": 500 Internal Server Error',
+        ),
         {
           data: { statusCode: 500, statusMessage: 'something-unexpected' },
         },
@@ -200,7 +204,7 @@ describe('useLiveSession', () => {
 
     await vm.stop()
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/stop', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/stop', {
       method: 'POST',
       body: { encounter: 1 },
     })
@@ -270,7 +274,7 @@ describe('useLiveSession', () => {
     vm.sync({ round: 3 })
     await flushPromises()
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/live/sync', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/encounter/live/sync', {
       method: 'POST',
       body: { encounter: 1 },
     })
@@ -295,9 +299,12 @@ describe('useLiveSession', () => {
 
   it('Should toast the translated error when stopping fails with a known slug', async () => {
     fetchMock.mockRejectedValue(
-      Object.assign(new Error('[POST] "/api/live/stop": 404 Not Found'), {
-        data: { statusCode: 404, statusMessage: 'no-active-session' },
-      }),
+      Object.assign(
+        new Error('[POST] "/api/encounter/live/stop": 404 Not Found'),
+        {
+          data: { statusCode: 404, statusMessage: 'no-active-session' },
+        },
+      ),
     )
 
     const { vm } = await mountProbe()

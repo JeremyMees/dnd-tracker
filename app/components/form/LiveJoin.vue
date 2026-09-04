@@ -44,7 +44,7 @@ const onSubmit = form.handleSubmit(async values => {
   isLoading.value = true
 
   try {
-    const session = await $fetch<LiveJoinResponse>('/api/live/join', {
+    const session = await $fetch<LiveJoinResponse>('/api/encounter/live/join', {
       method: 'POST',
       body: {
         code: props.code,

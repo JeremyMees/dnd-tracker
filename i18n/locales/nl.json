@@ -77,7 +77,11 @@
     "applyDamage": "Schade toepassen",
     "generateName": "Naam genereren",
     "kick": "Verwijder",
-    "copyLink": "Kopieer link"
+    "copyLink": "Kopieer link",
+    "resetFilter": "Reset filter | Reset filters",
+    "encounterStats": "Encounter statistieken",
+    "openCombatLog": "Gevechtslog openen",
+    "closeCombatLog": "Gevechtslog sluiten"
   },
   "general": {
     "waiting": "Wachten",
@@ -209,6 +213,7 @@
     "infoPins": "Info pins",
     "fantasyNameGenerator": "Fantasy name generator",
     "diceRoll": "Dobbelsteen roller",
+    "combatLog": "Gevechtslog",
     "globally": "Globaal",
     "synced": "Gesynchroniseerd",
     "syncing": "Synchroniseren",
@@ -687,6 +692,83 @@
     "diceRoll": {
       "rolled": "Rolde {amount} {dice}|Rolde meerdere dobbelstenen"
     },
+    "combatLog": {
+      "empty": "Nog geen gevechtsgebeurtenissen",
+      "round": "Ronde {round}",
+      "hp": {
+        "heal": "{rowName} genas {amount} HP",
+        "damage": "{rowName} kreeg {amount} schade",
+        "temp": "{rowName} kreeg {amount} tijdelijke HP",
+        "override": "{rowName}'s HP werd ingesteld op {after}"
+      },
+      "ac": {
+        "add": "{rowName}'s AC steeg met {amount}",
+        "remove": "{rowName}'s AC daalde met {amount}",
+        "temp": "{rowName} kreeg {amount} tijdelijke AC",
+        "override": "{rowName}'s AC werd ingesteld op {after}"
+      },
+      "conditionAdded": "{rowName} kreeg {condition}",
+      "conditionRemoved": "{rowName} verloor {condition}",
+      "concentrationBroken": "{rowName} verloor concentratie",
+      "concentrationStarted": "{rowName} begon te concentreren",
+      "deathSave": {
+        "save": "{rowName} slaagde een death save|{rowName} slaagde {amount} death saves",
+        "fail": "{rowName} faalde een death save|{rowName} faalde {amount} death saves"
+      },
+      "stabilized": "{rowName} stabiliseerde",
+      "died": "{rowName} stierf"
+    },
+    "combatSummary": {
+      "title": "Gevecht samenvatting",
+      "description": "Hoe het gevecht verliep voor iedereen",
+      "empty": "Er is nog niets gebeurd in dit gevecht, dus er is niets samen te vatten.",
+      "totals": {
+        "rounds": "Rondes",
+        "damage": "Schade gedaan",
+        "healing": "Genezing gedaan",
+        "downed": "Keren neergegaan",
+        "deaths": "Doden",
+        "deathSaves": "Death saves",
+        "conditions": "Condities toegepast",
+        "concentration": "Concentratie verbroken"
+      },
+      "deathSavesValue": "{made} geslaagd / {failed} gefaald",
+      "awards": {
+        "title": "Uitschieters",
+        "exclusive": {
+          "died": "Gesneuveld na {value} schade",
+          "mostDamageTaken": "Kreeg het meeste klop: {value} schade",
+          "mostTimesDowned": "Ging het vaakst neer: {value}x",
+          "biggestHit": "Kreeg de grootste klap: {value} schade",
+          "mostDeathSavesFailed": "Dichtst bij de dood: {value} gefaalde saves",
+          "mostHealingReceived": "Het meest opgelapt: {value} HP",
+          "mostDeathSavesMade": "Vocht het hardst terug: {value} geslaagde saves",
+          "mostConditions": "Meest getroffen: {value} condities",
+          "mostConcentrationBroken": "Verloor het vaakst focus: {value}x",
+          "mostTempHitPoints": "Best beschermd: {value} tijdelijke HP",
+          "unscathed": "Kwam er zonder een schrammetje van af"
+        },
+        "plain": {
+          "died": "Gesneuveld na {value} schade",
+          "mostDamageTaken": "Kreeg {value} schade",
+          "mostTimesDowned": "Ging {value}x neer",
+          "biggestHit": "Grootste klap: {value} schade",
+          "mostDeathSavesFailed": "Faalde {value} death saves",
+          "mostHealingReceived": "Genas {value} HP",
+          "mostDeathSavesMade": "Slaagde {value} death saves",
+          "mostConditions": "Kreeg {value} condities",
+          "mostConcentrationBroken": "Verloor {value}x concentratie",
+          "mostTempHitPoints": "Kreeg {value} tijdelijke HP",
+          "unscathed": "Kwam er zonder een schrammetje van af"
+        }
+      },
+      "actions": {
+        "share": "Toon aan spelers",
+        "shared": "Getoond aan spelers",
+        "keepPlaying": "Verder spelen",
+        "reset": "Gevecht resetten"
+      }
+    },
     "initiativeTableModals": {
       "name": "Naam wijzigen",
       "init": "Initiatief wijzigen",
@@ -700,11 +782,10 @@
       "online": {
         "title": "Je bent online",
         "text": "Je hebt succesvol verbonden met het internet"
-      },
-      "open5e": {
-        "title": "Open5e is momenteel traag of niet beschikbaar",
-        "text": "De Open5e API lijkt traag of niet beschikbaar te zijn, wat de toegang tot D&D content beïnvloedt"
       }
+    },
+    "open5eStatus": {
+      "stale": "Open5e is momenteel niet bereikbaar, dus je ziet opgeslagen content die verouderd kan zijn."
     },
     "toast": {
       "delete": {
@@ -1148,7 +1229,7 @@
     },
     "11": {
       "title": "Klaar voor een nieuwe ronde? 🔄",
-      "description": "Eén klik op de resetknop en je encounter is terug fris. Perfect om opnieuw te beginnen."
+      "description": "Gevecht gedaan? Open dit menu om de rondes te resetten, een live sessie te delen, het gevecht te beëindigen of het gevechtslog te bekijken."
     },
     "12": {
       "title": "Proficiat, je bent er helemaal klaar voor! 🎉"

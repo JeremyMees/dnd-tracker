@@ -8,13 +8,13 @@ interface Props {
   item: InitiativeSheetRow
 }
 
-const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -24,7 +24,6 @@ const props: Props = {
 
 describe('Initiative table row concentration', async () => {
   beforeEach(() => {
-    mockUpdate.mockClear()
     mockSheet.value = sheet
   })
 
@@ -68,30 +67,13 @@ describe('Initiative table row concentration', async () => {
     expect(component.find('[test-id="false"]').exists()).toBeTruthy()
   })
 
-  it('Should call update with toggled concentration', async () => {
+  it('Should call patchRow with toggled concentration', async () => {
     const component = await mountSuspended(Concentration, { props, provide })
 
     await component.find('button').trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
-        expect.objectContaining({
-          concentration: !props.item.concentration,
-        }),
-      ]),
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      concentration: !props.item.concentration,
     })
-  })
-
-  it('Should not call update when sheet is undefined', async () => {
-    mockSheet.value = undefined
-
-    const component = await mountSuspended(Concentration, {
-      props,
-      provide,
-    })
-
-    await component.find('button').trigger('click')
-
-    expect(mockUpdate).not.toHaveBeenCalled()
   })
 })

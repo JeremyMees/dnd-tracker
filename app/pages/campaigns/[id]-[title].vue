@@ -69,8 +69,13 @@ const tabs = computed<Tab[]>(() => {
 <template>
   <NuxtLayout name="sidebar">
     <template #header>
-      <div class="flex gap-x-4 gap-y-2 items-center">
-        <UiButton as-child variant="foreground-ghost" size="icon-sm">
+      <div class="flex gap-x-4 items-center min-w-0">
+        <UiButton
+          as-child
+          variant="foreground-ghost"
+          size="icon-sm"
+          class="shrink-0"
+        >
           <NuxtLinkLocale
             v-tippy="$t('actions.back')"
             test-id="back"
@@ -79,28 +84,22 @@ const tabs = computed<Tab[]>(() => {
             <Icon name="tabler:arrow-left" :aria-hidden="true" />
           </NuxtLinkLocale>
         </UiButton>
-        <h2 class="text-muted-foreground flex gap-2">
-          <span class="hidden md:block"> {{ $t('general.campaign') }}: </span>
-          <ClientOnly>
-            <span
-              v-if="isSuccess && data?.title"
-              test-id="title"
-              class="text-foreground"
-            >
-              {{ data.title }}
-            </span>
-            <UiSkeleton
-              v-else
-              test-id="title-loader"
-              class="w-[150px] h-9 rounded-full"
-            />
-            <template #fallback>
-              <UiSkeleton
-                test-id="title-loader"
-                class="w-[150px] h-9 rounded-full"
-              />
-            </template>
-          </ClientOnly>
+        <h2 class="text-xl text-muted-foreground flex gap-2 min-w-0">
+          <span class="hidden md:block shrink-0">
+            {{ $t('general.campaign') }}:
+          </span>
+          <span
+            v-if="isSuccess && data?.title"
+            test-id="title"
+            class="text-foreground truncate"
+          >
+            {{ data.title }}
+          </span>
+          <UiSkeleton
+            v-else
+            test-id="title-loader"
+            class="w-[150px] h-9 rounded-full shrink-0"
+          />
         </h2>
       </div>
     </template>

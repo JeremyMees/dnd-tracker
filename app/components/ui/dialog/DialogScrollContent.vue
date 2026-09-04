@@ -11,6 +11,10 @@ import {
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const props = defineProps<
   DialogContentProps & { class?: HTMLAttributes['class'] }
 >()
@@ -37,7 +41,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
             props.class,
           )
         "
-        v-bind="forwarded"
+        v-bind="{ ...forwarded, ...$attrs }"
         @pointer-down-outside="
           event => {
             const originalEvent = event.detail.originalEvent

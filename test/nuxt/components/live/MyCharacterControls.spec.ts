@@ -55,7 +55,6 @@ function mountControls(
 
 describe('LiveMyCharacterControls', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
     pending.value = false
   })
 

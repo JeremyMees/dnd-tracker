@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, afterEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import user from '../../fixtures/user.json'
 import { useAuthentication } from '~/composables/useAuthentication'
 import { useUi } from '~/composables/useUi'
@@ -12,8 +12,6 @@ describe('useUi', async () => {
   const playRoutes = 3
   const updateProfileRoutes = 1
   const profileRoutes = 3
-
-  afterEach(() => vi.clearAllMocks())
 
   const createAuthMock = (userData: unknown) => ({
     user: ref(userData as AuthUser | null),

@@ -72,6 +72,16 @@ export async function broadcastLiveEnded(
   await channel.httpSend('ended', {})
 }
 
+export async function broadcastLiveSummary(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  session: string,
+  stats: CombatStats,
+): Promise<void> {
+  const channel = supabase.channel(`live:${session}`)
+
+  await channel.httpSend('summary', { stats })
+}
+
 export async function broadcastLiveSeats(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
