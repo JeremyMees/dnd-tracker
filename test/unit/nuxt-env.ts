@@ -37,6 +37,7 @@ export function nuxtAutoImports(): Plugin {
         'getRequestHeader',
         'getHeader',
         'getRequestIP',
+        'setHeader',
       ].map(name => ({ name, from: 'h3' })),
       { name: 'useStorage', from: 'nitropack/runtime' },
       { name: 'defineCachedEventHandler', from: '#nitro' },
