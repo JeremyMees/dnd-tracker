@@ -34,6 +34,7 @@ export function nuxtAutoImports(): Plugin {
         'readBody',
         'readRawBody',
         'getQuery',
+        'getValidatedQuery',
         'getRequestHeader',
         'getHeader',
         'getRequestIP',
