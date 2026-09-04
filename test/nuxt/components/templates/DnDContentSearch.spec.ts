@@ -282,7 +282,7 @@ describe('DnDContentSearch', async () => {
     await component.get('[test-id="search"]').setValue('sword')
     await vi.advanceTimersByTimeAsync(600)
 
-    expect(filterRef?.value.filters.name__icontains).toBe('sword')
+    expect(filterRef?.value.filters.search).toBe('sword')
   })
 
   it('Should reset the search and query filters when the content type changes', async () => {
@@ -298,7 +298,7 @@ describe('DnDContentSearch', async () => {
       'value',
       '',
     )
-    expect(filterRef?.value.filters.name__icontains).toBe('')
+    expect(filterRef?.value.filters.search).toBe('')
     expect(filterRef?.value.filters.ordering).toBe('name')
     expect(filterRef?.value.type).toBe('weapons')
   })
@@ -310,7 +310,7 @@ describe('DnDContentSearch', async () => {
       .findComponent({ name: 'GameSystemFilter' })
       .vm.$emit('update:document', ['srd-2014'])
 
-    expect(filterRef?.value.filters.document__key__in).toBe('srd-2014')
+    expect(filterRef?.value.filters.documents).toEqual(['srd-2014'])
   })
 
   it('Should reset the query filters when the selected game system changes', async () => {
@@ -320,7 +320,7 @@ describe('DnDContentSearch', async () => {
       .findComponent({ name: 'GameSystemFilter' })
       .vm.$emit('update:system', '5e-2014')
 
-    expect(filterRef?.value.filters.name__icontains).toBe('')
+    expect(filterRef?.value.filters.search).toBe('')
     expect(filterRef?.value.filters.ordering).toBe('name')
   })
 
@@ -439,8 +439,8 @@ describe('DnDContentSearch', async () => {
         'fire',
       )
       expect(filterRef?.value.type).toBe('weapons')
-      expect(filterRef?.value.filters.name__icontains).toBe('fire')
-      expect(filterRef?.value.filters.document__key__in).toBe('srd-2014')
+      expect(filterRef?.value.filters.search).toBe('fire')
+      expect(filterRef?.value.filters.documents).toEqual(['srd-2014'])
       expect(filterRef?.value.filters.page).toBe(2)
     })
 
@@ -522,7 +522,7 @@ describe('DnDContentSearch', async () => {
         'fire',
       )
       expect(filterRef?.value.type).toBe('weapons')
-      expect(filterRef?.value.filters.name__icontains).toBe('fire')
+      expect(filterRef?.value.filters.search).toBe('fire')
       expect(filterRef?.value.filters.page).toBe(2)
     })
 
@@ -645,8 +645,8 @@ describe('DnDContentSearch', async () => {
         '',
       )
       expect(filterRef?.value.type).toBe('spells')
-      expect(filterRef?.value.filters.name__icontains).toBe('')
-      expect(filterRef?.value.filters.document__key__in).toBe('srd-2024')
+      expect(filterRef?.value.filters.search).toBe('')
+      expect(filterRef?.value.filters.documents).toEqual(['srd-2024'])
       expect(
         component.findComponent({ name: 'GameSystemFilter' }).props('system'),
       ).toBe('5e-2024')
@@ -661,7 +661,7 @@ describe('DnDContentSearch', async () => {
       await component.get('[test-id="reset-filters"]').trigger('click')
       await vi.advanceTimersByTimeAsync(600)
 
-      expect(filterRef?.value.filters.name__icontains).toBe('')
+      expect(filterRef?.value.filters.search).toBe('')
     })
   })
 })

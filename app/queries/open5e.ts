@@ -2,15 +2,33 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 import { TEN_MINUTES, ONE_DAY } from '~~/constants/time'
 
+const STALE_HEADER = 'x-open5e-stale-at'
+
 function listingQuery(type: Open5eType, filters: Open5eFilters) {
   return {
     type,
     page: filters.page,
-    search: filters.name__icontains ?? '',
-    documents: filters.document__key__in ?? '',
+    search: filters.search ?? '',
+    documents: filters.documents?.join(',') ?? '',
     ordering: filters.ordering ?? 'name',
     ...(filters.cr === undefined ? {} : { cr: filters.cr }),
   }
+}
+
+async function readOpen5e<T>(
+  url: string,
+  query?: Record<string, unknown>,
+): Promise<{ data: T; staleAt: string | null }> {
+  const response = await $fetch.raw<T>(url, { query })
+
+  if (response._data === undefined) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'Open5e returned an empty response',
+    })
+  }
+
+  return { data: response._data, staleAt: response.headers.get(STALE_HEADER) }
 }
 
 export function useOpen5eListing(
@@ -18,14 +36,20 @@ export function useOpen5eListing(
 ) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useOpen5e', data],
     queryFn: async () => {
       try {
-        return await $fetch<Open5eListingResult>('/api/open5e/listing', {
-          query: listingQuery(data.value.type, data.value.filters),
-        })
+        const listing = await readOpen5e<Open5eListingResult>(
+          '/api/open5e/listing',
+          listingQuery(data.value.type, data.value.filters),
+        )
+
+        trackOpen5eFreshness(listing.staleAt)
+
+        return listing.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
@@ -45,12 +69,19 @@ export function useOpen5eListing(
 export function useOpen5eDocuments() {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useOpen5eDocuments'],
     queryFn: async () => {
       try {
-        return await $fetch<Open5eDocument[]>('/api/open5e/documents')
+        const documents = await readOpen5e<Open5eDocument[]>(
+          '/api/open5e/documents',
+        )
+
+        trackOpen5eFreshness(documents.staleAt)
+
+        return documents.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
@@ -84,12 +115,19 @@ export async function prefetchConditionsListing() {
 export function useConditionsListing() {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useConditionsListing'],
     queryFn: async () => {
       try {
-        return await $fetch<DndCondition[]>('/api/open5e/conditions')
+        const conditions = await readOpen5e<DndCondition[]>(
+          '/api/open5e/conditions',
+        )
+
+        trackOpen5eFreshness(conditions.staleAt)
+
+        return conditions.data
       } catch (error) {
         toast({
           title: t('general.error.title'),
@@ -111,14 +149,20 @@ export function useOpen5eMonsterListing(
 ) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { trackOpen5eFreshness } = useOpen5eStatus()
 
   return useQuery({
     queryKey: ['useOpen5eMonsterListing', data],
     queryFn: async () => {
       try {
-        return await $fetch<Open5eListingResult>('/api/open5e/listing', {
-          query: listingQuery('monsters', data.value.filters),
-        })
+        const listing = await readOpen5e<Open5eListingResult>(
+          '/api/open5e/listing',
+          listingQuery('monsters', data.value.filters),
+        )
+
+        trackOpen5eFreshness(listing.staleAt)
+
+        return listing.data
       } catch (error) {
         toast({
           title: t('general.error.title'),

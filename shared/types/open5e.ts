@@ -18,11 +18,10 @@ export type Open5eSortBy =
 
 export interface Open5eFilters {
   page: number
-  limit?: number
-  name__icontains?: string
+  search?: string
   cr?: number
   ordering?: Open5eSortBy
-  document__key__in?: string
+  documents?: string[]
 }
 
 interface Open5eInfoObject<T = string> {

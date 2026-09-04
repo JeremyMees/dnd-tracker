@@ -73,9 +73,9 @@ watch([() => state.type, () => state.documents, appliedSearch], () => {
 
 const queryFilters = computed<Open5eFilters>(() => ({
   page: state.page,
-  name__icontains: appliedSearch.value,
+  search: appliedSearch.value,
   ordering: 'name',
-  document__key__in: state.documents.join(','),
+  documents: state.documents,
 }))
 
 function handleTypeChange(): void {
@@ -91,6 +91,8 @@ const { data, status: listingStatus } = useOpen5eListing(
 )
 
 const { data: documents, status: documentsStatus } = useOpen5eDocuments()
+
+const { isStale: isOpen5eStale } = useOpen5eStatus()
 
 const isLoading = computed(
   () =>
@@ -252,6 +254,14 @@ function resetFilters(): void {
         </AnimationExpand>
       </div>
     </div>
+
+    <p
+      v-if="isOpen5eStale"
+      test-id="open5e-stale"
+      class="rounded-md border border-warning bg-warning/10 px-3 py-2 text-center text-sm"
+    >
+      {{ $t('components.open5eStatus.stale') }}
+    </p>
 
     <div class="overflow-y-auto">
       <MasonryGrid

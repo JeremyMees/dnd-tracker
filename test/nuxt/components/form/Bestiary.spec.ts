@@ -247,7 +247,7 @@ describe('Bestiary', () => {
     await vi.advanceTimersByTimeAsync(1000)
     await flushPromises()
 
-    expect(lastFilters().name__icontains).toBe('goblin')
+    expect(lastFilters().search).toBe('goblin')
 
     vi.useRealTimers()
   })
@@ -285,9 +285,9 @@ describe('Bestiary', () => {
     await component.get('[test-id="checkbox-homebrew-2024"]').trigger('click')
     await flushPromises()
 
-    expect(lastFilters().document__key__in).toContain('homebrew-2024')
-    expect(lastFilters().document__key__in).toContain('srd-2024')
-    expect(lastFilters().name__icontains).toBe('')
+    expect(lastFilters().documents).toContain('homebrew-2024')
+    expect(lastFilters().documents).toContain('srd-2024')
+    expect(lastFilters().search).toBe('')
   })
 
   it('Should refetch when the selected game system changes', async () => {
@@ -302,7 +302,7 @@ describe('Bestiary', () => {
     await component.findAll('button[role="radio"]')[0]!.trigger('click')
     await flushPromises()
 
-    expect(lastFilters().document__key__in).toBe('srd-2014')
+    expect(lastFilters().documents).toEqual(['srd-2014'])
   })
 
   it('Should refetch with the picked page from pagination', async () => {
@@ -360,7 +360,7 @@ describe('Bestiary', () => {
       'value',
       'goblin',
     )
-    expect(lastFilters().name__icontains).toBe('goblin')
+    expect(lastFilters().search).toBe('goblin')
     expect(lastFilters().cr).toBe(5)
     expect(lastFilters().ordering).toBe('-hit_points')
     expect(lastFilters().page).toBe(2)
@@ -493,10 +493,10 @@ describe('Bestiary', () => {
         'value',
         '',
       )
-      expect(lastFilters().name__icontains).toBe('')
+      expect(lastFilters().search).toBe('')
       expect(lastFilters().cr).toBeUndefined()
       expect(lastFilters().ordering).toBe('name')
-      expect(lastFilters().document__key__in).toBe('srd-2024')
+      expect(lastFilters().documents).toEqual(['srd-2024'])
       expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
 
       vi.useRealTimers()
@@ -512,7 +512,7 @@ describe('Bestiary', () => {
       await vi.advanceTimersByTimeAsync(1000)
       await flushPromises()
 
-      expect(lastFilters().name__icontains).toBe('')
+      expect(lastFilters().search).toBe('')
 
       vi.useRealTimers()
     })

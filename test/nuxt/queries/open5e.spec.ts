@@ -9,9 +9,12 @@ import {
 import {
   clearQueryCache,
   fetchMock,
+  fetchRawMock,
+  mockRawResponse,
   mountHook,
   toast,
 } from '~~/test/nuxt/stubs/query'
+import { useOpen5eStatus } from '~/composables/useOpen5eStatus'
 import {
   prefetchConditionsListing,
   useConditionsListing,
@@ -33,7 +36,7 @@ async function mount<T extends Record<string, unknown>>(
 }
 
 function request() {
-  const [url, options] = fetchMock.mock.calls[0]!
+  const [url, options] = fetchRawMock.mock.calls[0]!
 
   return { url, query: options?.query as Record<string, unknown> | undefined }
 }
@@ -41,6 +44,8 @@ function request() {
 describe('open5e queries', () => {
   beforeEach(async () => {
     fetchMock.mockReset()
+    fetchRawMock.mockReset()
+    clearNuxtState()
     await clearQueryCache()
   })
 
@@ -57,7 +62,7 @@ describe('open5e queries', () => {
         pages: 2,
       }
 
-      fetchMock.mockResolvedValue(listing)
+      fetchRawMock.mockResolvedValue(mockRawResponse(listing))
 
       const { vm } = await mount(() =>
         useOpen5eListing(
@@ -74,7 +79,9 @@ describe('open5e queries', () => {
     })
 
     it('calls our own endpoint rather than open5e directly', async () => {
-      fetchMock.mockResolvedValue({ type: 'spells', items: [], pages: 0 })
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({ type: 'spells', items: [], pages: 0 }),
+      )
 
       await mount(() =>
         useOpen5eListing(
@@ -86,11 +93,13 @@ describe('open5e queries', () => {
       )
 
       expect(request().url).toBe('/api/open5e/listing')
-      expect(fetchMock.mock.calls[0]![0]).not.toContain('api.open5e.com')
+      expect(fetchRawMock.mock.calls[0]![0]).not.toContain('api.open5e.com')
     })
 
     it('maps the open5e filter names onto the endpoint contract', async () => {
-      fetchMock.mockResolvedValue({ type: 'spells', items: [], pages: 0 })
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({ type: 'spells', items: [], pages: 0 }),
+      )
 
       await mount(() =>
         useOpen5eListing(
@@ -98,9 +107,9 @@ describe('open5e queries', () => {
             type: 'spells' as const,
             filters: {
               page: 2,
-              name__icontains: 'fire',
+              search: 'fire',
               ordering: 'name',
-              document__key__in: 'srd-2024,srd-2014',
+              documents: ['srd-2024', 'srd-2014'],
             } as Open5eFilters,
           })),
         ),
@@ -116,7 +125,9 @@ describe('open5e queries', () => {
     })
 
     it('sends empty strings rather than omitting unset filters', async () => {
-      fetchMock.mockResolvedValue({ type: 'spells', items: [], pages: 0 })
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({ type: 'spells', items: [], pages: 0 }),
+      )
 
       await mount(() =>
         useOpen5eListing(
@@ -136,7 +147,7 @@ describe('open5e queries', () => {
     })
 
     it('toasts an error and settles the query into an error state', async () => {
-      fetchMock.mockRejectedValue(new Error('network down'))
+      fetchRawMock.mockRejectedValue(new Error('network down'))
 
       const { vm } = await mount(() =>
         useOpen5eListing(
@@ -157,7 +168,7 @@ describe('open5e queries', () => {
 
   describe('useOpen5eDocuments', () => {
     it('passes the already filtered documents through untouched', async () => {
-      fetchMock.mockResolvedValue([open5eDocumentFixture])
+      fetchRawMock.mockResolvedValue(mockRawResponse([open5eDocumentFixture]))
 
       const { vm } = await mount(() => useOpen5eDocuments())
 
@@ -168,7 +179,7 @@ describe('open5e queries', () => {
     })
 
     it('toasts an error and settles the query into an error state', async () => {
-      fetchMock.mockRejectedValue(new Error('network down'))
+      fetchRawMock.mockRejectedValue(new Error('network down'))
 
       const { vm } = await mount(() => useOpen5eDocuments())
 
@@ -182,7 +193,7 @@ describe('open5e queries', () => {
 
   describe('useConditionsListing', () => {
     it('requests the conditions endpoint', async () => {
-      fetchMock.mockResolvedValue([dndConditionFixture])
+      fetchRawMock.mockResolvedValue(mockRawResponse([dndConditionFixture]))
 
       const { vm } = await mount(() => useConditionsListing())
 
@@ -193,7 +204,7 @@ describe('open5e queries', () => {
     })
 
     it('toasts an error and settles the query into an error state', async () => {
-      fetchMock.mockRejectedValue(new Error('network down'))
+      fetchRawMock.mockRejectedValue(new Error('network down'))
 
       const { vm } = await mount(() => useConditionsListing())
 
@@ -214,7 +225,7 @@ describe('open5e queries', () => {
       }))
 
       expect(vm.result?.[0]?.id).toBe('blinded')
-      expect(request().url).toBe('/api/open5e/conditions')
+      expect(fetchMock.mock.calls[0]![0]).toBe('/api/open5e/conditions')
     })
 
     it('resolves to undefined instead of throwing when the fetch fails', async () => {
@@ -230,11 +241,13 @@ describe('open5e queries', () => {
 
   describe('useOpen5eMonsterListing', () => {
     it('forwards the challenge rating and narrows away the listing type', async () => {
-      fetchMock.mockResolvedValue({
-        type: 'monsters',
-        items: [dndMonsterFixture],
-        pages: 1,
-      })
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({
+          type: 'monsters',
+          items: [dndMonsterFixture],
+          pages: 1,
+        }),
+      )
 
       const { vm } = await mount(() =>
         useOpen5eMonsterListing(
@@ -249,7 +262,9 @@ describe('open5e queries', () => {
     })
 
     it('keeps a zero challenge rating as a real filter', async () => {
-      fetchMock.mockResolvedValue({ type: 'monsters', items: [], pages: 0 })
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({ type: 'monsters', items: [], pages: 0 }),
+      )
 
       await mount(() =>
         useOpen5eMonsterListing(
@@ -261,11 +276,13 @@ describe('open5e queries', () => {
     })
 
     it('discards a listing that came back as another type', async () => {
-      fetchMock.mockResolvedValue({
-        type: 'spells',
-        items: [dndSpellFixture],
-        pages: 1,
-      })
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({
+          type: 'spells',
+          items: [dndSpellFixture],
+          pages: 1,
+        }),
+      )
 
       const { vm } = await mount(() =>
         useOpen5eMonsterListing(
@@ -279,7 +296,7 @@ describe('open5e queries', () => {
     })
 
     it('toasts an error and settles the query into an error state', async () => {
-      fetchMock.mockRejectedValue(new Error('network down'))
+      fetchRawMock.mockRejectedValue(new Error('network down'))
 
       const { vm } = await mount(() =>
         useOpen5eMonsterListing(
@@ -292,6 +309,73 @@ describe('open5e queries', () => {
       expect(toast).toHaveBeenCalledWith(
         expect.objectContaining({ variant: 'destructive' }),
       )
+    })
+  })
+  describe('freshness tracking', () => {
+    const STALE_AT = '2026-09-04T12:00:00.000Z'
+
+    function probe() {
+      return mount(() => {
+        const { data } = useOpen5eListing(
+          computed(() => ({
+            type: 'spells' as const,
+            filters: { page: 0 } as Open5eFilters,
+          })),
+        )
+        const { isStale, staleSince } = useOpen5eStatus()
+
+        return { data, isStale, staleSince }
+      })
+    }
+
+    it('marks the content stale when the endpoint served a saved copy', async () => {
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse(
+          { type: 'spells', items: [], pages: 0 },
+          { 'x-open5e-stale-at': STALE_AT },
+        ),
+      )
+
+      const { vm } = await probe()
+
+      await vi.waitFor(() => expect(vm.data).toBeDefined())
+
+      expect(vm.isStale).toBe(true)
+      expect(vm.staleSince).toBe(STALE_AT)
+    })
+
+    it('leaves the content fresh when the header is absent', async () => {
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse({ type: 'spells', items: [], pages: 0 }),
+      )
+
+      const { vm } = await probe()
+
+      await vi.waitFor(() => expect(vm.data).toBeDefined())
+
+      expect(vm.isStale).toBe(false)
+      expect(vm.staleSince).toBeNull()
+    })
+
+    it('recovers once a live response comes back', async () => {
+      fetchRawMock.mockResolvedValue(
+        mockRawResponse([open5eDocumentFixture], {
+          'x-open5e-stale-at': STALE_AT,
+        }),
+      )
+
+      const { vm } = await mount(() => {
+        const { data } = useOpen5eDocuments()
+        const { isStale, trackOpen5eFreshness } = useOpen5eStatus()
+
+        return { data, isStale, trackOpen5eFreshness }
+      })
+
+      await vi.waitFor(() => expect(vm.isStale).toBe(true))
+
+      vm.trackOpen5eFreshness(null)
+
+      expect(vm.isStale).toBe(false)
     })
   })
 })

@@ -782,11 +782,10 @@
       "offline": {
         "title": "You are offline",
         "text": "Reconnect to the internet to use the app"
-      },
-      "open5e": {
-        "title": "Open5e is currently slow or unavailable",
-        "text": "The Open5e API appears to be slow or unavailable, affecting access to D&D content"
       }
+    },
+    "open5eStatus": {
+      "stale": "Open5e is unreachable right now, so you are seeing saved content that may be out of date."
     },
     "toast": {
       "delete": {

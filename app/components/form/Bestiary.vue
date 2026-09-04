@@ -96,10 +96,10 @@ watch(
 
 const queryFilters = computed<Open5eFilters>(() => ({
   page: state.page,
-  name__icontains: appliedSearch.value,
+  search: appliedSearch.value,
   cr: typeof state.cr === 'string' ? undefined : state.cr,
   ordering: state.sortBy,
-  document__key__in: state.documents.join(','),
+  documents: state.documents,
 }))
 
 const { data, status: monstersStatus } = useOpen5eMonsterListing(
@@ -109,6 +109,8 @@ const { data, status: monstersStatus } = useOpen5eMonsterListing(
 )
 
 const { data: documents, status: documentsStatus } = useOpen5eDocuments()
+
+const { isStale: isOpen5eStale } = useOpen5eStatus()
 
 const isLoading = computed(
   () =>
@@ -274,6 +276,14 @@ async function addMonster(monster: DndMonster): Promise<void> {
         </AnimationExpand>
       </div>
     </div>
+
+    <p
+      v-if="isOpen5eStale"
+      test-id="open5e-stale"
+      class="rounded-md border border-warning bg-warning/10 px-3 py-2 text-center text-sm"
+    >
+      {{ $t('components.open5eStatus.stale') }}
+    </p>
 
     <div class="overflow-y-auto">
       <MasonryGrid

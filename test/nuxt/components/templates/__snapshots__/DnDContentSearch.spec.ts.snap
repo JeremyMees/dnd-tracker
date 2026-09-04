@@ -32,6 +32,7 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
       <div axis="width"></div>
     </div>
   </div>
+  <!--v-if-->
   <div class="overflow-y-auto">
     <div class="grid gap-4 overflow-y-auto" style="grid-template-columns: repeat(2, minmax(0, 1fr));" test-id="content-grid">
       <div class="flex flex-col gap-4">

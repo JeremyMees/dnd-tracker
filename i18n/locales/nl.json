@@ -782,11 +782,10 @@
       "online": {
         "title": "Je bent online",
         "text": "Je hebt succesvol verbonden met het internet"
-      },
-      "open5e": {
-        "title": "Open5e is momenteel traag of niet beschikbaar",
-        "text": "De Open5e API lijkt traag of niet beschikbaar te zijn, wat de toegang tot D&D content beïnvloedt"
       }
+    },
+    "open5eStatus": {
+      "stale": "Open5e is momenteel niet bereikbaar, dus je ziet opgeslagen content die verouderd kan zijn."
     },
     "toast": {
       "delete": {
