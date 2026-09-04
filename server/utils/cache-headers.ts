@@ -1,5 +1,11 @@
 import type { H3Event } from 'h3'
-import { ONE_DAY, ONE_SECOND, ONE_WEEK, TEN_MINUTES } from '~~/constants/time'
+import {
+  ONE_DAY,
+  ONE_MINUTE,
+  ONE_SECOND,
+  ONE_WEEK,
+  TEN_MINUTES,
+} from '~~/constants/time'
 
 const MAX_AGE_CEILING = 31536000
 
@@ -19,6 +25,12 @@ export const FILTERED_LIST_CACHE: CacheTier = {
   maxAge: TEN_MINUTES,
   staleWhileRevalidate: ONE_DAY,
   staleIfError: ONE_WEEK,
+}
+
+export const STALE_FALLBACK_CACHE: CacheTier = {
+  maxAge: ONE_MINUTE,
+  staleWhileRevalidate: 0,
+  staleIfError: 0,
 }
 
 function seconds(ms: number): number {

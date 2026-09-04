@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
 import {
   fetchOpen5e,
+  isOpen5eUnavailable,
   open5eErrorToH3Error,
   open5eUrl,
 } from '~~/server/utils/open5e'
@@ -127,6 +128,43 @@ describe('open5eErrorToH3Error', () => {
 
   it('reports a non-error rejection as unavailable', () => {
     expect(open5eErrorToH3Error(undefined)).toMatchObject({ statusCode: 503 })
+  })
+})
+
+describe('isOpen5eUnavailable', () => {
+  it('treats the whole upstream failure family as recoverable from cache', () => {
+    for (const statusCode of [502, 503, 504]) {
+      expect(isOpen5eUnavailable({ statusCode })).toBe(true)
+    }
+  })
+
+  it('does not serve stale data for a request we got wrong', () => {
+    for (const statusCode of [400, 404, 429, 500]) {
+      expect(isOpen5eUnavailable({ statusCode })).toBe(false)
+    }
+  })
+
+  it('recognises the errors its own mapper produces', () => {
+    expect(isOpen5eUnavailable(open5eErrorToH3Error(timeoutError()))).toBe(true)
+    expect(isOpen5eUnavailable(open5eErrorToH3Error(withStatus(503)))).toBe(
+      true,
+    )
+    expect(
+      isOpen5eUnavailable(open5eErrorToH3Error(new Error('fetch failed'))),
+    ).toBe(true)
+    expect(isOpen5eUnavailable(open5eErrorToH3Error(withStatus(404)))).toBe(
+      false,
+    )
+    expect(isOpen5eUnavailable(open5eErrorToH3Error(withStatus(400)))).toBe(
+      false,
+    )
+  })
+
+  it('handles values that are not errors at all', () => {
+    expect(isOpen5eUnavailable(undefined)).toBe(false)
+    expect(isOpen5eUnavailable(null)).toBe(false)
+    expect(isOpen5eUnavailable('503')).toBe(false)
+    expect(isOpen5eUnavailable({ statusCode: '503' })).toBe(false)
   })
 })
 

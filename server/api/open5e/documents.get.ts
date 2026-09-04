@@ -24,13 +24,15 @@ async function fetchAllDocuments(): Promise<Open5eDocument[]> {
 }
 
 export default defineEventHandler(async (event): Promise<Open5eDocument[]> => {
-  const documents = await fetchAllDocuments()
+  return withOpen5eFallback(
+    event,
+    { key: 'documents', tier: STATIC_LIST_CACHE },
+    async () => {
+      const documents = await fetchAllDocuments()
 
-  const supported = documents.filter(document =>
-    gameSystems.includes(document.gamesystem.key),
+      return documents.filter(document =>
+        gameSystems.includes(document.gamesystem.key),
+      )
+    },
   )
-
-  setCacheHeaders(event, STATIC_LIST_CACHE)
-
-  return supported
 })

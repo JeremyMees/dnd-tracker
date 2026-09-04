@@ -112,6 +112,14 @@ export function open5eErrorToH3Error(error: unknown): Partial<H3Error> {
   }
 }
 
+const UNAVAILABLE_STATUSES = new Set([502, 503, 504])
+
+export function isOpen5eUnavailable(error: unknown): boolean {
+  const statusCode = (error as { statusCode?: unknown } | null)?.statusCode
+
+  return typeof statusCode === 'number' && UNAVAILABLE_STATUSES.has(statusCode)
+}
+
 export async function fetchOpen5e<T>(
   type: Open5eType,
   params: Open5eQueryParams,
