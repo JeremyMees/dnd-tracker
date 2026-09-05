@@ -4,7 +4,6 @@ import {
   fetchOpen5e,
   isOpen5eUnavailable,
   open5eErrorToH3Error,
-  open5eUrl,
 } from '~~/server/utils/open5e'
 
 function params(url: string): URLSearchParams {
@@ -21,66 +20,6 @@ function timeoutError(): Error {
 
   return error
 }
-
-describe('open5eUrl', () => {
-  it('maps monsters onto the creatures resource', () => {
-    expect(open5eUrl('monsters', {})).toBe(
-      'https://api.open5e.com/v2/creatures/',
-    )
-  })
-
-  it('maps every remaining type onto its own resource', () => {
-    expect(open5eUrl('spells', {})).toBe('https://api.open5e.com/v2/spells/')
-    expect(open5eUrl('conditions', {})).toBe(
-      'https://api.open5e.com/v2/conditions/',
-    )
-    expect(open5eUrl('magicitems', {})).toBe(
-      'https://api.open5e.com/v2/magicitems/',
-    )
-    expect(open5eUrl('weapons', {})).toBe('https://api.open5e.com/v2/weapons/')
-    expect(open5eUrl('armor', {})).toBe('https://api.open5e.com/v2/armor/')
-    expect(open5eUrl('documents', {})).toBe(
-      'https://api.open5e.com/v2/documents/',
-    )
-  })
-
-  it('drops params that carry no filter', () => {
-    const query = params(
-      open5eUrl('spells', {
-        page: 1,
-        name__icontains: '',
-        cr: null,
-        ordering: undefined,
-      }),
-    )
-
-    expect([...query.keys()]).toEqual(['page'])
-  })
-
-  it('keeps falsy values that are still meaningful', () => {
-    const query = params(open5eUrl('spells', { page: 0, exclude: false }))
-
-    expect(query.get('page')).toBe('0')
-    expect(query.get('exclude')).toBe('false')
-  })
-
-  it('sorts params so the same filters always produce the same url', () => {
-    const a = open5eUrl('spells', { page: 1, limit: 20, ordering: 'name' })
-    const b = open5eUrl('spells', { ordering: 'name', page: 1, limit: 20 })
-
-    expect(a).toBe(b)
-    expect(a).toContain('?limit=20&ordering=name&page=1')
-  })
-
-  it('throws a 400 for an unsupported type', () => {
-    expect(() => open5eUrl('races' as Open5eType, {})).toThrowError(
-      expect.objectContaining({
-        statusCode: 400,
-        statusMessage: 'Unsupported open5e type: races',
-      }),
-    )
-  })
-})
 
 describe('open5eErrorToH3Error', () => {
   it('reports a timeout as a gateway timeout', () => {

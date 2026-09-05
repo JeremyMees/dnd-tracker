@@ -1,3 +1,5 @@
+import { modifierFromScore } from '../dnd/abilities'
+import { parseHitDice } from '../dnd/dice'
 import {
   mapActionsV1,
   mapActionsV2,

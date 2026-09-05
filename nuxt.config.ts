@@ -40,7 +40,8 @@ export default defineNuxtConfig({
 
   typescript: {
     tsConfig: {
-      include: ['../test/unit/**/*'],
+      include: ['../test/unit/**/*', '../scripts/**/*'],
+      compilerOptions: { types: ['node'] },
     },
   },
 

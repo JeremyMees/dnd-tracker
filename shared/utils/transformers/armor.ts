@@ -1,3 +1,4 @@
+import { parseBoolean, parseIntegerFromText } from '../parse'
 import { mapArmorType } from './utils'
 
 function mapArmorV1(dto: Open5eV1Item): DndArmor {

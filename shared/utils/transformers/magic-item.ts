@@ -1,3 +1,4 @@
+import { parseBoolean, parseIntegerFromText } from '../parse'
 import {
   mapArmorType,
   mapDamageType,
