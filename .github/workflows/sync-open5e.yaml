@@ -1,0 +1,33 @@
+name: Sync Open5e
+
+on:
+  schedule:
+    - cron: "0 4 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Fetch and transform without writing anything
+        type: boolean
+        default: false
+
+concurrency:
+  group: sync-open5e
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync SRD content
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          save-cache: "true"
+      - name: Sync Open5e content
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: npm run open5e:sync ${{ inputs.dry_run && '-- --dry-run' || '' }}
