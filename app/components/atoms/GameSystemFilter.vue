@@ -2,7 +2,7 @@
 import { gameSystems } from '~~/constants/dnd'
 
 const props = defineProps<{
-  documents: Open5eDocument[]
+  documents: DndDocument[]
   disabled?: boolean
 }>()
 
@@ -30,27 +30,27 @@ watch(
   { immediate: true },
 )
 
-const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
+const documentOptions = computed<Record<Open5eGameSystem, DndDocument[]>>(
   () => {
     const acc = props.documents.reduce(
       (acc, document) => {
-        const key = document.gamesystem.key
+        const key = document.gamesystemKey
         if (!acc[key]) acc[key] = []
         acc[key].push(document)
         return acc
       },
-      {} as Record<Open5eGameSystem, Open5eDocument[]>,
+      {} as Record<Open5eGameSystem, DndDocument[]>,
     )
 
     Object.keys(acc).forEach((key: string) => {
       const documents = acc[key as Open5eGameSystem]
-      documents.sort((a: Open5eDocument, b: Open5eDocument) => {
-        const aIsWotC = a.publisher.key === 'wizards-of-the-coast'
-        const bIsWotC = b.publisher.key === 'wizards-of-the-coast'
+      documents.sort((a: DndDocument, b: DndDocument) => {
+        const aIsWotC = a.publisherKey === 'wizards-of-the-coast'
+        const bIsWotC = b.publisherKey === 'wizards-of-the-coast'
 
         if (aIsWotC && !bIsWotC) return -1
         if (!aIsWotC && bIsWotC) return 1
-        return a.publisher.name.localeCompare(b.publisher.name)
+        return a.publisherName.localeCompare(b.publisherName)
       })
     })
 
@@ -106,14 +106,14 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
           <div class="grid gap-1">
             <div
               v-for="option in documentOptions[selectedSystem]"
-              :key="option.key"
-              :test-id="option.key"
+              :key="option.id"
+              :test-id="option.id"
               class="rounded-md border border-input bg-background px-3 py-2 flex flex-col gap-1"
             >
               <div class="flex flex-row items-center space-x-2">
                 <UiCheckbox
-                  :test-id="`checkbox-${option.key}`"
-                  :model-value="(selectedDocuments ?? []).includes(option.key)"
+                  :test-id="`checkbox-${option.id}`"
+                  :model-value="(selectedDocuments ?? []).includes(option.id)"
                   @update:model-value="
                     (val: boolean | 'indeterminate') => {
                       let updated = selectedDocuments
@@ -121,10 +121,10 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
                         : []
 
                       if (val) {
-                        if (!updated.includes(option.key))
-                          updated.push(option.key)
+                        if (!updated.includes(option.id))
+                          updated.push(option.id)
                       } else {
-                        updated = updated.filter(k => k !== option.key)
+                        updated = updated.filter(k => k !== option.id)
                       }
 
                       selectedDocuments = updated
@@ -132,20 +132,24 @@ const documentOptions = computed<Record<Open5eGameSystem, Open5eDocument[]>>(
                   "
                 />
                 <UiLabel>
-                  {{ option.display_name }}
+                  {{ option.displayName }}
                 </UiLabel>
               </div>
               <div class="text-muted-foreground text-2xs">
                 Published by
                 <NuxtLink
-                  :test-id="`publisher-${option.key}`"
+                  v-if="option.permalink"
+                  :test-id="`publisher-${option.id}`"
                   :to="option.permalink"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="underline"
                 >
-                  {{ option.publisher.name }}
+                  {{ option.publisherName }}
                 </NuxtLink>
+                <span v-else :test-id="`publisher-${option.id}`">
+                  {{ option.publisherName }}
+                </span>
               </div>
             </div>
           </div>

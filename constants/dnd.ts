@@ -43,12 +43,12 @@ export const open5eContentTypes = [
 
 export const open5eSortOptions = [
   'name',
-  'hit_points',
-  '-hit_points',
-  'armor_class',
-  '-armor_class',
-  'challenge_rating',
-  '-challenge_rating',
+  'hitPoints',
+  '-hitPoints',
+  'armorClass',
+  '-armorClass',
+  'challengeRating',
+  '-challengeRating',
 ] as const satisfies readonly Open5eSortBy[]
 
 export const abilityTypes = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']

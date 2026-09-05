@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockEvent, responseHeader } from '~~/test/unit/stubs/api-event'
-import handler from '~~/server/api/open5e/warm.get'
+import handler from '~~/server/api/srd/warm.get'
 
 const SECRET = 'a-very-random-cron-secret'
 
@@ -18,7 +18,7 @@ function warmedQueries() {
   return mockFetch.mock.calls.map(([, options]) => options?.query)
 }
 
-describe('GET /api/open5e/warm', () => {
+describe('GET /api/srd/warm', () => {
   beforeEach(() => {
     mockFetch.mockReset().mockResolvedValue({})
     mockRuntimeConfig({ public: {}, cronSecret: SECRET })
@@ -69,14 +69,14 @@ describe('GET /api/open5e/warm', () => {
       const result = await handler(cronEvent())
 
       expect(warmedPaths()).toEqual([
-        '/api/open5e/documents',
-        '/api/open5e/conditions',
-        '/api/open5e/listing',
-        '/api/open5e/listing',
-        '/api/open5e/listing',
-        '/api/open5e/listing',
-        '/api/open5e/listing',
-        '/api/open5e/listing',
+        '/api/srd/documents',
+        '/api/srd/conditions',
+        '/api/srd/listing',
+        '/api/srd/listing',
+        '/api/srd/listing',
+        '/api/srd/listing',
+        '/api/srd/listing',
+        '/api/srd/listing',
       ])
       expect(result.warmed).toBe(8)
     })

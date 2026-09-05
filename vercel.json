@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/open5e/warm",
+      "path": "/api/srd/warm",
       "schedule": "0 4 * * *"
     }
   ],

@@ -11,11 +11,11 @@ interface WarmTarget {
 }
 
 const targets: WarmTarget[] = [
-  { name: 'documents', path: '/api/open5e/documents' },
-  { name: 'conditions', path: '/api/open5e/conditions' },
+  { name: 'documents', path: '/api/srd/documents' },
+  { name: 'conditions', path: '/api/srd/conditions' },
   ...open5eContentTypes.map(type => ({
     name: `listing:${type}`,
-    path: '/api/open5e/listing',
+    path: '/api/srd/listing',
     query: {
       type,
       page: 0,

@@ -92,7 +92,7 @@ describe('open5e queries', () => {
         ),
       )
 
-      expect(request().url).toBe('/api/open5e/listing')
+      expect(request().url).toBe('/api/srd/listing')
       expect(fetchRawMock.mock.calls[0]![0]).not.toContain('api.open5e.com')
     })
 
@@ -198,7 +198,7 @@ describe('open5e queries', () => {
       await vi.waitFor(() => expect(vm.data).toBeDefined())
 
       expect(vm.data).toEqual([open5eDocumentFixture])
-      expect(request().url).toBe('/api/open5e/documents')
+      expect(request().url).toBe('/api/srd/documents')
     })
 
     it('toasts an error and settles the query into an error state', async () => {
@@ -223,7 +223,7 @@ describe('open5e queries', () => {
       await vi.waitFor(() => expect(vm.data).toBeDefined())
 
       expect(vm.data?.[0]?.id).toBe('blinded')
-      expect(request().url).toBe('/api/open5e/conditions')
+      expect(request().url).toBe('/api/srd/conditions')
     })
 
     it('toasts an error and settles the query into an error state', async () => {
@@ -248,7 +248,7 @@ describe('open5e queries', () => {
       }))
 
       expect(vm.result?.[0]?.id).toBe('blinded')
-      expect(fetchMock.mock.calls[0]![0]).toBe('/api/open5e/conditions')
+      expect(fetchMock.mock.calls[0]![0]).toBe('/api/srd/conditions')
     })
 
     it('resolves to undefined instead of throwing when the fetch fails', async () => {

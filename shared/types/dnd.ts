@@ -414,6 +414,17 @@ export interface DndCreatureStats {
   traits?: DndTrait[] | null
 }
 
+export interface DndDocument {
+  id: string
+  name: string
+  displayName: string
+  gamesystemKey: Open5eGameSystem
+  publisherKey: string
+  publisherName: string
+  publicationDate: string | null
+  permalink: string
+}
+
 export interface DndCondition {
   name: string
   id: string

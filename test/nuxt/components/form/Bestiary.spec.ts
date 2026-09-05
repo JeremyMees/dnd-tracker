@@ -19,33 +19,19 @@ const data = ref<{ items: DndMonster[]; pages: number }>({
   items: [dndMonsterFixture],
   pages: 1,
 })
-const documents = ref<Open5eDocument[]>([])
+const documents = ref<DndDocument[]>([])
 
 function createDocument(key: string, gamesystem: Open5eGameSystem = '5e-2024') {
   return {
+    id: key,
     name: key,
-    key,
-    url: `https://api.open5e.com/v2/documents/${key}/`,
-    licenses: [],
-    publisher: {
-      name: 'Wizards of the Coast',
-      key: 'wizards-of-the-coast',
-      url: 'https://api.open5e.com/v2/publishers/wizards-of-the-coast/',
-    },
-    gamesystem: {
-      name: gamesystem,
-      key: gamesystem,
-      url: `https://api.open5e.com/v2/gamesystems/${gamesystem}/`,
-    },
-    display_name: key,
-    desc: '',
-    type: 'document',
-    author: 'Wizards of the Coast',
-    publication_date: '2014-01-01',
+    displayName: key,
+    gamesystemKey: gamesystem,
+    publisherKey: 'wizards-of-the-coast',
+    publisherName: 'Wizards of the Coast',
+    publicationDate: '2014-01-01',
     permalink: `https://example.com/${key}`,
-    distance_unit: 'ft',
-    weight_unit: 'lb',
-  } as Open5eDocument
+  } as DndDocument
 }
 
 const monsterListingArgs = vi.fn()
@@ -265,9 +251,9 @@ describe('Bestiary', () => {
   it('Should refetch with the picked sort order', async () => {
     const component = await mountBestiary().mount()
 
-    await selectOption(component, '-hit_points', { index: 1 })
+    await selectOption(component, '-hitPoints', { index: 1 })
 
-    expect(lastFilters().ordering).toBe('-hit_points')
+    expect(lastFilters().ordering).toBe('-hitPoints')
   })
 
   it('Should reset the search and refetch when the selected documents change', async () => {
@@ -351,7 +337,7 @@ describe('Bestiary', () => {
       JSON.stringify({
         search: 'goblin',
         cr: 5,
-        sortBy: '-hit_points',
+        sortBy: '-hitPoints',
         page: 2,
       }),
     )
@@ -364,7 +350,7 @@ describe('Bestiary', () => {
     )
     expect(lastFilters().search).toBe('goblin')
     expect(lastFilters().cr).toBe(5)
-    expect(lastFilters().ordering).toBe('-hit_points')
+    expect(lastFilters().ordering).toBe('-hitPoints')
     expect(lastFilters().page).toBe(2)
   })
 
@@ -436,7 +422,7 @@ describe('Bestiary', () => {
     it('Should show the reset button when the sort order changes', async () => {
       const component = await mountBestiary().mount()
 
-      await selectOption(component, '-hit_points', { index: 1 })
+      await selectOption(component, '-hitPoints', { index: 1 })
 
       expect(component.find('[test-id="reset-filters"]').exists()).toBeTruthy()
     })
@@ -483,7 +469,7 @@ describe('Bestiary', () => {
 
       await component.get('input[name="search"]').setValue('goblin')
       await selectOption(component, 5, { index: 0 })
-      await selectOption(component, '-hit_points', { index: 1 })
+      await selectOption(component, '-hitPoints', { index: 1 })
       await vi.advanceTimersByTimeAsync(1000)
       await flushPromises()
 

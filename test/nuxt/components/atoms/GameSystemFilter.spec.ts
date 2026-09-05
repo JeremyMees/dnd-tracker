@@ -3,12 +3,12 @@ import { describe, expect, it } from 'vitest'
 import GameSystemFilter from '~/components/atoms/GameSystemFilter.vue'
 
 interface Props {
-  documents: Open5eDocument[]
+  documents: DndDocument[]
   disabled?: boolean
 }
 
 interface Vm {
-  documentOptions: Record<Open5eGameSystem, Open5eDocument[]>
+  documentOptions: Record<Open5eGameSystem, DndDocument[]>
 }
 
 function createDocument(
@@ -17,30 +17,16 @@ function createDocument(
   gamesystem: Open5eGameSystem,
   publisherKey: string,
   publisherName: string,
-): Open5eDocument {
+): DndDocument {
   return {
+    id: key,
     name: displayName,
-    key,
-    url: `https://api.open5e.com/v2/documents/${key}/`,
-    licenses: [],
-    publisher: {
-      name: publisherName,
-      key: publisherKey,
-      url: `https://api.open5e.com/v2/publishers/${publisherKey}/`,
-    },
-    gamesystem: {
-      name: gamesystem,
-      key: gamesystem,
-      url: `https://api.open5e.com/v2/gamesystems/${gamesystem}/`,
-    },
-    display_name: displayName,
-    desc: '',
-    type: 'document',
-    author: publisherName,
-    publication_date: '2014-01-01',
+    displayName,
+    gamesystemKey: gamesystem,
+    publisherKey,
+    publisherName,
+    publicationDate: '2014-01-01',
     permalink: `https://example.com/${key}`,
-    distance_unit: 'ft',
-    weight_unit: 'lb',
   }
 }
 
@@ -73,7 +59,7 @@ const wotcDoc2024 = createDocument(
   'Wizards of the Coast',
 )
 
-const documents: Open5eDocument[] = [
+const documents: DndDocument[] = [
   koboldDoc2014,
   wotcDoc2014,
   greenRoninDoc2014,
@@ -192,7 +178,7 @@ describe('GameSystemFilter', async () => {
     const vm = component.vm as unknown as Vm
     const options = vm.documentOptions['5e-2014']!
 
-    expect(options.map(option => option.key)).toEqual([
+    expect(options.map(option => option.id)).toEqual([
       'srd-2014',
       'green-ronin-2014',
       'kobold-2014',

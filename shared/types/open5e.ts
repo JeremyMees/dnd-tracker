@@ -9,12 +9,12 @@ export type Open5eType =
 
 export type Open5eSortBy =
   | 'name'
-  | 'hit_points'
-  | '-hit_points'
-  | 'armor_class'
-  | '-armor_class'
-  | 'challenge_rating'
-  | '-challenge_rating'
+  | 'hitPoints'
+  | '-hitPoints'
+  | 'armorClass'
+  | '-armorClass'
+  | 'challengeRating'
+  | '-challengeRating'
 
 export interface Open5eFilters {
   page: number

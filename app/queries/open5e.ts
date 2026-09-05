@@ -43,7 +43,7 @@ export function useOpen5eListing(
     queryFn: async () => {
       try {
         const listing = await readOpen5e<Open5eListingResult>(
-          '/api/open5e/listing',
+          '/api/srd/listing',
           listingQuery(data.value.type, data.value.filters),
         )
 
@@ -75,9 +75,7 @@ export function useOpen5eDocuments() {
     queryKey: ['useOpen5eDocuments'],
     queryFn: async () => {
       try {
-        const documents = await readOpen5e<Open5eDocument[]>(
-          '/api/open5e/documents',
-        )
+        const documents = await readOpen5e<DndDocument[]>('/api/srd/documents')
 
         trackOpen5eFreshness(documents.staleAt)
 
@@ -105,7 +103,7 @@ export async function prefetchConditionsListing() {
   return queryClient
     .query({
       queryKey: ['useConditionsListing'],
-      queryFn: () => $fetch<DndCondition[]>('/api/open5e/conditions'),
+      queryFn: () => $fetch<DndCondition[]>('/api/srd/conditions'),
       staleTime: ONE_DAY,
       gcTime: ONE_DAY,
     })
@@ -122,7 +120,7 @@ export function useConditionsListing() {
     queryFn: async () => {
       try {
         const conditions = await readOpen5e<DndCondition[]>(
-          '/api/open5e/conditions',
+          '/api/srd/conditions',
         )
 
         trackOpen5eFreshness(conditions.staleAt)
@@ -156,7 +154,7 @@ export function useOpen5eMonsterListing(
     queryFn: async () => {
       try {
         const listing = await readOpen5e<Open5eListingResult>(
-          '/api/open5e/listing',
+          '/api/srd/listing',
           listingQuery('monsters', data.value.filters),
         )
 

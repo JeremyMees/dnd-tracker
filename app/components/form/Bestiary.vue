@@ -35,27 +35,27 @@ const sortOptions = computed<{ label: string; value: Open5eSortBy }[]>(() => [
   },
   {
     label: t('components.addInitiativeMonster.sort.options.mostHP'),
-    value: '-hit_points',
+    value: '-hitPoints',
   },
   {
     label: t('components.addInitiativeMonster.sort.options.leastHP'),
-    value: 'hit_points',
+    value: 'hitPoints',
   },
   {
     label: t('components.addInitiativeMonster.sort.options.mostAC'),
-    value: '-armor_class',
+    value: '-armorClass',
   },
   {
     label: t('components.addInitiativeMonster.sort.options.leastAC'),
-    value: 'armor_class',
+    value: 'armorClass',
   },
   {
     label: t('components.addInitiativeMonster.sort.options.mostCR'),
-    value: '-challenge_rating',
+    value: '-challengeRating',
   },
   {
     label: t('components.addInitiativeMonster.sort.options.leastCR'),
-    value: 'challenge_rating',
+    value: 'challengeRating',
   },
 ])
 

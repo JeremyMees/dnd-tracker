@@ -118,6 +118,7 @@ function documentRows(
     gamesystemKey: document.gamesystem.key,
     publisherKey: document.publisher.key,
     publisherName: document.publisher.name,
+    permalink: document.permalink || '',
     publicationDate: document.publication_date || null,
     syncedAt,
   }))
