@@ -12,7 +12,7 @@ defineProps<{
       {{ content.damageDice }}
       <span v-if="content.damageType">({{ content.damageType }})</span>
     </p>
-    <p v-if="content.range !== undefined" class="mt-1 text-muted-foreground">
+    <p v-if="isDefined(content.range)" class="mt-1 text-muted-foreground">
       <span class="font-bold text-foreground">Range:</span>
       {{ content.range }}{{ content.longRange ? `/${content.longRange}` : '' }}
       <span v-if="content.distanceUnit" class="ml-0.5">{{

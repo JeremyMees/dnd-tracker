@@ -1,4 +1,4 @@
-export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4'
+export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4' | 'd3'
 
 export type DndDiceSide = 4 | 6 | 8 | 10 | 12 | 20 | 100
 
@@ -217,7 +217,7 @@ export interface DndSpellCastingOption {
   damageRoll?: string
   targetCount?: number
   duration?: string
-  range?: number
+  range?: string | null
   concentration?: boolean
   shapeSize?: number
   desc?: string
@@ -353,8 +353,8 @@ export interface DndWeapon {
   damageType: DndDamageType
   distanceUnit: DndDistanceUnit
   damageDice: string
-  range: number
-  longRange: number
+  range?: number | null
+  longRange?: number | null
   isSimple: boolean
   isImprovised: boolean
 }

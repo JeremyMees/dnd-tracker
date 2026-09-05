@@ -298,7 +298,7 @@ export const usageTypes: DndUsageType[] = [
   'perRest',
 ]
 
-export const diceTypes: DndDice[] = [
+export const diceTypes = [
   'd4',
   'd6',
   'd8',
@@ -306,7 +306,9 @@ export const diceTypes: DndDice[] = [
   'd12',
   'd20',
   'd100',
-]
+] as const satisfies readonly DndDice[]
+
+export type DndRollableDice = (typeof diceTypes)[number]
 
 export const distanceUnits: DndDistanceUnit[] = ['feet', 'miles']
 

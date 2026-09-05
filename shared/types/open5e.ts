@@ -60,7 +60,7 @@ export interface Open5eSpellCastingOption {
   damage_roll: string | null
   target_count: number | null
   duration: string | null
-  range: number | null
+  range: string | null
   concentration: boolean | null
   shape_size: number | null
   desc?: string | null

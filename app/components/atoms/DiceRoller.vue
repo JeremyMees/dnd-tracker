@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
+import { diceTypes, type DndRollableDice } from '~~/constants/dnd'
 
 const emit = defineEmits<{ rolled: [amount: number] }>()
 
@@ -15,8 +16,7 @@ withDefaults(
 const { toast } = useToast()
 const { t } = useI18n()
 
-const dices: DndDice[] = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
-const toRoll = ref<Record<DndDice, number>>({
+const toRoll = ref<Record<DndRollableDice, number>>({
   d4: 0,
   d6: 0,
   d8: 0,
@@ -94,7 +94,7 @@ function calculateDndDiceRoll() {
   <div :class="{ 'bg-background rounded-lg p-2 mb-4': styled }">
     <div class="flex items-center gap-x-2">
       <div
-        v-for="dice in dices"
+        v-for="dice in diceTypes"
         :key="dice"
         class="flex flex-col items-center flex-1"
       >
