@@ -7,7 +7,7 @@ import handler from '~~/server/api/srd/documents.get'
 
 const SYNCED_AT = '2026-09-01T00:00:00.000Z'
 
-function documentRow(id: string, gamesystemKey: Open5eGameSystem) {
+function documentRow(id: string, gamesystemKey: DndGameSystem) {
   return {
     id,
     name: id,

@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 
 const selectedDocuments = defineModel<string[]>('document', { required: true })
-const selectedSystem = defineModel<Open5eGameSystem>('system', {
+const selectedSystem = defineModel<DndGameSystem>('system', {
   required: true,
 })
 const popoverOpen = shallowRef<boolean>(false)
@@ -30,33 +30,31 @@ watch(
   { immediate: true },
 )
 
-const documentOptions = computed<Record<Open5eGameSystem, DndDocument[]>>(
-  () => {
-    const acc = props.documents.reduce(
-      (acc, document) => {
-        const key = document.gamesystemKey
-        if (!acc[key]) acc[key] = []
-        acc[key].push(document)
-        return acc
-      },
-      {} as Record<Open5eGameSystem, DndDocument[]>,
-    )
+const documentOptions = computed<Record<DndGameSystem, DndDocument[]>>(() => {
+  const acc = props.documents.reduce(
+    (acc, document) => {
+      const key = document.gamesystemKey
+      if (!acc[key]) acc[key] = []
+      acc[key].push(document)
+      return acc
+    },
+    {} as Record<DndGameSystem, DndDocument[]>,
+  )
 
-    Object.keys(acc).forEach((key: string) => {
-      const documents = acc[key as Open5eGameSystem]
-      documents.sort((a: DndDocument, b: DndDocument) => {
-        const aIsWotC = a.publisherKey === 'wizards-of-the-coast'
-        const bIsWotC = b.publisherKey === 'wizards-of-the-coast'
+  Object.keys(acc).forEach((key: string) => {
+    const documents = acc[key as DndGameSystem]
+    documents.sort((a: DndDocument, b: DndDocument) => {
+      const aIsWotC = a.publisherKey === 'wizards-of-the-coast'
+      const bIsWotC = b.publisherKey === 'wizards-of-the-coast'
 
-        if (aIsWotC && !bIsWotC) return -1
-        if (!aIsWotC && bIsWotC) return 1
-        return a.publisherName.localeCompare(b.publisherName)
-      })
+      if (aIsWotC && !bIsWotC) return -1
+      if (!aIsWotC && bIsWotC) return 1
+      return a.publisherName.localeCompare(b.publisherName)
     })
+  })
 
-    return acc
-  },
-)
+  return acc
+})
 </script>
 
 <template>

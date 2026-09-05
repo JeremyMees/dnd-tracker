@@ -414,11 +414,41 @@ export interface DndCreatureStats {
   traits?: DndTrait[] | null
 }
 
+export type DndGameSystem = '5e-2014' | '5e-2024' | 'a5e'
+
+export type DndContentType =
+  'spells' | 'monsters' | 'conditions' | 'magicitems' | 'weapons' | 'armor'
+
+export type DndSortBy =
+  | 'name'
+  | 'hitPoints'
+  | '-hitPoints'
+  | 'armorClass'
+  | '-armorClass'
+  | 'challengeRating'
+  | '-challengeRating'
+
+export interface DndContentFilters {
+  page: number
+  search?: string
+  cr?: number
+  ordering?: DndSortBy
+  documents?: string[]
+}
+
+export type DndListingResult =
+  | { type: 'spells'; items: DndSpell[]; pages: number }
+  | { type: 'monsters'; items: DndMonster[]; pages: number }
+  | { type: 'conditions'; items: DndCondition[]; pages: number }
+  | { type: 'magicitems'; items: DndMagicItem[]; pages: number }
+  | { type: 'weapons'; items: DndWeapon[]; pages: number }
+  | { type: 'armor'; items: DndArmor[]; pages: number }
+
 export interface DndDocument {
   id: string
   name: string
   displayName: string
-  gamesystemKey: Open5eGameSystem
+  gamesystemKey: DndGameSystem
   publisherKey: string
   publisherName: string
   publicationDate: string | null

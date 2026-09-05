@@ -1,28 +1,4 @@
-export type Open5eType =
-  | 'spells'
-  | 'monsters'
-  | 'conditions'
-  | 'magicitems'
-  | 'weapons'
-  | 'armor'
-  | 'documents'
-
-export type Open5eSortBy =
-  | 'name'
-  | 'hitPoints'
-  | '-hitPoints'
-  | 'armorClass'
-  | '-armorClass'
-  | 'challengeRating'
-  | '-challengeRating'
-
-export interface Open5eFilters {
-  page: number
-  search?: string
-  cr?: number
-  ordering?: Open5eSortBy
-  documents?: string[]
-}
+export type Open5eType = DndContentType | 'documents'
 
 interface Open5eInfoObject<T = string> {
   name: string
@@ -51,7 +27,7 @@ export interface Open5eMinimalDocument {
   type: string
   display_name: string
   publisher: Open5eInfoObject
-  gamesystem: Open5eInfoObject<Open5eGameSystem>
+  gamesystem: Open5eInfoObject<DndGameSystem>
   permalink: string
 }
 
@@ -282,12 +258,10 @@ export interface Open5eCondition extends Open5eInfoObject {
   document: Open5eMinimalDocument
 }
 
-export type Open5eGameSystem = '5e-2014' | '5e-2024' | 'a5e'
-
 export interface Open5eDocument extends Open5eInfoObject {
   licenses: Open5eInfoObject[]
   publisher: Open5eInfoObject
-  gamesystem: Open5eInfoObject<Open5eGameSystem>
+  gamesystem: Open5eInfoObject<DndGameSystem>
   display_name: string
   desc: string
   type: string
@@ -331,7 +305,7 @@ export interface Open5eV1Item {
   desc: string
   name: string
   size: string
-  type: Open5eType
+  type: string
   subtype: string
   group: string | null
   alignment: string
@@ -395,11 +369,3 @@ export interface Open5eV1Item {
   prerequisite?: string
   effects_desc?: string[]
 }
-
-export type Open5eListingResult =
-  | { type: 'spells'; items: DndSpell[]; pages: number }
-  | { type: 'monsters'; items: DndMonster[]; pages: number }
-  | { type: 'conditions'; items: DndCondition[]; pages: number }
-  | { type: 'magicitems'; items: DndMagicItem[]; pages: number }
-  | { type: 'weapons'; items: DndWeapon[]; pages: number }
-  | { type: 'armor'; items: DndArmor[]; pages: number }

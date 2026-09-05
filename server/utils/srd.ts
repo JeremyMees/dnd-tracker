@@ -2,8 +2,6 @@ import type { H3Event } from 'h3'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { gameSystems } from '~~/constants/dnd'
 
-type SrdContentType = Exclude<Open5eType, 'documents'>
-
 const contentTables = {
   spells: 'srd_spells',
   conditions: 'srd_conditions',
@@ -21,11 +19,11 @@ const monsterOrderColumns = [
 type MonsterOrderColumn = (typeof monsterOrderColumns)[number]
 
 export interface SrdListingQuery {
-  type: SrdContentType
+  type: DndContentType
   page: number
   search: string
   documents: string[]
-  ordering: Open5eSortBy
+  ordering: DndSortBy
   cr?: number
 }
 
@@ -37,7 +35,7 @@ function isMonsterOrderColumn(value: string): value is MonsterOrderColumn {
   return (monsterOrderColumns as readonly string[]).includes(value)
 }
 
-export function monsterOrder(ordering: Open5eSortBy): {
+export function monsterOrder(ordering: DndSortBy): {
   column: 'name' | MonsterOrderColumn
   ascending: boolean
 } {
@@ -73,7 +71,7 @@ export async function srdListing(
   event: H3Event,
   query: SrdListingQuery,
   pageSize: number,
-): Promise<Open5eListingResult> {
+): Promise<DndListingResult> {
   const supabase = serverSupabaseServiceRole<DB>(event)
   const from = query.page * pageSize
   const to = from + pageSize - 1

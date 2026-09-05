@@ -8,13 +8,13 @@ interface Props {
 }
 
 interface Vm {
-  documentOptions: Record<Open5eGameSystem, DndDocument[]>
+  documentOptions: Record<DndGameSystem, DndDocument[]>
 }
 
 function createDocument(
   key: string,
   displayName: string,
-  gamesystem: Open5eGameSystem,
+  gamesystem: DndGameSystem,
   publisherKey: string,
   publisherName: string,
 ): DndDocument {

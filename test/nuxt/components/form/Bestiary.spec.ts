@@ -1,5 +1,4 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { useOpen5eStatus } from '~/composables/useOpen5eStatus'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Bestiary from '~/components/form/Bestiary.vue'
@@ -21,7 +20,7 @@ const data = ref<{ items: DndMonster[]; pages: number }>({
 })
 const documents = ref<DndDocument[]>([])
 
-function createDocument(key: string, gamesystem: Open5eGameSystem = '5e-2024') {
+function createDocument(key: string, gamesystem: DndGameSystem = '5e-2024') {
   return {
     id: key,
     name: key,
@@ -40,14 +39,14 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
 }))
 
-vi.mock('~/queries/open5e', () => ({
-  useOpen5eMonsterListing: (filters: ComputedRef<unknown>) => {
+vi.mock('~/queries/srd', () => ({
+  useSrdMonsterListing: (filters: ComputedRef<unknown>) => {
     monsterListingArgs(filters)
     touchArgs(filters)
 
     return { data, status: monstersStatus }
   },
-  useOpen5eDocuments: () => ({ data: documents, status: documentsStatus }),
+  useSrdDocuments: () => ({ data: documents, status: documentsStatus }),
 }))
 
 function mountBestiary(props: Record<string, unknown> = {}) {
@@ -59,9 +58,9 @@ function mountBestiary(props: Record<string, unknown> = {}) {
   }
 }
 
-function lastFilters(): Open5eFilters {
+function lastFilters(): DndContentFilters {
   const arg = monsterListingArgs.mock.calls.at(-1)![0] as ComputedRef<{
-    filters: Open5eFilters
+    filters: DndContentFilters
   }>
 
   return arg.value.filters
@@ -504,19 +503,5 @@ describe('Bestiary', () => {
 
       vi.useRealTimers()
     })
-  })
-
-  it('Should not warn about stale content while open5e is healthy', async () => {
-    const component = await mountBestiary().mount()
-
-    expect(component.find('[test-id="open5e-stale"]').exists()).toBeFalsy()
-  })
-
-  it('Should warn when the content came from our own cache', async () => {
-    useOpen5eStatus().trackOpen5eFreshness('2026-09-04T12:00:00.000Z')
-
-    const component = await mountBestiary().mount()
-
-    expect(component.find('[test-id="open5e-stale"]').exists()).toBeTruthy()
   })
 })

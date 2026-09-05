@@ -93,7 +93,7 @@ interface SrdArmorOverride {
 }
 
 interface SrdDocumentOverride {
-  gamesystemKey: Open5eGameSystem
+  gamesystemKey: DndGameSystem
 }
 
 interface DatabaseOverrides {

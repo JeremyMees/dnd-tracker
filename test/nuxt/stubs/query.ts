@@ -49,35 +49,18 @@ export function mockChain(result: Record<string, unknown>): SupabaseChain {
   return chain
 }
 
-const {
-  fetchMock,
-  fetchRawMock,
-  toast,
-  supabaseFrom,
-  supabaseRpc,
-  supabaseAuthUpdateUser,
-} = vi.hoisted(() => {
-  const fetchRawMock = vi.fn()
-  const fetchMock = Object.assign(vi.fn(), { raw: fetchRawMock })
+const { fetchMock, toast, supabaseFrom, supabaseRpc, supabaseAuthUpdateUser } =
+  vi.hoisted(() => {
+    return {
+      fetchMock: vi.fn(),
+      toast: vi.fn(),
+      supabaseFrom: vi.fn(),
+      supabaseRpc: vi.fn(),
+      supabaseAuthUpdateUser: vi.fn().mockResolvedValue({ error: null }),
+    }
+  })
 
-  return {
-    fetchMock,
-    fetchRawMock,
-    toast: vi.fn(),
-    supabaseFrom: vi.fn(),
-    supabaseRpc: vi.fn(),
-    supabaseAuthUpdateUser: vi.fn().mockResolvedValue({ error: null }),
-  }
-})
-
-export { fetchMock, fetchRawMock, supabaseAuthUpdateUser, supabaseRpc, toast }
-
-export function mockRawResponse<T>(
-  data: T,
-  headers: Record<string, string> = {},
-) {
-  return { _data: data, headers: new Headers(headers) }
-}
+export { fetchMock, supabaseAuthUpdateUser, supabaseRpc, toast }
 
 vi.mock('~/components/ui/toast', () => ({ useToast: () => ({ toast }) }))
 vi.mock('~/components/ui/toast/use-toast', () => ({

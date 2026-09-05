@@ -2,7 +2,7 @@
 import { FlexRender, useTable } from '@tanstack/vue-table'
 import { initiativeFeatures } from '~/tables/features'
 import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
-import { prefetchConditionsListing } from '~/queries/open5e'
+import { prefetchConditionsListing } from '~/queries/srd'
 import { useCombatEventsClear } from '~/queries/combat-events'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 

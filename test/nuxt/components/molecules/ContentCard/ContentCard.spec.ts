@@ -11,7 +11,7 @@ import {
 
 interface Props {
   hit: DndItem
-  type: Open5eType
+  type: DndContentType
   pinned?: boolean
   allowPin?: boolean
   variant?: 'secondary' | 'background'

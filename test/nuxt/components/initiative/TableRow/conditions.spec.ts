@@ -36,12 +36,12 @@ const props: Props = {
   item: sheet.rows[0]!,
 }
 
-vi.mock('~/queries/open5e', () => ({
+vi.mock('~/queries/srd', () => ({
   useConditionsListing: () => ({
     data: ref(conditions),
     isPending: ref(false),
   }),
-  useOpen5eDocuments: () => ({
+  useSrdDocuments: () => ({
     data: ref([]),
   }),
 }))

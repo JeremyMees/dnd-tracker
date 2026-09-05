@@ -2,11 +2,11 @@
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions, gameSystems } from '~~/constants/dnd'
-import { useOpen5eDocuments, useOpen5eMonsterListing } from '~/queries/open5e'
+import { useSrdDocuments, useSrdMonsterListing } from '~/queries/srd'
 
 const props = withDefaults(
   defineProps<{
-    system?: Open5eGameSystem
+    system?: DndGameSystem
     preSelectedDocuments?: string[]
     persist?: FilterPersistence
   }>(),
@@ -28,7 +28,7 @@ const crFilterOptions = computed<{ label: string; value: number | string }[]>(
   () => [{ label: t('general.all'), value: 'all' }, ...crOptions],
 )
 
-const sortOptions = computed<{ label: string; value: Open5eSortBy }[]>(() => [
+const sortOptions = computed<{ label: string; value: DndSortBy }[]>(() => [
   {
     label: t('components.addInitiativeMonster.sort.options.alphabet'),
     value: 'name',
@@ -64,7 +64,7 @@ const { state } = useFilterState(
   {
     search: '',
     cr: 'all' as number | string,
-    sortBy: 'name' as Open5eSortBy,
+    sortBy: 'name' as DndSortBy,
     system: props.system,
     documents: props.preSelectedDocuments,
     page: 0,
@@ -94,7 +94,7 @@ watch(
   },
 )
 
-const queryFilters = computed<Open5eFilters>(() => ({
+const queryFilters = computed<DndContentFilters>(() => ({
   page: state.page,
   search: appliedSearch.value,
   cr: typeof state.cr === 'string' ? undefined : state.cr,
@@ -102,15 +102,13 @@ const queryFilters = computed<Open5eFilters>(() => ({
   documents: state.documents,
 }))
 
-const { data, status: monstersStatus } = useOpen5eMonsterListing(
+const { data, status: monstersStatus } = useSrdMonsterListing(
   computed(() => ({
     filters: queryFilters.value,
   })),
 )
 
-const { data: documents, status: documentsStatus } = useOpen5eDocuments()
-
-const { isStale: isOpen5eStale } = useOpen5eStatus()
+const { data: documents, status: documentsStatus } = useSrdDocuments()
 
 const isLoading = computed(
   () =>
@@ -278,14 +276,6 @@ async function addMonster(monster: DndMonster): Promise<void> {
         </AnimationExpand>
       </div>
     </div>
-
-    <p
-      v-if="isOpen5eStale"
-      test-id="open5e-stale"
-      class="rounded-md border border-warning bg-warning/10 px-3 py-2 text-center text-sm"
-    >
-      {{ $t('components.open5eStatus.stale') }}
-    </p>
 
     <div class="overflow-y-auto">
       <MasonryGrid

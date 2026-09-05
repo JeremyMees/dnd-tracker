@@ -35,10 +35,10 @@ export function transformOpen5eItem(
 }
 
 export function narrowListing(
-  type: Open5eType,
+  type: DndContentType,
   items: DndItem[],
   pages: number,
-): Open5eListingResult {
+): DndListingResult {
   switch (type) {
     case 'spells':
       return { type, items: items.filter(isSpell), pages }
@@ -53,6 +53,6 @@ export function narrowListing(
     case 'armor':
       return { type, items: items.filter(isArmor), pages }
     default:
-      throw new Error(`Unsupported open5e type: ${type}`)
+      throw new Error(`Unsupported content type: ${type}`)
   }
 }

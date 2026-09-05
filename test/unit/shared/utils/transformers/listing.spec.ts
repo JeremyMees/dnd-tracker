@@ -72,8 +72,8 @@ describe('transformers/listing', () => {
     })
 
     it('refuses a type it cannot narrow', () => {
-      expect(() => narrowListing('documents', [], 0)).toThrow(
-        'Unsupported open5e type: documents',
+      expect(() => narrowListing('documents' as DndContentType, [], 0)).toThrow(
+        'Unsupported content type: documents',
       )
     })
   })

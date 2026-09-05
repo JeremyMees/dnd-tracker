@@ -53,7 +53,7 @@ describe('useHealthCheck', () => {
     vi.useRealTimers()
   })
 
-  it('never reaches out to open5e itself', async () => {
+  it('never fetches anything of its own', async () => {
     await mountProbe()
 
     expect(fetchMock).not.toHaveBeenCalled()
