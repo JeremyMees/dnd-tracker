@@ -46,6 +46,39 @@ export type ProfileUpdate = DB['public']['Tables']['profiles']['Update']
 export type TeamRow = DB['public']['Tables']['team']['Row']
 export type TeamInsert = DB['public']['Tables']['team']['Insert']
 export type TeamUpdate = DB['public']['Tables']['team']['Update']
+export type SrdDocumentRow = DB['public']['Tables']['srd_documents']['Row']
+export type SrdDocumentInsert =
+  DB['public']['Tables']['srd_documents']['Insert']
+export type SrdMonsterRow = DB['public']['Tables']['srd_monsters']['Row']
+export type SrdMonsterInsert = DB['public']['Tables']['srd_monsters']['Insert']
+export type SrdSpellRow = DB['public']['Tables']['srd_spells']['Row']
+export type SrdSpellInsert = DB['public']['Tables']['srd_spells']['Insert']
+export type SrdMagicItemRow = DB['public']['Tables']['srd_magic_items']['Row']
+export type SrdMagicItemInsert =
+  DB['public']['Tables']['srd_magic_items']['Insert']
+export type SrdWeaponRow = DB['public']['Tables']['srd_weapons']['Row']
+export type SrdWeaponInsert = DB['public']['Tables']['srd_weapons']['Insert']
+export type SrdArmorRow = DB['public']['Tables']['srd_armor']['Row']
+export type SrdArmorInsert = DB['public']['Tables']['srd_armor']['Insert']
+export type SrdConditionRow = DB['public']['Tables']['srd_conditions']['Row']
+export type SrdConditionInsert =
+  DB['public']['Tables']['srd_conditions']['Insert']
+
+// Sync bookkeeping the app never returns
+type SrdMeta = 'documentKey' | 'syncedAt'
+type Satisfies<T extends U, U> = T
+export type SrdMonster = Satisfies<Omit<SrdMonsterRow, SrdMeta>, DndMonster>
+export type SrdSpell = Satisfies<Omit<SrdSpellRow, SrdMeta>, DndSpell>
+export type SrdMagicItem = Satisfies<
+  Omit<SrdMagicItemRow, SrdMeta>,
+  DndMagicItem
+>
+export type SrdWeapon = Satisfies<Omit<SrdWeaponRow, SrdMeta>, DndWeapon>
+export type SrdArmor = Satisfies<Omit<SrdArmorRow, SrdMeta>, DndArmor>
+export type SrdCondition = Satisfies<
+  Omit<SrdConditionRow, SrdMeta>,
+  DndCondition
+>
 
 // Database Enums
 export type FeatureRequestStatus =
