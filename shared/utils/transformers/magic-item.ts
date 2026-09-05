@@ -97,7 +97,7 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
       name: dto.rarity.name,
       rank: dto.rarity.rank,
     },
-    isMagicItem: dto.is_magic_item,
+    isMagicItem: true,
     ...(dto.weapon
       ? {
           weapon: {

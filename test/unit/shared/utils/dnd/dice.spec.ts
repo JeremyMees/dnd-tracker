@@ -152,6 +152,18 @@ describe('dnd/dice', () => {
         hitDiceType: 'd4',
       })
     })
+
+    it('should fallback when hit dice are missing', () => {
+      expect(parseHitDice(null)).toEqual({
+        hitDiceCount: 1,
+        hitDiceType: 'd4',
+      })
+
+      expect(parseHitDice(undefined)).toEqual({
+        hitDiceCount: 1,
+        hitDiceType: 'd4',
+      })
+    })
   })
 
   describe('parseDndDiceToString', () => {

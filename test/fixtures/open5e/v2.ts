@@ -150,7 +150,6 @@ export const open5eV2MagicItemFixture: Open5eMagicItem = {
     key: 'uncommon',
     rank: 2,
   },
-  is_magic_item: true,
   weapon: null,
   armor: {
     name: 'Breastplate',

@@ -17,6 +17,11 @@ describe('transformers/magic-item', () => {
       expect(item.requiresAttunement).toBeFalsy()
     })
 
+    it('marks v2 items as magic without an is_magic_item field', () => {
+      expect('is_magic_item' in open5eV2MagicItemFixture).toBe(false)
+      expect(toMagicItem(open5eV2MagicItemFixture).isMagicItem).toBe(true)
+    })
+
     it('maps rarity', () => {
       const item = toMagicItem(open5eV2MagicItemFixture)
 
