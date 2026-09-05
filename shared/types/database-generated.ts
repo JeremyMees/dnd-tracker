@@ -475,6 +475,408 @@ export type Database = {
         }
         Relationships: []
       }
+      srd_armor: {
+        Row: {
+          acAddDexMod: boolean
+          acBase: number
+          acCapDexMod: number | null
+          acDisplay: string
+          documentKey: string
+          grantsStealthDisadvantage: boolean
+          id: string
+          name: string
+          strengthScoreRequired: number | null
+          syncedAt: string
+          type: string
+        }
+        Insert: {
+          acAddDexMod: boolean
+          acBase: number
+          acCapDexMod?: number | null
+          acDisplay: string
+          documentKey: string
+          grantsStealthDisadvantage: boolean
+          id: string
+          name: string
+          strengthScoreRequired?: number | null
+          syncedAt?: string
+          type: string
+        }
+        Update: {
+          acAddDexMod?: boolean
+          acBase?: number
+          acCapDexMod?: number | null
+          acDisplay?: string
+          documentKey?: string
+          grantsStealthDisadvantage?: boolean
+          id?: string
+          name?: string
+          strengthScoreRequired?: number | null
+          syncedAt?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      srd_conditions: {
+        Row: {
+          desc: string
+          documentKey: string
+          hasLevels: boolean | null
+          id: string
+          level: number | null
+          name: string
+          syncedAt: string
+        }
+        Insert: {
+          desc: string
+          documentKey: string
+          hasLevels?: boolean | null
+          id: string
+          level?: number | null
+          name: string
+          syncedAt?: string
+        }
+        Update: {
+          desc?: string
+          documentKey?: string
+          hasLevels?: boolean | null
+          id?: string
+          level?: number | null
+          name?: string
+          syncedAt?: string
+        }
+        Relationships: []
+      }
+      srd_documents: {
+        Row: {
+          displayName: string
+          gamesystemKey: string
+          id: string
+          name: string
+          publicationDate: string | null
+          publisherKey: string
+          publisherName: string
+          syncedAt: string
+        }
+        Insert: {
+          displayName: string
+          gamesystemKey: string
+          id: string
+          name: string
+          publicationDate?: string | null
+          publisherKey: string
+          publisherName: string
+          syncedAt?: string
+        }
+        Update: {
+          displayName?: string
+          gamesystemKey?: string
+          id?: string
+          name?: string
+          publicationDate?: string | null
+          publisherKey?: string
+          publisherName?: string
+          syncedAt?: string
+        }
+        Relationships: []
+      }
+      srd_magic_items: {
+        Row: {
+          armor: Json | null
+          attunementDetail: string | null
+          cost: string | null
+          desc: string
+          documentKey: string
+          id: string
+          isMagicItem: boolean
+          name: string
+          rarity: Json
+          requiresAttunement: boolean
+          size: string
+          syncedAt: string
+          type: string
+          weapon: Json | null
+          weight: number
+          weightUnit: string
+        }
+        Insert: {
+          armor?: Json | null
+          attunementDetail?: string | null
+          cost?: string | null
+          desc: string
+          documentKey: string
+          id: string
+          isMagicItem?: boolean
+          name: string
+          rarity: Json
+          requiresAttunement: boolean
+          size: string
+          syncedAt?: string
+          type: string
+          weapon?: Json | null
+          weight: number
+          weightUnit: string
+        }
+        Update: {
+          armor?: Json | null
+          attunementDetail?: string | null
+          cost?: string | null
+          desc?: string
+          documentKey?: string
+          id?: string
+          isMagicItem?: boolean
+          name?: string
+          rarity?: Json
+          requiresAttunement?: boolean
+          size?: string
+          syncedAt?: string
+          type?: string
+          weapon?: Json | null
+          weight?: number
+          weightUnit?: string
+        }
+        Relationships: []
+      }
+      srd_monsters: {
+        Row: {
+          abilityScores: Json
+          actions: Json
+          alignment: string
+          armorClass: number
+          armorDetail: string
+          challengeRating: number
+          documentKey: string
+          experiencePoints: number
+          hitDice: Json
+          hitPoints: number
+          id: string
+          initiativeBonus: number
+          languages: Json
+          modifiers: Json
+          name: string
+          passivePerception: number
+          proficiencyBonus: number | null
+          resistancesAndImmunities: Json
+          savingThrows: Json
+          sight: Json
+          size: string
+          skillBonuses: Json
+          speed: Json
+          syncedAt: string
+          traits: Json
+          type: string
+        }
+        Insert: {
+          abilityScores: Json
+          actions?: Json
+          alignment: string
+          armorClass: number
+          armorDetail: string
+          challengeRating: number
+          documentKey: string
+          experiencePoints: number
+          hitDice: Json
+          hitPoints: number
+          id: string
+          initiativeBonus: number
+          languages?: Json
+          modifiers: Json
+          name: string
+          passivePerception: number
+          proficiencyBonus?: number | null
+          resistancesAndImmunities: Json
+          savingThrows: Json
+          sight: Json
+          size: string
+          skillBonuses: Json
+          speed: Json
+          syncedAt?: string
+          traits?: Json
+          type: string
+        }
+        Update: {
+          abilityScores?: Json
+          actions?: Json
+          alignment?: string
+          armorClass?: number
+          armorDetail?: string
+          challengeRating?: number
+          documentKey?: string
+          experiencePoints?: number
+          hitDice?: Json
+          hitPoints?: number
+          id?: string
+          initiativeBonus?: number
+          languages?: Json
+          modifiers?: Json
+          name?: string
+          passivePerception?: number
+          proficiencyBonus?: number | null
+          resistancesAndImmunities?: Json
+          savingThrows?: Json
+          sight?: Json
+          size?: string
+          skillBonuses?: Json
+          speed?: Json
+          syncedAt?: string
+          traits?: Json
+          type?: string
+        }
+        Relationships: []
+      }
+      srd_spells: {
+        Row: {
+          attackRoll: boolean
+          castingOptions: Json
+          castingTime: string
+          classes: string[]
+          concentration: boolean
+          damageRoll: string
+          damageTypes: string[]
+          desc: string
+          documentKey: string
+          duration: string
+          higherLevel: string
+          id: string
+          level: number
+          material: boolean
+          materialConsumed: boolean
+          materialCost: number | null
+          materialSpecified: string
+          name: string
+          range: number | null
+          rangeText: string
+          rangeUnit: string
+          reactionCondition: string | null
+          ritual: boolean
+          savingThrowAbility: string
+          school: string
+          shapeSize: number | null
+          shapeSizeUnit: string
+          shapeType: string | null
+          somatic: boolean
+          syncedAt: string
+          targetCount: number | null
+          targetType: string | null
+          verbal: boolean
+        }
+        Insert: {
+          attackRoll: boolean
+          castingOptions?: Json
+          castingTime: string
+          classes?: string[]
+          concentration: boolean
+          damageRoll: string
+          damageTypes?: string[]
+          desc: string
+          documentKey: string
+          duration: string
+          higherLevel: string
+          id: string
+          level: number
+          material: boolean
+          materialConsumed: boolean
+          materialCost?: number | null
+          materialSpecified: string
+          name: string
+          range?: number | null
+          rangeText: string
+          rangeUnit: string
+          reactionCondition?: string | null
+          ritual: boolean
+          savingThrowAbility: string
+          school: string
+          shapeSize?: number | null
+          shapeSizeUnit: string
+          shapeType?: string | null
+          somatic: boolean
+          syncedAt?: string
+          targetCount?: number | null
+          targetType?: string | null
+          verbal: boolean
+        }
+        Update: {
+          attackRoll?: boolean
+          castingOptions?: Json
+          castingTime?: string
+          classes?: string[]
+          concentration?: boolean
+          damageRoll?: string
+          damageTypes?: string[]
+          desc?: string
+          documentKey?: string
+          duration?: string
+          higherLevel?: string
+          id?: string
+          level?: number
+          material?: boolean
+          materialConsumed?: boolean
+          materialCost?: number | null
+          materialSpecified?: string
+          name?: string
+          range?: number | null
+          rangeText?: string
+          rangeUnit?: string
+          reactionCondition?: string | null
+          ritual?: boolean
+          savingThrowAbility?: string
+          school?: string
+          shapeSize?: number | null
+          shapeSizeUnit?: string
+          shapeType?: string | null
+          somatic?: boolean
+          syncedAt?: string
+          targetCount?: number | null
+          targetType?: string | null
+          verbal?: boolean
+        }
+        Relationships: []
+      }
+      srd_weapons: {
+        Row: {
+          damageDice: string
+          damageType: string
+          distanceUnit: string
+          documentKey: string
+          id: string
+          isImprovised: boolean
+          isSimple: boolean
+          longRange: number
+          name: string
+          properties: Json
+          range: number
+          syncedAt: string
+        }
+        Insert: {
+          damageDice: string
+          damageType: string
+          distanceUnit: string
+          documentKey: string
+          id: string
+          isImprovised: boolean
+          isSimple: boolean
+          longRange: number
+          name: string
+          properties?: Json
+          range: number
+          syncedAt?: string
+        }
+        Update: {
+          damageDice?: string
+          damageType?: string
+          distanceUnit?: string
+          documentKey?: string
+          id?: string
+          isImprovised?: boolean
+          isSimple?: boolean
+          longRange?: number
+          name?: string
+          properties?: Json
+          range?: number
+          syncedAt?: string
+        }
+        Relationships: []
+      }
       team: {
         Row: {
           campaign: number

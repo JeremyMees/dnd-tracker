@@ -1,3 +1,17 @@
+import { toSpell } from './spell'
+import { toMonster } from './monster'
+import { toCondition } from './condition'
+import { toMagicItem } from './magic-item'
+import { toWeapon } from './weapon'
+import { toArmor } from './armor'
+import {
+  isArmor,
+  isCondition,
+  isMagicItem,
+  isMonster,
+  isSpell,
+  isWeapon,
+} from '../dnd/checks'
 export function transformOpen5eItem(
   type: Open5eType,
   item: Open5eItem,

@@ -1,3 +1,4 @@
+import { parseIntegerFromText } from '../parse'
 import { conditionHasLevels, mapConditionDescription } from './utils'
 
 function mapConditionV1(dto: Open5eV1Item): DndCondition {

@@ -1,4 +1,4 @@
-export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4'
+export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4' | 'd3'
 
 export type DndDiceSide = 4 | 6 | 8 | 10 | 12 | 20 | 100
 
@@ -217,7 +217,7 @@ export interface DndSpellCastingOption {
   damageRoll?: string
   targetCount?: number
   duration?: string
-  range?: number
+  range?: string | null
   concentration?: boolean
   shapeSize?: number
   desc?: string
@@ -292,26 +292,26 @@ export interface DndSpell {
   desc: string
   level: number
   higherLevel: string
-  targetType: string
+  targetType: string | null
   rangeText: string
-  range: number
+  range: number | null
   ritual: boolean
   castingTime: string
-  reactionCondition?: string
+  reactionCondition?: string | null
   verbal: boolean
   somatic: boolean
   material: boolean
   materialSpecified: string
-  materialCost?: number
+  materialCost?: number | null
   materialConsumed: boolean
-  targetCount: number
+  targetCount: number | null
   savingThrowAbility: DndAbility
   attackRoll: boolean
   damageRoll: string
   damageTypes: DndDamageType[]
   duration: string
-  shapeType?: DndShapeType
-  shapeSize?: number
+  shapeType?: DndShapeType | null
+  shapeSize?: number | null
   concentration: boolean
 }
 
@@ -327,14 +327,14 @@ export interface DndMagicItem {
   type: DndMagicItemType
   rarity: DndRarity
   isMagicItem: boolean
-  weapon?: DndWeapon
-  armor?: DndArmor
+  weapon?: DndWeapon | null
+  armor?: DndArmor | null
   size: DndSize
   weight: number
   weightUnit: DndWeightUnit
-  cost: string
+  cost: string | null
   requiresAttunement: boolean
-  attunementDetail?: string
+  attunementDetail?: string | null
 }
 
 export interface DndWeaponProperty {
@@ -353,8 +353,8 @@ export interface DndWeapon {
   damageType: DndDamageType
   distanceUnit: DndDistanceUnit
   damageDice: string
-  range: number
-  longRange: number
+  range?: number | null
+  longRange?: number | null
   isSimple: boolean
   isImprovised: boolean
 }
@@ -365,10 +365,10 @@ export interface DndArmor {
   acDisplay: string
   type: DndArmorType
   grantsStealthDisadvantage: boolean
-  strengthScoreRequired?: number
+  strengthScoreRequired?: number | null
   acBase: number
   acAddDexMod: boolean
-  acCapDexMod?: number
+  acCapDexMod?: number | null
 }
 
 export interface DndHitDice {
@@ -383,7 +383,7 @@ export interface DndMonster {
   type: DndMonsterType
   size: DndSize
   challengeRating: number
-  proficiencyBonus?: number
+  proficiencyBonus?: number | null
   speed: DndSpeed
   alignment: DndAlignment
   languages: DndLanguage[]
@@ -418,8 +418,8 @@ export interface DndCondition {
   name: string
   id: string
   desc: string
-  level?: number
-  hasLevels?: boolean
+  level?: number | null
+  hasLevels?: boolean | null
 }
 
 export type DndItem =

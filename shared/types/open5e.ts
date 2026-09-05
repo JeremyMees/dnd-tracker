@@ -60,7 +60,7 @@ export interface Open5eSpellCastingOption {
   damage_roll: string | null
   target_count: number | null
   duration: string | null
-  range: number | null
+  range: string | null
   concentration: boolean | null
   shape_size: number | null
   desc?: string | null
@@ -152,9 +152,9 @@ export interface Open5eSpell extends Open5eInfoObject {
   desc: string
   level: number
   higher_level: string
-  target_type: string
+  target_type: string | null
   range_text: string
-  range: number
+  range: number | null
   ritual: boolean
   casting_time: string
   reaction_condition: string | null
@@ -164,7 +164,7 @@ export interface Open5eSpell extends Open5eInfoObject {
   material_specified: string
   material_cost: number | null
   material_consumed: boolean
-  target_count: number
+  target_count: number | null
   saving_throw_ability: string
   attack_roll: boolean
   damage_roll: string
@@ -189,13 +189,12 @@ export interface Open5eMagicItem extends Open5eInfoObject {
   desc: string
   category: Open5eInfoObject
   rarity: Open5eInfoObject & { rank: number }
-  is_magic_item: boolean
   weapon: Open5eWeapon | null
   armor: Open5eArmorStats | null
   size: Open5eInfoObject
   weight: string
   weight_unit: string
-  cost: string
+  cost: string | null
   requires_attunement: boolean
   attunement_detail: string | null
   document: Open5eMinimalDocument

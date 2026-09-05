@@ -1,7 +1,7 @@
 import type { MergeDeep } from 'type-fest'
 import type { Database } from './database-generated'
 
-interface HomebrewItemRow {
+interface HomebrewItemOverride {
   actions: DndAction[]
   abilityScores: DndAbilityScores | null
   modifiers: DndModifiers | null
@@ -14,7 +14,7 @@ interface HomebrewItemRow {
   traits: DndTrait[] | null
 }
 
-interface HomebrewItemInsert {
+interface HomebrewItemInsertOverride {
   actions: DndAction[]
   abilityScores?: DndAbilityScores | null
   modifiers?: DndModifiers | null
@@ -27,13 +27,105 @@ interface HomebrewItemInsert {
   traits?: DndTrait[] | null
 }
 
+interface SrdMonsterOverride {
+  type: DndMonsterType
+  size: DndSize
+  alignment: DndAlignment
+  hitDice: DndHitDice
+  speed: DndSpeed
+  sight: DndSight
+  languages: DndLanguage[]
+  abilityScores: DndAbilityScores
+  modifiers: DndModifiers
+  savingThrows: DndSavingThrowBonuses
+  skillBonuses: DndSkillBonuses
+  resistancesAndImmunities: DndResistancesAndImmunities
+  actions: DndAction[]
+  traits: DndTrait[]
+}
+
+interface SrdMonsterInsertOverride extends Omit<
+  SrdMonsterOverride,
+  'languages' | 'actions' | 'traits'
+> {
+  languages?: DndLanguage[]
+  actions?: DndAction[]
+  traits?: DndTrait[]
+}
+
+interface SrdSpellOverride {
+  school: DndSpellSchool
+  classes: DndClass[]
+  damageTypes: DndDamageType[]
+  rangeUnit: DndDistanceUnit
+  shapeSizeUnit: DndDistanceUnit
+  shapeType: DndShapeType | null
+  savingThrowAbility: DndAbility
+  castingOptions: DndSpellCastingOption[]
+}
+
+interface SrdSpellInsertOverride extends Omit<
+  SrdSpellOverride,
+  'classes' | 'damageTypes' | 'castingOptions'
+> {
+  classes?: DndClass[]
+  damageTypes?: DndDamageType[]
+  castingOptions?: DndSpellCastingOption[]
+}
+
+interface SrdMagicItemOverride {
+  type: DndMagicItemType
+  size: DndSize
+  weightUnit: DndWeightUnit
+  rarity: DndRarity
+  weapon: DndWeapon | null
+  armor: DndArmor | null
+}
+
+interface SrdWeaponOverride {
+  damageType: DndDamageType
+  distanceUnit: DndDistanceUnit
+  properties: DndWeaponProperty[]
+}
+
+interface SrdArmorOverride {
+  type: DndArmorType
+}
+
 interface DatabaseOverrides {
   public: {
     Tables: {
+      srd_monsters: {
+        Row: SrdMonsterOverride
+        Insert: SrdMonsterInsertOverride
+        Update: Partial<SrdMonsterOverride>
+      }
+      srd_spells: {
+        Row: SrdSpellOverride
+        Insert: SrdSpellInsertOverride
+        Update: Partial<SrdSpellOverride>
+      }
+      srd_magic_items: {
+        Row: SrdMagicItemOverride
+        Insert: SrdMagicItemOverride
+        Update: Partial<SrdMagicItemOverride>
+      }
+      srd_weapons: {
+        Row: SrdWeaponOverride
+        Insert: Omit<SrdWeaponOverride, 'properties'> & {
+          properties?: DndWeaponProperty[]
+        }
+        Update: Partial<SrdWeaponOverride>
+      }
+      srd_armor: {
+        Row: SrdArmorOverride
+        Insert: SrdArmorOverride
+        Update: Partial<SrdArmorOverride>
+      }
       homebrew_items: {
-        Row: HomebrewItemRow
-        Insert: HomebrewItemInsert
-        Update: Partial<HomebrewItemRow>
+        Row: HomebrewItemOverride
+        Insert: HomebrewItemInsertOverride
+        Update: Partial<HomebrewItemOverride>
       }
       initiative_sheets: {
         Row: {

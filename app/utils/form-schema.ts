@@ -84,7 +84,7 @@ const conditionTypeEnum = conditionTypes as [
   ...DndConditionType[],
 ]
 const attackTypeEnum = attackTypes as [DndAttackType, ...DndAttackType[]]
-const diceTypeEnum = diceTypes as [DndDice, ...DndDice[]]
+const diceTypeEnum = [...diceTypes] as [DndDice, ...DndDice[]]
 const distanceUnitEnum = distanceUnits as [
   DndDistanceUnit,
   ...DndDistanceUnit[],

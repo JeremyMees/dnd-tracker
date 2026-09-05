@@ -20,6 +20,7 @@
     "test:coverage": "vitest --coverage",
     "test:coverage:gate": "nyc report --temp-dir=coverage-raw --report-dir=coverage --reporter=text --reporter=lcov && nyc check-coverage --temp-dir=coverage-raw --lines 80 --functions 80 --branches 80 --statements 80",
     "deps": "npx taze -w",
+    "open5e:sync": "tsx --env-file-if-exists=.env scripts/sync-open5e.ts",
     "stripe": "stripe listen --forward-to localhost:3000/api/stripe/webhooks"
   },
   "engines": {
@@ -117,6 +118,7 @@
     "magic-string": "^1.2.2",
     "nyc": "^18.0.0",
     "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3",
     "unimport": "^6.4.0",
     "vitest": "^5.0.0"

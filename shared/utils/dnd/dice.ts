@@ -68,8 +68,8 @@ export function parseAttackDice(
   }
 }
 
-export function parseHitDice(hitDice: string): DndHitDice {
-  const match = hitDice.match(/(\d+)d(4|6|8|10|12|20|100)([+-]\d+)?/i)
+export function parseHitDice(hitDice: string | null | undefined): DndHitDice {
+  const match = hitDice?.match(/(\d+)d(4|6|8|10|12|20|100)([+-]\d+)?/i)
 
   if (!match) {
     return {

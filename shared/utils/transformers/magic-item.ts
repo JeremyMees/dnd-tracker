@@ -1,3 +1,4 @@
+import { parseBoolean, parseIntegerFromText } from '../parse'
 import {
   mapArmorType,
   mapDamageType,
@@ -97,7 +98,7 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
       name: dto.rarity.name,
       rank: dto.rarity.rank,
     },
-    isMagicItem: dto.is_magic_item,
+    isMagicItem: true,
     ...(dto.weapon
       ? {
           weapon: {
