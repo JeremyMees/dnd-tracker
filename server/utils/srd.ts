@@ -10,6 +10,9 @@ const contentTables = {
   armor: 'srd_armor',
 } as const
 
+const SRD_RULE_DOCUMENTS = ['srd-2014', 'srd-2024']
+const CONDITION_FALLBACK_DOCUMENT = 'core'
+
 const monsterOrderColumns = [
   'hitPoints',
   'armorClass',
@@ -47,6 +50,12 @@ export function monsterOrder(ordering: DndSortBy): {
   return { column: key, ascending: !descending }
 }
 
+function conditionDocuments(documents: string[]): string[] {
+  if (!documents.some(key => SRD_RULE_DOCUMENTS.includes(key))) return documents
+
+  return [...new Set([...documents, CONDITION_FALLBACK_DOCUMENT])]
+}
+
 function srdError(message: string, cause: unknown): never {
   throw createError({ statusCode: 500, statusMessage: message, cause })
 }
@@ -77,13 +86,19 @@ export async function srdListing(
   const to = from + pageSize - 1
   const pattern = `%${escapeLike(query.search)}%`
 
+  // open5e conditions under 2014 core document this is a workaround
+  const documents =
+    query.type === 'conditions'
+      ? conditionDocuments(query.documents)
+      : query.documents
+
   if (query.type === 'monsters') {
     const { column, ascending } = monsterOrder(query.ordering)
 
     let builder = supabase
       .from('srd_monsters')
       .select('*', { count: 'exact' })
-      .in('documentKey', query.documents)
+      .in('documentKey', documents)
       .ilike('name', pattern)
 
     if (query.cr !== undefined) {
@@ -107,7 +122,7 @@ export async function srdListing(
   const { data, count, error } = await supabase
     .from(contentTables[query.type])
     .select('*', { count: 'exact' })
-    .in('documentKey', query.documents)
+    .in('documentKey', documents)
     .ilike('name', pattern)
     .order('name', { ascending: true })
     .order('id', { ascending: true })

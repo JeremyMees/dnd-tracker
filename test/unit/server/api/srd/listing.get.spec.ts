@@ -191,6 +191,44 @@ describe('GET /api/srd/listing', () => {
     ])
   })
 
+  it('pulls the core document in when conditions are asked for by rule set', async () => {
+    const chain = stubTable('srd_conditions', [])
+
+    await handler(listingEvent({ type: 'conditions', documents: 'srd-2024' }))
+
+    expect(chain.in).toHaveBeenCalledWith('documentKey', ['srd-2024', 'core'])
+  })
+
+  it('adds core only once when both rule sets are selected', async () => {
+    const chain = stubTable('srd_conditions', [])
+
+    await handler(
+      listingEvent({ type: 'conditions', documents: 'srd-2014,srd-2024,core' }),
+    )
+
+    expect(chain.in).toHaveBeenCalledWith('documentKey', [
+      'srd-2014',
+      'srd-2024',
+      'core',
+    ])
+  })
+
+  it('leaves conditions from other publishers alone', async () => {
+    const chain = stubTable('srd_conditions', [])
+
+    await handler(listingEvent({ type: 'conditions', documents: 'a5e-ag' }))
+
+    expect(chain.in).toHaveBeenCalledWith('documentKey', ['a5e-ag'])
+  })
+
+  it('does not widen any other content type to core', async () => {
+    const chain = stubTable('srd_spells', [])
+
+    await handler(listingEvent({ type: 'spells', documents: 'srd-2024' }))
+
+    expect(chain.in).toHaveBeenCalledWith('documentKey', ['srd-2024'])
+  })
+
   it('returns an empty listing without querying when no documents are selected', async () => {
     const chain = stubTable('srd_spells', [])
 
