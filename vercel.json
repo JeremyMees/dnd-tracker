@@ -1,10 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/open5e/warm",
-      "schedule": "0 4 * * *"
-    }
-  ],
   "redirects": [
     {
       "source": "/cookie-policy",

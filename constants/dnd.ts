@@ -30,26 +30,26 @@ export const crOptions = [
   { label: '30', value: 30.0 },
 ]
 
-export const gameSystems: Open5eGameSystem[] = ['5e-2014', '5e-2024']
+export const gameSystems: DndGameSystem[] = ['5e-2014', '5e-2024']
 
-export const open5eContentTypes = [
+export const dndContentTypes = [
   'spells',
   'monsters',
   'conditions',
   'magicitems',
   'weapons',
   'armor',
-] as const satisfies readonly Open5eType[]
+] as const satisfies readonly DndContentType[]
 
-export const open5eSortOptions = [
+export const dndSortOptions = [
   'name',
-  'hit_points',
-  '-hit_points',
-  'armor_class',
-  '-armor_class',
-  'challenge_rating',
-  '-challenge_rating',
-] as const satisfies readonly Open5eSortBy[]
+  'hitPoints',
+  '-hitPoints',
+  'armorClass',
+  '-armorClass',
+  'challengeRating',
+  '-challengeRating',
+] as const satisfies readonly DndSortBy[]
 
 export const abilityTypes = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']
 

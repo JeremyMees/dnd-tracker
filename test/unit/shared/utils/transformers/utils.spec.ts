@@ -516,100 +516,6 @@ describe('transformers/utils', () => {
     })
   })
 
-  describe('mapActionsV1', () => {
-    it('tags actions, legendary actions and reactions', () => {
-      const actions = mapActionsV1({
-        actions: [{ name: 'Bite', desc: 'Bites.' }],
-        legendary_actions: [{ name: 'Move', desc: 'Moves.' }],
-        reactions: [{ name: 'Parry', desc: 'Parries.' }],
-      } as unknown as Open5eV1Item)
-
-      expect(actions.map(action => action.actionType)).toEqual([
-        'action',
-        'legendaryAction',
-        'reaction',
-      ])
-    })
-
-    it('returns an empty list when every action array is missing', () => {
-      expect(mapActionsV1({} as unknown as Open5eV1Item)).toEqual([])
-    })
-
-    it('builds an attack from the attack bonus alone', () => {
-      const [action] = mapActionsV1({
-        actions: [{ name: 'Bite', desc: 'Bites.', attack_bonus: 4 }],
-      } as unknown as Open5eV1Item)
-
-      expect(action!.attacks).toEqual([
-        {
-          name: 'Bite',
-          attackType: 'melee',
-          toHitMod: 4,
-          distanceUnit: 'feet',
-        },
-      ])
-    })
-
-    it('builds an attack from the damage dice alone', () => {
-      const [action] = mapActionsV1({
-        actions: [
-          { name: 'Slam', desc: 'Slams.', damage_dice: '2d8', damage_bonus: 3 },
-        ],
-      } as unknown as Open5eV1Item)
-
-      expect(action!.attacks[0]).toEqual({
-        name: 'Slam',
-        attackType: 'melee',
-        toHitMod: 0,
-        distanceUnit: 'feet',
-        damageBonus: 3,
-        damageDieCount: 2,
-        damageDieType: 'd8',
-      })
-    })
-
-    it('produces no attacks for a descriptive action', () => {
-      const [action] = mapActionsV1({
-        actions: [{ name: 'Multiattack', desc: 'Attacks twice.' }],
-      } as unknown as Open5eV1Item)
-
-      expect(action!.attacks).toEqual([])
-    })
-  })
-
-  describe('mapTraitsV1', () => {
-    it('maps special abilities to traits', () => {
-      expect(
-        mapTraitsV1({
-          special_abilities: [{ name: 'Amphibious', desc: 'Breathes water.' }],
-        } as unknown as Open5eV1Item),
-      ).toEqual([{ name: 'Amphibious', desc: 'Breathes water.' }])
-    })
-
-    it('returns an empty list when special abilities are missing', () => {
-      expect(mapTraitsV1({} as unknown as Open5eV1Item)).toEqual([])
-    })
-  })
-
-  describe('mapSpeedV1', () => {
-    it('defaults walk to 0 and omits absent movement types', () => {
-      expect(mapSpeedV1({})).toEqual({ unit: 'feet', walk: 0 })
-    })
-
-    it('maps every movement type that is present', () => {
-      expect(
-        mapSpeedV1({ walk: 30, fly: 60, burrow: 10, climb: 20, swim: 40 }),
-      ).toEqual({
-        unit: 'feet',
-        walk: 30,
-        fly: 60,
-        burrow: 10,
-        climb: 20,
-        swim: 40,
-      })
-    })
-  })
-
   describe('mapSkillBonusesV2', () => {
     it('maps snake_case keys and passes unknown keys through', () => {
       expect(mapSkillBonusesV2({ animal_handling: 5, telepathy: 2 })).toEqual({
@@ -622,26 +528,6 @@ describe('transformers/utils', () => {
       expect(
         mapSkillBonusesV2(null as unknown as Record<string, number>),
       ).toEqual({})
-    })
-  })
-
-  describe('mapSkillBonusesV1', () => {
-    it('ignores keys that are not known skills', () => {
-      const bonuses = mapSkillBonusesV1({ stealth: 6, telepathy: 2 }, 9)
-
-      expect(bonuses.stealth).toBe(6)
-      expect(bonuses.perception).toBe(9)
-      expect(bonuses).not.toHaveProperty('telepathy')
-    })
-
-    it('falls back to zeroed bonuses when there are no skills', () => {
-      const bonuses = mapSkillBonusesV1(
-        null as unknown as Record<string, number>,
-        11,
-      )
-
-      expect(bonuses.stealth).toBe(0)
-      expect(bonuses.perception).toBe(11)
     })
   })
 })

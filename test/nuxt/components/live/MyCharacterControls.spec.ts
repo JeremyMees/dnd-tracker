@@ -23,7 +23,7 @@ const pending = ref(false)
 
 mockNuxtImport('useLiveMyAction', () => () => ({ apply, pending, endTurn }))
 
-vi.mock('~/queries/open5e', () => ({
+vi.mock('~/queries/srd', () => ({
   useConditionsListing: () => ({
     data: ref(conditions),
     isPending: ref(false),

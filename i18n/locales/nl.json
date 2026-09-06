@@ -784,9 +784,6 @@
         "text": "Je hebt succesvol verbonden met het internet"
       }
     },
-    "open5eStatus": {
-      "stale": "Open5e is momenteel niet bereikbaar, dus je ziet opgeslagen content die verouderd kan zijn."
-    },
     "toast": {
       "delete": {
         "error": "Er is iets fout gegaan bij het verwijderen van de {type}",

@@ -67,6 +67,7 @@ export type SrdConditionInsert =
 // Sync bookkeeping the app never returns
 type SrdMeta = 'documentKey' | 'syncedAt'
 type Satisfies<T extends U, U> = T
+export type SrdDocument = Satisfies<Omit<SrdDocumentRow, SrdMeta>, DndDocument>
 export type SrdMonster = Satisfies<Omit<SrdMonsterRow, SrdMeta>, DndMonster>
 export type SrdSpell = Satisfies<Omit<SrdSpellRow, SrdMeta>, DndSpell>
 export type SrdMagicItem = Satisfies<

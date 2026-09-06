@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useOpen5eListing, useOpen5eDocuments } from '~/queries/open5e'
+import { useSrdListing, useSrdDocuments } from '~/queries/srd'
 import { gameSystems } from '~~/constants/dnd'
 
 const props = withDefaults(
@@ -11,7 +11,7 @@ const props = withDefaults(
       payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
     ) => Promise<void>
     allowPin?: boolean
-    system?: Open5eGameSystem
+    system?: DndGameSystem
     preSelectedDocuments?: string[]
     persist?: FilterPersistence
   }>(),
@@ -33,7 +33,7 @@ const { t } = useI18n()
 const showPinned = ref<boolean>(false)
 const limit = 20
 
-const typeOptions = computed<{ value: Open5eType; label: string }[]>(() => [
+const typeOptions = computed<{ value: DndContentType; label: string }[]>(() => [
   { value: 'spells', label: t('general.spell', 2) },
   { value: 'conditions', label: t('general.condition', 2) },
   { value: 'magicitems', label: t('general.magicItem', 2) },
@@ -45,7 +45,7 @@ const { state } = useFilterState(
   'dnd-content-search',
   {
     search: '',
-    type: 'spells' as Open5eType,
+    type: 'spells' as DndContentType,
     system: props.system,
     documents: props.preSelectedDocuments,
     page: 0,
@@ -71,7 +71,7 @@ watch([() => state.type, () => state.documents, appliedSearch], () => {
   state.page = 0
 })
 
-const queryFilters = computed<Open5eFilters>(() => ({
+const queryFilters = computed<DndContentFilters>(() => ({
   page: state.page,
   search: appliedSearch.value,
   ordering: 'name',
@@ -83,16 +83,14 @@ function handleTypeChange(): void {
   appliedSearch.value = ''
 }
 
-const { data, status: listingStatus } = useOpen5eListing(
+const { data, status: listingStatus } = useSrdListing(
   computed(() => ({
     type: state.type,
     filters: queryFilters.value,
   })),
 )
 
-const { data: documents, status: documentsStatus } = useOpen5eDocuments()
-
-const { isStale: isOpen5eStale } = useOpen5eStatus()
+const { data: documents, status: documentsStatus } = useSrdDocuments()
 
 const isLoading = computed(
   () =>
@@ -254,14 +252,6 @@ function resetFilters(): void {
         </AnimationExpand>
       </div>
     </div>
-
-    <p
-      v-if="isOpen5eStale"
-      test-id="open5e-stale"
-      class="rounded-md border border-warning bg-warning/10 px-3 py-2 text-center text-sm"
-    >
-      {{ $t('components.open5eStatus.stale') }}
-    </p>
 
     <div class="overflow-y-auto">
       <MasonryGrid

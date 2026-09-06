@@ -41,14 +41,14 @@ vi.mock('~/queries/combat-events', () => ({
   useCombatEventsClear: () => ({ mutateAsync: clearCombatEvents }),
 }))
 
-vi.mock('~/queries/open5e', () => ({
+vi.mock('~/queries/srd', () => ({
   prefetchConditionsListing: () => Promise.resolve(),
   useConditionsListing: () => ({
     data: conditions,
     isLoading: false,
     isError: false,
   }),
-  useOpen5eDocuments: () => ({
+  useSrdDocuments: () => ({
     data: ref([]),
   }),
 }))

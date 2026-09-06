@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useConditionsListing } from '~/queries/open5e'
+import { useConditionsListing } from '~/queries/srd'
 
 const props = defineProps<{
   row: PlayerRow

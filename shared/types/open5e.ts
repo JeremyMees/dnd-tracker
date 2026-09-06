@@ -1,28 +1,4 @@
-export type Open5eType =
-  | 'spells'
-  | 'monsters'
-  | 'conditions'
-  | 'magicitems'
-  | 'weapons'
-  | 'armor'
-  | 'documents'
-
-export type Open5eSortBy =
-  | 'name'
-  | 'hit_points'
-  | '-hit_points'
-  | 'armor_class'
-  | '-armor_class'
-  | 'challenge_rating'
-  | '-challenge_rating'
-
-export interface Open5eFilters {
-  page: number
-  search?: string
-  cr?: number
-  ordering?: Open5eSortBy
-  documents?: string[]
-}
+export type Open5eType = DndContentType | 'documents'
 
 interface Open5eInfoObject<T = string> {
   name: string
@@ -51,7 +27,7 @@ export interface Open5eMinimalDocument {
   type: string
   display_name: string
   publisher: Open5eInfoObject
-  gamesystem: Open5eInfoObject<Open5eGameSystem>
+  gamesystem: Open5eInfoObject<DndGameSystem>
   permalink: string
 }
 
@@ -282,12 +258,10 @@ export interface Open5eCondition extends Open5eInfoObject {
   document: Open5eMinimalDocument
 }
 
-export type Open5eGameSystem = '5e-2014' | '5e-2024' | 'a5e'
-
 export interface Open5eDocument extends Open5eInfoObject {
   licenses: Open5eInfoObject[]
   publisher: Open5eInfoObject
-  gamesystem: Open5eInfoObject<Open5eGameSystem>
+  gamesystem: Open5eInfoObject<DndGameSystem>
   display_name: string
   desc: string
   type: string
@@ -307,99 +281,3 @@ export interface Open5eEndpointMap {
   armor: Open5eArmor
   documents: Open5eDocument
 }
-
-export interface Open5eV1Action {
-  name: string
-  desc: string
-  attack_bonus?: number
-  damage_bonus?: number
-  damage_dice?: string
-}
-
-export interface Open5eV1Item {
-  strength: number
-  dexterity: number
-  constitution: number
-  intelligence: number
-  wisdom: number
-  charisma: number
-  actions: Open5eV1Action[]
-  legendary_actions: Open5eV1Action[]
-  reactions: Open5eV1Action[]
-  special_abilities: Open5eV1Action[]
-  slug: string
-  desc: string
-  name: string
-  size: string
-  type: Open5eType
-  subtype: string
-  group: string | null
-  alignment: string
-  armor_class: number
-  armor_desc: string
-  hit_points: number
-  hit_dice: string
-  speed: Record<string, number>
-  strength_save: string | null
-  dexterity_save: string | null
-  constitution_save: number
-  intelligence_save: number
-  wisdom_save: number
-  charisma_save: string | null
-  perception: number
-  skills: Record<string, number>
-  damage_vulnerabilities: string
-  damage_resistances: string
-  damage_immunities: string
-  condition_immunities: string
-  senses: string
-  languages: string
-  challenge_rating: string
-  cr: number
-  legendary_desc: string
-  page_no: number
-  environments: string[]
-  img_main: string
-  document__slug: string
-  document__title: string
-  document__license_url: string
-  document__url: string
-  xp?: number
-  category?: string
-  ac_string?: string
-  strength_requirement?: string
-  stealth_disadvantage?: string
-  cost?: string
-  damage_dice?: string
-  damage_type?: string
-  weight?: string
-  properties?: string[]
-  rarity?: string
-  requires_attunement?: string
-  skill_proficiencies?: string
-  tool_proficiencies?: string
-  equipment?: string
-  feature?: string
-  feature_desc?: string
-  level?: string
-  higher_level?: string
-  casting_time?: string
-  range?: string
-  duration?: string
-  concentration?: string
-  ritual?: string
-  components?: string
-  material?: string
-  school?: string
-  dnd_class?: string
-  prerequisite?: string
-  effects_desc?: string[]
-}
-
-export type Open5eListingResult =
-  | { type: 'spells'; items: DndSpell[]; pages: number }
-  | { type: 'monsters'; items: DndMonster[]; pages: number }
-  | { type: 'conditions'; items: DndCondition[]; pages: number }
-  | { type: 'magicitems'; items: DndMagicItem[]; pages: number }
-  | { type: 'weapons'; items: DndWeapon[]; pages: number }
-  | { type: 'armor'; items: DndArmor[]; pages: number }

@@ -4,7 +4,6 @@ import {
   parseNumber,
   splitList,
 } from '../parse'
-import { modifierFromScore } from '../dnd/abilities'
 import {
   alignmentMap,
   armorTypeMap,
@@ -133,10 +132,6 @@ export function mapShapeType(
   return shapeTypeMap[normalizeKey(value)]
 }
 
-export function mapLanguagesV1(input: string): DndLanguage[] {
-  return splitList(input).map(name => ({ name, desc: '' }))
-}
-
 export function mapDistanceUnit(
   input: string | null | undefined,
 ): DndDistanceUnit {
@@ -204,16 +199,6 @@ export function parseSenseRange(
   return Number.isFinite(value) ? value : undefined
 }
 
-export function mapSightV1(senses: string): DndSight {
-  return {
-    normalSightRange: 0,
-    darkVisionRange: parseSenseRange(senses, 'darkvision'),
-    blindSightRange: parseSenseRange(senses, 'blindsight'),
-    tremorSenseRange: parseSenseRange(senses, 'tremorsense'),
-    trueSightRange: parseSenseRange(senses, 'truesight'),
-  }
-}
-
 export function mapSkillBonusesV2(
   skills: Record<string, number>,
 ): DndSkillBonuses {
@@ -225,60 +210,6 @@ export function mapSkillBonusesV2(
   }
 
   return mapped
-}
-
-export function mapSkillBonusesV1(
-  skills: Record<string, number>,
-  perception: number,
-): DndSkillBonuses {
-  const mapped: DndSkillBonuses = {
-    acrobatics: 0,
-    animalHandling: 0,
-    arcana: 0,
-    athletics: 0,
-    deception: 0,
-    history: 0,
-    insight: 0,
-    intimidation: 0,
-    investigation: 0,
-    medicine: 0,
-    nature: 0,
-    perception,
-    performance: 0,
-    persuasion: 0,
-    religion: 0,
-    sleightOfHand: 0,
-    stealth: 0,
-    survival: 0,
-  }
-
-  for (const [key, value] of Object.entries(skills ?? {})) {
-    const mappedKey = skillKeyMap[key]
-
-    if (mappedKey) mapped[mappedKey] = value
-  }
-
-  return mapped
-}
-
-export function mapSavingThrowsV1(item: Open5eV1Item): DndSavingThrowBonuses {
-  return {
-    strength: parseNumber(item.strength_save, modifierFromScore(item.strength)),
-    dexterity: parseNumber(
-      item.dexterity_save,
-      modifierFromScore(item.dexterity),
-    ),
-    constitution: parseNumber(
-      item.constitution_save,
-      modifierFromScore(item.constitution),
-    ),
-    intelligence: parseNumber(
-      item.intelligence_save,
-      modifierFromScore(item.intelligence),
-    ),
-    wisdom: parseNumber(item.wisdom_save, modifierFromScore(item.wisdom)),
-    charisma: parseNumber(item.charisma_save, modifierFromScore(item.charisma)),
-  }
 }
 
 export function mapAttackType(type: string): DndAttackType {
@@ -381,71 +312,6 @@ export function mapActionsV2(actions: Open5eAction[]): DndAction[] {
       ? { usageLimits: mapUsageLimits(action.usage_limits) }
       : {}),
   }))
-}
-
-export function mapActionsV1(item: Open5eV1Item): DndAction[] {
-  const normal = (item.actions ?? []).map(action => ({
-    ...action,
-    _kind: 'action' as const,
-  }))
-  const legendary = (item.legendary_actions ?? []).map(action => ({
-    ...action,
-    _kind: 'legendaryAction' as const,
-  }))
-  const reactions = (item.reactions ?? []).map(action => ({
-    ...action,
-    _kind: 'reaction' as const,
-  }))
-
-  return [...normal, ...legendary, ...reactions].map(action => {
-    const damageDiceMatch = action.damage_dice?.match(
-      /(\d+)d(4|6|8|10|12|20|100)/i,
-    )
-
-    return {
-      name: action.name,
-      desc: action.desc,
-      attacks:
-        action.attack_bonus != null || damageDiceMatch
-          ? [
-              {
-                name: action.name,
-                attackType: 'melee',
-                toHitMod: action.attack_bonus ?? 0,
-                distanceUnit: 'feet',
-                ...(action.damage_bonus != null
-                  ? { damageBonus: action.damage_bonus }
-                  : {}),
-                ...(damageDiceMatch
-                  ? {
-                      damageDieCount: Number.parseInt(damageDiceMatch[1]!, 10),
-                      damageDieType: `d${damageDiceMatch[2]}` as DndDice,
-                    }
-                  : {}),
-              },
-            ]
-          : [],
-      actionType: action._kind,
-    }
-  })
-}
-
-export function mapTraitsV1(item: Open5eV1Item): DndTrait[] {
-  return (item.special_abilities ?? []).map(trait => ({
-    name: trait.name,
-    desc: trait.desc,
-  }))
-}
-
-export function mapSpeedV1(speed: Record<string, number>): DndSpeed {
-  return {
-    unit: 'feet',
-    walk: speed.walk ?? 0,
-    ...(speed.fly != null ? { fly: speed.fly } : {}),
-    ...(speed.burrow != null ? { burrow: speed.burrow } : {}),
-    ...(speed.climb != null ? { climb: speed.climb } : {}),
-    ...(speed.swim != null ? { swim: speed.swim } : {}),
-  }
 }
 
 export function conditionHasLevels(name: string): boolean {

@@ -1,4 +1,3 @@
-import { parseBoolean, parseIntegerFromText } from '../parse'
 import {
   mapArmorType,
   mapDamageType,
@@ -10,81 +9,7 @@ import {
   parseWeight,
 } from './utils'
 
-function mapMagicItemWeaponV1(dto: Open5eV1Item): DndWeapon | undefined {
-  if (!dto.damage_dice) return undefined
-
-  const range = parseIntegerFromText(dto.range)
-
-  return {
-    id: dto.slug,
-    name: dto.name,
-    properties: (dto.properties ?? []).map(property => ({
-      property: {
-        name: property,
-        desc: '',
-      },
-    })),
-    damageType: mapDamageType(dto.damage_type),
-    distanceUnit: mapDistanceUnit(dto.range),
-    damageDice: formatDiceWithCount(dto.damage_dice),
-    range,
-    longRange: range,
-    isSimple: false,
-    isImprovised: false,
-  }
-}
-
-function mapMagicItemArmorV1(dto: Open5eV1Item): DndArmor | undefined {
-  if (!dto.ac_string && dto.armor_class == null) return undefined
-
-  const type = mapArmorType(dto.category)
-  const strengthScoreRequired = parseIntegerFromText(dto.strength_requirement)
-
-  return {
-    id: dto.slug,
-    name: dto.name,
-    acDisplay: dto.ac_string || `${dto.armor_class}`,
-    type,
-    grantsStealthDisadvantage: parseBoolean(dto.stealth_disadvantage),
-    ...(strengthScoreRequired > 0 ? { strengthScoreRequired } : {}),
-    acBase: dto.armor_class,
-    acAddDexMod: type !== 'heavy',
-    ...(type === 'medium' ? { acCapDexMod: 2 } : {}),
-  }
-}
-
-function mapMagicItemV1(dto: Open5eV1Item): DndMagicItem {
-  const weapon = mapMagicItemWeaponV1(dto)
-  const armor = mapMagicItemArmorV1(dto)
-
-  return {
-    id: dto.slug,
-    name: dto.name,
-    desc: dto.desc,
-    type: weapon
-      ? 'weapon'
-      : armor
-        ? 'armor'
-        : mapMagicItemType(dto.category || dto.rarity),
-    rarity: {
-      name: dto.rarity || 'Common',
-      rank: 0,
-    },
-    isMagicItem: true,
-    ...(weapon ? { weapon } : {}),
-    ...(armor ? { armor } : {}),
-    size: 'medium',
-    weight: parseWeight(dto.weight),
-    weightUnit: mapWeightUnit(dto.weight),
-    cost: dto.cost || '',
-    requiresAttunement: parseBoolean(dto.requires_attunement),
-    ...(dto.requires_attunement
-      ? { attunementDetail: dto.requires_attunement }
-      : {}),
-  }
-}
-
-function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
+export function toMagicItem(dto: Open5eMagicItem): DndMagicItem {
   return {
     id: dto.key,
     name: dto.name,
@@ -152,8 +77,4 @@ function mapMagicItemV2(dto: Open5eMagicItem): DndMagicItem {
       ? { attunementDetail: dto.attunement_detail }
       : {}),
   }
-}
-
-export function toMagicItem(dto: Open5eMagicItem | Open5eV1Item): DndMagicItem {
-  return 'slug' in dto ? mapMagicItemV1(dto) : mapMagicItemV2(dto)
 }

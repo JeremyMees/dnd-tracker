@@ -553,6 +553,7 @@ export type Database = {
           gamesystemKey: string
           id: string
           name: string
+          permalink: string
           publicationDate: string | null
           publisherKey: string
           publisherName: string
@@ -563,6 +564,7 @@ export type Database = {
           gamesystemKey: string
           id: string
           name: string
+          permalink?: string
           publicationDate?: string | null
           publisherKey: string
           publisherName: string
@@ -573,6 +575,7 @@ export type Database = {
           gamesystemKey?: string
           id?: string
           name?: string
+          permalink?: string
           publicationDate?: string | null
           publisherKey?: string
           publisherName?: string

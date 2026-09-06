@@ -784,9 +784,6 @@
         "text": "Reconnect to the internet to use the app"
       }
     },
-    "open5eStatus": {
-      "stale": "Open5e is unreachable right now, so you are seeing saved content that may be out of date."
-    },
     "toast": {
       "delete": {
         "error": "Something went wrong while deleting the {type}",

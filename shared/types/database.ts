@@ -92,9 +92,18 @@ interface SrdArmorOverride {
   type: DndArmorType
 }
 
+interface SrdDocumentOverride {
+  gamesystemKey: DndGameSystem
+}
+
 interface DatabaseOverrides {
   public: {
     Tables: {
+      srd_documents: {
+        Row: SrdDocumentOverride
+        Insert: SrdDocumentOverride
+        Update: Partial<SrdDocumentOverride>
+      }
       srd_monsters: {
         Row: SrdMonsterOverride
         Insert: SrdMonsterInsertOverride

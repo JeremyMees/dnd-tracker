@@ -1,76 +1,15 @@
-import { modifierFromScore } from '../dnd/abilities'
 import { parseHitDice } from '../dnd/dice'
 import {
-  mapActionsV1,
   mapActionsV2,
   mapAlignment,
   mapConditionTypes,
   mapDamageType,
-  mapDamageTypes,
-  mapLanguagesV1,
   mapMonsterType,
-  mapSavingThrowsV1,
-  mapSightV1,
   mapSize,
-  mapSkillBonusesV1,
   mapSkillBonusesV2,
-  mapSpeedV1,
-  mapTraitsV1,
 } from './utils'
 
-function mapMonsterV1(dto: Open5eV1Item): DndMonster {
-  const abilityScores: DndAbilityScores = {
-    strength: dto.strength,
-    dexterity: dto.dexterity,
-    constitution: dto.constitution,
-    intelligence: dto.intelligence,
-    wisdom: dto.wisdom,
-    charisma: dto.charisma,
-  }
-
-  const modifiers: DndModifiers = {
-    strength: modifierFromScore(dto.strength),
-    dexterity: modifierFromScore(dto.dexterity),
-    constitution: modifierFromScore(dto.constitution),
-    intelligence: modifierFromScore(dto.intelligence),
-    wisdom: modifierFromScore(dto.wisdom),
-    charisma: modifierFromScore(dto.charisma),
-  }
-
-  return {
-    id: dto.slug,
-    name: dto.name,
-    type: mapMonsterType(dto.type || dto.category),
-    size: mapSize(dto.size),
-    challengeRating: dto.cr,
-    proficiencyBonus: undefined,
-    speed: mapSpeedV1(dto.speed),
-    alignment: mapAlignment(dto.alignment),
-    languages: mapLanguagesV1(dto.languages),
-    armorClass: dto.armor_class,
-    armorDetail: dto.armor_desc,
-    hitPoints: dto.hit_points,
-    hitDice: parseHitDice(dto.hit_dice),
-    experiencePoints: dto.xp ?? 0,
-    abilityScores,
-    modifiers,
-    initiativeBonus: modifiers.dexterity,
-    savingThrows: mapSavingThrowsV1(dto),
-    skillBonuses: mapSkillBonusesV1(dto.skills, dto.perception),
-    passivePerception: dto.perception,
-    resistancesAndImmunities: {
-      damageImmunities: mapDamageTypes(dto.damage_immunities),
-      damageResistances: mapDamageTypes(dto.damage_resistances),
-      damageVulnerabilities: mapDamageTypes(dto.damage_vulnerabilities),
-      conditionImmunities: mapConditionTypes(dto.condition_immunities),
-    },
-    sight: mapSightV1(dto.senses),
-    actions: mapActionsV1(dto),
-    traits: mapTraitsV1(dto),
-  }
-}
-
-function mapMonsterV2(dto: Open5eMonster): DndMonster {
+export function toMonster(dto: Open5eMonster): DndMonster {
   return {
     id: dto.key,
     name: dto.name,
@@ -135,8 +74,4 @@ function mapMonsterV2(dto: Open5eMonster): DndMonster {
       desc: trait.desc,
     })),
   }
-}
-
-export function toMonster(dto: Open5eMonster | Open5eV1Item): DndMonster {
-  return 'slug' in dto ? mapMonsterV1(dto) : mapMonsterV2(dto)
 }
