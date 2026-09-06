@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  open5eV2SpellFixture,
-  open5eV1SpellFixture,
-} from '~~/test/fixtures/open5e'
+import { open5eV2SpellFixture } from '~~/test/fixtures/open5e'
 
 describe('transformers/spell', () => {
   describe('toSpell (V2)', () => {
@@ -132,60 +129,6 @@ describe('transformers/spell', () => {
       expect(spell.materialCost).toBeUndefined()
       expect(spell.shapeType).toBeUndefined()
       expect(spell.shapeSize).toBeUndefined()
-    })
-  })
-
-  describe('toSpell (V1)', () => {
-    it('maps core fields using slug as id', () => {
-      const spell = toSpell(open5eV1SpellFixture)
-
-      expect(spell.id).toBe('acid-arrow')
-      expect(spell.name).toBe('Acid Arrow')
-      expect(spell.level).toBe(2)
-      expect(spell.school).toBe('evocation')
-      expect(spell.classes).toContain('wizard')
-      expect(spell.ritual).toBeFalsy()
-      expect(spell.concentration).toBeFalsy()
-    })
-
-    it('returns empty castingOptions array', () => {
-      const spell = toSpell(open5eV1SpellFixture)
-
-      expect(spell.castingOptions).toEqual([])
-    })
-
-    it('maps range and unit from string', () => {
-      const spell = toSpell(open5eV1SpellFixture)
-
-      expect(spell.range).toBe(90)
-      expect(spell.rangeUnit).toBe('feet')
-      expect(spell.rangeText).toBe('90 feet')
-    })
-
-    it('parses components from string', () => {
-      const spell = toSpell(open5eV1SpellFixture)
-
-      expect(spell.verbal).toBeTruthy()
-      expect(spell.somatic).toBeTruthy()
-      expect(spell.material).toBeTruthy()
-      expect(spell.materialSpecified).toBe('powdered rhubarb leaf')
-    })
-
-    it('falls back to empty strings for absent text fields', () => {
-      const spell = toSpell({
-        ...open5eV1SpellFixture,
-        range: undefined,
-        casting_time: undefined,
-        material: undefined,
-        duration: undefined,
-        higher_level: undefined,
-      })
-
-      expect(spell.rangeText).toBe('')
-      expect(spell.castingTime).toBe('')
-      expect(spell.materialSpecified).toBe('')
-      expect(spell.duration).toBe('')
-      expect(spell.higherLevel).toBe('')
     })
   })
 })

@@ -1,4 +1,3 @@
-import { parseBoolean, parseNumber } from '../parse'
 import {
   mapAbility,
   mapClasses,
@@ -6,45 +5,9 @@ import {
   mapDistanceUnit,
   mapShapeType,
   mapSpellSchool,
-  parseComponents,
-  parseRange,
 } from './utils'
 
-function mapSpellV1(dto: Open5eV1Item): DndSpell {
-  const components = parseComponents(dto.components)
-
-  return {
-    id: dto.slug,
-    name: dto.name,
-    castingOptions: [],
-    school: mapSpellSchool(dto.school),
-    classes: mapClasses(dto.dnd_class),
-    rangeUnit: mapDistanceUnit(dto.range),
-    shapeSizeUnit: mapDistanceUnit(dto.range),
-    desc: dto.desc,
-    level: parseNumber(dto.level),
-    higherLevel: dto.higher_level || '',
-    targetType: '',
-    rangeText: dto.range || '',
-    range: parseRange(dto.range),
-    ritual: parseBoolean(dto.ritual),
-    castingTime: dto.casting_time || '',
-    verbal: components.verbal,
-    somatic: components.somatic,
-    material: components.material,
-    materialSpecified: dto.material || '',
-    materialConsumed: false,
-    targetCount: 1,
-    savingThrowAbility: mapAbility(undefined),
-    attackRoll: false,
-    damageRoll: '',
-    damageTypes: mapDamageTypes(dto.desc),
-    duration: dto.duration || '',
-    concentration: parseBoolean(dto.concentration),
-  }
-}
-
-function mapSpellV2(dto: Open5eSpell): DndSpell {
+export function toSpell(dto: Open5eSpell): DndSpell {
   const shapeType = mapShapeType(dto.shape_type)
 
   return {
@@ -95,8 +58,4 @@ function mapSpellV2(dto: Open5eSpell): DndSpell {
     ...(dto.shape_size != null ? { shapeSize: dto.shape_size } : {}),
     concentration: dto.concentration,
   }
-}
-
-export function toSpell(dto: Open5eSpell | Open5eV1Item): DndSpell {
-  return 'slug' in dto ? mapSpellV1(dto) : mapSpellV2(dto)
 }

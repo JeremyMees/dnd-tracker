@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  open5eV2WeaponFixture,
-  open5eV1WeaponFixture,
-} from '~~/test/fixtures/open5e'
+import { open5eV2WeaponFixture } from '~~/test/fixtures/open5e'
 
 describe('transformers/weapon', () => {
   describe('toWeapon (V2)', () => {
@@ -25,41 +22,6 @@ describe('transformers/weapon', () => {
       expect(weapon.properties[0]!.property.name).toBe('Topple')
       expect(weapon.properties[1]!.property.name).toBe('Versatile')
       expect(weapon.properties[1]!.detail).toBe('1d10')
-    })
-  })
-
-  describe('toWeapon (V1)', () => {
-    it('maps core fields using slug as id', () => {
-      const weapon = toWeapon(open5eV1WeaponFixture)
-
-      expect(weapon.id).toBe('longsword')
-      expect(weapon.name).toBe('Longsword')
-      expect(weapon.damageDice).toBe('1d8')
-      expect(weapon.damageType).toBe('slashing')
-      expect(weapon.distanceUnit).toBe('feet')
-    })
-
-    it('maps properties from string array', () => {
-      const weapon = toWeapon(open5eV1WeaponFixture)
-
-      expect(weapon.properties.length).toBe(1)
-      expect(weapon.properties[0]!.property.name).toBe('Versatile')
-      expect(weapon.properties[0]!.property.desc).toBe('')
-    })
-
-    it('maps range from string', () => {
-      const weapon = toWeapon(open5eV1WeaponFixture)
-
-      expect(weapon.range).toBe(5)
-    })
-
-    it('defaults properties to an empty array when missing', () => {
-      const weapon = toWeapon({
-        ...open5eV1WeaponFixture,
-        properties: undefined,
-      })
-
-      expect(weapon.properties).toEqual([])
     })
   })
 })

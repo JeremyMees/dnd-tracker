@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  open5eV2MonsterFixture,
-  open5eV1MonsterFixture,
-} from '~~/test/fixtures/open5e'
+import { open5eV2MonsterFixture } from '~~/test/fixtures/open5e'
 
 describe('transformers/monster', () => {
   describe('toMonster (V2)', () => {
@@ -180,113 +177,6 @@ describe('transformers/monster', () => {
 
       expect(monster.actions).toEqual([])
       expect(monster.traits).toEqual([])
-    })
-  })
-
-  describe('toMonster (V1)', () => {
-    it('maps core identity fields using slug as id', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.id).toBe('goblin')
-      expect(monster.name).toBe('Goblin')
-      expect(monster.type).toBe('humanoid')
-      expect(monster.size).toBe('small')
-    })
-
-    it('maps ability scores from top-level fields', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.abilityScores.strength).toBe(8)
-      expect(monster.abilityScores.dexterity).toBe(14)
-      expect(monster.abilityScores.constitution).toBe(10)
-      expect(monster.abilityScores.intelligence).toBe(10)
-      expect(monster.abilityScores.wisdom).toBe(8)
-      expect(monster.abilityScores.charisma).toBe(8)
-    })
-
-    it('maps combat stats', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.armorClass).toBe(15)
-      expect(monster.hitPoints).toBe(7)
-      expect(monster.hitDice.hitDiceCount).toBe(2)
-      expect(monster.hitDice.hitDiceType).toBe('d6')
-      expect(monster.experiencePoints).toBe(50)
-    })
-
-    it('maps challenge rating', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.challengeRating).toBe(0.25)
-    })
-
-    it('maps alignment', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.alignment).toBe('neutralEvil')
-    })
-
-    it('maps speed from object', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.speed.walk).toBe(30)
-      expect(monster.speed.unit).toBe('feet')
-    })
-
-    it('maps actions from actions array with attack stats', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.actions.length).toBeGreaterThan(0)
-
-      const scimitar = monster.actions.find(a => a.name === 'Scimitar')
-      expect(scimitar).toBeDefined()
-      expect(scimitar!.actionType).toBe('action')
-      expect(scimitar!.attacks.length).toBe(1)
-      expect(scimitar!.attacks[0]!.toHitMod).toBe(4)
-      expect(scimitar!.attacks[0]!.damageBonus).toBe(2)
-    })
-
-    it('maps traits from special_abilities', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.traits.length).toBe(1)
-      expect(monster.traits[0]!.name).toBe('Nimble Escape')
-    })
-
-    it('parses darkvision from senses string', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.sight.darkVisionRange).toBe(60)
-    })
-
-    it('maps passive perception', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.passivePerception).toBe(9)
-    })
-
-    it('maps skill bonuses converting snake_case keys to camelCase', () => {
-      const monster = toMonster(open5eV1MonsterFixture)
-
-      expect(monster.skillBonuses.stealth).toBe(6)
-      expect(monster.skillBonuses.animalHandling).toBe(0)
-      expect(monster.skillBonuses.sleightOfHand).toBe(0)
-    })
-
-    it('falls back to category when type is empty', () => {
-      const monster = toMonster({
-        ...open5eV1MonsterFixture,
-        type: '' as Open5eType,
-        category: 'Dragon',
-      })
-
-      expect(monster.type).toBe('dragon')
-    })
-
-    it('defaults experience points to 0 when xp is absent', () => {
-      const monster = toMonster({ ...open5eV1MonsterFixture, xp: undefined })
-
-      expect(monster.experiencePoints).toBe(0)
     })
   })
 })

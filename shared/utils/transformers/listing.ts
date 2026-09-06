@@ -12,6 +12,7 @@ import {
   isSpell,
   isWeapon,
 } from '../dnd/checks'
+
 export function transformOpen5eItem(
   type: Open5eType,
   item: Open5eItem,
