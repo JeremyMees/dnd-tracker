@@ -42,12 +42,11 @@ export function useAuthentication() {
     const { error } = await supabase.auth.signOut()
 
     if (error) throw createError(error)
-    else {
-      setTimeout(() => navigateTo(localePath('/login')), 100)
 
-      user.value = null
-      gc.value = null
-    }
+    user.value = null
+    gc.value = null
+
+    await navigateTo(localePath('/login'))
   }
 
   async function fetch(forceRefresh = false): Promise<void> {
