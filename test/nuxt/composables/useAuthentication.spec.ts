@@ -21,6 +21,7 @@ const mockSupabaseSingle = vi.fn()
 const mockGetUser = vi.fn().mockReturnValue({
   data: { user: { id: 'test-user-id' } },
 })
+const mockNavigateTo = vi.fn()
 
 let authStateChangeCallback: ((event: string) => void) | null = null
 
@@ -28,6 +29,8 @@ registerEndpoint('/api/user/create', {
   method: 'POST',
   handler: async event => mockCreateUser(await readBody(event)),
 })
+
+mockNuxtImport('navigateTo', () => (path: string) => mockNavigateTo(path))
 
 mockNuxtImport('useSupabaseClient', () => () => ({
   auth: {
@@ -84,6 +87,7 @@ describe('useAuthentication', () => {
     mockSupabaseSelect.mockReturnValue({ eq: mockSupabaseEq })
     mockSupabaseEq.mockReturnValue({ single: mockSupabaseSingle })
     mockGetUser.mockReturnValue({ data: { user: { id: 'test-user-id' } } })
+    mockNavigateTo.mockReset()
 
     auth = useAuthentication()
 
@@ -173,6 +177,7 @@ describe('useAuthentication', () => {
 
       expect(mockSignOut).toHaveBeenCalled()
       expect(auth.user.value).toBeNull()
+      expect(mockNavigateTo).toHaveBeenCalledWith('/login')
     })
 
     it('should throw error if logout fails', async () => {
@@ -182,6 +187,7 @@ describe('useAuthentication', () => {
 
       await expect(auth.logout()).rejects.toThrow()
       expect(mockSignOut).toHaveBeenCalled()
+      expect(mockNavigateTo).not.toHaveBeenCalled()
     })
   })
 
