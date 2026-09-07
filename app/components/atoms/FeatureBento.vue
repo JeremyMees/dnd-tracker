@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useReducedMotion } from 'motion-v'
+import { m, useReducedMotion } from 'motion-v'
 
 const reduced = useReducedMotion()
 
@@ -54,10 +54,9 @@ const enter = computed(() =>
     </div>
 
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-      <Motion
+      <m.article
         v-for="(cell, index) in cells"
         :key="cell.key"
-        as="article"
         test-id="feature-cell"
         :initial="enter"
         :while-in-view="{ opacity: 1, y: 0 }"
@@ -89,7 +88,7 @@ const enter = computed(() =>
             :aria-hidden="true"
           />
         </NuxtLinkLocale>
-      </Motion>
+      </m.article>
     </div>
   </section>
 </template>

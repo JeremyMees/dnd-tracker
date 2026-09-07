@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Motion } from 'motion-v'
+import { m } from 'motion-v'
 
 defineExpose({ calculateEyes })
 
@@ -32,7 +32,7 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
 </script>
 
 <template>
-  <Motion
+  <m.div
     ref="dragon"
     :initial="reduced ? undefined : { y: '50%', x: '25%', rotate: '-45deg' }"
     :while-in-view="{
@@ -72,7 +72,7 @@ function angle(cx: number, cy: number, ex: number, ey: number): number {
         class="h-full w-full object-cover"
       />
     </div>
-  </Motion>
+  </m.div>
 </template>
 
 <style scoped>

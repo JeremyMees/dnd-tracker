@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { m } from 'motion-v'
+
 import type { HTMLAttributes } from 'vue'
 
 const props = defineProps<{
@@ -26,8 +28,7 @@ const enter = computed(() =>
         )
       "
     >
-      <Motion
-        as="p"
+      <m.p
         :initial="enter"
         :while-in-view="{ opacity: 1, y: 0 }"
         :in-view-options="{ once: true, amount: 0.4 }"
@@ -35,9 +36,8 @@ const enter = computed(() =>
         class="mx-auto max-w-3xl text-2xl font-black tracking-tight text-balance text-foreground md:text-4xl"
       >
         {{ title }}
-      </Motion>
-      <Motion
-        as="p"
+      </m.p>
+      <m.p
         :initial="enter"
         :while-in-view="{ opacity: 1, y: 0 }"
         :in-view-options="{ once: true, amount: 0.4 }"
@@ -45,9 +45,8 @@ const enter = computed(() =>
         class="mx-auto mt-5 max-w-prose text-lg text-pretty text-muted-foreground"
       >
         {{ subtitle }}
-      </Motion>
-      <Motion
-        as="div"
+      </m.p>
+      <m.div
         :initial="enter"
         :while-in-view="{ opacity: 1, y: 0 }"
         :in-view-options="{ once: true, amount: 0.4 }"
@@ -64,7 +63,7 @@ const enter = computed(() =>
             {{ button }}
           </NuxtLinkLocale>
         </UiButton>
-      </Motion>
+      </m.div>
 
       <UiBorderBeam
         :size="350"

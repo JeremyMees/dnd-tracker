@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { m } from 'motion-v'
+
 import { usePricingListing } from '~/queries/pricing'
 
 useSeo('Pricing')
@@ -126,8 +128,7 @@ async function manageBilling(): Promise<void> {
         </UiTabsList>
       </UiTabs>
 
-      <Motion
-        as="div"
+      <m.div
         :initial="{ opacity: 0 }"
         :animate="{ opacity: 1 }"
         class="relative grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto py-8 mt-8 mb-16"
@@ -138,7 +139,7 @@ async function manageBilling(): Promise<void> {
           class="size-8 absolute top-0 left-20"
         />
 
-        <Motion
+        <m.div
           v-if="freeProduct"
           as-child
           :animate="{ opacity: 1, y: 0 }"
@@ -213,9 +214,9 @@ async function manageBilling(): Promise<void> {
               </UiButton>
             </UiCardFooter>
           </UiCard>
-        </Motion>
+        </m.div>
 
-        <Motion
+        <m.div
           v-if="activePro"
           as-child
           :animate="{ opacity: 1, y: 0, transition: { delay: 0.2 } }"
@@ -337,8 +338,8 @@ async function manageBilling(): Promise<void> {
               </UiButton>
             </UiCardFooter>
           </UiCard>
-        </Motion>
-      </Motion>
+        </m.div>
+      </m.div>
       <p
         test-id="text"
         class="mb-5 max-w-3xl mx-auto text-center pt-12 text-muted-foreground"

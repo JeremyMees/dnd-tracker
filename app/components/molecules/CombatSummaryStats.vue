@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { m } from 'motion-v'
+
 const STAGGER_STEP = 0.05
 
 const props = defineProps<{ stats: CombatStats }>()
@@ -46,10 +48,9 @@ function awardLabel(combatant: CombatantStats): string {
 <template>
   <div class="flex flex-col gap-6">
     <div test-id="totals" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-      <Motion
+      <m.div
         v-for="(total, index) in totals"
         :key="total.key"
-        as="div"
         test-id="total"
         :initial="reduced ? undefined : { opacity: 0, y: 12 }"
         :animate="{ opacity: 1, y: 0 }"
@@ -69,9 +70,8 @@ function awardLabel(combatant: CombatantStats): string {
             :delay="index * STAGGER_STEP"
           />
         </div>
-      </Motion>
-      <Motion
-        as="div"
+      </m.div>
+      <m.div
         test-id="total"
         :initial="reduced ? undefined : { opacity: 0, y: 12 }"
         :animate="{ opacity: 1, y: 0 }"
@@ -93,12 +93,11 @@ function awardLabel(combatant: CombatantStats): string {
             })
           }}
         </div>
-      </Motion>
+      </m.div>
     </div>
 
     <div class="flex flex-col gap-2">
-      <Motion
-        as="p"
+      <m.p
         :initial="reduced ? undefined : { opacity: 0, y: 12 }"
         :animate="{ opacity: 1, y: 0 }"
         :transition="{
@@ -109,12 +108,11 @@ function awardLabel(combatant: CombatantStats): string {
         class="head-6"
       >
         {{ $t('components.combatSummary.awards.title') }}
-      </Motion>
+      </m.p>
       <ul class="flex flex-col gap-2 border rounded-lg p-2">
-        <Motion
+        <m.li
           v-for="(combatant, index) in stats.combatants"
           :key="combatant.rowId"
-          as="li"
           test-id="award"
           :initial="reduced ? undefined : { opacity: 0, y: 12 }"
           :animate="{ opacity: 1, y: 0 }"
@@ -141,7 +139,7 @@ function awardLabel(combatant: CombatantStats): string {
               {{ $t(awardLabel(combatant), { value: combatant.awardValue }) }}
             </p>
           </div>
-        </Motion>
+        </m.li>
       </ul>
     </div>
   </div>
