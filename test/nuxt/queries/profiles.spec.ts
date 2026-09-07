@@ -6,6 +6,7 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  mutationSpies,
   supabaseAuthUpdateUser,
 } from '~~/test/nuxt/stubs/query'
 import { useProfileRemove, useProfileUpdate } from '~/queries/profiles'
@@ -17,6 +18,7 @@ mockNuxtImport('useAuthentication', () => () => ({ logout }))
 describe('profiles queries', () => {
   beforeEach(async () => {
     fetchMock.mockReset()
+    logout.mockClear()
     await clearQueryCache()
   })
 
@@ -61,13 +63,47 @@ describe('profiles queries', () => {
       })
 
       const { vm } = await mountHook(() => useProfileUpdate())
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
       await expect(
-        vm.mutateAsync({ id: '1', data: { username: 'Renamed' }, onError }),
+        vm.mutateAsync({ id: '1', data: { username: 'Renamed' }, ...spies }),
       ).rejects.toThrow('boom')
 
-      expect(onError).toHaveBeenCalledWith('boom')
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(spies.onSuccess).not.toHaveBeenCalled()
+    })
+
+    it('reports an error when the supabase auth update fails', async () => {
+      mockSupabaseFrom({ profiles: mockChain({ data: null, error: null }) })
+      supabaseAuthUpdateUser.mockResolvedValueOnce({
+        error: { message: 'email taken' },
+      })
+
+      const { vm } = await mountHook(() => useProfileUpdate())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          id: '1',
+          data: { email: 'new@example.com' },
+          ...spies,
+        }),
+      ).rejects.toThrow('email taken')
+
+      expect(spies.onError).toHaveBeenCalledWith('email taken')
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ profiles: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useProfileUpdate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: '1', data: { username: 'Renamed' }, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
   })
 
@@ -91,17 +127,48 @@ describe('profiles queries', () => {
       expect(logout).toHaveBeenCalled()
     })
 
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ profiles: mockChain({ data: null, error: null }) })
+      fetchMock.mockResolvedValue({ error: null })
+
+      const { vm } = await mountHook(() => useProfileRemove())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: '1', ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('does not log out when the account removal route reports an error', async () => {
+      mockSupabaseFrom({ profiles: mockChain({ data: null, error: null }) })
+      fetchMock.mockResolvedValue({ error: { message: 'still linked' } })
+
+      const { vm } = await mountHook(() => useProfileRemove())
+      const spies = mutationSpies()
+
+      await expect(vm.mutateAsync({ id: '1', ...spies })).rejects.toThrow(
+        'still linked',
+      )
+
+      expect(spies.onError).toHaveBeenCalledWith('still linked')
+      expect(logout).not.toHaveBeenCalled()
+    })
+
     it('does not log out when the profile deletion fails', async () => {
       mockSupabaseFrom({
         profiles: mockChain({ data: null, error: { message: 'boom' } }),
       })
 
       const { vm } = await mountHook(() => useProfileRemove())
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
-      await expect(vm.mutateAsync({ id: '1', onError })).rejects.toThrow('boom')
+      await expect(vm.mutateAsync({ id: '1', ...spies })).rejects.toThrow(
+        'boom',
+      )
 
-      expect(onError).toHaveBeenCalledWith('boom')
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(logout).not.toHaveBeenCalled()
     })
   })

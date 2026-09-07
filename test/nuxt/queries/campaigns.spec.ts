@@ -5,6 +5,7 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  mutationSpies,
   toast,
 } from '~~/test/nuxt/stubs/query'
 import {
@@ -115,6 +116,22 @@ describe('campaigns queries', () => {
 
       expect(vm.data?.map((c: { id: number }) => c.id)).toEqual([1, 2])
     })
+
+    it('surfaces a supabase error', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => {
+        useQueryClient().setDefaultOptions({ queries: { retry: false } })
+
+        return useCampaignMinimalListing('me')
+      })
+
+      await vi.waitFor(() => expect(vm.isError).toBe(true))
+
+      expect(vm.error).toMatchObject({ message: 'boom' })
+    })
   })
 
   describe('useCampaignMinimalDetail', () => {
@@ -144,6 +161,22 @@ describe('campaigns queries', () => {
 
       expect(vm.result?.data.value).toEqual({ id: 5, title: 'Cave' })
     })
+
+    it('surfaces a supabase error', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => {
+        useQueryClient().setDefaultOptions({ queries: { retry: false } })
+
+        return { result: useCampaignMinimalDetail(5) }
+      })
+
+      await vi.waitFor(() => expect(vm.result?.isError.value).toBe(true))
+
+      expect(vm.result?.error.value).toMatchObject({ message: 'boom' })
+    })
   })
 
   describe('useCampaignCount', () => {
@@ -155,6 +188,16 @@ describe('campaigns queries', () => {
       const { vm } = await mountHook(() => useCampaignCount())
 
       await vi.waitFor(() => expect(vm.data).toBe(4))
+    })
+
+    it('reports no campaigns when the count comes back empty', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: null, count: null }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignCount())
+
+      await vi.waitFor(() => expect(vm.data).toBe(0))
     })
   })
 
@@ -186,6 +229,41 @@ describe('campaigns queries', () => {
         expect.objectContaining({ variant: 'success' }),
       )
     })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ campaigns: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useCampaignCreate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        data: { title: 'New' } as CampaignInsert,
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+      expect(spies.onError).not.toHaveBeenCalled()
+    })
+
+    it('reports an error and toasts on failure', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignCreate())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({ data: { title: 'New' } as CampaignInsert, ...spies }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
+    })
   })
 
   describe('useCampaignUpdate', () => {
@@ -206,6 +284,37 @@ describe('campaigns queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 5],
       })
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'success' }),
+      )
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ campaigns: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useCampaignUpdate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: 5, data: { title: 'Renamed' }, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('toasts on failure even without callbacks', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignUpdate())
+
+      await expect(
+        vm.mutateAsync({ id: 5, data: { title: 'Renamed' } }),
+      ).rejects.toThrow('boom')
+
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
     })
   })
 
@@ -250,6 +359,38 @@ describe('campaigns queries', () => {
         queryKey: ['useCampaignDetail', 6],
       })
       expect(from.mock.results[0]!.value.in).toHaveBeenCalledWith('id', [5, 6])
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ campaigns: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useCampaignRemove())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: 5, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'success' }),
+      )
+    })
+
+    it('reports an error and toasts on failure', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignRemove())
+      const spies = mutationSpies()
+
+      await expect(vm.mutateAsync({ id: 5, ...spies })).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
     })
   })
 })

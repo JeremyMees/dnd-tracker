@@ -135,6 +135,14 @@ export async function mountHook<T extends Record<string, unknown>>(
   }
 }
 
+export function mutationSpies() {
+  return {
+    onSuccess: vi.fn(),
+    onError: vi.fn(),
+    onSettled: vi.fn(),
+  }
+}
+
 export async function clearQueryCache() {
   const { vm } = await mountHook(() => ({ queryClient: useQueryClient() }))
 

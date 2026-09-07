@@ -6,6 +6,7 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  mutationSpies,
 } from '~~/test/nuxt/stubs/query'
 import {
   useInitiativeSheetDetail,
@@ -266,6 +267,122 @@ describe('initiative-sheets queries', () => {
 
       expect(vm.queryClient.getQueryData(['useCombatEvents', 7])).toEqual([])
     })
+
+    it('leaves other rows untouched while patching one', async () => {
+      const other: InitiativeSheetRow = { ...row, id: 'row-2', name: 'Bruk' }
+
+      fetchMock.mockResolvedValue({ row: { ...row, hitPoints: 6 } })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        rows: [row, other],
+      })
+
+      await vm.mutateAsync({ id: 7, rowId: 'row-1', patch: { hitPoints: 6 } })
+
+      const cached = vm.queryClient.getQueryData<InitiativeSheet>([
+        'useInitiativeSheetDetail',
+        7,
+      ])
+
+      expect(cached?.rows[1]).toEqual(other)
+    })
+
+    it('patches without a cached sheet to fall back on', async () => {
+      fetchMock.mockResolvedValue({ row: { ...row, hitPoints: 6 } })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      await vm.mutateAsync({ id: 7, rowId: 'row-1', patch: { hitPoints: 6 } })
+
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/patch-row', {
+        method: 'POST',
+        body: { rowId: 'row-1', patch: { hitPoints: 6 } },
+      })
+      expect(
+        vm.queryClient.getQueryData(['useInitiativeSheetDetail', 7]),
+      ).toBeUndefined()
+    })
+
+    it('skips the event diff when the patched row is not in the cache', async () => {
+      fetchMock.mockResolvedValue({ row })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        rows: [row],
+      })
+
+      await vm.mutateAsync({
+        id: 7,
+        rowId: 'missing-row',
+        patch: { hitPoints: 6 },
+      })
+
+      expect(
+        vm.queryClient.getQueryData(['useCombatEvents', 7]),
+      ).toBeUndefined()
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      fetchMock.mockResolvedValue({ row })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatch(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        rows: [row],
+      })
+
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        id: 7,
+        rowId: 'row-1',
+        patch: { hitPoints: 6 },
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('reports the error to the caller when the patch fails', async () => {
+      fetchMock.mockRejectedValue(new Error('boom'))
+
+      const { vm } = await mountHook(() => useInitiativeSheetPatch())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          id: 7,
+          rowId: 'row-1',
+          patch: { hitPoints: 6 },
+          ...spies,
+        }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+    })
   })
 
   describe('useInitiativeSheetDetailUpdate', () => {
@@ -300,6 +417,74 @@ describe('initiative-sheets queries', () => {
       expect(updated.rows.map((r: InitiativeSheetRow) => r.index)).toEqual([
         0, 1,
       ])
+    })
+
+    it('gives every condition a description before updating', async () => {
+      const from = mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      fetchMock.mockResolvedValue(undefined)
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+      await vm.mutateAsync({
+        id: 7,
+        data: {
+          rows: [
+            {
+              ...row,
+              conditions: [
+                { name: 'Prone', desc: 'knocked down' },
+                { name: 'Blinded' },
+              ],
+            } as InitiativeSheetRow,
+          ],
+        },
+      })
+
+      const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
+
+      expect(updated.rows[0].conditions).toEqual([
+        { name: 'Prone', desc: 'knocked down' },
+        { name: 'Blinded', desc: '' },
+      ])
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      fetchMock.mockResolvedValue(undefined)
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: 7, data: { title: 'Renamed' }, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('still resolves when the sheet sync fails', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      fetchMock.mockRejectedValue(new Error('sync down'))
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+      await expect(
+        vm.mutateAsync({ id: 7, data: { title: 'Renamed' } }),
+      ).resolves.toBeUndefined()
+
+      await vi.waitFor(() =>
+        expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
+          method: 'POST',
+        }),
+      )
     })
 
     it('syncs the sheet channel after a successful update', async () => {
@@ -348,13 +533,14 @@ describe('initiative-sheets queries', () => {
         rows: [],
       })
 
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
       await expect(
-        vm.mutateAsync({ id: 7, data: { title: 'Renamed' }, onError }),
+        vm.mutateAsync({ id: 7, data: { title: 'Renamed' }, ...spies }),
       ).rejects.toThrow('boom')
 
-      expect(onError).toHaveBeenCalledWith('boom')
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
 
       const cached = vm.queryClient.getQueryData<InitiativeSheet>([
         'useInitiativeSheetDetail',
@@ -362,6 +548,28 @@ describe('initiative-sheets queries', () => {
       ])
 
       expect(cached?.title).toBe('Ambush')
+    })
+
+    it('reports the error without a cached sheet to roll back to', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({
+          data: null,
+          error: { message: 'boom' },
+        }),
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetDetailUpdate(),
+        queryClient: useQueryClient(),
+      }))
+
+      await expect(
+        vm.mutateAsync({ id: 7, data: { title: 'Renamed' } }),
+      ).rejects.toThrow('boom')
+
+      expect(
+        vm.queryClient.getQueryData(['useInitiativeSheetDetail', 7]),
+      ).toBeUndefined()
     })
   })
 })

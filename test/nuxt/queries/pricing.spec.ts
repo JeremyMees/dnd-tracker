@@ -31,6 +31,23 @@ describe('pricing queries', () => {
       expect(free?.id).toBeUndefined()
     })
 
+    it('ignores a stripe price whose lookup key has no default product', async () => {
+      fetchMock.mockResolvedValue([
+        { lookupKey: 'retired_plan', price: 500, id: 'price_old' },
+      ])
+
+      const { vm } = await mountHook(() => usePricingListing())
+
+      await vi.waitFor(() => expect(vm.data).toBeDefined())
+
+      expect(vm.data?.map(p => p.key)).toEqual([
+        'free',
+        'pro_monthly',
+        'pro_lifetime',
+      ])
+      expect(vm.data?.every(p => p.id === undefined)).toBe(true)
+    })
+
     it('shows the plain defaults as placeholder data while loading', async () => {
       fetchMock.mockImplementation(() => new Promise(() => {}))
 
