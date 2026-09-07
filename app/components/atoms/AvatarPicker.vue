@@ -75,26 +75,27 @@ watch(
   { deep: true },
 )
 
-onMounted(() => {
+onMounted(async () => {
   if (avatar.value) {
     avatarCreator.avatar.value = avatar.value
     initialAvatar.value = JSON.parse(JSON.stringify(avatar.value))
-  } else {
-    avatarCreator.random()
+    return
   }
 
-  if (avatarCreator.avatar.value && !avatar.value) {
+  await avatarCreator.random()
+
+  if (avatarCreator.avatar.value) {
     avatar.value = avatarCreator.avatar.value
     initialAvatar.value = JSON.parse(JSON.stringify(avatarCreator.avatar.value))
   }
 })
 
 function updateAvatar(key: string, value: string): void {
-  avatarCreator.update({ [key]: value })
+  void avatarCreator.update({ [key]: value })
+}
 
-  if (avatarCreator.avatar.value) {
-    avatar.value = avatarCreator.avatar.value
-  }
+function randomize(): void {
+  void avatarCreator.random()
 }
 
 function save(): void {
@@ -108,9 +109,13 @@ function save(): void {
 
 function reset(): void {
   if (initialAvatar.value && initialAvatar.value.extra) {
-    const initialOptions = initialAvatar.value.extra as SelectedStyleOptions
-    avatarCreator.update(initialOptions)
-    avatar.value = avatarCreator.avatar.value
+    const initial = JSON.parse(JSON.stringify(initialAvatar.value)) as Avatar
+
+    avatarCreator.options.value = normalizeStyleOptions(
+      initial.extra as SelectedStyleOptions,
+    )
+    avatarCreator.avatar.value = initial
+    avatar.value = initial
     creatorOpen.value = false
   }
 }
@@ -123,7 +128,13 @@ function reset(): void {
       'max-w-prose': profile,
     }"
   >
-    <UiAvatar test-id="avatar" :size="size" class="border-4 border-primary">
+    <UiAvatar
+      test-id="avatar"
+      :size="size"
+      :aria-busy="avatarCreator.pending.value"
+      class="border-4 border-primary transition-opacity"
+      :class="{ 'opacity-60': avatarCreator.pending.value }"
+    >
       <UiAvatarImage
         :src="avatarCreator.avatar?.value?.url || ''"
         alt="Avatar image"
@@ -148,7 +159,7 @@ function reset(): void {
         class="size-7 flex flex-col items-center justify-center outline-none text-white"
         :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
         :aria-label="$t('actions.random')"
-        @click="avatarCreator.random()"
+        @click="randomize"
       >
         <Icon
           name="tabler:arrows-shuffle-2"

@@ -162,7 +162,6 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@dicebear/core',
         '@tanstack/vue-query',
         '@tanstack/vue-table',
         '@tiptap/extension-highlight',

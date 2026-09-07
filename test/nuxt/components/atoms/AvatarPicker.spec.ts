@@ -2,8 +2,8 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import AvatarPicker from '~/components/atoms/AvatarPicker.vue'
 import type { AvatarVariants } from '~/components/ui/avatar'
-import type { Avatar } from '~/composables/useAvatar'
 import { defaultAvatar } from '~~/constants/default-avatar'
+import { flushAvatar, stubAvatarEndpoint } from '~~/test/nuxt/stubs/avatar'
 
 interface Props {
   profile?: boolean
@@ -32,6 +32,8 @@ const avatarSizes: Record<'xs' | 'sm' | 'base' | 'lg', string> = {
   base: 'h-12 w-12',
   lg: 'h-32 w-32',
 }
+
+stubAvatarEndpoint()
 
 const singleColorAvatar: Avatar = {
   url: 'data:image/svg+xml,initial',
@@ -117,6 +119,8 @@ describe('AvatarPicker', async () => {
     const component = await mountSuspended(AvatarPicker, { props: {} })
     const vm = component.vm as unknown as AvatarPickerVM
 
+    await flushAvatar()
+
     expect(vm.avatarCreator.avatar.value).toBeDefined()
     expect(component.emitted('update:modelValue')).toBeTruthy()
   })
@@ -164,6 +168,7 @@ describe('AvatarPicker', async () => {
     const initialUrl = vm.avatarCreator.avatar.value?.url
 
     await component.get('[test-id="creator"] [test-id="next"]').trigger('click')
+    await flushAvatar()
 
     expect(vm.avatarCreator.avatar.value?.url).not.toBe(initialUrl)
     expect(component.emitted('update:modelValue')).toBeTruthy()
@@ -200,6 +205,7 @@ describe('AvatarPicker', async () => {
       .get('button[aria-label="components.avatarPicker.options"]')
       .trigger('click')
     await component.get('[test-id="creator"] [test-id="next"]').trigger('click')
+    await flushAvatar()
 
     expect(vm.isChanged).toBeTruthy()
   })
@@ -223,6 +229,7 @@ describe('AvatarPicker', async () => {
       await component
         .get('[test-id="creator"] [test-id="next"]')
         .trigger('click')
+      await flushAvatar()
 
       expect(
         component.find('button[aria-label="actions.save"]').exists(),
@@ -244,6 +251,7 @@ describe('AvatarPicker', async () => {
       await component
         .get('[test-id="creator"] [test-id="next"]')
         .trigger('click')
+      await flushAvatar()
       await component.get('button[aria-label="actions.save"]').trigger('click')
 
       expect(component.emitted('save')).toBeTruthy()
@@ -263,6 +271,7 @@ describe('AvatarPicker', async () => {
       await component
         .get('[test-id="creator"] [test-id="next"]')
         .trigger('click')
+      await flushAvatar()
 
       expect(vm.isChanged).toBeTruthy()
 

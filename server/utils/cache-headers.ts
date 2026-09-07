@@ -15,6 +15,12 @@ export const STATIC_LIST_CACHE: CacheTier = {
   staleIfError: ONE_WEEK,
 }
 
+export const GENERATED_ASSET_CACHE: CacheTier = {
+  maxAge: ONE_WEEK,
+  staleWhileRevalidate: ONE_WEEK,
+  staleIfError: ONE_WEEK,
+}
+
 export const FILTERED_LIST_CACHE: CacheTier = {
   maxAge: TEN_MINUTES,
   staleWhileRevalidate: ONE_DAY,

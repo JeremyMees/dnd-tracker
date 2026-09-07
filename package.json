@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > shared/types/database-generated.ts",
+    "avatar:options": "tsx scripts/generate-avatar-options.ts",
     "prepare": "husky",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
