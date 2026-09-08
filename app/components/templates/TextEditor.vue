@@ -80,13 +80,13 @@ watchDebounced(
 )
 
 const sanitizeBeforeUpdate = useDebounceFn(
-  () => {
+  async () => {
     if (!editor.value) return
 
     invalidHTML.value = false
 
     const dirty = editor.value.getHTML()
-    const clean = sanitizeClientHTML(dirty)
+    const clean = await sanitizeClientHTML(dirty)
 
     if (dirty === clean) emit('updated', clean)
     else invalidHTML.value = true

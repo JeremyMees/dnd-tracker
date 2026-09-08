@@ -3,15 +3,13 @@ defineProps<{
   content: DndSpell
   isOpen: boolean
 }>()
-
-const { renderMarkdown } = useMarkdown()
 </script>
 
 <template>
   <div class="text-sm">
-    <div
+    <MarkdownText
       v-if="content.desc"
-      v-dompurify-html="renderMarkdown(content.desc)"
+      :text="content.desc"
       class="md-richtext text-muted-foreground"
       :class="{
         'line-clamp-3': !isOpen,

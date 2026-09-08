@@ -180,7 +180,6 @@ export default defineNuxtConfig({
         'reka-ui',
         'tailwind-merge',
         'vee-validate',
-        'vue-dompurify-html',
         'vue-draggable-plus',
         'vue-tippy',
         'ybug-vue',

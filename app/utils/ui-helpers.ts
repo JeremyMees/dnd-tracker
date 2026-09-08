@@ -1,6 +1,3 @@
-import DOMPurify from 'dompurify'
-import { allowedHTMLAttr, allowedHTMLTags } from '~~/constants/html-policy'
-
 export function scrollToId(id: string): void {
   const el = document.getElementById(id)
 
@@ -83,13 +80,6 @@ export function homebrewColor(type: HomebrewType): string {
     default:
       return 'text-primary'
   }
-}
-
-export function sanitizeClientHTML(dirty: string): string {
-  return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: allowedHTMLTags,
-    ALLOWED_ATTR: allowedHTMLAttr,
-  }).replaceAll('<hr />', '<hr>')
 }
 
 export function formatDate(date: string | Date): string {
