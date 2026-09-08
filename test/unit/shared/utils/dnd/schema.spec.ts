@@ -60,6 +60,18 @@ describe('dnd/schema', () => {
       ).not.toThrow()
     })
 
+    it('accepts null level and hasLevels from the srd tables', () => {
+      expect(() =>
+        conditionSchema.parse({
+          id: 'blinded',
+          name: 'Blinded',
+          desc: 'Cannot see.',
+          level: null,
+          hasLevels: null,
+        }),
+      ).not.toThrow()
+    })
+
     it('rejects a missing desc', () => {
       expect(() =>
         conditionSchema.parse({ id: 'blinded', name: 'Blinded' }),
