@@ -143,9 +143,12 @@ describe('HomebrewInformation', () => {
 
       await component.get('[test-id="generate-name"]').trigger('click')
 
-      expect(
-        (component.get('input[name="name"]').element as HTMLInputElement).value,
-      ).not.toBe('')
+      await vi.waitFor(() =>
+        expect(
+          (component.get('input[name="name"]').element as HTMLInputElement)
+            .value,
+        ).not.toBe(''),
+      )
     })
 
     it('Should generate a random initiative roll when the roll button is clicked', async () => {

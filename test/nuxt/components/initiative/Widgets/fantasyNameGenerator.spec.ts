@@ -1,10 +1,13 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import FantasyNameGeneratorWidget from '~/components/initiative/Widgets/FantasyNameGenerator.vue'
+import { flushNames } from '~~/test/nuxt/stubs/names'
 
 describe('Initiative fantasy name generator widget', async () => {
   it('Should match snapshot', async () => {
     const component = await mountSuspended(FantasyNameGeneratorWidget)
+
+    await flushNames()
 
     expect(component.html()).toMatchSnapshot()
   })

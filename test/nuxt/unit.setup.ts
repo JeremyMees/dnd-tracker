@@ -1,18 +1,13 @@
 import { config, enableAutoUnmount } from '@vue/test-utils'
 import { afterEach, beforeEach, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import * as dndHelpers from '~~/shared/utils/dnd/names'
+import { resetNames, stubNamesEndpoint } from '~~/test/nuxt/stubs/names'
 
 enableAutoUnmount(afterEach)
 
-let nameIndex = 0
+stubNamesEndpoint()
 
-beforeEach(() => {
-  nameIndex = 0
-  vi.spyOn(dndHelpers, 'randomName').mockImplementation(
-    () => `Test Name ${++nameIndex}`,
-  )
-})
+beforeEach(() => resetNames())
 
 config.global.mocks = {
   $t: (tKey: string) => tKey,

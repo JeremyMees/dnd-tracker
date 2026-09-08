@@ -815,24 +815,46 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--v-if-->
                   </div>
                 </div>
-                <ol class="grid list-disc list-inside gap-x-6" style="grid-template-columns: repeat(1, minmax(0, 1fr));">
+                <ol class="grid list-inside gap-x-6" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div class="flex flex-col gap-1">
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 1</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 2</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 3</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 4</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 5</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 6</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 7</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 8</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 9</li>
-                    <li class="cursor-copy hover:bg-muted rounded px-2 transition-colors duration-300 text-sm">Test Name 10</li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
+                    <li>
+                      <div class="animate-pulse bg-muted h-6 border-4 rounded-full"></div>
+                    </li>
                   </div>
                 </ol>
                 <div test-id="actions" class="flex w-full gap-2">
                   <div class="text-muted-foreground flex gap-2 items-center"><span class="iconify i-tabler:info-circle text-info w-4 min-w-4" aria-hidden="true"></span>
                     <p class="text-xs">pages.fantasyNameGenerator.tip</p>
-                  </div><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 self-end" test-id="generate">actions.generate</button>
+                  </div><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 ml-auto" test-id="generate">actions.generate</button>
                 </div>
               </div>
             </div>

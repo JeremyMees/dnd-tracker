@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
+import { useRandomNames } from '~/queries/names'
 import { raceOptions, genderOptions } from '~~/constants/names'
 
 const props = withDefaults(
@@ -16,23 +17,18 @@ const { copy } = useClipboard()
 const { toast } = useToast()
 const { t } = useI18n()
 
-const names = ref<string[]>([])
 const selectedRace = ref<DndRace | 'random'>('random')
 const selectedDndGender = ref<DndGender | 'random'>('random')
 
-onMounted(() => generate())
+const { data, refetch } = useRandomNames(
+  computed(() => ({
+    amount: props.amount,
+    race: selectedRace.value,
+    gender: selectedDndGender.value,
+  })),
+)
 
-function generate(): void {
-  names.value = []
-
-  const race = selectedRace.value === 'random' ? undefined : selectedRace.value
-  const gender =
-    selectedDndGender.value === 'random' ? undefined : selectedDndGender.value
-
-  for (let i = 0; i < props.amount; i++) {
-    names.value.push(randomName(race, gender))
-  }
-}
+const names = computed<string[]>(() => data.value ?? [])
 
 function handleCopy(name: string): void {
   copy(name)
@@ -42,10 +38,6 @@ function handleCopy(name: string): void {
     variant: 'info',
   })
 }
-
-watch([selectedRace, selectedDndGender], () => {
-  generate()
-})
 </script>
 
 <template>
@@ -124,12 +116,7 @@ watch([selectedRace, selectedDndGender], () => {
           {{ $t('pages.fantasyNameGenerator.tip') }}
         </p>
       </div>
-      <UiButton
-        test-id="generate"
-        :disabled="!names.length"
-        class="self-end"
-        @click="generate"
-      >
+      <UiButton test-id="generate" class="ml-auto" @click="refetch()">
         {{ $t('actions.generate') }}
       </UiButton>
     </div>

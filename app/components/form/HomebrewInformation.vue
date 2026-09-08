@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { speedTypes, speedMap, sightRangeMap } from '~~/constants/dnd'
+import { useRandomName } from '~/queries/names'
 
 const props = defineProps<{
   type?: string
@@ -15,6 +16,16 @@ const summonersOptions = computed<Option<string>[]>(() => {
 })
 
 const showAdvanced = ref(false)
+
+const { mutate: randomName } = useRandomName()
+
+function generateName(setValue: (value: string) => void): void {
+  randomName(undefined, {
+    onSuccess: name => {
+      if (name) setValue(name)
+    },
+  })
+}
 </script>
 
 <template>
@@ -118,7 +129,7 @@ const showAdvanced = ref(false)
               <UiInputGroupButton
                 test-id="generate-name"
                 :aria-label="$t('actions.generateName')"
-                @click="setValue(randomName())"
+                @click="generateName(setValue)"
               >
                 <Icon name="tabler:arrows-shuffle-2" />
               </UiInputGroupButton>
