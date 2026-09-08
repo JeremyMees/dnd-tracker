@@ -178,36 +178,36 @@ async function moveRow(up: boolean): Promise<void> {
       test-id="controls"
       class="flex flex-col"
     >
-      <button
-        v-if="canGoUp"
-        v-tippy="$t('actions.moveUp')"
-        test-id="up"
-        :aria-label="$t('actions.moveUp')"
-        :class="{ 'relative top-1': canGoDown }"
-        class="flex items-center"
-        @click="moveRow(true)"
-      >
-        <Icon
-          name="tabler:caret-up"
-          class="size-5 min-w-5 text-tertiary"
-          aria-hidden="true"
-        />
-      </button>
-      <button
-        v-if="canGoDown"
-        v-tippy="$t('actions.moveDown')"
-        test-id="down"
-        :aria-label="$t('actions.moveDown')"
-        :class="{ 'relative bottom-1': canGoUp }"
-        class="flex items-center"
-        @click="moveRow(false)"
-      >
-        <Icon
-          name="tabler:caret-down"
-          class="size-5 min-w-5 text-tertiary"
-          aria-hidden="true"
-        />
-      </button>
+      <Tooltip v-if="canGoUp" :text="$t('actions.moveUp')">
+        <button
+          test-id="up"
+          :aria-label="$t('actions.moveUp')"
+          :class="{ 'relative top-1': canGoDown }"
+          class="flex items-center"
+          @click="moveRow(true)"
+        >
+          <Icon
+            name="tabler:caret-up"
+            class="size-5 min-w-5 text-tertiary"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
+      <Tooltip v-if="canGoDown" :text="$t('actions.moveDown')">
+        <button
+          test-id="down"
+          :aria-label="$t('actions.moveDown')"
+          :class="{ 'relative bottom-1': canGoUp }"
+          class="flex items-center"
+          @click="moveRow(false)"
+        >
+          <Icon
+            name="tabler:caret-down"
+            class="size-5 min-w-5 text-tertiary"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
     </div>
   </div>
 </template>

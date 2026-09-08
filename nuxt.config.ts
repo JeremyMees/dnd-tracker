@@ -47,11 +47,7 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  css: [
-    '~/assets/css/global.css',
-    '~/assets/css/tippy.css',
-    '~/assets/css/driver.css',
-  ],
+  css: ['~/assets/css/global.css', '~/assets/css/driver.css'],
 
   site: {
     url: seo.url,
@@ -181,7 +177,6 @@ export default defineNuxtConfig({
         'tailwind-merge',
         'vee-validate',
         'vue-draggable-plus',
-        'vue-tippy',
         'ybug-vue',
         'zod',
       ],

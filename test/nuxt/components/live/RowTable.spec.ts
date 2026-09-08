@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import LiveRowTable from '~/components/live/RowTable.vue'
 import { playerSheet, playerRow } from '~~/test/fixtures/player-portal'
 import { setSeat, stubRowElement } from '~~/test/nuxt/stubs/live'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const ownRow: PlayerRow = {
   ...playerRow,
@@ -36,7 +36,7 @@ describe('LiveRowTable', () => {
   })
 
   it('renders a row per combatant with its name and initiative', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow]), loading: false },
     })
 
@@ -49,7 +49,7 @@ describe('LiveRowTable', () => {
   })
 
   it('shows a placeholder dash when initiative has not been rolled', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: {
         sheet: sheetWith([{ ...ownRow, initiative: -1 }, monsterRow]),
         loading: false,
@@ -63,7 +63,7 @@ describe('LiveRowTable', () => {
   })
 
   it('marks the row taking its turn as active', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow], 1), loading: false },
     })
 
@@ -74,7 +74,7 @@ describe('LiveRowTable', () => {
   })
 
   it('shows hit points, armor class and concentration for a visible row', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow]), loading: false },
     })
 
@@ -91,7 +91,7 @@ describe('LiveRowTable', () => {
   })
 
   it('replaces hidden hit points and armor class with a dash', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow]), loading: false },
     })
 
@@ -106,7 +106,7 @@ describe('LiveRowTable', () => {
   it('shows the own badge only for the claimed row', async () => {
     setSeat({ row: ownRow.id })
 
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow]), loading: false },
     })
 
@@ -119,7 +119,7 @@ describe('LiveRowTable', () => {
   it('shows death saves only for the claimed row', async () => {
     setSeat({ row: ownRow.id })
 
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet: sheetWith([ownRow, monsterRow]), loading: false },
     })
 
@@ -130,7 +130,7 @@ describe('LiveRowTable', () => {
   })
 
   it('drops the columns that no row exposes', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: {
         sheet: sheetWith([{ ...monsterRow, healthBand: undefined }]),
         loading: false,
@@ -149,7 +149,7 @@ describe('LiveRowTable', () => {
   })
 
   it('keeps every column while loading', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { loading: true },
     })
 
@@ -158,7 +158,7 @@ describe('LiveRowTable', () => {
   })
 
   it('shows nothing when there is no sheet and nothing is pending', async () => {
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { loading: false },
     })
 
@@ -169,7 +169,7 @@ describe('LiveRowTable', () => {
   it('scrolls the active row into view when it is out of view', async () => {
     const sheet = sheetWith([ownRow, monsterRow], 1)
 
-    const component = await mountSuspended(LiveRowTable, {
+    const component = await mountWithTooltips(LiveRowTable, {
       props: { sheet, loading: false },
     })
 

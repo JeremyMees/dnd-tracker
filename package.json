@@ -95,7 +95,6 @@
     "vue": "latest",
     "vue-draggable-plus": "^0.6.1",
     "vue-router": "latest",
-    "vue-tippy": "^6.7.1",
     "ybug-vue": "^1.2.0",
     "zod": "^4.5.4"
   },

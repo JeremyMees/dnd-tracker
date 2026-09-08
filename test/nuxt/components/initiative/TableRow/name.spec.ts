@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Name from '~/components/initiative/TableRow/Name.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   item: InitiativeSheetRow
@@ -35,13 +35,13 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Name, { props, provide })
+    const component = await mountWithTooltips(Name, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display name and summoner if available', async () => {
-    const component = await mountSuspended(Name, {
+    const component = await mountWithTooltips(Name, {
       props: {
         item: {
           ...props.item,
@@ -58,7 +58,7 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should not display summoner', async () => {
-    const component = await mountSuspended(Name, { props, provide })
+    const component = await mountWithTooltips(Name, { props, provide })
 
     expect(component.find('[test-id="summoner"]').exists()).toBeFalsy()
   })
@@ -66,7 +66,7 @@ describe('Initiative table row name', async () => {
   it('Should not update if sheet is undefined', async () => {
     mockSheet.value = undefined
 
-    const component = await mountSuspended(Name, {
+    const component = await mountWithTooltips(Name, {
       props,
       provide,
     })
@@ -79,7 +79,7 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should not update if the row is not found in the sheet', async () => {
-    const component = await mountSuspended(Name, {
+    const component = await mountWithTooltips(Name, {
       props: {
         item: { ...props.item, id: 'not-in-sheet' },
       },
@@ -94,7 +94,7 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should update the row name and close the popover on successful submit', async () => {
-    const component = await mountSuspended(Name, { props, provide })
+    const component = await mountWithTooltips(Name, { props, provide })
 
     const vm = component.vm as unknown as MockFunctions
     vm.popoverOpen = true
@@ -115,7 +115,7 @@ describe('Initiative table row name', async () => {
   it('Should set formError when update throws', async () => {
     mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
 
-    const component = await mountSuspended(Name, { props, provide })
+    const component = await mountWithTooltips(Name, { props, provide })
 
     const vm = component.vm as unknown as MockFunctions
     vm.form.setValues({ name: 'New Name' })
@@ -127,7 +127,7 @@ describe('Initiative table row name', async () => {
   it('Should set a fallback formError when update throws without a message', async () => {
     mockUpdate.mockRejectedValueOnce({})
 
-    const component = await mountSuspended(Name, { props, provide })
+    const component = await mountWithTooltips(Name, { props, provide })
 
     const vm = component.vm as unknown as MockFunctions
     vm.form.setValues({ name: 'New Name' })
@@ -137,7 +137,7 @@ describe('Initiative table row name', async () => {
   })
 
   it('Should render the rename popover content when opened', async () => {
-    const component = await mountSuspended(Name, { props, provide })
+    const component = await mountWithTooltips(Name, { props, provide })
 
     const vm = component.vm as unknown as MockFunctions
     vm.popoverOpen = true

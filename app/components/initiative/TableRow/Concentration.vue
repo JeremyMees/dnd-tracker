@@ -11,21 +11,21 @@ function updateConcentration(): void {
 </script>
 
 <template>
-  <UiButton
-    v-if="item.type !== 'lair'"
-    v-tippy="$t('general.concentration')"
-    :test-id="item.concentration"
-    :aria-label="$t('general.concentration')"
-    variant="default-ghost"
-    size="icon-sm"
-    class="mx-auto"
-    @click="updateConcentration"
-  >
-    <Icon
-      :name="
-        item.concentration ? 'tabler:circle-filled' : 'tabler:circle-dotted'
-      "
-      :aria-hidden="true"
-    />
-  </UiButton>
+  <Tooltip v-if="item.type !== 'lair'" :text="$t('general.concentration')">
+    <UiButton
+      :test-id="item.concentration"
+      :aria-label="$t('general.concentration')"
+      variant="default-ghost"
+      size="icon-sm"
+      class="mx-auto"
+      @click="updateConcentration"
+    >
+      <Icon
+        :name="
+          item.concentration ? 'tabler:circle-filled' : 'tabler:circle-dotted'
+        "
+        :aria-hidden="true"
+      />
+    </UiButton>
+  </Tooltip>
 </template>

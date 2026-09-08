@@ -64,14 +64,14 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
             >
               {{ item.hitPoints }}
             </span>
-            <span
+            <Tooltip
               v-if="isDefined(item.hitPoints) && item.tempHitPoints"
-              v-tippy="$t('general.temp')"
-              test-id="temp"
-              class="text-warning text-xs"
+              :text="$t('general.temp')"
             >
-              +{{ item.tempHitPoints }}
-            </span>
+              <span test-id="temp" class="text-warning text-xs">
+                +{{ item.tempHitPoints }}
+              </span>
+            </Tooltip>
           </div>
           <span
             v-if="item.maxHitPoints !== item.hitPoints"

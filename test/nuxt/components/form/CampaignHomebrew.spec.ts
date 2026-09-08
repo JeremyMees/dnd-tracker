@@ -1,4 +1,3 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import CampaignHomebrew from '~/components/form/CampaignHomebrew.vue'
@@ -14,6 +13,7 @@ import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { touchArgs } from '~~/test/nuxt/stubs/queries'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const homebrews = ref<HomebrewItemRow[]>(mockHomebrewListing)
 const isPending = ref(false)
@@ -39,7 +39,7 @@ function mountCampaignHomebrew(
   return {
     injected,
     mount: () =>
-      mountSuspended(CampaignHomebrew, { provide: injected.provide }),
+      mountWithTooltips(CampaignHomebrew, { provide: injected.provide }),
   }
 }
 

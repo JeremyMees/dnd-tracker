@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Init from '~/components/initiative/TableRow/Init.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   item: InitiativeSheetRow
@@ -42,13 +42,13 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Init, { props, provide })
+    const component = await mountWithTooltips(Init, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should open the popover when the trigger is clicked', async () => {
-    const component = await mountSuspended(Init, { props, provide })
+    const component = await mountWithTooltips(Init, { props, provide })
     const vm = component.vm as unknown as { popoverOpen: boolean }
 
     await component.get('[test-id="trigger"]').trigger('click')
@@ -58,7 +58,7 @@ describe('Initiative table row init', async () => {
 
   it('Should display initiative value correctly', async () => {
     const initiative = 15
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative },
       },
@@ -71,7 +71,7 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should show plus icon when initiative is not defined', async () => {
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative: -1 },
       },
@@ -82,7 +82,7 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should show up/down controls when initiative is defined', async () => {
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative: 15 },
       },
@@ -93,7 +93,7 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should not show controls when initiative is not defined', async () => {
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative: -1 },
       },
@@ -112,7 +112,7 @@ describe('Initiative table row init', async () => {
       ],
     }
 
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative: 15, index: 1 },
       },
@@ -131,7 +131,7 @@ describe('Initiative table row init', async () => {
       ],
     }
 
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative: 15, index: 0 },
       },
@@ -150,7 +150,7 @@ describe('Initiative table row init', async () => {
       rows: [firstRow, secondRow],
     }
 
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: secondRow,
       },
@@ -185,7 +185,7 @@ describe('Initiative table row init', async () => {
       rows: [firstRow, secondRow],
     }
 
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: firstRow,
       },
@@ -215,7 +215,7 @@ describe('Initiative table row init', async () => {
       ],
     }
 
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: {
         item: { ...props.item, initiative: 15, index: 1 },
       },
@@ -247,7 +247,7 @@ describe('Initiative table row init', async () => {
       rows: [firstRow, secondRow, thirdRow, fourthRow],
     }
 
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: { item: thirdRow },
       provide,
     })
@@ -270,7 +270,7 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should not move the row when already at the top', async () => {
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: { item: { ...props.item, index: 0 } },
       provide,
     })
@@ -282,7 +282,7 @@ describe('Initiative table row init', async () => {
   })
 
   it('Should not move the row when already at the bottom', async () => {
-    const component = await mountSuspended(Init, {
+    const component = await mountWithTooltips(Init, {
       props: { item: { ...props.item, index: sheet.rows.length - 1 } },
       provide,
     })
@@ -295,7 +295,7 @@ describe('Initiative table row init', async () => {
 
   describe('Form submission', () => {
     it('Should save the combined initiative and modifier on submit', async () => {
-      const component = await mountSuspended(Init, { props, provide })
+      const component = await mountWithTooltips(Init, { props, provide })
       const vm = component.vm as unknown as InitVM
 
       vm.popoverOpen = true
@@ -314,7 +314,7 @@ describe('Initiative table row init', async () => {
     })
 
     it('Should not go below 0 when the modifier is negative', async () => {
-      const component = await mountSuspended(Init, { props, provide })
+      const component = await mountWithTooltips(Init, { props, provide })
       const vm = component.vm as unknown as InitVM
 
       vm.popoverOpen = true
@@ -333,7 +333,7 @@ describe('Initiative table row init', async () => {
     it('Should not call update when sheet is undefined', async () => {
       mockSheet.value = undefined as unknown as InitiativeSheet
 
-      const component = await mountSuspended(Init, { props, provide })
+      const component = await mountWithTooltips(Init, { props, provide })
       const vm = component.vm as unknown as InitVM
 
       vm.form.setValues({ initiative: 10 })
@@ -343,7 +343,7 @@ describe('Initiative table row init', async () => {
     })
 
     it('Should roll a random initiative when the roll button is clicked', async () => {
-      const component = await mountSuspended(Init, { props, provide })
+      const component = await mountWithTooltips(Init, { props, provide })
       const vm = component.vm as unknown as InitVM
 
       vm.popoverOpen = true

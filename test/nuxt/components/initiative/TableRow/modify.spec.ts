@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Modify from '~/components/initiative/TableRow/Modify.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   item: InitiativeSheetRow
@@ -28,12 +28,12 @@ describe('Initiative table row modify', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Modify, { props, provide })
+    const component = await mountWithTooltips(Modify, { props, provide })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display link button when item has link', async () => {
-    const component = await mountSuspended(Modify, {
+    const component = await mountWithTooltips(Modify, {
       props: {
         item: { ...props.item, link: 'https://example.com' },
       },
@@ -44,7 +44,7 @@ describe('Initiative table row modify', async () => {
   })
 
   it('Should not display link button when item has no link', async () => {
-    const component = await mountSuspended(Modify, {
+    const component = await mountWithTooltips(Modify, {
       props: {
         item: { ...props.item, link: undefined },
       },
@@ -55,7 +55,7 @@ describe('Initiative table row modify', async () => {
   })
 
   it('Should call update with new row when copy button is clicked', async () => {
-    const component = await mountSuspended(Modify, { props, provide })
+    const component = await mountWithTooltips(Modify, { props, provide })
 
     await component.find('[test-id="copy"]').trigger('click')
 
@@ -70,7 +70,7 @@ describe('Initiative table row modify', async () => {
   })
 
   it('Should call update with filtered rows when delete button is clicked', async () => {
-    const component = await mountSuspended(Modify, { props, provide })
+    const component = await mountWithTooltips(Modify, { props, provide })
 
     await component.find('[test-id="delete"]').trigger('click')
 
@@ -92,7 +92,7 @@ describe('Initiative table row modify', async () => {
       rows: maxRows,
     }
 
-    const component = await mountSuspended(Modify, {
+    const component = await mountWithTooltips(Modify, {
       props,
       provide,
     })
@@ -105,7 +105,7 @@ describe('Initiative table row modify', async () => {
   it('Should not call update when sheet is undefined', async () => {
     mockSheet.value = undefined
 
-    const component = await mountSuspended(Modify, {
+    const component = await mountWithTooltips(Modify, {
       props,
       provide,
     })

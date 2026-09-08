@@ -29,11 +29,12 @@ function toggleVote(vote: FeatureVote): void {
       <UiCardTitle>
         <div class="flex items-center gap-x-2">
           <UiAvatar class="border-2 border-background">
-            <UiAvatarImage
-              v-tippy="feature.createdBy.username"
-              :src="feature.createdBy.avatar"
-              :alt="feature.createdBy.username"
-            />
+            <Tooltip :text="feature.createdBy.username">
+              <UiAvatarImage
+                :src="feature.createdBy.avatar"
+                :alt="feature.createdBy.username"
+              />
+            </Tooltip>
             <UiAvatarFallback>
               <Icon
                 name="tabler:user"

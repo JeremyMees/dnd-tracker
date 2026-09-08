@@ -1,10 +1,11 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ActionRoll from '~/components/initiative/ActionRoll.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { closePopover, openPopover } from '~~/test/nuxt/stubs/popover'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 type RollType = 'advantage' | 'straight' | 'disadvantage'
 
@@ -61,13 +62,23 @@ describe('ActionRoll component', () => {
   })
 
   it('Should match snapshot', async () => {
-    component = await mountSuspended(ActionRoll, { props, provide })
+    component = await mountWithTooltips(ActionRoll, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
+  it('Should open the popover when the trigger is clicked', async () => {
+    component = await mountWithTooltips(ActionRoll, { props, provide })
+
+    await component.find('[test-id="trigger"]').trigger('click')
+    await flushPromises()
+
+    const vm = component.vm as unknown as ActionRollVM
+    expect(vm.popoverOpen).toBe(true)
+  })
+
   it('Should have result undefined and popoverOpen false initially', async () => {
-    component = await mountSuspended(ActionRoll, { props, provide })
+    component = await mountWithTooltips(ActionRoll, { props, provide })
 
     const vm = component.vm as unknown as ActionRollVM
     expect(vm.result).toBeUndefined()
@@ -76,7 +87,7 @@ describe('ActionRoll component', () => {
 
   describe('Roll functionality', () => {
     it('Should roll straight with single die', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       vm.onRoll('straight')
@@ -88,7 +99,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should roll advantage with two dice and take highest', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       vm.onRoll('advantage')
@@ -101,7 +112,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should roll disadvantage with two dice and take lowest', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       vm.onRoll('disadvantage')
@@ -114,7 +125,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should calculate attackTotal with attackBonus and totalDamage with damageBonus', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       vm.onRoll('straight')
@@ -132,7 +143,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should handle undefined attackBonus', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: { ...props, attackBonus: undefined },
         provide,
       })
@@ -146,7 +157,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should handle undefined damageDice', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: { ...props, damageDice: undefined },
         provide,
       })
@@ -160,7 +171,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should handle zero damageBonus', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: { ...props, damageBonus: 0 },
         provide,
       })
@@ -180,7 +191,7 @@ describe('ActionRoll component', () => {
 
   describe('Target selection', () => {
     it('Should filter out current row and include all other rows as targets', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       const targets = vm.targets
@@ -197,18 +208,18 @@ describe('ActionRoll component', () => {
 
     it('Should have no targets when sheet has only current row or empty rows', async () => {
       mockSheet.value = { ...sheet, rows: [sheet.rows[0]!] }
-      const component1 = await mountSuspended(ActionRoll, { props, provide })
+      const component1 = await mountWithTooltips(ActionRoll, { props, provide })
       expect((component1.vm as unknown as ActionRollVM).targets?.length).toBe(0)
 
       mockSheet.value = { ...sheet, rows: [] }
-      const component2 = await mountSuspended(ActionRoll, { props, provide })
+      const component2 = await mountWithTooltips(ActionRoll, { props, provide })
       expect((component2.vm as unknown as ActionRollVM).targets?.length).toBe(0)
     })
 
     it('Should not call update when sheet is undefined', async () => {
       mockSheet.value = undefined
 
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       await vm.onSubmit()
@@ -220,7 +231,7 @@ describe('ActionRoll component', () => {
   describe('Critical hits', () => {
     it('Should double the damage dice rolled on a natural 20', async () => {
       const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       vm.onRoll('straight')
@@ -234,7 +245,7 @@ describe('ActionRoll component', () => {
 
     it('Should not double the damage dice when the attack roll is not a natural 20', async () => {
       const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0)
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
       vm.onRoll('straight')
@@ -249,7 +260,7 @@ describe('ActionRoll component', () => {
 
   describe('Popover interactions', () => {
     it('Should render the title and roll buttons once opened', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
 
       await openPopover(component)
 
@@ -262,7 +273,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should reset the roll result when the popover is closed', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
       const vm = component.vm as unknown as ActionRollVM
 
       await openPopover(component)
@@ -279,7 +290,7 @@ describe('ActionRoll component', () => {
 
   describe('Rolling via the UI', () => {
     it('Should roll advantage, straight and disadvantage from their respective buttons', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
       const vm = component.vm as unknown as ActionRollVM
 
       await openPopover(component)
@@ -310,7 +321,7 @@ describe('ActionRoll component', () => {
   describe('Result rendering', () => {
     it('Should highlight a natural 20 and a natural 1 in the roll breakdown', async () => {
       const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
       const vm = component.vm as unknown as ActionRollVM
 
       await openPopover(component)
@@ -334,7 +345,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should show the attack and damage bonuses when they are set', async () => {
-      component = await mountSuspended(ActionRoll, { props, provide })
+      component = await mountWithTooltips(ActionRoll, { props, provide })
       const vm = component.vm as unknown as ActionRollVM
 
       await openPopover(component)
@@ -346,7 +357,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should hide the attack and damage bonuses when they are falsy', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: { ...props, attackBonus: 0, damageBonus: 0 },
         provide,
       })
@@ -370,7 +381,7 @@ describe('ActionRoll component', () => {
     const targetId = sheet.rows[0]!.id
 
     it('Should update the target, toast a concentration warning and close the popover', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
         provide,
       })
@@ -395,7 +406,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should not update when the selected target no longer exists on submit', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
         provide,
       })
@@ -415,7 +426,7 @@ describe('ActionRoll component', () => {
     })
 
     it('Should not update when the sheet becomes undefined before submit', async () => {
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
         provide,
       })
@@ -434,7 +445,7 @@ describe('ActionRoll component', () => {
     it('Should set the thrown error message on the form when the update fails', async () => {
       mockPatchRow.mockRejectedValueOnce(new Error('boom'))
 
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
         provide,
       })
@@ -455,7 +466,7 @@ describe('ActionRoll component', () => {
     it('Should set a generic error message when the thrown error has no message', async () => {
       mockPatchRow.mockRejectedValueOnce('')
 
-      component = await mountSuspended(ActionRoll, {
+      component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
         provide,
       })

@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Concentration from '~/components/initiative/TableRow/Concentration.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   item: InitiativeSheetRow
@@ -28,13 +28,13 @@ describe('Initiative table row concentration', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Concentration, { props, provide })
+    const component = await mountWithTooltips(Concentration, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should not render button for lair type', async () => {
-    const component = await mountSuspended(Concentration, {
+    const component = await mountWithTooltips(Concentration, {
       props: {
         item: { ...props.item, type: 'lair' as const },
       },
@@ -45,19 +45,19 @@ describe('Initiative table row concentration', async () => {
   })
 
   it('Should render button for non-lair type', async () => {
-    const component = await mountSuspended(Concentration, { props, provide })
+    const component = await mountWithTooltips(Concentration, { props, provide })
 
     expect(component.find('button').exists()).toBeTruthy()
   })
 
   it('Should show filled circle when concentration is true', async () => {
-    const component = await mountSuspended(Concentration, { props, provide })
+    const component = await mountWithTooltips(Concentration, { props, provide })
 
     expect(component.find('[test-id="true"]').exists()).toBeTruthy()
   })
 
   it('Should show dotted circle when concentration is false', async () => {
-    const component = await mountSuspended(Concentration, {
+    const component = await mountWithTooltips(Concentration, {
       props: {
         item: { ...props.item, concentration: false },
       },
@@ -68,7 +68,7 @@ describe('Initiative table row concentration', async () => {
   })
 
   it('Should call patchRow with toggled concentration', async () => {
-    const component = await mountSuspended(Concentration, { props, provide })
+    const component = await mountWithTooltips(Concentration, { props, provide })
 
     await component.find('button').trigger('click')
 

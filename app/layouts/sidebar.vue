@@ -80,34 +80,35 @@ async function logoutUser(): Promise<void> {
                   v-for="item in sidebarItem.routes"
                   :key="item.label"
                 >
-                  <UiSidebarMenuButton as-child>
-                    <NuxtLinkLocale
-                      v-tippy="{
-                        content: $t(item.label),
-                        placement: 'right',
-                        onShow: () => !isExpanded,
-                      }"
-                      :to="item.url"
-                      :data-active="
-                        item.url === '/'
-                          ? route.path === '/'
-                          : route.name
-                              ?.toString()
-                              .startsWith(item.url.replace('/', ''))
-                      "
-                    >
-                      <Icon
-                        v-if="item.icon"
-                        :name="item.icon"
-                        class="size-4 min-w-4"
-                      />
-                      <span
-                        class="group-data-[collapsible=icon]:hidden truncate"
+                  <Tooltip
+                    :text="$t(item.label)"
+                    side="right"
+                    :disabled="isExpanded"
+                  >
+                    <UiSidebarMenuButton as-child>
+                      <NuxtLinkLocale
+                        :to="item.url"
+                        :data-active="
+                          item.url === '/'
+                            ? route.path === '/'
+                            : route.name
+                                ?.toString()
+                                .startsWith(item.url.replace('/', ''))
+                        "
                       >
-                        {{ $t(item.label) }}
-                      </span>
-                    </NuxtLinkLocale>
-                  </UiSidebarMenuButton>
+                        <Icon
+                          v-if="item.icon"
+                          :name="item.icon"
+                          class="size-4 min-w-4"
+                        />
+                        <span
+                          class="group-data-[collapsible=icon]:hidden truncate"
+                        >
+                          {{ $t(item.label) }}
+                        </span>
+                      </NuxtLinkLocale>
+                    </UiSidebarMenuButton>
+                  </Tooltip>
                 </UiSidebarMenuItem>
               </UiSidebarMenu>
             </UiSidebarGroup>
@@ -116,25 +117,26 @@ async function logoutUser(): Promise<void> {
       </UiSidebarContent>
       <UiSidebarFooter>
         <ClientOnly>
-          <NuxtLinkLocale
+          <Tooltip
             v-if="user && user.subscriptionType !== 'pro'"
-            v-tippy="{
-              content: $t('components.navbar.upgrade'),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            to="/pricing"
-            class="bg-linear-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 text-sm"
+            :text="$t('components.navbar.upgrade')"
+            side="right"
+            :disabled="isExpanded"
           >
-            <Icon name="tabler:sparkles" class="size-4 min-w-4" />
-            <span class="group-data-[collapsible=icon]:hidden truncate">
-              {{ $t('components.navbar.upgrade') }}
-            </span>
-            <Icon
-              name="tabler:arrow-right"
-              class="size-4 min-w-4 ml-auto group-data-[collapsible=icon]:hidden"
-            />
-          </NuxtLinkLocale>
+            <NuxtLinkLocale
+              to="/pricing"
+              class="bg-linear-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 text-sm"
+            >
+              <Icon name="tabler:sparkles" class="size-4 min-w-4" />
+              <span class="group-data-[collapsible=icon]:hidden truncate">
+                {{ $t('components.navbar.upgrade') }}
+              </span>
+              <Icon
+                name="tabler:arrow-right"
+                class="size-4 min-w-4 ml-auto group-data-[collapsible=icon]:hidden"
+              />
+            </NuxtLinkLocale>
+          </Tooltip>
         </ClientOnly>
         <UiSidebarSeparator class="-mx-2" />
         <UiAlertDialog>

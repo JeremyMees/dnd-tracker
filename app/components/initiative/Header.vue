@@ -147,39 +147,41 @@ const liveOpen = ref<boolean>(false)
       id="tour-1"
       class="w-full min-[400px]:w-auto flex gap-2 items-center justify-between bg-primary/50 rounded-lg border-4 border-primary"
     >
-      <button
-        v-tippy="{ content: $t('actions.prev') }"
-        test-id="previous"
-        :disabled="
-          !data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)
-        "
-        :aria-label="$t('actions.prev')"
-        class="group disabled:cursor-not-allowed duration-300 ease-in-out p-1 border-r-4 border-primary flex flex-col items-center"
-        @click="$emit('previous')"
-      >
-        <Icon
-          name="tabler:chevron-left"
-          class="group-disabled:opacity-50 size-6"
-          aria-hidden="true"
-        />
-      </button>
+      <Tooltip :text="$t('actions.prev')">
+        <button
+          test-id="previous"
+          :disabled="
+            !data?.rows.length || (data?.round === 1 && data?.activeIndex === 0)
+          "
+          :aria-label="$t('actions.prev')"
+          class="group disabled:cursor-not-allowed duration-300 ease-in-out p-1 border-r-4 border-primary flex flex-col items-center"
+          @click="$emit('previous')"
+        >
+          <Icon
+            name="tabler:chevron-left"
+            class="group-disabled:opacity-50 size-6"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
       <p class="text-sm font-medium">
         {{ $t('components.inputs.initiativeLabel') }}
       </p>
-      <button
-        v-tippy="{ content: $t('actions.next') }"
-        test-id="next"
-        :disabled="!data?.rows.length"
-        :aria-label="$t('actions.next')"
-        class="group disabled:cursor-not-allowed p-1 border-l-4 border-primary flex flex-col items-center"
-        @click="$emit('next')"
-      >
-        <Icon
-          name="tabler:chevron-right"
-          class="group-disabled:opacity-50 size-6"
-          aria-hidden="true"
-        />
-      </button>
+      <Tooltip :text="$t('actions.next')">
+        <button
+          test-id="next"
+          :disabled="!data?.rows.length"
+          :aria-label="$t('actions.next')"
+          class="group disabled:cursor-not-allowed p-1 border-l-4 border-primary flex flex-col items-center"
+          @click="$emit('next')"
+        >
+          <Icon
+            name="tabler:chevron-right"
+            class="group-disabled:opacity-50 size-6"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
     </div>
   </div>
 </template>

@@ -1,10 +1,11 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
 import Widgets from '~/components/initiative/Widgets/index.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { authUser } from '~~/test/fixtures/auth-user'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface WidgetsVM {
   popoverOpen: boolean
@@ -59,7 +60,7 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should match snapshot', async () => {
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -74,7 +75,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
 
     expect(
       component.findComponent({ name: 'InitiativeWidgetsNote' }).exists(),
@@ -91,7 +92,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
     await new Promise(resolve => setTimeout(resolve, 0))
     await nextTick()
 
@@ -111,7 +112,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
 
     expect(
       component.findComponent({ name: 'InitiativeWidgetsNote' }).exists(),
@@ -133,7 +134,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
 
     expect(component.text()).toContain(
       'components.initiativeSettings.noActiveWidgets',
@@ -151,7 +152,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, {
+    component = await mountWithTooltips(Widgets, {
       provide,
       props: { encounterId: 1 },
     })
@@ -163,7 +164,7 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should call update when note content changes', async () => {
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
     const noteWidget = component.findComponent({
       name: 'InitiativeWidgetsNote',
     })
@@ -174,7 +175,7 @@ describe('Initiative widgets wrapper', async () => {
   })
 
   it('Should call update when pinned content changes', async () => {
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
     const pinnedContentWidget = component.findComponent({
       name: 'InitiativeWidgetsPinnedContent',
     })
@@ -194,7 +195,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
 
     expect(
       component
@@ -213,7 +214,7 @@ describe('Initiative widgets wrapper', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    component = await mountSuspended(Widgets, { provide })
+    component = await mountWithTooltips(Widgets, { provide })
 
     expect(
       component.findComponent({ name: 'InitiativeWidgetsDiceRoll' }).exists(),
@@ -222,7 +223,7 @@ describe('Initiative widgets wrapper', async () => {
 
   describe('Widget settings popover', () => {
     it('Should populate form with all widgets when not modified', async () => {
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       vm.popoverOpen = true
@@ -241,7 +242,7 @@ describe('Initiative widgets wrapper', async () => {
         } as InitiativeSheet['settings'],
       }
 
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       vm.popoverOpen = true
@@ -251,7 +252,7 @@ describe('Initiative widgets wrapper', async () => {
     })
 
     it('Should render the checkbox group and save button once opened', async () => {
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       vm.popoverOpen = true
@@ -261,7 +262,7 @@ describe('Initiative widgets wrapper', async () => {
     })
 
     it('Should update settings and close the popover on submit', async () => {
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       vm.popoverOpen = true
@@ -278,7 +279,7 @@ describe('Initiative widgets wrapper', async () => {
     it('Should not call update on submit when sheet is undefined', async () => {
       mockSheet.value = undefined as unknown as InitiativeSheet
 
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       await vm.onSubmit()
@@ -289,7 +290,7 @@ describe('Initiative widgets wrapper', async () => {
 
   describe('Widget list interactions', () => {
     it('Should call update with reordered widgets on drag end', async () => {
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       vm.onDragEnd()
@@ -302,7 +303,7 @@ describe('Initiative widgets wrapper', async () => {
     it('Should not save widgets when sheet is undefined', async () => {
       mockSheet.value = undefined as unknown as InitiativeSheet
 
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
 
       vm.saveWidgets(['note'])
@@ -320,7 +321,7 @@ describe('Initiative widgets wrapper', async () => {
         } as InitiativeSheet['settings'],
       }
 
-      component = await mountSuspended(Widgets, { provide })
+      component = await mountWithTooltips(Widgets, { provide })
 
       await component.findAll('[test-id="remove-widget"]')[0]!.trigger('click')
 

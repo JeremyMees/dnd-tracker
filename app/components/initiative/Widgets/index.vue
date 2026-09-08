@@ -91,14 +91,13 @@ function removeWidget(id: InitiativeWidget) {
 
       <UiPopover v-model:open="popoverOpen">
         <UiPopoverTrigger as-child>
-          <UiButton
-            v-tippy="$t('pages.encounter.update.widgets')"
-            variant="foreground-ghost"
-            size="icon-sm"
-          >
-            <Icon name="tabler:settings" />
+          <UiButton variant="foreground-ghost" size="icon-sm">
+            <Tooltip :text="$t('pages.encounter.update.widgets')">
+              <Icon name="tabler:settings" />
+            </Tooltip>
           </UiButton>
         </UiPopoverTrigger>
+
         <UiPopoverContent>
           <h4 class="mb-4">
             {{ $t('pages.encounter.update.widgets') }}

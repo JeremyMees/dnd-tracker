@@ -53,8 +53,14 @@ exports[`CampaignHomebrew > Should match snapshot 1`] = `
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
               <!---->
             </td>
-            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>21</span></span></td>
-            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>17</span></span></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-state="closed" data-grace-area-trigger="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>21</span></span>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-state="closed" data-grace-area-trigger="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>17</span></span>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
           </tr>
           <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted" data-state="false">
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
@@ -68,8 +74,14 @@ exports[`CampaignHomebrew > Should match snapshot 1`] = `
               </div>
             </td>
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">Jeremy</td>
-            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>32</span></span></td>
-            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>15</span></span></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-state="closed" data-grace-area-trigger="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>32</span></span>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-state="closed" data-grace-area-trigger="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>15</span></span>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
           </tr>
           <tr class="transition-colors data-[state=selected]:bg-secondary border-b border-muted" data-state="false">
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button class="grid place-content-center peer size-4 min-w-4 shrink-0 rounded-sm border border-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" role="checkbox" type="button" aria-checked="false" aria-required="false" data-state="unchecked">
@@ -85,8 +97,14 @@ exports[`CampaignHomebrew > Should match snapshot 1`] = `
             <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
               <!---->
             </td>
-            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>18</span></span></td>
-            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-v-tippy="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>13</span></span></td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-state="closed" data-grace-area-trigger="" class="flex items-center gap-2"><span class="iconify i-tabler:heart text-destructive size-3" aria-hidden="true" ariahidden="true"></span><span>18</span></span>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
+            <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><span data-state="closed" data-grace-area-trigger="" class="flex items-center gap-2"><span class="iconify i-tabler:shield text-help size-3" aria-hidden="true" ariahidden="true"></span><span>13</span></span>
+              <!--teleport start-->
+              <!--teleport end-->
+            </td>
           </tr>
         </tbody>
       </table>

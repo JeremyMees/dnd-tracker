@@ -36,37 +36,40 @@ function deleteRow(): void {
 
 <template>
   <div class="flex items-center justify-end">
-    <UiButton v-if="item.link" variant="info-ghost" size="icon-sm" as-child>
-      <NuxtLink
-        v-tippy="$t('components.actions.link')"
-        test-id="link"
-        :aria-label="$t('components.actions.link')"
-        target="_blank"
-        :to="item.link"
+    <Tooltip v-if="item.link" :text="$t('components.actions.link')">
+      <UiButton variant="info-ghost" size="icon-sm" as-child>
+        <NuxtLink
+          test-id="link"
+          :aria-label="$t('components.actions.link')"
+          target="_blank"
+          :to="item.link"
+        >
+          <Icon name="tabler:link" :aria-hidden="true" />
+        </NuxtLink>
+      </UiButton>
+    </Tooltip>
+    <Tooltip :text="$t('actions.copy')">
+      <UiButton
+        test-id="copy"
+        variant="help-ghost"
+        size="icon-sm"
+        :disabled="maxCharacters"
+        :aria-label="$t('actions.copy')"
+        @click="copyRow"
       >
-        <Icon name="tabler:link" :aria-hidden="true" />
-      </NuxtLink>
-    </UiButton>
-    <UiButton
-      v-tippy="$t('actions.copy')"
-      test-id="copy"
-      variant="help-ghost"
-      size="icon-sm"
-      :disabled="maxCharacters"
-      :aria-label="$t('actions.copy')"
-      @click="copyRow"
-    >
-      <Icon name="tabler:copy" :aria-hidden="true" />
-    </UiButton>
-    <UiButton
-      v-tippy="$t('actions.delete')"
-      test-id="delete"
-      variant="destructive-ghost"
-      size="icon-sm"
-      :aria-label="$t('actions.delete')"
-      @click="deleteRow"
-    >
-      <Icon name="tabler:trash" :aria-hidden="true" />
-    </UiButton>
+        <Icon name="tabler:copy" :aria-hidden="true" />
+      </UiButton>
+    </Tooltip>
+    <Tooltip :text="$t('actions.delete')">
+      <UiButton
+        test-id="delete"
+        variant="destructive-ghost"
+        size="icon-sm"
+        :aria-label="$t('actions.delete')"
+        @click="deleteRow"
+      >
+        <Icon name="tabler:trash" :aria-hidden="true" />
+      </UiButton>
+    </Tooltip>
   </div>
 </template>

@@ -1,9 +1,0 @@
-@reference "./global.css";
-
-.tippy-box[data-theme~='dnd'] {
-  @apply rounded-lg bg-muted text-foreground;
-}
-
-.tippy-arrow {
-  @apply text-muted!;
-}

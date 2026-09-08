@@ -68,22 +68,18 @@ provide(INITIATIVE_SHEET, {
   <NuxtLayout name="sidebar">
     <template #header>
       <div class="flex gap-x-4 items-center min-w-0">
-        <UiButton
-          v-if="!data?.campaign"
-          as-child
-          variant="foreground-ghost"
-          size="icon-sm"
-          class="shrink-0"
-        >
-          <NuxtLinkLocale
-            v-if="!data?.campaign"
-            v-tippy="$t('actions.back')"
-            test-id="back"
-            to="/encounters"
+        <Tooltip v-if="!data?.campaign" :text="$t('actions.back')">
+          <UiButton
+            as-child
+            variant="foreground-ghost"
+            size="icon-sm"
+            class="shrink-0"
           >
-            <Icon name="tabler:arrow-left" :aria-hidden="true" />
-          </NuxtLinkLocale>
-        </UiButton>
+            <NuxtLinkLocale test-id="back" to="/encounters">
+              <Icon name="tabler:arrow-left" :aria-hidden="true" />
+            </NuxtLinkLocale>
+          </UiButton>
+        </Tooltip>
         <UiDropdownMenu v-else>
           <UiDropdownMenuTrigger as-child>
             <UiButton

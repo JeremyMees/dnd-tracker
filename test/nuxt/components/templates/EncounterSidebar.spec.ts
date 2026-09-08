@@ -1,4 +1,3 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import type { VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
@@ -6,6 +5,7 @@ import { DialogContent } from '~/components/ui/dialog'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface EncounterSidebarVM {
   openModal:
@@ -82,20 +82,20 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should match snapshot', async () => {
-    component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountWithTooltips(EncounterSidebar, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should have correct initial values', async () => {
-    component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountWithTooltips(EncounterSidebar, { props, provide })
     const vm = component.vm as unknown as EncounterSidebarVM
 
     expect(vm.openModal).toBeUndefined()
   })
 
   it('Should render bestiary button when not at max characters', async () => {
-    component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountWithTooltips(EncounterSidebar, { props, provide })
 
     expect(component.find('[test-id="bestiary"]').exists()).toBeTruthy()
   })
@@ -106,7 +106,7 @@ describe('EncounterSidebar', () => {
       campaign: mockSheetCampaign,
     }
 
-    component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountWithTooltips(EncounterSidebar, { props, provide })
 
     expect(
       component.find('[test-id="campaign-homebrew"]').exists(),
@@ -119,14 +119,14 @@ describe('EncounterSidebar', () => {
       campaign: undefined,
     }
 
-    component = await mountSuspended(EncounterSidebar, { props, provide })
+    component = await mountWithTooltips(EncounterSidebar, { props, provide })
 
     expect(component.find('[test-id="campaign-homebrew"]').exists()).toBeFalsy()
   })
 
   describe('maxCharacters computed', () => {
     it('Should be false when sheet has less than 50 rows', async () => {
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
       })
@@ -143,7 +143,7 @@ describe('EncounterSidebar', () => {
 
       mockSheet.value = { ...sheet, rows }
 
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
       })
@@ -161,7 +161,7 @@ describe('EncounterSidebar', () => {
       mockSheet.value = { ...sheet, rows }
       await nextTick()
 
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
       })
@@ -182,7 +182,7 @@ describe('EncounterSidebar', () => {
       mockSheet.value = { ...sheet, rows }
       await nextTick()
 
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
       })
@@ -192,7 +192,7 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should render correctly when collapsed', async () => {
-    component = await mountSuspended(EncounterSidebar, {
+    component = await mountWithTooltips(EncounterSidebar, {
       props: { isExpanded: false },
       provide,
     })
@@ -240,7 +240,7 @@ describe('EncounterSidebar', () => {
     it('Should open the dialog with the correct content when the trigger is clicked', async () => {
       mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
         global: { stubs: formStubs },
@@ -256,7 +256,7 @@ describe('EncounterSidebar', () => {
     it('Should close the dialog when the close button is clicked', async () => {
       mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
         global: { stubs: formStubs },
@@ -276,7 +276,7 @@ describe('EncounterSidebar', () => {
     it('Should close the dialog on escape key down, pointer down outside and interact outside', async () => {
       mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
-      component = await mountSuspended(EncounterSidebar, {
+      component = await mountWithTooltips(EncounterSidebar, {
         props,
         provide,
         global: { stubs: formStubs },
@@ -304,7 +304,7 @@ describe('EncounterSidebar', () => {
   it('Should close the campaign homebrew dialog when the form closes', async () => {
     mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
-    component = await mountSuspended(EncounterSidebar, {
+    component = await mountWithTooltips(EncounterSidebar, {
       props,
       provide,
       global: { stubs: formStubs },
@@ -322,7 +322,7 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should close the new homebrew dialog when the form closes', async () => {
-    component = await mountSuspended(EncounterSidebar, {
+    component = await mountWithTooltips(EncounterSidebar, {
       props,
       provide,
       global: { stubs: formStubs },
@@ -340,7 +340,7 @@ describe('EncounterSidebar', () => {
   it('Should pass the current row count to the new homebrew form', async () => {
     mockSheet.value = { ...sheet, rows: [] }
 
-    component = await mountSuspended(EncounterSidebar, {
+    component = await mountWithTooltips(EncounterSidebar, {
       props,
       provide,
       global: { stubs: formStubs },
@@ -354,7 +354,7 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should close the settings dialog when the form closes', async () => {
-    component = await mountSuspended(EncounterSidebar, {
+    component = await mountWithTooltips(EncounterSidebar, {
       props,
       provide,
       global: { stubs: formStubs },
@@ -372,7 +372,7 @@ describe('EncounterSidebar', () => {
   })
 
   it('Should reset openModal on unmount', async () => {
-    component = await mountSuspended(EncounterSidebar, {
+    component = await mountWithTooltips(EncounterSidebar, {
       props,
       provide,
       global: { stubs: formStubs },

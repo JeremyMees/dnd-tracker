@@ -264,77 +264,83 @@ function setLink() {
             'border-secondary': variant === 'widget',
           }"
         >
-          <UiButton
-            v-tippy="$t('general.link')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary': buttonStates.isLink }"
-            :aria-label="$t('general.link')"
-            test-id="link"
-            @click="setLink"
-          >
-            <Icon name="tabler:link" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('actions.unlink')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :disabled="!buttonStates.isLink"
-            :aria-label="$t('actions.unlink')"
-            test-id="unlink"
-            @click="editor.chain().focus().unsetLink().run()"
-          >
-            <Icon name="tabler:unlink" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('general.unOrderedList')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isBulletList }"
-            :aria-label="$t('general.unOrderedList')"
-            test-id="bullet-list"
-            @click="editor.chain().focus().toggleBulletList().run()"
-          >
-            <Icon name="tabler:list" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('general.orderedList')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isOrderedList }"
-            :aria-label="$t('general.orderedList')"
-            test-id="ordered-list"
-            @click="editor.chain().focus().toggleOrderedList().run()"
-          >
-            <Icon name="tabler:list-numbers" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('general.quote')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isBlockquote }"
-            :aria-label="$t('general.quote')"
-            test-id="blockquote"
-            @click="editor.chain().focus().toggleBlockquote().run()"
-          >
-            <Icon name="tabler:blockquote" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('general.horizontalRule')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :aria-label="$t('general.horizontalRule')"
-            test-id="horizontal-rule"
-            @click="editor.chain().focus().setHorizontalRule().run()"
-          >
-            <Icon name="tabler:separator" aria-hidden="true" />
-          </UiButton>
+          <Tooltip :text="$t('general.link')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary': buttonStates.isLink }"
+              :aria-label="$t('general.link')"
+              test-id="link"
+              @click="setLink"
+            >
+              <Icon name="tabler:link" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('actions.unlink')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :disabled="!buttonStates.isLink"
+              :aria-label="$t('actions.unlink')"
+              test-id="unlink"
+              @click="editor.chain().focus().unsetLink().run()"
+            >
+              <Icon name="tabler:unlink" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('general.unOrderedList')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isBulletList }"
+              :aria-label="$t('general.unOrderedList')"
+              test-id="bullet-list"
+              @click="editor.chain().focus().toggleBulletList().run()"
+            >
+              <Icon name="tabler:list" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('general.orderedList')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isOrderedList }"
+              :aria-label="$t('general.orderedList')"
+              test-id="ordered-list"
+              @click="editor.chain().focus().toggleOrderedList().run()"
+            >
+              <Icon name="tabler:list-numbers" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('general.quote')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isBlockquote }"
+              :aria-label="$t('general.quote')"
+              test-id="blockquote"
+              @click="editor.chain().focus().toggleBlockquote().run()"
+            >
+              <Icon name="tabler:blockquote" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('general.horizontalRule')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :aria-label="$t('general.horizontalRule')"
+              test-id="horizontal-rule"
+              @click="editor.chain().focus().setHorizontalRule().run()"
+            >
+              <Icon name="tabler:separator" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
         </div>
         <div
           class="flex items-center border-r pr-2"
@@ -343,94 +349,101 @@ function setLink() {
             'border-secondary': variant === 'widget',
           }"
         >
-          <UiButton
-            v-tippy="$t('general.bold')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isBold }"
-            :disabled="!buttonStates.canBold"
-            :aria-label="$t('general.bold')"
-            test-id="bold"
-            @click="editor.chain().focus().toggleBold().run()"
-          >
-            <Icon name="tabler:bold" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('general.italic')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isItalic }"
-            :disabled="!buttonStates.canItalic"
-            :aria-label="$t('general.italic')"
-            test-id="italic"
-            @click="editor.chain().focus().toggleItalic().run()"
-          >
-            <Icon name="tabler:italic" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('general.strikeThrough')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isStrike }"
-            :disabled="!buttonStates.canStrike"
-            :aria-label="$t('general.strikeThrough')"
-            test-id="strike"
-            @click="editor.chain().focus().toggleStrike().run()"
-          >
-            <Icon name="tabler:strikethrough" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('actions.highlight')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :class="{ 'bg-primary!': buttonStates.isHighlight }"
-            :aria-label="$t('actions.highlight')"
-            test-id="highlight"
-            @click="editor.chain().focus().toggleHighlight().run()"
-          >
-            <Icon name="tabler:highlight" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('actions.clearFormatting')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :aria-label="$t('actions.clearFormatting')"
-            test-id="clear-formatting"
-            @click="editor.chain().focus().unsetAllMarks().run()"
-          >
-            <Icon name="tabler:clear-formatting" aria-hidden="true" />
-          </UiButton>
+          <Tooltip :text="$t('general.bold')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isBold }"
+              :disabled="!buttonStates.canBold"
+              :aria-label="$t('general.bold')"
+              test-id="bold"
+              @click="editor.chain().focus().toggleBold().run()"
+            >
+              <Icon name="tabler:bold" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('general.italic')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isItalic }"
+              :disabled="!buttonStates.canItalic"
+              :aria-label="$t('general.italic')"
+              test-id="italic"
+              @click="editor.chain().focus().toggleItalic().run()"
+            >
+              <Icon name="tabler:italic" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('general.strikeThrough')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isStrike }"
+              :disabled="!buttonStates.canStrike"
+              :aria-label="$t('general.strikeThrough')"
+              test-id="strike"
+              @click="editor.chain().focus().toggleStrike().run()"
+            >
+              <Icon name="tabler:strikethrough" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('actions.highlight')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :class="{ 'bg-primary!': buttonStates.isHighlight }"
+              :aria-label="$t('actions.highlight')"
+              test-id="highlight"
+              @click="editor.chain().focus().toggleHighlight().run()"
+            >
+              <Icon name="tabler:highlight" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('actions.clearFormatting')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :aria-label="$t('actions.clearFormatting')"
+              test-id="clear-formatting"
+              @click="editor.chain().focus().unsetAllMarks().run()"
+            >
+              <Icon name="tabler:clear-formatting" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
         </div>
         <div class="flex items-center">
-          <UiButton
-            v-tippy="$t('actions.undo')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :disabled="!buttonStates.canUndo"
-            :aria-label="$t('actions.undo')"
-            test-id="undo"
-            @click="editor.chain().focus().undo().run()"
-          >
-            <Icon name="tabler:arrow-back" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('actions.redo')"
-            type="button"
-            size="icon-sm"
-            variant="default-ghost"
-            :disabled="!buttonStates.canRedo"
-            :aria-label="$t('actions.redo')"
-            test-id="redo"
-            @click="editor.chain().focus().redo().run()"
-          >
-            <Icon name="tabler:arrow-forward" aria-hidden="true" />
-          </UiButton>
+          <Tooltip :text="$t('actions.undo')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :disabled="!buttonStates.canUndo"
+              :aria-label="$t('actions.undo')"
+              test-id="undo"
+              @click="editor.chain().focus().undo().run()"
+            >
+              <Icon name="tabler:arrow-back" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('actions.redo')">
+            <UiButton
+              type="button"
+              size="icon-sm"
+              variant="default-ghost"
+              :disabled="!buttonStates.canRedo"
+              :aria-label="$t('actions.redo')"
+              test-id="redo"
+              @click="editor.chain().focus().redo().run()"
+            >
+              <Icon name="tabler:arrow-forward" aria-hidden="true" />
+            </UiButton>
+          </Tooltip>
         </div>
       </div>
       <EditorContent

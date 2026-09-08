@@ -1,7 +1,7 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import Note from '~/components/initiative/Widgets/Note.vue'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   value: string
@@ -18,13 +18,13 @@ describe('Initiative note widget', async () => {
   })
 
   it('Should match snapshot', async () => {
-    component = await mountSuspended(Note, { props })
+    component = await mountWithTooltips(Note, { props })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should emit update after debounce when text changes', async () => {
-    component = await mountSuspended(Note, { props })
+    component = await mountWithTooltips(Note, { props })
     const textEditor = component.findComponent({ name: 'TextEditor' })
 
     // Enable fake timers after mounting to avoid blocking suspense
@@ -41,14 +41,14 @@ describe('Initiative note widget', async () => {
   })
 
   it('Should initialize with provided value', async () => {
-    component = await mountSuspended(Note, { props })
+    component = await mountWithTooltips(Note, { props })
     const textEditor = component.findComponent({ name: 'TextEditor' })
 
     expect(textEditor.props('content')).toBe('Test note')
   })
 
   it('Should update the content when the value prop changes', async () => {
-    component = await mountSuspended(Note, { props })
+    component = await mountWithTooltips(Note, { props })
 
     await component.setProps({ value: 'Updated note' })
 
@@ -57,7 +57,7 @@ describe('Initiative note widget', async () => {
   })
 
   it('Should fall back to an empty string when the value prop becomes falsy', async () => {
-    component = await mountSuspended(Note, { props })
+    component = await mountWithTooltips(Note, { props })
 
     await component.setProps({ value: '' })
 

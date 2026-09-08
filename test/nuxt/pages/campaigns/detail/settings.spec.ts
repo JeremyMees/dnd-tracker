@@ -1,4 +1,4 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Settings from '~/pages/campaigns/[id]-[title]/settings.vue'
@@ -9,6 +9,7 @@ import {
   mockInvitedMember,
   mockTeamMember,
 } from '~~/test/fixtures/campaign'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const {
   ask,
@@ -69,7 +70,7 @@ const self = {
 }
 
 async function mountPage(overrides: { current?: CampaignFull } = {}) {
-  const component = await mountSuspended(Settings, {
+  const component = await mountWithTooltips(Settings, {
     props: {
       current: mockCampaignFull,
       campaignId: campaignPageProps.campaignId,

@@ -1,6 +1,6 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import AvatarSelector from '~/components/atoms/AvatarSelector.vue'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 type Identifier =
   | 'backgroundColor'
@@ -34,12 +34,12 @@ const props: Props = {
 
 describe('AvatarSelector', async () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(AvatarSelector, { props })
+    const component = await mountWithTooltips(AvatarSelector, { props })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render avatar with default props correctly', async () => {
-    const component = await mountSuspended(AvatarSelector, { props })
+    const component = await mountWithTooltips(AvatarSelector, { props })
 
     const icon = component.find('[test-id="icon"]')
     expect(icon.exists()).toBeTruthy()
@@ -53,7 +53,7 @@ describe('AvatarSelector', async () => {
   })
 
   it('Should go to next and previous options', async () => {
-    const component = await mountSuspended(AvatarSelector, { props })
+    const component = await mountWithTooltips(AvatarSelector, { props })
 
     const options = props.options.length
     const nextButton = component.find('[test-id="next"]')
@@ -93,7 +93,7 @@ describe('AvatarSelector', async () => {
   })
 
   it('Should wrap around to the last option when prev is clicked at the first option', async () => {
-    const component = await mountSuspended(AvatarSelector, { props })
+    const component = await mountWithTooltips(AvatarSelector, { props })
 
     await component.find('[test-id="prev"]').trigger('click')
 
@@ -101,7 +101,7 @@ describe('AvatarSelector', async () => {
   })
 
   it('Should go to the previous option without wrapping when not at the first option', async () => {
-    const component = await mountSuspended(AvatarSelector, {
+    const component = await mountWithTooltips(AvatarSelector, {
       props: { ...props, selected: props.options[1] },
     })
 
@@ -111,7 +111,7 @@ describe('AvatarSelector', async () => {
   })
 
   it('Should fall back to a generic icon and the raw identifier as label for unknown identifiers', async () => {
-    const component = await mountSuspended(AvatarSelector, {
+    const component = await mountWithTooltips(AvatarSelector, {
       props: { ...props, identifier: 'unknownIdentifier' },
     })
 
@@ -120,7 +120,7 @@ describe('AvatarSelector', async () => {
   })
 
   it('Should not emit update when there are no options to select', async () => {
-    const component = await mountSuspended(AvatarSelector, {
+    const component = await mountWithTooltips(AvatarSelector, {
       props: { ...props, options: [] },
     })
 

@@ -1,9 +1,9 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import AvatarPicker from '~/components/atoms/AvatarPicker.vue'
 import type { AvatarVariants } from '~/components/ui/avatar'
 import { defaultAvatar } from '~~/constants/default-avatar'
 import { flushAvatar, stubAvatarEndpoint } from '~~/test/nuxt/stubs/avatar'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   profile?: boolean
@@ -42,12 +42,12 @@ const singleColorAvatar: Avatar = {
 
 describe('AvatarPicker', async () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(AvatarPicker, { props })
+    const component = await mountWithTooltips(AvatarPicker, { props })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render avatar with default props correctly', async () => {
-    const component = await mountSuspended(AvatarPicker, {
+    const component = await mountWithTooltips(AvatarPicker, {
       props,
       modalValue: defaultAvatar,
     })
@@ -69,7 +69,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should show deprecated message when user has an old avatar', async () => {
-    const component = await mountSuspended(AvatarPicker, {
+    const component = await mountWithTooltips(AvatarPicker, {
       props: { ...props, deprecatedAvatar: true },
     })
 
@@ -81,7 +81,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should have creator open by default', async () => {
-    const component = await mountSuspended(AvatarPicker, {
+    const component = await mountWithTooltips(AvatarPicker, {
       props: { ...props, hideCreatorToggle: true },
     })
 
@@ -94,7 +94,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should apply correct size', async () => {
-    const component = await mountSuspended(AvatarPicker, {
+    const component = await mountWithTooltips(AvatarPicker, {
       props: { ...props, size: 'xs' },
     })
 
@@ -116,7 +116,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should generate a random avatar on mount when no model value is given', async () => {
-    const component = await mountSuspended(AvatarPicker, { props: {} })
+    const component = await mountWithTooltips(AvatarPicker, { props: {} })
     const vm = component.vm as unknown as AvatarPickerVM
 
     await flushAvatar()
@@ -126,7 +126,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should call avatarCreator.random when the random button is clicked', async () => {
-    const component = await mountSuspended(AvatarPicker, { props })
+    const component = await mountWithTooltips(AvatarPicker, { props })
     const vm = component.vm as unknown as AvatarPickerVM & {
       avatarCreator: { random: () => void }
     }
@@ -138,7 +138,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should toggle the creator open and closed when the options button is clicked', async () => {
-    const component = await mountSuspended(AvatarPicker, { props })
+    const component = await mountWithTooltips(AvatarPicker, { props })
 
     expect(component.find('[test-id="creator"]').exists()).toBeFalsy()
 
@@ -156,7 +156,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should update the avatar when a style selector emits an update', async () => {
-    const component = await mountSuspended(AvatarPicker, {
+    const component = await mountWithTooltips(AvatarPicker, {
       props: { ...props, modelValue: singleColorAvatar },
     })
     const vm = component.vm as unknown as AvatarPickerVM
@@ -175,7 +175,7 @@ describe('AvatarPicker', async () => {
   })
 
   it('Should sync avatarCreator when the avatar model is updated externally', async () => {
-    const component = await mountSuspended(AvatarPicker, { props })
+    const component = await mountWithTooltips(AvatarPicker, { props })
     const vm = component.vm as unknown as AvatarPickerVM
 
     const newAvatar: Avatar = {
@@ -194,7 +194,7 @@ describe('AvatarPicker', async () => {
       extra: undefined,
     } as unknown as Avatar
 
-    const component = await mountSuspended(AvatarPicker, {
+    const component = await mountWithTooltips(AvatarPicker, {
       props: { ...props, profile: true, modelValue: noExtraAvatar },
     })
     const vm = component.vm as unknown as AvatarPickerVM
@@ -212,7 +212,7 @@ describe('AvatarPicker', async () => {
 
   describe('profile save/reset flow', () => {
     it('Should show the save and reset buttons once a style is changed', async () => {
-      const component = await mountSuspended(AvatarPicker, {
+      const component = await mountWithTooltips(AvatarPicker, {
         props: { ...props, profile: true, modelValue: singleColorAvatar },
       })
 
@@ -240,7 +240,7 @@ describe('AvatarPicker', async () => {
     })
 
     it('Should emit save and close the creator when the save button is clicked', async () => {
-      const component = await mountSuspended(AvatarPicker, {
+      const component = await mountWithTooltips(AvatarPicker, {
         props: { ...props, profile: true, modelValue: singleColorAvatar },
       })
       const vm = component.vm as unknown as AvatarPickerVM
@@ -260,7 +260,7 @@ describe('AvatarPicker', async () => {
     })
 
     it('Should reset the avatar to its initial value when the reset button is clicked', async () => {
-      const component = await mountSuspended(AvatarPicker, {
+      const component = await mountWithTooltips(AvatarPicker, {
         props: { ...props, profile: true, modelValue: singleColorAvatar },
       })
       const vm = component.vm as unknown as AvatarPickerVM

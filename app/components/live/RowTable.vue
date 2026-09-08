@@ -167,13 +167,16 @@ const columns = computed(() => {
               </UiTableCell>
 
               <UiTableCell v-if="columns.deathSaves" class="p-2">
-                <LiveDeathSaves
+                <Tooltip
                   v-if="row.deathSaves && ownRowId === row.id"
-                  v-tippy="$t('general.deathSaves')"
-                  test-id="death-saves"
-                  :saves="row.deathSaves"
-                  disabled
-                />
+                  :text="$t('general.deathSaves')"
+                >
+                  <LiveDeathSaves
+                    test-id="death-saves"
+                    :saves="row.deathSaves"
+                    disabled
+                  />
+                </Tooltip>
               </UiTableCell>
 
               <UiTableCell v-if="columns.concentration" class="p-2">

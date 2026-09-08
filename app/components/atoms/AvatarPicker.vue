@@ -154,47 +154,56 @@ function reset(): void {
     <div
       class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur"
     >
-      <button
-        v-tippy="$t('actions.random')"
-        class="size-7 flex flex-col items-center justify-center outline-none text-white"
-        :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
-        :aria-label="$t('actions.random')"
-        @click="randomize"
-      >
-        <Icon
-          name="tabler:arrows-shuffle-2"
-          aria-hidden="true"
-          class="size-5"
-        />
-      </button>
-      <button
-        v-if="!hideCreatorToggle"
-        v-tippy="$t('components.avatarPicker.options')"
-        :aria-label="$t('components.avatarPicker.options')"
-        class="size-7 flex flex-col items-center justify-center outline-none text-white"
-        :class="{ 'border-r-2 border-primary': profile && isChanged }"
-        @click="creatorOpen = !creatorOpen"
-      >
-        <Icon name="tabler:shirt" aria-hidden="true" class="size-5" />
-      </button>
-      <template v-if="profile && isChanged && avatarCreator.avatar.value">
+      <Tooltip :text="$t('actions.random')">
         <button
-          v-if="avatar?.extra"
-          v-tippy="$t('actions.reset')"
-          class="size-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary text-white"
-          :aria-label="$t('actions.reset')"
-          @click="reset"
-        >
-          <Icon name="tabler:refresh" aria-hidden="true" class="size-5" />
-        </button>
-        <button
-          v-tippy="$t('actions.save')"
           class="size-7 flex flex-col items-center justify-center outline-none text-white"
-          :aria-label="$t('actions.save')"
-          @click="save"
+          :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
+          :aria-label="$t('actions.random')"
+          @click="randomize"
         >
-          <Icon name="tabler:device-floppy" aria-hidden="true" class="size-5" />
+          <Icon
+            name="tabler:arrows-shuffle-2"
+            aria-hidden="true"
+            class="size-5"
+          />
         </button>
+      </Tooltip>
+      <Tooltip
+        v-if="!hideCreatorToggle"
+        :text="$t('components.avatarPicker.options')"
+      >
+        <button
+          :aria-label="$t('components.avatarPicker.options')"
+          class="size-7 flex flex-col items-center justify-center outline-none text-white"
+          :class="{ 'border-r-2 border-primary': profile && isChanged }"
+          @click="creatorOpen = !creatorOpen"
+        >
+          <Icon name="tabler:shirt" aria-hidden="true" class="size-5" />
+        </button>
+      </Tooltip>
+      <template v-if="profile && isChanged && avatarCreator.avatar.value">
+        <Tooltip v-if="avatar?.extra" :text="$t('actions.reset')">
+          <button
+            class="size-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary text-white"
+            :aria-label="$t('actions.reset')"
+            @click="reset"
+          >
+            <Icon name="tabler:refresh" aria-hidden="true" class="size-5" />
+          </button>
+        </Tooltip>
+        <Tooltip :text="$t('actions.save')">
+          <button
+            class="size-7 flex flex-col items-center justify-center outline-none text-white"
+            :aria-label="$t('actions.save')"
+            @click="save"
+          >
+            <Icon
+              name="tabler:device-floppy"
+              aria-hidden="true"
+              class="size-5"
+            />
+          </button>
+        </Tooltip>
       </template>
     </div>
     <div

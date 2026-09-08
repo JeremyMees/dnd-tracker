@@ -68,18 +68,21 @@ function confirmKick(seat: LiveSeat): void {
         :test-id="`seat-${seat.seat}`"
         class="flex items-center gap-2 text-sm"
       >
-        <span
-          v-tippy="
+        <Tooltip
+          :text="
             connected.has(seat.seat)
               ? $t('general.online')
               : $t('general.offline')
           "
-          :test-id="`seat-status-${seat.seat}`"
-          class="size-2 rounded-full shrink-0 animate-pulse"
-          :class="
-            connected.has(seat.seat) ? 'bg-success' : 'bg-muted-foreground/30'
-          "
-        />
+        >
+          <span
+            :test-id="`seat-status-${seat.seat}`"
+            class="size-2 rounded-full shrink-0 animate-pulse"
+            :class="
+              connected.has(seat.seat) ? 'bg-success' : 'bg-muted-foreground/30'
+            "
+          />
+        </Tooltip>
 
         <div class="flex flex-col flex-1 min-w-0">
           <span class="font-medium truncate">{{ seat.name }}</span>

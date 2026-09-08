@@ -1,10 +1,11 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises, type VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import CampaignPage from '~/pages/campaigns/[id]-[title].vue'
 import { isCampaignAdmin, isCampaignOwner } from '~~/shared/utils/abilities'
 import { mockCampaignFull } from '~~/test/fixtures/campaign'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { allows } = vi.hoisted(() => ({ allows: vi.fn() }))
 
@@ -60,7 +61,7 @@ function grant({ admin = false, owner = false } = {}): void {
 let mounted: VueWrapper | undefined
 
 async function mountPage() {
-  const component = await mountSuspended(CampaignPage, { global: { stubs } })
+  const component = await mountWithTooltips(CampaignPage, { global: { stubs } })
 
   mounted = component
 

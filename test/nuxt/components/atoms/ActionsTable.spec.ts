@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ActionsTable from '~/components/atoms/ActionsTable.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -31,7 +31,7 @@ const baseAction: DndAction = {
 
 describe('ActionsTable', async () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: { actions: [baseAction] },
     })
 
@@ -39,7 +39,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should render actions correctly', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: { actions: [baseAction] },
     })
 
@@ -52,7 +52,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should not show attack name label when there is only one attack', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: { actions: [baseAction] },
     })
 
@@ -60,7 +60,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show attack name when action has multiple attacks', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -80,7 +80,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should fall back to Attack N when attack has no name', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -99,7 +99,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show reach for melee attacks', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [{ ...baseAction, attacks: [{ ...baseAttack, reach: 5 }] }],
       },
@@ -110,7 +110,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show range with long range for ranged attacks', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -133,7 +133,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show spell save DC and ability', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -152,7 +152,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show target creature only label', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -167,7 +167,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show extra damage', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -190,7 +190,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show legendary action cost', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -207,14 +207,14 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show usage limits', async () => {
-    const perDay = await mountSuspended(ActionsTable, {
+    const perDay = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [{ ...baseAction, usageLimits: { type: 'perDay', param: 3 } }],
       },
     })
     expect(perDay.text()).toContain('3/day')
 
-    const recharge = await mountSuspended(ActionsTable, {
+    const recharge = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           { ...baseAction, usageLimits: { type: 'recharge', param: 5 } },
@@ -223,14 +223,14 @@ describe('ActionsTable', async () => {
     })
     expect(recharge.text()).toContain('Recharge 5-6')
 
-    const atWill = await mountSuspended(ActionsTable, {
+    const atWill = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [{ ...baseAction, usageLimits: { type: 'atWill', param: 1 } }],
       },
     })
     expect(atWill.text()).toContain('At will')
 
-    const perRest = await mountSuspended(ActionsTable, {
+    const perRest = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           { ...baseAction, usageLimits: { type: 'perRest', param: 2 } },
@@ -241,7 +241,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should render the roll button when allowRoll, id are set and the attack has a hit mod', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [baseAction],
         allowRoll: true,
@@ -256,7 +256,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should not render the roll button when the attack has neither a hit mod nor damage dice', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           {
@@ -278,7 +278,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should show no actions message when actions array is empty', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: { actions: [] },
     })
 
@@ -286,7 +286,7 @@ describe('ActionsTable', async () => {
   })
 
   it('Should group actions by type', async () => {
-    const component = await mountSuspended(ActionsTable, {
+    const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
           { ...baseAction, actionType: 'action', name: 'Strike' },

@@ -1,9 +1,9 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { dropdownStubs } from '~~/test/nuxt/stubs/dropdown-menu'
 import { closeDialog, dialogIsOpen } from '~~/test/nuxt/stubs/dialog'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   data: InitiativeSheet | undefined
@@ -26,19 +26,19 @@ vi.mock('~/components/live/SessionPanel.vue', () => ({
 
 describe('Initiative header', () => {
   it('Should render correctly with required props', async () => {
-    const component = await mountSuspended(Header, { props, global })
+    const component = await mountWithTooltips(Header, { props, global })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display pet when its active in the settings', async () => {
-    const component = await mountSuspended(Header, { props, global })
+    const component = await mountWithTooltips(Header, { props, global })
 
     expect(component.find('[test-id="pet"]').exists()).toBeTruthy()
   })
 
   it('Should not display pet when its not active in the settings', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         data: {
           ...sheet,
@@ -55,7 +55,7 @@ describe('Initiative header', () => {
   })
 
   it('Should display correct round number', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         data: {
           ...sheet,
@@ -69,7 +69,7 @@ describe('Initiative header', () => {
   })
 
   it('Should display default round number when not provided', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         data: {
           ...sheet,
@@ -83,7 +83,7 @@ describe('Initiative header', () => {
   })
 
   it('Should disable previous button when round is 1 and activeIndex is 0', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         data: {
           ...sheet,
@@ -100,7 +100,7 @@ describe('Initiative header', () => {
   })
 
   it('Should disable action buttons when there are no rows', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         data: {
           ...sheet,
@@ -122,7 +122,7 @@ describe('Initiative header', () => {
   })
 
   it('Should emit next event when next button is clicked', async () => {
-    const component = await mountSuspended(Header, { props, global })
+    const component = await mountWithTooltips(Header, { props, global })
 
     await component.find('[test-id="next"]').trigger('click')
 
@@ -130,7 +130,7 @@ describe('Initiative header', () => {
   })
 
   it('Should emit previous event when previous button is clicked', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         data: {
           ...sheet,
@@ -146,7 +146,7 @@ describe('Initiative header', () => {
   })
 
   it('Should not display the live session trigger without an encounterId', async () => {
-    const component = await mountSuspended(Header, { props, global })
+    const component = await mountWithTooltips(Header, { props, global })
 
     expect(
       component.find('[test-id="live-session-trigger"]').exists(),
@@ -154,7 +154,7 @@ describe('Initiative header', () => {
   })
 
   it('Should display the live session trigger when an encounterId is given', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -165,7 +165,7 @@ describe('Initiative header', () => {
   })
 
   it('Should render the live session panel with the encounterId when opened', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -180,7 +180,7 @@ describe('Initiative header', () => {
   })
 
   it('Should close the live session dialog when it is dismissed', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -196,13 +196,13 @@ describe('Initiative header', () => {
   })
 
   it('Should not display the history trigger without an encounterId', async () => {
-    const component = await mountSuspended(Header, { props, global })
+    const component = await mountWithTooltips(Header, { props, global })
 
     expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
   })
 
   it('Should display the history trigger when an encounterId is given', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -211,7 +211,7 @@ describe('Initiative header', () => {
   })
 
   it('Should emit toggleHistory when the history trigger is clicked', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -222,7 +222,7 @@ describe('Initiative header', () => {
   })
 
   it('Should label the history trigger with the open action when the log is closed', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -233,7 +233,7 @@ describe('Initiative header', () => {
   })
 
   it('Should label the history trigger with the close action when the log is open', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42, historyOpen: true },
       global,
     })
@@ -244,13 +244,13 @@ describe('Initiative header', () => {
   })
 
   it('Should not display the end encounter button without an encounterId', async () => {
-    const component = await mountSuspended(Header, { props, global })
+    const component = await mountWithTooltips(Header, { props, global })
 
     expect(component.find('[test-id="end-encounter"]').exists()).toBeFalsy()
   })
 
   it('Should display the end encounter button when an encounterId is given', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -259,7 +259,7 @@ describe('Initiative header', () => {
   })
 
   it('Should emit endEncounter when the end encounter button is clicked', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: { ...props, encounterId: 42 },
       global,
     })
@@ -270,7 +270,7 @@ describe('Initiative header', () => {
   })
 
   it('Should disable the end encounter button when the sheet has no rows', async () => {
-    const component = await mountSuspended(Header, {
+    const component = await mountWithTooltips(Header, {
       props: {
         ...props,
         encounterId: 42,
@@ -286,7 +286,7 @@ describe('Initiative header', () => {
 
   describe('Reset submenu', () => {
     it('Should emit a soft reset when the soft option is clicked', async () => {
-      const component = await mountSuspended(Header, { props, global })
+      const component = await mountWithTooltips(Header, { props, global })
 
       await component.find('[test-id="reset-soft"]').trigger('click')
 
@@ -294,7 +294,7 @@ describe('Initiative header', () => {
     })
 
     it('Should emit a hard reset when the hard option is clicked', async () => {
-      const component = await mountSuspended(Header, { props, global })
+      const component = await mountWithTooltips(Header, { props, global })
 
       await component.find('[test-id="reset-hard"]').trigger('click')
 

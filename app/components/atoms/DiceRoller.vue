@@ -110,14 +110,15 @@ function calculateDndDiceRoll() {
           <Icon name="tabler:caret-up" />
         </UiButton>
         <div class="size-5">
-          <NuxtImg
-            v-tippy="dice.toUpperCase()"
-            :src="`/${dice}.webp`"
-            :alt="dice.toUpperCase()"
-            sizes="sm:20px md:20px lg:20px"
-            class="w-full h-full object-contain"
-            format="webp"
-          />
+          <Tooltip :text="dice.toUpperCase()">
+            <NuxtImg
+              :src="`/${dice}.webp`"
+              :alt="dice.toUpperCase()"
+              sizes="sm:20px md:20px lg:20px"
+              class="w-full h-full object-contain"
+              format="webp"
+            />
+          </Tooltip>
         </div>
         <UiButton
           type="button"

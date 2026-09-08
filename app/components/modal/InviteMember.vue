@@ -294,17 +294,18 @@ async function inviteNewUser(email: string): Promise<void> {
                 <UiFormMessage />
               </UiFormItem>
             </UiFormField>
-            <UiButton
-              v-tippy="$t('actions.delete')"
-              test-id="remove"
-              variant="destructive-ghost"
-              size="icon-sm"
-              type="button"
-              :aria-label="$t('actions.delete')"
-              @click="foundUsers.splice(index, 1)"
-            >
-              <Icon name="tabler:trash" aria-hidden="true" />
-            </UiButton>
+            <Tooltip :text="$t('actions.delete')">
+              <UiButton
+                test-id="remove"
+                variant="destructive-ghost"
+                size="icon-sm"
+                type="button"
+                :aria-label="$t('actions.delete')"
+                @click="foundUsers.splice(index, 1)"
+              >
+                <Icon name="tabler:trash" aria-hidden="true" />
+              </UiButton>
+            </Tooltip>
           </div>
 
           <input

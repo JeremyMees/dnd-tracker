@@ -1,9 +1,9 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Ac from '~/components/initiative/TableRow/Ac.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { openPopover } from '~~/test/nuxt/stubs/popover'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface AcTestMethods {
   handleAcChanges: (
@@ -38,7 +38,7 @@ describe('Initiative table row ac', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Ac, { props, provide })
+    const component = await mountWithTooltips(Ac, { props, provide })
 
     expect(component.html()).toMatchSnapshot()
   })
@@ -49,7 +49,7 @@ describe('Initiative table row ac', async () => {
     const maxArmorClassOld = 10
     const tempArmorClass = 5
 
-    const component = await mountSuspended(Ac, {
+    const component = await mountWithTooltips(Ac, {
       props: {
         item: {
           ...props.item,
@@ -72,7 +72,7 @@ describe('Initiative table row ac', async () => {
   })
 
   it('Should show destructive styling when AC is 0', async () => {
-    const component = await mountSuspended(Ac, {
+    const component = await mountWithTooltips(Ac, {
       props: {
         item: { ...props.item, armorClass: 0 },
       },
@@ -88,7 +88,7 @@ describe('Initiative table row ac', async () => {
   })
 
   it('Should show plus icon when AC is not defined', async () => {
-    const component = await mountSuspended(Ac, {
+    const component = await mountWithTooltips(Ac, {
       props: {
         ...props,
         item: { ...props.item, armorClass: undefined },
@@ -100,7 +100,7 @@ describe('Initiative table row ac', async () => {
   })
 
   it('Should set AC to 0 when negative values are not allowed', async () => {
-    const component = await mountSuspended(Ac, {
+    const component = await mountWithTooltips(Ac, {
       props: {
         item: {
           ...props.item,
@@ -131,7 +131,7 @@ describe('Initiative table row ac', async () => {
       } as InitiativeSheet['settings'],
     }
 
-    const component = await mountSuspended(Ac, {
+    const component = await mountWithTooltips(Ac, {
       props: {
         item: {
           ...props.item,
@@ -152,7 +152,7 @@ describe('Initiative table row ac', async () => {
 
   describe('handleAcChanges', () => {
     it('Should add to the armor class', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
         provide,
       })
@@ -164,7 +164,7 @@ describe('Initiative table row ac', async () => {
     })
 
     it('Should set a temporary armor class', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
         provide,
       })
@@ -176,7 +176,7 @@ describe('Initiative table row ac', async () => {
     })
 
     it('Should override the max armor class', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
         provide,
       })
@@ -189,7 +189,7 @@ describe('Initiative table row ac', async () => {
     })
 
     it('Should reset an overridden max armor class', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: {
           item: {
             ...props.item,
@@ -211,7 +211,7 @@ describe('Initiative table row ac', async () => {
 
   describe('Popover content', () => {
     it('Should render the current, max and temp AC breakdown when opened', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: {
           item: {
             ...props.item,
@@ -233,7 +233,7 @@ describe('Initiative table row ac', async () => {
     })
 
     it('Should show the previous max armor class even when it is 0', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: {
           item: {
             ...props.item,
@@ -251,7 +251,7 @@ describe('Initiative table row ac', async () => {
     })
 
     it('Should not show the AC breakdown or forms when armorClass is not defined', async () => {
-      const component = await mountSuspended(Ac, {
+      const component = await mountWithTooltips(Ac, {
         props: {
           item: {
             ...props.item,

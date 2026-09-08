@@ -46,16 +46,19 @@ const onSubmit = form.handleSubmit(async values => {
               <UiSelectTrigger>
                 <UiSelectValue :placeholder="$t('components.inputs.nothing')" />
               </UiSelectTrigger>
-              <UiButton
+              <Tooltip
                 v-if="value !== props.member.role"
-                v-tippy="$t('actions.save')"
-                type="submit"
-                size="icon-sm"
-                variant="success-ghost"
-                :aria-label="$t('actions.save')"
+                :text="$t('actions.save')"
               >
-                <Icon name="tabler:device-floppy" aria-hidden="true" />
-              </UiButton>
+                <UiButton
+                  type="submit"
+                  size="icon-sm"
+                  variant="success-ghost"
+                  :aria-label="$t('actions.save')"
+                >
+                  <Icon name="tabler:device-floppy" aria-hidden="true" />
+                </UiButton>
+              </Tooltip>
             </div>
           </UiFormControl>
           <UiSelectContent>

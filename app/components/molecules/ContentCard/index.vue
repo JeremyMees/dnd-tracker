@@ -28,26 +28,27 @@ const isOpen = ref<boolean>(false)
     @dblclick="isOpen = !isOpen"
   >
     <UiCardHeader class="p-4">
-      <UiButton
+      <Tooltip
         v-if="allowPin"
-        v-tippy="{
-          content: $t(`components.infoCard.${pinned ? 'remove' : 'add'}`),
-          placement: 'left',
-        }"
-        test-id="pin"
-        variant="secondary-ghost"
-        size="icon"
-        :aria-label="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
-        class="absolute right-0 top-0"
-        @click="pinned ? $emit('unpin') : $emit('pin')"
+        :text="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
+        side="left"
       >
-        <Icon
-          :name="pinned ? 'tabler:pinned-off' : 'tabler:pin'"
-          class="size-4 min-w-4 group-hover:text-foreground!"
-          :class="[pinned ? 'text-destructive' : 'text-primary']"
-          aria-hidden="true"
-        />
-      </UiButton>
+        <UiButton
+          test-id="pin"
+          variant="secondary-ghost"
+          size="icon"
+          :aria-label="$t(`components.infoCard.${pinned ? 'remove' : 'add'}`)"
+          class="absolute right-0 top-0"
+          @click="pinned ? $emit('unpin') : $emit('pin')"
+        >
+          <Icon
+            :name="pinned ? 'tabler:pinned-off' : 'tabler:pin'"
+            class="size-4 min-w-4 group-hover:text-foreground!"
+            :class="[pinned ? 'text-destructive' : 'text-primary']"
+            aria-hidden="true"
+          />
+        </UiButton>
+      </Tooltip>
       <UiCardTitle test-id="title" class="overflow-hidden text-ellipsis">
         {{ hit.name }}
       </UiCardTitle>

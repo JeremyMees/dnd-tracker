@@ -1,8 +1,9 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import type { VueWrapper } from '@vue/test-utils'
 import type { Editor } from '@tiptap/vue-3'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import TextEditor from '~/components/templates/TextEditor.vue'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface TextEditorVM {
   editor?: Editor
@@ -40,7 +41,7 @@ describe('TextEditor', () => {
   })
 
   it('Should match snapshot', async () => {
-    component = await mountSuspended(TextEditor, {
+    component = await mountWithTooltips(TextEditor, {
       props: { content: '<p>Hello</p>' },
     })
 
@@ -48,7 +49,7 @@ describe('TextEditor', () => {
   })
 
   it('Should initialize the editor with the provided content', async () => {
-    component = await mountSuspended(TextEditor, {
+    component = await mountWithTooltips(TextEditor, {
       props: { content: '<p>Hello</p>' },
     })
 
@@ -56,7 +57,7 @@ describe('TextEditor', () => {
   })
 
   it('Should apply the input variant styling by default', async () => {
-    component = await mountSuspended(TextEditor, { props: {} })
+    component = await mountWithTooltips(TextEditor, { props: {} })
 
     const classes = component.get('[test-id="editor"]').classes()
     expect(classes).toContain('border-input')
@@ -64,7 +65,7 @@ describe('TextEditor', () => {
   })
 
   it('Should apply the widget variant styling', async () => {
-    component = await mountSuspended(TextEditor, {
+    component = await mountWithTooltips(TextEditor, {
       props: { variant: 'widget' },
     })
 
@@ -74,7 +75,7 @@ describe('TextEditor', () => {
   })
 
   it('Should highlight the border when focused and remove it when blurred', async () => {
-    component = await mountSuspended(TextEditor, { props: {} })
+    component = await mountWithTooltips(TextEditor, { props: {} })
     const dom = component.get('.tiptap').element
 
     dom.dispatchEvent(new FocusEvent('focus'))
@@ -90,7 +91,7 @@ describe('TextEditor', () => {
 
   describe('Text style dropdown', () => {
     it('Should open the dropdown on mouseenter and close it on mouseleave', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       await component
         .get('[test-id="text-style-dropdown"]')
@@ -103,7 +104,7 @@ describe('TextEditor', () => {
     })
 
     it('Should open the dropdown when the trigger is clicked', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       await component.get('[test-id="text-style-dropdown"]').trigger('click')
 
@@ -111,7 +112,7 @@ describe('TextEditor', () => {
     })
 
     it('Should close the dropdown when escape is pressed', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       vm().isOpen = true
       await nextTick()
@@ -125,7 +126,7 @@ describe('TextEditor', () => {
     })
 
     it('Should close the dropdown when clicking outside of it', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       vm().isOpen = true
       await nextTick()
@@ -140,7 +141,7 @@ describe('TextEditor', () => {
     })
 
     it('Should set the block to a paragraph and close the dropdown', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       vm().editor?.commands.toggleHeading({ level: 1 })
       await vi.advanceTimersByTimeAsync(32)
@@ -162,7 +163,7 @@ describe('TextEditor', () => {
     it.each([1, 2, 3] as const)(
       'Should set heading level %s and close the dropdown',
       async level => {
-        component = await mountSuspended(TextEditor, { props: {} })
+        component = await mountWithTooltips(TextEditor, { props: {} })
 
         vm().isOpen = true
         await nextTick()
@@ -189,7 +190,7 @@ describe('TextEditor', () => {
       ['ordered-list', 'orderedList'],
       ['blockquote', 'blockquote'],
     ])('Should toggle %s when clicked', async (testId, mark) => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       await component.get(`[test-id="${testId}"]`).trigger('click')
       await vi.advanceTimersByTimeAsync(32)
@@ -209,7 +210,7 @@ describe('TextEditor', () => {
     })
 
     it('Should insert a horizontal rule when clicked', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       await component.get('[test-id="horizontal-rule"]').trigger('click')
 
@@ -217,7 +218,7 @@ describe('TextEditor', () => {
     })
 
     it('Should clear formatting marks when clicked', async () => {
-      component = await mountSuspended(TextEditor, { props: {} })
+      component = await mountWithTooltips(TextEditor, { props: {} })
 
       vm().editor?.commands.insertContent('some text')
       vm().editor?.commands.selectAll()
@@ -230,7 +231,7 @@ describe('TextEditor', () => {
     })
 
     it('Should support undoing and redoing content changes', async () => {
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -254,7 +255,7 @@ describe('TextEditor', () => {
     })
 
     it('Should disable undo and redo when there is nothing to undo or redo', async () => {
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -274,7 +275,7 @@ describe('TextEditor', () => {
 
     it('Should set a link when a url is provided', async () => {
       window.prompt = vi.fn().mockReturnValue('https://example.com')
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -289,7 +290,7 @@ describe('TextEditor', () => {
 
     it('Should not change the link when the prompt is cancelled', async () => {
       window.prompt = vi.fn().mockReturnValue(null)
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -303,7 +304,7 @@ describe('TextEditor', () => {
     it('Should unset the link when the prompt is submitted empty', async () => {
       const promptMock = vi.fn()
       window.prompt = promptMock
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -322,7 +323,7 @@ describe('TextEditor', () => {
 
     it('Should unset the link when the unlink button is clicked', async () => {
       window.prompt = vi.fn().mockReturnValue('https://example.com')
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -347,7 +348,7 @@ describe('TextEditor', () => {
 
   describe('Content updates', () => {
     it('Should emit updated with sanitized content after debounce', async () => {
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -363,7 +364,7 @@ describe('TextEditor', () => {
     it('Should set invalidHTML and not emit when sanitizing changes the content', async () => {
       sanitizeMock.mockImplementation(() => '<p>different</p>')
 
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p></p>' },
       })
 
@@ -378,7 +379,7 @@ describe('TextEditor', () => {
 
   describe('Content prop watcher', () => {
     it('Should update the editor content when the prop changes and the editor is not focused', async () => {
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p>Initial</p>' },
       })
 
@@ -389,7 +390,7 @@ describe('TextEditor', () => {
     })
 
     it('Should not update the editor content when the prop changes while focused', async () => {
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p>Initial</p>' },
       })
 
@@ -403,7 +404,7 @@ describe('TextEditor', () => {
 
   describe('Character stats', () => {
     it('Should render the character and word counts', async () => {
-      component = await mountSuspended(TextEditor, {
+      component = await mountWithTooltips(TextEditor, {
         props: { content: '<p>Hello world</p>', charLimit: 100 },
       })
 
@@ -413,7 +414,7 @@ describe('TextEditor', () => {
   })
 
   it('Should destroy the editor on unmount', async () => {
-    component = await mountSuspended(TextEditor, { props: {} })
+    component = await mountWithTooltips(TextEditor, { props: {} })
     const destroySpy = vi.spyOn(vm().editor!, 'destroy')
 
     component.unmount()
