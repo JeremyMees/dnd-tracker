@@ -18,37 +18,41 @@ const pageName = computed<string>(() =>
 </script>
 
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtLoadingIndicator
-      color="linear-gradient(to right,#7333E0 70%,#D926AA 100%)"
-      error-color="#F87272"
-    />
+  <AnimationMotionProvider>
+    <TooltipProvider>
+      <div>
+        <NuxtRouteAnnouncer />
+        <NuxtLoadingIndicator
+          color="linear-gradient(to right,#7333E0 70%,#D926AA 100%)"
+          error-color="#F87272"
+        />
 
-    <LazyConsentBanner v-if="nuxtReady" />
+        <LazyConsentBanner v-if="nuxtReady" />
 
-    <ClientOnly>
-      <UiToaster />
-      <ModalGroup />
-      <LazyConfirmDialog
-        v-for="dialog in dialogs"
-        :key="dialog.uuid"
-        v-bind="dialog"
-        v-on="handlers"
-      />
-    </ClientOnly>
+        <ClientOnly>
+          <UiToaster />
+          <ModalGroup />
+          <LazyConfirmDialog
+            v-for="dialog in dialogs"
+            :key="dialog.uuid"
+            v-bind="dialog"
+            v-on="handlers"
+          />
+        </ClientOnly>
 
-    <div
-      :class="{
-        'bg-primary/10': [
-          'profile',
-          'pricing',
-          'updates-feature-request',
-        ].includes(pageName),
-      }"
-      class="flex flex-col min-h-screen"
-    >
-      <NuxtPage />
-    </div>
-  </div>
+        <div
+          :class="{
+            'bg-primary/10': [
+              'profile',
+              'pricing',
+              'updates-feature-request',
+            ].includes(pageName),
+          }"
+          class="flex flex-col min-h-screen"
+        >
+          <NuxtPage />
+        </div>
+      </div>
+    </TooltipProvider>
+  </AnimationMotionProvider>
 </template>

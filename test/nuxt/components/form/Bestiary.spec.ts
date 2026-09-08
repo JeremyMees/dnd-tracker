@@ -1,4 +1,3 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Bestiary from '~/components/form/Bestiary.vue'
@@ -9,6 +8,7 @@ import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { touchArgs } from '~~/test/nuxt/stubs/queries'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
 
@@ -54,7 +54,8 @@ function mountBestiary(props: Record<string, unknown> = {}) {
 
   return {
     injected,
-    mount: () => mountSuspended(Bestiary, { props, provide: injected.provide }),
+    mount: () =>
+      mountWithTooltips(Bestiary, { props, provide: injected.provide }),
   }
 }
 
@@ -212,7 +213,7 @@ describe('Bestiary', () => {
   it('Should not add a monster without a sheet', async () => {
     const injected = createInitiativeSheetProvide(null)
 
-    const component = await mountSuspended(Bestiary, {
+    const component = await mountWithTooltips(Bestiary, {
       provide: injected.provide,
     })
 
@@ -262,7 +263,7 @@ describe('Bestiary', () => {
     ]
 
     const injected = createInitiativeSheetProvide()
-    const component = await mountSuspended(Bestiary, {
+    const component = await mountWithTooltips(Bestiary, {
       provide: injected.provide,
       global: {
         stubs: { PopoverContent: { template: '<div><slot /></div>' } },
@@ -279,7 +280,7 @@ describe('Bestiary', () => {
 
   it('Should refetch when the selected game system changes', async () => {
     const injected = createInitiativeSheetProvide()
-    const component = await mountSuspended(Bestiary, {
+    const component = await mountWithTooltips(Bestiary, {
       provide: injected.provide,
       global: {
         stubs: { PopoverContent: { template: '<div><slot /></div>' } },
@@ -433,7 +434,7 @@ describe('Bestiary', () => {
       ]
 
       const injected = createInitiativeSheetProvide()
-      const component = await mountSuspended(Bestiary, {
+      const component = await mountWithTooltips(Bestiary, {
         provide: injected.provide,
         global: {
           stubs: { PopoverContent: { template: '<div><slot /></div>' } },
@@ -448,7 +449,7 @@ describe('Bestiary', () => {
 
     it('Should show the reset button when the game system changes', async () => {
       const injected = createInitiativeSheetProvide()
-      const component = await mountSuspended(Bestiary, {
+      const component = await mountWithTooltips(Bestiary, {
         provide: injected.provide,
         global: {
           stubs: { PopoverContent: { template: '<div><slot /></div>' } },

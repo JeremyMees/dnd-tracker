@@ -11,16 +11,17 @@ const { toggleSidebar } = useSidebar()
 </script>
 
 <template>
-  <Button
-    v-tippy="$t('actions.toggleSidebar')"
-    data-sidebar="trigger"
-    data-slot="sidebar-trigger"
-    variant="default-ghost"
-    size="icon"
-    :class="cn('h-7 w-7', props.class)"
-    @click="toggleSidebar"
-  >
-    <Icon name="tabler:layout-sidebar" class="size-4" />
-    <span class="sr-only">{{ $t('actions.toggleSidebar') }}</span>
-  </Button>
+  <Tooltip :text="$t('actions.toggleSidebar')">
+    <Button
+      data-sidebar="trigger"
+      data-slot="sidebar-trigger"
+      variant="default-ghost"
+      size="icon"
+      :class="cn('h-7 w-7', props.class)"
+      @click="toggleSidebar"
+    >
+      <Icon name="tabler:layout-sidebar" class="size-4" />
+      <span class="sr-only">{{ $t('actions.toggleSidebar') }}</span>
+    </Button>
+  </Tooltip>
 </template>

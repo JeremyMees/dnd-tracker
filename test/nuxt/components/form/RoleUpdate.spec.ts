@@ -1,9 +1,9 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import RoleUpdate from '~/components/form/RoleUpdate.vue'
 import { mockCampaignFull, mockTeamMember } from '~~/test/fixtures/campaign'
 import { submitForm } from '~~/test/nuxt/stubs/form'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { updateTeamMember } = vi.hoisted(() => ({ updateTeamMember: vi.fn() }))
 
@@ -14,7 +14,7 @@ vi.mock('~/queries/team-members', () => ({
 const member: TeamMemberFull = { ...mockTeamMember, role: 'Viewer' }
 
 function mountRoleUpdate(overrides: Partial<TeamMemberFull> = {}) {
-  return mountSuspended(RoleUpdate, {
+  return mountWithTooltips(RoleUpdate, {
     props: {
       member: { ...member, ...overrides },
       campaignId: mockCampaignFull.id,

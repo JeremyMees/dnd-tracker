@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { m } from 'motion-v'
+
 const reduced = useReducedMotion()
 
 const { scrollY } = useScroll()
@@ -25,28 +27,25 @@ function step(index: number) {
     class="h-auto min-h-dvh justify-start gap-10 overflow-hidden pt-24 pb-0"
   >
     <div class="dnd-container flex flex-1 flex-col items-center justify-center">
-      <Motion
-        as="h1"
+      <m.h1
         :initial="rise"
         :animate="settle"
         :transition="step(1)"
         class="mt-8 max-w-4xl text-center text-3xl font-black tracking-tight text-balance sm:text-4xl md:text-5xl lg:text-6xl"
       >
         {{ $t('components.hero.title') }}
-      </Motion>
+      </m.h1>
 
-      <Motion
-        as="p"
+      <m.p
         :initial="rise"
         :animate="settle"
         :transition="step(2)"
         class="mx-auto mt-6 max-w-[620px] text-center text-lg text-pretty text-muted-foreground"
       >
         {{ $t('components.hero.description') }}
-      </Motion>
+      </m.p>
 
-      <Motion
-        as="div"
+      <m.div
         :initial="rise"
         :animate="settle"
         :transition="step(3)"
@@ -70,11 +69,10 @@ function step(index: number) {
             />
           </NuxtLinkLocale>
         </UiButton>
-      </Motion>
+      </m.div>
     </div>
 
-    <Motion
-      as="div"
+    <m.div
       test-id="hero-preview"
       :initial="reduced ? undefined : { opacity: 0, y: 60 }"
       :animate="{ opacity: 1, y: 0 }"
@@ -102,6 +100,6 @@ function step(index: number) {
           class="rounded-t-[32px]"
         />
       </div>
-    </Motion>
+    </m.div>
   </UiAuroraBackground>
 </template>

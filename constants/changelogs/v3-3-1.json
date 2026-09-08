@@ -1,0 +1,30 @@
+{
+  "version": "v3.3.1",
+  "date": "2026-09-08",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Dnd content now comes from our own API instead of open5e, which allows for more control and customization"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Improved performance with smaller build size and faster loading times"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Conditions without levels could not be selected in the player portal"
+        }
+      ]
+    }
+  ]
+}

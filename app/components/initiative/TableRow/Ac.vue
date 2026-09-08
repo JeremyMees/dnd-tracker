@@ -67,14 +67,14 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
             >
               {{ item.armorClass }}
             </span>
-            <span
+            <Tooltip
               v-if="isDefined(item.armorClass) && item.tempArmorClass"
-              v-tippy="$t('general.temp')"
-              test-id="temp"
-              class="text-warning text-xs"
+              :text="$t('general.temp')"
             >
-              +{{ item.tempArmorClass }}
-            </span>
+              <span test-id="temp" class="text-warning text-xs">
+                +{{ item.tempArmorClass }}
+              </span>
+            </Tooltip>
           </div>
           <span
             v-if="item.maxArmorClass !== item.armorClass"

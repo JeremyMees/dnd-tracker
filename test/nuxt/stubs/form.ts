@@ -4,6 +4,7 @@ import type { VueWrapper } from '@vue/test-utils'
 import { useForm } from 'vee-validate'
 import type { Component } from 'vue'
 import { vi } from 'vitest'
+import TooltipProvider from '~/components/atoms/TooltipProvider.vue'
 
 type UseFormOptions = NonNullable<Parameters<typeof useForm>[0]>
 
@@ -60,7 +61,10 @@ export async function mountWithForm(
         validationSchema: options.validationSchema,
       })
 
-      return () => h(component, options.props, options.slots)
+      return () =>
+        h(TooltipProvider, null, {
+          default: () => h(component, options.props, options.slots),
+        })
     },
   })
 

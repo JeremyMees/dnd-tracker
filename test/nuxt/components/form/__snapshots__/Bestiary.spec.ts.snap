@@ -40,18 +40,26 @@ exports[`Bestiary > Should match snapshot 1`] = `
     <div class="grid gap-4 overflow-y-auto" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
       <div class="flex flex-col gap-4">
         <div class="rounded-lg text-card-foreground shadow-sm relative bg-secondary/50 border-secondary border-4" id="el">
-          <div class="flex flex-col gap-y-1.5 p-6"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-success hover:text-success-foreground size-7 absolute right-4 top-4" test-id="add-button" aria-label="actions.add"><span class="iconify i-tabler:plus size-4 min-w-4" aria-hidden="true"></span></button>
+          <div class="flex flex-col gap-y-1.5 p-6"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-success hover:text-success-foreground size-7 absolute right-4 top-4" data-state="closed" data-grace-area-trigger="" test-id="add-button" aria-label="actions.add"><span class="iconify i-tabler:plus size-4 min-w-4" aria-hidden="true"></span></button>
+            <!--teleport start-->
+            <!--teleport end-->
             <h3 class="text-2xl font-semibold leading-none tracking-tight" test-id="title">Aboleth</h3>
             <div class="flex gap-4">
-              <div class="flex gap-1 items-center"><span class="iconify i-tabler:skull size-6 min-w-6 text-warning" aria-hidden="true"></span>
+              <div data-state="closed" data-grace-area-trigger="" class="flex gap-1 items-center"><span class="iconify i-tabler:skull size-6 min-w-6 text-warning" aria-hidden="true"></span>
                 <p class="font-bold">11</p>
               </div>
-              <div class="flex gap-1 items-center"><span class="iconify i-tabler:shield size-6 min-w-6 text-help" aria-hidden="true"></span>
+              <!--teleport start-->
+              <!--teleport end-->
+              <div data-state="closed" data-grace-area-trigger="" class="flex gap-1 items-center"><span class="iconify i-tabler:shield size-6 min-w-6 text-help" aria-hidden="true"></span>
                 <p class="font-bold">17</p>
               </div>
-              <div class="flex gap-1 items-center"><span class="iconify i-tabler:heart size-6 min-w-6 text-destructive" aria-hidden="true"></span>
+              <!--teleport start-->
+              <!--teleport end-->
+              <div data-state="closed" data-grace-area-trigger="" class="flex gap-1 items-center"><span class="iconify i-tabler:heart size-6 min-w-6 text-destructive" aria-hidden="true"></span>
                 <p class="font-bold">171</p>
               </div>
+              <!--teleport start-->
+              <!--teleport end-->
             </div>
           </div>
           <div class="p-6 pt-0">

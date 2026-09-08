@@ -1,4 +1,4 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterPage from '~/pages/encounters/[id]-[title].vue'
@@ -7,6 +7,7 @@ import { authUser } from '~~/test/fixtures/auth-user'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const {
   getQueryData,
@@ -111,7 +112,9 @@ interface Probe {
 }
 
 async function mountPage() {
-  const component = await mountSuspended(EncounterPage, { global: { stubs } })
+  const component = await mountWithTooltips(EncounterPage, {
+    global: { stubs },
+  })
 
   await flushPromises()
 

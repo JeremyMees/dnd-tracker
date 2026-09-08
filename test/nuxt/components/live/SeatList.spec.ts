@@ -1,7 +1,8 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LiveSeatList from '~/components/live/SeatList.vue'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { ask, kick, reassign } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -50,25 +51,25 @@ describe('LiveSeatList', () => {
     ]
     connected.value = new Set(['seat-1'])
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should show the empty state when no one has joined', async () => {
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     expect(component.find('[test-id="seat-empty"]').exists()).toBe(true)
   })
 
   it('Should show the title by default', async () => {
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     expect(component.find('[test-id="seat-list-title"]').exists()).toBe(true)
   })
 
   it('Should hide the title when showTitle is false', async () => {
-    const component = await mountSuspended(LiveSeatList, {
+    const component = await mountWithTooltips(LiveSeatList, {
       props: { ...props, showTitle: false },
     })
 
@@ -86,7 +87,7 @@ describe('LiveSeatList', () => {
     ]
     connected.value = new Set(['seat-1'])
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     const seat = component.find('[test-id="seat-seat-1"]')
 
@@ -102,7 +103,7 @@ describe('LiveSeatList', () => {
       { seat: 'seat-2', row: null, name: 'Watcher', spectator: true },
     ]
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     expect(component.find('[test-id="reassign-seat-2"]').exists()).toBe(false)
   })
@@ -113,7 +114,7 @@ describe('LiveSeatList', () => {
     ]
     connected.value = new Set()
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     expect(
       component.find('[test-id="seat-status-seat-1"]').classes(),
@@ -125,7 +126,7 @@ describe('LiveSeatList', () => {
       { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
     ]
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     await component.find('[test-id="kick-seat-1"]').trigger('click')
 
@@ -148,7 +149,7 @@ describe('LiveSeatList', () => {
       { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
     ]
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     await component.find('[test-id="kick-seat-1"]').trigger('click')
 
@@ -163,7 +164,7 @@ describe('LiveSeatList', () => {
       { seat: 'seat-1', row: null, name: 'Elara', spectator: false },
     ]
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     expect(
       component.findComponent({ name: 'SelectRoot' }).props('modelValue'),
@@ -175,7 +176,7 @@ describe('LiveSeatList', () => {
       { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
     ]
 
-    const component = await mountSuspended(LiveSeatList, { props })
+    const component = await mountWithTooltips(LiveSeatList, { props })
 
     await selectOption(component, 'row-2')
 

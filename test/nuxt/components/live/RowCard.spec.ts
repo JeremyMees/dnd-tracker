@@ -1,7 +1,7 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import LiveRowCard from '~/components/live/RowCard.vue'
 import { playerRow as baseRow } from '~~/test/fixtures/player-portal'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 function setSeat(overrides: Partial<LiveJoinResponse> = {}): void {
   localStorage.setItem(
@@ -26,7 +26,7 @@ describe('LiveRowCard', () => {
   })
 
   it('renders the name, type icon and initiative', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -35,7 +35,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows a placeholder dash when initiative has not been rolled', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: { ...baseRow, initiative: -1 }, active: false },
     })
 
@@ -43,7 +43,7 @@ describe('LiveRowCard', () => {
   })
 
   it('highlights the card when active', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: true },
     })
 
@@ -53,7 +53,7 @@ describe('LiveRowCard', () => {
   })
 
   it('does not highlight the card when inactive', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -63,7 +63,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows hit points and temp hit points when defined', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, hitPoints: 8, maxHitPoints: 20, tempHitPoints: 3 },
         active: false,
@@ -79,7 +79,7 @@ describe('LiveRowCard', () => {
   })
 
   it('marks the hit points as destructive when at or below zero', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, hitPoints: 0, maxHitPoints: 20 },
         active: false,
@@ -92,7 +92,7 @@ describe('LiveRowCard', () => {
   })
 
   it('hides the max hit points when it equals the current hit points', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, hitPoints: 20, maxHitPoints: 20 },
         active: false,
@@ -103,7 +103,7 @@ describe('LiveRowCard', () => {
   })
 
   it('hides the temp hit points indicator when there are none', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -119,7 +119,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows the health band badge instead of numbers when hit points are hidden', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, type: 'monster', healthBand: 'bloodied' },
         active: false,
@@ -136,7 +136,7 @@ describe('LiveRowCard', () => {
   })
 
   it('styles the health band badge as healthy', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, type: 'monster', healthBand: 'healthy' },
         active: false,
@@ -149,7 +149,7 @@ describe('LiveRowCard', () => {
   })
 
   it('styles the health band badge as critical', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, type: 'monster', healthBand: 'critical' },
         active: false,
@@ -162,7 +162,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows armor class and temp armor class when defined', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, armorClass: 14, tempArmorClass: 2 },
         active: false,
@@ -176,7 +176,7 @@ describe('LiveRowCard', () => {
   })
 
   it('hides the temp armor class indicator when there is none', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: { ...baseRow, armorClass: 14, tempArmorClass: 0 },
         active: false,
@@ -187,7 +187,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows conditions as badges', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -201,7 +201,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows the condition level when defined', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -217,7 +217,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows the concentration indicator as active when concentrating', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: { ...baseRow, concentration: true }, active: false },
     })
 
@@ -227,7 +227,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows the concentration indicator as inactive when not concentrating', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -237,7 +237,7 @@ describe('LiveRowCard', () => {
   })
 
   it('hides the concentration indicator for lair rows', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: { ...baseRow, type: 'lair' }, active: false },
     })
 
@@ -245,7 +245,7 @@ describe('LiveRowCard', () => {
   })
 
   it('shows the death saves grid when present', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -265,7 +265,7 @@ describe('LiveRowCard', () => {
   })
 
   it('highlights the death saves grid as stabilized when all saves succeed', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -284,7 +284,7 @@ describe('LiveRowCard', () => {
   })
 
   it('highlights the death saves grid as dead when all saves fail', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -303,7 +303,7 @@ describe('LiveRowCard', () => {
   })
 
   it('hides the death saves grid for monster rows even when present', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: {
         row: {
           ...baseRow,
@@ -321,7 +321,7 @@ describe('LiveRowCard', () => {
   })
 
   it('does not show the death saves grid when absent', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -329,7 +329,7 @@ describe('LiveRowCard', () => {
   })
 
   it('does not show the own badge without a claimed seat', async () => {
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -339,7 +339,7 @@ describe('LiveRowCard', () => {
   it('shows the own badge for the claimed row', async () => {
     setSeat({ row: baseRow.id })
 
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -349,7 +349,7 @@ describe('LiveRowCard', () => {
   it('does not show the own badge for a different row', async () => {
     setSeat({ row: 'row-2' })
 
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 
@@ -359,7 +359,7 @@ describe('LiveRowCard', () => {
   it('does not show the own badge for a spectator seat', async () => {
     setSeat({ row: baseRow.id, spectator: true })
 
-    const component = await mountSuspended(LiveRowCard, {
+    const component = await mountWithTooltips(LiveRowCard, {
       props: { row: baseRow, active: false },
     })
 

@@ -330,30 +330,32 @@ async function addInitiative(options: {
       </div>
 
       <div class="flex justify-end gap-2">
-        <UiButton
-          v-tippy="$t('actions.prev')"
-          test-id="prev"
-          type="button"
-          variant="foreground"
-          size="icon"
-          class="min-w-10"
-          :disabled="!canGoBack"
-          @click="activeTab = tabs[tabIndex - 1]!"
-        >
-          <Icon name="tabler:arrow-left" />
-        </UiButton>
-        <UiButton
-          v-tippy="$t('actions.next')"
-          test-id="next"
-          type="button"
-          variant="foreground"
-          size="icon"
-          class="min-w-10"
-          :disabled="!canGoForward"
-          @click="activeTab = tabs[tabIndex + 1]!"
-        >
-          <Icon name="tabler:arrow-right" />
-        </UiButton>
+        <Tooltip :text="$t('actions.prev')">
+          <UiButton
+            test-id="prev"
+            type="button"
+            variant="foreground"
+            size="icon"
+            class="min-w-10"
+            :disabled="!canGoBack"
+            @click="activeTab = tabs[tabIndex - 1]!"
+          >
+            <Icon name="tabler:arrow-left" />
+          </UiButton>
+        </Tooltip>
+        <Tooltip :text="$t('actions.next')">
+          <UiButton
+            test-id="next"
+            type="button"
+            variant="foreground"
+            size="icon"
+            class="min-w-10"
+            :disabled="!canGoForward"
+            @click="activeTab = tabs[tabIndex + 1]!"
+          >
+            <Icon name="tabler:arrow-right" />
+          </UiButton>
+        </Tooltip>
         <UiButton type="submit" class="w-full md:w-fit">
           {{ $t('actions.save') }}
         </UiButton>

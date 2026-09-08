@@ -29,59 +29,62 @@ const stats: { key: keyof DndMonster; label: string }[] = [
     @dblclick="isOpen = !isOpen"
   >
     <UiCardHeader>
-      <UiButton
-        v-if="addable"
-        v-tippy="{
-          content: $t('actions.add'),
-          placement: 'left',
-        }"
-        variant="success-ghost"
-        size="icon-sm"
-        test-id="add-button"
-        :aria-label="$t('actions.add')"
-        class="absolute right-4 top-4"
-        @click="$emit('add', monster)"
-      >
-        <Icon name="tabler:plus" class="size-4 min-w-4" aria-hidden="true" />
-      </UiButton>
+      <Tooltip v-if="addable" :text="$t('actions.add')" side="left">
+        <UiButton
+          variant="success-ghost"
+          size="icon-sm"
+          test-id="add-button"
+          :aria-label="$t('actions.add')"
+          class="absolute right-4 top-4"
+          @click="$emit('add', monster)"
+        >
+          <Icon name="tabler:plus" class="size-4 min-w-4" aria-hidden="true" />
+        </UiButton>
+      </Tooltip>
       <UiCardTitle test-id="title">
         {{ monster.name }}
       </UiCardTitle>
       <div class="flex gap-4">
-        <div v-tippy="{ content: 'CR' }" class="flex gap-1 items-center">
-          <Icon
-            name="tabler:skull"
-            class="size-6 min-w-6 text-warning"
-            aria-hidden="true"
-          />
-          <p class="font-bold">
-            {{
-              monster.challengeRating != null
-                ? formatChallengeRating(monster.challengeRating)
-                : '_'
-            }}
-          </p>
-        </div>
-        <div v-tippy="{ content: 'AC' }" class="flex gap-1 items-center">
-          <Icon
-            name="tabler:shield"
-            class="size-6 min-w-6 text-help"
-            aria-hidden="true"
-          />
-          <p class="font-bold">
-            {{ monster.armorClass || '_' }}
-          </p>
-        </div>
-        <div v-tippy="{ content: 'HP' }" class="flex gap-1 items-center">
-          <Icon
-            name="tabler:heart"
-            class="size-6 min-w-6 text-destructive"
-            aria-hidden="true"
-          />
-          <p class="font-bold">
-            {{ monster.hitPoints || '_' }}
-          </p>
-        </div>
+        <Tooltip text="CR">
+          <div class="flex gap-1 items-center">
+            <Icon
+              name="tabler:skull"
+              class="size-6 min-w-6 text-warning"
+              aria-hidden="true"
+            />
+            <p class="font-bold">
+              {{
+                monster.challengeRating != null
+                  ? formatChallengeRating(monster.challengeRating)
+                  : '_'
+              }}
+            </p>
+          </div>
+        </Tooltip>
+        <Tooltip text="AC">
+          <div class="flex gap-1 items-center">
+            <Icon
+              name="tabler:shield"
+              class="size-6 min-w-6 text-help"
+              aria-hidden="true"
+            />
+            <p class="font-bold">
+              {{ monster.armorClass || '_' }}
+            </p>
+          </div>
+        </Tooltip>
+        <Tooltip text="HP">
+          <div class="flex gap-1 items-center">
+            <Icon
+              name="tabler:heart"
+              class="size-6 min-w-6 text-destructive"
+              aria-hidden="true"
+            />
+            <p class="font-bold">
+              {{ monster.hitPoints || '_' }}
+            </p>
+          </div>
+        </Tooltip>
       </div>
     </UiCardHeader>
 

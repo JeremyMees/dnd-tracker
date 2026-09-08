@@ -47,11 +47,7 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  css: [
-    '~/assets/css/global.css',
-    '~/assets/css/tippy.css',
-    '~/assets/css/driver.css',
-  ],
+  css: ['~/assets/css/global.css', '~/assets/css/driver.css'],
 
   site: {
     url: seo.url,
@@ -127,7 +123,16 @@ export default defineNuxtConfig({
 
   hooks: {
     close: nuxt => {
-      if (!nuxt.options.dev && !nuxt.options.test && !nuxt.options._prepare) {
+      const analyze = nuxt.options.build.analyze
+      const analyzing =
+        analyze === true || (typeof analyze === 'object' && analyze.enabled)
+
+      if (
+        !nuxt.options.dev &&
+        !nuxt.options.test &&
+        !nuxt.options._prepare &&
+        !analyzing
+      ) {
         process.exit(0)
       }
     },
@@ -153,7 +158,6 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@dicebear/core',
         '@tanstack/vue-query',
         '@tanstack/vue-table',
         '@tiptap/extension-highlight',
@@ -172,9 +176,7 @@ export default defineNuxtConfig({
         'reka-ui',
         'tailwind-merge',
         'vee-validate',
-        'vue-dompurify-html',
         'vue-draggable-plus',
-        'vue-tippy',
         'ybug-vue',
         'zod',
       ],

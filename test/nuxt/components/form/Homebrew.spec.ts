@@ -1,4 +1,4 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Homebrew from '~/components/form/Homebrew.vue'
@@ -8,6 +8,7 @@ import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { createHomebrew, updateHomebrew, currentUser } = vi.hoisted(() => ({
   createHomebrew: vi.fn(),
@@ -52,7 +53,7 @@ function mountHomebrew({
   rows = sheet.rows,
   campaign = ownedCampaign,
 }: MountOptions = {}) {
-  return mountSuspended(Homebrew, {
+  return mountWithTooltips(Homebrew, {
     props: {
       count: 0,
       campaignId,
@@ -405,7 +406,7 @@ describe('Homebrew', () => {
   })
 
   it('Should not add to the sheet when the update handler is missing', async () => {
-    const component = await mountSuspended(Homebrew, {
+    const component = await mountWithTooltips(Homebrew, {
       props: {
         count: 0,
         sheet: { ...sheet },

@@ -9,6 +9,6 @@ export const conditionSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   desc: z.string(),
-  level: z.number().optional(),
-  hasLevels: z.boolean().optional(),
+  level: z.number().nullish(),
+  hasLevels: z.boolean().nullish(),
 })

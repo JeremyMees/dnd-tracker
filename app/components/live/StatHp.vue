@@ -26,13 +26,9 @@ defineProps<{
     >
       / {{ row.maxHitPoints }}
     </span>
-    <span
-      v-if="row.tempHitPoints"
-      v-tippy="$t('general.temp')"
-      class="text-warning text-xs"
-    >
-      +{{ row.tempHitPoints }}
-    </span>
+    <Tooltip v-if="row.tempHitPoints" :text="$t('general.temp')">
+      <span class="text-warning text-xs"> +{{ row.tempHitPoints }} </span>
+    </Tooltip>
   </div>
   <slot v-else />
 </template>

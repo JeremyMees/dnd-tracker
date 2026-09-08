@@ -1,9 +1,20 @@
 import { describe, expect, it, vi } from 'vitest'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 type UseMarkdownModule = typeof import('~/composables/useMarkdown')
 
+const { sanitizeSpy } = vi.hoisted(() => ({
+  sanitizeSpy: vi.fn((html: string) => html),
+}))
+
+mockNuxtImport(
+  'loadMarkdownSanitizer',
+  () => () => Promise.resolve(sanitizeSpy),
+)
+
 async function loadUseMarkdown() {
   vi.resetModules()
+  sanitizeSpy.mockClear()
 
   const { useMarkdown } = await vi.importActual<UseMarkdownModule>(
     '~/composables/useMarkdown',
@@ -40,6 +51,23 @@ describe('useMarkdown', () => {
     expect(html).toContain('<p>Effects.</p>')
     expect(html).toContain('<ul>')
     expect(html).toContain('<li>Can’t See. You can’t see.</li>')
+  })
+
+  it('Should pass the rendered markup through the sanitizer', async () => {
+    const useMarkdown = await loadUseMarkdown()
+    const { renderMarkdown } = useMarkdown()
+
+    sanitizeSpy.mockImplementation(() => '<p>clean</p>')
+
+    await vi.waitFor(() =>
+      expect(renderMarkdown('**bold**')).toBe('<p>clean</p>'),
+    )
+
+    expect(sanitizeSpy).toHaveBeenCalledWith(
+      expect.stringContaining('<strong>bold</strong>'),
+    )
+
+    sanitizeSpy.mockImplementation((html: string) => html)
   })
 
   it('Should re-render reactively when the renderer resolves', async () => {

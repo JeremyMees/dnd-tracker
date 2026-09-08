@@ -1,4 +1,3 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ContentCard from '~/components/molecules/ContentCard/index.vue'
 import {
@@ -8,6 +7,7 @@ import {
   dndSpellFixture,
   dndWeaponFixture,
 } from '~~/test/fixtures/open5e'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   hit: DndItem
@@ -45,7 +45,7 @@ const contentTypes = [
 
 describe.each(contentTypes)('ContentCard - $name', ({ hit, type, body }) => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(ContentCard, {
+    const component = await mountWithTooltips(ContentCard, {
       props: { ...props, hit, type },
     })
 
@@ -53,7 +53,7 @@ describe.each(contentTypes)('ContentCard - $name', ({ hit, type, body }) => {
   })
 
   it('Should render the matching body component and title', async () => {
-    const component = await mountSuspended(ContentCard, {
+    const component = await mountWithTooltips(ContentCard, {
       props: { ...props, hit, type },
     })
 
@@ -62,7 +62,7 @@ describe.each(contentTypes)('ContentCard - $name', ({ hit, type, body }) => {
   })
 
   it('Should render exactly one body component', async () => {
-    const component = await mountSuspended(ContentCard, {
+    const component = await mountWithTooltips(ContentCard, {
       props: { ...props, hit, type },
     })
     const bodies = contentTypes.filter(c =>
@@ -77,7 +77,7 @@ describe.each(contentTypes.filter(c => c.body !== 'armor'))(
   'ContentCard - $name (expanded)',
   ({ hit, type }) => {
     it('Should match snapshot when expanded', async () => {
-      const component = await mountSuspended(ContentCard, {
+      const component = await mountWithTooltips(ContentCard, {
         props: { ...props, hit, type },
       })
 
@@ -88,7 +88,7 @@ describe.each(contentTypes.filter(c => c.body !== 'armor'))(
     })
 
     it('Should toggle between read more and read less', async () => {
-      const component = await mountSuspended(ContentCard, {
+      const component = await mountWithTooltips(ContentCard, {
         props: { ...props, hit, type },
       })
       const toggle = component.find('[test-id="toggle"]')
@@ -110,7 +110,7 @@ describe.each(contentTypes.filter(c => c.body !== 'armor'))(
 
 describe("ContentCard - 'armor'", async () => {
   it('Should not render a read more toggle', async () => {
-    const component = await mountSuspended(ContentCard, {
+    const component = await mountWithTooltips(ContentCard, {
       props: { ...props, hit: dndArmorFixture, type: 'armor' },
     })
 
@@ -120,7 +120,7 @@ describe("ContentCard - 'armor'", async () => {
 
 describe('ContentCard', async () => {
   it('Should render correct with default props', async () => {
-    const component = await mountSuspended(ContentCard, { props })
+    const component = await mountWithTooltips(ContentCard, { props })
 
     expect(component.find('[test-id="pin"]').exists()).toBeFalsy()
     expect(component.find('[test-id="title"]').text()).toBe(
@@ -129,7 +129,7 @@ describe('ContentCard', async () => {
   })
 
   it('Should show pin button when allowPin is true', async () => {
-    const component = await mountSuspended(ContentCard, {
+    const component = await mountWithTooltips(ContentCard, {
       props: { ...props, allowPin: true },
     })
     const pin = component.find('[test-id="pin"]')
@@ -138,7 +138,7 @@ describe('ContentCard', async () => {
   })
 
   it('Should be possible to pin and unpin', async () => {
-    const component = await mountSuspended(ContentCard, {
+    const component = await mountWithTooltips(ContentCard, {
       props: { ...props, allowPin: true },
     })
     const pin = component.find('[test-id="pin"]')

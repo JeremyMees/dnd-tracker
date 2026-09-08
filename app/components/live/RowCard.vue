@@ -46,14 +46,14 @@ const own = computed(() => ownRowId.value === props.row.id)
 
         <LiveStatAc :row="row" icon />
 
-        <LiveStatConcentration
-          v-if="row.type !== 'lair'"
-          v-tippy="$t('general.concentration')"
-          test-id="concentration"
-          :data-active="row.concentration"
-          :active="row.concentration"
-          label
-        />
+        <Tooltip v-if="row.type !== 'lair'" :text="$t('general.concentration')">
+          <LiveStatConcentration
+            test-id="concentration"
+            :data-active="row.concentration"
+            :active="row.concentration"
+            label
+          />
+        </Tooltip>
       </div>
 
       <div
@@ -67,13 +67,16 @@ const own = computed(() => ownRowId.value === props.row.id)
         </UiBadge>
       </div>
 
-      <LiveDeathSaves
+      <Tooltip
         v-if="row.deathSaves && row.type !== 'monster'"
-        v-tippy="$t('general.deathSaves')"
-        test-id="death-saves"
-        :saves="row.deathSaves"
-        disabled
-      />
+        :text="$t('general.deathSaves')"
+      >
+        <LiveDeathSaves
+          test-id="death-saves"
+          :saves="row.deathSaves"
+          disabled
+        />
+      </Tooltip>
     </UiCardContent>
   </UiCard>
 </template>

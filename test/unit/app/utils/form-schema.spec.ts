@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { z } from 'zod'
 import {
   initiativeSpacingOptions,
   initiativeDefaultRows,
@@ -843,6 +844,18 @@ describe('form-schema', () => {
         initiativeSettingsSchema.safeParse(initiativeSettingsInitialValues())
           .success,
       ).toBeTruthy()
+    })
+  })
+
+  describe('zod compile', () => {
+    it('Should install the compiler before the schemas are built', () => {
+      expect(z.core.globalConfig.postProcessor).toBeTypeOf('function')
+    })
+
+    it('Should compile a module scope schema on first parse', () => {
+      skillBonusesSchema.safeParse({ acrobatics: 5 })
+
+      expect(skillBonusesSchema._zod.bag.validator).toBeTypeOf('function')
     })
   })
 })

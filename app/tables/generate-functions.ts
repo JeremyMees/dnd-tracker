@@ -1,4 +1,3 @@
-import { Tippy } from 'vue-tippy'
 import type { BouncerAbility } from 'nuxt-authorization/utils'
 import type { DndCreatureStats } from '#shared/types/dnd'
 import type { ButtonVariants } from '~/components/ui/button'
@@ -14,6 +13,7 @@ import {
   UiKbd,
   UiKbdGroup,
   UiButton,
+  Tooltip,
 } from '#components'
 
 export function iconElement(options: {
@@ -35,13 +35,11 @@ export function iconLabelElement(options: {
   color?: string
   size?: string
 }): VNode {
-  return h(
-    Tippy,
-    {
-      class: 'flex items-center gap-2',
-      content: options.tooltip,
-    },
-    () => [iconElement(options), h('span', options.label)],
+  return h(Tooltip, { text: options.tooltip }, () =>
+    h('span', { class: 'flex items-center gap-2' }, [
+      iconElement(options),
+      h('span', options.label),
+    ]),
   )
 }
 
@@ -53,11 +51,10 @@ export function iconButton(options: {
   disabled?: boolean
   iconColor?: string
 }): VNode {
-  return h(Tippy, { content: options.content }, () =>
+  return h(Tooltip, { text: options.content }, () =>
     h(
       UiButton,
       {
-        tippy: options.content,
         ariaLabel: options.content,
         onClick: options.cb,
         disabled: options.disabled || false,
@@ -76,7 +73,7 @@ export function iconLink(options: {
   to: string
   external?: boolean
 }): VNode {
-  return h(Tippy, { content: options.content }, () =>
+  return h(Tooltip, { text: options.content }, () =>
     h(
       UiButton,
       {
@@ -136,10 +133,8 @@ export function expandButton(options: {
   cb: (event: unknown) => void
 }): VNode {
   return h(
-    Tippy,
-    {
-      allowHTML: true,
-    },
+    Tooltip,
+    {},
     {
       default: () =>
         h(

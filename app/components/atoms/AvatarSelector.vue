@@ -51,13 +51,14 @@ function next(): void {
   <div
     class="text-foreground flex items-center justify-between gap-2 px-2 border-4 rounded-lg bg-secondary border-secondary min-w-[160px] overflow-hidden"
   >
-    <Icon
-      v-tippy="$t(`general.${label}`)"
-      test-id="icon"
-      :name="icon"
-      class="min-w-6 min-h-6"
-      aria-hidden="true"
-    />
+    <Tooltip :text="$t(`general.${label}`)">
+      <Icon
+        test-id="icon"
+        :name="icon"
+        class="min-w-6 min-h-6"
+        aria-hidden="true"
+      />
+    </Tooltip>
     <span test-id="current" class="w-8 text-xs text-muted-foreground">
       {{ current + 1 }}/{{ options.length }}
     </span>

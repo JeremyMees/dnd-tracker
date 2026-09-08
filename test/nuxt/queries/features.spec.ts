@@ -1,9 +1,11 @@
+import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   clearQueryCache,
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  mutationSpies,
   supabaseRpc,
   toast,
 } from '~~/test/nuxt/stubs/query'
@@ -91,6 +93,29 @@ describe('features queries', () => {
       expect(vm.data).toEqual({ amount: 0, pages: 1, features: [] })
       expect(from).toHaveBeenCalledWith('features')
     })
+
+    it('surfaces an error from the profile card lookup', async () => {
+      mockSupabaseFrom(
+        {
+          features: mockChain({
+            data: [{ id: 1, createdBy: 'user-1', title: 'Idea' }],
+            error: null,
+            count: 1,
+          }),
+        },
+        { rpc: mockChain({ data: null, error: { message: 'boom' } }) },
+      )
+
+      const { vm } = await mountHook(() => {
+        useQueryClient().setDefaultOptions({ queries: { retry: false } })
+
+        return useFeatureListing(computed(() => ({ page: 0 })))
+      })
+
+      await vi.waitFor(() => expect(vm.isError).toBe(true))
+
+      expect(vm.error).toMatchObject({ message: 'boom' })
+    })
   })
 
   describe('useFeatureCount', () => {
@@ -102,6 +127,16 @@ describe('features queries', () => {
       const { vm } = await mountHook(() => useFeatureCount())
 
       await vi.waitFor(() => expect(vm.data).toBe(3))
+    })
+
+    it('reports no requests when the count comes back empty', async () => {
+      mockSupabaseFrom({
+        features: mockChain({ data: null, error: null, count: null }),
+      })
+
+      const { vm } = await mountHook(() => useFeatureCount())
+
+      await vi.waitFor(() => expect(vm.data).toBe(0))
     })
   })
 
@@ -131,19 +166,36 @@ describe('features queries', () => {
       })
 
       const { vm } = await mountHook(() => useFeatureCreate())
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
       await expect(
         vm.mutateAsync({
           data: { title: 'Idea', text: 'desc' } as FeatureInsert,
-          onError,
+          ...spies,
         }),
       ).rejects.toThrow('boom')
 
-      expect(onError).toHaveBeenCalledWith('boom')
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(spies.onSuccess).not.toHaveBeenCalled()
       expect(toast).toHaveBeenCalledWith(
         expect.objectContaining({ variant: 'destructive' }),
       )
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ features: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useFeatureCreate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        data: { title: 'Idea', text: 'desc' } as FeatureInsert,
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
   })
 
@@ -153,12 +205,16 @@ describe('features queries', () => {
 
       const { vm } = await mountHook(() => useFeatureVote())
 
-      await vm.mutateAsync({ id: 5, vote: 'like' })
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: 5, vote: 'like', ...spies })
 
       expect(supabaseRpc).toHaveBeenCalledWith('vote_feature', {
         p_feature: 5,
         p_vote: 'like',
       })
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
 
     it('sends an empty vote when clearing a vote', async () => {
@@ -181,13 +237,14 @@ describe('features queries', () => {
       )
 
       const { vm } = await mountHook(() => useFeatureVote())
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
       await expect(
-        vm.mutateAsync({ id: 5, vote: 'like', onError }),
+        vm.mutateAsync({ id: 5, vote: 'like', ...spies }),
       ).rejects.toThrow('boom')
 
-      expect(onError).toHaveBeenCalledWith('boom')
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(toast).toHaveBeenCalledWith(
         expect.objectContaining({ variant: 'destructive' }),
       )

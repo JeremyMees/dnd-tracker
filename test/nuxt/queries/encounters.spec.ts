@@ -6,6 +6,7 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  mutationSpies,
   toast,
 } from '~~/test/nuxt/stubs/query'
 import {
@@ -168,19 +169,38 @@ describe('encounters queries', () => {
       })
 
       const { vm } = await mountHook(() => useEncounterCreate())
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
       await expect(
         vm.mutateAsync({
           data: { title: 'New fight' } as InitiativeInsert,
-          onError,
+          ...spies,
         }),
       ).rejects.toThrow('boom')
 
-      expect(onError).toHaveBeenCalledWith('boom')
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(spies.onSuccess).not.toHaveBeenCalled()
       expect(toast).toHaveBeenCalledWith(
         expect.objectContaining({ variant: 'destructive' }),
       )
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => useEncounterCreate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        data: { title: 'New fight' } as InitiativeInsert,
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
   })
 
@@ -198,6 +218,42 @@ describe('encounters queries', () => {
 
       expect(chain.update).toHaveBeenCalledWith({ title: 'Renamed' })
       expect(chain.eq).toHaveBeenCalledWith('id', 3)
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'success' }),
+      )
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => useEncounterUpdate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: 3, data: { title: 'Renamed' }, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('toasts on failure even without callbacks', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({
+          data: null,
+          error: { message: 'boom' },
+        }),
+      })
+
+      const { vm } = await mountHook(() => useEncounterUpdate())
+
+      await expect(
+        vm.mutateAsync({ id: 3, data: { title: 'Renamed' } }),
+      ).rejects.toThrow('boom')
+
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
     })
   })
 
@@ -206,12 +262,18 @@ describe('encounters queries', () => {
       fetchMock.mockResolvedValue({ deleted: true })
 
       const { vm } = await mountHook(() => useEncounterRemove())
+      const spies = mutationSpies()
 
-      await vm.mutateAsync({ id: 3 })
+      await vm.mutateAsync({ id: 3, ...spies })
 
       expect(fetchMock).toHaveBeenCalledWith('/api/encounter/3', {
         method: 'DELETE',
       })
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'success' }),
+      )
     })
 
     it('deletes every id in bulk through the server route', async () => {
@@ -237,12 +299,16 @@ describe('encounters queries', () => {
         queryClient: useQueryClient(),
       }))
       const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
-      const onError = vi.fn()
+      const spies = mutationSpies()
 
-      await expect(vm.mutateAsync({ id: 3, onError })).rejects.toThrow('boom')
+      await expect(vm.mutateAsync({ id: 3, ...spies })).rejects.toThrow('boom')
 
-      expect(onError).toHaveBeenCalled()
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(invalidateSpy).not.toHaveBeenCalled()
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
     })
   })
 
@@ -262,6 +328,45 @@ describe('encounters queries', () => {
       expect(inserted.createdBy).toBe('1')
       expect(inserted.campaign).toBe(2)
       expect(inserted.id).toBeUndefined()
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'success' }),
+      )
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => useEncounterCopy())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ data: encounterItem, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('reports an error and toasts on failure', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({
+          data: null,
+          error: { message: 'boom' },
+        }),
+      })
+
+      const { vm } = await mountHook(() => useEncounterCopy())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({ data: encounterItem, ...spies }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(toast).toHaveBeenCalledWith(
+        expect.objectContaining({ variant: 'destructive' }),
+      )
     })
   })
 })

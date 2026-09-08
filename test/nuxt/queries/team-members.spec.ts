@@ -6,6 +6,7 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  mutationSpies,
   toast,
 } from '~~/test/nuxt/stubs/query'
 import {
@@ -40,6 +41,45 @@ describe('team-members queries', () => {
       expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith([
         { campaign: 1, role: 'Player', token: 'jwt-token' },
       ])
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      fetchMock.mockResolvedValue('jwt-token')
+      mockSupabaseFrom({
+        join_campaign: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => useJoinTokenCreate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        data: { campaign: 1, role: 'Player' } as TeamInsert,
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+      expect(spies.onError).not.toHaveBeenCalled()
+    })
+
+    it('reports a failed join_campaign insert', async () => {
+      fetchMock.mockResolvedValue('jwt-token')
+      mockSupabaseFrom({
+        join_campaign: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useJoinTokenCreate())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          data: { campaign: 1, role: 'Player' } as TeamInsert,
+          ...spies,
+        }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
     })
 
     it('throws when no token is returned', async () => {
@@ -78,6 +118,42 @@ describe('team-members queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 1],
       })
+    })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({
+        join_campaign: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => useJoinTokenRemove())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ id: 3, campaign: 1, ...spies })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('reports an error and leaves the campaign cache alone on failure', async () => {
+      mockSupabaseFrom({
+        join_campaign: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useJoinTokenRemove(),
+        queryClient: useQueryClient(),
+      }))
+
+      const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({ id: 3, campaign: 1, ...spies }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+      expect(invalidateSpy).not.toHaveBeenCalled()
     })
   })
 
@@ -128,6 +204,40 @@ describe('team-members queries', () => {
       expect(from).toHaveBeenCalledWith('join_campaign')
       expect(from.mock.results[1]!.value.eq).toHaveBeenCalledWith('id', 9)
     })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useTeamMemberCreate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        data: { campaign: 1, role: 'Player' } as TeamInsert,
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('reports an error when the insert fails', async () => {
+      mockSupabaseFrom({
+        team: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useTeamMemberCreate())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          data: { campaign: 1, role: 'Player' } as TeamInsert,
+          ...spies,
+        }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+    })
   })
 
   describe('useTeamMemberUpdate', () => {
@@ -153,6 +263,44 @@ describe('team-members queries', () => {
         queryKey: ['useCampaignDetail', 1],
       })
     })
+
+    it('hands the caller its callbacks on success', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => useTeamMemberUpdate())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({
+        id: 3,
+        campaign: 1,
+        data: { role: 'Admin' },
+        ...spies,
+      })
+
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('reports an error when the update fails', async () => {
+      mockSupabaseFrom({
+        team: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useTeamMemberUpdate())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          id: 3,
+          campaign: 1,
+          data: { role: 'Admin' },
+          ...spies,
+        }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(spies.onSettled).toHaveBeenCalledWith('boom')
+    })
   })
 
   describe('useTeamMemberRemove', () => {
@@ -168,12 +316,16 @@ describe('team-members queries', () => {
 
       const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
 
-      await vm.mutateAsync({ member: 3, campaign: 1 })
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ member: 3, campaign: 1, ...spies })
 
       expect(from.mock.results[0]!.value.eq).toHaveBeenCalledWith('id', 3)
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 1],
       })
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
 
     it('toasts a generic error on failure', async () => {

@@ -47,13 +47,14 @@ const onSubmit = form.handleSubmit(async values => {
   <UiPopover v-model:open="popoverOpen">
     <UiPopoverTrigger as-child>
       <button class="flex items-center gap-x-2">
-        <Icon
-          v-tippy="$t(`general.${item.type}`)"
-          :name="homebrewIcon(item.type)"
-          :class="homebrewColor(item.type)"
-          class="size-5 min-w-5"
-          aria-hidden="true"
-        />
+        <Tooltip :text="$t(`general.${item.type}`)">
+          <Icon
+            :name="homebrewIcon(item.type)"
+            :class="homebrewColor(item.type)"
+            class="size-5 min-w-5"
+            aria-hidden="true"
+          />
+        </Tooltip>
         <div class="flex flex-col gap-y-1 text-left">
           <span test-id="name">
             {{ item.name }}

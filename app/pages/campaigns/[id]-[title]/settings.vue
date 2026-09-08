@@ -116,23 +116,22 @@ async function remove(
                 class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
               >
                 <div class="flex items-center gap-2">
-                  <UiAvatar
-                    v-tippy="
-                      `${member.user.username} ${member.role ? `(${member.role})` : ''}`
-                    "
-                    class="border-2 border-background"
+                  <Tooltip
+                    :text="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
                   >
-                    <UiAvatarImage
-                      :src="member.user.avatar"
-                      :alt="member.user.username"
-                    />
-                    <UiAvatarFallback>
-                      <Icon
-                        name="tabler:user"
-                        class="size-6 min-w-6 text-muted-foreground"
+                    <UiAvatar class="border-2 border-background">
+                      <UiAvatarImage
+                        :src="member.user.avatar"
+                        :alt="member.user.username"
                       />
-                    </UiAvatarFallback>
-                  </UiAvatar>
+                      <UiAvatarFallback>
+                        <Icon
+                          name="tabler:user"
+                          class="size-6 min-w-6 text-muted-foreground"
+                        />
+                      </UiAvatarFallback>
+                    </UiAvatar>
+                  </Tooltip>
                   <div class="flex flex-col">
                     <span class="font-bold">
                       {{ member.user.username }}
@@ -165,17 +164,18 @@ async function remove(
                   :campaign-id="props.campaignId"
                 />
                 <div class="flex sm:justify-end items-center">
-                  <UiButton
-                    v-tippy="$t('actions.delete')"
-                    test-id="remove"
-                    variant="destructive-ghost"
-                    size="icon-sm"
-                    :disabled="member.role === 'Owner'"
-                    :aria-label="$t('actions.delete')"
-                    @click="remove(member)"
-                  >
-                    <Icon name="tabler:trash" aria-hidden="true" />
-                  </UiButton>
+                  <Tooltip :text="$t('actions.delete')">
+                    <UiButton
+                      test-id="remove"
+                      variant="destructive-ghost"
+                      size="icon-sm"
+                      :disabled="member.role === 'Owner'"
+                      :aria-label="$t('actions.delete')"
+                      @click="remove(member)"
+                    >
+                      <Icon name="tabler:trash" aria-hidden="true" />
+                    </UiButton>
+                  </Tooltip>
                 </div>
               </div>
             </template>

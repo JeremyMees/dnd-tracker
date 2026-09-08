@@ -1,4 +1,4 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,6 +7,7 @@ import { mockCampaignFull, mockTeamMember } from '~~/test/fixtures/campaign'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { createJoinCampaignToken, fetchMock, invalidateQueries, toast } =
   vi.hoisted(() => ({
@@ -48,7 +49,7 @@ const foundProfile = {
 const foundEmail = 'bilbo@shire.com'
 
 function mountInviteMemberModal(current = mockCampaignFull) {
-  return mountSuspended(InviteMemberModal, { props: { current } })
+  return mountWithTooltips(InviteMemberModal, { props: { current } })
 }
 
 function wait(ms: number): Promise<void> {

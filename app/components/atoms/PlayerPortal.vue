@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { m } from 'motion-v'
+
 const { locale } = useI18n({ useScope: 'global' })
 const { appDomain } = useRuntimeConfig().public
 
@@ -36,8 +38,7 @@ const enter = computed(() =>
       data-player-portal
     >
       <div class="lg:col-span-5">
-        <Motion
-          as="p"
+        <m.p
           :initial="enter"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true, amount: 0.4 }"
@@ -45,10 +46,9 @@ const enter = computed(() =>
           class="text-2xl font-black tracking-tight text-balance md:text-4xl"
         >
           {{ $t('pages.home.playerPortal.title') }}
-        </Motion>
+        </m.p>
 
-        <Motion
-          as="p"
+        <m.p
           :initial="enter"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true, amount: 0.4 }"
@@ -56,13 +56,12 @@ const enter = computed(() =>
           class="mt-5 max-w-prose text-muted-foreground"
         >
           {{ $t('pages.home.playerPortal.text') }}
-        </Motion>
+        </m.p>
 
         <ul class="mt-10 flex flex-col gap-6">
-          <Motion
+          <m.li
             v-for="(item, index) in items"
             :key="item.title"
-            as="li"
             test-id="portal-item"
             :initial="enter"
             :while-in-view="{ opacity: 1, y: 0 }"
@@ -89,7 +88,7 @@ const enter = computed(() =>
                 {{ $t(item.text) }}
               </span>
             </span>
-          </Motion>
+          </m.li>
         </ul>
 
         <UiButton as-child size="lg" variant="tertiary" class="mt-10">
@@ -99,8 +98,7 @@ const enter = computed(() =>
         </UiButton>
       </div>
 
-      <Motion
-        as="div"
+      <m.div
         :initial="reduced ? undefined : { opacity: 0, y: 48 }"
         :while-in-view="{ opacity: 1, y: 0 }"
         :in-view-options="{ once: true, amount: 0.3 }"
@@ -122,7 +120,7 @@ const enter = computed(() =>
           src="/player-portal.webp"
           class="h-auto w-[240px] shrink-0 rotate-2 drop-shadow-2xl md:w-[280px]"
         />
-      </Motion>
+      </m.div>
     </div>
   </section>
 </template>

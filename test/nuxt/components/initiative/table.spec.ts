@@ -1,4 +1,4 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -6,6 +6,7 @@ import conditions from '~~/test/fixtures/conditions.json'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { dropdownStubs } from '~~/test/nuxt/stubs/dropdown-menu'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 mockNuxtImport('useAuthenticatedUser', () => () => ref({ ...authUser }))
 
@@ -111,13 +112,13 @@ describe('Initiative table', () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Table, { props, provide, global })
+    const component = await mountWithTooltips(Table, { props, provide, global })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should display table rows when data is available and widgets section', async () => {
-    const component = await mountSuspended(Table, { props, provide, global })
+    const component = await mountWithTooltips(Table, { props, provide, global })
 
     expect(component.findAll('[test-id="row"]').length).toBe(sheet.rows.length)
     expect(component.find('[test-id="widgets"]').exists()).toBeTruthy()
@@ -129,7 +130,7 @@ describe('Initiative table', () => {
       rows: [],
     }
 
-    const component = await mountSuspended(Table, {
+    const component = await mountWithTooltips(Table, {
       props: { loading: true },
       provide,
       global,
@@ -139,7 +140,7 @@ describe('Initiative table', () => {
   })
 
   it('Should pass the encounterId through to the header', async () => {
-    const component = await mountSuspended(Table, {
+    const component = await mountWithTooltips(Table, {
       props: { ...props, encounterId: 42 },
       provide,
       global,
@@ -153,7 +154,7 @@ describe('Initiative table', () => {
   it('Should display empty state when no data is available', async () => {
     mockSheet.value = undefined
 
-    const component = await mountSuspended(Table, {
+    const component = await mountWithTooltips(Table, {
       props: { ...props },
       provide,
       global,
@@ -164,7 +165,7 @@ describe('Initiative table', () => {
 
   describe('History panel', () => {
     it('Should not render the history panel by default', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -174,7 +175,7 @@ describe('Initiative table', () => {
     })
 
     it('Should show the history panel after toggling it from the header', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -189,7 +190,11 @@ describe('Initiative table', () => {
     })
 
     it('Should not render the history panel without an encounterId even when toggled', async () => {
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
 
       expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
       expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
@@ -198,7 +203,11 @@ describe('Initiative table', () => {
 
   describe('Encounter summary', () => {
     it('Should not render the summary dialog without an encounterId', async () => {
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
 
       expect(component.find('[test-id="end-encounter"]').exists()).toBeFalsy()
       expect(
@@ -207,7 +216,7 @@ describe('Initiative table', () => {
     })
 
     it('Should mount the summary dialog closed when an encounterId is given', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -223,7 +232,7 @@ describe('Initiative table', () => {
     })
 
     it('Should open the summary from the header button', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -240,7 +249,7 @@ describe('Initiative table', () => {
     })
 
     it('Should close the summary when it is dismissed', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -260,7 +269,7 @@ describe('Initiative table', () => {
     })
 
     it('Should close the summary when the players keep playing', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -280,7 +289,7 @@ describe('Initiative table', () => {
     })
 
     it('Should close the summary and clear the events when it is reset', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -301,7 +310,7 @@ describe('Initiative table', () => {
     })
 
     it('Should clear the logged events when the encounter is reset', async () => {
-      const component = await mountSuspended(Table, {
+      const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
@@ -316,7 +325,11 @@ describe('Initiative table', () => {
     })
 
     it('Should not try to clear events when there is no encounterId', async () => {
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
 
       component
         .findComponent({ name: 'InitiativeHeader' })
@@ -330,7 +343,11 @@ describe('Initiative table', () => {
   describe('Table padding', () => {
     it('Should handle all spacing variants', async () => {
       // Test normal spacing (default)
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
       expect(component.findAll('.p-2').length).toBeGreaterThan(0)
 
       // Test compact spacing
@@ -359,7 +376,11 @@ describe('Initiative table', () => {
 
   describe('Column visibility', () => {
     it('Should show all columns by default and update when settings change', async () => {
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
 
       expect(component.findAll('[test-id="header"]').length).toBe(10)
 
@@ -387,7 +408,11 @@ describe('Initiative table', () => {
         } as InitiativeSheet['settings'],
       }
 
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
 
       expect(component.findAll('[test-id="header"]').length).toBe(5)
     })
@@ -402,7 +427,11 @@ describe('Initiative table', () => {
         } as InitiativeSheet['settings'],
       }
 
-      const component = await mountSuspended(Table, { props, provide, global })
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
 
       const firstRow = component.find('[test-id="row"]')
       const expandButton = firstRow.find('button[arialabel="actions.show"]')
@@ -415,7 +444,7 @@ describe('Initiative table', () => {
   })
 
   it('Should handle row selection and expansion', async () => {
-    const component = await mountSuspended(Table, { props, provide, global })
+    const component = await mountWithTooltips(Table, { props, provide, global })
 
     // Test row selection
     const firstRow = component.find('[test-id="row"]')

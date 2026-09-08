@@ -75,26 +75,27 @@ watch(
   { deep: true },
 )
 
-onMounted(() => {
+onMounted(async () => {
   if (avatar.value) {
     avatarCreator.avatar.value = avatar.value
     initialAvatar.value = JSON.parse(JSON.stringify(avatar.value))
-  } else {
-    avatarCreator.random()
+    return
   }
 
-  if (avatarCreator.avatar.value && !avatar.value) {
+  await avatarCreator.random()
+
+  if (avatarCreator.avatar.value) {
     avatar.value = avatarCreator.avatar.value
     initialAvatar.value = JSON.parse(JSON.stringify(avatarCreator.avatar.value))
   }
 })
 
 function updateAvatar(key: string, value: string): void {
-  avatarCreator.update({ [key]: value })
+  void avatarCreator.update({ [key]: value })
+}
 
-  if (avatarCreator.avatar.value) {
-    avatar.value = avatarCreator.avatar.value
-  }
+function randomize(): void {
+  void avatarCreator.random()
 }
 
 function save(): void {
@@ -108,9 +109,13 @@ function save(): void {
 
 function reset(): void {
   if (initialAvatar.value && initialAvatar.value.extra) {
-    const initialOptions = initialAvatar.value.extra as SelectedStyleOptions
-    avatarCreator.update(initialOptions)
-    avatar.value = avatarCreator.avatar.value
+    const initial = JSON.parse(JSON.stringify(initialAvatar.value)) as Avatar
+
+    avatarCreator.options.value = normalizeStyleOptions(
+      initial.extra as SelectedStyleOptions,
+    )
+    avatarCreator.avatar.value = initial
+    avatar.value = initial
     creatorOpen.value = false
   }
 }
@@ -123,7 +128,13 @@ function reset(): void {
       'max-w-prose': profile,
     }"
   >
-    <UiAvatar test-id="avatar" :size="size" class="border-4 border-primary">
+    <UiAvatar
+      test-id="avatar"
+      :size="size"
+      :aria-busy="avatarCreator.pending.value"
+      class="border-4 border-primary transition-opacity"
+      :class="{ 'opacity-60': avatarCreator.pending.value }"
+    >
       <UiAvatarImage
         :src="avatarCreator.avatar?.value?.url || ''"
         alt="Avatar image"
@@ -143,47 +154,56 @@ function reset(): void {
     <div
       class="bg-primary/50 border-2 border-primary rounded-lg flex w-fit relative bottom-2 backdrop-blur"
     >
-      <button
-        v-tippy="$t('actions.random')"
-        class="size-7 flex flex-col items-center justify-center outline-none text-white"
-        :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
-        :aria-label="$t('actions.random')"
-        @click="avatarCreator.random()"
-      >
-        <Icon
-          name="tabler:arrows-shuffle-2"
-          aria-hidden="true"
-          class="size-5"
-        />
-      </button>
-      <button
-        v-if="!hideCreatorToggle"
-        v-tippy="$t('components.avatarPicker.options')"
-        :aria-label="$t('components.avatarPicker.options')"
-        class="size-7 flex flex-col items-center justify-center outline-none text-white"
-        :class="{ 'border-r-2 border-primary': profile && isChanged }"
-        @click="creatorOpen = !creatorOpen"
-      >
-        <Icon name="tabler:shirt" aria-hidden="true" class="size-5" />
-      </button>
-      <template v-if="profile && isChanged && avatarCreator.avatar.value">
+      <Tooltip :text="$t('actions.random')">
         <button
-          v-if="avatar?.extra"
-          v-tippy="$t('actions.reset')"
-          class="size-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary text-white"
-          :aria-label="$t('actions.reset')"
-          @click="reset"
-        >
-          <Icon name="tabler:refresh" aria-hidden="true" class="size-5" />
-        </button>
-        <button
-          v-tippy="$t('actions.save')"
           class="size-7 flex flex-col items-center justify-center outline-none text-white"
-          :aria-label="$t('actions.save')"
-          @click="save"
+          :class="{ 'border-r-2 border-primary': !hideCreatorToggle }"
+          :aria-label="$t('actions.random')"
+          @click="randomize"
         >
-          <Icon name="tabler:device-floppy" aria-hidden="true" class="size-5" />
+          <Icon
+            name="tabler:arrows-shuffle-2"
+            aria-hidden="true"
+            class="size-5"
+          />
         </button>
+      </Tooltip>
+      <Tooltip
+        v-if="!hideCreatorToggle"
+        :text="$t('components.avatarPicker.options')"
+      >
+        <button
+          :aria-label="$t('components.avatarPicker.options')"
+          class="size-7 flex flex-col items-center justify-center outline-none text-white"
+          :class="{ 'border-r-2 border-primary': profile && isChanged }"
+          @click="creatorOpen = !creatorOpen"
+        >
+          <Icon name="tabler:shirt" aria-hidden="true" class="size-5" />
+        </button>
+      </Tooltip>
+      <template v-if="profile && isChanged && avatarCreator.avatar.value">
+        <Tooltip v-if="avatar?.extra" :text="$t('actions.reset')">
+          <button
+            class="size-7 flex flex-col items-center justify-center outline-none border-r-2 border-primary text-white"
+            :aria-label="$t('actions.reset')"
+            @click="reset"
+          >
+            <Icon name="tabler:refresh" aria-hidden="true" class="size-5" />
+          </button>
+        </Tooltip>
+        <Tooltip :text="$t('actions.save')">
+          <button
+            class="size-7 flex flex-col items-center justify-center outline-none text-white"
+            :aria-label="$t('actions.save')"
+            @click="save"
+          >
+            <Icon
+              name="tabler:device-floppy"
+              aria-hidden="true"
+              class="size-5"
+            />
+          </button>
+        </Tooltip>
       </template>
     </div>
     <div

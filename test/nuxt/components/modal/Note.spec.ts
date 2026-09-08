@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import NoteModal from '~/components/modal/Note.vue'
 import { mockNote } from '~~/test/fixtures/note'
 import { submitForm } from '~~/test/nuxt/stubs/form'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { createNote, updateNote } = vi.hoisted(() => ({
   createNote: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('~/queries/notes', () => ({
 }))
 
 function mountNoteModal(note?: NoteRow) {
-  return mountSuspended(NoteModal, {
+  return mountWithTooltips(NoteModal, {
     props: { campaignId: mockNote.campaign, note },
   })
 }

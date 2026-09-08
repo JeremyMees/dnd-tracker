@@ -18,13 +18,9 @@ defineProps<{
       aria-hidden="true"
     />
     <span>{{ row.armorClass }}</span>
-    <span
-      v-if="row.tempArmorClass"
-      v-tippy="$t('general.temp')"
-      class="text-warning text-xs"
-    >
-      +{{ row.tempArmorClass }}
-    </span>
+    <Tooltip v-if="row.tempArmorClass" :text="$t('general.temp')">
+      <span class="text-warning text-xs"> +{{ row.tempArmorClass }} </span>
+    </Tooltip>
   </div>
   <slot v-else />
 </template>

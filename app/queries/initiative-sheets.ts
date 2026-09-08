@@ -75,11 +75,11 @@ export function useInitiativeSheetDetailUpdate() {
 
       queryClient.setQueryData(
         ['useInitiativeSheetDetail', id],
-        (old: InitiativeSheet) => ({
-          ...old,
-          ...data,
-          rows: data.rows || old.rows,
-        }),
+        (old: InitiativeSheet) => {
+          if (!old) return old
+
+          return { ...old, ...data, rows: data.rows || old.rows }
+        },
       )
 
       return { previous }

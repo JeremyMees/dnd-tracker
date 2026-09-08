@@ -1,6 +1,6 @@
 {
   "name": "dnd-tracker",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
     "sb:types": "npx supabase gen types --lang=typescript --project-id nvqbozqxmtyvuslofrvs > shared/types/database-generated.ts",
+    "avatar:options": "tsx scripts/generate-avatar-options.ts",
     "prepare": "husky",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
@@ -92,10 +93,8 @@
     "unstorage": "^1.17.5",
     "vee-validate": "^5.0.0-beta.1",
     "vue": "latest",
-    "vue-dompurify-html": "^5.3.0",
     "vue-draggable-plus": "^0.6.1",
     "vue-router": "latest",
-    "vue-tippy": "^6.7.1",
     "ybug-vue": "^1.2.0",
     "zod": "^4.5.4"
   },

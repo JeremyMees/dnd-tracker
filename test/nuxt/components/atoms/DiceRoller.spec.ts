@@ -1,6 +1,6 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import DiceRoller from '~/components/atoms/DiceRoller.vue'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   styled?: boolean
@@ -29,17 +29,17 @@ const DescriptionHost = defineComponent({
 })
 
 async function renderDescription(node: unknown) {
-  return await mountSuspended(DescriptionHost, { props: { node } })
+  return await mountWithTooltips(DescriptionHost, { props: { node } })
 }
 
 describe('DiceRoller', () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(DiceRoller, { props })
+    const component = await mountWithTooltips(DiceRoller, { props })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render dice rollers correctly', async () => {
-    const component = await mountSuspended(DiceRoller, { props })
+    const component = await mountWithTooltips(DiceRoller, { props })
 
     expect(component.html()).toContain('d4')
     expect(component.html()).toContain('d6')
@@ -52,7 +52,7 @@ describe('DiceRoller', () => {
 
   describe('Dice count controls', () => {
     it('Should start with every dice count at zero', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       expect(vm.toRoll).toEqual({
@@ -67,7 +67,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should increment a dice count from zero when clicking the increment button', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       await component.find('[test-id="increment-d6"]').trigger('click')
@@ -77,7 +77,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should increment a dice count further when already non-zero', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       await component.find('[test-id="increment-d6"]').trigger('click')
@@ -87,7 +87,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should decrement a dice count when clicking the decrement button', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       await component.find('[test-id="increment-d6"]').trigger('click')
@@ -98,7 +98,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should disable the increment button once a dice count reaches 100', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       vm.toRoll.d20 = 100
@@ -110,7 +110,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should disable the decrement button while a dice count is zero', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
 
       expect(
         component.find('[test-id="decrement-d20"]').attributes('disabled'),
@@ -118,7 +118,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should keep a dice count at zero when the decrement handler runs while already at zero', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
       const decrementButton = component.find('[test-id="decrement-d6"]')
       decrementButton.element.removeAttribute('disabled')
@@ -129,7 +129,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should disable the roll button while every dice count is zero and enable it otherwise', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
 
       expect(
         component.find('[test-id="roll-dice"]').attributes('disabled'),
@@ -151,7 +151,7 @@ describe('DiceRoller', () => {
     it('Should roll a single dice type once, emit the total, reset counts and toast a singular title', async () => {
       vi.spyOn(Math, 'random').mockReturnValueOnce(0)
 
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       vm.toRoll.d6 = 1
@@ -185,7 +185,7 @@ describe('DiceRoller', () => {
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(0.5)
 
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       vm.toRoll.d20 = 3
@@ -209,7 +209,7 @@ describe('DiceRoller', () => {
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(0.99999)
 
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       vm.toRoll.d4 = 1
@@ -230,7 +230,7 @@ describe('DiceRoller', () => {
     })
 
     it('Should handle rolling when no dice are selected', async () => {
-      const component = await mountSuspended(DiceRoller, { props })
+      const component = await mountWithTooltips(DiceRoller, { props })
       const vm = component.vm as unknown as DiceRollerVM
 
       vm.calculateDndDiceRoll()

@@ -29,26 +29,27 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
     <UiSidebarMenu>
       <UiSidebarMenuItem>
         <UiDialog :open="openModal === 'content'">
-          <UiDialogTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                id="tour-3"
-                v-tippy="{
-                  content: `${$t('components.navbar.dnd-content')}`,
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                test-id="content"
-                :aria-label="`${$t('components.navbar.dnd-content')}`"
-                @click="openModal = 'content'"
-              >
-                <Icon name="tabler:book" class="size-4 min-w-4 text-help" />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('components.navbar.dnd-content') }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiDialogTrigger>
+          <Tooltip
+            :text="`${$t('components.navbar.dnd-content')}`"
+            side="right"
+            :disabled="isExpanded"
+          >
+            <UiDialogTrigger as-child>
+              <UiSidebarMenuButton as-child>
+                <button
+                  id="tour-3"
+                  test-id="content"
+                  :aria-label="`${$t('components.navbar.dnd-content')}`"
+                  @click="openModal = 'content'"
+                >
+                  <Icon name="tabler:book" class="size-4 min-w-4 text-help" />
+                  <span class="group-data-[collapsible=icon]:hidden truncate">
+                    {{ $t('components.navbar.dnd-content') }}
+                  </span>
+                </button>
+              </UiSidebarMenuButton>
+            </UiDialogTrigger>
+          </Tooltip>
           <UiDialogContent
             class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
             @escape-key-down="openModal = undefined"
@@ -70,18 +71,19 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         <UiSidebarMenuButton
           class="bg-destructive/10 border border-destructive"
         >
-          <Icon
-            v-tippy="{
-              content: $t('pages.encounter.maxCharacters'),
-              placement: 'right',
-              onShow: () => !isExpanded,
-            }"
-            test-id="max-characters"
-            name="tabler:alert-triangle"
-            :aria-hidden="true"
-            :class="{ 'relative right-px': !isExpanded }"
-            class="size-4 min-w-4 text-destructive"
-          />
+          <Tooltip
+            :text="$t('pages.encounter.maxCharacters')"
+            side="right"
+            :disabled="isExpanded"
+          >
+            <Icon
+              test-id="max-characters"
+              name="tabler:alert-triangle"
+              :aria-hidden="true"
+              :class="{ 'relative right-px': !isExpanded }"
+              class="size-4 min-w-4 text-destructive"
+            />
+          </Tooltip>
           <span class="group-data-[collapsible=icon]:hidden truncate">
             {{ $t('pages.encounter.maxCharacters') }}
           </span>
@@ -90,29 +92,30 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       <template v-else>
         <UiSidebarMenuItem>
           <UiDialog :open="openModal === 'bestiary'">
-            <UiDialogTrigger as-child>
-              <UiSidebarMenuButton as-child>
-                <button
-                  id="tour-4"
-                  v-tippy="{
-                    content: $t('general.bestiary'),
-                    placement: 'right',
-                    onShow: () => !isExpanded,
-                  }"
-                  test-id="bestiary"
-                  :aria-label="$t('general.bestiary')"
-                  @click="openModal = 'bestiary'"
-                >
-                  <Icon
-                    name="tabler:bat"
-                    class="size-4 min-w-4 text-destructive"
-                  />
-                  <span class="group-data-[collapsible=icon]:hidden truncate">
-                    {{ $t('general.bestiary') }}
-                  </span>
-                </button>
-              </UiSidebarMenuButton>
-            </UiDialogTrigger>
+            <Tooltip
+              :text="$t('general.bestiary')"
+              side="right"
+              :disabled="isExpanded"
+            >
+              <UiDialogTrigger as-child>
+                <UiSidebarMenuButton as-child>
+                  <button
+                    id="tour-4"
+                    test-id="bestiary"
+                    :aria-label="$t('general.bestiary')"
+                    @click="openModal = 'bestiary'"
+                  >
+                    <Icon
+                      name="tabler:bat"
+                      class="size-4 min-w-4 text-destructive"
+                    />
+                    <span class="group-data-[collapsible=icon]:hidden truncate">
+                      {{ $t('general.bestiary') }}
+                    </span>
+                  </button>
+                </UiSidebarMenuButton>
+              </UiDialogTrigger>
+            </Tooltip>
             <UiDialogContent
               class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
               @escape-key-down="openModal = undefined"
@@ -132,29 +135,30 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiSidebarMenuItem>
         <UiSidebarMenuItem v-if="sheet?.campaign?.id">
           <UiDialog :open="openModal === 'addHomebrew'">
-            <UiDialogTrigger as-child>
-              <UiSidebarMenuButton as-child>
-                <button
-                  id="tour-5"
-                  v-tippy="{
-                    content: $t('general.campaignHomebrew'),
-                    placement: 'right',
-                    onShow: () => !isExpanded,
-                  }"
-                  test-id="campaign-homebrew"
-                  :aria-label="$t('general.campaignHomebrew')"
-                  @click="openModal = 'addHomebrew'"
-                >
-                  <Icon
-                    name="tabler:meeple"
-                    class="size-4 min-w-4 text-primary"
-                  />
-                  <span class="group-data-[collapsible=icon]:hidden truncate">
-                    {{ $t('general.campaignHomebrew') }}
-                  </span>
-                </button>
-              </UiSidebarMenuButton>
-            </UiDialogTrigger>
+            <Tooltip
+              :text="$t('general.campaignHomebrew')"
+              side="right"
+              :disabled="isExpanded"
+            >
+              <UiDialogTrigger as-child>
+                <UiSidebarMenuButton as-child>
+                  <button
+                    id="tour-5"
+                    test-id="campaign-homebrew"
+                    :aria-label="$t('general.campaignHomebrew')"
+                    @click="openModal = 'addHomebrew'"
+                  >
+                    <Icon
+                      name="tabler:meeple"
+                      class="size-4 min-w-4 text-primary"
+                    />
+                    <span class="group-data-[collapsible=icon]:hidden truncate">
+                      {{ $t('general.campaignHomebrew') }}
+                    </span>
+                  </button>
+                </UiSidebarMenuButton>
+              </UiDialogTrigger>
+            </Tooltip>
             <UiDialogContent
               class="max-w-xl gap-0"
               @escape-key-down="openModal = undefined"
@@ -174,29 +178,30 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiSidebarMenuItem>
         <UiSidebarMenuItem>
           <UiDialog :open="openModal === 'newHomebrew'">
-            <UiDialogTrigger as-child>
-              <UiSidebarMenuButton as-child>
-                <button
-                  id="tour-6"
-                  v-tippy="{
-                    content: $t('general.newHomebrew'),
-                    placement: 'right',
-                    onShow: () => !isExpanded,
-                  }"
-                  test-id="new-homebrew"
-                  :aria-label="$t('general.newHomebrew')"
-                  @click="openModal = 'newHomebrew'"
-                >
-                  <Icon
-                    name="tabler:beer"
-                    class="size-4 min-w-4 text-warning"
-                  />
-                  <span class="group-data-[collapsible=icon]:hidden truncate">
-                    {{ $t('general.newHomebrew') }}
-                  </span>
-                </button>
-              </UiSidebarMenuButton>
-            </UiDialogTrigger>
+            <Tooltip
+              :text="$t('general.newHomebrew')"
+              side="right"
+              :disabled="isExpanded"
+            >
+              <UiDialogTrigger as-child>
+                <UiSidebarMenuButton as-child>
+                  <button
+                    id="tour-6"
+                    test-id="new-homebrew"
+                    :aria-label="$t('general.newHomebrew')"
+                    @click="openModal = 'newHomebrew'"
+                  >
+                    <Icon
+                      name="tabler:beer"
+                      class="size-4 min-w-4 text-warning"
+                    />
+                    <span class="group-data-[collapsible=icon]:hidden truncate">
+                      {{ $t('general.newHomebrew') }}
+                    </span>
+                  </button>
+                </UiSidebarMenuButton>
+              </UiDialogTrigger>
+            </Tooltip>
             <UiDialogContent
               class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
               @escape-key-down="openModal = undefined"
@@ -226,26 +231,27 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
       </template>
       <UiSidebarMenuItem>
         <UiDialog :open="openModal === 'settings'">
-          <UiDialogTrigger as-child>
-            <UiSidebarMenuButton as-child>
-              <button
-                id="tour-7"
-                v-tippy="{
-                  content: $t('general.setting', 2),
-                  placement: 'right',
-                  onShow: () => !isExpanded,
-                }"
-                test-id="settings"
-                :aria-label="$t('general.setting', 2)"
-                @click="openModal = 'settings'"
-              >
-                <Icon name="tabler:settings" class="size-4 min-w-4" />
-                <span class="group-data-[collapsible=icon]:hidden truncate">
-                  {{ $t('general.setting', 2) }}
-                </span>
-              </button>
-            </UiSidebarMenuButton>
-          </UiDialogTrigger>
+          <Tooltip
+            :text="$t('general.setting', 2)"
+            side="right"
+            :disabled="isExpanded"
+          >
+            <UiDialogTrigger as-child>
+              <UiSidebarMenuButton as-child>
+                <button
+                  id="tour-7"
+                  test-id="settings"
+                  :aria-label="$t('general.setting', 2)"
+                  @click="openModal = 'settings'"
+                >
+                  <Icon name="tabler:settings" class="size-4 min-w-4" />
+                  <span class="group-data-[collapsible=icon]:hidden truncate">
+                    {{ $t('general.setting', 2) }}
+                  </span>
+                </button>
+              </UiSidebarMenuButton>
+            </UiDialogTrigger>
+          </Tooltip>
           <UiDialogContent
             class="max-w-xl"
             @escape-key-down="openModal = undefined"
@@ -264,62 +270,66 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiSidebarMenuButton as-child>
-          <tippy trigger="mouseenter focus click" placement="right" :delay="0">
-            <button
-              id="tour-8"
-              :aria-label="$t('general.hotkey', 2)"
-              class="flex items-center gap-x-2"
-            >
-              <Icon name="tabler:keyboard" class="size-4 min-w-4" />
-              <span class="group-data-[collapsible=icon]:hidden truncate">
-                {{ $t('general.hotkey', 2) }}
-              </span>
-            </button>
-            <template #content>
-              <div class="p-4 space-y-2 overflow-auto">
-                <div class="space-y-4">
-                  <div class="space-y-2">
-                    <p class="font-medium">
-                      {{ $t('general.modifierKeys') }}
-                    </p>
-                    <UiKbdGroup>
-                      <UiKbd>⌃</UiKbd>
-                      <span class="text-muted-foreground">/</span>
-                      <UiKbd>⌘</UiKbd>
-                      <span class="text-muted-foreground">/</span>
-                      <UiKbd>⇧</UiKbd>
-                    </UiKbdGroup>
-                  </div>
-                  <div class="space-y-2">
-                    <p class="font-medium">
-                      {{ $t('actions.changeInitiative') }}
-                    </p>
-                    <UiKbdGroup>
-                      <UiKbd> MOD </UiKbd>
-                      <span class="text-muted-foreground">+</span>
-                      <UiKbdGroup>
-                        <UiKbd>←</UiKbd>
-                        <span class="text-muted-foreground">/</span>
-                        <UiKbd>→</UiKbd>
-                      </UiKbdGroup>
-                    </UiKbdGroup>
-                  </div>
-                  <div class="space-y-2">
-                    <p class="font-medium">
-                      {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
-                    </p>
-                    <UiKbdGroup>
-                      <UiKbd> MOD </UiKbd>
-                      <span class="text-muted-foreground">+</span>
-                      <UiKbd>⏎</UiKbd>
-                    </UiKbdGroup>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </tippy>
-        </UiSidebarMenuButton>
+        <UiPopover>
+          <UiPopoverTrigger as-child>
+            <UiSidebarMenuButton as-child>
+              <button
+                id="tour-8"
+                :aria-label="$t('general.hotkey', 2)"
+                class="flex items-center gap-x-2"
+              >
+                <Tooltip
+                  :text="`${$t('general.hotkey', 2)}`"
+                  side="right"
+                  :disabled="isExpanded"
+                >
+                  <Icon name="tabler:keyboard" class="size-4 min-w-4" />
+                  <span class="group-data-[collapsible=icon]:hidden truncate">
+                    {{ $t('general.hotkey', 2) }}
+                  </span>
+                </Tooltip>
+              </button>
+            </UiSidebarMenuButton>
+          </UiPopoverTrigger>
+          <UiPopoverContent side="right" align="start" class="space-y-4">
+            <div class="space-y-2">
+              <p class="font-medium">
+                {{ $t('general.modifierKeys') }}
+              </p>
+              <UiKbdGroup>
+                <UiKbd>⌃</UiKbd>
+                <span class="text-muted-foreground">/</span>
+                <UiKbd>⌘</UiKbd>
+                <span class="text-muted-foreground">/</span>
+                <UiKbd>⇧</UiKbd>
+              </UiKbdGroup>
+            </div>
+            <div class="space-y-2">
+              <p class="font-medium">
+                {{ $t('actions.changeInitiative') }}
+              </p>
+              <UiKbdGroup>
+                <UiKbd> MOD </UiKbd>
+                <span class="text-muted-foreground">+</span>
+                <UiKbdGroup>
+                  <UiKbd>←</UiKbd>
+                  <span class="text-muted-foreground">/</span>
+                  <UiKbd>→</UiKbd>
+                </UiKbdGroup>
+              </UiKbdGroup>
+            </div>
+            <div class="space-y-2">
+              <p class="font-medium">
+                {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
+              </p>
+              <UiKbdGroup>
+                <UiKbd> MOD </UiKbd>
+                <span class="text-muted-foreground">+</span>
+                <UiKbd>⏎</UiKbd>
+              </UiKbdGroup>
+            </div>
+          </UiPopoverContent>
+        </UiPopover>
       </UiSidebarMenuItem>
     </UiSidebarMenu>
   </UiSidebarGroup>

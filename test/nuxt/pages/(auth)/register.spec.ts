@@ -1,10 +1,11 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Register from '~/pages/(auth)/register.vue'
 import { defaultAvatar } from '~~/constants/default-avatar'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { navigateTo, register, toast, useSeo } = vi.hoisted(() => ({
   navigateTo: vi.fn(),
@@ -42,7 +43,7 @@ const account = {
 }
 
 async function mountPage() {
-  const component = await mountSuspended(Register, { global: { stubs } })
+  const component = await mountWithTooltips(Register, { global: { stubs } })
 
   await flushPromises()
 

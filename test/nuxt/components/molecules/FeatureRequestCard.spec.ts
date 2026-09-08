@@ -1,8 +1,8 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 import FeatureRequestCard from '~/components/molecules/FeatureRequestCard.vue'
 import SocialProfile from '~~/test/fixtures/social-profile.json'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const mockUser = ref<{ id: string } | null>({ id: 'test-user-id' })
 
@@ -37,13 +37,13 @@ afterEach(() => {
 
 describe('FeatureRequestCard', async () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(FeatureRequestCard, { props })
+    const component = await mountWithTooltips(FeatureRequestCard, { props })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render correct with default props', async () => {
-    const component = await mountSuspended(FeatureRequestCard, { props })
+    const component = await mountWithTooltips(FeatureRequestCard, { props })
 
     expect(component.find('[test-id="title"]').text()).toContain(
       props.feature.title,
@@ -72,7 +72,7 @@ describe('FeatureRequestCard', async () => {
   })
 
   it('Should not render label when status is accepted', async () => {
-    const component = await mountSuspended(FeatureRequestCard, {
+    const component = await mountWithTooltips(FeatureRequestCard, {
       props: { ...props, feature: { ...props.feature, status: 'accepted' } },
     })
 
@@ -80,7 +80,7 @@ describe('FeatureRequestCard', async () => {
   })
 
   it('Should disable vote buttons when status is added', async () => {
-    const component = await mountSuspended(FeatureRequestCard, {
+    const component = await mountWithTooltips(FeatureRequestCard, {
       props: { ...props, feature: { ...props.feature, status: 'added' } },
     })
     const likeButton = component.find('[test-id="like-button"]')
@@ -91,7 +91,7 @@ describe('FeatureRequestCard', async () => {
   })
 
   it('Should be able to toggle vote', async () => {
-    const component = await mountSuspended(FeatureRequestCard, { props })
+    const component = await mountWithTooltips(FeatureRequestCard, { props })
     const likeButton = component.find('[test-id="like-button"]')
 
     await likeButton.trigger('click')
@@ -133,7 +133,7 @@ describe('FeatureRequestCard', async () => {
   })
 
   it('Should be able to toggle dislike vote', async () => {
-    const component = await mountSuspended(FeatureRequestCard, { props })
+    const component = await mountWithTooltips(FeatureRequestCard, { props })
     const dislikeButton = component.find('[test-id="dislike-button"]')
 
     await dislikeButton.trigger('click')
@@ -160,7 +160,7 @@ describe('FeatureRequestCard', async () => {
   })
 
   it('Should move a like vote to dislike when the opposite is toggled', async () => {
-    const component = await mountSuspended(FeatureRequestCard, {
+    const component = await mountWithTooltips(FeatureRequestCard, {
       props: {
         ...props,
         feature: {
@@ -183,7 +183,7 @@ describe('FeatureRequestCard', async () => {
   it('Should emit login instead of toggling a vote when there is no user', async () => {
     mockUser.value = null
 
-    const component = await mountSuspended(FeatureRequestCard, { props })
+    const component = await mountWithTooltips(FeatureRequestCard, { props })
     const likeButton = component.find('[test-id="like-button"]')
     const dislikeButton = component.find('[test-id="dislike-button"]')
 

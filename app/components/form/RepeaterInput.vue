@@ -74,39 +74,42 @@ function moveDown(index: number) {
         </div>
 
         <div class="flex flex-col gap-2">
-          <UiButton
-            v-tippy="$t('actions.moveUp')"
-            :test-id="`move-up-${index}`"
-            type="button"
-            variant="default-ghost"
-            size="icon-sm"
-            :disabled="index === 0"
-            @click="moveUp(index)"
-          >
-            <Icon name="tabler:arrow-up" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('actions.moveDown')"
-            :test-id="`move-down-${index}`"
-            type="button"
-            variant="default-ghost"
-            size="icon-sm"
-            :disabled="index === fields.length - 1"
-            @click="moveDown(index)"
-          >
-            <Icon name="tabler:arrow-down" />
-          </UiButton>
-          <UiButton
-            v-tippy="$t('actions.remove')"
-            :test-id="`remove-${index}`"
-            type="button"
-            variant="destructive-ghost"
-            size="icon-sm"
-            :disabled="fields.length <= min"
-            @click="removeItem(index)"
-          >
-            <Icon name="tabler:trash" />
-          </UiButton>
+          <Tooltip :text="$t('actions.moveUp')">
+            <UiButton
+              :test-id="`move-up-${index}`"
+              type="button"
+              variant="default-ghost"
+              size="icon-sm"
+              :disabled="index === 0"
+              @click="moveUp(index)"
+            >
+              <Icon name="tabler:arrow-up" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('actions.moveDown')">
+            <UiButton
+              :test-id="`move-down-${index}`"
+              type="button"
+              variant="default-ghost"
+              size="icon-sm"
+              :disabled="index === fields.length - 1"
+              @click="moveDown(index)"
+            >
+              <Icon name="tabler:arrow-down" />
+            </UiButton>
+          </Tooltip>
+          <Tooltip :text="$t('actions.remove')">
+            <UiButton
+              :test-id="`remove-${index}`"
+              type="button"
+              variant="destructive-ghost"
+              size="icon-sm"
+              :disabled="fields.length <= min"
+              @click="removeItem(index)"
+            >
+              <Icon name="tabler:trash" />
+            </UiButton>
+          </Tooltip>
         </div>
       </div>
 

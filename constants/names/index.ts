@@ -1,37 +1,3 @@
-import human from './human.json'
-import elf from './elf.json'
-import dwarf from './dwarf.json'
-import halfling from './halfling.json'
-import dragonborn from './dragonborn.json'
-import gnome from './gnome.json'
-import halfElf from './half-elf.json'
-import halfOrc from './half-orc.json'
-import tiefling from './tiefling.json'
-
-type Content = Record<
-  DndGender,
-  {
-    first: string[]
-    middle: string[]
-    last: {
-      prefixes: string[]
-      suffixes: string[]
-    }
-  }
->
-
-const names: Record<DndRace, Content> = {
-  human: human,
-  elf: elf,
-  dwarf: dwarf,
-  halfling: halfling,
-  dragonborn: dragonborn,
-  gnome: gnome,
-  'half-elf': halfElf,
-  'half-orc': halfOrc,
-  tiefling: tiefling,
-} as const
-
 const races: DndRace[] = [
   'human',
   'elf',
@@ -66,4 +32,4 @@ const genderOptions: Option<DndGender | 'random'>[] = [
   { label: 'Non-binary', value: 'nonbinary' },
 ]
 
-export { names, races, raceOptions, genders, genderOptions }
+export { races, raceOptions, genders, genderOptions }

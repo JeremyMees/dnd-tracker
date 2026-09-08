@@ -1,4 +1,3 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
@@ -6,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import DataTable from '~/components/atoms/DataTable.vue'
 import type { ListingFeatures } from '~/tables/features'
 import { expandButton, selectButton } from '~/tables/generate-functions'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface TestData {
   id: number
@@ -84,12 +84,12 @@ const props: Props = {
 
 describe('DataTable', () => {
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(TypedDataTable, { props })
+    const component = await mountWithTooltips(TypedDataTable, { props })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render table with correct data', async () => {
-    const component = await mountSuspended(TypedDataTable, { props })
+    const component = await mountWithTooltips(TypedDataTable, { props })
 
     const headers = component.findAll('th')
     expect(headers.length).toBe(5)
@@ -111,7 +111,7 @@ describe('DataTable', () => {
   })
 
   it('Should show loading state correctly', async () => {
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, loading: true, data: [] },
       slots: {
         loading: () => h('div', 'Loading'),
@@ -122,7 +122,7 @@ describe('DataTable', () => {
   })
 
   it('Should show empty message when no data', async () => {
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, data: [] },
     })
 
@@ -132,7 +132,7 @@ describe('DataTable', () => {
   })
 
   it('Should emit remove event when bulk remove button is clicked', async () => {
-    const component = await mountSuspended(TypedDataTable, { props })
+    const component = await mountWithTooltips(TypedDataTable, { props })
 
     const checkbox = component.find('button[role="checkbox"]')
     expect(checkbox.exists()).toBeTruthy()
@@ -149,7 +149,7 @@ describe('DataTable', () => {
   })
 
   it('Should handle row expansion correctly', async () => {
-    const component = await mountSuspended(TypedDataTable, { props })
+    const component = await mountWithTooltips(TypedDataTable, { props })
 
     let expansionButton = component.find('button[arialabel="actions.show"]')
     expect(expansionButton.exists()).toBeTruthy()
@@ -183,7 +183,7 @@ describe('DataTable', () => {
       },
     }
 
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: paginationProps,
     })
 
@@ -208,7 +208,7 @@ describe('DataTable', () => {
   })
 
   it('Should sort by column and emit invalidate when a sortable header is clicked', async () => {
-    const component = await mountSuspended(TypedDataTable, { props })
+    const component = await mountWithTooltips(TypedDataTable, { props })
 
     const headers = component.findAll('th')
     const nameHeader = headers[3]!
@@ -226,7 +226,7 @@ describe('DataTable', () => {
   })
 
   it('Should emit invalidate when the search input triggers a global filter change', async () => {
-    const component = await mountSuspended(TypedDataTable, { props })
+    const component = await mountWithTooltips(TypedDataTable, { props })
 
     await component.find('input[type="search"]').setValue('John')
     await nextTick()
@@ -235,7 +235,7 @@ describe('DataTable', () => {
   })
 
   it('Should default row permissions to true when no permission prop is given', async () => {
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, permission: undefined },
     })
 
@@ -246,7 +246,7 @@ describe('DataTable', () => {
   it('Should disable row selection while permissions are still being fetched', async () => {
     const pendingPermissionFn = vi.fn(() => new Promise<boolean>(() => {}))
 
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, permission: pendingPermissionFn },
     })
 
@@ -265,7 +265,7 @@ describe('DataTable', () => {
       .mockImplementationOnce(() => stalePromise)
       .mockImplementation(() => Promise.resolve(true))
 
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, data: [mockData[0]!], permission: permissionFn },
     })
 
@@ -280,7 +280,7 @@ describe('DataTable', () => {
   })
 
   it('Should default page count to 0 when options are not provided', async () => {
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, options: undefined },
     })
 
@@ -288,7 +288,7 @@ describe('DataTable', () => {
   })
 
   it('Should show a pinned column with sticky styling', async () => {
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: {
         ...props,
         options: {
@@ -331,7 +331,7 @@ describe('DataTable', () => {
       }),
     ])
 
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, columns: groupedColumns },
     })
 
@@ -340,7 +340,7 @@ describe('DataTable', () => {
   })
 
   it('Should show empty state with no message when emptyMessage is not provided', async () => {
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: { ...props, data: [], emptyMessage: undefined },
     })
 
@@ -353,7 +353,7 @@ describe('DataTable', () => {
       .fn()
       .mockImplementation(item => Promise.resolve(item.id === 1))
 
-    const component = await mountSuspended(TypedDataTable, {
+    const component = await mountWithTooltips(TypedDataTable, {
       props: {
         ...props,
         permission: permissionFn,

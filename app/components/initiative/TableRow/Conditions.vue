@@ -5,7 +5,6 @@ import { useConditionsListing } from '~/queries/srd'
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { patchRow } = validateInject(INITIATIVE_SHEET)
-const { renderMarkdown } = useMarkdown()
 
 const selected = ref<DndCondition[]>([])
 const popoverOpen = ref<boolean>(false)
@@ -103,8 +102,8 @@ function toggleSelected(item: DndCondition): void {
           <UiPopoverHeader>
             <UiPopoverTitle>{{ condition.name }}</UiPopoverTitle>
           </UiPopoverHeader>
-          <div
-            v-dompurify-html="renderMarkdown(condition.desc)"
+          <MarkdownText
+            :text="condition.desc"
             class="text-sm text-muted-foreground"
           />
           <UiNumberField

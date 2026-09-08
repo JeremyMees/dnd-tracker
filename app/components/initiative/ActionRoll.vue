@@ -136,18 +136,19 @@ const onSubmit = form.handleSubmit(async values => {
   >
     <UiPopoverTrigger as-child>
       <UiButton
-        v-tippy="$t('actions.roll')"
         test-id="trigger"
         variant="tertiary-ghost"
         size="icon-sm"
         :aria-label="$t('actions.roll')"
         class="group"
       >
-        <Icon
-          name="tabler:hexagon"
-          :aria-hidden="true"
-          class="text-tertiary group-hover:text-foreground transition-colors"
-        />
+        <Tooltip :text="$t('actions.roll')">
+          <Icon
+            name="tabler:hexagon"
+            :aria-hidden="true"
+            class="text-tertiary group-hover:text-foreground transition-colors"
+          />
+        </Tooltip>
       </UiButton>
     </UiPopoverTrigger>
     <UiPopoverContent>

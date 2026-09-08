@@ -1,4 +1,4 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -9,6 +9,7 @@ import {
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { spyOnReplace } from '~~/test/nuxt/stubs/router'
 import type { LocationQuery } from 'vue-router'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface Props {
   variant?: 'secondary' | 'background'
@@ -90,13 +91,13 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should render with default props', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     expect(component.find('[test-id="search"]').exists()).toBeTruthy()
     expect(component.find('[test-id="type"]').exists()).toBeTruthy()
@@ -105,7 +106,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should not show pin controls when sheet has no info cards', async () => {
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: {
         ...props,
         sheet: {
@@ -120,7 +121,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should show all items', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     const grid = component.find('[test-id="content-grid"]')
 
@@ -131,7 +132,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should show only pinned items', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     vi.useFakeTimers()
     await component.find('[test-id="pin-toggle"]').trigger('click')
@@ -144,7 +145,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should handle remove pins', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     vi.useFakeTimers()
     await component.find('[test-id="remove-pins"]').trigger('click')
@@ -156,7 +157,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should show toast when trying to pin more than 10 items', async () => {
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: {
         ...props,
         allowPin: true,
@@ -186,7 +187,7 @@ describe('DnDContentSearch', async () => {
   it('Should show loading state', async () => {
     status.value = 'pending'
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     expect(component.find('[test-id="loading"]').exists()).toBeTruthy()
     expect(component.find('[test-id="not-found"]').exists()).toBeFalsy()
@@ -196,7 +197,7 @@ describe('DnDContentSearch', async () => {
   it('Should show error state', async () => {
     status.value = 'error'
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     expect(component.text()).toContain('components.dndContentSearch.error')
     expect(component.find('[test-id="error"]').exists()).toBeTruthy()
@@ -207,7 +208,7 @@ describe('DnDContentSearch', async () => {
   it('Should show pagination when there are more than 1 page', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     expect(component.find('[test-id="pagination"]').exists()).toBeTruthy()
   })
@@ -215,7 +216,7 @@ describe('DnDContentSearch', async () => {
   it('Should not show pagination when there are no pages', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 0 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     expect(component.find('[test-id="pagination"]').exists()).toBeFalsy()
   })
@@ -223,7 +224,7 @@ describe('DnDContentSearch', async () => {
   it('Should not show pagination while pinned items are shown', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     vi.useFakeTimers()
     await component.find('[test-id="pin-toggle"]').trigger('click')
@@ -235,7 +236,7 @@ describe('DnDContentSearch', async () => {
   it('Should use the background pagination styles for the background variant', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: { ...props, variant: 'background' },
     })
 
@@ -247,7 +248,7 @@ describe('DnDContentSearch', async () => {
   it('Should scroll to the results anchor when paginating', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     await component.findComponent({ name: 'Pagination' }).vm.$emit('paginate')
 
@@ -257,7 +258,7 @@ describe('DnDContentSearch', async () => {
   it('Should update the page when the pagination emits a new page', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     await component
       .findComponent({ name: 'Pagination' })
@@ -269,7 +270,7 @@ describe('DnDContentSearch', async () => {
   it('Should show the not found message when the search has no results', async () => {
     data.value = { items: [], pages: 0 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     await component.get('[test-id="search"]').setValue('nothing here')
 
@@ -277,7 +278,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should debounce the search query filters', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     vi.useFakeTimers()
     await component.get('[test-id="search"]').setValue('sword')
@@ -287,7 +288,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should reset the search and query filters when the content type changes', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     vi.useFakeTimers()
     await component.get('[test-id="search"]').setValue('sword')
@@ -305,7 +306,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should reset the query filters when the selected documents change', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     await component
       .findComponent({ name: 'GameSystemFilter' })
@@ -315,7 +316,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should reset the query filters when the selected game system changes', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     await component
       .findComponent({ name: 'GameSystemFilter' })
@@ -334,7 +335,7 @@ describe('DnDContentSearch', async () => {
       pages: 1,
     }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
     const pinnedCard = component
       .findAllComponents({ name: 'ContentCard' })
       .find(card => (card.props('hit') as { id?: string }).id === mockItem.id)
@@ -343,7 +344,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should pin a new item when there is room left', async () => {
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: { ...props, allowPin: true },
     })
 
@@ -373,7 +374,7 @@ describe('DnDContentSearch', async () => {
       pages: 1,
     }
 
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: { ...props, allowPin: true },
     })
 
@@ -388,7 +389,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should not pin or unpin without a sheet or update handler', async () => {
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: {},
     })
 
@@ -399,7 +400,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should not remove pins without a sheet or update handler', async () => {
-    const component = await mountSuspended(DnDContentSearch, {
+    const component = await mountWithTooltips(DnDContentSearch, {
       props: {},
     })
 
@@ -413,7 +414,7 @@ describe('DnDContentSearch', async () => {
   })
 
   it('Should not persist the filters by default', async () => {
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
     const replace = spyOnReplace()
 
     await component.get('[test-id="search"]').setValue('sword')
@@ -431,7 +432,7 @@ describe('DnDContentSearch', async () => {
         page: '2',
       }
 
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'url' },
       })
 
@@ -448,7 +449,7 @@ describe('DnDContentSearch', async () => {
     it('Should ignore a content type the search does not offer', async () => {
       routeQuery.value = { type: 'monsters' }
 
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'url' },
       })
 
@@ -457,7 +458,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should write the filters to the query', async () => {
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'url' },
       })
       const replace = spyOnReplace()
@@ -479,7 +480,7 @@ describe('DnDContentSearch', async () => {
     it('Should write the page to the query', async () => {
       data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'url' },
       })
       const replace = spyOnReplace()
@@ -492,7 +493,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should follow the query when the browser navigates', async () => {
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'url' },
       })
 
@@ -514,7 +515,7 @@ describe('DnDContentSearch', async () => {
         JSON.stringify({ search: 'fire', type: 'weapons', page: 2 }),
       )
 
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'local' },
       })
 
@@ -528,7 +529,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should write the filters to the storage', async () => {
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, persist: 'local' },
       })
       const replace = spyOnReplace()
@@ -545,7 +546,7 @@ describe('DnDContentSearch', async () => {
   it('Should reset the page when the filters change', async () => {
     data.value = { items: open5eV2ArmorListingFixture, pages: 2 }
 
-    const component = await mountSuspended(DnDContentSearch, { props })
+    const component = await mountWithTooltips(DnDContentSearch, { props })
 
     await component
       .findComponent({ name: 'Pagination' })
@@ -562,13 +563,13 @@ describe('DnDContentSearch', async () => {
 
   describe('reset filters', () => {
     it('Should not show the reset button while the filters are untouched', async () => {
-      const component = await mountSuspended(DnDContentSearch, { props })
+      const component = await mountWithTooltips(DnDContentSearch, { props })
 
       expect(component.find('[test-id="reset-filters"]').exists()).toBeFalsy()
     })
 
     it('Should show the reset button when the search changes', async () => {
-      const component = await mountSuspended(DnDContentSearch, { props })
+      const component = await mountWithTooltips(DnDContentSearch, { props })
 
       await component.get('[test-id="search"]').setValue('sword')
 
@@ -576,7 +577,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should show the reset button when the content type changes', async () => {
-      const component = await mountSuspended(DnDContentSearch, { props })
+      const component = await mountWithTooltips(DnDContentSearch, { props })
 
       await selectOption(component, 'weapons')
 
@@ -584,7 +585,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should show the reset button when the selected documents change', async () => {
-      const component = await mountSuspended(DnDContentSearch, { props })
+      const component = await mountWithTooltips(DnDContentSearch, { props })
 
       await component
         .findComponent({ name: 'GameSystemFilter' })
@@ -595,7 +596,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should show the reset button when the game system changes', async () => {
-      const component = await mountSuspended(DnDContentSearch, { props })
+      const component = await mountWithTooltips(DnDContentSearch, { props })
 
       await component
         .findComponent({ name: 'GameSystemFilter' })
@@ -606,7 +607,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should not show the reset button when the documents match the pre selected ones', async () => {
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: { ...props, preSelectedDocuments: ['srd-2024', 'srd-2014'] },
       })
 
@@ -619,7 +620,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should restore every filter to its initial value', async () => {
-      const component = await mountSuspended(DnDContentSearch, {
+      const component = await mountWithTooltips(DnDContentSearch, {
         props: {
           ...props,
           system: '5e-2024',
@@ -655,7 +656,7 @@ describe('DnDContentSearch', async () => {
     })
 
     it('Should clear a pending debounced search when resetting', async () => {
-      const component = await mountSuspended(DnDContentSearch, { props })
+      const component = await mountWithTooltips(DnDContentSearch, { props })
 
       vi.useFakeTimers()
       await component.get('[test-id="search"]').setValue('sword')
