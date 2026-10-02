@@ -4,15 +4,23 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Join from '~/pages/campaigns/join.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const { fetchMock, getQueryData, navigateTo, removeQueries, toast, useSeo } =
-  vi.hoisted(() => ({
-    fetchMock: vi.fn(),
-    getQueryData: vi.fn(),
-    navigateTo: vi.fn(),
-    removeQueries: vi.fn(),
-    toast: vi.fn(),
-    useSeo: vi.fn(),
-  }))
+const {
+  fetchMock,
+  getQueryData,
+  invalidateQueries,
+  navigateTo,
+  removeQueries,
+  toast,
+  useSeo,
+} = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
+  getQueryData: vi.fn(),
+  invalidateQueries: vi.fn(),
+  navigateTo: vi.fn(),
+  removeQueries: vi.fn(),
+  toast: vi.fn(),
+  useSeo: vi.fn(),
+}))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({ toast }),
@@ -20,7 +28,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ getQueryData, removeQueries }),
+  useQueryClient: () => ({ getQueryData, invalidateQueries, removeQueries }),
 }))
 
 mockNuxtImport('useSeo', () => useSeo)
@@ -145,6 +153,19 @@ describe('Campaign join page', () => {
     )
   })
 
+  it('Should clear the cached membership and listing when the invite is accepted', async () => {
+    const { join } = await mountPage()
+
+    await join()
+
+    expect(removeQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignMember', 1],
+    })
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignListing'],
+    })
+  })
+
   it('Should decline the invite with the token', async () => {
     const { decline } = await mountPage()
 
@@ -173,6 +194,19 @@ describe('Campaign join page', () => {
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
 
+  it('Should clear the cached membership and listing when the invite is declined', async () => {
+    const { decline } = await mountPage()
+
+    await decline()
+
+    expect(removeQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignMember', 1],
+    })
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignListing'],
+    })
+  })
+
   it('Should keep the invite and toast when the request fails', async () => {
     fetchMock.mockRejectedValue(new Error('Boom'))
 
@@ -186,6 +220,7 @@ describe('Campaign join page', () => {
       variant: 'destructive',
     })
     expect(removeQueries).not.toHaveBeenCalled()
+    expect(invalidateQueries).not.toHaveBeenCalled()
     expect(navigateTo).not.toHaveBeenCalled()
   })
 

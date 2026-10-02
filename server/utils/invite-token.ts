@@ -7,8 +7,13 @@ export interface InviteTokenPayload {
 export async function verifyInviteToken(
   token: string,
 ): Promise<InviteTokenPayload> {
-  const claims = await verifyJWT(useRuntimeConfig().jwtSecret, token)
-  const { data } = claims
+  const { data } = await verifyJWT(useRuntimeConfig().jwtSecret, token).catch(
+    (error: Error) => {
+      throw error.message === 'Expired JWT'
+        ? createError({ statusCode: 410, statusMessage: 'Invite expired' })
+        : createError({ statusCode: 400, statusMessage: 'Invalid invite' })
+    },
+  )
 
   if (
     data === null ||
@@ -20,7 +25,7 @@ export async function verifyInviteToken(
     !('role' in data) ||
     typeof data.role !== 'string'
   )
-    throw createError('Invalid JWT')
+    throw createError({ statusCode: 400, statusMessage: 'Invalid invite' })
 
   return data as InviteTokenPayload
 }

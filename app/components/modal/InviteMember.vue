@@ -11,8 +11,7 @@ const props = defineProps<{ current: CampaignFull }>()
 
 const user = useAuthenticatedUser()
 const { toast } = useToast()
-const { t } = useI18n()
-const localePath = useLocalePath()
+const { t, locale } = useI18n()
 const queryClient = useQueryClient()
 
 const { mutateAsync: createJoinCampaignToken } = useJoinTokenCreate()
@@ -170,7 +169,7 @@ async function addTeamMember(member: FoundUser): Promise<void> {
     body: {
       campaignId: props.current.id,
       userId: member.id,
-      inviteLink: `https://dnd-tracker.com${localePath('/campaigns/join')}?token=${token}`,
+      inviteLink: joinCampaignUrl(token, locale.value),
     },
   })
 }

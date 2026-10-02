@@ -51,14 +51,26 @@ describe('Valid Token middleware', () => {
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
 
-  it('should throw when $fetch fails', async () => {
+  it('should redirect to no-access when the token is invalid', async () => {
     const query = { token: 'invalid' }
 
-    fetchMock.mockRejectedValue(new Error('Invalid token'))
+    fetchMock.mockRejectedValue({ statusCode: 400 })
 
-    await expect(middleware({ ...mockTo, query }, mockFrom)).rejects.toThrow(
-      'Invalid token',
-    )
+    await middleware({ ...mockTo, query }, mockFrom)
+
+    expect(navigateTo).toHaveBeenCalledWith('/no-access')
+    expect(mockSupabase.from).not.toHaveBeenCalled()
+  })
+
+  it('should redirect to the expired notice when the token has expired', async () => {
+    const query = { token: 'expired' }
+
+    fetchMock.mockRejectedValue({ statusCode: 410 })
+
+    await middleware({ ...mockTo, query }, mockFrom)
+
+    expect(navigateTo).toHaveBeenCalledWith('/no-access?reason=expired')
+    expect(mockSupabase.from).not.toHaveBeenCalled()
   })
 
   it('should redirect to no-access when supabase query fails', async () => {
@@ -73,6 +85,7 @@ describe('Valid Token middleware', () => {
     await middleware({ ...mockTo, query }, mockFrom)
 
     expect(navigateTo).toHaveBeenCalledWith('/no-access')
+    expect(mockQueryClient.setQueryData).not.toHaveBeenCalled()
   })
 
   it('should set query data on success', async () => {

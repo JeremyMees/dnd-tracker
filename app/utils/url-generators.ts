@@ -44,6 +44,12 @@ export function shareEncounterUrl(token: string, locale: string): string {
   return `${appDomain}${localeParam(locale)}/playground?token=${token}`
 }
 
+export function joinCampaignUrl(token: string, locale: string): string {
+  const { appDomain } = useRuntimeConfig().public
+
+  return `${appDomain}${localeParam(locale)}/campaigns/join?token=${token}`
+}
+
 export function liveSessionUrl(code: string, locale: string): string {
   const { appDomain } = useRuntimeConfig().public
 

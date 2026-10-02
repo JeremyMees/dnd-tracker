@@ -3,6 +3,7 @@ import {
   campaignUrl,
   encounterUrl,
   shareEncounterUrl,
+  joinCampaignUrl,
   liveSessionUrl,
   generateParams,
   slugify,
@@ -92,6 +93,20 @@ describe('url-generators', () => {
       const url = shareEncounterUrl('xyz789', 'nl')
 
       expect(url).toBe('https://dnd-tracker.com/nl/playground?token=xyz789')
+    })
+  })
+
+  describe('joinCampaignUrl', () => {
+    it('should generate a join URL with English locale', () => {
+      const url = joinCampaignUrl('abc123', 'en')
+
+      expect(url).toBe('https://dnd-tracker.com/campaigns/join?token=abc123')
+    })
+
+    it('should generate a join URL with Dutch locale', () => {
+      const url = joinCampaignUrl('abc123', 'nl')
+
+      expect(url).toBe('https://dnd-tracker.com/nl/campaigns/join?token=abc123')
     })
   })
 

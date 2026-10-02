@@ -75,6 +75,10 @@ async function answerInvite(accept: boolean): Promise<void> {
     queryClient.removeQueries({
       queryKey: ['useJoinCampaign', route.query.token],
     })
+    queryClient.removeQueries({
+      queryKey: ['useCampaignMember', data.value.campaign.id],
+    })
+    queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
     navigateTo(localePath(url))
   } catch {
     toast({

@@ -85,7 +85,10 @@ describe('POST /api/campaign/accept-invite', () => {
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { token } })),
-    ).rejects.toThrow('Invalid signature')
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      statusMessage: 'Invalid invite',
+    })
 
     expect(select.match).not.toHaveBeenCalled()
   })
@@ -96,7 +99,10 @@ describe('POST /api/campaign/accept-invite', () => {
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { token } })),
-    ).rejects.toMatchObject({ message: 'Invalid JWT' })
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      statusMessage: 'Invalid invite',
+    })
 
     expect(select.match).not.toHaveBeenCalled()
   })

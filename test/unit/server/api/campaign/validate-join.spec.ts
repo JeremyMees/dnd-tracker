@@ -39,7 +39,25 @@ describe('POST /api/campaign/validate-join', () => {
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { token } })),
-    ).rejects.toThrow('Invalid signature')
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      statusMessage: 'Invalid invite',
+    })
+  })
+
+  it('throws a 410 when the token has expired', async () => {
+    const token = await signJWT(
+      secretString,
+      { data: { campaign: 42, user: 'user-1', role: 'Player' } },
+      new Date(Date.now() - 60_000),
+    )
+
+    await expect(
+      handler(mockEvent({ method: 'POST', body: { token } })),
+    ).rejects.toMatchObject({
+      statusCode: 410,
+      statusMessage: 'Invite expired',
+    })
   })
 
   it('throws when the payload is missing invite data', async () => {
@@ -47,6 +65,9 @@ describe('POST /api/campaign/validate-join', () => {
 
     await expect(
       handler(mockEvent({ method: 'POST', body: { token } })),
-    ).rejects.toMatchObject({ message: 'Invalid JWT' })
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      statusMessage: 'Invalid invite',
+    })
   })
 })

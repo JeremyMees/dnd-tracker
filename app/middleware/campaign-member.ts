@@ -23,7 +23,17 @@ export default defineNuxtRouteMiddleware(async to => {
 
     const member = data.team.find(member => member.user === user.value?.id)
 
-    if (!member) return navigateTo(localePath('/no-access'))
+    if (!member) {
+      const invite = data.join_campaign.find(
+        invite => invite.user === user.value?.id,
+      )
+
+      return navigateTo(
+        localePath(
+          invite ? `/campaigns/join?token=${invite.token}` : '/no-access',
+        ),
+      )
+    }
 
     // Check if user has permission to access the page
     if (hasPermission(member.role, expectedRole)) return
@@ -48,6 +58,7 @@ type CampaignMember = {
   join_campaign: {
     role: UserRole
     user: string
+    token: string
   }[]
 }
 
@@ -107,7 +118,8 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
       ),
       join_campaign(
         role,
-        user
+        user,
+        token
       )
     `,
     )

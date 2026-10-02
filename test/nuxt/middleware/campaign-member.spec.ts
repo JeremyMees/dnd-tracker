@@ -329,6 +329,51 @@ describe('Campaign member middleware', () => {
     expect(navigateTo).toHaveBeenCalledWith('/no-access')
   })
 
+  it('should navigate to the join page when user has a pending invite', async () => {
+    mockUser = { ...authUser, id: '3' }
+    mockQueryClient.getQueryData.mockReturnValue({
+      createdBy: '1',
+      team: [{ role: 'Viewer', user: '2' }],
+      join_campaign: [
+        { role: 'Admin', user: '4', token: 'other-token' },
+        { role: 'Admin', user: '3', token: 'invite-token' },
+      ],
+    })
+
+    await middleware(
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
+      mockFrom,
+    )
+
+    expect(navigateTo).toHaveBeenCalledWith(
+      '/campaigns/join?token=invite-token',
+    )
+  })
+
+  it('should navigate to /no-access when only other users have pending invites', async () => {
+    mockUser = { ...authUser, id: '3' }
+    mockQueryClient.getQueryData.mockReturnValue({
+      createdBy: '1',
+      team: [],
+      join_campaign: [{ role: 'Admin', user: '4', token: 'other-token' }],
+    })
+
+    await middleware(
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
+      mockFrom,
+    )
+
+    expect(navigateTo).toHaveBeenCalledWith('/no-access')
+  })
+
   it('should fetch from supabase when not cached and allow access for owner', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
