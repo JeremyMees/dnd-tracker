@@ -272,6 +272,7 @@ describe('InviteMember modal', () => {
       body: expect.objectContaining({
         campaignId: mockCampaignFull.id,
         userId: foundProfile.id,
+        inviteLink: joinCampaignUrl('join-token', 'en'),
       }),
     })
   })

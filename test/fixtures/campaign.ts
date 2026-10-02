@@ -19,6 +19,7 @@ export const mockCampaignItem: CampaignItem = {
     avatar: 'avatar-url',
   },
   team: [],
+  join_campaign: [],
   initiative_sheets: 2,
   homebrew_items: 3,
 }

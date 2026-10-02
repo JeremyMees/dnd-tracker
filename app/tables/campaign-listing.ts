@@ -87,6 +87,12 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
         if (admin) return t('general.admin')
         if (member) return t('general.member')
         if (owner) return t('general.owner')
+        if (
+          row.original.join_campaign.some(
+            ({ user: id }) => id === user.value.id,
+          )
+        )
+          return t('general.invited')
         return ''
       },
     }),

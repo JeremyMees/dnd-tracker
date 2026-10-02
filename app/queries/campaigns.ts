@@ -54,7 +54,8 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
           id,
           role,
           user(id, username, avatar)
-        )
+        ),
+        join_campaign(user)
       `,
         filters: data.value,
         page: data.value.page,

@@ -227,6 +227,7 @@ export interface CampaignItem extends Omit<CampaignRow, 'team' | 'createdBy'> {
   homebrew_items: number
   createdBy: MinimalProfile
   team: TeamMember[]
+  join_campaign: Pick<JoinCampaignRow, 'user'>[]
 }
 
 export interface CampaignMinimal {
