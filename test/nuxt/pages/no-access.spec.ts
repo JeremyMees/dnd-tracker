@@ -1,11 +1,14 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import NoAccess from '~/pages/no-access.vue'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
 const { useSeo } = vi.hoisted(() => ({ useSeo: vi.fn() }))
 
 mockNuxtImport('useSeo', () => useSeo)
+mockNuxtImport('useRoute', () => () => route)
+
+const route: { query: Record<string, string> } = { query: {} }
 
 const stubs = { NuxtLayout: nuxtLayoutStub }
 
@@ -14,6 +17,10 @@ function mountPage() {
 }
 
 describe('No access page', () => {
+  beforeEach(() => {
+    route.query = {}
+  })
+
   it('Should render the title and text', async () => {
     const component = await mountPage()
 
@@ -21,6 +28,19 @@ describe('No access page', () => {
       'pages.noAccess.title',
     )
     expect(component.get('[test-id="text"]').text()).toBe('pages.noAccess.text')
+  })
+
+  it('Should render the expired invite notice', async () => {
+    route.query = { reason: 'expired' }
+
+    const component = await mountPage()
+
+    expect(component.get('[test-id="title"]').text()).toBe(
+      'pages.noAccess.expired.title',
+    )
+    expect(component.get('[test-id="text"]').text()).toBe(
+      'pages.noAccess.expired.text',
+    )
   })
 
   it('Should render inside the centered layout', async () => {

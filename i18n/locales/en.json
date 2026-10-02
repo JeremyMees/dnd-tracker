@@ -605,7 +605,11 @@
     },
     "noAccess": {
       "title": "You're not a team member",
-      "text": "Oops! It seems like you're not a member, and you don't have access to this content. If you believe this is a mistake, please don't hesitate to reach out to the owner or an admin for assistance."
+      "text": "Oops! It seems like you're not a member, and you don't have access to this content. If you believe this is a mistake, please don't hesitate to reach out to the owner or an admin for assistance.",
+      "expired": {
+        "title": "This invite has expired",
+        "text": "Campaign invites are valid for one week. Ask the owner or an admin of the campaign to invite you again."
+      }
     },
     "fantasyNameGenerator": {
       "tip": "Click on the generated name to copy it to your clipboard"
