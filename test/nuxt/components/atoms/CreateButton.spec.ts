@@ -22,7 +22,7 @@ describe('CreateButton', async () => {
 
   it('Should render with default props correctly', async () => {
     const component = await mountSuspended(CreateButton, { props })
-    const button = component.find('button')
+    const button = component.find('[test-id="create"]')
 
     expect(button.exists()).toBeTruthy()
     expect(button.text()).toBe('actions.create')
