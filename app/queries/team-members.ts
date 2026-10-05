@@ -1,40 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
-export function useJoinTokenCreate() {
-  const supabase = useSupabaseClient<DB>()
-
-  return useMutation({
-    mutationFn: async ({ data }: { data: TeamInsert } & QueryDefaults) => {
-      const jwt = await $fetch<string>('/api/campaign/join', {
-        method: 'POST',
-        body: data,
-      })
-
-      if (!jwt) throw createError('Failed to create join token')
-
-      const { error } = await supabase
-        .from('join_campaign')
-        .insert([{ ...data, token: jwt }]).select(`
-          *,
-          user(id, username, avatar)
-        `)
-
-      if (error) throw createError(error)
-      else return jwt
-    },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
-  })
-}
-
 export function useJoinTokenRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
@@ -56,39 +22,6 @@ export function useJoinTokenRemove() {
       queryClient.invalidateQueries({
         queryKey: ['useCampaignDetail', campaign],
       })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
-  })
-}
-
-export function useTeamMemberCreate() {
-  const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({
-      data,
-      id,
-    }: { data: TeamInsert; id?: number } & QueryDefaults) => {
-      const { error } = await supabase.from('team').insert([data])
-
-      if (error) throw createError(error)
-
-      if (id) await supabase.from('join_campaign').delete().eq('id', id)
-    },
-    onSuccess: (_data, { data, onSuccess }) => {
-      queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', data.campaign],
-      })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-
-      if (onSuccess) onSuccess()
     },
     onError: (error, { onError }) => {
       if (onError) onError(error.message)

@@ -22,6 +22,7 @@ export async function requireUser(event: H3Event): Promise<SessionUser> {
 export interface CampaignAccess {
   id: number
   title: string
+  createdBy: string
   role: UserRole
 }
 
@@ -61,7 +62,12 @@ export async function requireCampaignAccess(
     throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
 
-  return { id: campaign.id, title: campaign.title, role }
+  return {
+    id: campaign.id,
+    title: campaign.title,
+    createdBy: campaign.createdBy,
+    role,
+  }
 }
 
 export interface EncounterAccess {

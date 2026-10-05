@@ -91,6 +91,7 @@ describe('auth', () => {
         {
           id: 42,
           title: 'Curse of Strahd',
+          createdBy: 'user-1',
           role: 'Owner',
         },
       )
@@ -109,6 +110,7 @@ describe('auth', () => {
         {
           id: 42,
           title: 'Curse of Strahd',
+          createdBy: 'user-1',
           role: 'Admin',
         },
       )
