@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { setup } from '@nuxt/test-utils/e2e'
-import { host, dismissConsent, openPage } from '../utils'
+import { dismissConsent, host, openPage } from '../helpers'
 
 describe('login page', async () => {
   await setup({ host, browser: true })

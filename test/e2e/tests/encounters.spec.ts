@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { setup } from '@nuxt/test-utils/e2e'
-import { host, testTitle, openPage, row, submitTitleForm } from '../utils'
+import { host, openPage, row, submitTitleForm, testTitle } from '../helpers'
 
 describe('encounters', async () => {
   await setup({ host, browser: true })
