@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { setup } from '@nuxt/test-utils/e2e'
-import { host, openPage } from '../helpers'
+import { host, openPage } from '../utils'
 
 describe('authenticated session', async () => {
   await setup({ host, browser: true })
