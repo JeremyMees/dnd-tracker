@@ -17,14 +17,7 @@ export function testTitle(name: string): string {
 }
 
 export async function dismissConsent(page: Page): Promise<void> {
-  const banner = page.getByTestId('banner')
-  const shown = await banner.waitFor({ timeout: 5_000 }).then(
-    () => true,
-    () => false,
-  )
+  const reject = page.getByTestId('reject-all')
 
-  if (!shown) return
-
-  await banner.getByTestId('reject-all').click()
-  await banner.waitFor({ state: 'detached' })
+  if (await reject.isVisible()) await reject.click()
 }
