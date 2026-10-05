@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { createPage, setup } from '@nuxt/test-utils/e2e'
-import { dismissConsent, host } from '../helpers'
+import { setup } from '@nuxt/test-utils/e2e'
+import { dismissConsent, host, openPage } from '../helpers'
 
 describe('login page', async () => {
   await setup({ host, browser: true })
 
   it('renders the login form', async () => {
-    const page = await createPage('/login')
+    const page = await openPage('/login', { signedIn: false })
 
     expect(await page.getByTestId('email').isVisible()).toBe(true)
     expect(await page.getByTestId('password').isVisible()).toBe(true)
@@ -14,7 +14,7 @@ describe('login page', async () => {
   })
 
   it('marks fields invalid when submitted empty', async () => {
-    const page = await createPage('/login')
+    const page = await openPage('/login', { signedIn: false })
     await dismissConsent(page)
 
     await page.getByTestId('submit').click()
@@ -27,7 +27,7 @@ describe('login page', async () => {
   })
 
   it('navigates to the register page', async () => {
-    const page = await createPage('/login')
+    const page = await openPage('/login', { signedIn: false })
     await dismissConsent(page)
 
     await page.getByTestId('register').click()

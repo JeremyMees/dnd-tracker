@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { createPage, setup } from '@nuxt/test-utils/e2e'
-import type { Page } from 'playwright-core'
-import { host, storageState, testTitle } from '../helpers'
+import { setup } from '@nuxt/test-utils/e2e'
+import { host, openPage, row, submitTitleForm, testTitle } from '../helpers'
 
 describe('campaigns', async () => {
   await setup({ host, browser: true })
@@ -9,31 +8,18 @@ describe('campaigns', async () => {
   const title = testTitle('Campaign')
   const updatedTitle = testTitle('Renamed')
 
-  function row(page: Page, text: string) {
-    return page.getByRole('row').filter({ hasText: text })
-  }
-
-  async function submitCampaignForm(page: Page, value: string): Promise<void> {
-    const dialog = page
-      .getByRole('dialog')
-      .filter({ has: page.getByTestId('title') })
-    await dialog.getByTestId('title').fill(value)
-    await dialog.getByTestId('submit').click()
-    await dialog.waitFor({ state: 'detached' })
-  }
-
   it('creates a campaign', async () => {
-    const page = await createPage('/campaigns', { storageState })
+    const page = await openPage('/campaigns')
 
     await page.getByTestId('create').click()
-    await submitCampaignForm(page, title)
+    await submitTitleForm(page, title)
     await row(page, title).waitFor()
 
     expect(await row(page, title).count()).toBe(1)
   })
 
   it('opens the campaign from the listing', async () => {
-    const page = await createPage('/campaigns', { storageState })
+    const page = await openPage('/campaigns')
 
     await row(page, title).getByRole('link', { name: title }).click()
     await page.waitForURL(/\/campaigns\/\d+-.+\/encounters$/)
@@ -42,17 +28,17 @@ describe('campaigns', async () => {
   })
 
   it('renames a campaign', async () => {
-    const page = await createPage('/campaigns', { storageState })
+    const page = await openPage('/campaigns')
 
     await row(page, title).getByRole('button', { name: 'Update' }).click()
-    await submitCampaignForm(page, updatedTitle)
+    await submitTitleForm(page, updatedTitle)
     await row(page, updatedTitle).waitFor()
 
     expect(await row(page, title).count()).toBe(0)
   })
 
   it('deletes a campaign', async () => {
-    const page = await createPage('/campaigns', { storageState })
+    const page = await openPage('/campaigns')
 
     await row(page, updatedTitle).getByRole('checkbox').click()
     await page.getByTestId('remove').click()
