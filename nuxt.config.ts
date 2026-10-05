@@ -40,12 +40,7 @@ export default defineNuxtConfig({
 
   typescript: {
     tsConfig: {
-      include: [
-        '../test/unit/**/*',
-        '../test/e2e/**/*',
-        '../scripts/**/*',
-        '../vitest.e2e.config.ts',
-      ],
+      include: ['../test/unit/**/*', '../scripts/**/*'],
       compilerOptions: { types: ['node'] },
     },
   },

@@ -38,6 +38,3 @@ logs
 .agents
 .claude
 skills-lock.json
-
-# e2e session
-test/e2e/.auth
