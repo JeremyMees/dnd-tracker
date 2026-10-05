@@ -16,7 +16,6 @@ defineProps<{
     <UiSkeleton v-if="loading" test-id="skeleton" class="w-[70px] h-[32px]" />
     <UiButton
       v-else
-      test-id="create"
       size="sm"
       :aria-label="$t('actions.create')"
       :disabled="disabled"
