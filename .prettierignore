@@ -5,3 +5,4 @@
 /.vscode
 pnpm-lock.yaml
 /server/generated
+/supabase
