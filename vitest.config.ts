@@ -54,7 +54,6 @@ export default defineConfig({
         'app/components/ui/**',
         'app/components/animation/**',
         'server/emails/**/*.vue',
-        'supabase/**',
       ],
     },
   },

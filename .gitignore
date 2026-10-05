@@ -31,6 +31,7 @@ logs
 # VSCode
 .vscode/mcp.json
 
+/supabase
 /coverage
 /coverage-raw
 

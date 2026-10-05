@@ -11,4 +11,3 @@ lint-staged.config.mjs
 eslint.config.mjs
 .prettierrc
 .prettierignore
-supabase
