@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
-import { useJoinTokenCreate } from '~/queries/team-members'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
@@ -13,8 +12,6 @@ const user = useAuthenticatedUser()
 const { toast } = useToast()
 const { t, locale } = useI18n()
 const queryClient = useQueryClient()
-
-const { mutateAsync: createJoinCampaignToken } = useJoinTokenCreate()
 
 const formError = ref<string>('')
 const searchFormError = ref<string>('')
@@ -112,17 +109,18 @@ async function handleSearch(): Promise<void> {
 
 function validateUser(email: string): string | undefined {
   const { team, join_campaign, createdBy } = props.current
+  const matches = (other: string) => other.toLowerCase() === email.toLowerCase()
 
-  if (email === user.value.email) return 'self'
-  else if (join_campaign.some(({ user }) => user.email === email))
+  if (matches(user.value.email)) return 'self'
+  else if (join_campaign.some(({ user }) => matches(user.email)))
     return 'alreadyInvited'
-  else if (foundUsers.value.some(({ profile }) => profile.email === email))
+  else if (foundUsers.value.some(({ profile }) => matches(profile.email)))
     return 'alreadySelected'
   else if ([...foundUsers.value, ...team, ...join_campaign].length >= 9)
     return 'maxMembers'
   else if (
-    createdBy.email === email ||
-    team.some(({ user }) => user.email === email)
+    matches(createdBy.email) ||
+    team.some(({ user }) => matches(user.email))
   )
     return 'alreadyAdded'
 }
@@ -133,11 +131,6 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     await Promise.all(values.users.map(async user => addTeamMember(user)))
 
-    queryClient.invalidateQueries({
-      queryKey: ['useCampaignDetail', props.current.id],
-    })
-    queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-
     toast({
       title: t('components.inviteMember.toast.invited.title'),
       description: t('components.inviteMember.toast.invited.text'),
@@ -146,30 +139,30 @@ const onSubmit = form.handleSubmit(async values => {
 
     emit('close')
   } catch (err) {
-    formError.value = getErrorMessage(err) || t('general.error.text')
+    const message = getErrorMessage(err)
+
+    formError.value =
+      message === 'alreadyInvited'
+        ? t('components.inviteMember.errors.alreadyInvited')
+        : message || t('general.error.text')
+  } finally {
+    queryClient.invalidateQueries({
+      queryKey: ['useCampaignDetail', props.current.id],
+    })
+    queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
   }
 })
 
 async function addTeamMember(member: FoundUser): Promise<void> {
   if (member.role !== 'Admin' && member.role !== 'Viewer') return
 
-  const token = await createJoinCampaignToken({
-    data: {
-      user: member.id,
-      campaign: props.current.id,
-      role: member.role,
-    },
-    onError: (error: string) => {
-      throw createError(error)
-    },
-  })
-
   await $fetch('/api/emails/campaign-invite', {
     method: 'POST',
     body: {
       campaignId: props.current.id,
       userId: member.id,
-      inviteLink: joinCampaignUrl(token, locale.value),
+      role: member.role,
+      locale: locale.value,
     },
   })
 }

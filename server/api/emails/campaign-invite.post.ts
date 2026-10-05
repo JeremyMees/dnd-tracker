@@ -1,12 +1,14 @@
 import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
+import { ONE_WEEK } from '~~/constants/time'
 import CampaignInvite from '~~/server/emails/CampaignInvite.vue'
 
 const bodySchema = z.object({
   campaignId: z.number().int().positive(),
   userId: z.uuid(),
-  inviteLink: z.url().max(2048),
+  role: z.enum(['Admin', 'Player', 'Viewer']),
+  locale: z.enum(['nl', 'en']),
 })
 
 export default defineEventHandler(async event => {
@@ -14,6 +16,7 @@ export default defineEventHandler(async event => {
   const body = await readValidatedBody(event, bodySchema.parse)
   const {
     plunkApiKey,
+    jwtSecret,
     public: { appDomain },
   } = useRuntimeConfig()
 
@@ -23,8 +26,6 @@ export default defineEventHandler(async event => {
     caller.id,
     ['Owner', 'Admin'],
   )
-
-  const token = assertInviteLink(body.inviteLink, appDomain)
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
@@ -38,14 +39,36 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'User not found' })
   }
 
-  const { data: invite } = await supabase
-    .from('join_campaign')
-    .select('id')
-    .match({ token, campaign: campaign.id, user: body.userId })
-    .maybeSingle()
+  const token = await signJWT(
+    jwtSecret,
+    {
+      user: caller.id,
+      data: { campaign: campaign.id, user: body.userId, role: body.role },
+    },
+    new Date(Date.now() + ONE_WEEK),
+  )
 
-  if (!invite) {
-    throw createError({ statusCode: 404, statusMessage: 'Invite not found' })
+  const { data: invite, error: inviteError } = await supabase
+    .from('join_campaign')
+    .insert({
+      campaign: campaign.id,
+      user: body.userId,
+      role: body.role,
+      token,
+    })
+    .select('id')
+    .single()
+
+  if (inviteError?.code === '23505') {
+    throw createError({ statusCode: 409, statusMessage: 'alreadyInvited' })
+  }
+
+  if (inviteError || !invite) {
+    throw createError(
+      inviteError
+        ? postgresErrorToH3Error(inviteError)
+        : { statusCode: 500, statusMessage: 'Failed to create invite' },
+    )
   }
 
   const { data: inviter } = await supabase
@@ -59,7 +82,7 @@ export default defineEventHandler(async event => {
     username: invitee.username,
     campaign: campaign.title,
     invitedBy: inviter?.username || 'Owner',
-    inviteLink: body.inviteLink,
+    inviteLink: `${appDomain}${localeParam(body.locale)}/campaigns/join?token=${token}`,
   }
 
   try {
@@ -85,30 +108,9 @@ export default defineEventHandler(async event => {
     )
   } catch (error) {
     console.error('Error sending campaign invite email:', error)
+
+    await supabase.from('join_campaign').delete().eq('id', invite.id)
+
     throw createError('Failed to send email.')
   }
 })
-
-function assertInviteLink(link: string, appDomain: string): string {
-  let url: URL
-  let expected: URL
-
-  try {
-    url = new URL(link)
-    expected = new URL(appDomain)
-  } catch {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid invite link' })
-  }
-
-  const token = url.searchParams.get('token')
-
-  if (
-    url.origin !== expected.origin ||
-    !url.pathname.endsWith('/campaigns/join') ||
-    !token
-  ) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid invite link' })
-  }
-
-  return token
-}

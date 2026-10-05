@@ -10,7 +10,6 @@ import {
   toast,
 } from '~~/test/nuxt/stubs/query'
 import {
-  useJoinTokenCreate,
   useJoinTokenRemove,
   useTeamMemberCreate,
   useTeamMemberRemove,
@@ -21,82 +20,6 @@ describe('team-members queries', () => {
   beforeEach(async () => {
     fetchMock.mockReset()
     await clearQueryCache()
-  })
-
-  describe('useJoinTokenCreate', () => {
-    it('creates a join token and inserts the join_campaign row', async () => {
-      fetchMock.mockResolvedValue('jwt-token')
-
-      const from = mockSupabaseFrom({
-        join_campaign: mockChain({ data: null, error: null }),
-      })
-
-      const { vm } = await mountHook(() => useJoinTokenCreate())
-
-      const result = await vm.mutateAsync({
-        data: { campaign: 1, role: 'Player' } as TeamInsert,
-      })
-
-      expect(result).toBe('jwt-token')
-      expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith([
-        { campaign: 1, role: 'Player', token: 'jwt-token' },
-      ])
-    })
-
-    it('hands the caller its callbacks on success', async () => {
-      fetchMock.mockResolvedValue('jwt-token')
-      mockSupabaseFrom({
-        join_campaign: mockChain({ data: null, error: null }),
-      })
-
-      const { vm } = await mountHook(() => useJoinTokenCreate())
-      const spies = mutationSpies()
-
-      await vm.mutateAsync({
-        data: { campaign: 1, role: 'Player' } as TeamInsert,
-        ...spies,
-      })
-
-      expect(spies.onSuccess).toHaveBeenCalledOnce()
-      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
-      expect(spies.onError).not.toHaveBeenCalled()
-    })
-
-    it('reports a failed join_campaign insert', async () => {
-      fetchMock.mockResolvedValue('jwt-token')
-      mockSupabaseFrom({
-        join_campaign: mockChain({ data: null, error: { message: 'boom' } }),
-      })
-
-      const { vm } = await mountHook(() => useJoinTokenCreate())
-      const spies = mutationSpies()
-
-      await expect(
-        vm.mutateAsync({
-          data: { campaign: 1, role: 'Player' } as TeamInsert,
-          ...spies,
-        }),
-      ).rejects.toThrow('boom')
-
-      expect(spies.onError).toHaveBeenCalledWith('boom')
-      expect(spies.onSettled).toHaveBeenCalledWith('boom')
-    })
-
-    it('throws when no token is returned', async () => {
-      fetchMock.mockResolvedValue(undefined)
-
-      const { vm } = await mountHook(() => useJoinTokenCreate())
-      const onError = vi.fn()
-
-      await expect(
-        vm.mutateAsync({
-          data: { campaign: 1, role: 'Player' } as TeamInsert,
-          onError,
-        }),
-      ).rejects.toThrow('Failed to create join token')
-
-      expect(onError).toHaveBeenCalledWith('Failed to create join token')
-    })
   })
 
   describe('useJoinTokenRemove', () => {
