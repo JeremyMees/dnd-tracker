@@ -14,6 +14,7 @@ import handler from '~~/server/api/emails/campaign-invite.post'
 const appDomain = 'https://www.dnd-tracker.com'
 const jwtSecret = 'test-secret'
 const invitedUser = '11111111-1111-4111-8111-111111111111'
+const invitedOwner = '22222222-2222-4222-8222-222222222222'
 
 function body(overrides: Record<string, unknown> = {}) {
   return {
@@ -34,11 +35,13 @@ function mockTables({
     data: { email: 'invitee@example.com', username: 'Invitee' },
     error: null,
   },
+  membership = { data: null, error: null },
   invite = { data: { id: 7 }, error: null },
   inviter = { data: { username: 'DM' }, error: null },
 }: {
   campaign?: Record<string, unknown>
   invitee?: Record<string, unknown>
+  membership?: Record<string, unknown>
   invite?: Record<string, unknown>
   inviter?: Record<string, unknown>
 } = {}): SupabaseChain {
@@ -47,6 +50,7 @@ function mockTables({
   mockFrom({
     campaigns: mockChain(campaign),
     profiles: [mockChain(invitee), mockChain(inviter)],
+    team: mockChain(membership),
     join_campaign: joinCampaign,
   })
 
@@ -141,6 +145,45 @@ describe('POST /api/emails/campaign-invite', () => {
     ).rejects.toMatchObject({
       statusCode: 404,
       statusMessage: 'User not found',
+    })
+    expect(joinCampaign.insert).not.toHaveBeenCalled()
+  })
+
+  it('throws a 409 when the user is already on the team', async () => {
+    const joinCampaign = mockTables({ membership: { data: { id: 3 } } })
+
+    await expect(
+      handler(mockEvent({ method: 'POST', body: body() })),
+    ).rejects.toMatchObject({
+      statusCode: 409,
+      statusMessage: 'alreadyAdded',
+    })
+    expect(joinCampaign.insert).not.toHaveBeenCalled()
+  })
+
+  it('throws a 409 when the user owns the campaign', async () => {
+    const joinCampaign = mockChain({ data: { id: 7 }, error: null })
+
+    mockFrom({
+      campaigns: mockChain({
+        data: { id: 42, title: 'Curse of Strahd', createdBy: invitedOwner },
+        error: null,
+      }),
+      team: [mockChain({ data: { role: 'Admin' } }), mockChain({ data: null })],
+      profiles: mockChain({
+        data: { email: 'owner@example.com', username: 'Owner' },
+        error: null,
+      }),
+      join_campaign: joinCampaign,
+    })
+
+    await expect(
+      handler(
+        mockEvent({ method: 'POST', body: body({ userId: invitedOwner }) }),
+      ),
+    ).rejects.toMatchObject({
+      statusCode: 409,
+      statusMessage: 'alreadyAdded',
     })
     expect(joinCampaign.insert).not.toHaveBeenCalled()
   })

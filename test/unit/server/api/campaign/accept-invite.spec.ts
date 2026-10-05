@@ -76,6 +76,22 @@ describe('POST /api/campaign/accept-invite', () => {
     expect(from).toHaveBeenCalledWith('team')
   })
 
+  it('removes the invite when the user is already on the team', async () => {
+    const { del } = mockTables({
+      insertResult: {
+        data: null,
+        error: { code: '23505', message: 'duplicate key' },
+      },
+    })
+    const token = await validInvite()
+
+    await expect(
+      handler(mockEvent({ method: 'POST', body: { token } })),
+    ).resolves.toBeNull()
+
+    expect(del.eq).toHaveBeenCalledWith('id', 1)
+  })
+
   it('throws when the token signature is invalid', async () => {
     const { select } = mockTables()
     const token = await signInvite(
@@ -182,7 +198,12 @@ describe('POST /api/campaign/accept-invite', () => {
     const { del } = mockTables({
       insertResult: {
         data: null,
-        error: { code: '23505', message: 'duplicate', details: '', hint: '' },
+        error: {
+          code: '23503',
+          message: 'foreign key violation',
+          details: '',
+          hint: '',
+        },
       },
     })
     const token = await validInvite()
@@ -192,7 +213,7 @@ describe('POST /api/campaign/accept-invite', () => {
     ).rejects.toMatchObject({
       statusCode: 409,
       statusMessage: 'Conflict',
-      data: { code: '23505' },
+      data: { code: '23503' },
     })
 
     expect(del.eq).not.toHaveBeenCalled()

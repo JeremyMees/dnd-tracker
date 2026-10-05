@@ -32,39 +32,6 @@ export function useJoinTokenRemove() {
   })
 }
 
-export function useTeamMemberCreate() {
-  const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({
-      data,
-      id,
-    }: { data: TeamInsert; id?: number } & QueryDefaults) => {
-      const { error } = await supabase.from('team').insert([data])
-
-      if (error) throw createError(error)
-
-      if (id) await supabase.from('join_campaign').delete().eq('id', id)
-    },
-    onSuccess: (_data, { data, onSuccess }) => {
-      queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', data.campaign],
-      })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-
-      if (onSuccess) onSuccess()
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
-  })
-}
-
 export function useTeamMemberUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()

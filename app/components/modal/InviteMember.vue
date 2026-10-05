@@ -91,20 +91,20 @@ async function handleSearch(): Promise<void> {
   } catch (error) {
     const message = getErrorMessage(error) ?? ''
 
-    if (
-      [
-        'self',
-        'alreadyAdded',
-        'alreadyInvited',
-        'alreadySelected',
-        'maxMembers',
-      ].includes(message)
-    ) {
-      searchFormError.value = t(`components.inviteMember.errors.${message}`)
-    } else {
-      searchFormError.value = message
-    }
+    searchFormError.value = translateError(message)
   }
+}
+
+function translateError(message: string): string {
+  return [
+    'self',
+    'alreadyAdded',
+    'alreadyInvited',
+    'alreadySelected',
+    'maxMembers',
+  ].includes(message)
+    ? t(`components.inviteMember.errors.${message}`)
+    : message
 }
 
 function validateUser(email: string): string | undefined {
@@ -139,12 +139,8 @@ const onSubmit = form.handleSubmit(async values => {
 
     emit('close')
   } catch (err) {
-    const message = getErrorMessage(err)
-
     formError.value =
-      message === 'alreadyInvited'
-        ? t('components.inviteMember.errors.alreadyInvited')
-        : message || t('general.error.text')
+      translateError(getErrorMessage(err) ?? '') || t('general.error.text')
   } finally {
     queryClient.invalidateQueries({
       queryKey: ['useCampaignDetail', props.current.id],

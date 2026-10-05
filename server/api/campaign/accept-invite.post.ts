@@ -39,7 +39,8 @@ export default defineEventHandler(async event => {
     })
     .select('id, role, user')
 
-  if (teamError) throw createError(postgresErrorToH3Error(teamError))
+  if (teamError && teamError.code !== '23505')
+    throw createError(postgresErrorToH3Error(teamError))
 
   const { error: deleteError } = await supabase
     .from('join_campaign')

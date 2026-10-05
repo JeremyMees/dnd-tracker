@@ -39,6 +39,16 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'User not found' })
   }
 
+  const { data: membership } = await supabase
+    .from('team')
+    .select('id')
+    .match({ campaign: campaign.id, user: body.userId })
+    .maybeSingle()
+
+  if (membership || campaign.createdBy === body.userId) {
+    throw createError({ statusCode: 409, statusMessage: 'alreadyAdded' })
+  }
+
   const token = await signJWT(
     jwtSecret,
     {
