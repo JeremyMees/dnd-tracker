@@ -33,10 +33,10 @@ async function logoutUser(): Promise<void> {
   try {
     await logout()
     isOpen.value = false
-  } catch {
+  } catch (error) {
     toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
+      title: t('general.error.failed.logout'),
+      description: t(`general.error.reasons.${getFailureReason(error)}`),
       variant: 'destructive',
     })
   }

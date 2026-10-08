@@ -80,10 +80,14 @@ async function answerInvite(accept: boolean): Promise<void> {
     })
     queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
     navigateTo(localePath(url))
-  } catch {
+  } catch (error) {
     toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
+      title: t(
+        accept
+          ? 'general.error.failed.inviteAccept'
+          : 'general.error.failed.inviteDecline',
+      ),
+      description: t(`general.error.reasons.${getFailureReason(error)}`),
       variant: 'destructive',
     })
   } finally {

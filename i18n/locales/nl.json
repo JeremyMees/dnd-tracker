@@ -260,7 +260,20 @@
         "conditions": "Condities konden niet geladen worden",
         "monsters": "Monsters uit het bestiarium konden niet geladen worden",
         "names": "Fantasienamen konden niet gegenereerd worden",
-        "pricing": "Prijzen konden niet geladen worden"
+        "pricing": "Prijzen konden niet geladen worden",
+        "campaigns": "Je campagnes konden niet geladen worden"
+      },
+      "failed": {
+        "summaryShare": "De gevecht samenvatting kon niet gedeeld worden",
+        "shareLink": "De deellink kon niet aangemaakt worden",
+        "logout": "Je kon niet uitgelogd worden",
+        "noteMail": "De notitie kon niet gemaild worden",
+        "inviteAccept": "De uitnodiging kon niet geaccepteerd worden",
+        "inviteDecline": "De uitnodiging kon niet afgewezen worden",
+        "inviteRevoke": "De uitnodiging kon niet ingetrokken worden",
+        "memberRemove": "Het lid kon niet uit de campagne verwijderd worden",
+        "accountDelete": "Je account kon niet verwijderd worden",
+        "vote": "Je stem kon niet opgeslagen worden"
       }
     },
     "success": {

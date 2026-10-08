@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, initialState } from '~/tables/campaign-listing'
 import {
@@ -15,7 +14,6 @@ useSeo('Campaigns')
 
 const modal = useModal()
 const { ask } = useConfirm()
-const { toast } = useToast()
 const { t } = useI18n()
 const user = useAuthenticatedUser()
 const queryClient = useQueryClient()
@@ -25,7 +23,7 @@ const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { data: count } = useCampaignCount()
 const { mutateAsync: removeCampaign } = useCampaignRemove()
-const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
+const { mutate: removeTeamMember } = useTeamMemberRemove()
 
 const { data, status } = useCampaignListing(
   computed(() => {
@@ -58,18 +56,10 @@ const columns = generateColumns({
         title: t('pages.campaigns.dialog.leave.title'),
         description: t('pages.campaigns.dialog.leave.text'),
       },
-      async (confirmed: boolean) => {
+      (confirmed: boolean) => {
         if (!confirmed) return
 
-        try {
-          await removeTeamMember({ member: member.id, campaign: item.id })
-        } catch {
-          toast({
-            title: t('general.error.title'),
-            description: t('general.error.text'),
-            variant: 'destructive',
-          })
-        }
+        removeTeamMember({ member: member.id, campaign: item.id })
       },
     )
   },

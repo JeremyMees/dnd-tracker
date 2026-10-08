@@ -131,8 +131,8 @@ export function useFeatureVote() {
       if (onError) onError(error.message)
 
       toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
+        title: t('general.error.failed.vote'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },

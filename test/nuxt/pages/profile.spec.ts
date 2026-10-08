@@ -29,7 +29,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 
 vi.mock('~/queries/profiles', () => ({
   useProfileUpdate: () => ({ mutateAsync: updateProfile }),
-  useProfileRemove: () => ({ mutateAsync: removeProfile }),
+  useProfileRemove: () => ({ mutate: removeProfile }),
 }))
 
 vi.mock('~/components/atoms/AvatarPicker.vue', () => ({
@@ -449,19 +449,14 @@ describe('Profile page', () => {
     })
   })
 
-  it('Should show an error toast when the removal fails', async () => {
-    removeProfile.mockImplementation(async ({ onError }) => onError())
-
+  it('Should leave the failure toast to the removal mutation', async () => {
     const { removeUser } = await mountPage()
 
     await removeUser()
     await confirmCallback()(true)
 
+    expect(removeProfile.mock.calls[0]?.[0]).not.toHaveProperty('onError')
     expect(navigateTo).not.toHaveBeenCalled()
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(toast).not.toHaveBeenCalled()
   })
 })

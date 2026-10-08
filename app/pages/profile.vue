@@ -17,7 +17,7 @@ const avatar = ref<Avatar>({
 })
 
 const { mutateAsync: updateProfile } = useProfileUpdate()
-const { mutateAsync: removeProfile } = useProfileRemove()
+const { mutate: removeProfile } = useProfileRemove()
 
 async function updateAvatar(avatar: Avatar): Promise<void> {
   return handleUpdateProfile({
@@ -68,10 +68,10 @@ async function handleRemoveUser(): Promise<void> {
       title: t('pages.profile.dialog.delete.title'),
       description: t('pages.profile.dialog.delete.text'),
     },
-    async (confirmed: boolean) => {
+    (confirmed: boolean) => {
       if (!confirmed) return
 
-      await removeProfile({
+      removeProfile({
         id: user.value.id,
         onSuccess: () => {
           navigateTo(localePath('/'))
@@ -79,13 +79,6 @@ async function handleRemoveUser(): Promise<void> {
           toast({
             description: t('pages.profile.toast.delete.text'),
             variant: 'success',
-          })
-        },
-        onError: () => {
-          toast({
-            title: t('general.error.title'),
-            description: t('general.error.text'),
-            variant: 'destructive',
           })
         },
       })

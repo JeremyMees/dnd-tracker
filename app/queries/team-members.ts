@@ -4,6 +4,8 @@ import { useToast } from '~/components/ui/toast'
 export function useJoinTokenRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const { t } = useI18n()
 
   return useMutation({
     mutationFn: async ({
@@ -25,6 +27,12 @@ export function useJoinTokenRemove() {
     },
     onError: (error, { onError }) => {
       if (onError) onError(error.message)
+
+      toast({
+        title: t('general.error.failed.inviteRevoke'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+        variant: 'destructive',
+      })
     },
     onSettled: (_data, error, { onSettled }) => {
       if (onSettled) onSettled(error?.message)
@@ -94,8 +102,8 @@ export function useTeamMemberRemove() {
       if (onError) onError(error.message)
 
       toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
+        title: t('general.error.failed.memberRemove'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },

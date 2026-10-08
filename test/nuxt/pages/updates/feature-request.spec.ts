@@ -21,7 +21,7 @@ vi.mock('~/queries/features', () => ({
     filters = input
     return { data, status }
   },
-  useFeatureVote: () => ({ mutateAsync: vote }),
+  useFeatureVote: () => ({ mutate: vote }),
 }))
 
 mockNuxtImport('useSeo', () => useSeo)

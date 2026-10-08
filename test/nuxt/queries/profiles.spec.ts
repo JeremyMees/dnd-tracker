@@ -8,6 +8,7 @@ import {
   mountHook,
   mutationSpies,
   supabaseAuthUpdateUser,
+  toast,
 } from '~~/test/nuxt/stubs/query'
 import { useProfileRemove, useProfileUpdate } from '~/queries/profiles'
 
@@ -170,6 +171,11 @@ describe('profiles queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(logout).not.toHaveBeenCalled()
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.failed.accountDelete',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })

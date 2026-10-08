@@ -12,7 +12,7 @@ const debouncedSearch = refDebounced(search, 500, { maxWait: 1000 })
 const createdBy = ref<'all' | 'my'>('all')
 const page = ref<number>(0)
 
-const { mutateAsync: vote } = useFeatureVote()
+const { mutate: vote } = useFeatureVote()
 
 const { data, status } = useFeatureListing(
   computed(() => ({

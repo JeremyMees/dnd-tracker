@@ -215,13 +215,29 @@ describe('Campaign join page', () => {
     await join()
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'general.error.failed.inviteAccept',
+      description: 'general.error.reasons.rejected',
       variant: 'destructive',
     })
     expect(removeQueries).not.toHaveBeenCalled()
     expect(invalidateQueries).not.toHaveBeenCalled()
     expect(navigateTo).not.toHaveBeenCalled()
+  })
+
+  it('Should say the decline failed and why when declining fails', async () => {
+    fetchMock.mockRejectedValue(
+      Object.assign(new Error('gone'), { statusCode: 404 }),
+    )
+
+    const { decline } = await mountPage()
+
+    await decline()
+
+    expect(toast).toHaveBeenCalledWith({
+      title: 'general.error.failed.inviteDecline',
+      description: 'general.error.reasons.notFound',
+      variant: 'destructive',
+    })
   })
 
   it('Should answer again after a failed request', async () => {

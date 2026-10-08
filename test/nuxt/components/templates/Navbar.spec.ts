@@ -96,7 +96,11 @@ describe('Navbar', () => {
 
     await vm.logoutUser()
 
-    expect(toastMock).toHaveBeenCalled()
+    expect(toastMock).toHaveBeenCalledWith({
+      title: 'general.error.failed.logout',
+      description: 'general.error.reasons.rejected',
+      variant: 'destructive',
+    })
   })
 
   it('Should add a background once the page is scrolled and remove it again', async () => {

@@ -260,7 +260,20 @@
         "conditions": "Conditions couldn't be loaded",
         "monsters": "Monsters from the bestiary couldn't be loaded",
         "names": "Fantasy names couldn't be generated",
-        "pricing": "Prices couldn't be loaded"
+        "pricing": "Prices couldn't be loaded",
+        "campaigns": "Your campaigns couldn't be loaded"
+      },
+      "failed": {
+        "summaryShare": "The encounter summary couldn't be shared",
+        "shareLink": "The share link couldn't be created",
+        "logout": "You couldn't be logged out",
+        "noteMail": "The note couldn't be emailed",
+        "inviteAccept": "The invitation couldn't be accepted",
+        "inviteDecline": "The invitation couldn't be declined",
+        "inviteRevoke": "The invitation couldn't be revoked",
+        "memberRemove": "The member couldn't be removed from the campaign",
+        "accountDelete": "Your account couldn't be deleted",
+        "vote": "Your vote couldn't be saved"
       }
     },
     "success": {

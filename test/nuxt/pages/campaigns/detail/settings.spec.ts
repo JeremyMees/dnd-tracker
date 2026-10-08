@@ -34,8 +34,8 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 }))
 
 vi.mock('~/queries/team-members', () => ({
-  useTeamMemberRemove: () => ({ mutateAsync: removeTeamMember }),
-  useJoinTokenRemove: () => ({ mutateAsync: removeJoinCampaignToken }),
+  useTeamMemberRemove: () => ({ mutate: removeTeamMember }),
+  useJoinTokenRemove: () => ({ mutate: removeJoinCampaignToken }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -309,7 +309,7 @@ describe('Campaign settings page', () => {
     expect(navigateTo).toHaveBeenCalledWith('/campaigns')
   })
 
-  it('Should toast when removing a member fails', async () => {
+  it('Should leave the failure toast to the removal mutation', async () => {
     const { removeMember } = await mountPage({
       current: {
         ...mockCampaignFull,
@@ -320,13 +320,8 @@ describe('Campaign settings page', () => {
     await removeMember(1)
     await confirmCallback()(true)
 
-    removeOptions().onError()
-
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(removeOptions()).not.toHaveProperty('onError')
+    expect(toast).not.toHaveBeenCalled()
   })
 
   it('Should revoke the token of an invited member instead', async () => {

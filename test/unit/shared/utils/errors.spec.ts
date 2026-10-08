@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { PostgrestError } from '@supabase/supabase-js'
+import { AuthApiError, PostgrestError } from '@supabase/supabase-js'
 import { createError } from 'h3'
 import { FetchError } from 'ofetch'
 import { getErrorMessage, getFailureReason } from '~~/shared/utils/errors'
@@ -157,6 +157,14 @@ describe('getFailureReason', () => {
     ['23514', 'rejected'],
   ])('maps postgres code %s to %s', (code, reason) => {
     expect(getFailureReason(postgrestError(code))).toBe(reason)
+  })
+
+  it('reads the status a supabase auth error carries', () => {
+    expect(
+      getFailureReason(
+        new AuthApiError('Too many requests', 429, 'over_request_rate_limit'),
+      ),
+    ).toBe('rateLimited')
   })
 
   it('reads the postgres code a server route forwards in data', () => {

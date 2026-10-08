@@ -232,7 +232,7 @@ describe('features queries', () => {
       })
     })
 
-    it('toasts a generic error on failure', async () => {
+    it('toasts that the vote was not saved and why', async () => {
       mockSupabaseFrom(
         {},
         { rpc: mockChain({ data: null, error: { message: 'boom' } }) },
@@ -247,9 +247,11 @@ describe('features queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.failed.vote',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })

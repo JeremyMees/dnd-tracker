@@ -47,7 +47,7 @@ export function getFailureReason(error: unknown): FailureReason {
     return 'offline'
   }
 
-  const statusCode = readProp(error, 'statusCode')
+  const statusCode = readProp(error, 'statusCode') ?? readProp(error, 'status')
   const code =
     readProp(readProp(error, 'cause'), 'code') ??
     readProp(readProp(error, 'data'), 'code')

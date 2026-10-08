@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useToast } from '~/components/ui/toast/use-toast'
 import { useCampaignRemove } from '~/queries/campaigns'
 
 useSeo('Campaign danger zone')
@@ -11,27 +10,19 @@ const props = defineProps<{
 
 const localePath = useLocalePath()
 const route = useRoute()
-const { toast } = useToast()
 const modal = useModal()
 const { ask } = useConfirm()
 const { t } = useI18n()
 
-const { mutateAsync: removeCampaign } = useCampaignRemove()
+const { mutate: removeCampaign } = useCampaignRemove()
 
 async function remove(): Promise<void> {
-  ask({}, async (confirmed: boolean) => {
+  ask({}, (confirmed: boolean) => {
     if (!confirmed) return
 
-    await removeCampaign({
+    removeCampaign({
       id: props.campaignId,
       onSuccess: () => navigateTo(localePath('/campaigns')),
-      onError: () => {
-        toast({
-          title: t('general.error.title'),
-          description: t('general.error.text'),
-          variant: 'destructive',
-        })
-      },
     })
   })
 }

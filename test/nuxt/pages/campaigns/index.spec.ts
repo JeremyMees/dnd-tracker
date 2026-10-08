@@ -59,7 +59,7 @@ vi.mock('~/queries/campaigns', () => ({
 }))
 
 vi.mock('~/queries/team-members', () => ({
-  useTeamMemberRemove: () => ({ mutateAsync: removeTeamMember }),
+  useTeamMemberRemove: () => ({ mutate: removeTeamMember }),
 }))
 
 interface ColumnOptions {
@@ -419,9 +419,7 @@ describe('Campaigns page', () => {
     expect(ask).not.toHaveBeenCalled()
   })
 
-  it('Should toast when leaving a campaign fails', async () => {
-    removeTeamMember.mockRejectedValue(new Error('Boom'))
-
+  it('Should leave the failure toast to the removal mutation', async () => {
     const campaign = {
       ...mockCampaignItem,
       team: [
@@ -438,11 +436,11 @@ describe('Campaigns page', () => {
     await columnOptions?.onLeave(campaign)
     await confirmCallback()(true)
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
+    expect(removeTeamMember).toHaveBeenCalledWith({
+      member: 5,
+      campaign: campaign.id,
     })
+    expect(toast).not.toHaveBeenCalled()
   })
 
   it('Should offer a refresh when the listing fails', async () => {
