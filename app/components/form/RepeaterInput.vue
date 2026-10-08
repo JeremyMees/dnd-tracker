@@ -1,5 +1,5 @@
 <script setup generic="T" lang="ts">
-import { useFieldArray } from 'vee-validate'
+import { ErrorMessage, useFieldArray } from 'vee-validate'
 import type { HTMLAttributes } from 'vue'
 
 const props = withDefaults(
@@ -57,6 +57,13 @@ function moveDown(index: number) {
         {{ $t('actions.add') }}
       </UiButton>
     </div>
+
+    <ErrorMessage
+      test-id="error"
+      as="p"
+      :name="name"
+      class="text-xs text-destructive"
+    />
 
     <div class="space-y-4">
       <div

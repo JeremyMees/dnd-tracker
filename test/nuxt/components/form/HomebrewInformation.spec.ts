@@ -1,4 +1,6 @@
+import { flushPromises } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
+import * as z from 'zod'
 import HomebrewInformation from '~/components/form/HomebrewInformation.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { mountWithForm } from '~~/test/nuxt/stubs/form'
@@ -13,6 +15,22 @@ async function mountHomebrewInformation(
   })
 
   return component
+}
+
+async function mountWithInvalidField(field: 'name' | 'hitDice') {
+  return mountWithForm(HomebrewInformation, {
+    props: { type: 'npc' },
+    initialValues: { type: 'npc', [field]: 'x' },
+    validationSchema: z.object({ [field]: z.string().min(3) }),
+  })
+}
+
+function isAdvancedHidden(
+  component: Awaited<ReturnType<typeof mountWithInvalidField>>['component'],
+) {
+  return isHidden(
+    component.get('[test-id="advanced-content"]').element as HTMLElement,
+  )
 }
 
 function isHidden(el: HTMLElement) {
@@ -225,6 +243,33 @@ describe('HomebrewInformation', () => {
       expect(toggle.attributes('aria-expanded')).toBe('false')
 
       vi.useRealTimers()
+    })
+
+    it('Should open the advanced fields when saving fails on one of them', async () => {
+      const { component, form } = await mountWithInvalidField('hitDice')
+
+      await form.handleSubmit(vi.fn())()
+      await flushPromises()
+
+      expect(isAdvancedHidden(component)).toBeFalsy()
+    })
+
+    it('Should keep the advanced fields closed when saving fails elsewhere', async () => {
+      const { component, form } = await mountWithInvalidField('name')
+
+      await form.handleSubmit(vi.fn())()
+      await flushPromises()
+
+      expect(isAdvancedHidden(component)).toBeTruthy()
+    })
+
+    it('Should keep the advanced fields closed for an invalid field before saving', async () => {
+      const { component, form } = await mountWithInvalidField('hitDice')
+
+      await form.validate()
+      await flushPromises()
+
+      expect(isAdvancedHidden(component)).toBeTruthy()
     })
   })
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AcceptableValue } from 'reka-ui'
-import { useField, useFieldValue } from 'vee-validate'
+import { ErrorMessage, useField, useFieldValue } from 'vee-validate'
 import { usageTypes } from '~~/constants/dnd'
 import { actionType } from '~~/constants/validation'
 
@@ -169,6 +169,12 @@ const emptyAttack: DndAttack = {
           type="number"
           :model-value="usageLimits?.param"
           @update:model-value="v => handleUsageParamChange(parseInteger(v))"
+        />
+        <ErrorMessage
+          test-id="usage-param-error"
+          as="p"
+          :name="`${fieldName}.usageLimits`"
+          class="text-xs text-destructive"
         />
       </UiFormItem>
     </div>
