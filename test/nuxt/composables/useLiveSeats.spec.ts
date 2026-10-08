@@ -232,7 +232,7 @@ describe('useLiveSeats', () => {
     await vm.kick('seat-1')
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
+      title: 'components.liveSession.failed.kick',
       description: 'pages.encounter.liveSession.errors.seatNotFound',
       variant: 'destructive',
     })
@@ -255,8 +255,8 @@ describe('useLiveSeats', () => {
     await vm.kick('seat-1')
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'components.liveSession.failed.kick',
+      description: 'general.error.reasons.rejected',
       variant: 'destructive',
     })
   })
@@ -292,7 +292,7 @@ describe('useLiveSeats', () => {
     await vm.reassign('seat-1', 'row-2')
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
+      title: 'components.liveSession.failed.reassign',
       description: 'pages.encounter.liveSession.errors.rowClaimed',
       variant: 'destructive',
     })

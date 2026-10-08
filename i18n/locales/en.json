@@ -713,6 +713,12 @@
           "title": "Remove {name}?",
           "text": "They will be disconnected and their seat freed up."
         }
+      },
+      "failed": {
+        "start": "The live session couldn't be started",
+        "end": "The live session couldn't be ended",
+        "kick": "The player couldn't be removed",
+        "reassign": "The player couldn't be moved to that character"
       }
     },
     "actionsTable": {

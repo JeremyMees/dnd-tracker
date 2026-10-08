@@ -713,6 +713,12 @@
           "title": "{name} verwijderen?",
           "text": "Diegene wordt losgekoppeld en de plek komt weer vrij."
         }
+      },
+      "failed": {
+        "start": "De live sessie kon niet gestart worden",
+        "end": "De live sessie kon niet beëindigd worden",
+        "kick": "De speler kon niet verwijderd worden",
+        "reassign": "De speler kon niet aan dat personage gekoppeld worden"
       }
     },
     "actionsTable": {

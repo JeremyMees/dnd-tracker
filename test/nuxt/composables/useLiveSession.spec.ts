@@ -144,7 +144,7 @@ describe('useLiveSession', () => {
     await vm.start()
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
+      title: 'components.liveSession.failed.start',
       description: 'pages.encounter.liveSession.errors.proRequired',
       variant: 'destructive',
     })
@@ -160,8 +160,8 @@ describe('useLiveSession', () => {
     await vm.start()
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'components.liveSession.failed.start',
+      description: 'general.error.reasons.rejected',
       variant: 'destructive',
     })
   })
@@ -183,8 +183,30 @@ describe('useLiveSession', () => {
     await vm.start()
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'components.liveSession.failed.start',
+      description: 'general.error.reasons.rejected',
+      variant: 'destructive',
+    })
+  })
+
+  it('Should explain an unrecognized failure from its status code', async () => {
+    fetchMock.mockRejectedValue(
+      Object.assign(
+        new Error('[POST] "/api/encounter/live/start": 429 Too Many Requests'),
+        {
+          statusCode: 429,
+          data: { statusCode: 429, statusMessage: 'Too Many Requests' },
+        },
+      ),
+    )
+
+    const { vm } = await mountProbe()
+
+    await vm.start()
+
+    expect(toast).toHaveBeenCalledWith({
+      title: 'components.liveSession.failed.start',
+      description: 'general.error.reasons.rateLimited',
       variant: 'destructive',
     })
   })
@@ -312,7 +334,7 @@ describe('useLiveSession', () => {
     await vm.stop()
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
+      title: 'components.liveSession.failed.end',
       description: 'pages.encounter.liveSession.errors.noActiveSession',
       variant: 'destructive',
     })
