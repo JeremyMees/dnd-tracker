@@ -23,6 +23,14 @@ vi.mock('~/queries/homebrews', () => ({
 
 mockNuxtImport('useAuthentication', () => () => ({ user: currentUser }))
 
+mockNuxtImport('useI18n', () => () => ({
+  t: (key: string, params?: unknown) =>
+    params && typeof params === 'object'
+      ? `${key} ${Object.values(params).join(' ')}`
+      : key,
+  locale: { value: 'en' },
+}))
+
 const update = vi.fn()
 
 const ownedCampaign: NonNullable<InitiativeSheet['campaign']> = {
@@ -73,6 +81,13 @@ async function fillName(
 ) {
   await component.get('input[name="name"]').setValue(name)
   await flushPromises()
+}
+
+const invalidAction: DndAction = {
+  actionType: 'bonusAction',
+  name: '',
+  desc: '',
+  attacks: [],
 }
 
 function createOptions() {
@@ -172,6 +187,64 @@ describe('Homebrew', () => {
     await submitForm(component)
 
     expect(createHomebrew).not.toHaveBeenCalled()
+  })
+
+  it('Should say which tab has the invalid field when saving fails', async () => {
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component, 'ab')
+    await submitForm(component)
+
+    expect(component.get('[test-id="form-error"]').text()).toBe(
+      'components.homebrewModal.invalid general.info',
+    )
+    expect(
+      component.findAll('[role="tab"]')[0]!.attributes('aria-selected'),
+    ).toBe('true')
+  })
+
+  it('Should switch to the tab with the invalid field when saving fails', async () => {
+    const component = await mountHomebrew({
+      item: { ...mockHomebrewItem, actions: [invalidAction] },
+    })
+
+    await submitForm(component)
+
+    expect(component.get('[test-id="form-error"]').text()).toBe(
+      'components.homebrewModal.invalid general.action',
+    )
+    expect(
+      component.findAll('[role="tab"]')[3]!.attributes('aria-selected'),
+    ).toBe('true')
+    expect(updateHomebrew).not.toHaveBeenCalled()
+  })
+
+  it('Should stay on the current tab when it is one of the invalid tabs', async () => {
+    const component = await mountHomebrew({
+      item: { ...mockHomebrewItem, actions: [invalidAction] },
+    })
+
+    await fillName(component, 'ab')
+    await submitForm(component)
+
+    expect(component.get('[test-id="form-error"]').text()).toBe(
+      'components.homebrewModal.invalid general.info and general.action',
+    )
+    expect(
+      component.findAll('[role="tab"]')[0]!.attributes('aria-selected'),
+    ).toBe('true')
+  })
+
+  it('Should clear the invalid message once the form saves', async () => {
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component, 'ab')
+    await submitForm(component)
+    await fillName(component)
+    await submitForm(component)
+
+    expect(component.find('[test-id="form-error"]').exists()).toBe(false)
+    expect(createHomebrew).toHaveBeenCalled()
   })
 
   it('Should create a homebrew for the campaign', async () => {

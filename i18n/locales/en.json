@@ -1081,7 +1081,8 @@
       "save": "Add to campaign",
       "max": "Max campaign homebrews",
       "actionPage": "Action page",
-      "infoPage": "Info page"
+      "infoPage": "Info page",
+      "invalid": "Can't save yet, check {tabs} for fields that still need fixing"
     },
     "homebrewTable": {
       "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself.",

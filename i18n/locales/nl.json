@@ -1081,7 +1081,8 @@
       "save": "Toevoegen aan campagne",
       "max": "Max campagne homebrews",
       "actionPage": "Actie pagina",
-      "infoPage": "Info pagina"
+      "infoPage": "Info pagina",
+      "invalid": "Nog niet opgeslagen, kijk bij {tabs} welke velden nog aangepast moeten worden"
     },
     "homebrewTable": {
       "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht passen, maar dat betekent niet dat je ze niet zelf kunt maken.",
