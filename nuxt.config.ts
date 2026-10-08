@@ -221,7 +221,7 @@ export default defineNuxtConfig({
     types: '~~/shared/types/database-generated.ts',
     redirectOptions: {
       login: '/login',
-      callback: '/',
+      callback: '/confirm',
       include: [
         '/campaigns/*',
         '/encounters/*',
