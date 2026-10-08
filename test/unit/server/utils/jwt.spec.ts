@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { errors } from 'jose'
 import { signJWT, verifyJWT } from '~~/server/utils/jwt'
 
 const secret = 'test-secret'
@@ -27,8 +28,29 @@ describe('jwt', () => {
 
     await expect(verifyJWT(secret, token)).resolves.toMatchObject({
       user: 'user-1',
+      iat: expect.any(Number),
       exp: Math.floor(future.getTime() / 1000),
     })
+  })
+
+  it('rejects a token signed with another secret', async () => {
+    const token = await signJWT('other-secret', { user: 'user-1' }, future)
+
+    await expect(verifyJWT(secret, token)).rejects.toBeInstanceOf(
+      errors.JWSSignatureVerificationFailed,
+    )
+  })
+
+  it('rejects a token that has expired', async () => {
+    const token = await signJWT(
+      secret,
+      { user: 'user-1' },
+      new Date(Date.now() - 60_000),
+    )
+
+    await expect(verifyJWT(secret, token)).rejects.toBeInstanceOf(
+      errors.JWTExpired,
+    )
   })
 
   it('rejects a token whose header declares another algorithm', async () => {
@@ -37,13 +59,17 @@ describe('jwt', () => {
       { user: 'user-1' },
     )
 
-    await expect(verifyJWT(secret, token)).rejects.toThrow('Invalid algorithm')
+    await expect(verifyJWT(secret, token)).rejects.toBeInstanceOf(
+      errors.JOSEAlgNotAllowed,
+    )
   })
 
   it('rejects a token whose header has no algorithm', async () => {
     const token = await craftToken({ typ: 'JWT' }, { user: 'user-1' })
 
-    await expect(verifyJWT(secret, token)).rejects.toThrow('Invalid algorithm')
+    await expect(verifyJWT(secret, token)).rejects.toBeInstanceOf(
+      errors.JWSInvalid,
+    )
   })
 
   it('rejects a token that is not valid yet', async () => {
@@ -52,6 +78,8 @@ describe('jwt', () => {
       { user: 'user-1', nbf: Math.floor(Date.now() / 1000) + 60 },
     )
 
-    await expect(verifyJWT(secret, token)).rejects.toThrow('Inactive JWT')
+    await expect(verifyJWT(secret, token)).rejects.toBeInstanceOf(
+      errors.JWTClaimValidationFailed,
+    )
   })
 })
