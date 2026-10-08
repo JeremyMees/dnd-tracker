@@ -11,12 +11,8 @@ const form = useForm({
   initialValues: initiativeSettingsInitialValues(sheet.value?.settings),
 })
 
-const formError = ref<string>('')
-
 const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
-
-  formError.value = ''
 
   try {
     await update({
@@ -26,13 +22,11 @@ const onSubmit = form.handleSubmit(async values => {
         modified: true,
       },
     })
-
-    emit('close')
-  } catch (err) {
-    formError.value =
-      getErrorMessage(err) ||
-      'An error occurred during updating initiative settings'
+  } catch {
+    return
   }
+
+  emit('close')
 })
 </script>
 
@@ -40,9 +34,6 @@ const onSubmit = form.handleSubmit(async values => {
   <div class="overflow-y-hidden">
     <UiFormWrapper @submit="onSubmit">
       <FormInitiativeSettingsFields />
-      <div v-if="formError" class="text-sm text-destructive">
-        {{ formError }}
-      </div>
       <UiButton type="submit" class="w-full">
         {{ $t('actions.save') }}
       </UiButton>

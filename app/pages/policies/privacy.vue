@@ -38,7 +38,7 @@ useSeo('Privacy policy')
         on the website that the visitor accessed or visited. The information is
         used to optimize the users experience by customizing our web page
         content based on visitors browser type and/or other information.
-        <NuxtLinkLocale to="/policies/cookie"> Cookie policy </NuxtLinkLocale>
+        <NuxtLinkLocale to="policies-cookie"> Cookie policy </NuxtLinkLocale>
       </p>
       <h2>Privacy Policies</h2>
       <p>

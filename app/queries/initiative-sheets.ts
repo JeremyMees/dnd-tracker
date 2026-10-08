@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
+import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
@@ -36,6 +37,8 @@ export function useInitiativeSheetDetail(id: number) {
 export function useInitiativeSheetDetailUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const { t } = useI18n()
   const { mutateAsync: sync } = useInitiativeSheetSync()
 
   return useMutation({
@@ -49,10 +52,7 @@ export function useInitiativeSheetDetailUpdate() {
       if (data.rows?.length) {
         data.rows = indexCorrect(data.rows).map(row => ({
           ...sanitizeRowNumbers(row),
-          conditions: row.conditions.map(c => ({
-            ...c,
-            desc: c.desc ?? '',
-          })),
+          conditions: row.conditions.map(sanitizeCondition),
         }))
       }
 
@@ -89,7 +89,7 @@ export function useInitiativeSheetDetailUpdate() {
 
       if (onSuccess) onSuccess()
     },
-    onError: (error, { onError, id }, context) => {
+    onError: (error, { onError, id, data }, context) => {
       if (context?.previous) {
         // roll back the optimistic update
         queryClient.setQueryData(
@@ -99,6 +99,14 @@ export function useInitiativeSheetDetailUpdate() {
       }
 
       if (onError) onError(error.message)
+
+      toast({
+        title: t(
+          `pages.encounter.toasts.updateFailed.${failedFieldKey(data, UPDATE_FAILED_FIELDS, 'generic')}`,
+        ),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+        variant: 'destructive',
+      })
     },
     onSettled: (_data, error, { onSettled }) => {
       if (onSettled) onSettled(error?.message)
@@ -114,8 +122,50 @@ export function useInitiativeSheetSync() {
   })
 }
 
+const PATCH_FAILED_FIELDS = [
+  ['conditions', ['conditions']],
+  [
+    'hitPoints',
+    ['hitPoints', 'maxHitPoints', 'maxHitPointsOld', 'tempHitPoints'],
+  ],
+  [
+    'armorClass',
+    ['armorClass', 'maxArmorClass', 'maxArmorClassOld', 'tempArmorClass'],
+  ],
+  ['deathSaves', ['deathSaves']],
+  ['concentration', ['concentration']],
+] as const satisfies readonly (readonly [
+  string,
+  readonly (keyof InitiativeSheetRow)[],
+])[]
+
+const UPDATE_FAILED_FIELDS = [
+  ['rows', ['rows']],
+  ['turn', ['activeIndex', 'round']],
+  ['settings', ['settings']],
+  ['infoCards', ['infoCards']],
+  ['info', ['info']],
+] as const satisfies readonly (readonly [
+  string,
+  readonly (keyof InitiativeSheet)[],
+])[]
+
+function failedFieldKey(
+  payload: object,
+  groups: readonly (readonly [string, readonly string[]])[],
+  fallback: string,
+): string {
+  const match = groups.find(([, fields]) =>
+    fields.some(field => field in payload),
+  )
+
+  return match ? match[0] : fallback
+}
+
 export function useInitiativeSheetPatch() {
   const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const { t } = useI18n()
 
   return useMutation({
     mutationFn: async ({
@@ -197,7 +247,7 @@ export function useInitiativeSheetPatch() {
     onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()
     },
-    onError: (error, { onError, id }, context) => {
+    onError: (error, { onError, id, rowId, patch }, context) => {
       if (context?.previous) {
         queryClient.setQueryData(
           ['useInitiativeSheetDetail', id],
@@ -213,6 +263,19 @@ export function useInitiativeSheetPatch() {
       }
 
       if (onError) onError(error.message)
+
+      const name = context?.previous?.rows.find(row => row.id === rowId)?.name
+
+      toast({
+        title: name
+          ? t(
+              `pages.encounter.toasts.patchFailed.${failedFieldKey(patch, PATCH_FAILED_FIELDS, 'row')}`,
+              { name },
+            )
+          : t('pages.encounter.toasts.patchFailed.generic'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+        variant: 'destructive',
+      })
     },
     onSettled: (_data, error, { onSettled }) => {
       if (onSettled) onSettled(error?.message)

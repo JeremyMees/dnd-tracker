@@ -28,7 +28,7 @@ function _useLiveSession(encounterId: number) {
     const slug = getErrorMessage(error)
 
     if (!slug || !liveSessionErrors.has(slug)) {
-      return t('general.error.text')
+      return t(`general.error.reasons.${getFailureReason(error)}`)
     }
 
     return t(`pages.encounter.liveSession.errors.${kebabToCamel(slug)}`)
@@ -53,7 +53,7 @@ function _useLiveSession(encounterId: number) {
       if (response) session.value = response
     } catch (error) {
       toast({
-        title: t('general.error.title'),
+        title: t('components.liveSession.failed.start'),
         description: errorDescription(error),
         variant: 'destructive',
       })
@@ -89,7 +89,7 @@ function _useLiveSession(encounterId: number) {
       session.value = undefined
     } catch (error) {
       toast({
-        title: t('general.error.title'),
+        title: t('components.liveSession.failed.end'),
         description: errorDescription(error),
         variant: 'destructive',
       })

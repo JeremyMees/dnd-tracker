@@ -80,10 +80,10 @@ async function shareEncounter(item: EncounterItem): Promise<void> {
       description: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
       variant: 'info',
     })
-  } catch {
+  } catch (error) {
     toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
+      title: t('general.error.failed.shareLink'),
+      description: t(`general.error.reasons.${getFailureReason(error)}`),
       variant: 'destructive',
     })
   }

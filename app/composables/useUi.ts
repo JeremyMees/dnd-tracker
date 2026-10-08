@@ -1,108 +1,108 @@
 export function useUi() {
   const { user } = useAuthentication()
 
-  const loggedOutRoutes = [
+  const loggedOutRoutes: Route[] = [
     {
       label: 'components.navbar.login',
-      url: '/login',
+      url: 'login',
       requireAuth: true,
       icon: 'tabler:login',
     },
     {
       label: 'components.navbar.register',
-      url: '/register',
+      url: 'register',
       requireAuth: true,
       icon: 'tabler:user-plus',
     },
   ]
 
-  const routes = computed(() => [
+  const routes = computed<Route[]>(() => [
     {
       label: 'components.navbar.contact',
-      url: '/contact',
+      url: 'contact',
       requireAuth: false,
       icon: 'tabler:mail',
     },
     {
       label: 'components.navbar.pricing',
-      url: '/pricing',
+      url: 'pricing',
       requireAuth: false,
       icon: 'tabler:credit-card',
     },
     ...(user.value ? [] : loggedOutRoutes),
   ])
 
-  const loggedInPlayRoutes = [
+  const loggedInPlayRoutes: Route[] = [
     {
       label: 'components.navbar.campaigns',
-      url: '/campaigns',
+      url: 'campaigns',
       requireAuth: true,
       icon: 'tabler:layout-dashboard',
     },
     {
       label: 'components.navbar.encounters',
-      url: '/encounters',
+      url: 'encounters',
       requireAuth: true,
       icon: 'tabler:list-details',
     },
   ]
 
-  const playRoutes = computed(() => [
+  const playRoutes = computed<Route[]>(() => [
     ...(user.value ? loggedInPlayRoutes : []),
     {
       label: 'components.navbar.playground',
-      url: '/playground',
+      url: 'playground',
       requireAuth: false,
       icon: 'tabler:monkeybar',
     },
     {
       label: 'components.navbar.fantasy',
-      url: '/fantasy-name-generator',
+      url: 'fantasy-name-generator',
       requireAuth: false,
       icon: 'tabler:signature',
     },
     {
       label: 'components.navbar.dnd-content',
-      url: '/dnd-content',
+      url: 'dnd-content',
       requireAuth: false,
       icon: 'tabler:book',
     },
   ])
 
-  const updateProfileRoutes = [
+  const updateProfileRoutes: Route[] = [
     {
       label: 'components.navbar.upgrade',
-      url: '/pricing',
+      url: 'pricing',
       requireAuth: true,
       icon: 'tabler:sparkles',
     },
   ]
 
-  const profileRoutes = computed(() => [
+  const profileRoutes = computed<Route[]>(() => [
     {
       label: 'components.navbar.profile',
-      url: '/profile',
+      url: 'profile',
       requireAuth: true,
       icon: 'tabler:user',
     },
     {
       label: 'components.navbar.changelog',
-      url: '/updates/changelog',
+      url: 'updates-changelog',
       requireAuth: false,
       icon: 'tabler:history',
     },
     {
       label: 'components.navbar.featureRequest',
-      url: '/updates/feature-request',
+      url: 'updates-feature-request',
       requireAuth: false,
       icon: 'tabler:bulb',
     },
     ...(user.value && !isPro(user.value) ? updateProfileRoutes : []),
   ])
 
-  const homeRoute = {
+  const homeRoute: Route = {
     label: 'components.navbar.home',
-    url: '/',
+    url: 'index',
     requireAuth: false,
     icon: 'tabler:home',
   }

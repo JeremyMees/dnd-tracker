@@ -52,13 +52,13 @@ function step(index: number) {
         class="mt-10 flex flex-wrap justify-center gap-4"
       >
         <UiButton as-child size="lg" variant="foreground">
-          <NuxtLinkLocale to="/campaigns" class="w-fit">
+          <NuxtLinkLocale to="campaigns" class="w-fit">
             {{ $t('components.hero.start') }}
           </NuxtLinkLocale>
         </UiButton>
         <UiButton as-child size="lg">
           <NuxtLinkLocale
-            to="/playground"
+            to="playground"
             class="group flex w-fit items-center justify-center gap-2"
           >
             {{ $t('components.hero.try') }}

@@ -1,5 +1,6 @@
 import { flushPromises } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+import * as z from 'zod'
 import RepeaterInput from '~/components/form/RepeaterInput.vue'
 import { mountWithForm } from '~~/test/nuxt/stubs/form'
 
@@ -13,8 +14,10 @@ const emptyObject: Trait = { name: '', desc: '' }
 function mountRepeaterInput(
   props: Record<string, unknown> = {},
   traits?: Trait[],
+  validationSchema?: z.ZodType,
 ) {
   return mountWithForm(RepeaterInput, {
+    validationSchema,
     props: { name: 'traits', emptyObject, ...props },
     slots: {
       item: slotProps =>
@@ -183,5 +186,31 @@ describe('RepeaterInput', () => {
     await flushPromises()
 
     expect(form.values.traits).toHaveLength(2)
+  })
+
+  it('Should show an error that belongs to the whole list', async () => {
+    const { component, form } = await mountRepeaterInput(
+      {},
+      traits,
+      z.object({ traits: z.array(z.unknown()).min(3) }),
+    )
+
+    await form.validate()
+    await flushPromises()
+
+    expect(component.get('[test-id="error"]').text()).not.toBe('')
+  })
+
+  it('Should not show a list error for a valid list', async () => {
+    const { component, form } = await mountRepeaterInput(
+      {},
+      traits,
+      z.object({ traits: z.array(z.unknown()).min(1) }),
+    )
+
+    await form.validate()
+    await flushPromises()
+
+    expect(component.find('[test-id="error"]').exists()).toBe(false)
   })
 })

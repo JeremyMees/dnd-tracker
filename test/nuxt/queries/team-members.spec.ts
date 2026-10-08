@@ -76,6 +76,11 @@ describe('team-members queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(invalidateSpy).not.toHaveBeenCalled()
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.failed.inviteRevoke',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -167,7 +172,7 @@ describe('team-members queries', () => {
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
 
-    it('toasts a generic error on failure', async () => {
+    it('toasts that the member was not removed and why', async () => {
       mockSupabaseFrom({
         team: mockChain({ data: null, error: { message: 'boom' } }),
       })
@@ -180,9 +185,11 @@ describe('team-members queries', () => {
       ).rejects.toThrow('boom')
 
       expect(onError).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.failed.memberRemove',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })

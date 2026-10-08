@@ -1,8 +1,10 @@
 import type { BouncerAbility } from 'nuxt-authorization/utils'
 import type { DndCreatureStats } from '#shared/types/dnd'
 import type { ButtonVariants } from '~/components/ui/button'
+import type { RouteLocationNamedI18n } from 'vue-router'
 import {
   Icon,
+  NuxtLink,
   NuxtLinkLocale,
   Can,
   ActionsTable,
@@ -83,9 +85,10 @@ export function iconLink(options: {
       },
       () =>
         h(
-          NuxtLinkLocale,
+          NuxtLink,
           {
             to: options.to,
+            external: options.external,
             ariaLabel: options.content,
             target: options.external ? '_blank' : undefined,
           },
@@ -96,7 +99,7 @@ export function iconLink(options: {
 }
 
 export function linkButton(options: {
-  to: string
+  to: RouteLocationNamedI18n
   content: string | VNode
   external?: boolean
   style?: string

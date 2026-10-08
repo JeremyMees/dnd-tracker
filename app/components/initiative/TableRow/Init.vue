@@ -8,7 +8,6 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = shallowRef<boolean>(false)
-const formError = ref<string>('')
 
 const formSchema = z.object({
   initiative: z.int().min(0).max(50),
@@ -29,29 +28,27 @@ watch(popoverOpen, open => {
 })
 
 const onSubmit = form.handleSubmit(async values => {
-  formError.value = ''
+  if (!sheet.value) return
+
+  const { initiative, modifier } = values
+
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
+
+  if (index === -1 || !rows[index]) return
+
+  rows[index] = {
+    ...rows[index],
+    initiative: Math.max(0, initiative + (modifier ?? 0)),
+  }
 
   try {
-    if (!sheet.value) return
-
-    const { initiative, modifier } = values
-
-    const index = getCurrentRowIndex(sheet.value, props.item.id)
-    const rows = [...sheet.value.rows]
-
-    if (index === -1 || !rows[index]) return
-
-    rows[index] = {
-      ...rows[index],
-      initiative: Math.max(0, initiative + (modifier ?? 0)),
-    }
-
     await update({ rows })
-    popoverOpen.value = false
-  } catch (err) {
-    formError.value =
-      getErrorMessage(err) || 'An error occurred during name update'
+  } catch {
+    return
   }
+
+  popoverOpen.value = false
 })
 
 const currentIndex = computed(() => props.item.index)
@@ -164,9 +161,6 @@ async function moveRow(up: boolean): Promise<void> {
               <UiFormMessage />
             </UiFormItem>
           </UiFormField>
-          <div v-if="formError" class="text-sm text-destructive">
-            {{ formError }}
-          </div>
           <UiButton type="submit" class="w-full">
             {{ $t('actions.save') }}
           </UiButton>

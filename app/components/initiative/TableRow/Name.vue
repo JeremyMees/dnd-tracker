@@ -8,7 +8,6 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = shallowRef<boolean>(false)
-const formError = ref<string>('')
 
 const formSchema = z.object({
   name: z.string().min(2).max(30),
@@ -19,27 +18,25 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit(async values => {
-  formError.value = ''
+  if (!sheet.value) return
+
+  const index = getCurrentRowIndex(sheet.value, props.item.id)
+  const rows = [...sheet.value.rows]
+
+  if (index === -1 || !rows[index]) return
+
+  rows[index] = {
+    ...rows[index],
+    name: values.name,
+  }
 
   try {
-    if (!sheet.value) return
-
-    const index = getCurrentRowIndex(sheet.value, props.item.id)
-    const rows = [...sheet.value.rows]
-
-    if (index === -1 || !rows[index]) return
-
-    rows[index] = {
-      ...rows[index],
-      name: values.name,
-    }
-
     await update({ rows })
-    popoverOpen.value = false
-  } catch (err) {
-    formError.value =
-      getErrorMessage(err) || 'An error occurred during name update'
+  } catch {
+    return
   }
+
+  popoverOpen.value = false
 })
 </script>
 
@@ -94,9 +91,6 @@ const onSubmit = form.handleSubmit(async values => {
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
-        <div v-if="formError" class="text-sm text-destructive">
-          {{ formError }}
-        </div>
       </UiFormWrapper>
     </UiPopoverContent>
   </UiPopover>

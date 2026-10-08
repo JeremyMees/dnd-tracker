@@ -21,6 +21,24 @@ function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
   }
 }
 
+const LIVE_ACTION_ERRORS: Record<string, string> = {
+  'Not your turn': 'notYourTurn',
+  'Action not allowed': 'actionNotAllowed',
+  'Live session has ended': 'sessionEnded',
+  'Live session not found': 'sessionNotFound',
+  'No row claimed': 'noRowClaimed',
+  'Spectators cannot act': 'spectator',
+  'Invalid live session token': 'seatExpired',
+}
+
+function failureDescriptionKey(error: unknown): string {
+  const known = LIVE_ACTION_ERRORS[getErrorMessage(error) ?? '']
+
+  return known
+    ? `pages.live.actionErrors.${known}`
+    : `general.error.reasons.${getFailureReason(error)}`
+}
+
 export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
   const { seat } = useLiveSeat()
   const queryClient = useQueryClient()
@@ -29,8 +47,16 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
 
   const pending = ref(false)
 
+  function notifyFailure(type: LiveAction['type'], error: unknown): void {
+    toast({
+      title: t(`pages.live.actionFailed.${type}`),
+      description: t(failureDescriptionKey(error)),
+      variant: 'destructive',
+    })
+  }
+
   async function apply(
-    action: LiveAction,
+    action: LiveRowAction,
     optimisticPatch: Partial<PlayerRow>,
   ): Promise<boolean> {
     const token = seat.value?.sessionToken
@@ -76,14 +102,10 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
       }
 
       return true
-    } catch {
+    } catch (error) {
       if (previous) queryClient.setQueryData(key, previous)
 
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
+      notifyFailure(action.type, error)
 
       return false
     } finally {
@@ -110,12 +132,8 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
       })
 
       return true
-    } catch {
-      toast({
-        title: t('general.error.title'),
-        description: t('general.error.text'),
-        variant: 'destructive',
-      })
+    } catch (error) {
+      notifyFailure('endTurn', error)
 
       return false
     } finally {

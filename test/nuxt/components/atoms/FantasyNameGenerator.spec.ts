@@ -7,6 +7,8 @@ import {
   flushNames,
   holdNextNames,
   nameRequests,
+  resetNames,
+  stubNamesEndpoint,
 } from '~~/test/nuxt/stubs/names'
 
 interface Props {
@@ -39,9 +41,11 @@ async function mountGenerator(
   return component
 }
 
+stubNamesEndpoint()
+
 describe('FantasyNameGenerator', async () => {
   beforeEach(async () => {
-    nameRequests.length = 0
+    resetNames()
     await clearQueryCache()
   })
 

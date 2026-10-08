@@ -169,9 +169,11 @@ describe('names queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.names',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
 
     it('does not retry a failed generation', async () => {
@@ -228,9 +230,11 @@ describe('names queries', () => {
 
       await expect(vm.mutateAsync()).rejects.toThrow('nope')
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.names',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })

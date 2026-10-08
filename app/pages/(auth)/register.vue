@@ -63,16 +63,9 @@ const onSubmit = form.handleSubmit(async values => {
       variant: 'success',
     })
 
-    navigateTo(localePath('/login'))
+    navigateTo(localePath('login'))
   } catch (err) {
-    formError.value =
-      getErrorMessage(err) || 'An error occurred during registration'
-
-    toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
-      variant: 'destructive',
-    })
+    formError.value = t(failureMessageKey(err))
   }
 })
 </script>
@@ -155,13 +148,13 @@ const onSubmit = form.handleSubmit(async values => {
 
     <div class="flex flex-wrap gap-2 justify-center">
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale test-id="login" to="/login">
+        <NuxtLinkLocale test-id="login" to="login">
           {{ $t('pages.login.signIn') }}
         </NuxtLinkLocale>
       </UiButton>
       <UiSeparator orientation="vertical" class="h-8" />
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale test-id="forgot" to="/forgot-password">
+        <NuxtLinkLocale test-id="forgot" to="forgot-password">
           {{ $t('pages.login.forgot') }}
         </NuxtLinkLocale>
       </UiButton>

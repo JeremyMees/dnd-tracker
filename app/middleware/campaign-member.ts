@@ -4,8 +4,10 @@ export default defineNuxtRouteMiddleware(async to => {
   const localePath = useLocalePath()
   const user = useState<AuthUser | null>('auth-user')
 
-  if (!to.params.title || !to.params.id || isNaN(+to.params.id)) {
-    return navigateTo(localePath('/'))
+  const { params } = to
+
+  if (!('id' in params) || !('title' in params) || isNaN(+params.id)) {
+    return navigateTo(localePath('index'))
   }
 
   const page = determinePageType(to.fullPath)
@@ -16,7 +18,7 @@ export default defineNuxtRouteMiddleware(async to => {
   const expectedRole = getExpectedRole(page)
 
   try {
-    const { data } = await getCampaign(+to.params.id)
+    const { data } = await getCampaign(+params.id)
 
     // Owner can always access the page
     if (data.createdBy === user.value?.id) return
@@ -30,7 +32,9 @@ export default defineNuxtRouteMiddleware(async to => {
 
       return navigateTo(
         localePath(
-          invite ? `/campaigns/join?token=${invite.token}` : '/no-access',
+          invite
+            ? { name: 'campaigns-join', query: { token: invite.token } }
+            : 'no-access',
         ),
       )
     }
@@ -44,7 +48,7 @@ export default defineNuxtRouteMiddleware(async to => {
         : to.fullPath.replace('/danger-zone', '/encounters'),
     )
   } catch {
-    return navigateTo(localePath('/'))
+    return navigateTo(localePath('index'))
   }
 })
 

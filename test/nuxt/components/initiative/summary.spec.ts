@@ -3,6 +3,7 @@ import {
   mountSuspended,
   registerEndpoint,
 } from '@nuxt/test-utils/runtime'
+import { createError } from 'h3'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Summary from '~/components/initiative/Summary.vue'
 import { clickInDialog, dialogText, inDialog } from '~~/test/nuxt/stubs/dialog'
@@ -10,6 +11,12 @@ import { clickInDialog, dialogText, inDialog } from '~~/test/nuxt/stubs/dialog'
 const events = shallowRef<CombatEventRow[] | undefined>([])
 const isPending = ref(false)
 const liveActive = ref(false)
+
+const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
+
+vi.mock('~/components/ui/toast/use-toast', () => ({
+  useToast: () => ({ toast }),
+}))
 
 vi.mock('~/queries/combat-events', () => ({
   useCombatEvents: () => ({ data: events, isPending }),
@@ -22,10 +29,15 @@ const { useLiveSessionMock } = vi.hoisted(() => ({
 mockNuxtImport('useLiveSession', () => useLiveSessionMock)
 
 const shareCalls: unknown[] = []
+let shareFails = false
 
 registerEndpoint('/api/encounter/live/summary', {
   method: 'POST',
   handler: () => {
+    if (shareFails) {
+      throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+    }
+
     shareCalls.push(true)
 
     return { shared: true }
@@ -83,6 +95,8 @@ describe('Initiative summary', () => {
     isPending.value = false
     liveActive.value = false
     shareCalls.length = 0
+    shareFails = false
+    toast.mockClear()
     useLiveSessionMock.mockReturnValue({ active: liveActive })
   })
 
@@ -157,6 +171,25 @@ describe('Initiative summary', () => {
         'components.combatSummary.actions.shared',
       )
     })
+  })
+
+  it('Should toast that sharing failed and why', async () => {
+    liveActive.value = true
+    shareFails = true
+
+    await mount()
+    await clickInDialog('share')
+
+    await vi.waitFor(() => {
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.failed.summaryShare',
+        description: 'general.error.reasons.forbidden',
+        variant: 'destructive',
+      })
+    })
+    expect(dialogText('share')).not.toContain(
+      'components.combatSummary.actions.shared',
+    )
   })
 
   it('Should emit a hard reset when reset is pressed', async () => {

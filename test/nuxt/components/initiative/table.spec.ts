@@ -34,12 +34,12 @@ const props: Props = {
 const global = { stubs: dropdownStubs }
 
 const { clearCombatEvents } = vi.hoisted(() => ({
-  clearCombatEvents: vi.fn(() => Promise.resolve()),
+  clearCombatEvents: vi.fn(),
 }))
 
 vi.mock('~/queries/combat-events', () => ({
   useCombatEvents: () => ({ data: ref([]), isPending: ref(false) }),
-  useCombatEventsClear: () => ({ mutateAsync: clearCombatEvents }),
+  useCombatEventsClear: () => ({ mutate: clearCombatEvents }),
 }))
 
 vi.mock('~/queries/srd', () => ({

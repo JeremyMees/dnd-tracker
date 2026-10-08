@@ -26,7 +26,7 @@ const isActive = computed<boolean>(() => route.fullPath.includes(props.link))
     }"
   >
     <NuxtLinkLocale
-      :to="link"
+      :to="{ path: link }"
       class="text-sm flex gap-2 items-center py-1 px-2 rounded-lg text-foreground hover:bg-tracker hover:foreground"
       active-class="text-foreground"
     >

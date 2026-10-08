@@ -88,7 +88,7 @@ function _useLiveSeats(
     const slug = getErrorMessage(error)
 
     if (!slug || !liveSeatErrors.has(slug)) {
-      return t('general.error.text')
+      return t(`general.error.reasons.${getFailureReason(error)}`)
     }
 
     return t(`pages.encounter.liveSession.errors.${kebabToCamel(slug)}`)
@@ -104,7 +104,7 @@ function _useLiveSeats(
       seats.value = seats.value.filter(s => s.seat !== seat)
     } catch (error) {
       toast({
-        title: t('general.error.title'),
+        title: t('components.liveSession.failed.kick'),
         description: errorDescription(error),
         variant: 'destructive',
       })
@@ -121,7 +121,7 @@ function _useLiveSeats(
       seats.value = seats.value.map(s => (s.seat === seat ? { ...s, row } : s))
     } catch (error) {
       toast({
-        title: t('general.error.title'),
+        title: t('components.liveSession.failed.reassign'),
         description: errorDescription(error),
         variant: 'destructive',
       })

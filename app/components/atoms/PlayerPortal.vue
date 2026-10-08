@@ -92,7 +92,7 @@ const enter = computed(() =>
         </ul>
 
         <UiButton as-child size="lg" variant="tertiary" class="mt-10">
-          <NuxtLinkLocale test-id="portal-link" to="/live" class="w-fit">
+          <NuxtLinkLocale test-id="portal-link" to="live" class="w-fit">
             {{ $t('pages.home.playerPortal.button') }}
           </NuxtLinkLocale>
         </UiButton>

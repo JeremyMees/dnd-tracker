@@ -24,21 +24,30 @@ describe('url-generators', () => {
       const campaign = { id: 1, title: 'My Campaign' }
       const url = campaignUrl(campaign, 'encounters')
 
-      expect(url).toBe('/campaigns/1-my-campaign/encounters')
+      expect(url).toEqual({
+        name: 'campaigns-id-title-encounters',
+        params: { id: '1', title: 'my-campaign' },
+      })
     })
 
     it('should handle special characters in campaign title', () => {
       const campaign = { id: 2, title: 'My & Special! Campaign?' }
       const url = campaignUrl(campaign, 'notes')
 
-      expect(url).toBe('/campaigns/2-my-special-campaign/notes')
+      expect(url).toEqual({
+        name: 'campaigns-id-title-notes',
+        params: { id: '2', title: 'my-special-campaign' },
+      })
     })
 
     it('should handle empty campaign title', () => {
       const campaign = { id: 3, title: '' }
       const url = campaignUrl(campaign, 'settings')
 
-      expect(url).toBe('/campaigns/3-campaign/settings')
+      expect(url).toEqual({
+        name: 'campaigns-id-title-settings',
+        params: { id: '3', title: 'campaign' },
+      })
     })
   })
 
@@ -51,7 +60,10 @@ describe('url-generators', () => {
       }
       const url = encounterUrl(encounter)
 
-      expect(url).toBe('/encounters/1-dragon-battle')
+      expect(url).toEqual({
+        name: 'encounters-id-title',
+        params: { id: '1', title: 'dragon-battle' },
+      })
     })
 
     it('should handle special characters in encounter title', () => {
@@ -62,7 +74,10 @@ describe('url-generators', () => {
       }
       const url = encounterUrl(encounter)
 
-      expect(url).toBe('/encounters/2-goblins-trolls')
+      expect(url).toEqual({
+        name: 'encounters-id-title',
+        params: { id: '2', title: 'goblins-trolls' },
+      })
     })
 
     it('should handle empty encounter title', () => {
@@ -73,7 +88,10 @@ describe('url-generators', () => {
       }
       const url = encounterUrl(encounter)
 
-      expect(url).toBe('/encounters/3-encounter')
+      expect(url).toEqual({
+        name: 'encounters-id-title',
+        params: { id: '3', title: 'encounter' },
+      })
     })
   })
 

@@ -15,7 +15,7 @@ definePageMeta({
 const route = useRoute()
 const { startTour } = useTour()
 
-const id = validateParamId(route.params.id)
+const id = validateParamId('id' in route.params ? route.params.id : undefined)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const { mutateAsync: patch } = useInitiativeSheetPatch()
@@ -75,7 +75,7 @@ provide(INITIATIVE_SHEET, {
             size="icon-sm"
             class="shrink-0"
           >
-            <NuxtLinkLocale test-id="back" to="/encounters">
+            <NuxtLinkLocale test-id="back" to="encounters">
               <Icon name="tabler:arrow-left" :aria-hidden="true" />
             </NuxtLinkLocale>
           </UiButton>
@@ -109,7 +109,7 @@ provide(INITIATIVE_SHEET, {
             <UiDropdownMenuItem>
               <NuxtLinkLocale
                 test-id="back-encounters"
-                to="/encounters"
+                to="encounters"
                 class="flex items-center gap-2"
               >
                 <Icon name="tabler:list-details" class="size-4 min-w-4" />

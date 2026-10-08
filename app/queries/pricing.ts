@@ -64,8 +64,8 @@ export function usePricingListing() {
         return products
       } catch (error) {
         toast({
-          title: t('general.error.title'),
-          description: getErrorMessage(error),
+          title: t('general.error.loadFailed.pricing'),
+          description: t(`general.error.reasons.${getFailureReason(error)}`),
           variant: 'destructive',
         })
 

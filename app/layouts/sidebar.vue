@@ -18,10 +18,10 @@ const isExpanded = computed<boolean>(() => sidebar.value?.state === 'expanded')
 async function logoutUser(): Promise<void> {
   try {
     await logout()
-  } catch {
+  } catch (error) {
     toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
+      title: t('general.error.failed.logout'),
+      description: t(`general.error.reasons.${getFailureReason(error)}`),
       variant: 'destructive',
     })
   }
@@ -34,7 +34,7 @@ async function logoutUser(): Promise<void> {
       <UiSidebarHeader>
         <div class="flex items-center gap-2 min-w-0">
           <NuxtLinkLocale
-            to="/"
+            to="index"
             class="group-data-[collapsible=icon]:py-0 py-2 min-w-0"
           >
             <NuxtImg
@@ -89,11 +89,7 @@ async function logoutUser(): Promise<void> {
                       <NuxtLinkLocale
                         :to="item.url"
                         :data-active="
-                          item.url === '/'
-                            ? route.path === '/'
-                            : route.name
-                                ?.toString()
-                                .startsWith(item.url.replace('/', ''))
+                          route.name?.toString().startsWith(item.url)
                         "
                       >
                         <Icon
@@ -124,7 +120,7 @@ async function logoutUser(): Promise<void> {
             :disabled="isExpanded"
           >
             <NuxtLinkLocale
-              to="/pricing"
+              to="pricing"
               class="bg-linear-to-r from-primary to-tertiary text-white rounded-lg p-2 flex items-center gap-x-2 text-sm"
             >
               <Icon name="tabler:sparkles" class="size-4 min-w-4" />

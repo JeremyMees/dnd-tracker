@@ -4,12 +4,14 @@ export default defineNuxtRouteMiddleware(async to => {
   const localePath = useLocalePath()
   const user = useState<AuthUser | null>('auth-user')
 
-  if (!to.params.title || !to.params.id || isNaN(+to.params.id)) {
-    return navigateTo(localePath('/'))
+  const { params } = to
+
+  if (!('id' in params) || !('title' in params) || isNaN(+params.id)) {
+    return navigateTo(localePath('index'))
   }
 
   try {
-    const encounterId = +to.params.id
+    const encounterId = +params.id
     const { data } = await getEncounter(encounterId)
 
     // Owner can always access the page
@@ -25,10 +27,10 @@ export default defineNuxtRouteMiddleware(async to => {
       !data.campaign ||
       !data.campaign.team.some(member => member.user.id === user.value?.id)
     ) {
-      return navigateTo(localePath('/no-access'))
+      return navigateTo(localePath('no-access'))
     }
   } catch {
-    return navigateTo(localePath('/'))
+    return navigateTo(localePath('index'))
   }
 })
 

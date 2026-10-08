@@ -18,7 +18,7 @@ const campaigns = ref<{ id: number; title: string }[] | undefined>([
   { id: 1, title: 'The Sunless Citadel' },
   { id: 2, title: 'The Lost Mine' },
 ])
-const isError = ref(false)
+const error = ref<Error | null>(null)
 
 vi.mock('~/queries/encounters', () => ({
   useEncounterCreate: () => ({ mutateAsync: addEncounter }),
@@ -26,7 +26,7 @@ vi.mock('~/queries/encounters', () => ({
 }))
 
 vi.mock('~/queries/campaigns', () => ({
-  useCampaignMinimalListing: () => ({ data: campaigns, isError }),
+  useCampaignMinimalListing: () => ({ data: campaigns, error }),
 }))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
@@ -66,7 +66,7 @@ describe('Encounter modal', () => {
       { id: 1, title: 'The Sunless Citadel' },
       { id: 2, title: 'The Lost Mine' },
     ]
-    isError.value = false
+    error.value = null
 
     addEncounter.mockResolvedValue(undefined)
     updateEncounter.mockResolvedValue(undefined)
@@ -262,12 +262,14 @@ describe('Encounter modal', () => {
   it('Should toast and close when the campaign listing errors', async () => {
     const component = await mountEncounterModal()
 
-    isError.value = true
+    error.value = Object.assign(new Error('denied'), { statusCode: 403 })
     await flushPromises()
 
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'destructive' }),
-    )
+    expect(toast).toHaveBeenCalledWith({
+      title: 'general.error.loadFailed.campaigns',
+      description: 'general.error.reasons.forbidden',
+      variant: 'destructive',
+    })
     expect(component.emitted('close')).toBeTruthy()
   })
 })

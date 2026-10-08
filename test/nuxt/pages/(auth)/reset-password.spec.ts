@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuthApiError, AuthSessionMissingError } from '@supabase/supabase-js'
 import ResetPassword from '~/pages/(auth)/reset-password.vue'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
@@ -112,24 +113,43 @@ describe('Reset password page', () => {
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
 
-  it('Should show the error and toast when supabase fails', async () => {
-    updateUser.mockResolvedValue({ error: new Error('Same password') })
+  it('Should explain a reused password inline without a toast', async () => {
+    updateUser.mockResolvedValue({
+      error: new AuthApiError(
+        'New password should be different from the old password.',
+        422,
+        'same_password',
+      ),
+    })
 
     const component = await mountPage()
 
     await fillForm(component, password)
     await submitForm(component)
 
-    expect(component.get('[test-id="error"]').text()).toBe('Same password')
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(component.get('[test-id="error"]').text()).toBe(
+      'general.error.auth.samePassword',
+    )
+    expect(toast).not.toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'general.error.title' }),
+    )
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
-  it('Should fall back to a generic error without a message', async () => {
+  it('Should explain an expired reset session', async () => {
+    updateUser.mockResolvedValue({ error: new AuthSessionMissingError() })
+
+    const component = await mountPage()
+
+    await fillForm(component, password)
+    await submitForm(component)
+
+    expect(component.get('[test-id="error"]').text()).toBe(
+      'general.error.auth.sessionExpired',
+    )
+  })
+
+  it('Should fall back to the failure reason for an unknown error', async () => {
     updateUser.mockRejectedValue({})
 
     const component = await mountPage()
@@ -138,7 +158,7 @@ describe('Reset password page', () => {
     await submitForm(component)
 
     expect(component.get('[test-id="error"]').text()).toBe(
-      'An error occurred during password reset',
+      'general.error.reasons.rejected',
     )
   })
 

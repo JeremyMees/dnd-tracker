@@ -56,7 +56,7 @@ const enter = computed(() =>
         <UiButton as-child size="lg" variant="tertiary">
           <NuxtLinkLocale
             test-id="link"
-            :to="user ? '/pricing' : '/login'"
+            :to="user ? 'pricing' : 'login'"
             :style="false"
             class="w-fit"
           >

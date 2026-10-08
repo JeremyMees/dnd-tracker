@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { speedTypes, speedMap, sightRangeMap } from '~~/constants/dnd'
 import { useRandomName } from '~/queries/names'
+import { useFormErrors, useSubmitCount } from 'vee-validate'
 
 const props = defineProps<{
   type?: string
@@ -15,7 +16,30 @@ const summonersOptions = computed<Option<string>[]>(() => {
   } else return []
 })
 
+const advancedFields = [
+  'hitDice',
+  'armorDetail',
+  'proficiencyBonus',
+  'passivePerception',
+  'speed',
+  'sight',
+  'languages',
+]
+
 const showAdvanced = ref(false)
+
+const submitCount = useSubmitCount()
+const errors = useFormErrors()
+
+const hasAdvancedError = computed(() =>
+  Object.entries(errors.value).some(
+    ([path, error]) => error && advancedFields.includes(path.split(/[.[]/)[0]!),
+  ),
+)
+
+watch([submitCount, hasAdvancedError], ([count, hasError]) => {
+  if (count && hasError) showAdvanced.value = true
+})
 
 const { mutate: randomName } = useRandomName()
 

@@ -129,7 +129,7 @@ async function toggleLiveAllow(
         {{ $t('components.liveSession.upsell') }}
       </p>
       <UiButton as-child>
-        <NuxtLinkLocale to="/pricing">
+        <NuxtLinkLocale to="pricing">
           {{ $t('components.navbar.upgrade') }}
         </NuxtLinkLocale>
       </UiButton>

@@ -98,6 +98,7 @@ describe('POST /api/user/create', () => {
     ).rejects.toMatchObject({
       statusCode: 409,
       statusMessage: 'Email already in use',
+      data: { code: 'user_already_exists' },
     })
 
     expect(deleteUser).not.toHaveBeenCalled()
@@ -105,13 +106,13 @@ describe('POST /api/user/create', () => {
 
   it('rolls back the auth user when the profile insert fails', async () => {
     mockSignUp(newUser())
-    mockProfiles({ error: { message: 'duplicate key value' } })
+    mockProfiles({ error: { message: 'duplicate key value', code: '23505' } })
 
     await expect(
       handler(mockEvent({ method: 'POST', body })),
     ).rejects.toMatchObject({
-      statusCode: 400,
-      statusMessage: 'duplicate key value',
+      statusCode: 409,
+      data: { code: '23505' },
     })
 
     expect(deleteUser).toHaveBeenCalledWith(userId)
@@ -125,6 +126,24 @@ describe('POST /api/user/create', () => {
     ).rejects.toMatchObject({
       statusCode: 400,
       statusMessage: 'Signup disabled',
+    })
+  })
+
+  it('forwards the auth status and error code so the client can explain it', async () => {
+    mockSignUp({
+      data: { user: null },
+      error: {
+        message: 'Password should be at least 8 characters',
+        status: 422,
+        code: 'weak_password',
+      },
+    })
+
+    await expect(
+      handler(mockEvent({ method: 'POST', body })),
+    ).rejects.toMatchObject({
+      statusCode: 422,
+      data: { code: 'weak_password' },
     })
   })
 

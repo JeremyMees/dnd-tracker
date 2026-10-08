@@ -40,7 +40,7 @@ const onSubmit = form.handleSubmit(async values => {
       variant: 'success',
     })
 
-    navigateTo(localePath('/'))
+    navigateTo(localePath('index'))
   } catch (err) {
     formError.value =
       getErrorMessage(err) || 'An error occurred during contact request'

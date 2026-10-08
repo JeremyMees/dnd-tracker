@@ -245,7 +245,46 @@
     "back": "Terug",
     "error": {
       "title": "Fout",
-      "text": "Er ging iets mis"
+      "text": "Er ging iets mis",
+      "reasons": {
+        "offline": "Kan de server niet bereiken. Controleer je verbinding en probeer opnieuw.",
+        "unauthorized": "Je sessie is verlopen. Log opnieuw in en probeer het nog eens.",
+        "forbidden": "Je hebt geen toestemming om dit te doen.",
+        "notFound": "Iemand anders heeft het misschien verwijderd. Vernieuw de pagina en probeer opnieuw.",
+        "rateLimited": "Te veel verzoeken in korte tijd. Wacht even en probeer opnieuw.",
+        "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren."
+      },
+      "loadFailed": {
+        "content": "DnD inhoud kon niet geladen worden",
+        "documents": "Systeem documenten konden niet geladen worden",
+        "conditions": "Condities konden niet geladen worden",
+        "monsters": "Monsters uit het bestiarium konden niet geladen worden",
+        "names": "Fantasienamen konden niet gegenereerd worden",
+        "pricing": "Prijzen konden niet geladen worden",
+        "campaigns": "Je campagnes konden niet geladen worden"
+      },
+      "failed": {
+        "summaryShare": "De gevecht samenvatting kon niet gedeeld worden",
+        "shareLink": "De deellink kon niet aangemaakt worden",
+        "logout": "Je kon niet uitgelogd worden",
+        "noteMail": "De notitie kon niet gemaild worden",
+        "inviteAccept": "De uitnodiging kon niet geaccepteerd worden",
+        "inviteDecline": "De uitnodiging kon niet afgewezen worden",
+        "inviteRevoke": "De uitnodiging kon niet ingetrokken worden",
+        "memberRemove": "Het lid kon niet uit de campagne verwijderd worden",
+        "accountDelete": "Je account kon niet verwijderd worden",
+        "vote": "Je stem kon niet opgeslagen worden",
+        "avatar": "Je avatar is niet opgeslagen"
+      },
+      "auth": {
+        "emailInUse": "Er bestaat al een account met dit e-mailadres. Log in of reset je wachtwoord.",
+        "emailInvalid": "Dat e-mailadres is niet geldig.",
+        "weakPassword": "Dat wachtwoord is te zwak. Gebruik een langer wachtwoord met letters, cijfers en symbolen.",
+        "samePassword": "Je nieuwe wachtwoord moet verschillen van je huidige wachtwoord.",
+        "sessionExpired": "Je sessie is verlopen. Vraag een nieuwe link aan of log opnieuw in.",
+        "invalidCredentials": "Dat e-mailadres en wachtwoord komen niet overeen. Controleer ze en probeer opnieuw.",
+        "emailNotConfirmed": "Bevestig eerst je e-mailadres. Kijk in je inbox voor de bevestigingslink."
+      }
     },
     "success": {
       "title": "Succes",
@@ -453,7 +492,25 @@
         "removed": {
           "title": "Encounter is verwijderd",
           "text": "Iemand heeft de encounter verwijderd, dus je kan hem niet meer gebruiken"
-        }
+        },
+        "patchFailed": {
+          "conditions": "Condities voor {name} zijn niet opgeslagen",
+          "hitPoints": "HP voor {name} is niet opgeslagen",
+          "armorClass": "AC voor {name} is niet opgeslagen",
+          "deathSaves": "Death saves voor {name} zijn niet opgeslagen",
+          "concentration": "Concentratie voor {name} is niet opgeslagen",
+          "row": "Je wijziging aan {name} is niet opgeslagen",
+          "generic": "Je wijziging is niet opgeslagen"
+        },
+        "updateFailed": {
+          "rows": "Wijzigingen aan de initiatieflijst zijn niet opgeslagen",
+          "turn": "De beurt kon niet gewijzigd worden",
+          "settings": "Encounter instellingen zijn niet opgeslagen",
+          "infoCards": "Gepinde kaarten zijn niet opgeslagen",
+          "info": "Je notitie is niet opgeslagen",
+          "generic": "Je wijzigingen aan de encounter zijn niet opgeslagen"
+        },
+        "combatLogClearFailed": "Het gevechtslogboek is niet gewist"
       },
       "back": {
         "encounters": "Encounters lijst",
@@ -523,8 +580,7 @@
       },
       "password": {
         "title": "Wachtwoord wijzigende Magie",
-        "subtitle": "Betoverende Beveiliging",
-        "same": "Het nieuwe wachtwoord moet verschillend zijn van het oude wachtwoord."
+        "subtitle": "Betoverende Beveiliging"
       },
       "updateImage": "Foto updaten",
       "delete": "Profiel Verwijderen",
@@ -637,6 +693,23 @@
         "title": "Sessie beëindigd",
         "text": "Deze live sessie is niet meer beschikbaar. Vraag je DM om een nieuwe code om opnieuw deel te nemen.",
         "action": "Voer een nieuwe code in"
+      },
+      "actionFailed": {
+        "hp": "Je HP is niet bijgewerkt",
+        "ac": "Je AC is niet bijgewerkt",
+        "deathSaves": "Je death saves zijn niet bijgewerkt",
+        "concentration": "Je concentratie is niet bijgewerkt",
+        "conditions": "Je condities zijn niet bijgewerkt",
+        "endTurn": "Je beurt kon niet beëindigd worden"
+      },
+      "actionErrors": {
+        "notYourTurn": "Het is niet meer jouw beurt.",
+        "actionNotAllowed": "Je DM heeft deze actie uitgeschakeld.",
+        "sessionEnded": "Deze live sessie is beëindigd.",
+        "sessionNotFound": "Deze live sessie bestaat niet meer.",
+        "noRowClaimed": "Je hebt nog geen personage gekozen.",
+        "spectator": "Kijkers kunnen geen personages aanpassen.",
+        "seatExpired": "Je plaats is verlopen. Neem opnieuw deel aan de live sessie."
       }
     }
   },
@@ -670,6 +743,12 @@
           "title": "{name} verwijderen?",
           "text": "Diegene wordt losgekoppeld en de plek komt weer vrij."
         }
+      },
+      "failed": {
+        "start": "De live sessie kon niet gestart worden",
+        "end": "De live sessie kon niet beëindigd worden",
+        "kick": "De speler kon niet verwijderd worden",
+        "reassign": "De speler kon niet aan dat personage gekoppeld worden"
       }
     },
     "actionsTable": {
@@ -790,19 +869,19 @@
     },
     "toast": {
       "delete": {
-        "error": "Er is iets fout gegaan bij het verwijderen van de {type}",
+        "error": "De {type} kon niet verwijderd worden",
         "success": "Succesvol verwijderd de {type}"
       },
       "create": {
-        "error": "Er is iets fout gegaan bij het creëren van de {type}",
+        "error": "De {type} kon niet aangemaakt worden",
         "success": "Succesvol gemaakt de {type}"
       },
       "update": {
-        "error": "Er is iets fout gegaan bij het bijwerken van de {type}",
+        "error": "De {type} kon niet bijgewerkt worden",
         "success": "Succesvol bijgewerkt de {type}"
       },
       "copy": {
-        "error": "Er is iets fout gegaan bij het kopiëren van de {type}",
+        "error": "De {type} kon niet gekopieerd worden",
         "success": "Succesvol gekopieerd de {type}"
       }
     },
@@ -1002,7 +1081,8 @@
       "save": "Toevoegen aan campagne",
       "max": "Max campagne homebrews",
       "actionPage": "Actie pagina",
-      "infoPage": "Info pagina"
+      "infoPage": "Info pagina",
+      "invalid": "Nog niet opgeslagen, kijk bij {tabs} welke velden nog aangepast moeten worden"
     },
     "homebrewTable": {
       "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht passen, maar dat betekent niet dat je ze niet zelf kunt maken.",

@@ -17,41 +17,39 @@ const avatar = ref<Avatar>({
 })
 
 const { mutateAsync: updateProfile } = useProfileUpdate()
-const { mutateAsync: removeProfile } = useProfileRemove()
+const { mutate: removeProfile } = useProfileRemove()
 
 async function updateAvatar(avatar: Avatar): Promise<void> {
-  return handleUpdateProfile({
-    avatar: avatar.url,
-    avatarOptions: avatar.extra as Record<string, string | number>,
-  })
+  try {
+    await handleUpdateProfile({
+      avatar: avatar.url,
+      avatarOptions: avatar.extra as Record<string, string | number>,
+    })
+  } catch (error) {
+    toast({
+      title: t('general.error.failed.avatar'),
+      description: getErrorMessage(error),
+      variant: 'destructive',
+    })
+  }
 }
 
 const handleUpdateProfile = useThrottleFn(
   async (data: ProfileUpdate & { password?: string }): Promise<void> => {
-    await updateProfile({
-      data,
-      id: user.value.id,
-      onSuccess: () => {
-        toast({
-          description: t('pages.profile.toast.success.text'),
-          variant: 'success',
-        })
-      },
-      onError: error => {
-        const message =
-          error === 'New password should be different from the old password.'
-            ? t('pages.profile.password.same')
-            : error
-
-        toast({
-          title: t('general.error.title'),
-          description: message || t('general.error.text'),
-          variant: 'destructive',
-        })
-
-        throw new Error(message)
-      },
-    })
+    try {
+      await updateProfile({
+        data,
+        id: user.value.id,
+        onSuccess: () => {
+          toast({
+            description: t('pages.profile.toast.success.text'),
+            variant: 'success',
+          })
+        },
+      })
+    } catch (error) {
+      throw new Error(t(failureMessageKey(error)), { cause: error })
+    }
   },
   1000,
 )
@@ -68,24 +66,17 @@ async function handleRemoveUser(): Promise<void> {
       title: t('pages.profile.dialog.delete.title'),
       description: t('pages.profile.dialog.delete.text'),
     },
-    async (confirmed: boolean) => {
+    (confirmed: boolean) => {
       if (!confirmed) return
 
-      await removeProfile({
+      removeProfile({
         id: user.value.id,
         onSuccess: () => {
-          navigateTo(localePath('/'))
+          navigateTo(localePath('index'))
 
           toast({
             description: t('pages.profile.toast.delete.text'),
             variant: 'success',
-          })
-        },
-        onError: () => {
-          toast({
-            title: t('general.error.title'),
-            description: t('general.error.text'),
-            variant: 'destructive',
           })
         },
       })

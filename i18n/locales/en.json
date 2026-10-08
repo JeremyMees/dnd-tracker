@@ -245,7 +245,46 @@
     "back": "Back",
     "error": {
       "title": "Error",
-      "text": "Something went wrong"
+      "text": "Something went wrong",
+      "reasons": {
+        "offline": "Couldn't reach the server. Check your connection and try again.",
+        "unauthorized": "Your session has expired. Log in again and retry.",
+        "forbidden": "You don't have permission to do this.",
+        "notFound": "It may have been removed by someone else. Refresh the page and try again.",
+        "rateLimited": "Too many requests in a short time. Wait a moment and try again.",
+        "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
+      },
+      "loadFailed": {
+        "content": "DnD content couldn't be loaded",
+        "documents": "System documents couldn't be loaded",
+        "conditions": "Conditions couldn't be loaded",
+        "monsters": "Monsters from the bestiary couldn't be loaded",
+        "names": "Fantasy names couldn't be generated",
+        "pricing": "Prices couldn't be loaded",
+        "campaigns": "Your campaigns couldn't be loaded"
+      },
+      "failed": {
+        "summaryShare": "The encounter summary couldn't be shared",
+        "shareLink": "The share link couldn't be created",
+        "logout": "You couldn't be logged out",
+        "noteMail": "The note couldn't be emailed",
+        "inviteAccept": "The invitation couldn't be accepted",
+        "inviteDecline": "The invitation couldn't be declined",
+        "inviteRevoke": "The invitation couldn't be revoked",
+        "memberRemove": "The member couldn't be removed from the campaign",
+        "accountDelete": "Your account couldn't be deleted",
+        "vote": "Your vote couldn't be saved",
+        "avatar": "Your avatar wasn't saved"
+      },
+      "auth": {
+        "emailInUse": "An account with this email already exists. Log in or reset your password instead.",
+        "emailInvalid": "That email address isn't valid.",
+        "weakPassword": "That password is too weak. Use a longer password with a mix of letters, numbers and symbols.",
+        "samePassword": "Your new password must be different from your current one.",
+        "sessionExpired": "Your session has expired. Request a new link or log in again.",
+        "invalidCredentials": "That email and password don't match. Check them and try again.",
+        "emailNotConfirmed": "Confirm your email address first. Check your inbox for the confirmation link."
+      }
     },
     "success": {
       "title": "Success",
@@ -453,7 +492,25 @@
         "removed": {
           "title": "Encounter is removed",
           "text": "Someone removed the encounter so it can't be used anymore"
-        }
+        },
+        "patchFailed": {
+          "conditions": "Conditions for {name} weren't saved",
+          "hitPoints": "HP for {name} wasn't saved",
+          "armorClass": "AC for {name} wasn't saved",
+          "deathSaves": "Death saves for {name} weren't saved",
+          "concentration": "Concentration for {name} wasn't saved",
+          "row": "Your change to {name} wasn't saved",
+          "generic": "Your change wasn't saved"
+        },
+        "updateFailed": {
+          "rows": "Changes to the initiative list weren't saved",
+          "turn": "The turn couldn't be changed",
+          "settings": "Encounter settings weren't saved",
+          "infoCards": "Pinned cards weren't saved",
+          "info": "Your note wasn't saved",
+          "generic": "Your changes to the encounter weren't saved"
+        },
+        "combatLogClearFailed": "The combat log wasn't cleared"
       },
       "back": {
         "encounters": "Encounters list",
@@ -523,8 +580,7 @@
       },
       "password": {
         "title": "Password changing Sorcery",
-        "subtitle": "Spellbound Security",
-        "same": "New password should be different from the old password."
+        "subtitle": "Spellbound Security"
       },
       "updateImage": "Update image",
       "delete": "Delete profile",
@@ -637,6 +693,23 @@
         "title": "Session ended",
         "text": "This live session is no longer available. Ask your DM for a new code to rejoin.",
         "action": "Enter a new code"
+      },
+      "actionFailed": {
+        "hp": "Your HP wasn't updated",
+        "ac": "Your AC wasn't updated",
+        "deathSaves": "Your death saves weren't updated",
+        "concentration": "Your concentration wasn't updated",
+        "conditions": "Your conditions weren't updated",
+        "endTurn": "Your turn couldn't be ended"
+      },
+      "actionErrors": {
+        "notYourTurn": "It's not your turn anymore.",
+        "actionNotAllowed": "Your DM turned this action off.",
+        "sessionEnded": "This live session has ended.",
+        "sessionNotFound": "This live session no longer exists.",
+        "noRowClaimed": "You haven't claimed a character yet.",
+        "spectator": "Spectators can't change characters.",
+        "seatExpired": "Your seat has expired. Rejoin the live session."
       }
     }
   },
@@ -670,6 +743,12 @@
           "title": "Remove {name}?",
           "text": "They will be disconnected and their seat freed up."
         }
+      },
+      "failed": {
+        "start": "The live session couldn't be started",
+        "end": "The live session couldn't be ended",
+        "kick": "The player couldn't be removed",
+        "reassign": "The player couldn't be moved to that character"
       }
     },
     "actionsTable": {
@@ -790,19 +869,19 @@
     },
     "toast": {
       "delete": {
-        "error": "Something went wrong while deleting the {type}",
+        "error": "The {type} couldn't be deleted",
         "success": "Successfully deleted the {type}"
       },
       "create": {
-        "error": "Something went wrong while creating the {type}",
+        "error": "The {type} couldn't be created",
         "success": "Successfully created the {type}"
       },
       "update": {
-        "error": "Something went wrong while updating the {type}",
+        "error": "The {type} couldn't be updated",
         "success": "Successfully updated the {type}"
       },
       "copy": {
-        "error": "Something went wrong while copying the {type}",
+        "error": "The {type} couldn't be copied",
         "success": "Successfully copied the {type}"
       }
     },
@@ -1002,7 +1081,8 @@
       "save": "Add to campaign",
       "max": "Max campaign homebrews",
       "actionPage": "Action page",
-      "infoPage": "Info page"
+      "infoPage": "Info page",
+      "invalid": "Can't save yet, check {tabs} for fields that still need fixing"
     },
     "homebrewTable": {
       "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself.",

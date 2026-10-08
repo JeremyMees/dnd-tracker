@@ -45,7 +45,7 @@ const activeRow = computed(() => props.sheet?.rows[props.sheet.activeIndex])
       class="dnd-container shrink-0 flex flex-wrap items-center justify-between gap-2 py-4 border-b"
     >
       <div class="flex items-center gap-4 min-w-0">
-        <NuxtLinkLocale to="/" :aria-label="$t('components.navbar.home')">
+        <NuxtLinkLocale to="index" :aria-label="$t('components.navbar.home')">
           <NuxtImg
             src="/icon-logo.svg"
             alt="DnD Tracker logo"

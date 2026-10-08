@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useHomebrewCreate, useHomebrewUpdate } from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
+import type { InvalidSubmissionContext } from 'vee-validate'
 import * as z from 'zod'
 import { homebrewType } from '~~/constants/validation'
 
@@ -26,7 +27,7 @@ const props = withDefaults(
   },
 )
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { user } = useAuthentication()
 
 const canSaveToCampaign = computed(() => {
@@ -42,7 +43,28 @@ const canSaveToCampaign = computed(() => {
 
 const tabs = ['info', 'stats', 'traits', 'actions'] as const
 
-const activeTab = ref<(typeof tabs)[number]>('info')
+type Tab = (typeof tabs)[number]
+
+const tabFields: Partial<Record<Tab, string[]>> = {
+  stats: ['abilityScores', 'modifiers', 'savingThrows', 'skillBonuses'],
+  traits: ['traits', 'resistancesAndImmunities'],
+  actions: ['actions'],
+}
+
+const tabLabels = computed<Record<Tab, string>>(() => ({
+  info: t('general.info'),
+  stats: t('general.stats'),
+  traits: t('general.trait', 2),
+  actions: t('general.action', 2),
+}))
+
+function tabOf(path: string): Tab {
+  const field = path.split(/[.[]/)[0]!
+
+  return tabs.find(tab => tabFields[tab]?.includes(field)) ?? 'info'
+}
+
+const activeTab = ref<Tab>('info')
 const tabIndex = computed(() => tabs.indexOf(activeTab.value))
 const canGoBack = computed(() => tabIndex.value > 0)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
@@ -199,7 +221,24 @@ const onSubmit = form.handleSubmit(async values => {
       })
     }
   }
-})
+}, onInvalidSubmit)
+
+function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
+  const invalidPaths = Object.keys(errors).filter(path => errors[path])
+  const invalidTabs = tabs.filter(tab =>
+    invalidPaths.some(path => tabOf(path) === tab),
+  )
+
+  if (!invalidTabs.length) return
+
+  if (!invalidTabs.includes(activeTab.value)) activeTab.value = invalidTabs[0]!
+
+  formError.value = t('components.homebrewModal.invalid', {
+    tabs: new Intl.ListFormat(locale.value, { type: 'conjunction' }).format(
+      invalidTabs.map(tab => tabLabels.value[tab]),
+    ),
+  })
+}
 
 async function create(options: {
   data: HomebrewItemInsert
@@ -253,17 +292,8 @@ async function addInitiative(options: {
   <UiFormWrapper @submit="onSubmit">
     <UiTabs v-model="activeTab">
       <UiTabsList class="grid w-full grid-cols-4">
-        <UiTabsTrigger value="info">
-          {{ $t('general.info') }}
-        </UiTabsTrigger>
-        <UiTabsTrigger value="stats">
-          {{ $t('general.stats') }}
-        </UiTabsTrigger>
-        <UiTabsTrigger value="traits">
-          {{ $t('general.trait', 2) }}
-        </UiTabsTrigger>
-        <UiTabsTrigger value="actions">
-          {{ $t('general.action', 2) }}
+        <UiTabsTrigger v-for="tab in tabs" :key="tab" :value="tab">
+          {{ tabLabels[tab] }}
         </UiTabsTrigger>
       </UiTabsList>
 
@@ -325,7 +355,12 @@ async function addInitiative(options: {
         </span>
       </div>
 
-      <div v-if="formError" class="text-sm text-destructive">
+      <div
+        v-if="formError"
+        test-id="form-error"
+        role="alert"
+        class="text-sm text-destructive"
+      >
         {{ formError }}
       </div>
 

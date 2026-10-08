@@ -43,13 +43,13 @@ const formError = ref<string>('')
 
 const { mutateAsync: updateEncounter } = useEncounterUpdate()
 const { mutateAsync: addEncounter } = useEncounterCreate()
-const { data: campaigns, isError } = useCampaignMinimalListing(user.value.id)
+const { data: campaigns, error } = useCampaignMinimalListing(user.value.id)
 
-watch(isError, err => {
+watch(error, err => {
   if (err) {
     toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
+      title: t('general.error.loadFailed.campaigns'),
+      description: t(`general.error.reasons.${getFailureReason(err)}`),
       variant: 'destructive',
     })
 

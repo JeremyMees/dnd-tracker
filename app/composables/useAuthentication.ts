@@ -46,7 +46,7 @@ export function useAuthentication() {
     user.value = null
     gc.value = null
 
-    await navigateTo(localePath('/login'))
+    await navigateTo(localePath('login'))
   }
 
   async function fetch(forceRefresh = false): Promise<void> {

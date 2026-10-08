@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
+import { describe, expect, it, vi } from 'vitest'
+import * as z from 'zod'
 import ActionInputs from '~/components/form/ActionInputs.vue'
-import { mountWithForm } from '~~/test/nuxt/stubs/form'
+import { mountWithForm, settle } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
 async function mountActionInputs(
@@ -165,6 +167,28 @@ describe('ActionInputs', () => {
         (component.get('[test-id="usage-param"]').element as HTMLInputElement)
           .value,
       ).toBe('7')
+    })
+
+    it('Should show why the usage param is invalid', async () => {
+      const { component, form } = await mountWithForm(ActionInputs, {
+        props: { fieldName: 'action' },
+        initialValues: {
+          action: {
+            actionType: 'action',
+            usageLimits: { type: 'perDay', param: 3 },
+          },
+        },
+        validationSchema: z.object({
+          action: z.object({ usageLimits: usageLimitsSchema }),
+        }),
+      })
+
+      await component.get('[test-id="usage-param"]').setValue(0)
+      await settle()
+      await form.handleSubmit(vi.fn())()
+      await flushPromises()
+
+      expect(component.get('[test-id="usage-param-error"]').text()).not.toBe('')
     })
   })
 

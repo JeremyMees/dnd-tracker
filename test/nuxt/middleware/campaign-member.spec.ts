@@ -37,7 +37,6 @@ mockNuxtImport('useSupabaseClient', () => vi.fn(() => mockSupabase))
 mockNuxtImport('createError', () =>
   vi.fn((error: { message: string }) => new Error(error.message)),
 )
-mockNuxtImport('useLocalePath', () => vi.fn(() => (path: string) => path))
 
 let mockUser: AuthUser | null = null
 

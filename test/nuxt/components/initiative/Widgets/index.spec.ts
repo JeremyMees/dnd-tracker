@@ -276,6 +276,20 @@ describe('Initiative widgets wrapper', async () => {
       expect(vm.popoverOpen).toBe(false)
     })
 
+    it('Should keep the popover open when the update fails', async () => {
+      mockUpdate.mockRejectedValueOnce(new Error('boom'))
+
+      component = await mountWithTooltips(Widgets, { provide })
+      const vm = component.vm as unknown as WidgetsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      await vm.onSubmit()
+
+      expect(vm.popoverOpen).toBe(true)
+    })
+
     it('Should not call update on submit when sheet is undefined', async () => {
       mockSheet.value = undefined as unknown as InitiativeSheet
 

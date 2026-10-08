@@ -25,7 +25,7 @@ vi.mock('~/components/ui/toast/use-toast', () => ({
 }))
 
 vi.mock('~/queries/campaigns', () => ({
-  useCampaignRemove: () => ({ mutateAsync: removeCampaign }),
+  useCampaignRemove: () => ({ mutate: removeCampaign }),
 }))
 
 mockNuxtImport('useSeo', () => useSeo)
@@ -221,19 +221,14 @@ describe('Campaign danger zone page', () => {
     expect(navigateTo).toHaveBeenCalledWith('/campaigns')
   })
 
-  it('Should toast when the removal fails', async () => {
+  it('Should leave the failure toast to the removal mutation', async () => {
     const { remove } = await mountPage()
 
     await remove()
     await confirmCallback()(true)
 
-    removeOptions().onError()
-
+    expect(removeOptions()).not.toHaveProperty('onError')
     expect(navigateTo).not.toHaveBeenCalled()
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(toast).not.toHaveBeenCalled()
   })
 })

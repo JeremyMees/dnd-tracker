@@ -27,19 +27,18 @@ const tablePadding = computed(() => {
   else return 'p-2'
 })
 
-const { mutateAsync: clearCombatEvents } = useCombatEventsClear()
+const { mutate: clearCombatEvents } = useCombatEventsClear()
 
 const columns = generateColumns()
 const tableData = shallowRef<InitiativeSheetRow[]>([])
 const historyOpen = shallowRef<boolean>(false)
 const summaryOpen = shallowRef<boolean>(false)
 
-async function handleReset(hard: boolean): Promise<void> {
+function handleReset(hard: boolean): void {
   reset(hard)
   summaryOpen.value = false
 
-  if (props.encounterId)
-    await clearCombatEvents({ encounterId: props.encounterId })
+  if (props.encounterId) clearCombatEvents({ encounterId: props.encounterId })
 }
 
 watch(

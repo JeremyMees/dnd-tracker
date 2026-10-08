@@ -10,9 +10,6 @@ const ignoredLogs = [
 ]
 
 export default defineConfig({
-  resolve: {
-    alias: { 'vitest/environments': 'vitest/runtime' },
-  },
   test: {
     projects: [
       {

@@ -1,7 +1,7 @@
 <template>
   <div class="container-max px-4 pb-2 flex flex-col gap-10">
     <NuxtLinkLocale
-      to="/"
+      to="index"
       test-id="footer-home"
       :aria-label="$t('components.navbar.home')"
     >
@@ -40,7 +40,7 @@
             Email
           </NuxtLink>
           <NuxtLinkLocale
-            to="/contact"
+            to="contact"
             class="flex items-center text-sm"
             test-id="footer-contact"
           >
@@ -105,7 +105,7 @@
         </p>
         <div class="flex flex-col gap-2">
           <NuxtLinkLocale
-            to="/updates/feature-request"
+            to="updates-feature-request"
             class="flex items-center text-sm"
             test-id="footer-feature-request"
           >
@@ -117,7 +117,7 @@
             {{ $t('components.navbar.featureRequest') }}
           </NuxtLinkLocale>
           <NuxtLinkLocale
-            to="/updates/changelog"
+            to="updates-changelog"
             class="flex items-center text-sm"
             test-id="footer-changelog"
           >
@@ -137,7 +137,7 @@
         </p>
         <div class="flex flex-col gap-2">
           <NuxtLinkLocale
-            to="/policies/cookie"
+            to="policies-cookie"
             class="flex items-center text-sm"
             test-id="footer-cookie"
           >
@@ -149,7 +149,7 @@
             {{ $t('components.navbar.cookie') }}
           </NuxtLinkLocale>
           <NuxtLinkLocale
-            to="/policies/privacy"
+            to="policies-privacy"
             class="flex items-center text-sm"
             test-id="footer-privacy"
           >
@@ -161,7 +161,7 @@
             {{ $t('components.navbar.privacy') }}
           </NuxtLinkLocale>
           <NuxtLinkLocale
-            to="/policies/legal"
+            to="policies-legal"
             class="flex items-center text-sm"
             test-id="footer-legal"
           >
@@ -188,7 +188,7 @@
           {{ $t('components.navbar.illustrations') }} Mount Lazarus
         </NuxtLink>
         <NuxtLinkLocale
-          to="/updates/changelog"
+          to="updates-changelog"
           class="text-muted-foreground text-sm"
           test-id="footer-version"
         >

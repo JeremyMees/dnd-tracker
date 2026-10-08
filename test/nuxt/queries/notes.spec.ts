@@ -148,9 +148,11 @@ describe('notes queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(spies.onSuccess).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.create.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -196,9 +198,11 @@ describe('notes queries', () => {
         vm.mutateAsync({ id: 8, data: { title: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.update.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -245,9 +249,11 @@ describe('notes queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.delete.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })

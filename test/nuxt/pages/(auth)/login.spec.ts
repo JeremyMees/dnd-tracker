@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuthApiError } from '@supabase/supabase-js'
 import Login from '~/pages/(auth)/login.vue'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
@@ -113,8 +114,10 @@ describe('Login page', () => {
     expect(redirect.value).toBe('')
   })
 
-  it('Should show the error message when logging in fails', async () => {
-    login.mockRejectedValue(new Error('Invalid credentials'))
+  it('Should explain wrong credentials when logging in fails', async () => {
+    login.mockRejectedValue(
+      new AuthApiError('Invalid login credentials', 400, 'invalid_credentials'),
+    )
 
     const component = await mountPage()
 
@@ -122,12 +125,12 @@ describe('Login page', () => {
     await submitForm(component)
 
     expect(component.get('[test-id="error"]').text()).toBe(
-      'Invalid credentials',
+      'general.error.auth.invalidCredentials',
     )
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
-  it('Should fall back to a generic error without a message', async () => {
+  it('Should fall back to the failure reason for an unknown error', async () => {
     login.mockRejectedValue({})
 
     const component = await mountPage()
@@ -136,7 +139,7 @@ describe('Login page', () => {
     await submitForm(component)
 
     expect(component.get('[test-id="error"]').text()).toBe(
-      'An error occurred during login',
+      'general.error.reasons.rejected',
     )
   })
 

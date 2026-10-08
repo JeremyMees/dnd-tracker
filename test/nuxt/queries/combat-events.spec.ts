@@ -6,6 +6,7 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
+  toast,
 } from '~~/test/nuxt/stubs/query'
 import { useCombatEvents, useCombatEventsClear } from '~/queries/combat-events'
 
@@ -125,6 +126,24 @@ describe('combat-events queries', () => {
       expect(
         vm.queryClient.getQueryData<CombatEventRow[]>(['useCombatEvents', 7]),
       ).toEqual([event])
+    })
+
+    it('toasts that the combat log was not cleared and why', async () => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('forbidden'), { statusCode: 403 }),
+      )
+
+      const { vm } = await mountHook(() => useCombatEventsClear())
+
+      await expect(vm.mutateAsync({ encounterId: 7 })).rejects.toThrow(
+        'forbidden',
+      )
+
+      expect(toast).toHaveBeenCalledWith({
+        title: 'pages.encounter.toasts.combatLogClearFailed',
+        description: 'general.error.reasons.forbidden',
+        variant: 'destructive',
+      })
     })
   })
 })

@@ -7,35 +7,35 @@ const cells = [
   {
     key: 'item1',
     art: '/gifs/dragon.gif',
-    to: '/campaigns',
+    to: 'campaigns',
     class:
       'md:col-span-2 lg:col-span-4 border-primary bg-primary/20 tracker-shadow-inset',
   },
   {
     key: 'item2',
     art: '/gifs/crawler.gif',
-    to: '/playground',
+    to: 'playground',
     class: 'lg:col-span-2 border-secondary bg-secondary/50',
   },
   {
     key: 'item3',
     art: '/gifs/wolf-rider.gif',
-    to: '/dnd-content',
+    to: 'dnd-content',
     class: 'lg:col-span-2 border-secondary bg-secondary/50',
   },
   {
     key: 'item4',
     art: '/gifs/barmaid.gif',
-    to: '/campaigns',
+    to: 'campaigns',
     class: 'lg:col-span-2 border-secondary bg-secondary/50',
   },
   {
     key: 'item5',
     art: '/gifs/fairy.gif',
-    to: '/fantasy-name-generator',
+    to: 'fantasy-name-generator',
     class: 'lg:col-span-2 border-secondary bg-secondary/20',
   },
-]
+] as const
 
 const enter = computed(() =>
   reduced.value ? undefined : { opacity: 0, y: 32 },

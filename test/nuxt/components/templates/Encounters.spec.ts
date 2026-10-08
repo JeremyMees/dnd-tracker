@@ -461,8 +461,8 @@ describe('Encounters', () => {
 
     expect(clipboardCopy).not.toHaveBeenCalled()
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'general.error.failed.shareLink',
+      description: 'general.error.reasons.rejected',
       variant: 'destructive',
     })
   })
@@ -475,8 +475,8 @@ describe('Encounters', () => {
     await columnOptions?.onShare(mockEncounterItem)
 
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'general.error.failed.shareLink',
+      description: 'general.error.reasons.rejected',
       variant: 'destructive',
     })
   })

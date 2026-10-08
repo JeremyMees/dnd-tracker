@@ -42,10 +42,10 @@ async function share(): Promise<void> {
     })
 
     shared.value = true
-  } catch {
+  } catch (error) {
     toast({
-      title: t('general.error.title'),
-      description: t('general.error.text'),
+      title: t('general.error.failed.summaryShare'),
+      description: t(`general.error.reasons.${getFailureReason(error)}`),
       variant: 'destructive',
     })
   } finally {

@@ -1,3 +1,5 @@
+import type { RouteMapI18n } from 'vue-router'
+
 export type Color =
   | 'primary'
   | 'tertiary'
@@ -17,7 +19,7 @@ export interface Option<T> {
 
 export interface Route {
   label: string
-  url: string
+  url: keyof RouteMapI18n
   requireAuth: boolean
   icon?: string
 }

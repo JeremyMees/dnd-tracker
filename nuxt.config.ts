@@ -7,6 +7,9 @@ import { defaultLocale, locales, localized } from './shared/utils/locale'
 export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
+    early404: true,
+    inlineErrorRendering: true,
+    typedPages: true,
   },
 
   modules: [
@@ -218,7 +221,7 @@ export default defineNuxtConfig({
     types: '~~/shared/types/database-generated.ts',
     redirectOptions: {
       login: '/login',
-      callback: '/',
+      callback: '/confirm',
       include: [
         '/campaigns/*',
         '/encounters/*',

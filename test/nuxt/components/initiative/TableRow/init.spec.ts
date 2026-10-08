@@ -10,7 +10,6 @@ interface Props {
 
 interface InitVM {
   popoverOpen: boolean
-  formError: string
   moveRow: (up: boolean) => Promise<void>
   onSubmit: () => Promise<void>
   form: {
@@ -311,6 +310,22 @@ describe('Initiative table row init', async () => {
       const resultRow = payload.rows.find(row => row.id === props.item.id)
       expect(resultRow?.initiative).toBe(15)
       expect(vm.popoverOpen).toBe(false)
+    })
+
+    it('Should keep the popover open when update throws', async () => {
+      mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
+
+      const component = await mountWithTooltips(Init, { props, provide })
+      const vm = component.vm as unknown as InitVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      vm.form.setValues({ initiative: 12, modifier: 3 })
+      await vm.onSubmit()
+
+      expect(mockUpdate).toHaveBeenCalled()
+      expect(vm.popoverOpen).toBe(true)
     })
 
     it('Should not go below 0 when the modifier is negative', async () => {

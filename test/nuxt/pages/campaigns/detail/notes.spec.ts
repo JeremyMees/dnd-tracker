@@ -397,8 +397,8 @@ describe('Campaign notes page', () => {
 
     expect(startCoolDown).not.toHaveBeenCalled()
     expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
+      title: 'general.error.failed.noteMail',
+      description: 'general.error.reasons.rejected',
       variant: 'destructive',
     })
   })

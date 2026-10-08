@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/vue-query'
 import type { UserAttributes } from '@supabase/supabase-js'
+import { useToast } from '~/components/ui/toast'
 
 export function useProfileUpdate() {
   const supabase = useSupabaseClient<DB>()
@@ -53,6 +54,8 @@ export function useProfileUpdate() {
 export function useProfileRemove() {
   const supabase = useSupabaseClient<DB>()
   const { logout } = useAuthentication()
+  const { toast } = useToast()
+  const { t } = useI18n()
 
   return useMutation({
     mutationFn: async ({ id }: { id: string } & QueryDefaults) => {
@@ -74,6 +77,12 @@ export function useProfileRemove() {
     },
     onError: (error, { onError }) => {
       if (onError) onError(error.message)
+
+      toast({
+        title: t('general.error.failed.accountDelete'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+        variant: 'destructive',
+      })
     },
     onSettled: (_data, error, { onSettled }) => {
       if (onSettled) onSettled(error?.message)

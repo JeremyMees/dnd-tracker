@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useToast } from '~/components/ui/toast/use-toast'
 import { useTeamMemberRemove, useJoinTokenRemove } from '~/queries/team-members'
 
 useSeo('Campaign settings')
@@ -10,7 +9,6 @@ const props = defineProps<{
 }>()
 
 const user = useAuthenticatedUser()
-const { toast } = useToast()
 const { t } = useI18n()
 const modal = useModal()
 const { ask } = useConfirm()
@@ -33,8 +31,8 @@ const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
   ]
 })
 
-const { mutateAsync: removeTeamMember } = useTeamMemberRemove()
-const { mutateAsync: removeJoinCampaignToken } = useJoinTokenRemove()
+const { mutate: removeTeamMember } = useTeamMemberRemove()
+const { mutate: removeJoinCampaignToken } = useJoinTokenRemove()
 
 function invite(): void {
   if (!props.current) return
@@ -68,24 +66,15 @@ async function remove(
             user: member.user.username,
           }),
     },
-    async (confirmed: boolean) => {
+    (confirmed: boolean) => {
       if (!confirmed) return
 
       const onSuccess = () => {
-        if (self) navigateTo(localePath('/campaigns'))
+        if (self) navigateTo(localePath('campaigns'))
       }
 
-      const onError = () => {
-        toast({
-          title: t('general.error.title'),
-          description: t('general.error.text'),
-          variant: 'destructive',
-        })
-      }
-
-      if (member.invite)
-        await removeJoinCampaignToken({ id, campaign, onSuccess, onError })
-      else await removeTeamMember({ member: id, campaign, onSuccess, onError })
+      if (member.invite) removeJoinCampaignToken({ id, campaign, onSuccess })
+      else removeTeamMember({ member: id, campaign, onSuccess })
     },
   )
 }

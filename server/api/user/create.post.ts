@@ -31,13 +31,18 @@ export default defineEventHandler(async event => {
   const { data, error } = await client.auth.signUp({ email, password })
 
   if (error) {
-    throw createError({ statusCode: 400, statusMessage: error.message })
+    throw createError({
+      statusCode: error.status ?? 400,
+      statusMessage: error.message,
+      data: { code: error.code },
+    })
   }
 
   if (!data.user || data.user.identities?.length === 0) {
     throw createError({
       statusCode: 409,
       statusMessage: 'Email already in use',
+      data: { code: 'user_already_exists' },
     })
   }
 
@@ -49,7 +54,7 @@ export default defineEventHandler(async event => {
   if (profileError) {
     await supabase.auth.admin.deleteUser(data.user.id)
 
-    throw createError({ statusCode: 400, statusMessage: profileError.message })
+    throw createError(postgresErrorToH3Error(profileError))
   }
 
   return { id: data.user.id }

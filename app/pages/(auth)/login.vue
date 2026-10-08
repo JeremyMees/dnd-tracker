@@ -6,6 +6,7 @@ definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Log in')
 
 const { login } = useAuthentication()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const redirect = useCookie<string>('sb-redirect-path')
 
@@ -27,14 +28,14 @@ const onSubmit = form.handleSubmit(async values => {
     await login(values)
 
     setTimeout(() => {
-      const route = redirect.value || '/'
+      const path = redirect.value
 
-      if (redirect.value) redirect.value = ''
+      if (path) redirect.value = ''
 
-      navigateTo(localePath(route))
+      navigateTo(localePath(path ? { path } : 'index'))
     }, 100)
   } catch (err) {
-    formError.value = getErrorMessage(err) || 'An error occurred during login'
+    formError.value = t(failureMessageKey(err))
   }
 })
 </script>
@@ -70,13 +71,13 @@ const onSubmit = form.handleSubmit(async values => {
 
     <div class="flex flex-wrap gap-2 justify-center">
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale test-id="register" to="/register">
+        <NuxtLinkLocale test-id="register" to="register">
           {{ $t('pages.login.new') }}
         </NuxtLinkLocale>
       </UiButton>
       <UiSeparator orientation="vertical" class="h-8" />
       <UiButton as-child variant="link" class="flex-1 grow">
-        <NuxtLinkLocale test-id="forgot" to="/forgot-password">
+        <NuxtLinkLocale test-id="forgot" to="forgot-password">
           {{ $t('pages.login.forgot') }}
         </NuxtLinkLocale>
       </UiButton>

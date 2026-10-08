@@ -159,9 +159,11 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.content',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -184,9 +186,11 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.documents',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -209,9 +213,11 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.conditions',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -303,9 +309,11 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.monsters',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })
