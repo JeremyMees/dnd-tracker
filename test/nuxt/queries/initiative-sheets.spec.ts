@@ -7,6 +7,7 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
+  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useInitiativeSheetDetail,
@@ -383,6 +384,67 @@ describe('initiative-sheets queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
     })
+
+    it.each([
+      [{ conditions: [] }, 'conditions'],
+      [{ hitPoints: 6, concentration: false }, 'hitPoints'],
+      [{ tempArmorClass: 2 }, 'armorClass'],
+      [
+        {
+          deathSaves: {
+            save: [true, false, false],
+            fail: [false, false, false],
+          },
+        },
+        'deathSaves',
+      ],
+      [{ concentration: true }, 'concentration'],
+      [{}, 'row'],
+    ] as [Partial<InitiativeSheetRow>, string][])(
+      'names the field when a %o patch fails',
+      async (patch, field) => {
+        fetchMock.mockRejectedValue(new Error('boom'))
+
+        const { vm } = await mountHook(() => ({
+          ...useInitiativeSheetPatch(),
+          queryClient: useQueryClient(),
+        }))
+
+        vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+          id: 7,
+          title: 'Ambush',
+          rows: [row],
+        })
+
+        await expect(
+          vm.mutateAsync({ id: 7, rowId: 'row-1', patch }),
+        ).rejects.toThrow('boom')
+
+        expect(toast).toHaveBeenCalledWith({
+          title: `pages.encounter.toasts.patchFailed.${field}`,
+          description: 'general.error.reasons.rejected',
+          variant: 'destructive',
+        })
+      },
+    )
+
+    it('explains a permission failure in the toast', async () => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('forbidden'), { statusCode: 403 }),
+      )
+
+      const { vm } = await mountHook(() => useInitiativeSheetPatch())
+
+      await expect(
+        vm.mutateAsync({ id: 7, rowId: 'row-1', patch: { hitPoints: 6 } }),
+      ).rejects.toThrow('forbidden')
+
+      expect(toast).toHaveBeenCalledWith({
+        title: 'pages.encounter.toasts.patchFailed.generic',
+        description: 'general.error.reasons.forbidden',
+        variant: 'destructive',
+      })
+    })
   })
 
   describe('useInitiativeSheetDetailUpdate', () => {
@@ -598,6 +660,57 @@ describe('initiative-sheets queries', () => {
       ])
 
       expect(cached?.title).toBe('Ambush')
+    })
+
+    it.each([
+      [{ rows: [row] }, 'rows'],
+      [{ rows: [row], activeIndex: 0, round: 1 }, 'rows'],
+      [{ activeIndex: 2, round: 3 }, 'turn'],
+      [{ settings: { modified: true } }, 'settings'],
+      [{ infoCards: [] }, 'infoCards'],
+      [{ info: 'Ambush at dawn' }, 'info'],
+      [{ title: 'Renamed' }, 'generic'],
+    ] as [UpdateInitiativeSheetData, string][])(
+      'names what failed when a %o update fails',
+      async (data, field) => {
+        mockSupabaseFrom({
+          initiative_sheets: mockChain({
+            data: null,
+            error: { message: 'boom', code: '23514' },
+          }),
+        })
+
+        const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+        await expect(vm.mutateAsync({ id: 7, data })).rejects.toThrow('boom')
+
+        expect(toast).toHaveBeenCalledWith({
+          title: `pages.encounter.toasts.updateFailed.${field}`,
+          description: 'general.error.reasons.rejected',
+          variant: 'destructive',
+        })
+      },
+    )
+
+    it('explains a row level security failure in the toast', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({
+          data: null,
+          error: { message: 'denied', code: '42501' },
+        }),
+      })
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+      await expect(
+        vm.mutateAsync({ id: 7, data: { activeIndex: 1 } }),
+      ).rejects.toThrow('denied')
+
+      expect(toast).toHaveBeenCalledWith({
+        title: 'pages.encounter.toasts.updateFailed.turn',
+        description: 'general.error.reasons.forbidden',
+        variant: 'destructive',
+      })
     })
 
     it('reports the error without a cached sheet to roll back to', async () => {

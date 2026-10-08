@@ -245,7 +245,15 @@
     "back": "Back",
     "error": {
       "title": "Error",
-      "text": "Something went wrong"
+      "text": "Something went wrong",
+      "reasons": {
+        "offline": "Couldn't reach the server. Check your connection and try again.",
+        "unauthorized": "Your session has expired. Log in again and retry.",
+        "forbidden": "You don't have permission to make this change.",
+        "notFound": "It may have been removed by someone else. Refresh the page and try again.",
+        "rateLimited": "Too many changes in a short time. Wait a moment and try again.",
+        "rejected": "The server didn't accept the change. Try again, and refresh the page if it keeps happening."
+      }
     },
     "success": {
       "title": "Success",
@@ -453,6 +461,23 @@
         "removed": {
           "title": "Encounter is removed",
           "text": "Someone removed the encounter so it can't be used anymore"
+        },
+        "patchFailed": {
+          "conditions": "Conditions for {name} weren't saved",
+          "hitPoints": "HP for {name} wasn't saved",
+          "armorClass": "AC for {name} wasn't saved",
+          "deathSaves": "Death saves for {name} weren't saved",
+          "concentration": "Concentration for {name} wasn't saved",
+          "row": "Your change to {name} wasn't saved",
+          "generic": "Your change wasn't saved"
+        },
+        "updateFailed": {
+          "rows": "Changes to the initiative list weren't saved",
+          "turn": "The turn couldn't be changed",
+          "settings": "Encounter settings weren't saved",
+          "infoCards": "Pinned cards weren't saved",
+          "info": "Your note wasn't saved",
+          "generic": "Your changes to the encounter weren't saved"
         }
       },
       "back": {

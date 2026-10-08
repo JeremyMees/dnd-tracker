@@ -245,7 +245,15 @@
     "back": "Terug",
     "error": {
       "title": "Fout",
-      "text": "Er ging iets mis"
+      "text": "Er ging iets mis",
+      "reasons": {
+        "offline": "Kan de server niet bereiken. Controleer je verbinding en probeer opnieuw.",
+        "unauthorized": "Je sessie is verlopen. Log opnieuw in en probeer het nog eens.",
+        "forbidden": "Je hebt geen toestemming om dit aan te passen.",
+        "notFound": "Iemand anders heeft het misschien verwijderd. Vernieuw de pagina en probeer opnieuw.",
+        "rateLimited": "Te veel wijzigingen in korte tijd. Wacht even en probeer opnieuw.",
+        "rejected": "De server heeft de wijziging niet aanvaard. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren."
+      }
     },
     "success": {
       "title": "Succes",
@@ -453,6 +461,23 @@
         "removed": {
           "title": "Encounter is verwijderd",
           "text": "Iemand heeft de encounter verwijderd, dus je kan hem niet meer gebruiken"
+        },
+        "patchFailed": {
+          "conditions": "Condities voor {name} zijn niet opgeslagen",
+          "hitPoints": "HP voor {name} is niet opgeslagen",
+          "armorClass": "AC voor {name} is niet opgeslagen",
+          "deathSaves": "Death saves voor {name} zijn niet opgeslagen",
+          "concentration": "Concentratie voor {name} is niet opgeslagen",
+          "row": "Je wijziging aan {name} is niet opgeslagen",
+          "generic": "Je wijziging is niet opgeslagen"
+        },
+        "updateFailed": {
+          "rows": "Wijzigingen aan de initiatieflijst zijn niet opgeslagen",
+          "turn": "De beurt kon niet gewijzigd worden",
+          "settings": "Encounter instellingen zijn niet opgeslagen",
+          "infoCards": "Gepinde kaarten zijn niet opgeslagen",
+          "info": "Je notitie is niet opgeslagen",
+          "generic": "Je wijzigingen aan de encounter zijn niet opgeslagen"
         }
       },
       "back": {

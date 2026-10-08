@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PostgrestError } from '@supabase/supabase-js'
-import { getErrorMessage } from '~~/shared/utils/errors'
+import { createError } from 'h3'
+import { FetchError } from 'ofetch'
+import { getErrorMessage, getFailureReason } from '~~/shared/utils/errors'
 
 describe('getErrorMessage', () => {
   describe('Error instances', () => {
@@ -103,5 +105,68 @@ describe('getErrorMessage', () => {
       expect(getErrorMessage(['foo'])).toBeUndefined()
       expect(getErrorMessage(() => 'foo')).toBeUndefined()
     })
+  })
+})
+
+describe('getFailureReason', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  function httpError(statusCode: number, data?: Record<string, unknown>) {
+    return Object.assign(new FetchError('request failed'), { statusCode, data })
+  }
+
+  function postgrestError(code: string) {
+    return createError({
+      message: 'failed',
+      cause: new PostgrestError({
+        message: 'failed',
+        details: '',
+        hint: '',
+        code,
+      }),
+    })
+  }
+
+  it('reports offline when the browser has no connection', () => {
+    vi.stubGlobal('navigator', { onLine: false })
+
+    expect(getFailureReason(httpError(500))).toBe('offline')
+  })
+
+  it('reports offline for a fetch that never got a response', () => {
+    expect(getFailureReason(new FetchError('fetch failed'))).toBe('offline')
+  })
+
+  it.each([
+    [401, 'unauthorized'],
+    [403, 'forbidden'],
+    [404, 'notFound'],
+    [429, 'rateLimited'],
+    [400, 'rejected'],
+    [500, 'rejected'],
+  ])('maps http status %i to %s', (statusCode, reason) => {
+    expect(getFailureReason(httpError(statusCode))).toBe(reason)
+  })
+
+  it.each([
+    ['42501', 'forbidden'],
+    ['PGRST116', 'notFound'],
+    ['PGRST301', 'unauthorized'],
+    ['23514', 'rejected'],
+  ])('maps postgres code %s to %s', (code, reason) => {
+    expect(getFailureReason(postgrestError(code))).toBe(reason)
+  })
+
+  it('reads the postgres code a server route forwards in data', () => {
+    expect(getFailureReason(createError({ data: { code: '42501' } }))).toBe(
+      'forbidden',
+    )
+  })
+
+  it('falls back to rejected for values that are not errors', () => {
+    expect(getFailureReason('boom')).toBe('rejected')
+    expect(getFailureReason(null)).toBe('rejected')
   })
 })
