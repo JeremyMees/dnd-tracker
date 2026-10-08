@@ -42,15 +42,24 @@ function readProp(value: unknown, key: string): unknown {
   return (value as Record<string, unknown>)[key]
 }
 
+function errorCode(error: unknown): unknown {
+  const data = readProp(error, 'data')
+
+  return (
+    readProp(readProp(error, 'cause'), 'code') ??
+    readProp(readProp(data, 'data'), 'code') ??
+    readProp(data, 'code') ??
+    readProp(error, 'code')
+  )
+}
+
 export function getFailureReason(error: unknown): FailureReason {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
     return 'offline'
   }
 
   const statusCode = readProp(error, 'statusCode') ?? readProp(error, 'status')
-  const code =
-    readProp(readProp(error, 'cause'), 'code') ??
-    readProp(readProp(error, 'data'), 'code')
+  const code = errorCode(error)
 
   if (statusCode === 401 || code === 'PGRST301' || code === 'PGRST302') {
     return 'unauthorized'
@@ -65,4 +74,45 @@ export function getFailureReason(error: unknown): FailureReason {
   }
 
   return 'rejected'
+}
+
+export type AuthFailure =
+  | 'emailInUse'
+  | 'emailInvalid'
+  | 'weakPassword'
+  | 'samePassword'
+  | 'sessionExpired'
+  | 'invalidCredentials'
+  | 'emailNotConfirmed'
+
+const AUTH_FAILURES: Record<string, AuthFailure> = {
+  user_already_exists: 'emailInUse',
+  email_exists: 'emailInUse',
+  email_address_invalid: 'emailInvalid',
+  weak_password: 'weakPassword',
+  same_password: 'samePassword',
+  session_not_found: 'sessionExpired',
+  session_expired: 'sessionExpired',
+  reauthentication_needed: 'sessionExpired',
+  invalid_credentials: 'invalidCredentials',
+  email_not_confirmed: 'emailNotConfirmed',
+}
+
+export function getAuthFailure(error: unknown): AuthFailure | undefined {
+  const name =
+    readProp(readProp(error, 'cause'), 'name') ?? readProp(error, 'name')
+
+  if (name === 'AuthSessionMissingError') return 'sessionExpired'
+
+  const code = errorCode(error)
+
+  return typeof code === 'string' ? AUTH_FAILURES[code] : undefined
+}
+
+export function failureMessageKey(error: unknown): string {
+  const authFailure = getAuthFailure(error)
+
+  return authFailure
+    ? `general.error.auth.${authFailure}`
+    : `general.error.reasons.${getFailureReason(error)}`
 }

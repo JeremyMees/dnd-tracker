@@ -20,38 +20,36 @@ const { mutateAsync: updateProfile } = useProfileUpdate()
 const { mutate: removeProfile } = useProfileRemove()
 
 async function updateAvatar(avatar: Avatar): Promise<void> {
-  return handleUpdateProfile({
-    avatar: avatar.url,
-    avatarOptions: avatar.extra as Record<string, string | number>,
-  })
+  try {
+    await handleUpdateProfile({
+      avatar: avatar.url,
+      avatarOptions: avatar.extra as Record<string, string | number>,
+    })
+  } catch (error) {
+    toast({
+      title: t('general.error.failed.avatar'),
+      description: getErrorMessage(error),
+      variant: 'destructive',
+    })
+  }
 }
 
 const handleUpdateProfile = useThrottleFn(
   async (data: ProfileUpdate & { password?: string }): Promise<void> => {
-    await updateProfile({
-      data,
-      id: user.value.id,
-      onSuccess: () => {
-        toast({
-          description: t('pages.profile.toast.success.text'),
-          variant: 'success',
-        })
-      },
-      onError: error => {
-        const message =
-          error === 'New password should be different from the old password.'
-            ? t('pages.profile.password.same')
-            : error
-
-        toast({
-          title: t('general.error.title'),
-          description: message || t('general.error.text'),
-          variant: 'destructive',
-        })
-
-        throw new Error(message)
-      },
-    })
+    try {
+      await updateProfile({
+        data,
+        id: user.value.id,
+        onSuccess: () => {
+          toast({
+            description: t('pages.profile.toast.success.text'),
+            variant: 'success',
+          })
+        },
+      })
+    } catch (error) {
+      throw new Error(t(failureMessageKey(error)), { cause: error })
+    }
   },
   1000,
 )

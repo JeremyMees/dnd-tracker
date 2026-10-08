@@ -1,8 +1,17 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { AuthApiError, PostgrestError } from '@supabase/supabase-js'
+import {
+  AuthApiError,
+  AuthSessionMissingError,
+  PostgrestError,
+} from '@supabase/supabase-js'
 import { createError } from 'h3'
 import { FetchError } from 'ofetch'
-import { getErrorMessage, getFailureReason } from '~~/shared/utils/errors'
+import {
+  failureMessageKey,
+  getAuthFailure,
+  getErrorMessage,
+  getFailureReason,
+} from '~~/shared/utils/errors'
 
 describe('getErrorMessage', () => {
   describe('Error instances', () => {
@@ -176,5 +185,71 @@ describe('getFailureReason', () => {
   it('falls back to rejected for values that are not errors', () => {
     expect(getFailureReason('boom')).toBe('rejected')
     expect(getFailureReason(null)).toBe('rejected')
+  })
+})
+
+describe('getAuthFailure', () => {
+  it.each([
+    ['user_already_exists', 'emailInUse'],
+    ['email_exists', 'emailInUse'],
+    ['email_address_invalid', 'emailInvalid'],
+    ['weak_password', 'weakPassword'],
+    ['same_password', 'samePassword'],
+    ['session_expired', 'sessionExpired'],
+    ['invalid_credentials', 'invalidCredentials'],
+    ['email_not_confirmed', 'emailNotConfirmed'],
+  ])('maps the supabase auth code %s to %s', (code, failure) => {
+    expect(getAuthFailure(new AuthApiError('failed', 400, code))).toBe(failure)
+  })
+
+  it('reads the code of an auth error wrapped by createError', () => {
+    expect(
+      getAuthFailure(
+        createError({
+          message: 'failed',
+          cause: new AuthApiError('failed', 422, 'weak_password'),
+        }),
+      ),
+    ).toBe('weakPassword')
+  })
+
+  it('reads the code a server route forwards in the response body', () => {
+    const error = Object.assign(new FetchError('request failed'), {
+      statusCode: 409,
+      data: {
+        statusCode: 409,
+        statusMessage: 'Email already in use',
+        data: { code: 'user_already_exists' },
+      },
+    })
+
+    expect(getAuthFailure(error)).toBe('emailInUse')
+  })
+
+  it('treats a missing auth session as an expired session', () => {
+    expect(getAuthFailure(new AuthSessionMissingError())).toBe('sessionExpired')
+  })
+
+  it('returns undefined for codes it does not know', () => {
+    expect(
+      getAuthFailure(new AuthApiError('failed', 500, 'unexpected_failure')),
+    ).toBeUndefined()
+    expect(getAuthFailure(new Error('boom'))).toBeUndefined()
+  })
+})
+
+describe('failureMessageKey', () => {
+  it('prefers the auth message for a known auth code', () => {
+    expect(
+      failureMessageKey(new AuthApiError('failed', 422, 'same_password')),
+    ).toBe('general.error.auth.samePassword')
+  })
+
+  it('falls back to the failure reason otherwise', () => {
+    expect(
+      failureMessageKey(
+        new AuthApiError('Too many requests', 429, 'over_request_rate_limit'),
+      ),
+    ).toBe('general.error.reasons.rateLimited')
   })
 })

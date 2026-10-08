@@ -353,49 +353,48 @@ describe('Profile page', () => {
     })
   })
 
-  it('Should show an error toast and throw when the update fails', async () => {
-    updateProfile.mockImplementation(async ({ onError }) => onError('Boom'))
+  it('Should throw the translated reason without a toast when the update fails', async () => {
+    updateProfile.mockRejectedValue(
+      Object.assign(new Error('denied'), { statusCode: 403 }),
+    )
 
     const { updateProfileData } = await mountPage()
 
-    await expect(updateProfileData({ name: 'Bilbo' })).rejects.toThrow('Boom')
+    await expect(updateProfileData({ name: 'Bilbo' })).rejects.toThrow(
+      'general.error.reasons.forbidden',
+    )
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'Boom',
-      variant: 'destructive',
-    })
-  })
-
-  it('Should fall back to a generic error description when there is no message', async () => {
-    updateProfile.mockImplementation(async ({ onError }) => onError(''))
-
-    const { updateProfileData } = await mountPage()
-
-    await expect(updateProfileData({ name: 'Bilbo' })).rejects.toThrow()
-
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(toast).not.toHaveBeenCalled()
   })
 
   it('Should translate the reused password error', async () => {
-    updateProfile.mockImplementation(async ({ onError }) =>
-      onError('New password should be different from the old password.'),
+    updateProfile.mockRejectedValue(
+      Object.assign(new Error('same'), { cause: { code: 'same_password' } }),
     )
 
     const { updatePassword } = await mountPage()
 
     await expect(updatePassword({ password: 'Secret1!' })).rejects.toThrow(
-      'pages.profile.password.same',
+      'general.error.auth.samePassword',
     )
+  })
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'pages.profile.password.same',
-      variant: 'destructive',
+  it('Should toast when saving the avatar fails', async () => {
+    updateProfile.mockRejectedValue(new Error('Boom'))
+
+    const { avatarPicker } = await mountPage()
+
+    avatarPicker.vm.$emit('save', {
+      url: 'https://example.com/new.svg',
+      extra: { hair: 'short' },
+    })
+
+    await vi.waitFor(() => {
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.failed.avatar',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 

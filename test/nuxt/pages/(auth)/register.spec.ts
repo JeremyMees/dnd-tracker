@@ -173,8 +173,17 @@ describe('Register page', () => {
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
-  it('Should show the error and toast when registering fails', async () => {
-    register.mockRejectedValue(new Error('Email already in use'))
+  it('Should explain an email that is already in use without a toast', async () => {
+    register.mockRejectedValue(
+      Object.assign(new Error('[POST] "/api/user/create": 409 Conflict'), {
+        statusCode: 409,
+        data: {
+          statusCode: 409,
+          statusMessage: 'Email already in use',
+          data: { code: 'user_already_exists' },
+        },
+      }),
+    )
 
     const { component, fillAccount, submit } = await mountPage()
 
@@ -182,17 +191,15 @@ describe('Register page', () => {
     await submit()
 
     expect(component.get('[test-id="error"]').text()).toBe(
-      'Email already in use',
+      'general.error.auth.emailInUse',
     )
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(toast).not.toHaveBeenCalledWith(
+      expect.objectContaining({ variant: 'destructive' }),
+    )
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
-  it('Should fall back to a generic error without a message', async () => {
+  it('Should fall back to the failure reason for an unknown error', async () => {
     register.mockRejectedValue({})
 
     const { component, fillAccount, submit } = await mountPage()
@@ -201,7 +208,7 @@ describe('Register page', () => {
     await submit()
 
     expect(component.get('[test-id="error"]').text()).toBe(
-      'An error occurred during registration',
+      'general.error.reasons.rejected',
     )
   })
 

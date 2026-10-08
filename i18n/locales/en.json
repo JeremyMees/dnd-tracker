@@ -273,7 +273,17 @@
         "inviteRevoke": "The invitation couldn't be revoked",
         "memberRemove": "The member couldn't be removed from the campaign",
         "accountDelete": "Your account couldn't be deleted",
-        "vote": "Your vote couldn't be saved"
+        "vote": "Your vote couldn't be saved",
+        "avatar": "Your avatar wasn't saved"
+      },
+      "auth": {
+        "emailInUse": "An account with this email already exists. Log in or reset your password instead.",
+        "emailInvalid": "That email address isn't valid.",
+        "weakPassword": "That password is too weak. Use a longer password with a mix of letters, numbers and symbols.",
+        "samePassword": "Your new password must be different from your current one.",
+        "sessionExpired": "Your session has expired. Request a new link or log in again.",
+        "invalidCredentials": "That email and password don't match. Check them and try again.",
+        "emailNotConfirmed": "Confirm your email address first. Check your inbox for the confirmation link."
       }
     },
     "success": {
@@ -570,8 +580,7 @@
       },
       "password": {
         "title": "Password changing Sorcery",
-        "subtitle": "Spellbound Security",
-        "same": "New password should be different from the old password."
+        "subtitle": "Spellbound Security"
       },
       "updateImage": "Update image",
       "delete": "Delete profile",

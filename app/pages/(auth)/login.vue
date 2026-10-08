@@ -6,6 +6,7 @@ definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Log in')
 
 const { login } = useAuthentication()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const redirect = useCookie<string>('sb-redirect-path')
 
@@ -34,7 +35,7 @@ const onSubmit = form.handleSubmit(async values => {
       navigateTo(localePath(route))
     }, 100)
   } catch (err) {
-    formError.value = getErrorMessage(err) || 'An error occurred during login'
+    formError.value = t(failureMessageKey(err))
   }
 })
 </script>

@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuthApiError } from '@supabase/supabase-js'
 import ForgotPassword from '~/pages/(auth)/forgot-password.vue'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
@@ -99,9 +100,13 @@ describe('Forgot password page', () => {
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
-  it('Should show the error and toast when supabase fails', async () => {
+  it('Should explain a rate limit inline without a toast', async () => {
     resetPasswordForEmail.mockResolvedValue({
-      error: new Error('Rate limit reached'),
+      error: new AuthApiError(
+        'Email rate limit exceeded',
+        429,
+        'over_email_send_rate_limit',
+      ),
     })
 
     const component = await mountPage()
@@ -109,16 +114,14 @@ describe('Forgot password page', () => {
     await fillForm(component, email)
     await submitForm(component)
 
-    expect(component.get('[test-id="error"]').text()).toBe('Rate limit reached')
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.title',
-      description: 'general.error.text',
-      variant: 'destructive',
-    })
+    expect(component.get('[test-id="error"]').text()).toBe(
+      'general.error.reasons.rateLimited',
+    )
+    expect(toast).not.toHaveBeenCalled()
     expect(navigateTo).not.toHaveBeenCalled()
   })
 
-  it('Should fall back to a generic error without a message', async () => {
+  it('Should fall back to the failure reason for an unknown error', async () => {
     resetPasswordForEmail.mockRejectedValue({})
 
     const component = await mountPage()
@@ -127,7 +130,7 @@ describe('Forgot password page', () => {
     await submitForm(component)
 
     expect(component.get('[test-id="error"]').text()).toBe(
-      'An error occurred during password reset',
+      'general.error.reasons.rejected',
     )
   })
 

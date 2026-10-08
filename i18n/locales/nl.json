@@ -273,7 +273,17 @@
         "inviteRevoke": "De uitnodiging kon niet ingetrokken worden",
         "memberRemove": "Het lid kon niet uit de campagne verwijderd worden",
         "accountDelete": "Je account kon niet verwijderd worden",
-        "vote": "Je stem kon niet opgeslagen worden"
+        "vote": "Je stem kon niet opgeslagen worden",
+        "avatar": "Je avatar is niet opgeslagen"
+      },
+      "auth": {
+        "emailInUse": "Er bestaat al een account met dit e-mailadres. Log in of reset je wachtwoord.",
+        "emailInvalid": "Dat e-mailadres is niet geldig.",
+        "weakPassword": "Dat wachtwoord is te zwak. Gebruik een langer wachtwoord met letters, cijfers en symbolen.",
+        "samePassword": "Je nieuwe wachtwoord moet verschillen van je huidige wachtwoord.",
+        "sessionExpired": "Je sessie is verlopen. Vraag een nieuwe link aan of log opnieuw in.",
+        "invalidCredentials": "Dat e-mailadres en wachtwoord komen niet overeen. Controleer ze en probeer opnieuw.",
+        "emailNotConfirmed": "Bevestig eerst je e-mailadres. Kijk in je inbox voor de bevestigingslink."
       }
     },
     "success": {
@@ -570,8 +580,7 @@
       },
       "password": {
         "title": "Wachtwoord wijzigende Magie",
-        "subtitle": "Betoverende Beveiliging",
-        "same": "Het nieuwe wachtwoord moet verschillend zijn van het oude wachtwoord."
+        "subtitle": "Betoverende Beveiliging"
       },
       "updateImage": "Foto updaten",
       "delete": "Profiel Verwijderen",
