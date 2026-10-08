@@ -181,9 +181,11 @@ describe('encounters queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(spies.onSuccess).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.create.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -251,9 +253,11 @@ describe('encounters queries', () => {
         vm.mutateAsync({ id: 3, data: { title: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.update.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -306,9 +310,11 @@ describe('encounters queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(invalidateSpy).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.delete.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 
@@ -364,9 +370,11 @@ describe('encounters queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'components.toast.copy.error',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })

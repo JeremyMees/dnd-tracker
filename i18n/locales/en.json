@@ -249,10 +249,10 @@
       "reasons": {
         "offline": "Couldn't reach the server. Check your connection and try again.",
         "unauthorized": "Your session has expired. Log in again and retry.",
-        "forbidden": "You don't have permission to make this change.",
+        "forbidden": "You don't have permission to do this.",
         "notFound": "It may have been removed by someone else. Refresh the page and try again.",
-        "rateLimited": "Too many changes in a short time. Wait a moment and try again.",
-        "rejected": "The server didn't accept the change. Try again, and refresh the page if it keeps happening."
+        "rateLimited": "Too many requests in a short time. Wait a moment and try again.",
+        "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
       }
     },
     "success": {
@@ -839,19 +839,19 @@
     },
     "toast": {
       "delete": {
-        "error": "Something went wrong while deleting the {type}",
+        "error": "The {type} couldn't be deleted",
         "success": "Successfully deleted the {type}"
       },
       "create": {
-        "error": "Something went wrong while creating the {type}",
+        "error": "The {type} couldn't be created",
         "success": "Successfully created the {type}"
       },
       "update": {
-        "error": "Something went wrong while updating the {type}",
+        "error": "The {type} couldn't be updated",
         "success": "Successfully updated the {type}"
       },
       "copy": {
-        "error": "Something went wrong while copying the {type}",
+        "error": "The {type} couldn't be copied",
         "success": "Successfully copied the {type}"
       }
     },

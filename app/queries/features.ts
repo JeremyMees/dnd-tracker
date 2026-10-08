@@ -93,8 +93,8 @@ export function useFeatureCreate() {
       if (onError) onError(error.message)
 
       toast({
-        title: t('general.error.title'),
-        description: t('components.toast.create.error', { type }),
+        title: t('components.toast.create.error', { type }),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },

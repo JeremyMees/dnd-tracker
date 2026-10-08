@@ -78,8 +78,8 @@ export function useHomebrewCreate() {
       if (onError) onError(error.message)
 
       toast({
-        title: t('general.error.title'),
-        description: t('components.toast.create.error', { type }),
+        title: t('components.toast.create.error', { type }),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },
@@ -127,8 +127,8 @@ export function useHomebrewUpdate() {
       if (onError) onError(error.message)
 
       toast({
-        title: t('general.error.title'),
-        description: t('components.toast.update.error', { type }),
+        title: t('components.toast.update.error', { type }),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },
@@ -171,8 +171,8 @@ export function useHomebrewRemove() {
       if (onError) onError(error.message)
 
       toast({
-        title: t('general.error.title'),
-        description: t('components.toast.delete.error', { type }),
+        title: t('components.toast.delete.error', { type }),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },

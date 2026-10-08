@@ -249,10 +249,10 @@
       "reasons": {
         "offline": "Kan de server niet bereiken. Controleer je verbinding en probeer opnieuw.",
         "unauthorized": "Je sessie is verlopen. Log opnieuw in en probeer het nog eens.",
-        "forbidden": "Je hebt geen toestemming om dit aan te passen.",
+        "forbidden": "Je hebt geen toestemming om dit te doen.",
         "notFound": "Iemand anders heeft het misschien verwijderd. Vernieuw de pagina en probeer opnieuw.",
-        "rateLimited": "Te veel wijzigingen in korte tijd. Wacht even en probeer opnieuw.",
-        "rejected": "De server heeft de wijziging niet aanvaard. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren."
+        "rateLimited": "Te veel verzoeken in korte tijd. Wacht even en probeer opnieuw.",
+        "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren."
       }
     },
     "success": {
@@ -839,19 +839,19 @@
     },
     "toast": {
       "delete": {
-        "error": "Er is iets fout gegaan bij het verwijderen van de {type}",
+        "error": "De {type} kon niet verwijderd worden",
         "success": "Succesvol verwijderd de {type}"
       },
       "create": {
-        "error": "Er is iets fout gegaan bij het creëren van de {type}",
+        "error": "De {type} kon niet aangemaakt worden",
         "success": "Succesvol gemaakt de {type}"
       },
       "update": {
-        "error": "Er is iets fout gegaan bij het bijwerken van de {type}",
+        "error": "De {type} kon niet bijgewerkt worden",
         "success": "Succesvol bijgewerkt de {type}"
       },
       "copy": {
-        "error": "Er is iets fout gegaan bij het kopiëren van de {type}",
+        "error": "De {type} kon niet gekopieerd worden",
         "success": "Succesvol gekopieerd de {type}"
       }
     },
