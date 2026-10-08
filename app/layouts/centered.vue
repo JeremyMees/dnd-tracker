@@ -2,7 +2,7 @@
   <UiAuroraBackground class="min-h-screen relative overflow-hidden">
     <NuxtLinkLocale
       class="absolute inset-0 bg-transparent cursor-pointer"
-      to="/"
+      to="index"
       tabindex="-1"
       aria-hidden="true"
     />
@@ -18,7 +18,7 @@
           class="size-8 absolute -top-8"
         />
         <NuxtLinkLocale
-          to="/"
+          to="index"
           :aria-label="$t('actions.close')"
           class="absolute size-4 right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         >

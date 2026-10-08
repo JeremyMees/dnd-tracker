@@ -15,17 +15,17 @@ vi.mock('~/composables/useAuthentication', () => ({
 const routes: Route[] = [
   {
     label: 'general.dashboard',
-    url: '/dashboard',
+    url: 'campaigns',
     requireAuth: false,
     icon: 'tabler:home',
   },
   {
     label: 'general.settings',
-    url: '/settings',
+    url: 'profile',
     requireAuth: true,
     icon: 'tabler:settings',
   },
-  { label: 'general.help', url: '/help', requireAuth: false },
+  { label: 'general.help', url: 'contact', requireAuth: false },
 ]
 
 function Wrapper() {

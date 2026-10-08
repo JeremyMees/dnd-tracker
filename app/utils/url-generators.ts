@@ -1,3 +1,5 @@
+import type { RouteLocationNamedI18n } from 'vue-router'
+
 export function generateParams<T extends object>(data: T): string {
   const params = new URLSearchParams()
 
@@ -23,19 +25,37 @@ export function slugify(str: string): string {
     .replace(/-+$/g, '')
 }
 
+type CampaignPage =
+  'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone'
+
 export function campaignUrl(
   campaign: { id: number; title: string },
-  type: 'encounters' | 'homebrews' | 'notes' | 'settings' | 'danger-zone',
-): string {
+  type: CampaignPage,
+): RouteLocationNamedI18n<`campaigns-id-title-${CampaignPage}`> {
   const title: string = slugify(campaign.title)
 
-  return `/campaigns/${campaign.id}${title === '' ? '-campaign' : `-${title}`}/${type}`
+  return {
+    name: `campaigns-id-title-${type}`,
+    params: {
+      id: String(campaign.id),
+      title: title === '' ? 'campaign' : title,
+    },
+  }
 }
 
-export function encounterUrl(encounter: { id: number; title: string }): string {
+export function encounterUrl(encounter: {
+  id: number
+  title: string
+}): RouteLocationNamedI18n<'encounters-id-title'> {
   const title: string = slugify(encounter.title)
 
-  return `/encounters/${encounter.id}${title === '' ? '-encounter' : `-${title}`}`
+  return {
+    name: 'encounters-id-title',
+    params: {
+      id: String(encounter.id),
+      title: title === '' ? 'encounter' : title,
+    },
+  }
 }
 
 export function shareEncounterUrl(token: string, locale: string): string {

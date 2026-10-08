@@ -4,6 +4,6 @@ export default defineNuxtRouteMiddleware(async to => {
   const authenticationNeeded = to.meta.auth
 
   if (authenticationNeeded && !user.value) {
-    return navigateTo(localePath('/login'))
+    return navigateTo(localePath('login'))
   }
 })

@@ -68,7 +68,7 @@ function checkShow(): void {
         </p>
         <div class="flex justify-end">
           <UiButton as-child>
-            <NuxtLinkLocale to="/pricing" class="whitespace-nowrap">
+            <NuxtLinkLocale to="pricing" class="whitespace-nowrap">
               {{ $t('components.limitCta.cta') }}
             </NuxtLinkLocale>
           </UiButton>

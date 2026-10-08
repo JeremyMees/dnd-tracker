@@ -2,6 +2,7 @@ import { config, enableAutoUnmount } from '@vue/test-utils'
 import { afterEach, beforeEach, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { resetNames, stubNamesEndpoint } from '~~/test/nuxt/stubs/names'
+import { NuxtLinkLocaleStub } from '~~/test/nuxt/stubs/locale'
 
 enableAutoUnmount(afterEach)
 
@@ -22,10 +23,7 @@ config.global.stubs = {
     props: ['to'],
     template: '<a :href="to"><slot></slot></a>',
   },
-  NuxtLinkLocale: {
-    props: ['to'],
-    template: '<a :href="to"><slot></slot></a>',
-  },
+  NuxtLinkLocale: NuxtLinkLocaleStub,
   AnimationExpand: {
     template: '<div><slot></slot></div>',
   },
@@ -53,7 +51,11 @@ mockNuxtImport('useI18n', () => () => ({
   ],
 }))
 
-mockNuxtImport('useLocalePath', () => () => (path: string) => path)
+mockNuxtImport('useLocalePath', async () => {
+  const { localeHref } = await import('~~/test/nuxt/stubs/locale')
+
+  return () => localeHref
+})
 
 mockNuxtImport('useMarkdown', () => () => ({
   renderMarkdown: (mdText: string) => mdText,

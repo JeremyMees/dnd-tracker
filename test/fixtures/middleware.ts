@@ -1,6 +1,8 @@
-export const mockTo = {
+import type { RouteLocationNormalized } from 'vue-router'
+
+export const mockTo: RouteLocationNormalized<'index___en'> = {
   path: '/',
-  name: 'to',
+  name: 'index___en',
   matched: [],
   fullPath: '/',
   hash: '',
@@ -10,9 +12,9 @@ export const mockTo = {
   query: {},
 }
 
-export const mockFrom = {
+export const mockFrom: RouteLocationNormalized<'index___en'> = {
   path: '/from',
-  name: 'from',
+  name: 'index___en',
   matched: [],
   fullPath: '/from',
   hash: '',

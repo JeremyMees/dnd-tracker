@@ -94,7 +94,7 @@ const { data, status } = useFeatureListing(
                   component: 'FeatureRequest',
                   header: $t('components.addFeatureRequestModal.title'),
                 })
-              : navigateTo(localePath('/login'))
+              : navigateTo(localePath('login'))
           "
         >
           {{ $t('pages.featureRequest.request') }}
@@ -117,7 +117,7 @@ const { data, status } = useFeatureListing(
             "
             :feature="feature"
             @update="vote({ id: feature.id, vote: $event })"
-            @login="navigateTo(localePath('/login'))"
+            @login="navigateTo(localePath('login'))"
           />
         </template>
 

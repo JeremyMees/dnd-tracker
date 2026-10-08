@@ -10,7 +10,7 @@ definePageMeta({
 const route = useRoute()
 const { t } = useI18n()
 
-const id = validateParamId(route.params.id)
+const id = validateParamId('id' in route.params ? route.params.id : undefined)
 const { data, isPending, isError, isSuccess } = useCampaignDetail(id)
 
 const fetchReady = ref(false)
@@ -77,7 +77,7 @@ const tabs = computed<Tab[]>(() => {
             size="icon-sm"
             class="shrink-0"
           >
-            <NuxtLinkLocale test-id="back" to="/campaigns">
+            <NuxtLinkLocale test-id="back" to="campaigns">
               <Icon name="tabler:arrow-left" :aria-hidden="true" />
             </NuxtLinkLocale>
           </UiButton>

@@ -75,7 +75,7 @@ function ctaLabel(product: ProductPricing | undefined): string {
 
 async function subscribe(id: string): Promise<void> {
   if (!user.value) {
-    navigateTo(localePath('/login'))
+    navigateTo(localePath('login'))
     return
   }
 

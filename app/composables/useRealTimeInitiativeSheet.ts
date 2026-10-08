@@ -98,7 +98,7 @@ export function useRealTimeInitiativeSheet(
       variant: 'warning',
     })
 
-    navigateTo(localePath('/encounters'))
+    navigateTo(localePath('encounters'))
   }
 
   function subscribe(): void {

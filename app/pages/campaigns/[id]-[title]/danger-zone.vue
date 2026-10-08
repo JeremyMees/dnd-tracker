@@ -22,7 +22,7 @@ async function remove(): Promise<void> {
 
     removeCampaign({
       id: props.campaignId,
-      onSuccess: () => navigateTo(localePath('/campaigns')),
+      onSuccess: () => navigateTo(localePath('campaigns')),
     })
   })
 }

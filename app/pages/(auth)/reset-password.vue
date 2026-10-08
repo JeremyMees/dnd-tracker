@@ -17,7 +17,7 @@ function checkIfError(): void {
   const { error } = route.query
 
   if (error) {
-    navigateTo(localePath('/forgot-password'))
+    navigateTo(localePath('forgot-password'))
 
     toast({
       title: t('pages.resetPassword.toast.error.title'),
@@ -60,7 +60,7 @@ const onSubmit = form.handleSubmit(async values => {
       variant: 'success',
     })
 
-    navigateTo(localePath('/'))
+    navigateTo(localePath('index'))
   } catch (err) {
     formError.value = t(failureMessageKey(err))
   }
@@ -84,7 +84,7 @@ const onSubmit = form.handleSubmit(async values => {
     </UiFormWrapper>
 
     <UiButton variant="destructive-ghost" as-child class="w-full mt-2">
-      <NuxtLinkLocale test-id="cancel" to="/">
+      <NuxtLinkLocale test-id="cancel" to="index">
         {{ $t('actions.cancel') }}
       </NuxtLinkLocale>
     </UiButton>

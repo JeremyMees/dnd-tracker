@@ -70,7 +70,7 @@ async function remove(
       if (!confirmed) return
 
       const onSuccess = () => {
-        if (self) navigateTo(localePath('/campaigns'))
+        if (self) navigateTo(localePath('campaigns'))
       }
 
       if (member.invite) removeJoinCampaignToken({ id, campaign, onSuccess })

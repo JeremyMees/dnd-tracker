@@ -21,6 +21,6 @@ export default defineNuxtRouteMiddleware(async to => {
     queryClient.removeQueries({
       queryKey: ['useInitiativeSheetPlayground', to.query.token],
     })
-    return navigateTo(localePath('/'))
+    return navigateTo(localePath('index'))
   }
 })

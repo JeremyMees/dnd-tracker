@@ -54,7 +54,7 @@ async function logoutUser(): Promise<void> {
     ]"
   >
     <div class="container-max p-4 flex justify-between items-center gap-4">
-      <NuxtLinkLocale to="/" :aria-label="$t('components.navbar.home')">
+      <NuxtLinkLocale to="index" :aria-label="$t('components.navbar.home')">
         <NuxtImg
           src="/logo.svg"
           alt="DnD Tracker logo"

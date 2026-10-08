@@ -72,7 +72,7 @@ async function handleRemoveUser(): Promise<void> {
       removeProfile({
         id: user.value.id,
         onSuccess: () => {
-          navigateTo(localePath('/'))
+          navigateTo(localePath('index'))
 
           toast({
             description: t('pages.profile.toast.delete.text'),

@@ -34,7 +34,7 @@ onMounted(() => {
   ])
 
   if (cache) data.value = cache
-  else navigateTo(localePath('/no-access'))
+  else navigateTo(localePath('no-access'))
 
   isLoading.value = false
 })
@@ -51,7 +51,9 @@ async function answerInvite(accept: boolean): Promise<void> {
       body: { token: route.query.token },
     })
 
-    const url = accept ? campaignUrl(data.value.campaign, 'encounters') : '/'
+    const url = accept
+      ? campaignUrl(data.value.campaign, 'encounters')
+      : 'index'
 
     if (accept) {
       toast({

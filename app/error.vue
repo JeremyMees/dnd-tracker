@@ -32,7 +32,7 @@ withDefaults(
         </p>
         <div class="flex flex-wrap gap-x-4">
           <UiButton as-child>
-            <NuxtLinkLocale to="/" class="w-fit">
+            <NuxtLinkLocale to="index" class="w-fit">
               {{ $t('pages.error.goHome') }}
             </NuxtLinkLocale>
           </UiButton>

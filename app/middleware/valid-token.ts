@@ -14,7 +14,7 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
   const { token } = query
 
   if (!token || typeof token !== 'string') {
-    return navigateTo(localePath('/'))
+    return navigateTo(localePath('index'))
   }
 
   let invite: Invite
@@ -28,7 +28,11 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
     const expired = (error as { statusCode?: number }).statusCode === 410
 
     return navigateTo(
-      localePath(expired ? '/no-access?reason=expired' : '/no-access'),
+      localePath(
+        expired
+          ? { name: 'no-access', query: { reason: 'expired' } }
+          : 'no-access',
+      ),
     )
   }
 
@@ -50,7 +54,7 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
     .match({ token, user, campaign, role })
     .single()
 
-  if (error) return navigateTo(localePath('/no-access'))
+  if (error) return navigateTo(localePath('no-access'))
 
   queryClient.setQueryData(['useJoinCampaign', token], data)
 })
