@@ -663,6 +663,23 @@
         "title": "Session ended",
         "text": "This live session is no longer available. Ask your DM for a new code to rejoin.",
         "action": "Enter a new code"
+      },
+      "actionFailed": {
+        "hp": "Your HP wasn't updated",
+        "ac": "Your AC wasn't updated",
+        "deathSaves": "Your death saves weren't updated",
+        "concentration": "Your concentration wasn't updated",
+        "conditions": "Your conditions weren't updated",
+        "endTurn": "Your turn couldn't be ended"
+      },
+      "actionErrors": {
+        "notYourTurn": "It's not your turn anymore.",
+        "actionNotAllowed": "Your DM turned this action off.",
+        "sessionEnded": "This live session has ended.",
+        "sessionNotFound": "This live session no longer exists.",
+        "noRowClaimed": "You haven't claimed a character yet.",
+        "spectator": "Spectators can't change characters.",
+        "seatExpired": "Your seat has expired. Rejoin the live session."
       }
     }
   },

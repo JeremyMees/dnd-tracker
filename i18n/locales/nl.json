@@ -663,6 +663,23 @@
         "title": "Sessie beëindigd",
         "text": "Deze live sessie is niet meer beschikbaar. Vraag je DM om een nieuwe code om opnieuw deel te nemen.",
         "action": "Voer een nieuwe code in"
+      },
+      "actionFailed": {
+        "hp": "Je HP is niet bijgewerkt",
+        "ac": "Je AC is niet bijgewerkt",
+        "deathSaves": "Je death saves zijn niet bijgewerkt",
+        "concentration": "Je concentratie is niet bijgewerkt",
+        "conditions": "Je condities zijn niet bijgewerkt",
+        "endTurn": "Je beurt kon niet beëindigd worden"
+      },
+      "actionErrors": {
+        "notYourTurn": "Het is niet meer jouw beurt.",
+        "actionNotAllowed": "Je DM heeft deze actie uitgeschakeld.",
+        "sessionEnded": "Deze live sessie is beëindigd.",
+        "sessionNotFound": "Deze live sessie bestaat niet meer.",
+        "noRowClaimed": "Je hebt nog geen personage gekozen.",
+        "spectator": "Kijkers kunnen geen personages aanpassen.",
+        "seatExpired": "Je plaats is verlopen. Neem opnieuw deel aan de live sessie."
       }
     }
   },

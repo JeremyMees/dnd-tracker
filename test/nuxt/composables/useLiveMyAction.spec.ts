@@ -25,6 +25,7 @@ mockNuxtImport('$fetch', () => fetchMock)
 interface Probe {
   pending: boolean
   apply: (action: LiveAction, patch: Partial<PlayerRow>) => Promise<void>
+  endTurn: () => Promise<boolean>
 }
 
 const rowId = ref<string>()
@@ -184,9 +185,82 @@ describe('useLiveMyAction', () => {
       ['useLiveState', 'session-token', 'seat-token'],
       cachedState,
     ])
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'destructive' }),
+    expect(toast).toHaveBeenCalledWith({
+      title: 'pages.live.actionFailed.hp',
+      description: 'general.error.reasons.rejected',
+      variant: 'destructive',
+    })
+  })
+
+  it.each([
+    [403, 'Not your turn', 'notYourTurn'],
+    [403, 'Action not allowed', 'actionNotAllowed'],
+    [410, 'Live session has ended', 'sessionEnded'],
+    [404, 'Live session not found', 'sessionNotFound'],
+    [403, 'No row claimed', 'noRowClaimed'],
+    [403, 'Spectators cannot act', 'spectator'],
+    [401, 'Invalid live session token', 'seatExpired'],
+  ])(
+    'explains a %i "%s" rejection from the server',
+    async (statusCode, statusMessage, reason) => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('request failed'), {
+          statusCode,
+          data: { statusCode, statusMessage },
+        }),
+      )
+      getQueryData.mockReturnValue(cachedState)
+
+      const vm = await mountProbe()
+
+      await vm.apply({ type: 'conditions', value: [] }, { conditions: [] })
+
+      expect(toast).toHaveBeenCalledWith({
+        title: 'pages.live.actionFailed.conditions',
+        description: `pages.live.actionErrors.${reason}`,
+        variant: 'destructive',
+      })
+    },
+  )
+
+  it('falls back to the generic failure reason for an unknown rejection', async () => {
+    fetchMock.mockRejectedValue(
+      Object.assign(new Error('request failed'), {
+        statusCode: 429,
+        data: { statusCode: 429, statusMessage: 'Too Many Requests' },
+      }),
     )
+    getQueryData.mockReturnValue(cachedState)
+
+    const vm = await mountProbe()
+
+    await vm.apply({ type: 'ac', acType: 'add', amount: 1 }, {})
+
+    expect(toast).toHaveBeenCalledWith({
+      title: 'pages.live.actionFailed.ac',
+      description: 'general.error.reasons.rateLimited',
+      variant: 'destructive',
+    })
+  })
+
+  it('toasts why ending the turn failed', async () => {
+    fetchMock.mockRejectedValue(
+      Object.assign(new Error('request failed'), {
+        statusCode: 403,
+        data: { statusCode: 403, statusMessage: 'Not your turn' },
+      }),
+    )
+
+    const vm = await mountProbe()
+
+    const ended = await vm.endTurn()
+
+    expect(ended).toBe(false)
+    expect(toast).toHaveBeenCalledWith({
+      title: 'pages.live.actionFailed.endTurn',
+      description: 'pages.live.actionErrors.notYourTurn',
+      variant: 'destructive',
+    })
   })
 
   it('does nothing without a claimed seat', async () => {
