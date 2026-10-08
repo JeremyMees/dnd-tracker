@@ -46,13 +46,14 @@ export interface LiveSummaryEvent {
   stats: CombatStats
 }
 
-export type LiveAction =
+export type LiveRowAction =
   | { type: 'hp'; hpType: 'heal' | 'damage' | 'temp'; amount: number }
   | { type: 'ac'; acType: 'add' | 'remove' | 'temp'; amount: number }
   | { type: 'deathSaves'; value: DndDeathSaves }
   | { type: 'concentration'; value: boolean }
   | { type: 'conditions'; value: DndCondition[] }
-  | { type: 'endTurn' }
+
+export type LiveAction = LiveRowAction | { type: 'endTurn' }
 
 export type LiveAllowActions = Record<LiveAction['type'], boolean>
 

@@ -56,7 +56,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
   }
 
   async function apply(
-    action: LiveAction,
+    action: LiveRowAction,
     optimisticPatch: Partial<PlayerRow>,
   ): Promise<boolean> {
     const token = seat.value?.sessionToken

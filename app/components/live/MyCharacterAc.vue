@@ -6,7 +6,7 @@ import { maxHealthAndArmour } from '~~/constants/validation'
 const props = defineProps<{
   row: PlayerRow
   pending: boolean
-  apply: (action: LiveAction, patch: Partial<PlayerRow>) => Promise<boolean>
+  apply: (action: LiveRowAction, patch: Partial<PlayerRow>) => Promise<boolean>
 }>()
 
 const selected = ref<'add' | 'remove' | 'temp'>('add')

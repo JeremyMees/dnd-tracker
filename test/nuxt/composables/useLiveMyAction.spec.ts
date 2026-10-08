@@ -24,7 +24,7 @@ mockNuxtImport('$fetch', () => fetchMock)
 
 interface Probe {
   pending: boolean
-  apply: (action: LiveAction, patch: Partial<PlayerRow>) => Promise<void>
+  apply: (action: LiveRowAction, patch: Partial<PlayerRow>) => Promise<void>
   endTurn: () => Promise<boolean>
 }
 
