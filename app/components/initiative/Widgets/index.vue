@@ -20,7 +20,6 @@ const formSchema = z.object({
 })
 
 const form = useForm({ validationSchema: formSchema })
-const formError = ref<string>('')
 const popoverOpen = shallowRef(false)
 const localWidgets = ref<InitiativeWidget[]>([])
 const isModified = computed(() => sheet.value?.settings?.modified ?? false)
@@ -47,15 +46,18 @@ watch(popoverOpen, open => {
 
 const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
-  formError.value = ''
 
-  await update({
-    settings: {
-      ...sheet.value.settings,
-      ...values,
-      modified: true,
-    },
-  })
+  try {
+    await update({
+      settings: {
+        ...sheet.value.settings,
+        ...values,
+        modified: true,
+      },
+    })
+  } catch {
+    return
+  }
 
   popoverOpen.value = false
 })
@@ -112,9 +114,6 @@ function removeWidget(id: InitiativeWidget) {
                 }))
               "
             />
-            <div v-if="formError" class="text-sm text-destructive">
-              {{ formError }}
-            </div>
             <UiButton type="submit" class="w-full">
               {{ $t('actions.save') }}
             </UiButton>

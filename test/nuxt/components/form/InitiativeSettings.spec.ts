@@ -102,7 +102,7 @@ describe('InitiativeSettings', () => {
     expect(component.emitted('close')).toBeUndefined()
   })
 
-  it('Should show the error and stay open when saving fails', async () => {
+  it('Should stay open without an inline error when saving fails', async () => {
     const { injected, mount } = mountSettings()
 
     injected.update.mockRejectedValue(new Error('Save failed'))
@@ -111,21 +111,7 @@ describe('InitiativeSettings', () => {
 
     await submitForm(component)
 
-    expect(component.text()).toContain('Save failed')
+    expect(component.text()).not.toContain('Save failed')
     expect(component.emitted('close')).toBeUndefined()
-  })
-
-  it('Should show a generic error when the failure has no message', async () => {
-    const { injected, mount } = mountSettings()
-
-    injected.update.mockRejectedValue({})
-
-    const component = await mount()
-
-    await submitForm(component)
-
-    expect(component.text()).toContain(
-      'An error occurred during updating initiative settings',
-    )
   })
 })

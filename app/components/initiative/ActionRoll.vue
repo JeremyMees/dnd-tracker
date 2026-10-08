@@ -19,7 +19,6 @@ const { toast } = useToast()
 type RollType = 'advantage' | 'straight' | 'disadvantage'
 
 const popoverOpen = shallowRef(false)
-const formError = ref<string>('')
 
 const formSchema = z.object({
   target: z.string().min(2).max(50),
@@ -94,34 +93,32 @@ function handleToasts(toasts: ToastItem[]): void {
 }
 
 const onSubmit = form.handleSubmit(async values => {
-  formError.value = ''
+  if (!sheet.value) return
+
+  const target = sheet.value.rows.find(row => row.id === values.target)
+
+  if (!target || !isDefined(target.hitPoints)) return
+
+  const { row, toasts } = handleHpChanges(
+    result.value?.totalDamage ?? 0,
+    'damage',
+    target,
+    sheet.value?.settings?.negative ?? false,
+  )
+
+  handleToasts(toasts)
+
+  const patch = buildCombatPatch(target, row)
 
   try {
-    if (!sheet.value) return
-
-    const target = sheet.value.rows.find(row => row.id === values.target)
-
-    if (!target || !isDefined(target.hitPoints)) return
-
-    const { row, toasts } = handleHpChanges(
-      result.value?.totalDamage ?? 0,
-      'damage',
-      target,
-      sheet.value?.settings?.negative ?? false,
-    )
-
-    handleToasts(toasts)
-
-    const patch = buildCombatPatch(target, row)
-
     await patchRow(values.target, patch)
-    popoverOpen.value = false
-
-    animateTableUpdate(`${values.target}-hp`, 'red')
-  } catch (err) {
-    formError.value =
-      getErrorMessage(err) || 'An error occurred during action roll'
+  } catch {
+    return
   }
+
+  popoverOpen.value = false
+
+  animateTableUpdate(`${values.target}-hp`, 'red')
 })
 </script>
 
@@ -285,13 +282,6 @@ const onSubmit = form.handleSubmit(async values => {
                 <UiFormMessage />
               </UiFormItem>
             </UiFormField>
-            <div
-              v-if="formError"
-              test-id="error"
-              class="text-sm text-destructive"
-            >
-              {{ formError }}
-            </div>
             <UiButton test-id="submit" type="submit" class="w-full">
               {{ $t('actions.applyDamage') }}
             </UiButton>

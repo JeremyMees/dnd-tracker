@@ -18,7 +18,6 @@ interface InitFormValues {
 
 interface InitVM {
   popoverOpen: boolean
-  formError: string
   usedTypes: string[]
   rollAllInitiatives: () => void
   onSubmit: () => Promise<void>
@@ -60,7 +59,6 @@ describe('Initiative TableHeader Init', () => {
     const component = await mountSuspended(Init, { props, provide })
     const vm = component.vm as unknown as InitVM
 
-    expect(vm.formError).toBe('')
     expect(vm.popoverOpen).toBeFalsy()
   })
 
@@ -425,50 +423,8 @@ describe('Initiative TableHeader Init', () => {
       })
     })
 
-    it('Should set formError when update throws', async () => {
+    it('Should keep the popover open when update throws', async () => {
       mockUpdate.mockRejectedValueOnce(new Error('roll failed'))
-      mockSheet.value = {
-        ...sheet,
-        rows: [{ ...sheet.rows[0]!, id: 'row1' }],
-      }
-
-      const component = await mountSuspended(Init, { props, provide })
-      const vm = component.vm as unknown as InitVM
-
-      vm.form.setValues({
-        selectedTypes: [],
-        ignore: false,
-        selectedCreatures: [{ id: 'row1', amount: 10, initiative: 3 }],
-      })
-      await vm.onSubmit()
-
-      expect(vm.formError).toBe('roll failed')
-    })
-
-    it('Should set a fallback formError when update throws without a message', async () => {
-      mockUpdate.mockRejectedValueOnce({})
-      mockSheet.value = {
-        ...sheet,
-        rows: [{ ...sheet.rows[0]!, id: 'row1' }],
-      }
-
-      const component = await mountSuspended(Init, { props, provide })
-      const vm = component.vm as unknown as InitVM
-
-      vm.form.setValues({
-        selectedTypes: [],
-        ignore: false,
-        selectedCreatures: [{ id: 'row1', amount: 10, initiative: 3 }],
-      })
-      await vm.onSubmit()
-
-      expect(vm.formError).toBe(
-        'An error occurred during quick initiative roll',
-      )
-    })
-
-    it('Should render the form error message in the popover when set', async () => {
-      mockUpdate.mockRejectedValueOnce(new Error('boom'))
       mockSheet.value = {
         ...sheet,
         rows: [{ ...sheet.rows[0]!, id: 'row1' }],
@@ -488,7 +444,8 @@ describe('Initiative TableHeader Init', () => {
       await vm.onSubmit()
       await nextTick()
 
-      expect(document.body.textContent).toContain('boom')
+      expect(vm.popoverOpen).toBe(true)
+      expect(document.body.textContent).not.toContain('roll failed')
     })
   })
 

@@ -11,7 +11,6 @@ interface Props {
 type MockFunctions = {
   onSubmit: (e?: Event) => Promise<void>
   popoverOpen: boolean
-  formError: string
   form: { setValues: (values: { name: string }) => void }
 }
 
@@ -112,28 +111,17 @@ describe('Initiative table row name', async () => {
     expect(vm.popoverOpen).toBeFalsy()
   })
 
-  it('Should set formError when update throws', async () => {
+  it('Should keep the popover open when update throws', async () => {
     mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
 
     const component = await mountWithTooltips(Name, { props, provide })
 
     const vm = component.vm as unknown as MockFunctions
+    vm.popoverOpen = true
     vm.form.setValues({ name: 'New Name' })
     await vm.onSubmit()
 
-    expect(vm.formError).toBe('Update failed')
-  })
-
-  it('Should set a fallback formError when update throws without a message', async () => {
-    mockUpdate.mockRejectedValueOnce({})
-
-    const component = await mountWithTooltips(Name, { props, provide })
-
-    const vm = component.vm as unknown as MockFunctions
-    vm.form.setValues({ name: 'New Name' })
-    await vm.onSubmit()
-
-    expect(vm.formError).toBe('An error occurred during name update')
+    expect(vm.popoverOpen).toBe(true)
   })
 
   it('Should render the rename popover content when opened', async () => {

@@ -8,7 +8,6 @@ defineProps<{ label: string }>()
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = shallowRef(false)
-const formError = ref<string>('')
 
 const usedTypes = computed(() => [
   ...new Set(sheet.value?.rows.map(({ type }) => type)),
@@ -67,37 +66,35 @@ function rollAllInitiatives() {
 }
 
 const onSubmit = form.handleSubmit(async values => {
-  formError.value = ''
+  if (!sheet.value) return
+
+  const { ignore, selectedCreatures } = values
+
+  const rows = [...sheet.value.rows]
+
+  selectedCreatures.forEach(({ id, amount, initiative }) => {
+    if (amount !== undefined) {
+      const index = rows.findIndex(row => row.id === id)
+
+      if (index >= 0) {
+        let init = amount ?? 0
+
+        if (!ignore && isDefined(initiative) && !isNaN(initiative))
+          init += initiative
+
+        if (rows[index])
+          rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
+      }
+    }
+  })
 
   try {
-    if (!sheet.value) return
-
-    const { ignore, selectedCreatures } = values
-
-    const rows = [...sheet.value.rows]
-
-    selectedCreatures.forEach(({ id, amount, initiative }) => {
-      if (amount !== undefined) {
-        const index = rows.findIndex(row => row.id === id)
-
-        if (index >= 0) {
-          let init = amount ?? 0
-
-          if (!ignore && isDefined(initiative) && !isNaN(initiative))
-            init += initiative
-
-          if (rows[index])
-            rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
-        }
-      }
-    })
-
     await update({ rows })
-    popoverOpen.value = false
-  } catch (err) {
-    formError.value =
-      getErrorMessage(err) || 'An error occurred during quick initiative roll'
+  } catch {
+    return
   }
+
+  popoverOpen.value = false
 })
 </script>
 
@@ -194,10 +191,6 @@ const onSubmit = form.handleSubmit(async values => {
             "
             list-class="sm:grid-cols-2 rounded-md border border-input bg-background px-3 py-2"
           />
-
-          <div v-if="formError" class="text-sm text-destructive">
-            {{ formError }}
-          </div>
 
           <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
             <UiFormField v-slot="{ value, handleChange }" name="ignore">

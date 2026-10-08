@@ -22,7 +22,6 @@ interface ActionRollVM {
   targets: { label: string; value: string }[]
   result: RollResult | undefined
   popoverOpen: boolean
-  formError: string
   onRoll: (type: RollType) => void
   onSubmit: () => Promise<void>
   form: { setFieldValue: (field: string, value: unknown) => void }
@@ -442,7 +441,7 @@ describe('ActionRoll component', () => {
       expect(mockPatchRow).not.toHaveBeenCalled()
     })
 
-    it('Should set the thrown error message on the form when the update fails', async () => {
+    it('Should keep the popover open without an inline error when the update fails', async () => {
       mockPatchRow.mockRejectedValueOnce(new Error('boom'))
 
       component = await mountWithTooltips(ActionRoll, {
@@ -457,26 +456,8 @@ describe('ActionRoll component', () => {
       await vm.onSubmit()
       await nextTick()
 
-      expect(vm.formError).toBe('boom')
-      expect(
-        document.body.querySelector('[test-id="error"]')?.textContent,
-      ).toBe('boom')
-    })
-
-    it('Should set a generic error message when the thrown error has no message', async () => {
-      mockPatchRow.mockRejectedValueOnce('')
-
-      component = await mountWithTooltips(ActionRoll, {
-        props: submitProps,
-        provide,
-      })
-      const vm = component.vm as unknown as ActionRollVM
-
-      vm.onRoll('straight')
-      vm.form.setFieldValue('target', targetId)
-      await vm.onSubmit()
-
-      expect(vm.formError).toBe('An error occurred during action roll')
+      expect(vm.popoverOpen).toBe(true)
+      expect(document.body.querySelector('[test-id="error"]')).toBeNull()
     })
   })
 })
