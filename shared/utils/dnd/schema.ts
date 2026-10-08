@@ -1,14 +1,17 @@
 import { z } from 'zod'
+import { sanitizeCondition } from './row'
 
 export const deathSavesSchema = z.object({
   save: z.tuple([z.boolean(), z.boolean(), z.boolean()]),
   fail: z.tuple([z.boolean(), z.boolean(), z.boolean()]),
 })
 
-export const conditionSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  desc: z.string(),
-  level: z.number().nullish(),
-  hasLevels: z.boolean().nullish(),
-})
+export const conditionSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    desc: z.string(),
+    level: z.number().nullish(),
+    hasLevels: z.boolean().nullish(),
+  })
+  .transform(sanitizeCondition)

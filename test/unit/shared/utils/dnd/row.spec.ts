@@ -79,6 +79,70 @@ describe('dnd/row', () => {
     })
   })
 
+  describe('sanitizeCondition', () => {
+    it('drops null level and hasLevels', () => {
+      expect(
+        sanitizeCondition({
+          id: 'prone',
+          name: 'Prone',
+          desc: 'On the ground.',
+          level: null,
+          hasLevels: null,
+        }),
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+    })
+
+    it('keeps level and hasLevels when set', () => {
+      expect(
+        sanitizeCondition({
+          id: 'exhaustion',
+          name: 'Exhaustion',
+          desc: 'Tired.',
+          level: 3,
+          hasLevels: true,
+        }),
+      ).toStrictEqual({
+        id: 'exhaustion',
+        name: 'Exhaustion',
+        desc: 'Tired.',
+        level: 3,
+        hasLevels: true,
+      })
+    })
+
+    it('rounds a fractional level to an integer', () => {
+      expect(
+        sanitizeCondition({
+          id: 'exhaustion',
+          name: 'Exhaustion',
+          desc: '',
+          level: 2.6,
+        }).level,
+      ).toBe(3)
+    })
+
+    it('strips keys that are not part of a stored condition', () => {
+      const condition = {
+        id: 'blinded',
+        name: 'Blinded',
+        desc: 'Cannot see.',
+        documentKey: 'core',
+      } as DndCondition
+
+      expect(sanitizeCondition(condition)).toStrictEqual({
+        id: 'blinded',
+        name: 'Blinded',
+        desc: 'Cannot see.',
+      })
+    })
+
+    it('defaults a missing desc to an empty string', () => {
+      const condition = { id: 'blinded', name: 'Blinded' } as DndCondition
+
+      expect(sanitizeCondition(condition).desc).toBe('')
+    })
+  })
+
   describe('getCurrentRowIndex', () => {
     it('should return correct index for existing id', () => {
       const index = getCurrentRowIndex(sheet, sheet.rows[0]?.id ?? '')

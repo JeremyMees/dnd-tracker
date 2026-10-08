@@ -49,10 +49,7 @@ export function useInitiativeSheetDetailUpdate() {
       if (data.rows?.length) {
         data.rows = indexCorrect(data.rows).map(row => ({
           ...sanitizeRowNumbers(row),
-          conditions: row.conditions.map(c => ({
-            ...c,
-            desc: c.desc ?? '',
-          })),
+          conditions: row.conditions.map(sanitizeCondition),
         }))
       }
 

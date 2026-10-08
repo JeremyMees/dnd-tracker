@@ -435,8 +435,8 @@ describe('initiative-sheets queries', () => {
             {
               ...row,
               conditions: [
-                { name: 'Prone', desc: 'knocked down' },
-                { name: 'Blinded' },
+                { id: 'prone', name: 'Prone', desc: 'knocked down' },
+                { id: 'blinded', name: 'Blinded' },
               ],
             } as InitiativeSheetRow,
           ],
@@ -446,8 +446,58 @@ describe('initiative-sheets queries', () => {
       const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
 
       expect(updated.rows[0].conditions).toEqual([
-        { name: 'Prone', desc: 'knocked down' },
-        { name: 'Blinded', desc: '' },
+        { id: 'prone', name: 'Prone', desc: 'knocked down' },
+        { id: 'blinded', name: 'Blinded', desc: '' },
+      ])
+    })
+
+    it('drops null condition fields that the rows check constraint rejects', async () => {
+      const from = mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      fetchMock.mockResolvedValue(undefined)
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+      await vm.mutateAsync({
+        id: 7,
+        data: {
+          rows: [
+            {
+              ...row,
+              conditions: [
+                {
+                  id: 'prone',
+                  name: 'Prone',
+                  desc: 'knocked down',
+                  level: null,
+                  hasLevels: null,
+                },
+                {
+                  id: 'exhaustion',
+                  name: 'Exhaustion',
+                  desc: 'tired',
+                  level: 2,
+                  hasLevels: true,
+                },
+              ],
+            },
+          ],
+        },
+      })
+
+      const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
+
+      expect(updated.rows[0].conditions).toStrictEqual([
+        { id: 'prone', name: 'Prone', desc: 'knocked down' },
+        {
+          id: 'exhaustion',
+          name: 'Exhaustion',
+          desc: 'tired',
+          level: 2,
+          hasLevels: true,
+        },
       ])
     })
 

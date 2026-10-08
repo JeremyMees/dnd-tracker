@@ -46,6 +46,20 @@ export function sanitizeRowNumbers(
   return sanitized
 }
 
+export function sanitizeCondition(condition: DndCondition): DndCondition {
+  const level = toIntegerOrUndefined(condition.level)
+
+  return {
+    id: condition.id,
+    name: condition.name,
+    desc: condition.desc ?? '',
+    ...(level !== undefined && { level }),
+    ...(typeof condition.hasLevels === 'boolean' && {
+      hasLevels: condition.hasLevels,
+    }),
+  }
+}
+
 const COMBAT_PATCH_FIELDS = [
   'hitPoints',
   'maxHitPoints',
