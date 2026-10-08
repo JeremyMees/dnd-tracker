@@ -478,7 +478,8 @@
           "infoCards": "Gepinde kaarten zijn niet opgeslagen",
           "info": "Je notitie is niet opgeslagen",
           "generic": "Je wijzigingen aan de encounter zijn niet opgeslagen"
-        }
+        },
+        "combatLogClearFailed": "Het gevechtslogboek is niet gewist"
       },
       "back": {
         "encounters": "Encounters lijst",

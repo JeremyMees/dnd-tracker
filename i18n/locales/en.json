@@ -478,7 +478,8 @@
           "infoCards": "Pinned cards weren't saved",
           "info": "Your note wasn't saved",
           "generic": "Your changes to the encounter weren't saved"
-        }
+        },
+        "combatLogClearFailed": "The combat log wasn't cleared"
       },
       "back": {
         "encounters": "Encounters list",
