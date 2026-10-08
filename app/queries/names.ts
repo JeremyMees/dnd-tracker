@@ -28,8 +28,8 @@ export function useRandomNames(data: ComputedRef<NameFilters>) {
         })
       } catch (error) {
         toast({
-          title: t('general.error.title'),
-          description: getErrorMessage(error),
+          title: t('general.error.loadFailed.names'),
+          description: t(`general.error.reasons.${getFailureReason(error)}`),
           variant: 'destructive',
         })
 
@@ -54,8 +54,8 @@ export function useRandomName() {
     },
     onError: error => {
       toast({
-        title: t('general.error.title'),
-        description: getErrorMessage(error),
+        title: t('general.error.loadFailed.names'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
     },

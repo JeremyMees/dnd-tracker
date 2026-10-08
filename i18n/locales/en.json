@@ -253,6 +253,14 @@
         "notFound": "It may have been removed by someone else. Refresh the page and try again.",
         "rateLimited": "Too many requests in a short time. Wait a moment and try again.",
         "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
+      },
+      "loadFailed": {
+        "content": "DnD content couldn't be loaded",
+        "documents": "System documents couldn't be loaded",
+        "conditions": "Conditions couldn't be loaded",
+        "monsters": "Monsters from the bestiary couldn't be loaded",
+        "names": "Fantasy names couldn't be generated",
+        "pricing": "Prices couldn't be loaded"
       }
     },
     "success": {

@@ -28,8 +28,8 @@ export function useSrdListing(
         })
       } catch (error) {
         toast({
-          title: t('general.error.title'),
-          description: getErrorMessage(error),
+          title: t('general.error.loadFailed.content'),
+          description: t(`general.error.reasons.${getFailureReason(error)}`),
           variant: 'destructive',
         })
 
@@ -53,8 +53,8 @@ export function useSrdDocuments() {
         return await $fetch<DndDocument[]>('/api/srd/documents')
       } catch (error) {
         toast({
-          title: t('general.error.title'),
-          description: getErrorMessage(error),
+          title: t('general.error.loadFailed.documents'),
+          description: t(`general.error.reasons.${getFailureReason(error)}`),
           variant: 'destructive',
         })
 
@@ -92,8 +92,8 @@ export function useConditionsListing() {
         return await $fetch<DndCondition[]>('/api/srd/conditions')
       } catch (error) {
         toast({
-          title: t('general.error.title'),
-          description: getErrorMessage(error),
+          title: t('general.error.loadFailed.conditions'),
+          description: t(`general.error.reasons.${getFailureReason(error)}`),
           variant: 'destructive',
         })
 
@@ -121,8 +121,8 @@ export function useSrdMonsterListing(
         })
       } catch (error) {
         toast({
-          title: t('general.error.title'),
-          description: getErrorMessage(error),
+          title: t('general.error.loadFailed.monsters'),
+          description: t(`general.error.reasons.${getFailureReason(error)}`),
           variant: 'destructive',
         })
 

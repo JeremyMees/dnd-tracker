@@ -68,9 +68,11 @@ describe('pricing queries', () => {
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
       expect(fetchMock).toHaveBeenCalledTimes(1)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'destructive' }),
-      )
+      expect(toast).toHaveBeenCalledWith({
+        title: 'general.error.loadFailed.pricing',
+        description: 'general.error.reasons.rejected',
+        variant: 'destructive',
+      })
     })
   })
 })
