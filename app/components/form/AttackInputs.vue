@@ -11,7 +11,7 @@ import {
 const props = defineProps<{ fieldName: string }>()
 
 const attackTypeValue = useFieldValue<DndAttackType>(
-  `${props.fieldName}.attackType`,
+  () => `${props.fieldName}.attackType`,
 )
 
 const isMelee = computed(

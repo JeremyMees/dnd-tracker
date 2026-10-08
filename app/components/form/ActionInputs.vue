@@ -7,12 +7,12 @@ import { actionType } from '~~/constants/validation'
 const props = defineProps<{ fieldName: string }>()
 
 const actionTypeValue = useFieldValue<DndActionType>(
-  `${props.fieldName}.actionType`,
+  () => `${props.fieldName}.actionType`,
 )
 
 const { value: usageLimits, handleChange: handleUsageLimitsChange } = useField<
   DndUsageLimits | undefined
->(`${props.fieldName}.usageLimits`)
+>(() => `${props.fieldName}.usageLimits`)
 
 const showLegendaryCost = computed(
   () =>

@@ -21,7 +21,7 @@ const props = withDefaults(
   },
 )
 
-const { fields, prepend, remove, move } = useFieldArray(props.name)
+const { fields, prepend, remove, move } = useFieldArray(() => props.name)
 
 function addItem() {
   if (fields.value.length < props.max) prepend(props.emptyObject)
