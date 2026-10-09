@@ -54,19 +54,6 @@
     "@tiptap/vue-3": "3.30.3",
     "@types/canvas-confetti": "^1.9.0",
     "@vitejs/plugin-vue": "^6.0.8",
-    "@vue-email/body": "^0.0.3",
-    "@vue-email/column": "^0.0.3",
-    "@vue-email/container": "^0.0.3",
-    "@vue-email/head": "^0.0.3",
-    "@vue-email/heading": "^0.0.3",
-    "@vue-email/hr": "^0.0.3",
-    "@vue-email/html": "^0.0.3",
-    "@vue-email/link": "^0.0.3",
-    "@vue-email/preview": "^0.0.3",
-    "@vue-email/render": "^0.0.9",
-    "@vue-email/row": "^0.0.3",
-    "@vue-email/section": "^0.0.3",
-    "@vue-email/text": "^0.0.3",
     "@vueuse/core": "^14.4.0",
     "@vueuse/nuxt": "^14.4.0",
     "c15t": "^2.2.1",
@@ -102,6 +89,8 @@
     "@golar/vue": "^0.1.10",
     "@iconify-json/tabler": "^1.2.38",
     "@inspira-ui/plugins": "^0.0.2",
+    "@maizzle/framework": "^6.2.0",
+    "@maizzle/nuxt": "^1.0.0",
     "@nuxt/test-utils": "^4.3.3",
     "@tanstack/eslint-plugin-query": "^5.102.2",
     "@types/node": "^26.2.0",
@@ -124,9 +113,6 @@
   "overrides": {
     "@intlify/unplugin-vue-i18n": {
       "@intlify/vue-i18n-extensions": "^9.0.0"
-    },
-    "@vue-email/render": {
-      "js-beautify": "^2.0.3"
     },
     "vue": "latest"
   }

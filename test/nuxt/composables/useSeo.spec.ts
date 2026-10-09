@@ -22,7 +22,7 @@ const {
   useHead: vi.fn(),
   useSchemaOrg: vi.fn(),
   useSeoMeta: vi.fn(),
-  withSiteUrl: vi.fn((path: string) => `https://dnd-tracker.com${path}`),
+  withSiteUrl: vi.fn((path: string) => `https://www.dnd-tracker.com${path}`),
 }))
 
 mockNuxtImport('useHead', () => useHead)

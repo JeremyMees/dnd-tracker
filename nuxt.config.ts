@@ -1,4 +1,3 @@
-import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 import packageJSON from './package.json'
 import tailwindcss from '@tailwindcss/vite'
@@ -27,6 +26,7 @@ export default defineNuxtConfig({
     'motion-v/nuxt',
     '@sentry/nuxt/module',
     '@formkit/auto-animate/nuxt',
+    '@maizzle/nuxt',
   ],
 
   components: [
@@ -146,15 +146,6 @@ export default defineNuxtConfig({
     externals: {
       inline: ['sanitize-html'],
     },
-    rollupConfig: {
-      plugins: [
-        // @ts-expect-error Needed for vue-email
-        vue(),
-      ],
-    },
-    devProxy: {
-      '/sw.js': { target: '/sw.js' },
-    },
   },
 
   vite: {
@@ -231,5 +222,14 @@ export default defineNuxtConfig({
       ],
       saveRedirectToCookie: true,
     },
+  },
+
+  maizzle: {
+    content: ['app/emails/*.vue'],
+    components: { source: ['app/emails/components'] },
+    css: { base: 'app/emails' },
+    static: { source: [] },
+    url: { base: { url: seo.url, tags: ['img'] } },
+    plaintext: true,
   },
 })

@@ -38,3 +38,7 @@ logs
 .agents
 .claude
 skills-lock.json
+
+# Maizzle
+.maizzle
+server/assets/emails

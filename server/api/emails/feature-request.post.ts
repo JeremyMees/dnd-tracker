@@ -1,7 +1,5 @@
-import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import FeatureRequest from '~~/server/emails/FeatureRequest.vue'
 
 const bodySchema = z.object({
   title: z.string().min(3).max(50),
@@ -22,6 +20,7 @@ export default defineEventHandler(async event => {
     .single()
 
   const props = {
+    date: new Date().toLocaleDateString('nl-NL'),
     email: profile?.email ?? caller.email ?? '',
     name: profile?.username ?? 'Unknown',
     title: body.title,
@@ -29,8 +28,7 @@ export default defineEventHandler(async event => {
   }
 
   try {
-    const html = await render(FeatureRequest, props, { pretty: true })
-    const text = await render(FeatureRequest, props, { plainText: true })
+    const { html, text } = await renderEmail('FeatureRequest', props)
 
     return await $fetch<PlunkSendResponse, string>(
       'https://next-api.useplunk.com/v1/send',

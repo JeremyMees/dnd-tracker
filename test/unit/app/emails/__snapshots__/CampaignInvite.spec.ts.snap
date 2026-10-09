@@ -1,0 +1,56 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CampaignInvite email > Should match snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" style="color-scheme: light dark; supported-color-schemes: light dark;"> <head><meta charset="utf-8"> <meta name="x-apple-disable-message-reformatting"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Join the Adventure: Exclusive Invitation to DnD-Tracker Campaign!</title> <meta name="color-scheme" content="light dark"> <meta name="supported-color-schemes" content="light dark"> <style>
+@media (prefers-color-scheme: dark) {
+  .border-border {
+    border-color: #27272a !important;
+  }
+  .bg-background {
+    background-color: #09090b !important;
+  }
+  .bg-border {
+    background-color: #27272a !important;
+  }
+  .bg-card {
+    background-color: #09090b !important;
+  }
+  .text-card-foreground {
+    color: #fafafa !important;
+  }
+  .text-foreground {
+    color: #fafafa !important;
+  }
+  :root {
+    --lightningcss-light:  ;
+    --lightningcss-dark: initial;
+  }
+}</style></head> <body xml:lang="en" dir="ltr" style="padding: 0; width: 100%; height: 100%; word-break: break-word; margin: auto; background-color: #fff; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; color: #09090b;" class="bg-background text-foreground"><div style="display:none;">Join {{ campaign }} on DnD Tracker&#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &nbsp;</div><span style="display: none"><!--[if mso]>
+  <xml>
+    <o:OfficeDocumentSettings>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    <w:WordDocument>
+      <w:DontUseAdvancedTypographyReadingMail />
+    </w:WordDocument>
+  </xml>
+<![endif]--></span><div role="article" aria-roledescription="email" lang="en" dir="ltr" style="font-size: medium; font-size: max(16px, 1rem)"> <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 700px" align="center"><tr><td><![endif]--> <div style="margin: 40px auto; max-width: 700px;"><!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fff"><![endif]--> <div class="border-border bg-card text-card-foreground" style="border-radius: 8px; border: 1px solid #e4e4e7; background-color: #fff; padding: 20px; color: #09090b;"><!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td><![endif]--> <div style="margin-top: 32px; text-align: center;"><img src="https://www.dnd-tracker.com/logo.png" alt="DnD Tracker" width="250" style="max-width: 100%; vertical-align: middle;"></div> <!--[if mso]></td></tr></table><![endif]--> <h1 style="margin: 60px 0 30px; font-size: 32px; line-height: 40px; font-weight: 400;">Campaign invite</h1> <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td><![endif]--> <div><p style="margin-top: 16px; margin-bottom: 16px; font-size: 16px; line-height: 24px;">
+      Hi <span>{{ username }}</span>,
+    </p> <p style="margin-top: 16px; margin-bottom: 16px; font-size: 16px; line-height: 24px;">
+      Great news!
+      <strong>{{ invitedBy }}</strong>
+      has invited you to join the "<strong>{{ campaign }}</strong>" campaign on <strong>DnD Tracker</strong>.
+    </p> <p style="margin-top: 16px; margin-bottom: 16px; font-size: 16px; line-height: 24px;">Ready to start your next adventure?</p> <p style="margin-top: 16px; margin-bottom: 16px; font-size: 16px; line-height: 24px;">
+      👉
+      <a href="{{ inviteLink }}" style="color: #7231e3; text-decoration: underline;">
+        Join the campaign
+      </a></p> <p style="margin-top: 16px; margin-bottom: 16px; font-size: 16px; line-height: 24px;">
+      We&rsquo;re excited to have you onboard and can&rsquo;t wait to see what stories
+      unfold!
+    </p></div> <!--[if mso]></td></tr></table><![endif]--> <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td><![endif]--> <div style="margin-top: 26px; margin-bottom: 26px; text-align: center;"><div role="separator" class="bg-border" style="margin-top: 26px; margin-bottom: 26px; height: 1px; background-color: #e4e4e7; line-height: 1px;">&zwj;</div> <img src="https://www.dnd-tracker.com/dragon.png" alt width="47" style="max-width: 100%; vertical-align: middle;"> <p style="margin-top: 8px; font-size: 16px; line-height: 24px; font-weight: 600;"><a href="https://www.dnd-tracker.com" style="color: #7231e3; text-decoration: none;">
+        DnD Tracker
+      </a></p> <p style="margin-top: 12px; font-size: 16px; line-height: 24px;">Keep adventuring</p> <p style="margin-top: 12px; font-size: 16px; line-height: 24px;"><a href="https://www.instagram.com/dnd.tracker/" style="text-decoration: none;"><img src="https://www.dnd-tracker.com/instagram.png" alt="Instagram" width="36" style="max-width: 100%; vertical-align: middle;"></a> <i style="display:inline-block; width: 8px; font-size: 16px; mso-font-width:50%;">&emsp;</i> <a href="https://bsky.app/profile/lilmees.bsky.social" style="text-decoration: none;"><img src="https://www.dnd-tracker.com/bluesky.png" alt="Bluesky" width="36" style="max-width: 100%; vertical-align: middle;"></a> <i style="display:inline-block; width: 8px; font-size: 16px; mso-font-width:50%;">&emsp;</i> <a href="https://ko-fi.com/jeremymees" style="text-decoration: none;"><img src="https://www.dnd-tracker.com/coffee.png" alt="Ko-fi" width="36" style="max-width: 100%; vertical-align: middle;"></a></p> <p style="margin-top: 8px; margin-bottom: 8px; font-size: 16px; line-height: 24px; font-weight: 600;"><a href="mailto:jeremy@dnd-tracker.com" style="color: #7231e3; text-decoration: none;">
+        jeremy@dnd-tracker.com
+      </a></p></div> <!--[if mso]></td></tr></table><![endif]--></div> <!--[if mso]></td></tr></table><![endif]--></div> <!--[if mso]></td></tr></table><![endif]--></div></body></html>"
+`;

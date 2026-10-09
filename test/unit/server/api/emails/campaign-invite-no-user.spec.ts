@@ -7,6 +7,7 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
+import { mockEmailTemplates } from '~~/test/unit/stubs/email'
 import handler from '~~/server/api/emails/campaign-invite-no-user.post'
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -19,6 +20,7 @@ function body(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/emails/campaign-invite-no-user', () => {
   beforeEach(() => {
+    mockEmailTemplates()
     mockFetch.mockReset()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ plunkApiKey: 'plunk-key' })
@@ -47,6 +49,9 @@ describe('POST /api/emails/campaign-invite-no-user', () => {
           subject: 'Added to a campaign on DnD Tracker',
         }),
       }),
+    )
+    expect(mockFetch.mock.calls[0]![1].body.text).toBe(
+      'campaign=Curse of Strahd\ninvitedBy=DM',
     )
   })
 
