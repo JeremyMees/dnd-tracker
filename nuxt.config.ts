@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     '@sentry/nuxt/module',
     '@formkit/auto-animate/nuxt',
     '@maizzle/nuxt',
+    'c15t/vue',
   ],
 
   components: [
@@ -96,7 +97,6 @@ export default defineNuxtConfig({
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
-      c15tUrl: process.env.NUXT_PUBLIC_C15T_URL,
       gId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
       sentry: {
         dsn: process.env.SENTRY_DSN,
@@ -160,8 +160,6 @@ export default defineNuxtConfig({
         '@tiptap/vue-3',
         '@vue/devtools-core',
         '@vue/devtools-kit',
-        'c15t',
-        '@c15t/scripts/google-tag',
         'class-variance-authority',
         'cn',
         'dompurify',

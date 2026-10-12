@@ -46,6 +46,10 @@ vi.mock('~/plugins/sentry-supabase.client', () => ({
   default: () => {},
 }))
 
+vi.mock('~/plugins/consent-scripts.client', () => ({
+  default: () => {},
+}))
+
 vi.mock('@formkit/auto-animate/vue', () => ({
   vAutoAnimate: {},
 }))
