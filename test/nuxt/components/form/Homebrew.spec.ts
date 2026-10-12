@@ -192,6 +192,20 @@ describe('Homebrew', () => {
     expect(createHomebrew).not.toHaveBeenCalled()
   })
 
+  it('Should accept names up to 50 characters', async () => {
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component, 'A'.repeat(51))
+    await submitForm(component)
+
+    expect(createHomebrew).not.toHaveBeenCalled()
+
+    await fillName(component, 'A'.repeat(50))
+    await submitForm(component)
+
+    expect(createHomebrew).toHaveBeenCalledOnce()
+  })
+
   it('Should say which tab has the invalid field when saving fails', async () => {
     const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
 
