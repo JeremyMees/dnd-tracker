@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { useHomebrewCreate, useHomebrewUpdate } from '~/queries/homebrews'
+import {
+  useHomebrewCount,
+  useHomebrewCreate,
+  useHomebrewUpdate,
+} from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import type { InvalidSubmissionContext } from 'vee-validate'
 import * as z from 'zod'
-import { homebrewType } from '~~/constants/validation'
+import { homebrewType, maxCampaignHomebrews } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
 const props = withDefaults(
   defineProps<{
     campaignId?: number
-    count: number
     item?: HomebrewItemRow
     row?: InitiativeSheetRow
     isEncounter?: boolean
@@ -169,8 +172,18 @@ const form = useForm({
 
 const saveToCampaign = ref<boolean>(false)
 const isLinked = computed(() => isDefined(props.row?.homebrew))
+const { data: homebrewCount } = useHomebrewCount(
+  props.campaignId ?? 0,
+  computed(
+    () =>
+      isDefined(props.campaignId) &&
+      !!props.sheet &&
+      canSaveToCampaign.value &&
+      !isLinked.value,
+  ),
+)
 const isCampaignFull = computed(
-  () => !isLinked.value && (props.sheet?.rows.length ?? 0) >= 100,
+  () => !isLinked.value && (homebrewCount.value ?? 0) >= maxCampaignHomebrews,
 )
 const formError = ref<string>('')
 

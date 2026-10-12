@@ -63,7 +63,7 @@ const formStubs = {
   },
   FormHomebrew: {
     name: 'FormHomebrew',
-    props: ['count'],
+    props: ['campaignId'],
     template: '<div />',
     emits: ['close'],
   },
@@ -337,8 +337,8 @@ describe('EncounterSidebar', () => {
     expect(vm.openModal).toBeUndefined()
   })
 
-  it('Should pass the current row count to the new homebrew form', async () => {
-    mockSheet.value = { ...sheet, rows: [] }
+  it('Should pass the campaign of the sheet to the new homebrew form', async () => {
+    mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
     component = await mountWithTooltips(EncounterSidebar, {
       props,
@@ -349,8 +349,8 @@ describe('EncounterSidebar', () => {
     await component.get('[test-id="new-homebrew"]').trigger('click')
 
     expect(
-      component.findComponent({ name: 'FormHomebrew' }).props('count'),
-    ).toBe(0)
+      component.findComponent({ name: 'FormHomebrew' }).props('campaignId'),
+    ).toBe(mockSheetCampaign.id)
   })
 
   it('Should close the settings dialog when the form closes', async () => {

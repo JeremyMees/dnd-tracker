@@ -1,4 +1,5 @@
 export const maxHealthAndArmour = 1000
+export const maxCampaignHomebrews = 100
 
 export const initiativeSpacingOptions = [
   'compact',

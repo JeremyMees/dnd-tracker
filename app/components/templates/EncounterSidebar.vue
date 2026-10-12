@@ -218,7 +218,6 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
               <div class="overflow-y-auto">
                 <FormHomebrew
                   :campaign-id="sheet?.campaign?.id"
-                  :count="sheet?.rows.length || 0"
                   :sheet="sheet"
                   :update="update"
                   is-encounter

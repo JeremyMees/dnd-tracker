@@ -11,6 +11,7 @@ import {
   useHomebrewListing,
   useHomebrewRemove,
 } from '~/queries/homebrews'
+import { maxCampaignHomebrews } from '~~/constants/validation'
 
 useSeo('Campaign homebrews')
 
@@ -30,7 +31,6 @@ const queryClient = useQueryClient()
 const table = ref<DataTableExposed>()
 const limitCta = ref<InstanceType<typeof LimitCta>>()
 const pageSize = 20
-const max = 100
 
 const hasRights = computed(() => props.isOwner || props.isAdmin)
 const enableDateFetching = computed(() => props.fetchReady)
@@ -68,7 +68,6 @@ function openModal(item?: HomebrewItemRow): void {
     variant: 'fullScreen',
     props: {
       campaignId: props.campaignId,
-      count: count.value,
       ...(item && { item }),
     },
   })
@@ -100,7 +99,7 @@ function invalidateQueries(): void {
       <RefreshCard v-if="status === 'error'" @refresh="invalidateQueries" />
     </AnimationExpand>
 
-    <LimitCta v-if="count && count >= max" ref="limitCta" />
+    <LimitCta v-if="count && count >= maxCampaignHomebrews" ref="limitCta" />
 
     <DataTable
       ref="table"
@@ -128,11 +127,13 @@ function invalidateQueries(): void {
           <ContentCount
             :loading="data?.homebrews === null"
             :count="count || 0"
-            :max="max"
+            :max="maxCampaignHomebrews"
           />
           <CreateButton
             v-if="hasRights"
-            :allow-create="isDefined(count) ? count < max : false"
+            :allow-create="
+              isDefined(count) ? count < maxCampaignHomebrews : false
+            "
             :disabled="status === 'pending'"
             :loading="data?.homebrews === null"
             @create="openModal()"

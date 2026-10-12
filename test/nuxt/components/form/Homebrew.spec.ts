@@ -10,15 +10,28 @@ import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
-const { createHomebrew, updateHomebrew, currentUser } = vi.hoisted(() => ({
+const {
+  createHomebrew,
+  updateHomebrew,
+  currentUser,
+  homebrewCount,
+  homebrewCountEnabled,
+} = vi.hoisted(() => ({
   createHomebrew: vi.fn(),
   updateHomebrew: vi.fn(),
   currentUser: { value: null as { id: string } | null },
+  homebrewCount: { value: 0 },
+  homebrewCountEnabled: { value: undefined as boolean | undefined },
 }))
 
 vi.mock('~/queries/homebrews', () => ({
   useHomebrewCreate: () => ({ mutateAsync: createHomebrew }),
   useHomebrewUpdate: () => ({ mutateAsync: updateHomebrew }),
+  useHomebrewCount: (_id: number, enabled: { value: boolean }) => {
+    homebrewCountEnabled.value = enabled.value
+
+    return { data: homebrewCount }
+  },
 }))
 
 mockNuxtImport('useAuthentication', () => () => ({ user: currentUser }))
@@ -65,7 +78,6 @@ function mountHomebrew({
 }: MountOptions = {}) {
   return mountWithTooltips(Homebrew, {
     props: {
-      count: 0,
       campaignId,
       item,
       row,
@@ -104,6 +116,7 @@ function updateOptions() {
 describe('Homebrew', () => {
   beforeEach(() => {
     currentUser.value = { id: authUser.id }
+    homebrewCount.value = 0
     createHomebrew.mockResolvedValue(undefined)
     updateHomebrew.mockResolvedValue(undefined)
     update.mockResolvedValue(undefined)
@@ -551,7 +564,6 @@ describe('Homebrew', () => {
   it('Should not close when the update handler is missing', async () => {
     const component = await mountWithTooltips(Homebrew, {
       props: {
-        count: 0,
         sheet: { ...sheet },
         update: undefined,
       },
@@ -618,7 +630,25 @@ describe('Homebrew', () => {
     ).toBe('true')
   })
 
-  it('Should block saving to the campaign on a full sheet', async () => {
+  it('Should block saving to a campaign that has the maximum homebrews', async () => {
+    homebrewCount.value = 100
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    expect(homebrewCountEnabled.value).toBe(true)
+    expect(
+      component.get('#saveToCampaign').attributes('disabled'),
+    ).toBeDefined()
+    expect(component.text()).toContain('components.homebrewModal.max')
+  })
+
+  it('Should allow saving to the campaign on a sheet with many rows', async () => {
+    homebrewCount.value = 99
+
     const rows = Array.from({ length: 100 }, (_row, index) => ({
       ...sheet.rows[0]!,
       id: `row-${index}`,
@@ -634,8 +664,14 @@ describe('Homebrew', () => {
 
     expect(
       component.get('#saveToCampaign').attributes('disabled'),
-    ).toBeDefined()
-    expect(component.text()).toContain('components.homebrewModal.max')
+    ).toBeUndefined()
+    expect(component.text()).not.toContain('components.homebrewModal.max')
+  })
+
+  it('Should not count the campaign homebrews outside an encounter', async () => {
+    await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    expect(homebrewCountEnabled.value).toBe(false)
   })
 
   describe('Editing a row', () => {
@@ -686,21 +722,12 @@ describe('Homebrew', () => {
       expect(component.find('input[name="initiative"]').exists()).toBe(false)
     })
 
-    it('Should offer to update the linked campaign homebrew, even on a full sheet', async () => {
-      const full = Array.from({ length: 100 }, (_row, index) => ({
-        ...sheet.rows[0]!,
-        id: `row-${index}`,
-        index,
-      }))
+    it('Should offer to update the linked campaign homebrew, even when the campaign is full', async () => {
+      homebrewCount.value = 100
 
-      const component = await mountHomebrew({
-        withSheet: true,
-        isEncounter: true,
-        campaignId: mockCampaignFull.id,
-        row: damaged,
-        rows: [damaged, ...full],
-      })
+      const component = await mountEdit()
 
+      expect(homebrewCountEnabled.value).toBe(false)
       expect(
         component.get('#saveToCampaign').attributes('disabled'),
       ).toBeUndefined()

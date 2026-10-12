@@ -307,7 +307,7 @@ describe('Campaign homebrews page', () => {
       component: 'Homebrew',
       header: 'components.homebrewModal.new',
       variant: 'fullScreen',
-      props: { campaignId: campaignPageProps.campaignId, count: 1 },
+      props: { campaignId: campaignPageProps.campaignId },
     })
   })
 
@@ -322,7 +322,6 @@ describe('Campaign homebrews page', () => {
       variant: 'fullScreen',
       props: {
         campaignId: campaignPageProps.campaignId,
-        count: 1,
         item: mockHomebrewItem,
       },
     })

@@ -97,7 +97,6 @@ function deleteRow(): void {
         <div class="overflow-y-auto">
           <FormHomebrew
             :campaign-id="sheet?.campaign?.id"
-            :count="sheet?.rows.length || 0"
             :row="item"
             :sheet="sheet"
             :update="update"

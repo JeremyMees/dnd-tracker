@@ -31,7 +31,6 @@ const formStubs = {
       sheet: Object,
       update: Function,
       campaignId: Number,
-      count: Number,
       isEncounter: Boolean,
     },
     template: '<div test-id="homebrew-form" />',
