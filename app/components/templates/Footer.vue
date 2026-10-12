@@ -128,7 +128,7 @@
             />
             {{ $t('components.navbar.changelog') }}
           </NuxtLinkLocale>
-          <YbugButton type="footer" />
+          <BugReportButton type="footer" />
         </div>
       </div>
       <div>

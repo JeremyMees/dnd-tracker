@@ -75,6 +75,22 @@ export async function mountWithForm(
   return { component: wrapper, form }
 }
 
+export async function selectFile(
+  component: VueWrapper,
+  selector: string,
+  file: File | null,
+): Promise<void> {
+  const input = component.get(selector)
+
+  Object.defineProperty(input.element, 'files', {
+    value: file ? [file] : [],
+    configurable: true,
+  })
+  await input.trigger('input')
+  await input.trigger('change')
+  await flushPromises()
+}
+
 export async function submitForm(
   component: FormWrapper,
   selector = 'form',

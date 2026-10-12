@@ -22,6 +22,7 @@ export type ModalComponent =
   | 'Homebrew'
   | 'Note'
   | 'Mail'
+  | 'BugReport'
 
 export type ModalVariant = 'default' | 'big' | 'fullScreen'
 

@@ -1214,6 +1214,24 @@
       "already": "Code is already claimed",
       "claim": "Claim badge"
     },
+    "bugReportModal": {
+      "title": "Report a bug",
+      "message": "What went wrong?",
+      "messagePlaceholder": "Describe what you did, what you expected and what happened instead",
+      "emailDescription": "Optional, so we can follow up with you",
+      "screenshot": "Screenshot",
+      "screenshotDescription": "Optional. PNG, JPG, WEBP or GIF, max 5 MB",
+      "send": "Send report",
+      "success": {
+        "title": "Bug report sent",
+        "text": "Thanks for helping us improve the app!"
+      },
+      "errors": {
+        "screenshotType": "Only PNG, JPG, WEBP or GIF images are allowed",
+        "screenshotSize": "The screenshot can be at most 5 MB",
+        "send": "We couldn't send your bug report. Please try again later."
+      }
+    },
     "addFeatureRequestModal": {
       "title": "Create feature request"
     },

@@ -16,6 +16,7 @@ const inviteMemberStub = { template: '<div test-id="invite-member" />' }
 const homebrewStub = { template: '<div test-id="homebrew" />' }
 const noteStub = { template: '<div test-id="note" />' }
 const mailStub = { template: '<div test-id="mail" />' }
+const bugReportStub = { template: '<div test-id="bug-report" />' }
 
 vi.mock('~/components/modal/FeatureRequest.vue', () => ({
   default: featureRequestStub,
@@ -31,6 +32,9 @@ vi.mock('~/components/modal/InviteMember.vue', () => ({
 vi.mock('~/components/modal/Homebrew.vue', () => ({ default: homebrewStub }))
 vi.mock('~/components/modal/Note.vue', () => ({ default: noteStub }))
 vi.mock('~/components/modal/Mail.vue', () => ({ default: mailStub }))
+vi.mock('~/components/modal/BugReport.vue', () => ({
+  default: bugReportStub,
+}))
 
 const modalsRef = ref<Modal[]>([])
 const closeMock = vi.fn()
@@ -77,6 +81,7 @@ describe('ModalGroup', () => {
     openModal({ component: 'Homebrew', header: 'Homebrew' })
     openModal({ component: 'Note', header: 'Note' })
     openModal({ component: 'Mail', header: 'Mail' })
+    openModal({ component: 'BugReport', header: 'BugReport' })
 
     const component = await mount()
 
@@ -94,6 +99,7 @@ describe('ModalGroup', () => {
     expect(document.body.querySelector('[test-id="homebrew"]')).not.toBeNull()
     expect(document.body.querySelector('[test-id="note"]')).not.toBeNull()
     expect(document.body.querySelector('[test-id="mail"]')).not.toBeNull()
+    expect(document.body.querySelector('[test-id="bug-report"]')).not.toBeNull()
     component.unmount()
   })
 

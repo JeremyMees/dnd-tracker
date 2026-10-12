@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import YbugButton from '~/components/atoms/YbugButton.vue'
+import BugReportButton from '~/components/atoms/BugReportButton.vue'
 import Footer from '~/components/templates/Footer.vue'
 
 describe('Footer', () => {
@@ -87,10 +87,12 @@ describe('Footer', () => {
     ).toBe('/updates/changelog')
   })
 
-  it('Should render the ybug feedback button as a footer button', async () => {
+  it('Should render the bug report button as a footer button', async () => {
     const component = await mountSuspended(Footer)
 
-    expect(component.findComponent(YbugButton).props('type')).toBe('footer')
+    expect(component.findComponent(BugReportButton).props('type')).toBe(
+      'footer',
+    )
   })
 
   it('Should render the policy links', async () => {

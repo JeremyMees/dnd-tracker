@@ -14,7 +14,7 @@ exports[`Footer > Should match snapshot 1`] = `
     </div>
     <div>
       <p class="mb-3 text-sm font-semibold">components.navbar.updates</p>
-      <div class="flex flex-col gap-2"><a href="/updates/feature-request" class="flex items-center text-sm" test-id="footer-feature-request"><span class="iconify i-tabler:git-pull-request min-w-4 min-h-4 mr-2 text-muted-foreground" aria-hidden="true"></span> components.navbar.featureRequest</a><a href="/updates/changelog" class="flex items-center text-sm" test-id="footer-changelog"><span class="iconify i-tabler:bolt min-w-4 min-h-4 mr-2 text-muted-foreground" aria-hidden="true"></span> components.navbar.changelog</a><button class="flex items-center text-sm"><span class="iconify i-tabler:bug size-4 min-w-4 mr-2 text-muted-foreground" aria-hidden="true"></span> components.navbar.bug</button></div>
+      <div class="flex flex-col gap-2"><a href="/updates/feature-request" class="flex items-center text-sm" test-id="footer-feature-request"><span class="iconify i-tabler:git-pull-request min-w-4 min-h-4 mr-2 text-muted-foreground" aria-hidden="true"></span> components.navbar.featureRequest</a><a href="/updates/changelog" class="flex items-center text-sm" test-id="footer-changelog"><span class="iconify i-tabler:bolt min-w-4 min-h-4 mr-2 text-muted-foreground" aria-hidden="true"></span> components.navbar.changelog</a><button test-id="bug-report" class="flex items-center text-sm"><span class="iconify i-tabler:bug size-4 min-w-4 mr-2 text-muted-foreground" aria-hidden="true"></span> components.navbar.bug</button></div>
     </div>
     <div>
       <p class="mb-3 text-sm font-semibold">components.navbar.policies</p>

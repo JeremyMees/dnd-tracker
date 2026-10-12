@@ -1214,6 +1214,24 @@
       "already": "De code is al geclaimd",
       "claim": "Ontvang badge"
     },
+    "bugReportModal": {
+      "title": "Bug melden",
+      "message": "Wat ging er mis?",
+      "messagePlaceholder": "Beschrijf wat je deed, wat je verwachtte en wat er in de plaats gebeurde",
+      "emailDescription": "Optioneel, zodat we je kunnen contacteren",
+      "screenshot": "Screenshot",
+      "screenshotDescription": "Optioneel. PNG, JPG, WEBP of GIF, max 5 MB",
+      "send": "Rapport versturen",
+      "success": {
+        "title": "Bug rapport verstuurd",
+        "text": "Bedankt om ons te helpen de app te verbeteren!"
+      },
+      "errors": {
+        "screenshotType": "Enkel PNG, JPG, WEBP of GIF afbeeldingen zijn toegestaan",
+        "screenshotSize": "De screenshot mag maximaal 5 MB zijn",
+        "send": "We konden je bug rapport niet versturen. Probeer het later opnieuw."
+      }
+    },
     "addFeatureRequestModal": {
       "title": "Feature request maken"
     },
