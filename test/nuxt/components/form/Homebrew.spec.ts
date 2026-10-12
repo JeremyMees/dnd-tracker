@@ -302,8 +302,6 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    createOptions().onSuccess()
-
     expect(component.emitted('close')).toHaveLength(1)
   })
 
@@ -550,7 +548,7 @@ describe('Homebrew', () => {
     expect(component.text()).toContain('zod.required')
   })
 
-  it('Should not add to the sheet when the update handler is missing', async () => {
+  it('Should not close when the update handler is missing', async () => {
     const component = await mountWithTooltips(Homebrew, {
       props: {
         count: 0,
@@ -562,7 +560,18 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    expect(component.emitted('close')).toHaveLength(1)
+    expect(component.emitted('close')).toBeUndefined()
+  })
+
+  it('Should not close when the campaign homebrew could not be saved', async () => {
+    createHomebrew.mockRejectedValue(new Error('boom'))
+
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component)
+    await submitForm(component)
+
+    expect(component.emitted('close')).toBeUndefined()
   })
 
   it('Should attach the picked summoner to the new row', async () => {

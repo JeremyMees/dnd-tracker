@@ -177,79 +177,43 @@ const formError = ref<string>('')
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
 
+type HomebrewData = Omit<HomebrewItemUpdate, NotUpdatable>
+
+interface Submission {
+  row: InitiativeSheetRowInsert
+  homebrew: HomebrewData
+  amount?: number
+  initiative?: number
+  initiativeModifier?: number
+  summoner?: string
+}
+
+type SubmitMode = 'editRow' | 'addRows' | 'updateHomebrew' | 'createHomebrew'
+
+const mode = computed<SubmitMode | undefined>(() => {
+  if (props.sheet) return props.row ? 'editRow' : 'addRows'
+  if (props.item) return 'updateHomebrew'
+  return props.campaignId ? 'createHomebrew' : undefined
+})
+
+const submitters: Record<
+  SubmitMode,
+  (submission: Submission) => Promise<boolean>
+> = {
+  editRow,
+  addRows,
+  updateHomebrew: async ({ homebrew }) =>
+    props.item ? updateInCampaign(props.item.id, homebrew) : false,
+  createHomebrew: async ({ homebrew }) =>
+    (await createInCampaign(homebrew)) !== null,
+}
+
 const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
-  const { amount, initiative, initiativeModifier, summoner, ...rest } = values
+  if (!mode.value) return
 
-  const formData = { ...rest }
-  const initMod = isDefined(initiativeModifier)
-    ? { initiativeModifier: initiativeModifier.toString() }
-    : {}
-
-  const onSuccess = () => emit('close')
-  const onError = (error: string) => (formError.value = error)
-
-  if (props.sheet && props.row) {
-    const saved = await editRow({
-      data: formData as InitiativeSheetRowInsert,
-      campaignData: { ...formData, ...initMod } as Omit<
-        HomebrewItemUpdate,
-        NotUpdatable
-      >,
-      initiativeModifier,
-      summoner,
-      onError,
-    })
-
-    if (saved) onSuccess()
-  } else if (props.sheet) {
-    const homebrew =
-      saveToCampaign.value && props.campaignId
-        ? await createLinked({
-            data: {
-              ...formData,
-              ...initMod,
-              campaign: props.campaignId,
-            } as HomebrewItemInsert,
-            onError,
-          })
-        : undefined
-
-    if (homebrew === null) return
-
-    await addInitiative({
-      data: { ...formData, homebrew } as InitiativeSheetRowInsert,
-      amount: amount ?? 1,
-      initiative,
-      initiativeModifier,
-      summoner,
-    })
-
-    onSuccess()
-  } else {
-    if (props.item) {
-      await updateHomebrew({
-        data: { ...formData, ...initMod } as Omit<
-          HomebrewItemUpdate,
-          NotUpdatable
-        >,
-        id: props.item.id,
-        onSuccess,
-        onError,
-      })
-    } else if (props.campaignId) {
-      await create({
-        data: {
-          ...formData,
-          ...initMod,
-          campaign: props.campaignId,
-        } as HomebrewItemInsert,
-        onSuccess,
-        onError,
-      })
-    }
-  }
+  if (await submitters[mode.value](toSubmission(values))) emit('close')
 }, onInvalidSubmit)
 
 function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
@@ -269,82 +233,87 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
   })
 }
 
-async function create(options: {
-  data: HomebrewItemInsert
-  onSuccess?: () => void
-  onError: (error: string) => void
-}): Promise<number> {
-  return await createHomebrew(options)
+function onError(error: string): void {
+  formError.value = error
 }
 
-async function createLinked(options: {
-  data: HomebrewItemInsert
-  onError: (error: string) => void
-}): Promise<number | null> {
+function toSubmission(values: z.output<typeof formSchema>): Submission {
+  const { amount, initiative, initiativeModifier, summoner, ...data } = values
+
+  return {
+    row: data as InitiativeSheetRowInsert,
+    homebrew: {
+      ...data,
+      ...(isDefined(initiativeModifier)
+        ? { initiativeModifier: initiativeModifier.toString() }
+        : {}),
+    } as HomebrewData,
+    amount,
+    initiative,
+    initiativeModifier,
+    summoner,
+  }
+}
+
+function findSummoner(id?: string): InitiativeSheetRow['summoner'] {
+  const summoner = id ? props.sheet?.rows.find(r => r.id === id) : undefined
+
+  return summoner ? { name: summoner.name, id: summoner.id } : undefined
+}
+
+async function createInCampaign(data: HomebrewData): Promise<number | null> {
+  if (!props.campaignId) return null
+
   try {
-    return await create(options)
+    return await createHomebrew({
+      data: { ...data, campaign: props.campaignId } as HomebrewItemInsert,
+      onError,
+    })
   } catch {
     return null
   }
 }
 
-async function syncToCampaign(options: {
-  data: Omit<HomebrewItemUpdate, NotUpdatable>
-  onError: (error: string) => void
-}): Promise<number | undefined | null> {
+async function updateInCampaign(
+  id: number,
+  data: HomebrewData,
+): Promise<boolean> {
+  try {
+    await updateHomebrew({ data, id, onError })
+
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function syncToCampaign(
+  data: HomebrewData,
+): Promise<number | undefined | null> {
   const linked = props.row?.homebrew
 
   if (!saveToCampaign.value || !props.campaignId) return linked
+  if (!isDefined(linked)) return createInCampaign(data)
 
-  if (!isDefined(linked)) {
-    return createLinked({
-      data: {
-        ...options.data,
-        campaign: props.campaignId,
-      } as HomebrewItemInsert,
-      onError: options.onError,
-    })
-  }
-
-  try {
-    await updateHomebrew({ ...options, id: linked })
-
-    return linked
-  } catch {
-    return null
-  }
+  return (await updateInCampaign(linked, data)) ? linked : null
 }
 
-async function editRow(options: {
-  data: InitiativeSheetRowInsert
-  campaignData: Omit<HomebrewItemUpdate, NotUpdatable>
-  initiativeModifier?: number
-  summoner?: string
-  onError: (error: string) => void
-}): Promise<boolean> {
+async function editRow(submission: Submission): Promise<boolean> {
   if (!props.sheet || !props.update || !props.row) return false
 
-  const homebrew = await syncToCampaign({
-    data: options.campaignData,
-    onError: options.onError,
-  })
+  const homebrew = await syncToCampaign(submission.homebrew)
 
   if (homebrew === null) return false
-
-  const sum = options.summoner
-    ? props.sheet.rows.find(r => r.id === options.summoner)
-    : undefined
-  const type = (form.values.type ?? 'player') as HomebrewType
 
   const edited = editInitiativeRow(
     props.row,
     {
-      ...options.data,
+      ...submission.row,
       homebrew,
-      initiativeModifier: options.initiativeModifier,
-      summoner: sum ? { name: sum.name, id: sum.id } : undefined,
+      initiativeModifier: submission.initiativeModifier,
+      summoner: findSummoner(submission.summoner),
     },
-    type,
+    submission.row.type,
   )
 
   await props.update({
@@ -354,43 +323,36 @@ async function editRow(options: {
   return true
 }
 
-async function addInitiative(options: {
-  data: InitiativeSheetRowInsert
-  amount: number
-  initiative?: number
-  initiativeModifier?: number | string
-  summoner?: string
-}): Promise<void> {
-  if (!props.sheet || !props.update) return
+async function addRows(submission: Submission): Promise<boolean> {
+  if (!props.sheet || !props.update) return false
 
-  const sum = options.summoner
-    ? props.sheet.rows.filter(r => r.id === options.summoner)[0]
-    : undefined
+  const { initiative, initiativeModifier } = submission
+  const homebrew =
+    saveToCampaign.value && props.campaignId
+      ? await createInCampaign(submission.homebrew)
+      : undefined
+
+  if (homebrew === null) return false
 
   const row: Partial<InitiativeSheetRow> & { name: string } = {
-    ...options.data,
-    ...(options.initiative && options.initiativeModifier
-      ? { initiative: +options.initiative + +options.initiativeModifier }
+    ...submission.row,
+    homebrew,
+    summoner: findSummoner(submission.summoner),
+    ...(initiative
+      ? { initiative: initiative + (initiativeModifier ?? 0) }
       : {}),
-    ...(options.initiative && !options.initiativeModifier
-      ? { initiative: +options.initiative }
-      : {}),
-    ...(sum ? { summoner: { name: sum.name, id: sum.id } } : {}),
-    ...(isDefined(options.initiativeModifier)
-      ? { initiativeModifier: +options.initiativeModifier }
-      : {}),
+    ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
   }
 
   const rows = [...props.sheet.rows]
-  const type = (form.values.type ?? 'player') as HomebrewType
 
-  for (let i = 0; i < options.amount; i++) {
-    rows.push(createInitiativeRow(row, type, rows.length))
+  for (let i = 0; i < (submission.amount ?? 1); i++) {
+    rows.push(createInitiativeRow(row, submission.row.type, rows.length))
   }
 
-  const sortedRows = indexCorrect(rows)
+  await props.update({ rows: indexCorrect(rows) })
 
-  await props.update({ rows: sortedRows })
+  return true
 }
 </script>
 
