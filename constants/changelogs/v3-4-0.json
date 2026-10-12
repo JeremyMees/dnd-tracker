@@ -31,7 +31,7 @@
           "text": "Raise homebrew validation limits for stats"
         },
         {
-          "text": "Duplicate campaigns invites could be sent when an invite was still pending"
+          "text": "Duplicate campaign invites could be sent when an invite was still pending"
         },
         {
           "text": "Campaign invites could be sent to users that were already members of the campaign"
@@ -40,7 +40,7 @@
           "text": "Could not access campaign when user is not an owner but is a member of the campaign"
         },
         {
-          "text": "Conditions aren’t saved: they disappear automatically a few seconds after I add them"
+          "text": "Conditions disappeared a few seconds after being added"
         },
         {
           "text": "Keep homebrew action fields bound when actions are added or moved"
