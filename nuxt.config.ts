@@ -195,6 +195,10 @@ export default defineNuxtConfig({
     org: 'kees',
     project: 'dnd-tracker',
 
+    release: {
+      name: `dnd-tracker@${packageJSON.version}`,
+    },
+
     sourcemaps: {
       filesToDeleteAfterUpload: ['./.vercel/output/static/**/*.map'],
     },
