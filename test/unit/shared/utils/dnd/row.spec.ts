@@ -208,6 +208,87 @@ describe('dnd/row', () => {
     })
   })
 
+  describe('editInitiativeRow', () => {
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 2,
+      initiative: 14,
+      name: 'Goblin',
+      type: 'monster',
+      homebrew: 7,
+      note: 'flanking',
+      conditions: [{ id: 'prone', name: 'Prone', desc: 'On the ground' }],
+      concentration: true,
+      deathSaves: { save: [true, false, false], fail: [false, false, false] },
+      hitPoints: 4,
+      maxHitPoints: 12,
+      tempHitPoints: 3,
+      armorClass: 15,
+      maxArmorClass: 15,
+      tempArmorClass: 2,
+    }
+
+    it('should apply the edited stats and keep the combat state', () => {
+      const edited = editInitiativeRow(
+        row,
+        {
+          name: 'Goblin Boss',
+          link: 'https://example.com',
+          hitPoints: 12,
+          armorClass: 15,
+        },
+        'npc',
+      )
+
+      expect(edited).toEqual({
+        ...row,
+        name: 'Goblin Boss',
+        link: 'https://example.com',
+        type: 'npc',
+      })
+    })
+
+    it('should reset current hit points when the base changes', () => {
+      const edited = editInitiativeRow(
+        { ...row, maxHitPoints: 30, maxHitPointsOld: 12 },
+        { name: 'Goblin', hitPoints: 20, armorClass: 15 },
+        'monster',
+      )
+
+      expect(edited.hitPoints).toBe(20)
+      expect(edited.maxHitPoints).toBe(20)
+      expect(edited.maxHitPointsOld).toBeUndefined()
+      expect(edited.tempHitPoints).toBe(3)
+    })
+
+    it('should keep an override while the base hit points stay the same', () => {
+      const overridden = { ...row, maxHitPoints: 30, maxHitPointsOld: 12 }
+
+      const edited = editInitiativeRow(
+        overridden,
+        { name: 'Goblin', hitPoints: 12, armorClass: 15 },
+        'monster',
+      )
+
+      expect(edited.hitPoints).toBe(4)
+      expect(edited.maxHitPoints).toBe(30)
+      expect(edited.maxHitPointsOld).toBe(12)
+    })
+
+    it('should reset current armor class when the base changes', () => {
+      const edited = editInitiativeRow(
+        { ...row, armorClass: 10, maxArmorClassOld: 15 },
+        { name: 'Goblin', hitPoints: 12, armorClass: 17 },
+        'monster',
+      )
+
+      expect(edited.armorClass).toBe(17)
+      expect(edited.maxArmorClass).toBe(17)
+      expect(edited.maxArmorClassOld).toBeUndefined()
+      expect(edited.tempArmorClass).toBe(2)
+    })
+  })
+
   describe('buildCombatPatch', () => {
     const baseRow: InitiativeSheetRow = {
       id: 'row-1',

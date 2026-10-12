@@ -12,6 +12,7 @@ const props = withDefaults(
     campaignId?: number
     count: number
     item?: HomebrewItemRow
+    row?: InitiativeSheetRow
     isEncounter?: boolean
     sheet?: InitiativeSheet
     update?: (
@@ -22,6 +23,7 @@ const props = withDefaults(
     isEncounter: false,
     campaignId: undefined,
     item: undefined,
+    row: undefined,
     sheet: undefined,
     update: undefined,
   },
@@ -105,6 +107,7 @@ const formSchema = z
   .refine(
     data =>
       !props.isEncounter ||
+      !!props.row ||
       !(['monster', 'summon'].includes(data.type) && !data.amount),
     { error: () => t('zod.required'), path: ['amount'] },
   )
@@ -114,44 +117,53 @@ const formSchema = z
     { error: () => t('zod.required'), path: ['summoner'] },
   )
 
+const source = props.row
+  ? {
+      ...props.row,
+      hitPoints: props.row.maxHitPointsOld ?? props.row.maxHitPoints,
+      armorClass: props.row.maxArmorClassOld ?? props.row.maxArmorClass,
+    }
+  : props.item
+
 const form = useForm({
   validationSchema: formSchema,
   initialValues: {
-    type: props.item?.type || 'player',
-    name: props.item?.name || '',
-    player: props.item?.player || '',
+    type: source?.type || 'player',
+    summoner: props.row?.summoner?.id,
+    name: source?.name || '',
+    player: source?.player || '',
     initiative: undefined,
-    initiativeModifier: props.item?.initiativeModifier
-      ? isNaN(+props.item.initiativeModifier)
+    initiativeModifier: source?.initiativeModifier
+      ? isNaN(+source.initiativeModifier)
         ? undefined
-        : +props.item.initiativeModifier
+        : +source.initiativeModifier
       : undefined,
-    armorClass: props.item?.armorClass || undefined,
-    hitPoints: props.item?.hitPoints || undefined,
-    link: props.item?.link || '',
-    hitDice: props.item?.hitDice || '',
-    armorDetail: props.item?.armorDetail || '',
-    proficiencyBonus: props.item?.proficiencyBonus || undefined,
-    passivePerception: props.item?.passivePerception || undefined,
-    speed: props.item?.speed || undefined,
-    sight: props.item?.sight || undefined,
-    languages: props.item?.languages || [],
-    abilityScores: props.item?.abilityScores || undefined,
-    modifiers: props.item?.modifiers || undefined,
-    savingThrows: props.item?.savingThrows || undefined,
-    skillBonuses: props.item?.skillBonuses || undefined,
+    armorClass: source?.armorClass || undefined,
+    hitPoints: source?.hitPoints || undefined,
+    link: source?.link || '',
+    hitDice: source?.hitDice || '',
+    armorDetail: source?.armorDetail || '',
+    proficiencyBonus: source?.proficiencyBonus || undefined,
+    passivePerception: source?.passivePerception || undefined,
+    speed: source?.speed || undefined,
+    sight: source?.sight || undefined,
+    languages: source?.languages || [],
+    abilityScores: source?.abilityScores || undefined,
+    modifiers: source?.modifiers || undefined,
+    savingThrows: source?.savingThrows || undefined,
+    skillBonuses: source?.skillBonuses || undefined,
     resistancesAndImmunities: {
       damageImmunities:
-        props.item?.resistancesAndImmunities?.damageImmunities ?? [],
+        source?.resistancesAndImmunities?.damageImmunities ?? [],
       damageResistances:
-        props.item?.resistancesAndImmunities?.damageResistances ?? [],
+        source?.resistancesAndImmunities?.damageResistances ?? [],
       damageVulnerabilities:
-        props.item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+        source?.resistancesAndImmunities?.damageVulnerabilities ?? [],
       conditionImmunities:
-        props.item?.resistancesAndImmunities?.conditionImmunities ?? [],
+        source?.resistancesAndImmunities?.conditionImmunities ?? [],
     },
-    traits: (props.item?.traits ?? []) as { name: string; desc: string }[],
-    actions: props.item?.actions ?? [],
+    traits: (source?.traits ?? []) as { name: string; desc: string }[],
+    actions: source?.actions ?? [],
   },
 })
 
@@ -174,23 +186,28 @@ const onSubmit = form.handleSubmit(async values => {
   const onSuccess = () => emit('close')
   const onError = (error: string) => (formError.value = error)
 
-  if (props.sheet) {
-    let homebrew: number | undefined
+  if (props.sheet && props.row) {
+    await editRow({
+      data: formData as InitiativeSheetRowInsert,
+      initiativeModifier,
+      summoner,
+    })
 
-    if (saveToCampaign.value && props.campaignId) {
-      try {
-        homebrew = await create({
-          data: {
-            ...formData,
-            ...initMod,
-            campaign: props.campaignId,
-          } as HomebrewItemInsert,
-          onError,
-        })
-      } catch {
-        return
-      }
-    }
+    onSuccess()
+  } else if (props.sheet) {
+    const homebrew =
+      saveToCampaign.value && props.campaignId
+        ? await createLinked({
+            data: {
+              ...formData,
+              ...initMod,
+              campaign: props.campaignId,
+            } as HomebrewItemInsert,
+            onError,
+          })
+        : undefined
+
+    if (homebrew === null) return
 
     await addInitiative({
       data: { ...formData, homebrew } as InitiativeSheetRowInsert,
@@ -253,6 +270,44 @@ async function create(options: {
   return await createHomebrew(options)
 }
 
+async function createLinked(options: {
+  data: HomebrewItemInsert
+  onError: (error: string) => void
+}): Promise<number | null> {
+  try {
+    return await create(options)
+  } catch {
+    return null
+  }
+}
+
+async function editRow(options: {
+  data: InitiativeSheetRowInsert
+  initiativeModifier?: number
+  summoner?: string
+}): Promise<void> {
+  if (!props.sheet || !props.update || !props.row) return
+
+  const sum = options.summoner
+    ? props.sheet.rows.find(r => r.id === options.summoner)
+    : undefined
+  const type = (form.values.type ?? 'player') as HomebrewType
+
+  const edited = editInitiativeRow(
+    props.row,
+    {
+      ...options.data,
+      initiativeModifier: options.initiativeModifier,
+      summoner: sum ? { name: sum.name, id: sum.id } : undefined,
+    },
+    type,
+  )
+
+  await props.update({
+    rows: props.sheet.rows.map(r => (r.id === edited.id ? edited : r)),
+  })
+}
+
 async function addInitiative(options: {
   data: InitiativeSheetRowInsert
   amount: number
@@ -309,6 +364,7 @@ async function addInitiative(options: {
         <FormHomebrewInformation
           :sheet="props.sheet"
           :type="form.values.type"
+          :row-id="row?.id"
         />
       </div>
 
@@ -339,6 +395,7 @@ async function addInitiative(options: {
         v-if="
           isEncounter &&
           sheet &&
+          !row &&
           canSaveToCampaign &&
           !$route.path.includes('playground')
         "

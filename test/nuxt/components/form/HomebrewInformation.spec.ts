@@ -8,9 +8,10 @@ import { mountWithForm } from '~~/test/nuxt/stubs/form'
 async function mountHomebrewInformation(
   type?: string,
   initiativeSheet?: InitiativeSheet,
+  rowId?: string,
 ) {
   const { component } = await mountWithForm(HomebrewInformation, {
-    props: { type, sheet: initiativeSheet },
+    props: { type, sheet: initiativeSheet, rowId },
     initialValues: { type },
   })
 
@@ -130,6 +131,36 @@ describe('HomebrewInformation', () => {
     it('Should show initiative with a sheet', async () => {
       const component = await mountHomebrewInformation('npc', sheet)
       expect(component.find('input[name="initiative"]').exists()).toBeTruthy()
+    })
+  })
+
+  describe('Editing a row', () => {
+    it('Should hide amount and initiative', async () => {
+      const component = await mountHomebrewInformation(
+        'monster',
+        sheet,
+        sheet.rows[1]!.id,
+      )
+
+      expect(component.html()).not.toContain('components.inputs.amountLabel')
+      expect(component.find('[test-id="generate-roll"]').exists()).toBe(false)
+    })
+
+    it('Should not offer the row as its own summoner', async () => {
+      const component = await mountHomebrewInformation(
+        'summon',
+        sheet,
+        sheet.rows[1]!.id,
+      )
+
+      const vm = component.findComponent(HomebrewInformation).vm as unknown as {
+        summonersOptions: Option<string>[]
+      }
+
+      const values = vm.summonersOptions.map(option => option.value)
+
+      expect(values).toContain(sheet.rows[0]!.id)
+      expect(values).not.toContain(sheet.rows[1]!.id)
     })
   })
 

@@ -18,6 +18,8 @@
     "save": "Save",
     "roll": "Roll dice",
     "update": "Update",
+    "edit": "Edit",
+    "editItem": "Edit {item}",
     "link": "Go to link",
     "heal": "Heal",
     "damage": "Damage",

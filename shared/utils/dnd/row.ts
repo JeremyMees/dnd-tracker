@@ -123,3 +123,27 @@ export const createInitiativeRow = (
     deathSaves: { save: baseArray, fail: baseArray },
   }
 }
+
+export const editInitiativeRow = (
+  row: InitiativeSheetRow,
+  formData: Partial<InitiativeSheetRow> & { name: string },
+  type: HomebrewType,
+): InitiativeSheetRow => {
+  const { hitPoints: _hitPoints, armorClass: _armorClass, ...stats } = formData
+  const hp = getHP(formData)
+  const ac = getAC(formData)
+  const baseHp = row.maxHitPointsOld ?? row.maxHitPoints
+  const baseAc = row.maxArmorClassOld ?? row.maxArmorClass
+
+  return {
+    ...row,
+    ...stats,
+    type,
+    ...(hp === baseHp
+      ? {}
+      : { hitPoints: hp, maxHitPoints: hp, maxHitPointsOld: undefined }),
+    ...(ac === baseAc
+      ? {}
+      : { armorClass: ac, maxArmorClass: ac, maxArmorClassOld: undefined }),
+  }
+}

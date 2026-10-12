@@ -1,4 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import Modify from '~/components/initiative/TableRow/Modify.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -22,9 +23,74 @@ const props: Props = {
   item: sheet.rows[0]!,
 }
 
+const formStubs = {
+  FormHomebrew: {
+    name: 'FormHomebrew',
+    props: {
+      row: Object,
+      sheet: Object,
+      update: Function,
+      campaignId: Number,
+      count: Number,
+      isEncounter: Boolean,
+    },
+    template: '<div test-id="homebrew-form" />',
+    emits: ['close'],
+  },
+}
+
+let component: VueWrapper | undefined
+
 describe('Initiative table row modify', async () => {
   beforeEach(() => {
     mockSheet.value = sheet
+  })
+
+  afterEach(() => {
+    component?.unmount()
+    component = undefined
+  })
+
+  it('Should open the row in the homebrew form when edit is clicked', async () => {
+    component = await mountWithTooltips(Modify, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+
+    expect(component.findComponent({ name: 'FormHomebrew' }).exists()).toBe(
+      false,
+    )
+
+    await component.get('[test-id="edit"]').trigger('click')
+
+    const form = component.findComponent({ name: 'FormHomebrew' })
+
+    expect(document.body.textContent).toContain('actions.editItem')
+    expect(form.props()).toMatchObject({
+      row: props.item,
+      sheet,
+      update: mockUpdate,
+      isEncounter: true,
+    })
+  })
+
+  it('Should close the edit dialog when the form closes', async () => {
+    component = await mountWithTooltips(Modify, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+
+    const vm = component.vm as unknown as { isEditing: boolean }
+
+    await component.get('[test-id="edit"]').trigger('click')
+    expect(vm.isEditing).toBe(true)
+
+    await component.findComponent({ name: 'FormHomebrew' }).vm.$emit('close')
+    await nextTick()
+
+    expect(vm.isEditing).toBe(false)
   })
 
   it('Should match snapshot', async () => {

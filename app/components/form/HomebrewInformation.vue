@@ -6,12 +6,13 @@ import { useFormErrors, useSubmitCount } from 'vee-validate'
 const props = defineProps<{
   type?: string
   sheet?: InitiativeSheet
+  rowId?: string
 }>()
 
 const summonersOptions = computed<Option<string>[]>(() => {
   if (props.sheet?.rows) {
     return props.sheet.rows
-      .filter(r => r.type !== 'summon')
+      .filter(r => r.type !== 'summon' && r.id !== props.rowId)
       .map(o => ({ label: o.name, value: o.id }))
   } else return []
 })
@@ -56,7 +57,7 @@ function generateName(setValue: (value: string) => void): void {
   <div
     :class="{
       'grid sm:grid-cols-2 gap-x-3':
-        (type === 'monster' || type === 'summon') && sheet,
+        (type === 'monster' || type === 'summon') && sheet && !rowId,
     }"
   >
     <UiFormField v-slot="{ componentField }" name="type">
@@ -92,7 +93,7 @@ function generateName(setValue: (value: string) => void): void {
       </UiFormItem>
     </UiFormField>
     <UiFormField
-      v-if="(type === 'monster' || type === 'summon') && sheet"
+      v-if="(type === 'monster' || type === 'summon') && sheet && !rowId"
       v-slot="{ componentField }"
       name="amount"
     >
@@ -179,9 +180,9 @@ function generateName(setValue: (value: string) => void): void {
       </UiFormItem>
     </UiFormField>
   </div>
-  <div :class="{ 'grid sm:grid-cols-2 gap-x-3': sheet }">
+  <div :class="{ 'grid sm:grid-cols-2 gap-x-3': sheet && !rowId }">
     <UiFormField
-      v-if="sheet"
+      v-if="sheet && !rowId"
       v-slot="{ componentField, setValue }"
       name="initiative"
     >

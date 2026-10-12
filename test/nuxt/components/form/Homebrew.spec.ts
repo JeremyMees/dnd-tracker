@@ -47,6 +47,7 @@ const ownedCampaign: NonNullable<InitiativeSheet['campaign']> = {
 interface MountOptions {
   campaignId?: number
   item?: HomebrewItemRow
+  row?: InitiativeSheetRow
   isEncounter?: boolean
   withSheet?: boolean
   rows?: InitiativeSheetRow[]
@@ -56,6 +57,7 @@ interface MountOptions {
 function mountHomebrew({
   campaignId,
   item,
+  row,
   isEncounter = false,
   withSheet = false,
   rows = sheet.rows,
@@ -66,6 +68,7 @@ function mountHomebrew({
       count: 0,
       campaignId,
       item,
+      row,
       isEncounter,
       sheet: withSheet
         ? { ...sheet, rows, campaign: campaign ?? undefined }
@@ -610,5 +613,91 @@ describe('Homebrew', () => {
       component.get('#saveToCampaign').attributes('disabled'),
     ).toBeDefined()
     expect(component.text()).toContain('components.homebrewModal.max')
+  })
+
+  describe('Editing a row', () => {
+    const damaged: InitiativeSheetRow = {
+      ...sheet.rows[1]!,
+      type: 'monster',
+      hitPoints: 40,
+      homebrew: 7,
+    }
+    const rows = sheet.rows.map(r => (r.id === damaged.id ? damaged : r))
+
+    function mountEdit() {
+      return mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        row: damaged,
+        rows,
+      })
+    }
+
+    function editedRow(): InitiativeSheetRow | undefined {
+      const updated: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      return updated.find(r => r.id === damaged.id)
+    }
+
+    it('Should prefill the form with the base stats of the row', async () => {
+      const component = await mountEdit()
+
+      expect(
+        component.get<HTMLInputElement>('input[name="name"]').element.value,
+      ).toBe(damaged.name)
+      expect(
+        component.get<HTMLInputElement>('input[name="hitPoints"]').element
+          .value,
+      ).toBe(String(damaged.maxHitPoints))
+      expect(
+        component.get<HTMLInputElement>('input[name="armorClass"]').element
+          .value,
+      ).toBe(String(damaged.maxArmorClass))
+    })
+
+    it('Should hide the amount, initiative and save to campaign fields', async () => {
+      const component = await mountEdit()
+
+      expect(component.find('input[name="amount"]').exists()).toBe(false)
+      expect(component.find('input[name="initiative"]').exists()).toBe(false)
+      expect(component.find('#saveToCampaign').exists()).toBe(false)
+    })
+
+    it('Should update the row in place and keep its combat state', async () => {
+      const component = await mountEdit()
+
+      await component
+        .get('input[name="link"]')
+        .setValue('https://example.com/goblin')
+      await flushPromises()
+      await submitForm(component)
+
+      const updated: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      expect(updated).toHaveLength(rows.length)
+      expect(editedRow()).toMatchObject({
+        id: damaged.id,
+        index: damaged.index,
+        initiative: damaged.initiative,
+        homebrew: damaged.homebrew,
+        conditions: damaged.conditions,
+        hitPoints: 40,
+        maxHitPoints: damaged.maxHitPoints,
+        link: 'https://example.com/goblin',
+      })
+      expect(createHomebrew).not.toHaveBeenCalled()
+      expect(component.emitted('close')).toHaveLength(1)
+    })
+
+    it('Should reset the current hit points when the base changes', async () => {
+      const component = await mountEdit()
+
+      await component.get('input[name="hitPoints"]').setValue(120)
+      await flushPromises()
+      await submitForm(component)
+
+      expect(editedRow()).toMatchObject({ hitPoints: 120, maxHitPoints: 120 })
+    })
   })
 })
