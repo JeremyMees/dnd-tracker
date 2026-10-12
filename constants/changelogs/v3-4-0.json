@@ -1,0 +1,54 @@
+{
+  "version": "v3.4.0",
+  "date": "2026-10-12",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Remix monsters from bestiary when adding to initiative sheet"
+        },
+        {
+          "text": "Update homebrew content while playing your initiative sheet. Optionally sync your changes to the campaign"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Better toast messages on failed actions"
+        },
+        {
+          "text": "Notify which homebrew tab blocks saving when validation fails"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Raise homebrew validation limits for stats"
+        },
+        {
+          "text": "Duplicate campaigns invites could be sent when an invite was still pending"
+        },
+        {
+          "text": "Campaign invites could be sent to users that were already members of the campaign"
+        },
+        {
+          "text": "Could not access campaign when user is not an owner but is a member of the campaign"
+        },
+        {
+          "text": "Conditions aren’t saved: they disappear automatically a few seconds after I add them"
+        },
+        {
+          "text": "Keep homebrew action fields bound when actions are added or moved"
+        },
+        {
+          "text": "Check the campaign homebrew limit against the campaign homebrew count"
+        }
+      ]
+    }
+  ]
+}
