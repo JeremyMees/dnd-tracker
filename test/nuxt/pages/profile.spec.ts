@@ -45,7 +45,13 @@ vi.mock('~/components/atoms/AvatarPicker.vue', () => ({
   },
 }))
 
+vi.mock('#c15t/composables', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useHasConsentPreferences: () => hasConsentPreferences,
+}))
+
 const user = ref<AuthUser>({ ...authUser })
+const hasConsentPreferences = ref(true)
 
 mockNuxtImport('useSeo', () => useSeo)
 mockNuxtImport('useAuthenticatedUser', () => () => user)
@@ -100,6 +106,7 @@ function confirmCallback(): (confirmed: boolean) => Promise<void> {
 describe('Profile page', () => {
   beforeEach(() => {
     user.value = { ...authUser }
+    hasConsentPreferences.value = true
 
     updateProfile.mockResolvedValue(undefined)
     removeProfile.mockResolvedValue(undefined)
@@ -457,5 +464,24 @@ describe('Profile page', () => {
     expect(removeProfile.mock.calls[0]?.[0]).not.toHaveProperty('onError')
     expect(navigateTo).not.toHaveBeenCalled()
     expect(toast).not.toHaveBeenCalled()
+  })
+
+  it('Should open the consent preferences from the privacy settings button', async () => {
+    const { component } = await mountPage()
+    const activeUI = useNuxtApp().vueApp.runWithContext(() =>
+      useConsentActiveUI(),
+    )
+
+    await component.get('[test-id="privacy-settings"]').trigger('click')
+
+    expect(activeUI.value).toBe('manager')
+  })
+
+  it('Should hide the privacy settings when the policy offers no preferences', async () => {
+    hasConsentPreferences.value = false
+
+    const { component } = await mountPage()
+
+    expect(component.find('[test-id="privacy-settings"]').exists()).toBe(false)
   })
 })

@@ -2,9 +2,17 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import BugReportButton from '~/components/atoms/BugReportButton.vue'
 import Footer from '~/components/templates/Footer.vue'
+import { authUser } from '~~/test/fixtures/auth-user'
+
+const user = ref<AuthUser | null>(null)
+
+vi.mock('~/composables/useAuthentication', () => ({
+  useAuthentication: () => ({ user }),
+}))
 
 describe('Footer', () => {
   beforeEach(() => {
+    user.value = null
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-05-01'))
   })
@@ -118,6 +126,16 @@ describe('Footer', () => {
     await component.get('[test-id="footer-privacy-settings"]').trigger('click')
 
     expect(activeUI.value).toBe('manager')
+  })
+
+  it('Should hide the privacy settings link for a logged in user', async () => {
+    user.value = authUser
+
+    const component = await mountSuspended(Footer)
+
+    expect(component.find('[test-id="footer-privacy-settings"]').exists()).toBe(
+      false,
+    )
   })
 
   it('Should render the illustration credit and version links', async () => {

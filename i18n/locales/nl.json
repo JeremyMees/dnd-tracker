@@ -586,6 +586,11 @@
         "title": "Wachtwoord wijzigende Magie",
         "subtitle": "Betoverende Beveiliging"
       },
+      "privacy": {
+        "title": "Privacyinstellingen",
+        "subtitle": "Kies welke cookies mee op avontuur mogen",
+        "manage": "Cookies beheren"
+      },
       "updateImage": "Foto updaten",
       "delete": "Profiel Verwijderen",
       "toast": {

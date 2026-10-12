@@ -586,6 +586,11 @@
         "title": "Password changing Sorcery",
         "subtitle": "Spellbound Security"
       },
+      "privacy": {
+        "title": "Privacy settings",
+        "subtitle": "Choose which cookies may join your party",
+        "manage": "Manage cookies"
+      },
       "updateImage": "Update image",
       "delete": "Delete profile",
       "toast": {

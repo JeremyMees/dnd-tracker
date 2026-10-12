@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
+import { useHasConsentPreferences } from '#c15t/composables'
 import { useProfileUpdate, useProfileRemove } from '~/queries/profiles'
 
 definePageMeta({ auth: true })
@@ -10,6 +11,8 @@ const { toast } = useToast()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
+const consentActiveUI = useConsentActiveUI()
+const hasConsentPreferences = useHasConsentPreferences()
 
 const avatar = ref<Avatar>({
   url: user.value.avatar || '',
@@ -192,6 +195,30 @@ function subscriptionState(user: AuthUser): string {
           <FormProfilePassword :update="handleUpdateProfile" />
         </div>
       </div>
+      <template v-if="hasConsentPreferences">
+        <UiSeparator />
+        <div
+          class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6"
+        >
+          <div class="md:min-w-[300px] flex-1">
+            <h2>
+              {{ $t('pages.profile.privacy.title') }}
+            </h2>
+            <p class="pt-2 text-muted-foreground">
+              {{ $t('pages.profile.privacy.subtitle') }}
+            </p>
+          </div>
+          <div class="md:max-w-md flex-1">
+            <UiButton
+              test-id="privacy-settings"
+              variant="secondary"
+              @click="consentActiveUI = 'manager'"
+            >
+              {{ $t('pages.profile.privacy.manage') }}
+            </UiButton>
+          </div>
+        </div>
+      </template>
       <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <UiButton
