@@ -180,6 +180,8 @@ describe('homebrews queries', () => {
 
       expect(chain.update).toHaveBeenCalledWith({ name: 'Orc' })
       expect(chain.eq).toHaveBeenCalledWith('id', 4)
+      expect(chain.select).toHaveBeenCalledWith('id')
+      expect(chain.single).toHaveBeenCalled()
       expect(toast).toHaveBeenCalledWith(
         expect.objectContaining({ variant: 'success' }),
       )

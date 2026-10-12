@@ -670,12 +670,109 @@ describe('Homebrew', () => {
       ).toBe(String(damaged.maxArmorClass))
     })
 
-    it('Should hide the amount, initiative and save to campaign fields', async () => {
+    it('Should hide the amount and initiative fields', async () => {
       const component = await mountEdit()
 
       expect(component.find('input[name="amount"]').exists()).toBe(false)
       expect(component.find('input[name="initiative"]').exists()).toBe(false)
-      expect(component.find('#saveToCampaign').exists()).toBe(false)
+    })
+
+    it('Should offer to update the linked campaign homebrew, even on a full sheet', async () => {
+      const full = Array.from({ length: 100 }, (_row, index) => ({
+        ...sheet.rows[0]!,
+        id: `row-${index}`,
+        index,
+      }))
+
+      const component = await mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        row: damaged,
+        rows: [damaged, ...full],
+      })
+
+      expect(
+        component.get('#saveToCampaign').attributes('disabled'),
+      ).toBeUndefined()
+      expect(component.text()).toContain(
+        'components.homebrewModal.updateCampaign',
+      )
+      expect(component.text()).not.toContain('components.homebrewModal.max')
+    })
+
+    it('Should update the linked campaign homebrew when the switch is on', async () => {
+      const component = await mountEdit()
+
+      await component.get('#saveToCampaign').trigger('click')
+      await component
+        .get('input[name="link"]')
+        .setValue('https://example.com/goblin')
+      await flushPromises()
+      await submitForm(component)
+
+      expect(updateOptions()).toMatchObject({
+        id: damaged.homebrew,
+        data: expect.objectContaining({
+          name: damaged.name,
+          link: 'https://example.com/goblin',
+          hitPoints: damaged.maxHitPoints,
+        }),
+      })
+      expect(createHomebrew).not.toHaveBeenCalled()
+      expect(editedRow()).toMatchObject({
+        homebrew: damaged.homebrew,
+        link: 'https://example.com/goblin',
+      })
+      expect(component.emitted('close')).toHaveLength(1)
+    })
+
+    it('Should leave the campaign homebrew alone when the switch is off', async () => {
+      const component = await mountEdit()
+
+      await submitForm(component)
+
+      expect(updateHomebrew).not.toHaveBeenCalled()
+      expect(editedRow()?.homebrew).toBe(damaged.homebrew)
+    })
+
+    it('Should keep the row unchanged when updating the campaign homebrew fails', async () => {
+      updateHomebrew.mockRejectedValue(new Error('not found'))
+
+      const component = await mountEdit()
+
+      await component.get('#saveToCampaign').trigger('click')
+      await submitForm(component)
+
+      expect(update).not.toHaveBeenCalled()
+      expect(component.emitted('close')).toBeUndefined()
+    })
+
+    it('Should add an unlinked row to the campaign and link it', async () => {
+      createHomebrew.mockResolvedValue(42)
+
+      const unlinked = { ...damaged, homebrew: undefined }
+      const component = await mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        row: unlinked,
+        rows: sheet.rows.map(r => (r.id === unlinked.id ? unlinked : r)),
+      })
+
+      expect(component.text()).toContain('components.homebrewModal.save')
+
+      await component.get('#saveToCampaign').trigger('click')
+      await submitForm(component)
+
+      expect(createOptions()).toMatchObject({
+        data: expect.objectContaining({
+          name: unlinked.name,
+          campaign: mockCampaignFull.id,
+        }),
+      })
+      expect(updateHomebrew).not.toHaveBeenCalled()
+      expect(editedRow()?.homebrew).toBe(42)
     })
 
     it('Should update the row in place and keep its combat state', async () => {

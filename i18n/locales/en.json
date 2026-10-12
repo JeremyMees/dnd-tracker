@@ -1081,6 +1081,7 @@
       "add": "Create homebrew",
       "update": "Update homebrew",
       "save": "Add to campaign",
+      "updateCampaign": "Also update campaign homebrew",
       "max": "Max campaign homebrews",
       "actionPage": "Action page",
       "infoPage": "Info page",

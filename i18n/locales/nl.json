@@ -1081,6 +1081,7 @@
       "add": "Homebrew creëren",
       "update": "Homebrew bijwerken",
       "save": "Toevoegen aan campagne",
+      "updateCampaign": "Ook campagne homebrew bijwerken",
       "max": "Max campagne homebrews",
       "actionPage": "Actie pagina",
       "infoPage": "Info pagina",

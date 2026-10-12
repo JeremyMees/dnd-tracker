@@ -168,6 +168,10 @@ const form = useForm({
 })
 
 const saveToCampaign = ref<boolean>(false)
+const isLinked = computed(() => isDefined(props.row?.homebrew))
+const isCampaignFull = computed(
+  () => !isLinked.value && (props.sheet?.rows.length ?? 0) >= 100,
+)
 const formError = ref<string>('')
 
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
@@ -187,13 +191,18 @@ const onSubmit = form.handleSubmit(async values => {
   const onError = (error: string) => (formError.value = error)
 
   if (props.sheet && props.row) {
-    await editRow({
+    const saved = await editRow({
       data: formData as InitiativeSheetRowInsert,
+      campaignData: { ...formData, ...initMod } as Omit<
+        HomebrewItemUpdate,
+        NotUpdatable
+      >,
       initiativeModifier,
       summoner,
+      onError,
     })
 
-    onSuccess()
+    if (saved) onSuccess()
   } else if (props.sheet) {
     const homebrew =
       saveToCampaign.value && props.campaignId
@@ -213,9 +222,7 @@ const onSubmit = form.handleSubmit(async values => {
       data: { ...formData, homebrew } as InitiativeSheetRowInsert,
       amount: amount ?? 1,
       initiative,
-      initiativeModifier: isDefined(initiativeModifier)
-        ? initiativeModifier
-        : undefined,
+      initiativeModifier,
       summoner,
     })
 
@@ -281,12 +288,48 @@ async function createLinked(options: {
   }
 }
 
+async function syncToCampaign(options: {
+  data: Omit<HomebrewItemUpdate, NotUpdatable>
+  onError: (error: string) => void
+}): Promise<number | undefined | null> {
+  const linked = props.row?.homebrew
+
+  if (!saveToCampaign.value || !props.campaignId) return linked
+
+  if (!isDefined(linked)) {
+    return createLinked({
+      data: {
+        ...options.data,
+        campaign: props.campaignId,
+      } as HomebrewItemInsert,
+      onError: options.onError,
+    })
+  }
+
+  try {
+    await updateHomebrew({ ...options, id: linked })
+
+    return linked
+  } catch {
+    return null
+  }
+}
+
 async function editRow(options: {
   data: InitiativeSheetRowInsert
+  campaignData: Omit<HomebrewItemUpdate, NotUpdatable>
   initiativeModifier?: number
   summoner?: string
-}): Promise<void> {
-  if (!props.sheet || !props.update || !props.row) return
+  onError: (error: string) => void
+}): Promise<boolean> {
+  if (!props.sheet || !props.update || !props.row) return false
+
+  const homebrew = await syncToCampaign({
+    data: options.campaignData,
+    onError: options.onError,
+  })
+
+  if (homebrew === null) return false
 
   const sum = options.summoner
     ? props.sheet.rows.find(r => r.id === options.summoner)
@@ -297,6 +340,7 @@ async function editRow(options: {
     props.row,
     {
       ...options.data,
+      homebrew,
       initiativeModifier: options.initiativeModifier,
       summoner: sum ? { name: sum.name, id: sum.id } : undefined,
     },
@@ -306,6 +350,8 @@ async function editRow(options: {
   await props.update({
     rows: props.sheet.rows.map(r => (r.id === edited.id ? edited : r)),
   })
+
+  return true
 }
 
 async function addInitiative(options: {
@@ -395,7 +441,6 @@ async function addInitiative(options: {
         v-if="
           isEncounter &&
           sheet &&
-          !row &&
           canSaveToCampaign &&
           !$route.path.includes('playground')
         "
@@ -405,14 +450,18 @@ async function addInitiative(options: {
           <UiSwitch
             id="saveToCampaign"
             v-model="saveToCampaign"
-            :disabled="sheet.rows.length >= 100"
+            :disabled="isCampaignFull"
             class="mb-0"
           />
           <UiLabel for="saveToCampaign">
-            {{ $t('components.homebrewModal.save') }}
+            {{
+              isLinked
+                ? $t('components.homebrewModal.updateCampaign')
+                : $t('components.homebrewModal.save')
+            }}
           </UiLabel>
         </div>
-        <span v-if="sheet.rows.length >= 100" class="text-destructive text-sm">
+        <span v-if="isCampaignFull" class="text-destructive text-sm">
           {{ $t('components.homebrewModal.max') }}
         </span>
       </div>

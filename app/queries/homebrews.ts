@@ -115,6 +115,8 @@ export function useHomebrewUpdate() {
         .from('homebrew_items')
         .update(data)
         .eq('id', id)
+        .select('id')
+        .single()
 
       if (error) throw createError(error)
     },
