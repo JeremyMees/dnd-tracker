@@ -59,9 +59,15 @@ export function useHomebrewCreate() {
     mutationFn: async ({
       data,
     }: { data: HomebrewItemInsert } & QueryDefaults) => {
-      const { error } = await supabase.from('homebrew_items').insert([data])
+      const { data: created, error } = await supabase
+        .from('homebrew_items')
+        .insert([data])
+        .select('id')
+        .single()
 
       if (error) throw createError(error)
+
+      return created.id
     },
     onSuccess: (_data, { onSuccess }) => {
       if (onSuccess) onSuccess()

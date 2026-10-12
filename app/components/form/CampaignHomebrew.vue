@@ -103,10 +103,11 @@ async function addHomebrews(addAll: boolean): Promise<void> {
     : selected.value
 
   selection.forEach((hb: HomebrewItemRow) => {
-    const { id: _id, ...rest } = hb
+    const { id, ...rest } = hb
 
     const row: Partial<InitiativeSheetRow> & { name: string } = {
       ...nullsToUndefined(rest),
+      homebrew: id,
       initiativeModifier: hb.initiativeModifier
         ? Number(hb.initiativeModifier)
         : undefined,

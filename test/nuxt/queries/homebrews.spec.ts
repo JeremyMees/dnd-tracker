@@ -97,20 +97,23 @@ describe('homebrews queries', () => {
   })
 
   describe('useHomebrewCreate', () => {
-    it('inserts the homebrew item and invalidates caches', async () => {
+    it('inserts the homebrew item and resolves its id', async () => {
       const from = mockSupabaseFrom({
-        homebrew_items: mockChain({ data: null, error: null }),
+        homebrew_items: mockChain({ data: { id: 7 }, error: null }),
       })
 
       const { vm } = await mountHook(() => useHomebrewCreate())
 
-      await vm.mutateAsync({
+      const id = await vm.mutateAsync({
         data: { name: 'Goblin' } as HomebrewItemInsert,
       })
 
-      expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith([
-        { name: 'Goblin' },
-      ])
+      const chain = from.mock.results[0]!.value
+
+      expect(chain.insert).toHaveBeenCalledWith([{ name: 'Goblin' }])
+      expect(chain.select).toHaveBeenCalledWith('id')
+      expect(chain.single).toHaveBeenCalled()
+      expect(id).toBe(7)
       expect(toast).toHaveBeenCalledWith(
         expect.objectContaining({ variant: 'success' }),
       )
@@ -118,7 +121,7 @@ describe('homebrews queries', () => {
 
     it('hands the caller its callbacks on success', async () => {
       mockSupabaseFrom({
-        homebrew_items: mockChain({ data: null, error: null }),
+        homebrew_items: mockChain({ data: { id: 7 }, error: null }),
       })
 
       const { vm } = await mountHook(() => useHomebrewCreate())

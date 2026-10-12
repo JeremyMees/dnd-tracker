@@ -175,8 +175,25 @@ const onSubmit = form.handleSubmit(async values => {
   const onError = (error: string) => (formError.value = error)
 
   if (props.sheet) {
-    addInitiative({
-      data: formData as InitiativeSheetRowInsert,
+    let homebrew: number | undefined
+
+    if (saveToCampaign.value && props.campaignId) {
+      try {
+        homebrew = await create({
+          data: {
+            ...formData,
+            ...initMod,
+            campaign: props.campaignId,
+          } as HomebrewItemInsert,
+          onError,
+        })
+      } catch {
+        return
+      }
+    }
+
+    await addInitiative({
+      data: { ...formData, homebrew } as InitiativeSheetRowInsert,
       amount: amount ?? 1,
       initiative,
       initiativeModifier: isDefined(initiativeModifier)
@@ -185,19 +202,7 @@ const onSubmit = form.handleSubmit(async values => {
       summoner,
     })
 
-    if (saveToCampaign.value && props.campaignId) {
-      await create({
-        data: {
-          ...formData,
-          ...initMod,
-          campaign: props.campaignId,
-        } as HomebrewItemInsert,
-        onSuccess,
-        onError,
-      })
-    } else {
-      onSuccess()
-    }
+    onSuccess()
   } else {
     if (props.item) {
       await updateHomebrew({
@@ -242,10 +247,10 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
 
 async function create(options: {
   data: HomebrewItemInsert
-  onSuccess: () => void
+  onSuccess?: () => void
   onError: (error: string) => void
-}): Promise<void> {
-  await createHomebrew(options)
+}): Promise<number> {
+  return await createHomebrew(options)
 }
 
 async function addInitiative(options: {

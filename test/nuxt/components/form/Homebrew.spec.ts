@@ -434,6 +434,61 @@ describe('Homebrew', () => {
     )
   })
 
+  it('Should link the added rows to the new campaign homebrew', async () => {
+    createHomebrew.mockResolvedValue(42)
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    await component.get('#saveToCampaign').trigger('click')
+    await fillName(component)
+    await submitForm(component)
+
+    const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+    const added = rows.find(row => row.name === 'Grommash')
+
+    expect(added?.homebrew).toBe(42)
+    expect(component.emitted('close')).toHaveLength(1)
+  })
+
+  it('Should not add rows when saving to the campaign fails', async () => {
+    createHomebrew.mockRejectedValue(new Error('boom'))
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    await component.get('#saveToCampaign').trigger('click')
+    await fillName(component)
+    await submitForm(component)
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.emitted('close')).toBeUndefined()
+  })
+
+  it('Should not link rows that are not saved to the campaign', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    await fillName(component)
+    await submitForm(component)
+
+    const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+    const added = rows.find(row => row.name === 'Grommash')
+
+    expect(added).toBeDefined()
+    expect(added!.homebrew).toBeUndefined()
+    expect(createHomebrew).not.toHaveBeenCalled()
+  })
+
   it('Should not submit with an invalid hit dice expression', async () => {
     const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
 
