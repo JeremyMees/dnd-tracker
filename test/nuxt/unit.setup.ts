@@ -38,6 +38,10 @@ vi.mock('~/plugins/session.client', () => ({
   default: () => {},
 }))
 
+vi.mock('~/plugins/sentry-user.client', () => ({
+  default: () => {},
+}))
+
 vi.mock('@formkit/auto-animate/vue', () => ({
   vAutoAnimate: {},
 }))

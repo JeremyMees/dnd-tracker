@@ -6,6 +6,7 @@ import { authUser } from '~~/test/fixtures/auth-user'
 const { setUser } = vi.hoisted(() => ({ setUser: vi.fn() }))
 
 vi.mock('@sentry/nuxt', () => ({ setUser }))
+vi.unmock('~/plugins/sentry-user.client')
 
 const user = ref<AuthUser | null>(null)
 
