@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import vue from '@vitejs/plugin-vue'
+import { offline } from 'c15t/vue'
 import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
 
 const ignoredLogs = [
@@ -27,6 +28,9 @@ export default defineConfig({
           name: 'nuxt',
           include: ['test/nuxt/**/*.{test,spec}.ts'],
           environment: 'nuxt',
+          environmentOptions: {
+            nuxt: { overrides: { c15t: { mode: offline() } } },
+          },
           setupFiles: ['./test/nuxt/unit.setup.ts'],
         },
       }),
