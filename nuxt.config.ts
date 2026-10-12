@@ -170,7 +170,6 @@ export default defineNuxtConfig({
         'reka-ui',
         'vee-validate',
         'vue-draggable-plus',
-        'ybug-vue',
         'zod',
       ],
     },
