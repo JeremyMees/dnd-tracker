@@ -7,6 +7,7 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
+import { mockEmailTemplates } from '~~/test/unit/stubs/email'
 import handler from '~~/server/api/emails/feature-request.post'
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -19,6 +20,7 @@ function body(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/emails/feature-request', () => {
   beforeEach(() => {
+    mockEmailTemplates()
     mockFetch.mockReset()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ plunkApiKey: 'plunk-key' })
@@ -47,6 +49,25 @@ describe('POST /api/emails/feature-request', () => {
         }),
       }),
     )
+  })
+
+  it('fills the email with the requester details', async () => {
+    mockFrom({
+      profiles: mockChain({
+        data: { username: 'Jeremy', email: 'jeremy@example.com' },
+        error: null,
+      }),
+    })
+    mockFetch.mockResolvedValue({ success: true })
+
+    await handler(mockEvent({ method: 'POST', body: body() }))
+
+    const { text } = mockFetch.mock.calls[0]![1].body
+
+    expect(text).toContain('email=jeremy@example.com')
+    expect(text).toContain('name=Jeremy')
+    expect(text).toContain(`title=${body().title}`)
+    expect(text).toContain(`text=${body().text}`)
   })
 
   it('falls back to the caller claims when no profile exists', async () => {

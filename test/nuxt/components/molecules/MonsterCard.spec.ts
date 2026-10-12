@@ -66,6 +66,23 @@ describe('MonsterCard', async () => {
     expect(component.emitted('add')![0]).toEqual([props.monster])
   })
 
+  it('Should not offer a remix by default', async () => {
+    const component = await mountWithTooltips(MonsterCard, { props })
+
+    expect(component.find('[test-id="remix-button"]').exists()).toBe(false)
+  })
+
+  it('Should be able to remix the monster', async () => {
+    const component = await mountWithTooltips(MonsterCard, {
+      props: { ...props, addable: true, remixable: true },
+    })
+
+    await component.get('[test-id="remix-button"]').trigger('click')
+
+    expect(component.emitted('remix')![0]).toEqual([props.monster])
+    expect(component.emitted('add')).toBeUndefined()
+  })
+
   it('Should fall back to a dash when core stats are missing', async () => {
     const monster = {
       ...dndMonsterFixture,

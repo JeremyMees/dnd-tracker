@@ -3,7 +3,6 @@ defineEmits<{ close: [] }>()
 
 defineProps<{
   campaignId: number
-  count: number
   item?: HomebrewItemRow
 }>()
 </script>
@@ -11,7 +10,6 @@ defineProps<{
 <template>
   <FormHomebrew
     :campaign-id="campaignId"
-    :count="count"
     :item="item"
     @close="$emit('close')"
   />

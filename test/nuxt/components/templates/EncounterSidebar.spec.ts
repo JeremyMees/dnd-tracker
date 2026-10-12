@@ -5,6 +5,7 @@ import { DialogContent } from '~/components/ui/dialog'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
+import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface EncounterSidebarVM {
@@ -55,7 +56,11 @@ const props = {
 
 const formStubs = {
   FormPinContent: { name: 'FormPinContent', template: '<div />' },
-  FormBestiary: { name: 'FormBestiary', template: '<div />' },
+  FormBestiary: {
+    name: 'FormBestiary',
+    template: '<div />',
+    emits: ['remix'],
+  },
   FormCampaignHomebrew: {
     name: 'FormCampaignHomebrew',
     template: '<div />',
@@ -63,7 +68,7 @@ const formStubs = {
   },
   FormHomebrew: {
     name: 'FormHomebrew',
-    props: ['count'],
+    props: ['campaignId', 'template'],
     template: '<div />',
     emits: ['close'],
   },
@@ -301,6 +306,50 @@ describe('EncounterSidebar', () => {
     })
   })
 
+  it('Should open a remixed monster in the new homebrew form', async () => {
+    component = await mountWithTooltips(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+    const vm = component.vm as unknown as EncounterSidebarVM
+
+    await component.get('[test-id="bestiary"]').trigger('click')
+    await component
+      .findComponent({ name: 'FormBestiary' })
+      .vm.$emit('remix', dndMonsterFixture)
+    await nextTick()
+
+    expect(vm.openModal).toBe('newHomebrew')
+    expect(document.body.textContent).toContain('actions.remixItem')
+    expect(
+      component.findComponent({ name: 'FormHomebrew' }).props('template'),
+    ).toEqual(monsterToRow(dndMonsterFixture))
+  })
+
+  it('Should forget the remix once its dialog closes', async () => {
+    component = await mountWithTooltips(EncounterSidebar, {
+      props,
+      provide,
+      global: { stubs: formStubs },
+    })
+
+    await component.get('[test-id="bestiary"]').trigger('click')
+    await component
+      .findComponent({ name: 'FormBestiary' })
+      .vm.$emit('remix', dndMonsterFixture)
+    await nextTick()
+
+    await component.findComponent({ name: 'FormHomebrew' }).vm.$emit('close')
+    await nextTick()
+    await component.get('[test-id="new-homebrew"]').trigger('click')
+    await nextTick()
+
+    expect(
+      component.findComponent({ name: 'FormHomebrew' }).props('template'),
+    ).toBeUndefined()
+  })
+
   it('Should close the campaign homebrew dialog when the form closes', async () => {
     mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
@@ -337,8 +386,8 @@ describe('EncounterSidebar', () => {
     expect(vm.openModal).toBeUndefined()
   })
 
-  it('Should pass the current row count to the new homebrew form', async () => {
-    mockSheet.value = { ...sheet, rows: [] }
+  it('Should pass the campaign of the sheet to the new homebrew form', async () => {
+    mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
 
     component = await mountWithTooltips(EncounterSidebar, {
       props,
@@ -349,8 +398,8 @@ describe('EncounterSidebar', () => {
     await component.get('[test-id="new-homebrew"]').trigger('click')
 
     expect(
-      component.findComponent({ name: 'FormHomebrew' }).props('count'),
-    ).toBe(0)
+      component.findComponent({ name: 'FormHomebrew' }).props('campaignId'),
+    ).toBe(mockSheetCampaign.id)
   })
 
   it('Should close the settings dialog when the form closes', async () => {

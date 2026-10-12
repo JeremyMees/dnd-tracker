@@ -1,6 +1,4 @@
-import { render } from '@vue-email/render'
 import * as z from 'zod'
-import ContactRequest from '~~/server/emails/ContactRequest.vue'
 
 const bodySchema = z.object({
   name: z.string().min(3).max(30).optional(),
@@ -13,8 +11,12 @@ export default defineEventHandler(async event => {
   const { plunkApiKey } = useRuntimeConfig()
 
   try {
-    const html = await render(ContactRequest, body, { pretty: true })
-    const text = await render(ContactRequest, body, { plainText: true })
+    const { html, text } = await renderEmail('ContactRequest', {
+      date: new Date().toLocaleDateString('nl-NL'),
+      email: body.email,
+      name: body.name,
+      question: body.question,
+    })
 
     return await $fetch<PlunkSendResponse, string>(
       'https://next-api.useplunk.com/v1/send',

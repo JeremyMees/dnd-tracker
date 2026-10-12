@@ -9,6 +9,7 @@ import type { SupabaseChain } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
 import { verifyJWT } from '~~/server/utils/jwt'
+import { mockEmailTemplates } from '~~/test/unit/stubs/email'
 import handler from '~~/server/api/emails/campaign-invite.post'
 
 const appDomain = 'https://www.dnd-tracker.com'
@@ -65,6 +66,7 @@ function sentInviteLink(): string {
 
 describe('POST /api/emails/campaign-invite', () => {
   beforeEach(() => {
+    mockEmailTemplates()
     mockFetch.mockReset()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({

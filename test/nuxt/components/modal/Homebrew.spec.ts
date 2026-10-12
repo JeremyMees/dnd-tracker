@@ -4,7 +4,7 @@ import HomebrewModal from '~/components/modal/Homebrew.vue'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 
 const FormHomebrewStub = defineComponent({
-  props: { campaignId: Number, count: Number, item: Object },
+  props: { campaignId: Number, item: Object },
   emits: ['close'],
   template: '<div test-id="form-homebrew" />',
 })
@@ -13,7 +13,7 @@ const stubs = { FormHomebrew: FormHomebrewStub }
 
 function mountHomebrewModal(item?: HomebrewItemRow) {
   return mountSuspended(HomebrewModal, {
-    props: { campaignId: 1, count: 3, item },
+    props: { campaignId: 1, item },
     global: { stubs },
   })
 }
@@ -31,13 +31,12 @@ describe('Homebrew modal', () => {
     expect(component.find('[test-id="form-homebrew"]').exists()).toBe(true)
   })
 
-  it('Should pass the campaignId and count through', async () => {
+  it('Should pass the campaignId through', async () => {
     const component = await mountHomebrewModal()
 
     const form = component.findComponent(FormHomebrewStub)
 
     expect(form.props('campaignId')).toBe(1)
-    expect(form.props('count')).toBe(3)
   })
 
   it('Should pass an undefined item when creating', async () => {

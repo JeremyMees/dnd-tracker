@@ -15,6 +15,16 @@ type Modals =
   | undefined
 
 const openModal = ref<Modals>(undefined)
+const remix = ref<ReturnType<typeof monsterToRow>>()
+
+watch(openModal, modal => {
+  if (modal !== 'newHomebrew') remix.value = undefined
+})
+
+function remixMonster(monster: DndMonster): void {
+  remix.value = monsterToRow(monster)
+  openModal.value = 'newHomebrew'
+}
 
 onBeforeUnmount(() => (openModal.value = undefined))
 
@@ -129,7 +139,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 </UiDialogTitle>
                 <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
-              <FormBestiary persist="local" />
+              <FormBestiary persist="local" @remix="remixMonster" />
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>
@@ -211,14 +221,18 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
             >
               <UiDialogHeader>
                 <UiDialogTitle>
-                  {{ $t('general.newHomebrew') }}
+                  {{
+                    remix
+                      ? $t('actions.remixItem', { item: remix.name })
+                      : $t('general.newHomebrew')
+                  }}
                 </UiDialogTitle>
                 <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
               <div class="overflow-y-auto">
                 <FormHomebrew
                   :campaign-id="sheet?.campaign?.id"
-                  :count="sheet?.rows.length || 0"
+                  :template="remix"
                   :sheet="sheet"
                   :update="update"
                   is-encounter

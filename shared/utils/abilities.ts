@@ -7,6 +7,10 @@ export const isAdmin = (item: TeamMember[], id: string) =>
   !!item.find(u => u.user.id === id && u.role === 'Admin')
 export const isMember = (item: TeamMember[], id: string) =>
   !!item.find(u => u.user.id === id)
+export const isOwnerOrAdmin = (
+  campaign: { createdBy: { id: string }; team: TeamMember[] },
+  id: string,
+) => campaign.createdBy.id === id || isAdmin(campaign.team, id)
 
 export const isNotCampaignOwner = defineAbility(
   (user: AuthUser, campaign: Campaign) => {

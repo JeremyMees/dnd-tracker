@@ -1,8 +1,6 @@
-import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
 import { ONE_WEEK } from '~~/constants/time'
-import CampaignInvite from '~~/server/emails/CampaignInvite.vue'
 
 const bodySchema = z.object({
   campaignId: z.number().int().positive(),
@@ -88,7 +86,6 @@ export default defineEventHandler(async event => {
     .single()
 
   const props = {
-    email: invitee.email,
     username: invitee.username,
     campaign: campaign.title,
     invitedBy: inviter?.username || 'Owner',
@@ -96,8 +93,7 @@ export default defineEventHandler(async event => {
   }
 
   try {
-    const html = await render(CampaignInvite, props, { pretty: true })
-    const text = await render(CampaignInvite, props, { plainText: true })
+    const { html, text } = await renderEmail('CampaignInvite', props)
 
     return await $fetch<PlunkSendResponse, string>(
       'https://next-api.useplunk.com/v1/send',

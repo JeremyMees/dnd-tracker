@@ -50,7 +50,7 @@ export default defineConfig({
         'app/tables/**',
         'app/components/ui/**',
         'app/components/animation/**',
-        'server/emails/**/*.vue',
+        'app/emails/**/*.vue',
       ],
     },
   },

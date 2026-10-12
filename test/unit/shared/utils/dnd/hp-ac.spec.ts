@@ -202,6 +202,23 @@ describe('dnd/hp-ac', () => {
     })
   })
 
+  describe('getBaseHP and getBaseAC', () => {
+    it('should return the max values without an override', () => {
+      expect(getBaseHP({ maxHitPoints: 30 })).toBe(30)
+      expect(getBaseAC({ maxArmorClass: 15 })).toBe(15)
+    })
+
+    it('should return the value from before the override', () => {
+      expect(getBaseHP({ maxHitPoints: 50, maxHitPointsOld: 30 })).toBe(30)
+      expect(getBaseAC({ maxArmorClass: 20, maxArmorClassOld: 15 })).toBe(15)
+    })
+
+    it('should return undefined when the row has no values', () => {
+      expect(getBaseHP({})).toBeUndefined()
+      expect(getBaseAC({})).toBeUndefined()
+    })
+  })
+
   describe('getHealthBand', () => {
     it.each([
       [80, 100, 'healthy'],

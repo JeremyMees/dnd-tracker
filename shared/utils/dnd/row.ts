@@ -123,3 +123,81 @@ export const createInitiativeRow = (
     deathSaves: { save: baseArray, fail: baseArray },
   }
 }
+
+export const monsterToRow = (
+  monster: DndMonster,
+): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
+  const {
+    initiativeBonus,
+    hitDice,
+    languages,
+    proficiencyBonus,
+    type: _type,
+    size: _size,
+    challengeRating: _challengeRating,
+    alignment: _alignment,
+    experiencePoints: _experiencePoints,
+    ...rest
+  } = monster
+
+  return {
+    ...rest,
+    type: 'monster',
+    hitDice: parseDndDiceToString(hitDice),
+    languages: parseDndLanguages(languages),
+    initiativeModifier: initiativeBonus,
+    proficiencyBonus: proficiencyBonus ?? undefined,
+  }
+}
+
+export const homebrewToRow = (
+  homebrew: HomebrewItemRow,
+): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
+  const { id, initiativeModifier, ...rest } = homebrew
+
+  return {
+    ...nullsToUndefined(rest),
+    homebrew: id,
+    initiativeModifier: toIntegerOrUndefined(initiativeModifier),
+  }
+}
+
+export function toSummoner(
+  rows: InitiativeSheetRow[],
+  id?: string,
+): InitiativeSheetRow['summoner'] {
+  const summoner = id ? rows.find(row => row.id === id) : undefined
+
+  return summoner ? { name: summoner.name, id: summoner.id } : undefined
+}
+
+export function replaceRow(
+  rows: InitiativeSheetRow[],
+  replacement: InitiativeSheetRow,
+): InitiativeSheetRow[] {
+  return rows.map(row => (row.id === replacement.id ? replacement : row))
+}
+
+export const editInitiativeRow = (
+  row: InitiativeSheetRow,
+  formData: Partial<InitiativeSheetRow> & { name: string },
+  type: HomebrewType,
+): InitiativeSheetRow => {
+  const { hitPoints: _hitPoints, armorClass: _armorClass, ...stats } = formData
+  const hp = getHP(formData)
+  const ac = getAC(formData)
+  const baseHp = getBaseHP(row)
+  const baseAc = getBaseAC(row)
+
+  return {
+    ...row,
+    ...stats,
+    type,
+    ...(hp === baseHp
+      ? {}
+      : { hitPoints: hp, maxHitPoints: hp, maxHitPointsOld: undefined }),
+    ...(ac === baseAc
+      ? {}
+      : { armorClass: ac, maxArmorClass: ac, maxArmorClassOld: undefined }),
+  }
+}

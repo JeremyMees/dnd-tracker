@@ -134,6 +134,21 @@ describe('CampaignHomebrew', () => {
     ])
   })
 
+  it('Should remember which homebrew each row came from', async () => {
+    const { injected, mount } = mountCampaignHomebrew()
+    const component = await mount()
+
+    await component.get('[aria-label="actions.addAll"]').trigger('click')
+    await flushPromises()
+
+    const added = rowsOf(injected.update).slice(sheet.rows.length)
+
+    expect(added.map(row => row.homebrew)).toEqual([
+      mockHomebrewItem.id,
+      mockHomebrewPlayer.id,
+    ])
+  })
+
   it('Should reindex the rows after adding', async () => {
     const { injected, mount } = mountCampaignHomebrew()
     const component = await mount()

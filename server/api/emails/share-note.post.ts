@@ -1,7 +1,5 @@
-import { render } from '@vue-email/render'
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
-import ShareNote from '~~/server/emails/ShareNote.vue'
 
 const bodySchema = z.object({
   noteId: z.number().int().positive(),
@@ -34,7 +32,6 @@ export default defineEventHandler(async event => {
     .single()
 
   const props = {
-    email: body.email,
     noteContent: sanitizeServerHTML(note.text ?? ''),
     noteTitle: note.title,
     campaign: campaign.title,
@@ -42,8 +39,7 @@ export default defineEventHandler(async event => {
   }
 
   try {
-    const html = await render(ShareNote, props, { pretty: true })
-    const text = await render(ShareNote, props, { plainText: true })
+    const { html, text } = await renderEmail('ShareNote', props)
 
     return await $fetch<PlunkSendResponse, string>(
       'https://next-api.useplunk.com/v1/send',

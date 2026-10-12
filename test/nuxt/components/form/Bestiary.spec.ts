@@ -181,6 +181,21 @@ describe('Bestiary', () => {
     expect(rows.at(-1)!.type).toBe('monster')
   })
 
+  it('Should pass a remixed monster on without adding it', async () => {
+    const { injected, mount } = mountBestiary()
+    const component = await mount()
+
+    const card = component.findComponent(MonsterCard)
+
+    expect(card.props('remixable')).toBe(true)
+
+    await card.vm.$emit('remix', dndMonsterFixture)
+    await flushPromises()
+
+    expect(component.emitted('remix')![0]).toEqual([dndMonsterFixture])
+    expect(injected.update).not.toHaveBeenCalled()
+  })
+
   it('Should reindex the rows after adding a monster', async () => {
     const { injected, mount } = mountBestiary()
     const component = await mount()

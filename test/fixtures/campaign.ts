@@ -1,4 +1,4 @@
-export const mockSheetCampaign: InitiativeSheet['campaign'] = {
+export const mockSheetCampaign: NonNullable<InitiativeSheet['campaign']> = {
   id: 1,
   title: 'Test Campaign',
   createdBy: {

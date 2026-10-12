@@ -3,6 +3,7 @@ import {
   isOwner,
   isAdmin,
   isMember,
+  isOwnerOrAdmin,
   isNotCampaignOwner,
   isCampaignOwner,
   isCampaignAdmin,
@@ -93,6 +94,23 @@ describe('abilities', () => {
         isAdmin(mockCampaign.team as TeamMember[], 'member-101'),
       ).toBeFalsy()
       expect(isAdmin(mockCampaign.team as TeamMember[], userId)).toBeFalsy()
+    })
+  })
+
+  describe('isOwnerOrAdmin', () => {
+    const campaign = {
+      createdBy: mockCampaign.createdBy,
+      team: mockCampaign.team as TeamMember[],
+    }
+
+    it('should return true for the owner and for an admin', () => {
+      expect(isOwnerOrAdmin(campaign, userId)).toBe(true)
+      expect(isOwnerOrAdmin(campaign, adminId)).toBe(true)
+    })
+
+    it('should return false for other members and outsiders', () => {
+      expect(isOwnerOrAdmin(campaign, memberId)).toBe(false)
+      expect(isOwnerOrAdmin(campaign, otherUserId)).toBe(false)
     })
   })
 

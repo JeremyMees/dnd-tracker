@@ -88,9 +88,12 @@ describe('form-schema', () => {
       ).toBeTruthy()
     })
 
-    it('Should reject name longer than 30 characters', () => {
+    it('Should reject name longer than 100 characters', () => {
       expect(
-        traitSchema.safeParse({ ...valid, name: 'A'.repeat(31) }).success,
+        traitSchema.safeParse({ ...valid, name: 'A'.repeat(100) }).success,
+      ).toBeTruthy()
+      expect(
+        traitSchema.safeParse({ ...valid, name: 'A'.repeat(101) }).success,
       ).toBeFalsy()
     })
 
@@ -103,9 +106,12 @@ describe('form-schema', () => {
       ).toBeTruthy()
     })
 
-    it('Should reject desc longer than 1000 characters', () => {
+    it('Should reject desc longer than 2000 characters', () => {
       expect(
-        traitSchema.safeParse({ ...valid, desc: 'A'.repeat(1001) }).success,
+        traitSchema.safeParse({ ...valid, desc: 'A'.repeat(2000) }).success,
+      ).toBeTruthy()
+      expect(
+        traitSchema.safeParse({ ...valid, desc: 'A'.repeat(2001) }).success,
       ).toBeFalsy()
     })
 
@@ -120,16 +126,16 @@ describe('form-schema', () => {
       expect(abilityScoresSchema.safeParse({}).success).toBeTruthy()
     })
 
-    it('Should accept boundary values 1 and 30', () => {
+    it('Should accept boundary values 1 and 50', () => {
       expect(
-        abilityScoresSchema.safeParse({ strength: 1, charisma: 30 }).success,
+        abilityScoresSchema.safeParse({ strength: 1, charisma: 50 }).success,
       ).toBeTruthy()
     })
 
     it('Should reject values out of range', () => {
       expect(abilityScoresSchema.safeParse({ strength: 0 }).success).toBeFalsy()
       expect(
-        abilityScoresSchema.safeParse({ strength: 31 }).success,
+        abilityScoresSchema.safeParse({ strength: 51 }).success,
       ).toBeFalsy()
     })
 
@@ -195,9 +201,9 @@ describe('form-schema', () => {
       expect(sightSchema.safeParse({}).success).toBeTruthy()
     })
 
-    it('Should accept boundary values 0 and 10000', () => {
+    it('Should accept boundary values 0 and 50000', () => {
       expect(
-        sightSchema.safeParse({ darkVisionRange: 0, trueSightRange: 10000 })
+        sightSchema.safeParse({ darkVisionRange: 0, trueSightRange: 50000 })
           .success,
       ).toBeTruthy()
     })
@@ -205,7 +211,7 @@ describe('form-schema', () => {
     it('Should reject values out of range', () => {
       expect(sightSchema.safeParse({ darkVisionRange: -1 }).success).toBeFalsy()
       expect(
-        sightSchema.safeParse({ darkVisionRange: 10001 }).success,
+        sightSchema.safeParse({ darkVisionRange: 50001 }).success,
       ).toBeFalsy()
     })
 
@@ -228,6 +234,16 @@ describe('form-schema', () => {
 
     it('Should accept a minimal valid attack', () => {
       expect(attackSchema.safeParse(valid).success).toBeTruthy()
+    })
+
+    it('Should enforce name length 1 to 100', () => {
+      expect(attackSchema.safeParse({ ...valid, name: '' }).success).toBeFalsy()
+      expect(
+        attackSchema.safeParse({ ...valid, name: 'A'.repeat(100) }).success,
+      ).toBeTruthy()
+      expect(
+        attackSchema.safeParse({ ...valid, name: 'A'.repeat(101) }).success,
+      ).toBeFalsy()
     })
 
     it('Should accept all attack types', () => {
@@ -377,15 +393,15 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should accept damageDieCount within 1 to 100', () => {
+    it('Should accept damageDieCount within 0 to 100', () => {
       expect(
-        attackSchema.safeParse({ ...valid, damageDieCount: 1 }).success,
+        attackSchema.safeParse({ ...valid, damageDieCount: 0 }).success,
       ).toBeTruthy()
       expect(
         attackSchema.safeParse({ ...valid, damageDieCount: 100 }).success,
       ).toBeTruthy()
       expect(
-        attackSchema.safeParse({ ...valid, damageDieCount: 0 }).success,
+        attackSchema.safeParse({ ...valid, damageDieCount: -1 }).success,
       ).toBeFalsy()
       expect(
         attackSchema.safeParse({ ...valid, damageDieCount: 101 }).success,
@@ -415,18 +431,18 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should accept param within 1 to 100', () => {
+    it('Should accept param within 1 to 200', () => {
       expect(
         usageLimitsSchema.safeParse({ type: 'perDay', param: 1 }).success,
       ).toBeTruthy()
       expect(
-        usageLimitsSchema.safeParse({ type: 'perDay', param: 100 }).success,
+        usageLimitsSchema.safeParse({ type: 'perDay', param: 200 }).success,
       ).toBeTruthy()
       expect(
         usageLimitsSchema.safeParse({ type: 'perDay', param: 0 }).success,
       ).toBeFalsy()
       expect(
-        usageLimitsSchema.safeParse({ type: 'perDay', param: 101 }).success,
+        usageLimitsSchema.safeParse({ type: 'perDay', param: 201 }).success,
       ).toBeFalsy()
     })
   })
@@ -477,15 +493,16 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should enforce name length 3 to 100', () => {
+    it('Should enforce name length 1 to 150', () => {
+      expect(actionSchema.safeParse({ ...valid, name: '' }).success).toBeFalsy()
       expect(
-        actionSchema.safeParse({ ...valid, name: 'AB' }).success,
-      ).toBeFalsy()
-      expect(
-        actionSchema.safeParse({ ...valid, name: 'ABC' }).success,
+        actionSchema.safeParse({ ...valid, name: '1' }).success,
       ).toBeTruthy()
       expect(
-        actionSchema.safeParse({ ...valid, name: 'A'.repeat(101) }).success,
+        actionSchema.safeParse({ ...valid, name: 'A'.repeat(150) }).success,
+      ).toBeTruthy()
+      expect(
+        actionSchema.safeParse({ ...valid, name: 'A'.repeat(151) }).success,
       ).toBeFalsy()
     })
 

@@ -22,7 +22,7 @@ describe('POST /api/stripe/portal', () => {
   beforeEach(() => {
     mockStorage()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
-    mockRuntimeConfig({ public: { appDomain: 'https://dnd-tracker.com' } })
+    mockRuntimeConfig({ public: { appDomain: 'https://www.dnd-tracker.com' } })
   })
 
   it('returns a billing portal url for the customer', async () => {
@@ -35,7 +35,7 @@ describe('POST /api/stripe/portal', () => {
 
     expect(stripe.billingPortal.sessions.create).toHaveBeenCalledWith({
       customer: 'cus_1',
-      return_url: 'https://dnd-tracker.com/profile',
+      return_url: 'https://www.dnd-tracker.com/profile',
     })
   })
 

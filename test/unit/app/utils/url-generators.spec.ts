@@ -13,7 +13,7 @@ vi.mock('#app', async importOriginal => {
   return {
     ...actual,
     useRuntimeConfig: () => ({
-      public: { appDomain: 'https://dnd-tracker.com' },
+      public: { appDomain: 'https://www.dnd-tracker.com' },
     }),
   }
 })
@@ -103,13 +103,13 @@ describe('url-generators', () => {
     it('should generate a share URL with English locale', () => {
       const url = shareEncounterUrl('abc123', 'en')
 
-      expect(url).toBe('https://dnd-tracker.com/playground?token=abc123')
+      expect(url).toBe('https://www.dnd-tracker.com/playground?token=abc123')
     })
 
     it('should generate a share URL with Dutch locale', () => {
       const url = shareEncounterUrl('xyz789', 'nl')
 
-      expect(url).toBe('https://dnd-tracker.com/nl/playground?token=xyz789')
+      expect(url).toBe('https://www.dnd-tracker.com/nl/playground?token=xyz789')
     })
   })
 
@@ -121,13 +121,13 @@ describe('url-generators', () => {
     it('should generate a live session URL with English locale', () => {
       const url = liveSessionUrl('AB12CD', 'en')
 
-      expect(url).toBe('https://dnd-tracker.com/live?code=AB12CD')
+      expect(url).toBe('https://www.dnd-tracker.com/live?code=AB12CD')
     })
 
     it('should generate a live session URL with Dutch locale', () => {
       const url = liveSessionUrl('AB12CD', 'nl')
 
-      expect(url).toBe('https://dnd-tracker.com/nl/live?code=AB12CD')
+      expect(url).toBe('https://www.dnd-tracker.com/nl/live?code=AB12CD')
     })
   })
 

@@ -134,6 +134,7 @@ export interface InitiativeSheetRow {
   tempHitPoints?: number
   initiativeModifier?: number
   campaign?: number
+  homebrew?: number
   createdAt?: string
   link?: string
   note?: string

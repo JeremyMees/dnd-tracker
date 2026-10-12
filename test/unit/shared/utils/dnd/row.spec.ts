@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
+import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 describe('dnd/row', () => {
   describe('indexCorrect', () => {
@@ -205,6 +207,196 @@ describe('dnd/row', () => {
       expect(row.traits).toEqual(traits)
       expect(row.proficiencyBonus).toBe(2)
       expect(row.passivePerception).toBe(12)
+    })
+  })
+
+  describe('monsterToRow', () => {
+    it('should turn a bestiary monster into monster row data', () => {
+      const row = monsterToRow(dndMonsterFixture)
+
+      expect(row).toMatchObject({
+        name: dndMonsterFixture.name,
+        type: 'monster',
+        hitPoints: dndMonsterFixture.hitPoints,
+        armorClass: dndMonsterFixture.armorClass,
+        hitDice: parseDndDiceToString(dndMonsterFixture.hitDice),
+        languages: dndMonsterFixture.languages.map(language => language.name),
+        initiativeModifier: dndMonsterFixture.initiativeBonus,
+      })
+    })
+
+    it('should drop the monster fields a row has no place for', () => {
+      const row = monsterToRow(dndMonsterFixture)
+
+      for (const field of [
+        'size',
+        'challengeRating',
+        'alignment',
+        'experiencePoints',
+        'initiativeBonus',
+      ]) {
+        expect(row).not.toHaveProperty(field)
+      }
+    })
+
+    it('should leave out a missing proficiency bonus', () => {
+      const row = monsterToRow({ ...dndMonsterFixture, proficiencyBonus: null })
+
+      expect(row.proficiencyBonus).toBeUndefined()
+    })
+  })
+
+  describe('homebrewToRow', () => {
+    it('should link the row to the homebrew it came from', () => {
+      const row = homebrewToRow(mockHomebrewItem)
+
+      expect(row.homebrew).toBe(mockHomebrewItem.id)
+      expect(row).not.toHaveProperty('id')
+      expect(row).toMatchObject({
+        name: mockHomebrewItem.name,
+        type: mockHomebrewItem.type,
+        campaign: mockHomebrewItem.campaign,
+        hitPoints: mockHomebrewItem.hitPoints,
+      })
+    })
+
+    it('should turn nulls into undefined', () => {
+      const row = homebrewToRow(mockHomebrewItem)
+
+      expect(row.player).toBeUndefined()
+      expect(row.link).toBeUndefined()
+      expect(row.traits).toBeUndefined()
+    })
+
+    it('should parse the stored initiative modifier', () => {
+      expect(homebrewToRow(mockHomebrewItem).initiativeModifier).toBe(2)
+      expect(
+        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: '0' })
+          .initiativeModifier,
+      ).toBe(0)
+      expect(
+        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: '' })
+          .initiativeModifier,
+      ).toBeUndefined()
+      expect(
+        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: null })
+          .initiativeModifier,
+      ).toBeUndefined()
+    })
+  })
+
+  describe('toSummoner', () => {
+    it('should return the name and id of the summoning row', () => {
+      const summoner = sheet.rows[0]!
+
+      expect(toSummoner(sheet.rows, summoner.id)).toEqual({
+        name: summoner.name,
+        id: summoner.id,
+      })
+    })
+
+    it('should return undefined without a matching row', () => {
+      expect(toSummoner(sheet.rows, 'missing')).toBeUndefined()
+      expect(toSummoner(sheet.rows)).toBeUndefined()
+    })
+  })
+
+  describe('replaceRow', () => {
+    it('should swap in the row with the same id and keep the order', () => {
+      const replacement = { ...sheet.rows[1]!, name: 'Renamed' }
+
+      const rows = replaceRow(sheet.rows, replacement)
+
+      expect(rows).toHaveLength(sheet.rows.length)
+      expect(rows[1]).toBe(replacement)
+      expect(rows[0]).toBe(sheet.rows[0])
+    })
+
+    it('should leave the rows alone when no id matches', () => {
+      const rows = replaceRow(sheet.rows, { ...sheet.rows[0]!, id: 'missing' })
+
+      expect(rows).toEqual(sheet.rows)
+    })
+  })
+
+  describe('editInitiativeRow', () => {
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 2,
+      initiative: 14,
+      name: 'Goblin',
+      type: 'monster',
+      homebrew: 7,
+      note: 'flanking',
+      conditions: [{ id: 'prone', name: 'Prone', desc: 'On the ground' }],
+      concentration: true,
+      deathSaves: { save: [true, false, false], fail: [false, false, false] },
+      hitPoints: 4,
+      maxHitPoints: 12,
+      tempHitPoints: 3,
+      armorClass: 15,
+      maxArmorClass: 15,
+      tempArmorClass: 2,
+    }
+
+    it('should apply the edited stats and keep the combat state', () => {
+      const edited = editInitiativeRow(
+        row,
+        {
+          name: 'Goblin Boss',
+          link: 'https://example.com',
+          hitPoints: 12,
+          armorClass: 15,
+        },
+        'npc',
+      )
+
+      expect(edited).toEqual({
+        ...row,
+        name: 'Goblin Boss',
+        link: 'https://example.com',
+        type: 'npc',
+      })
+    })
+
+    it('should reset current hit points when the base changes', () => {
+      const edited = editInitiativeRow(
+        { ...row, maxHitPoints: 30, maxHitPointsOld: 12 },
+        { name: 'Goblin', hitPoints: 20, armorClass: 15 },
+        'monster',
+      )
+
+      expect(edited.hitPoints).toBe(20)
+      expect(edited.maxHitPoints).toBe(20)
+      expect(edited.maxHitPointsOld).toBeUndefined()
+      expect(edited.tempHitPoints).toBe(3)
+    })
+
+    it('should keep an override while the base hit points stay the same', () => {
+      const overridden = { ...row, maxHitPoints: 30, maxHitPointsOld: 12 }
+
+      const edited = editInitiativeRow(
+        overridden,
+        { name: 'Goblin', hitPoints: 12, armorClass: 15 },
+        'monster',
+      )
+
+      expect(edited.hitPoints).toBe(4)
+      expect(edited.maxHitPoints).toBe(30)
+      expect(edited.maxHitPointsOld).toBe(12)
+    })
+
+    it('should reset current armor class when the base changes', () => {
+      const edited = editInitiativeRow(
+        { ...row, armorClass: 10, maxArmorClassOld: 15 },
+        { name: 'Goblin', hitPoints: 12, armorClass: 17 },
+        'monster',
+      )
+
+      expect(edited.armorClass).toBe(17)
+      expect(edited.maxArmorClass).toBe(17)
+      expect(edited.maxArmorClassOld).toBeUndefined()
+      expect(edited.tempArmorClass).toBe(2)
     })
   })
 

@@ -22,3 +22,7 @@ vi.mock('nitropack/runtime', () => ({ useStorage }))
 export function mockStorage() {
   hoisted.store.clear()
 }
+
+export function setStorageItem(key: string, value: unknown) {
+  hoisted.store.set(key, value)
+}

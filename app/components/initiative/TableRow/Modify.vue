@@ -6,6 +6,7 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
+const isEditing = ref(false)
 
 function copyRow(): void {
   if (!sheet.value) return
@@ -48,6 +49,17 @@ function deleteRow(): void {
         </NuxtLink>
       </UiButton>
     </Tooltip>
+    <Tooltip :text="$t('actions.edit')">
+      <UiButton
+        test-id="edit"
+        variant="warning-ghost"
+        size="icon-sm"
+        :aria-label="$t('actions.edit')"
+        @click="isEditing = true"
+      >
+        <Icon name="tabler:pencil" :aria-hidden="true" />
+      </UiButton>
+    </Tooltip>
     <Tooltip :text="$t('actions.copy')">
       <UiButton
         test-id="copy"
@@ -71,5 +83,28 @@ function deleteRow(): void {
         <Icon name="tabler:trash" :aria-hidden="true" />
       </UiButton>
     </Tooltip>
+    <UiDialog v-model:open="isEditing">
+      <UiDialogContent
+        test-id="edit-dialog"
+        class="inset-0 translate-x-0 translate-y-0 max-h-dvh gap-0 border-0 rounded-none!"
+      >
+        <UiDialogHeader>
+          <UiDialogTitle>
+            {{ $t('actions.editItem', { item: item.name }) }}
+          </UiDialogTitle>
+          <UiDialogDescription class="sr-only" />
+        </UiDialogHeader>
+        <div class="overflow-y-auto">
+          <FormHomebrew
+            :campaign-id="sheet?.campaign?.id"
+            :row="item"
+            :sheet="sheet"
+            :update="update"
+            is-encounter
+            @close="isEditing = false"
+          />
+        </div>
+      </UiDialogContent>
+    </UiDialog>
   </div>
 </template>

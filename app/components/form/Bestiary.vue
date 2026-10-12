@@ -4,6 +4,8 @@ import { useToast } from '~/components/ui/toast/use-toast'
 import { crOptions, gameSystems } from '~~/constants/dnd'
 import { useSrdDocuments, useSrdMonsterListing } from '~/queries/srd'
 
+defineEmits<{ remix: [monster: DndMonster] }>()
+
 const props = withDefaults(
   defineProps<{
     system?: DndGameSystem
@@ -140,29 +142,10 @@ function resetFilters(): void {
 async function addMonster(monster: DndMonster): Promise<void> {
   if (!sheet.value) return
 
-  const {
-    initiativeBonus,
-    hitDice,
-    languages,
-    proficiencyBonus,
-    type: _type,
-    size: _size,
-    challengeRating: _challengeRating,
-    alignment: _alignment,
-    experiencePoints: _experiencePoints,
-    ...rest
-  } = monster
-
   const rows = [
     ...sheet.value.rows,
     createInitiativeRow(
-      {
-        ...rest,
-        hitDice: parseDndDiceToString(hitDice),
-        languages: parseDndLanguages(languages),
-        initiativeModifier: initiativeBonus,
-        proficiencyBonus: proficiencyBonus ?? undefined,
-      },
+      monsterToRow(monster),
       'monster',
       sheet.value.rows.length,
     ),
@@ -296,7 +279,9 @@ async function addMonster(monster: DndMonster): Promise<void> {
           :key="hit.id"
           :monster="hit"
           addable
+          remixable
           @add="addMonster"
+          @remix="$emit('remix', $event)"
         />
       </MasonryGrid>
     </div>

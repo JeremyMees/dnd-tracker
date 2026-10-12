@@ -56,7 +56,7 @@ describe('POST /api/stripe/subscribe', () => {
   beforeEach(() => {
     mockStorage()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
-    mockRuntimeConfig({ public: { appDomain: 'https://dnd-tracker.com/' } })
+    mockRuntimeConfig({ public: { appDomain: 'https://www.dnd-tracker.com/' } })
   })
 
   it('opens a one-time checkout for a lifetime price', async () => {

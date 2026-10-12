@@ -10,15 +10,28 @@ import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
-const { createHomebrew, updateHomebrew, currentUser } = vi.hoisted(() => ({
+const {
+  createHomebrew,
+  updateHomebrew,
+  currentUser,
+  homebrewCount,
+  homebrewCountEnabled,
+} = vi.hoisted(() => ({
   createHomebrew: vi.fn(),
   updateHomebrew: vi.fn(),
   currentUser: { value: null as { id: string } | null },
+  homebrewCount: { value: 0 },
+  homebrewCountEnabled: { value: undefined as boolean | undefined },
 }))
 
 vi.mock('~/queries/homebrews', () => ({
   useHomebrewCreate: () => ({ mutateAsync: createHomebrew }),
   useHomebrewUpdate: () => ({ mutateAsync: updateHomebrew }),
+  useHomebrewCount: (_id: number, enabled: { value: boolean }) => {
+    homebrewCountEnabled.value = enabled.value
+
+    return { data: homebrewCount }
+  },
 }))
 
 mockNuxtImport('useAuthentication', () => () => ({ user: currentUser }))
@@ -47,6 +60,8 @@ const ownedCampaign: NonNullable<InitiativeSheet['campaign']> = {
 interface MountOptions {
   campaignId?: number
   item?: HomebrewItemRow
+  row?: InitiativeSheetRow
+  template?: Partial<InitiativeSheetRow> & { name: string }
   isEncounter?: boolean
   withSheet?: boolean
   rows?: InitiativeSheetRow[]
@@ -56,6 +71,8 @@ interface MountOptions {
 function mountHomebrew({
   campaignId,
   item,
+  row,
+  template,
   isEncounter = false,
   withSheet = false,
   rows = sheet.rows,
@@ -63,9 +80,10 @@ function mountHomebrew({
 }: MountOptions = {}) {
   return mountWithTooltips(Homebrew, {
     props: {
-      count: 0,
       campaignId,
       item,
+      row,
+      template,
       isEncounter,
       sheet: withSheet
         ? { ...sheet, rows, campaign: campaign ?? undefined }
@@ -101,6 +119,7 @@ function updateOptions() {
 describe('Homebrew', () => {
   beforeEach(() => {
     currentUser.value = { id: authUser.id }
+    homebrewCount.value = 0
     createHomebrew.mockResolvedValue(undefined)
     updateHomebrew.mockResolvedValue(undefined)
     update.mockResolvedValue(undefined)
@@ -187,6 +206,20 @@ describe('Homebrew', () => {
     await submitForm(component)
 
     expect(createHomebrew).not.toHaveBeenCalled()
+  })
+
+  it('Should accept names up to 50 characters', async () => {
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component, 'A'.repeat(51))
+    await submitForm(component)
+
+    expect(createHomebrew).not.toHaveBeenCalled()
+
+    await fillName(component, 'A'.repeat(50))
+    await submitForm(component)
+
+    expect(createHomebrew).toHaveBeenCalledOnce()
   })
 
   it('Should say which tab has the invalid field when saving fails', async () => {
@@ -284,8 +317,6 @@ describe('Homebrew', () => {
 
     await fillName(component)
     await submitForm(component)
-
-    createOptions().onSuccess()
 
     expect(component.emitted('close')).toHaveLength(1)
   })
@@ -434,6 +465,61 @@ describe('Homebrew', () => {
     )
   })
 
+  it('Should link the added rows to the new campaign homebrew', async () => {
+    createHomebrew.mockResolvedValue(42)
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    await component.get('#saveToCampaign').trigger('click')
+    await fillName(component)
+    await submitForm(component)
+
+    const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+    const added = rows.find(row => row.name === 'Grommash')
+
+    expect(added?.homebrew).toBe(42)
+    expect(component.emitted('close')).toHaveLength(1)
+  })
+
+  it('Should not add rows when saving to the campaign fails', async () => {
+    createHomebrew.mockRejectedValue(new Error('boom'))
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    await component.get('#saveToCampaign').trigger('click')
+    await fillName(component)
+    await submitForm(component)
+
+    expect(update).not.toHaveBeenCalled()
+    expect(component.emitted('close')).toBeUndefined()
+  })
+
+  it('Should not link rows that are not saved to the campaign', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    await fillName(component)
+    await submitForm(component)
+
+    const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+    const added = rows.find(row => row.name === 'Grommash')
+
+    expect(added).toBeDefined()
+    expect(added!.homebrew).toBeUndefined()
+    expect(createHomebrew).not.toHaveBeenCalled()
+  })
+
   it('Should not submit with an invalid hit dice expression', async () => {
     const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
 
@@ -478,10 +564,9 @@ describe('Homebrew', () => {
     expect(component.text()).toContain('zod.required')
   })
 
-  it('Should not add to the sheet when the update handler is missing', async () => {
+  it('Should not close when the update handler is missing', async () => {
     const component = await mountWithTooltips(Homebrew, {
       props: {
-        count: 0,
         sheet: { ...sheet },
         update: undefined,
       },
@@ -490,7 +575,18 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    expect(component.emitted('close')).toHaveLength(1)
+    expect(component.emitted('close')).toBeUndefined()
+  })
+
+  it('Should not close when the campaign homebrew could not be saved', async () => {
+    createHomebrew.mockRejectedValue(new Error('boom'))
+
+    const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    await fillName(component)
+    await submitForm(component)
+
+    expect(component.emitted('close')).toBeUndefined()
   })
 
   it('Should attach the picked summoner to the new row', async () => {
@@ -537,7 +633,25 @@ describe('Homebrew', () => {
     ).toBe('true')
   })
 
-  it('Should block saving to the campaign on a full sheet', async () => {
+  it('Should block saving to a campaign that has the maximum homebrews', async () => {
+    homebrewCount.value = 100
+
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+    })
+
+    expect(homebrewCountEnabled.value).toBe(true)
+    expect(
+      component.get('#saveToCampaign').attributes('disabled'),
+    ).toBeDefined()
+    expect(component.text()).toContain('components.homebrewModal.max')
+  })
+
+  it('Should allow saving to the campaign on a sheet with many rows', async () => {
+    homebrewCount.value = 99
+
     const rows = Array.from({ length: 100 }, (_row, index) => ({
       ...sheet.rows[0]!,
       id: `row-${index}`,
@@ -553,7 +667,238 @@ describe('Homebrew', () => {
 
     expect(
       component.get('#saveToCampaign').attributes('disabled'),
-    ).toBeDefined()
-    expect(component.text()).toContain('components.homebrewModal.max')
+    ).toBeUndefined()
+    expect(component.text()).not.toContain('components.homebrewModal.max')
+  })
+
+  it('Should not count the campaign homebrews outside an encounter', async () => {
+    await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+    expect(homebrewCountEnabled.value).toBe(false)
+  })
+
+  describe('Remixing a monster', () => {
+    const template = {
+      name: 'Goblin Boss',
+      type: 'monster' as const,
+      hitPoints: 21,
+      armorClass: 17,
+      link: 'https://example.com/goblin-boss',
+    }
+
+    function mountRemix() {
+      return mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        template,
+      })
+    }
+
+    it('Should prefill the form with the monster and an amount of one', async () => {
+      const component = await mountRemix()
+
+      expect(
+        component.get<HTMLInputElement>('input[name="name"]').element.value,
+      ).toBe(template.name)
+      expect(
+        component.get<HTMLInputElement>('input[name="hitPoints"]').element
+          .value,
+      ).toBe(String(template.hitPoints))
+      expect(
+        component.get<HTMLInputElement>('input[name="amount"]').element.value,
+      ).toBe('1')
+    })
+
+    it('Should add the remixed monster as new rows', async () => {
+      const component = await mountRemix()
+
+      await fillName(component, 'Goblin Warlord')
+      await submitForm(component)
+
+      const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      expect(rows).toHaveLength(sheet.rows.length + 1)
+      expect(rows.find(r => r.name === 'Goblin Warlord')).toMatchObject({
+        type: 'monster',
+        hitPoints: template.hitPoints,
+        link: template.link,
+      })
+      expect(component.emitted('close')).toHaveLength(1)
+    })
+  })
+
+  describe('Editing a row', () => {
+    const damaged: InitiativeSheetRow = {
+      ...sheet.rows[1]!,
+      type: 'monster',
+      hitPoints: 40,
+      homebrew: 7,
+    }
+    const rows = sheet.rows.map(r => (r.id === damaged.id ? damaged : r))
+
+    function mountEdit() {
+      return mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        row: damaged,
+        rows,
+      })
+    }
+
+    function editedRow(): InitiativeSheetRow | undefined {
+      const updated: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      return updated.find(r => r.id === damaged.id)
+    }
+
+    it('Should prefill the form with the base stats of the row', async () => {
+      const component = await mountEdit()
+
+      expect(
+        component.get<HTMLInputElement>('input[name="name"]').element.value,
+      ).toBe(damaged.name)
+      expect(
+        component.get<HTMLInputElement>('input[name="hitPoints"]').element
+          .value,
+      ).toBe(String(damaged.maxHitPoints))
+      expect(
+        component.get<HTMLInputElement>('input[name="armorClass"]').element
+          .value,
+      ).toBe(String(damaged.maxArmorClass))
+    })
+
+    it('Should hide the amount and initiative fields', async () => {
+      const component = await mountEdit()
+
+      expect(component.find('input[name="amount"]').exists()).toBe(false)
+      expect(component.find('input[name="initiative"]').exists()).toBe(false)
+    })
+
+    it('Should offer to update the linked campaign homebrew, even when the campaign is full', async () => {
+      homebrewCount.value = 100
+
+      const component = await mountEdit()
+
+      expect(homebrewCountEnabled.value).toBe(false)
+      expect(
+        component.get('#saveToCampaign').attributes('disabled'),
+      ).toBeUndefined()
+      expect(component.text()).toContain(
+        'components.homebrewModal.updateCampaign',
+      )
+      expect(component.text()).not.toContain('components.homebrewModal.max')
+    })
+
+    it('Should update the linked campaign homebrew when the switch is on', async () => {
+      const component = await mountEdit()
+
+      await component.get('#saveToCampaign').trigger('click')
+      await component
+        .get('input[name="link"]')
+        .setValue('https://example.com/goblin')
+      await flushPromises()
+      await submitForm(component)
+
+      expect(updateOptions()).toMatchObject({
+        id: damaged.homebrew,
+        data: expect.objectContaining({
+          name: damaged.name,
+          link: 'https://example.com/goblin',
+          hitPoints: damaged.maxHitPoints,
+        }),
+      })
+      expect(createHomebrew).not.toHaveBeenCalled()
+      expect(editedRow()).toMatchObject({
+        homebrew: damaged.homebrew,
+        link: 'https://example.com/goblin',
+      })
+      expect(component.emitted('close')).toHaveLength(1)
+    })
+
+    it('Should leave the campaign homebrew alone when the switch is off', async () => {
+      const component = await mountEdit()
+
+      await submitForm(component)
+
+      expect(updateHomebrew).not.toHaveBeenCalled()
+      expect(editedRow()?.homebrew).toBe(damaged.homebrew)
+    })
+
+    it('Should keep the row unchanged when updating the campaign homebrew fails', async () => {
+      updateHomebrew.mockRejectedValue(new Error('not found'))
+
+      const component = await mountEdit()
+
+      await component.get('#saveToCampaign').trigger('click')
+      await submitForm(component)
+
+      expect(update).not.toHaveBeenCalled()
+      expect(component.emitted('close')).toBeUndefined()
+    })
+
+    it('Should add an unlinked row to the campaign and link it', async () => {
+      createHomebrew.mockResolvedValue(42)
+
+      const unlinked = { ...damaged, homebrew: undefined }
+      const component = await mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        row: unlinked,
+        rows: sheet.rows.map(r => (r.id === unlinked.id ? unlinked : r)),
+      })
+
+      expect(component.text()).toContain('components.homebrewModal.save')
+
+      await component.get('#saveToCampaign').trigger('click')
+      await submitForm(component)
+
+      expect(createOptions()).toMatchObject({
+        data: expect.objectContaining({
+          name: unlinked.name,
+          campaign: mockCampaignFull.id,
+        }),
+      })
+      expect(updateHomebrew).not.toHaveBeenCalled()
+      expect(editedRow()?.homebrew).toBe(42)
+    })
+
+    it('Should update the row in place and keep its combat state', async () => {
+      const component = await mountEdit()
+
+      await component
+        .get('input[name="link"]')
+        .setValue('https://example.com/goblin')
+      await flushPromises()
+      await submitForm(component)
+
+      const updated: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      expect(updated).toHaveLength(rows.length)
+      expect(editedRow()).toMatchObject({
+        id: damaged.id,
+        index: damaged.index,
+        initiative: damaged.initiative,
+        homebrew: damaged.homebrew,
+        conditions: damaged.conditions,
+        hitPoints: 40,
+        maxHitPoints: damaged.maxHitPoints,
+        link: 'https://example.com/goblin',
+      })
+      expect(createHomebrew).not.toHaveBeenCalled()
+      expect(component.emitted('close')).toHaveLength(1)
+    })
+
+    it('Should reset the current hit points when the base changes', async () => {
+      const component = await mountEdit()
+
+      await component.get('input[name="hitPoints"]').setValue(120)
+      await flushPromises()
+      await submitForm(component)
+
+      expect(editedRow()).toMatchObject({ hitPoints: 120, maxHitPoints: 120 })
+    })
   })
 })

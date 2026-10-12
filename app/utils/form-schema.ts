@@ -39,17 +39,17 @@ export const skillBonusesSchema = z.object({
 })
 
 export const traitSchema = z.object({
-  name: z.string().min(3).max(30),
-  desc: z.string().min(10).max(1000),
+  name: z.string().min(3).max(100),
+  desc: z.string().min(10).max(2000),
 })
 
 export const abilityScoresSchema = z.object({
-  strength: z.int().gte(1).lte(30).optional(),
-  dexterity: z.int().gte(1).lte(30).optional(),
-  constitution: z.int().gte(1).lte(30).optional(),
-  intelligence: z.int().gte(1).lte(30).optional(),
-  wisdom: z.int().gte(1).lte(30).optional(),
-  charisma: z.int().gte(1).lte(30).optional(),
+  strength: z.int().gte(1).lte(50).optional(),
+  dexterity: z.int().gte(1).lte(50).optional(),
+  constitution: z.int().gte(1).lte(50).optional(),
+  intelligence: z.int().gte(1).lte(50).optional(),
+  wisdom: z.int().gte(1).lte(50).optional(),
+  charisma: z.int().gte(1).lte(50).optional(),
 })
 
 export const abilityBonusSchema = z.object({
@@ -72,11 +72,11 @@ export const speedSchema = z.object({
 })
 
 export const sightSchema = z.object({
-  normalSightRange: z.int().gte(0).lte(10000).optional(),
-  darkVisionRange: z.int().gte(0).lte(10000).optional(),
-  blindSightRange: z.int().gte(0).lte(10000).optional(),
-  tremorSenseRange: z.int().gte(0).lte(10000).optional(),
-  trueSightRange: z.int().gte(0).lte(10000).optional(),
+  normalSightRange: z.int().gte(0).lte(50000).optional(),
+  darkVisionRange: z.int().gte(0).lte(50000).optional(),
+  blindSightRange: z.int().gte(0).lte(50000).optional(),
+  tremorSenseRange: z.int().gte(0).lte(50000).optional(),
+  trueSightRange: z.int().gte(0).lte(50000).optional(),
 })
 
 const damageTypeEnum = damageTypes as [DndDamageType, ...DndDamageType[]]
@@ -95,7 +95,7 @@ const actionTypeEnum = [...actionType] as [DndActionType, ...DndActionType[]]
 const abilityTypeEnum = [...abilityType] as [DndAbility, ...DndAbility[]]
 
 export const attackSchema = z.object({
-  name: z.string().min(1).max(50),
+  name: z.string().min(1).max(100),
   attackType: z.enum(attackTypeEnum),
   toHitMod: z.int().gte(-20).lte(30).optional(),
   distanceUnit: z.enum(distanceUnitEnum),
@@ -103,7 +103,7 @@ export const attackSchema = z.object({
   range: z.int().gte(0).lte(1200).optional(),
   longRange: z.int().gte(0).lte(1200).optional(),
   targetCreatureOnly: z.boolean().optional(),
-  damageDieCount: z.int().gte(1).lte(100).optional(),
+  damageDieCount: z.int().gte(0).lte(100).optional(),
   damageDieType: z.enum(diceTypeEnum).optional(),
   damageBonus: z.int().gte(-20).lte(100).optional(),
   damageType: z.enum(damageTypeEnum).optional(),
@@ -117,12 +117,12 @@ export const attackSchema = z.object({
 
 export const usageLimitsSchema = z.object({
   type: z.enum(usageTypeEnum),
-  param: z.int().gte(1).lte(100),
+  param: z.int().gte(1).lte(200),
 })
 
 export const actionSchema = z.object({
   actionType: z.enum(actionTypeEnum),
-  name: z.string().min(3).max(100),
+  name: z.string().min(1).max(150),
   desc: z.string().min(1).max(2000),
   attacks: z.array(attackSchema).max(10),
   legendaryActionCost: z.int().gte(1).lte(10).optional(),

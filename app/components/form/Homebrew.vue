@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { useHomebrewCreate, useHomebrewUpdate } from '~/queries/homebrews'
+import {
+  useHomebrewCount,
+  useHomebrewCreate,
+  useHomebrewUpdate,
+} from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import type { InvalidSubmissionContext } from 'vee-validate'
 import * as z from 'zod'
-import { homebrewType } from '~~/constants/validation'
+import { homebrewType, maxCampaignHomebrews } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
 const props = withDefaults(
   defineProps<{
     campaignId?: number
-    count: number
     item?: HomebrewItemRow
+    row?: InitiativeSheetRow
+    template?: Partial<InitiativeSheetRow> & { name: string }
     isEncounter?: boolean
     sheet?: InitiativeSheet
     update?: (
@@ -22,6 +27,8 @@ const props = withDefaults(
     isEncounter: false,
     campaignId: undefined,
     item: undefined,
+    row: undefined,
+    template: undefined,
     sheet: undefined,
     update: undefined,
   },
@@ -32,13 +39,9 @@ const { user } = useAuthentication()
 
 const canSaveToCampaign = computed(() => {
   const id = user.value?.id
+  const campaign = props.sheet?.campaign
 
-  if (!id) return false
-
-  return (
-    props.sheet?.campaign?.createdBy.id === id ||
-    isAdmin(props.sheet?.campaign?.team || [], id)
-  )
+  return !!id && !!campaign && isOwnerOrAdmin(campaign, id)
 })
 
 const tabs = ['info', 'stats', 'traits', 'actions'] as const
@@ -74,7 +77,7 @@ const formSchema = z
     type: z.enum(homebrewType),
     amount: z.int().gte(1).lte(15).optional(),
     summoner: z.string().max(50).optional().or(z.literal('')),
-    name: z.string().min(3).max(30),
+    name: z.string().min(3).max(50),
     player: z.string().min(3).max(30).optional().or(z.literal('')),
     initiative: z.int().gte(1).lte(50).optional(),
     initiativeModifier: z.int().gte(-20).lte(20).optional(),
@@ -90,7 +93,7 @@ const formSchema = z
       .or(z.literal('')),
     armorDetail: z.string().max(100).optional().or(z.literal('')),
     proficiencyBonus: z.int().gte(0).lte(10).optional(),
-    passivePerception: z.int().gte(0).lte(30).optional(),
+    passivePerception: z.int().gte(0).lte(50).optional(),
     speed: speedSchema.optional(),
     sight: sightSchema.optional(),
     languages: z.array(z.string().min(1).max(50)).max(20),
@@ -105,6 +108,7 @@ const formSchema = z
   .refine(
     data =>
       !props.isEncounter ||
+      !!props.row ||
       !(['monster', 'summon'].includes(data.type) && !data.amount),
     { error: () => t('zod.required'), path: ['amount'] },
   )
@@ -114,113 +118,110 @@ const formSchema = z
     { error: () => t('zod.required'), path: ['summoner'] },
   )
 
+const source = props.row
+  ? {
+      ...props.row,
+      hitPoints: getBaseHP(props.row),
+      armorClass: getBaseAC(props.row),
+    }
+  : (props.item ?? props.template)
+
 const form = useForm({
   validationSchema: formSchema,
   initialValues: {
-    type: props.item?.type || 'player',
-    name: props.item?.name || '',
-    player: props.item?.player || '',
+    type: source?.type || 'player',
+    summoner: props.row?.summoner?.id,
+    name: source?.name || '',
+    player: source?.player || '',
+    amount: props.template ? 1 : undefined,
     initiative: undefined,
-    initiativeModifier: props.item?.initiativeModifier
-      ? isNaN(+props.item.initiativeModifier)
-        ? undefined
-        : +props.item.initiativeModifier
-      : undefined,
-    armorClass: props.item?.armorClass || undefined,
-    hitPoints: props.item?.hitPoints || undefined,
-    link: props.item?.link || '',
-    hitDice: props.item?.hitDice || '',
-    armorDetail: props.item?.armorDetail || '',
-    proficiencyBonus: props.item?.proficiencyBonus || undefined,
-    passivePerception: props.item?.passivePerception || undefined,
-    speed: props.item?.speed || undefined,
-    sight: props.item?.sight || undefined,
-    languages: props.item?.languages || [],
-    abilityScores: props.item?.abilityScores || undefined,
-    modifiers: props.item?.modifiers || undefined,
-    savingThrows: props.item?.savingThrows || undefined,
-    skillBonuses: props.item?.skillBonuses || undefined,
+    initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),
+    armorClass: source?.armorClass || undefined,
+    hitPoints: source?.hitPoints || undefined,
+    link: source?.link || '',
+    hitDice: source?.hitDice || '',
+    armorDetail: source?.armorDetail || '',
+    proficiencyBonus: source?.proficiencyBonus || undefined,
+    passivePerception: source?.passivePerception || undefined,
+    speed: source?.speed || undefined,
+    sight: source?.sight || undefined,
+    languages: source?.languages || [],
+    abilityScores: source?.abilityScores || undefined,
+    modifiers: source?.modifiers || undefined,
+    savingThrows: source?.savingThrows || undefined,
+    skillBonuses: source?.skillBonuses || undefined,
     resistancesAndImmunities: {
       damageImmunities:
-        props.item?.resistancesAndImmunities?.damageImmunities ?? [],
+        source?.resistancesAndImmunities?.damageImmunities ?? [],
       damageResistances:
-        props.item?.resistancesAndImmunities?.damageResistances ?? [],
+        source?.resistancesAndImmunities?.damageResistances ?? [],
       damageVulnerabilities:
-        props.item?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+        source?.resistancesAndImmunities?.damageVulnerabilities ?? [],
       conditionImmunities:
-        props.item?.resistancesAndImmunities?.conditionImmunities ?? [],
+        source?.resistancesAndImmunities?.conditionImmunities ?? [],
     },
-    traits: (props.item?.traits ?? []) as { name: string; desc: string }[],
-    actions: props.item?.actions ?? [],
+    traits: (source?.traits ?? []) as { name: string; desc: string }[],
+    actions: source?.actions ?? [],
   },
 })
 
 const saveToCampaign = ref<boolean>(false)
+const isLinked = computed(() => isDefined(props.row?.homebrew))
+const { data: homebrewCount } = useHomebrewCount(
+  props.campaignId ?? 0,
+  computed(
+    () =>
+      isDefined(props.campaignId) &&
+      !!props.sheet &&
+      canSaveToCampaign.value &&
+      !isLinked.value,
+  ),
+)
+const isCampaignFull = computed(
+  () => !isLinked.value && (homebrewCount.value ?? 0) >= maxCampaignHomebrews,
+)
 const formError = ref<string>('')
 
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
 
+type HomebrewData = Omit<HomebrewItemUpdate, NotUpdatable>
+
+interface Submission {
+  row: InitiativeSheetRowInsert
+  homebrew: HomebrewData
+  amount?: number
+  initiative?: number
+  initiativeModifier?: number
+  summoner?: string
+}
+
+type SubmitMode = 'editRow' | 'addRows' | 'updateHomebrew' | 'createHomebrew'
+
+const mode = computed<SubmitMode | undefined>(() => {
+  if (props.sheet) return props.row ? 'editRow' : 'addRows'
+  if (props.item) return 'updateHomebrew'
+  return props.campaignId ? 'createHomebrew' : undefined
+})
+
+const submitters: Record<
+  SubmitMode,
+  (submission: Submission) => Promise<boolean>
+> = {
+  editRow,
+  addRows,
+  updateHomebrew: async ({ homebrew }) =>
+    props.item ? updateInCampaign(props.item.id, homebrew) : false,
+  createHomebrew: async ({ homebrew }) =>
+    (await createInCampaign(homebrew)) !== null,
+}
+
 const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
-  const { amount, initiative, initiativeModifier, summoner, ...rest } = values
+  if (!mode.value) return
 
-  const formData = { ...rest }
-  const initMod = isDefined(initiativeModifier)
-    ? { initiativeModifier: initiativeModifier.toString() }
-    : {}
-
-  const onSuccess = () => emit('close')
-  const onError = (error: string) => (formError.value = error)
-
-  if (props.sheet) {
-    addInitiative({
-      data: formData as InitiativeSheetRowInsert,
-      amount: amount ?? 1,
-      initiative,
-      initiativeModifier: isDefined(initiativeModifier)
-        ? initiativeModifier
-        : undefined,
-      summoner,
-    })
-
-    if (saveToCampaign.value && props.campaignId) {
-      await create({
-        data: {
-          ...formData,
-          ...initMod,
-          campaign: props.campaignId,
-        } as HomebrewItemInsert,
-        onSuccess,
-        onError,
-      })
-    } else {
-      onSuccess()
-    }
-  } else {
-    if (props.item) {
-      await updateHomebrew({
-        data: { ...formData, ...initMod } as Omit<
-          HomebrewItemUpdate,
-          NotUpdatable
-        >,
-        id: props.item.id,
-        onSuccess,
-        onError,
-      })
-    } else if (props.campaignId) {
-      await create({
-        data: {
-          ...formData,
-          ...initMod,
-          campaign: props.campaignId,
-        } as HomebrewItemInsert,
-        onSuccess,
-        onError,
-      })
-    }
-  }
+  if (await submitters[mode.value](toSubmission(values))) emit('close')
 }, onInvalidSubmit)
 
 function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
@@ -240,51 +241,120 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
   })
 }
 
-async function create(options: {
-  data: HomebrewItemInsert
-  onSuccess: () => void
-  onError: (error: string) => void
-}): Promise<void> {
-  await createHomebrew(options)
+function onError(error: string): void {
+  formError.value = error
 }
 
-async function addInitiative(options: {
-  data: InitiativeSheetRowInsert
-  amount: number
-  initiative?: number
-  initiativeModifier?: number | string
-  summoner?: string
-}): Promise<void> {
-  if (!props.sheet || !props.update) return
+function toSubmission(values: z.output<typeof formSchema>): Submission {
+  const { amount, initiative, initiativeModifier, summoner, ...data } = values
 
-  const sum = options.summoner
-    ? props.sheet.rows.filter(r => r.id === options.summoner)[0]
-    : undefined
+  return {
+    row: data as InitiativeSheetRowInsert,
+    homebrew: {
+      ...data,
+      ...(isDefined(initiativeModifier)
+        ? { initiativeModifier: initiativeModifier.toString() }
+        : {}),
+    } as HomebrewData,
+    amount,
+    initiative,
+    initiativeModifier,
+    summoner,
+  }
+}
+
+async function createInCampaign(data: HomebrewData): Promise<number | null> {
+  if (!props.campaignId) return null
+
+  try {
+    return await createHomebrew({
+      data: { ...data, campaign: props.campaignId } as HomebrewItemInsert,
+      onError,
+    })
+  } catch {
+    return null
+  }
+}
+
+async function updateInCampaign(
+  id: number,
+  data: HomebrewData,
+): Promise<boolean> {
+  try {
+    await updateHomebrew({ data, id, onError })
+
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function syncToCampaign(
+  data: HomebrewData,
+): Promise<number | undefined | null> {
+  const linked = props.row?.homebrew
+
+  if (!saveToCampaign.value || !props.campaignId) return linked
+  if (!isDefined(linked)) return createInCampaign(data)
+
+  return (await updateInCampaign(linked, data)) ? linked : null
+}
+
+async function editRow(submission: Submission): Promise<boolean> {
+  if (!props.sheet || !props.update || !props.row) return false
+
+  const homebrew = await syncToCampaign(submission.homebrew)
+
+  if (homebrew === null) return false
+
+  const edited = editInitiativeRow(
+    props.row,
+    {
+      ...submission.row,
+      homebrew,
+      initiativeModifier: submission.initiativeModifier,
+      summoner: toSummoner(props.sheet.rows, submission.summoner),
+    },
+    submission.row.type,
+  )
+
+  await props.update({
+    rows: replaceRow(props.sheet.rows, edited),
+  })
+
+  return true
+}
+
+async function addRows(submission: Submission): Promise<boolean> {
+  if (!props.sheet || !props.update) return false
+
+  const { initiative, initiativeModifier } = submission
+  const homebrew =
+    saveToCampaign.value && props.campaignId
+      ? await createInCampaign(submission.homebrew)
+      : undefined
+
+  if (homebrew === null) return false
 
   const row: Partial<InitiativeSheetRow> & { name: string } = {
-    ...options.data,
-    ...(options.initiative && options.initiativeModifier
-      ? { initiative: +options.initiative + +options.initiativeModifier }
+    ...submission.row,
+    homebrew,
+    summoner: toSummoner(props.sheet.rows, submission.summoner),
+    ...(initiative
+      ? { initiative: initiative + (initiativeModifier ?? 0) }
       : {}),
-    ...(options.initiative && !options.initiativeModifier
-      ? { initiative: +options.initiative }
-      : {}),
-    ...(sum ? { summoner: { name: sum.name, id: sum.id } } : {}),
-    ...(isDefined(options.initiativeModifier)
-      ? { initiativeModifier: +options.initiativeModifier }
-      : {}),
+    ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
   }
 
   const rows = [...props.sheet.rows]
-  const type = (form.values.type ?? 'player') as HomebrewType
 
-  for (let i = 0; i < options.amount; i++) {
-    rows.push(createInitiativeRow(row, type, rows.length))
+  for (let i = 0; i < (submission.amount ?? 1); i++) {
+    rows.push(createInitiativeRow(row, submission.row.type, rows.length))
   }
 
-  const sortedRows = indexCorrect(rows)
+  await props.update({ rows: indexCorrect(rows) })
 
-  await props.update({ rows: sortedRows })
+  return true
 }
 </script>
 
@@ -304,6 +374,7 @@ async function addInitiative(options: {
         <FormHomebrewInformation
           :sheet="props.sheet"
           :type="form.values.type"
+          :row-id="row?.id"
         />
       </div>
 
@@ -343,14 +414,18 @@ async function addInitiative(options: {
           <UiSwitch
             id="saveToCampaign"
             v-model="saveToCampaign"
-            :disabled="sheet.rows.length >= 100"
+            :disabled="isCampaignFull"
             class="mb-0"
           />
           <UiLabel for="saveToCampaign">
-            {{ $t('components.homebrewModal.save') }}
+            {{
+              isLinked
+                ? $t('components.homebrewModal.updateCampaign')
+                : $t('components.homebrewModal.save')
+            }}
           </UiLabel>
         </div>
-        <span v-if="sheet.rows.length >= 100" class="text-destructive text-sm">
+        <span v-if="isCampaignFull" class="text-destructive text-sm">
           {{ $t('components.homebrewModal.max') }}
         </span>
       </div>

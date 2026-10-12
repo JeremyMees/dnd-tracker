@@ -7,6 +7,7 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
+import { mockEmailTemplates } from '~~/test/unit/stubs/email'
 import handler from '~~/server/api/emails/share-note.post'
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -46,6 +47,7 @@ function mockTables({
 
 describe('POST /api/emails/share-note', () => {
   beforeEach(() => {
+    mockEmailTemplates()
     mockFetch.mockReset()
     mockAuthedUser({ sub: 'user-1', email: 'dm@example.com' })
     mockRuntimeConfig({ plunkApiKey: 'plunk-key' })
@@ -69,6 +71,31 @@ describe('POST /api/emails/share-note', () => {
         }),
       }),
     )
+  })
+
+  it('fills the email with the sanitized note as html', async () => {
+    mockTables({
+      note: {
+        data: {
+          id: 7,
+          title: 'Session <1>',
+          text: '<p>Hello</p><script>alert(1)</script>',
+          campaign: 42,
+        },
+        error: null,
+      },
+    })
+    mockFetch.mockResolvedValue({ success: true })
+
+    await handler(mockEvent({ method: 'POST', body: body() }))
+
+    const { body: html, text } = mockFetch.mock.calls[0]![1].body
+
+    expect(html).toContain('noteContent=<p>Hello</p>')
+    expect(html).toContain('noteTitle=Session &lt;1&gt;')
+    expect(html).not.toContain('<script>')
+    expect(text).toContain('noteContent=Hello')
+    expect(text).toContain('sharedBy=Jeremy')
   })
 
   it('throws a 404 when the note does not exist', async () => {

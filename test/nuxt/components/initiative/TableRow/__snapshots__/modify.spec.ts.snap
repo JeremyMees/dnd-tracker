@@ -3,9 +3,13 @@
 exports[`Initiative table row modify > Should match snapshot 1`] = `
 "<div class="flex items-center justify-end"><a href="https://www.dndbeyond.com/characters/114215312" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-info hover:text-info-foreground size-7" data-state="closed" data-grace-area-trigger="" test-id="link" aria-label="components.actions.link" target="_blank"><span class="iconify i-tabler:link" aria-hidden="true"></span></a>
   <!--teleport start-->
+  <!--teleport end--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-warning hover:text-warning-foreground size-7" data-state="closed" data-grace-area-trigger="" test-id="edit" aria-label="actions.edit"><span class="iconify i-tabler:pencil" aria-hidden="true"></span></button>
+  <!--teleport start-->
   <!--teleport end--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-help hover:text-help-foreground size-7" data-state="closed" data-grace-area-trigger="" test-id="copy" aria-label="actions.copy"><span class="iconify i-tabler:copy" aria-hidden="true"></span></button>
   <!--teleport start-->
   <!--teleport end--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground size-7" data-state="closed" data-grace-area-trigger="" test-id="delete" aria-label="actions.delete"><span class="iconify i-tabler:trash" aria-hidden="true"></span></button>
+  <!--teleport start-->
+  <!--teleport end-->
   <!--teleport start-->
   <!--teleport end-->
 </div>"

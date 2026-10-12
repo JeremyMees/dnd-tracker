@@ -111,6 +111,21 @@ describe('Initiative table row name', async () => {
     expect(vm.popoverOpen).toBeFalsy()
   })
 
+  it('Should accept names up to 50 characters', async () => {
+    const component = await mountWithTooltips(Name, { props, provide })
+
+    const vm = component.vm as unknown as MockFunctions
+    vm.form.setValues({ name: 'A'.repeat(51) })
+    await vm.onSubmit()
+
+    expect(mockUpdate).not.toHaveBeenCalled()
+
+    vm.form.setValues({ name: 'A'.repeat(50) })
+    await vm.onSubmit()
+
+    expect(mockUpdate).toHaveBeenCalledOnce()
+  })
+
   it('Should keep the popover open when update throws', async () => {
     mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
 

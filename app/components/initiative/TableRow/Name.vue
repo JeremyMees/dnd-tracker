@@ -10,7 +10,7 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
 const popoverOpen = shallowRef<boolean>(false)
 
 const formSchema = z.object({
-  name: z.string().min(2).max(30),
+  name: z.string().min(2).max(50),
 })
 
 const form = useForm({
