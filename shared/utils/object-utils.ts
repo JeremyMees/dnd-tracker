@@ -52,7 +52,7 @@ export function flattenObject<T>(obj: Record<string, unknown>): T {
 
   function recurse(currentObj: Record<string, unknown>): void {
     for (const key in currentObj) {
-      if (Object.prototype.hasOwnProperty.call(currentObj, key)) {
+      if (Object.hasOwn(currentObj, key)) {
         const value = currentObj[key]
 
         if (

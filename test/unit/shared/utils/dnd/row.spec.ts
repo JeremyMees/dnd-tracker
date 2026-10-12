@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 describe('dnd/row', () => {
@@ -242,6 +243,79 @@ describe('dnd/row', () => {
       const row = monsterToRow({ ...dndMonsterFixture, proficiencyBonus: null })
 
       expect(row.proficiencyBonus).toBeUndefined()
+    })
+  })
+
+  describe('homebrewToRow', () => {
+    it('should link the row to the homebrew it came from', () => {
+      const row = homebrewToRow(mockHomebrewItem)
+
+      expect(row.homebrew).toBe(mockHomebrewItem.id)
+      expect(row).not.toHaveProperty('id')
+      expect(row).toMatchObject({
+        name: mockHomebrewItem.name,
+        type: mockHomebrewItem.type,
+        campaign: mockHomebrewItem.campaign,
+        hitPoints: mockHomebrewItem.hitPoints,
+      })
+    })
+
+    it('should turn nulls into undefined', () => {
+      const row = homebrewToRow(mockHomebrewItem)
+
+      expect(row.player).toBeUndefined()
+      expect(row.link).toBeUndefined()
+      expect(row.traits).toBeUndefined()
+    })
+
+    it('should parse the stored initiative modifier', () => {
+      expect(homebrewToRow(mockHomebrewItem).initiativeModifier).toBe(2)
+      expect(
+        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: '0' })
+          .initiativeModifier,
+      ).toBe(0)
+      expect(
+        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: '' })
+          .initiativeModifier,
+      ).toBeUndefined()
+      expect(
+        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: null })
+          .initiativeModifier,
+      ).toBeUndefined()
+    })
+  })
+
+  describe('toSummoner', () => {
+    it('should return the name and id of the summoning row', () => {
+      const summoner = sheet.rows[0]!
+
+      expect(toSummoner(sheet.rows, summoner.id)).toEqual({
+        name: summoner.name,
+        id: summoner.id,
+      })
+    })
+
+    it('should return undefined without a matching row', () => {
+      expect(toSummoner(sheet.rows, 'missing')).toBeUndefined()
+      expect(toSummoner(sheet.rows)).toBeUndefined()
+    })
+  })
+
+  describe('replaceRow', () => {
+    it('should swap in the row with the same id and keep the order', () => {
+      const replacement = { ...sheet.rows[1]!, name: 'Renamed' }
+
+      const rows = replaceRow(sheet.rows, replacement)
+
+      expect(rows).toHaveLength(sheet.rows.length)
+      expect(rows[1]).toBe(replacement)
+      expect(rows[0]).toBe(sheet.rows[0])
+    })
+
+    it('should leave the rows alone when no id matches', () => {
+      const rows = replaceRow(sheet.rows, { ...sheet.rows[0]!, id: 'missing' })
+
+      expect(rows).toEqual(sheet.rows)
     })
   })
 

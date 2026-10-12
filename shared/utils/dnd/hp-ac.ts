@@ -208,6 +208,18 @@ export function getAC(
   return isDefined(item.armorClass) ? parseNumber(item.armorClass) : undefined
 }
 
+export function getBaseHP(
+  row: Pick<InitiativeSheetRow, 'maxHitPoints' | 'maxHitPointsOld'>,
+): number | undefined {
+  return row.maxHitPointsOld ?? row.maxHitPoints
+}
+
+export function getBaseAC(
+  row: Pick<InitiativeSheetRow, 'maxArmorClass' | 'maxArmorClassOld'>,
+): number | undefined {
+  return row.maxArmorClassOld ?? row.maxArmorClass
+}
+
 export function getHealthBand(
   hitPoints?: number,
   maxHitPoints?: number,

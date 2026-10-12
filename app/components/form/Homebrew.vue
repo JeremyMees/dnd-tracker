@@ -39,13 +39,9 @@ const { user } = useAuthentication()
 
 const canSaveToCampaign = computed(() => {
   const id = user.value?.id
+  const campaign = props.sheet?.campaign
 
-  if (!id) return false
-
-  return (
-    props.sheet?.campaign?.createdBy.id === id ||
-    isAdmin(props.sheet?.campaign?.team || [], id)
-  )
+  return !!id && !!campaign && isOwnerOrAdmin(campaign, id)
 })
 
 const tabs = ['info', 'stats', 'traits', 'actions'] as const
@@ -125,8 +121,8 @@ const formSchema = z
 const source = props.row
   ? {
       ...props.row,
-      hitPoints: props.row.maxHitPointsOld ?? props.row.maxHitPoints,
-      armorClass: props.row.maxArmorClassOld ?? props.row.maxArmorClass,
+      hitPoints: getBaseHP(props.row),
+      armorClass: getBaseAC(props.row),
     }
   : (props.item ?? props.template)
 
@@ -139,11 +135,7 @@ const form = useForm({
     player: source?.player || '',
     amount: props.template ? 1 : undefined,
     initiative: undefined,
-    initiativeModifier: source?.initiativeModifier
-      ? isNaN(+source.initiativeModifier)
-        ? undefined
-        : +source.initiativeModifier
-      : undefined,
+    initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),
     armorClass: source?.armorClass || undefined,
     hitPoints: source?.hitPoints || undefined,
     link: source?.link || '',
@@ -271,12 +263,6 @@ function toSubmission(values: z.output<typeof formSchema>): Submission {
   }
 }
 
-function findSummoner(id?: string): InitiativeSheetRow['summoner'] {
-  const summoner = id ? props.sheet?.rows.find(r => r.id === id) : undefined
-
-  return summoner ? { name: summoner.name, id: summoner.id } : undefined
-}
-
 async function createInCampaign(data: HomebrewData): Promise<number | null> {
   if (!props.campaignId) return null
 
@@ -327,13 +313,13 @@ async function editRow(submission: Submission): Promise<boolean> {
       ...submission.row,
       homebrew,
       initiativeModifier: submission.initiativeModifier,
-      summoner: findSummoner(submission.summoner),
+      summoner: toSummoner(props.sheet.rows, submission.summoner),
     },
     submission.row.type,
   )
 
   await props.update({
-    rows: props.sheet.rows.map(r => (r.id === edited.id ? edited : r)),
+    rows: replaceRow(props.sheet.rows, edited),
   })
 
   return true
@@ -353,7 +339,7 @@ async function addRows(submission: Submission): Promise<boolean> {
   const row: Partial<InitiativeSheetRow> & { name: string } = {
     ...submission.row,
     homebrew,
-    summoner: findSummoner(submission.summoner),
+    summoner: toSummoner(props.sheet.rows, submission.summoner),
     ...(initiative
       ? { initiative: initiative + (initiativeModifier ?? 0) }
       : {}),
