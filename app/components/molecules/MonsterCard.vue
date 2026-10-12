@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { DndMonster } from '#shared/types/dnd'
 
-defineEmits<{ add: [monster: DndMonster] }>()
+defineEmits<{ add: [monster: DndMonster]; remix: [monster: DndMonster] }>()
 
 withDefaults(
   defineProps<{
     monster: DndMonster
     addable?: boolean
+    remixable?: boolean
   }>(),
   {
     addable: false,
+    remixable: false,
   },
 )
 
@@ -29,19 +31,48 @@ const stats: { key: keyof DndMonster; label: string }[] = [
     @dblclick="isOpen = !isOpen"
   >
     <UiCardHeader>
-      <Tooltip v-if="addable" :text="$t('actions.add')" side="left">
-        <UiButton
-          variant="success-ghost"
-          size="icon-sm"
-          test-id="add-button"
-          :aria-label="$t('actions.add')"
-          class="absolute right-4 top-4"
-          @click="$emit('add', monster)"
-        >
-          <Icon name="tabler:plus" class="size-4 min-w-4" aria-hidden="true" />
-        </UiButton>
-      </Tooltip>
-      <UiCardTitle test-id="title">
+      <div
+        v-if="addable || remixable"
+        class="absolute right-4 top-4 flex gap-1"
+      >
+        <Tooltip v-if="remixable" :text="$t('actions.remix')" side="left">
+          <UiButton
+            variant="warning-ghost"
+            size="icon-sm"
+            test-id="remix-button"
+            :aria-label="$t('actions.remix')"
+            @click="$emit('remix', monster)"
+          >
+            <Icon
+              name="tabler:wand"
+              class="size-4 min-w-4"
+              aria-hidden="true"
+            />
+          </UiButton>
+        </Tooltip>
+        <Tooltip v-if="addable" :text="$t('actions.add')" side="left">
+          <UiButton
+            variant="success-ghost"
+            size="icon-sm"
+            test-id="add-button"
+            :aria-label="$t('actions.add')"
+            @click="$emit('add', monster)"
+          >
+            <Icon
+              name="tabler:plus"
+              class="size-4 min-w-4"
+              aria-hidden="true"
+            />
+          </UiButton>
+        </Tooltip>
+      </div>
+      <UiCardTitle
+        test-id="title"
+        :class="{
+          'pr-16': addable && remixable,
+          'pr-8': addable !== remixable,
+        }"
+      >
         {{ monster.name }}
       </UiCardTitle>
       <div class="flex gap-4">

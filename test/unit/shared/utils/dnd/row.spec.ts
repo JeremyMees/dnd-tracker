@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 describe('dnd/row', () => {
   describe('indexCorrect', () => {
@@ -205,6 +206,42 @@ describe('dnd/row', () => {
       expect(row.traits).toEqual(traits)
       expect(row.proficiencyBonus).toBe(2)
       expect(row.passivePerception).toBe(12)
+    })
+  })
+
+  describe('monsterToRow', () => {
+    it('should turn a bestiary monster into monster row data', () => {
+      const row = monsterToRow(dndMonsterFixture)
+
+      expect(row).toMatchObject({
+        name: dndMonsterFixture.name,
+        type: 'monster',
+        hitPoints: dndMonsterFixture.hitPoints,
+        armorClass: dndMonsterFixture.armorClass,
+        hitDice: parseDndDiceToString(dndMonsterFixture.hitDice),
+        languages: dndMonsterFixture.languages.map(language => language.name),
+        initiativeModifier: dndMonsterFixture.initiativeBonus,
+      })
+    })
+
+    it('should drop the monster fields a row has no place for', () => {
+      const row = monsterToRow(dndMonsterFixture)
+
+      for (const field of [
+        'size',
+        'challengeRating',
+        'alignment',
+        'experiencePoints',
+        'initiativeBonus',
+      ]) {
+        expect(row).not.toHaveProperty(field)
+      }
+    })
+
+    it('should leave out a missing proficiency bonus', () => {
+      const row = monsterToRow({ ...dndMonsterFixture, proficiencyBonus: null })
+
+      expect(row.proficiencyBonus).toBeUndefined()
     })
   })
 

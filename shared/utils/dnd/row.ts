@@ -124,6 +124,32 @@ export const createInitiativeRow = (
   }
 }
 
+export const monsterToRow = (
+  monster: DndMonster,
+): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
+  const {
+    initiativeBonus,
+    hitDice,
+    languages,
+    proficiencyBonus,
+    type: _type,
+    size: _size,
+    challengeRating: _challengeRating,
+    alignment: _alignment,
+    experiencePoints: _experiencePoints,
+    ...rest
+  } = monster
+
+  return {
+    ...rest,
+    type: 'monster',
+    hitDice: parseDndDiceToString(hitDice),
+    languages: parseDndLanguages(languages),
+    initiativeModifier: initiativeBonus,
+    proficiencyBonus: proficiencyBonus ?? undefined,
+  }
+}
+
 export const editInitiativeRow = (
   row: InitiativeSheetRow,
   formData: Partial<InitiativeSheetRow> & { name: string },

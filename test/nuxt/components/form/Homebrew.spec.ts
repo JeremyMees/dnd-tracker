@@ -61,6 +61,7 @@ interface MountOptions {
   campaignId?: number
   item?: HomebrewItemRow
   row?: InitiativeSheetRow
+  template?: Partial<InitiativeSheetRow> & { name: string }
   isEncounter?: boolean
   withSheet?: boolean
   rows?: InitiativeSheetRow[]
@@ -71,6 +72,7 @@ function mountHomebrew({
   campaignId,
   item,
   row,
+  template,
   isEncounter = false,
   withSheet = false,
   rows = sheet.rows,
@@ -81,6 +83,7 @@ function mountHomebrew({
       campaignId,
       item,
       row,
+      template,
       isEncounter,
       sheet: withSheet
         ? { ...sheet, rows, campaign: campaign ?? undefined }
@@ -672,6 +675,57 @@ describe('Homebrew', () => {
     await mountHomebrew({ campaignId: mockCampaignFull.id })
 
     expect(homebrewCountEnabled.value).toBe(false)
+  })
+
+  describe('Remixing a monster', () => {
+    const template = {
+      name: 'Goblin Boss',
+      type: 'monster' as const,
+      hitPoints: 21,
+      armorClass: 17,
+      link: 'https://example.com/goblin-boss',
+    }
+
+    function mountRemix() {
+      return mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        template,
+      })
+    }
+
+    it('Should prefill the form with the monster and an amount of one', async () => {
+      const component = await mountRemix()
+
+      expect(
+        component.get<HTMLInputElement>('input[name="name"]').element.value,
+      ).toBe(template.name)
+      expect(
+        component.get<HTMLInputElement>('input[name="hitPoints"]').element
+          .value,
+      ).toBe(String(template.hitPoints))
+      expect(
+        component.get<HTMLInputElement>('input[name="amount"]').element.value,
+      ).toBe('1')
+    })
+
+    it('Should add the remixed monster as new rows', async () => {
+      const component = await mountRemix()
+
+      await fillName(component, 'Goblin Warlord')
+      await submitForm(component)
+
+      const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      expect(rows).toHaveLength(sheet.rows.length + 1)
+      expect(rows.find(r => r.name === 'Goblin Warlord')).toMatchObject({
+        type: 'monster',
+        hitPoints: template.hitPoints,
+        link: template.link,
+      })
+      expect(component.emitted('close')).toHaveLength(1)
+    })
   })
 
   describe('Editing a row', () => {

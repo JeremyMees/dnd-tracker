@@ -20,6 +20,8 @@
     "update": "Update",
     "edit": "Edit",
     "editItem": "Edit {item}",
+    "remix": "Remix",
+    "remixItem": "Remix {item}",
     "link": "Go to link",
     "heal": "Heal",
     "damage": "Damage",

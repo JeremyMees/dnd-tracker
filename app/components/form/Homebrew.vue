@@ -16,6 +16,7 @@ const props = withDefaults(
     campaignId?: number
     item?: HomebrewItemRow
     row?: InitiativeSheetRow
+    template?: Partial<InitiativeSheetRow> & { name: string }
     isEncounter?: boolean
     sheet?: InitiativeSheet
     update?: (
@@ -27,6 +28,7 @@ const props = withDefaults(
     campaignId: undefined,
     item: undefined,
     row: undefined,
+    template: undefined,
     sheet: undefined,
     update: undefined,
   },
@@ -126,7 +128,7 @@ const source = props.row
       hitPoints: props.row.maxHitPointsOld ?? props.row.maxHitPoints,
       armorClass: props.row.maxArmorClassOld ?? props.row.maxArmorClass,
     }
-  : props.item
+  : (props.item ?? props.template)
 
 const form = useForm({
   validationSchema: formSchema,
@@ -135,6 +137,7 @@ const form = useForm({
     summoner: props.row?.summoner?.id,
     name: source?.name || '',
     player: source?.player || '',
+    amount: props.template ? 1 : undefined,
     initiative: undefined,
     initiativeModifier: source?.initiativeModifier
       ? isNaN(+source.initiativeModifier)
