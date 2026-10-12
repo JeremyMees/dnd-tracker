@@ -109,6 +109,17 @@ describe('Footer', () => {
     )
   })
 
+  it('Should open the consent preferences from the privacy settings link', async () => {
+    const component = await mountSuspended(Footer)
+    const activeUI = useNuxtApp().vueApp.runWithContext(() =>
+      useConsentActiveUI(),
+    )
+
+    await component.get('[test-id="footer-privacy-settings"]').trigger('click')
+
+    expect(activeUI.value).toBe('manager')
+  })
+
   it('Should render the illustration credit and version links', async () => {
     const component = await mountSuspended(Footer)
 

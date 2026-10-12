@@ -172,6 +172,17 @@
             />
             {{ $t('components.navbar.legal') }}
           </NuxtLinkLocale>
+          <ConsentDialogLink
+            class="flex items-center text-sm cursor-pointer"
+            test-id="footer-privacy-settings"
+          >
+            <Icon
+              name="tabler:adjustments-horizontal"
+              class="min-w-4 min-h-4 mr-2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            {{ $t('components.navbar.privacySettings') }}
+          </ConsentDialogLink>
         </div>
       </div>
     </div>

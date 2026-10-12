@@ -233,4 +233,14 @@ export default defineNuxtConfig({
     url: { base: { url: seo.url, tags: ['img'] } },
     plaintext: true,
   },
+
+  c15t: {
+    theme: {
+      typography: { fontFamily: "'Geist', sans-serif" },
+      radius: {
+        md: 'calc(var(--radius) - 2px)',
+        lg: 'calc(var(--radius) * 2)',
+      },
+    },
+  },
 })

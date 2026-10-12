@@ -1139,6 +1139,7 @@
       "cookie": "Cookie",
       "privacy": "Privacy",
       "legal": "Legal",
+      "privacySettings": "Privacy settings",
       "illustrations": "Illustrations by"
     },
     "confirmationModal": {
