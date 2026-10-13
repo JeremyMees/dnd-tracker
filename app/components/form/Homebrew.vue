@@ -37,8 +37,6 @@ const canSaveToCampaign = computed(() => {
   return !!id && !!campaign && isOwnerOrAdmin(campaign, id)
 })
 
-const tabs = homebrewTabs
-
 const tabLabels = computed<Record<HomebrewTab, string>>(() => ({
   info: t('general.info'),
   stats: t('general.stats'),
@@ -46,10 +44,15 @@ const tabLabels = computed<Record<HomebrewTab, string>>(() => ({
   actions: t('general.action', 2),
 }))
 
-const activeTab = ref<HomebrewTab>('info')
-const tabIndex = computed(() => tabs.indexOf(activeTab.value))
-const canGoBack = computed(() => tabIndex.value > 0 || isNew)
-const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
+const {
+  current,
+  isFirst: isFirstTab,
+  isLast: isLastTab,
+  goTo: goToTab,
+  goToNext: goToNextTab,
+  goToPrevious: goToPreviousTab,
+} = useStepper([...homebrewTabs], 'info')
+const activeTab = computed({ get: () => current.value, set: goToTab })
 
 const isNew = !props.item && !props.row && !props.template
 const step = ref<HomebrewStartStep | 'form'>(isNew ? 'type' : 'form')
@@ -119,7 +122,7 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
 
   if (!invalidTabs.length) return
 
-  if (!invalidTabs.includes(activeTab.value)) activeTab.value = invalidTabs[0]!
+  if (!invalidTabs.includes(activeTab.value)) goToTab(invalidTabs[0]!)
 
   formError.value = t('components.homebrewModal.invalid', {
     tabs: new Intl.ListFormat(locale.value, { type: 'conjunction' }).format(
@@ -186,7 +189,7 @@ async function addRows(submission: HomebrewSubmission): Promise<boolean> {
 }
 
 const backLabel = computed(() => {
-  if (!isNew || tabIndex.value > 0) return t('actions.prev')
+  if (!isNew || !isFirstTab.value) return t('actions.prev')
 
   return form.values.type === 'monster'
     ? t('components.homebrewModal.changeStart')
@@ -194,12 +197,12 @@ const backLabel = computed(() => {
 })
 
 function goBack(): void {
-  if (tabIndex.value > 0) activeTab.value = tabs[tabIndex.value - 1]!
+  if (!isFirstTab.value) goToPreviousTab()
   else step.value = form.values.type === 'monster' ? 'source' : 'type'
 }
 
 function showForm(): void {
-  activeTab.value = 'info'
+  goToTab('info')
   step.value = 'form'
 }
 
@@ -256,44 +259,29 @@ function startFromMonster(monster: DndMonster): void {
       />
       {{ $t('components.homebrewModal.basedOn', { name: basedOn }) }}
     </p>
-    <UiTabs v-model="activeTab">
+    <UiTabs v-model="activeTab" :unmount-on-hide="false">
       <UiTabsList class="grid w-full grid-cols-4">
-        <UiTabsTrigger v-for="tab in tabs" :key="tab" :value="tab">
+        <UiTabsTrigger v-for="tab in homebrewTabs" :key="tab" :value="tab">
           {{ tabLabels[tab] }}
         </UiTabsTrigger>
       </UiTabsList>
 
-      <div
-        v-show="activeTab === 'info'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      <UiTabsContent value="info" class="space-y-2">
         <FormHomebrewInformation
           :sheet="props.sheet"
           :type="form.values.type"
           :row-id="row?.id"
         />
-      </div>
-
-      <div
-        v-show="activeTab === 'stats'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      </UiTabsContent>
+      <UiTabsContent value="stats" class="space-y-2">
         <FormHomebrewStats />
-      </div>
-
-      <div
-        v-show="activeTab === 'traits'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      </UiTabsContent>
+      <UiTabsContent value="traits" class="space-y-2">
         <FormHomebrewTraits />
-      </div>
-
-      <div
-        v-show="activeTab === 'actions'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      </UiTabsContent>
+      <UiTabsContent value="actions" class="space-y-2">
         <FormHomebrewActions :sheet="props.sheet" />
-      </div>
+      </UiTabsContent>
     </UiTabs>
 
     <div class="flex flex-col gap-y-4">
@@ -335,37 +323,13 @@ function startFromMonster(monster: DndMonster): void {
         {{ formError }}
       </div>
 
-      <div class="flex justify-end gap-2">
-        <Tooltip :text="backLabel">
-          <UiButton
-            test-id="prev"
-            type="button"
-            variant="foreground"
-            size="icon"
-            class="min-w-10"
-            :disabled="!canGoBack"
-            @click="goBack"
-          >
-            <Icon name="tabler:arrow-left" />
-          </UiButton>
-        </Tooltip>
-        <Tooltip :text="$t('actions.next')">
-          <UiButton
-            test-id="next"
-            type="button"
-            variant="foreground"
-            size="icon"
-            class="min-w-10"
-            :disabled="!canGoForward"
-            @click="activeTab = tabs[tabIndex + 1]!"
-          >
-            <Icon name="tabler:arrow-right" />
-          </UiButton>
-        </Tooltip>
-        <UiButton type="submit" class="w-full md:w-fit">
-          {{ $t('actions.save') }}
-        </UiButton>
-      </div>
+      <FormTabNav
+        :can-go-back="isNew || !isFirstTab"
+        :can-go-forward="!isLastTab"
+        :back-label="backLabel"
+        @back="goBack"
+        @next="goToNextTab"
+      />
     </div>
   </UiFormWrapper>
 </template>
