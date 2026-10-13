@@ -63,6 +63,7 @@ export function useTeamMemberUpdate() {
       })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
+      queryClient.removeQueries({ queryKey: ['useCampaignMember', campaign] })
 
       if (onSuccess) onSuccess()
     },
@@ -95,6 +96,7 @@ export function useTeamMemberRemove() {
       })
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
+      queryClient.removeQueries({ queryKey: ['useCampaignMember', campaign] })
 
       if (onSuccess) onSuccess()
     },

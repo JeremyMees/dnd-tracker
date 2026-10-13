@@ -9,15 +9,18 @@ import {
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
-const { fetchMock, invalidateQueries, toast } = vi.hoisted(() => ({
-  fetchMock: vi.fn(),
-  invalidateQueries: vi.fn(),
-  toast: vi.fn(),
-}))
+const { fetchMock, invalidateQueries, removeQueries, toast } = vi.hoisted(
+  () => ({
+    fetchMock: vi.fn(),
+    invalidateQueries: vi.fn(),
+    removeQueries: vi.fn(),
+    toast: vi.fn(),
+  }),
+)
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ invalidateQueries }),
+  useQueryClient: () => ({ invalidateQueries, removeQueries }),
 }))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
@@ -141,6 +144,17 @@ describe('TransferOwnership modal', () => {
     })
     expect(invalidateQueries).toHaveBeenCalledWith({
       queryKey: ['useCampaignListing'],
+    })
+  })
+
+  it('Should forget the cached membership so the old owner loses owner access', async () => {
+    const component = await mountTransferOwnershipModal()
+
+    await fillForm(component, 'Remove', mockTeamMember.user.id)
+    await submitForm(component)
+
+    expect(removeQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignMember', current.id],
     })
   })
 

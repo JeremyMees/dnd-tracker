@@ -342,6 +342,33 @@ describe('campaigns queries', () => {
       })
     })
 
+    it('forgets the cached membership of every removed campaign', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useCampaignRemove(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCampaignMember', 5], { id: 5 })
+      vm.queryClient.setQueryData(['useCampaignMember', 6], { id: 6 })
+      vm.queryClient.setQueryData(['useCampaignMember', 7], { id: 7 })
+
+      await vm.mutateAsync({ id: [5, 6] })
+
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 5]),
+      ).toBeUndefined()
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 6]),
+      ).toBeUndefined()
+      expect(vm.queryClient.getQueryData(['useCampaignMember', 7])).toEqual({
+        id: 7,
+      })
+    })
+
     it('invalidates a detail cache per id for a bulk removal', async () => {
       const from = mockSupabaseFrom({
         campaigns: mockChain({ data: null, error: null }),

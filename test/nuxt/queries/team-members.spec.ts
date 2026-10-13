@@ -108,6 +108,23 @@ describe('team-members queries', () => {
       })
     })
 
+    it('forgets the cached campaign membership so access is checked again', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => ({
+        ...useTeamMemberUpdate(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCampaignMember', 1], { id: 1 })
+
+      await vm.mutateAsync({ id: 3, campaign: 1, data: { role: 'Viewer' } })
+
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 1]),
+      ).toBeUndefined()
+    })
+
     it('hands the caller its callbacks on success', async () => {
       mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
 
@@ -170,6 +187,27 @@ describe('team-members queries', () => {
       })
       expect(spies.onSuccess).toHaveBeenCalledOnce()
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('forgets the cached campaign membership after leaving or removing', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => ({
+        ...useTeamMemberRemove(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCampaignMember', 1], { id: 1 })
+      vm.queryClient.setQueryData(['useCampaignMember', 2], { id: 2 })
+
+      await vm.mutateAsync({ member: 3, campaign: 1 })
+
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 1]),
+      ).toBeUndefined()
+      expect(vm.queryClient.getQueryData(['useCampaignMember', 2])).toEqual({
+        id: 2,
+      })
     })
 
     it('toasts that the member was not removed and why', async () => {

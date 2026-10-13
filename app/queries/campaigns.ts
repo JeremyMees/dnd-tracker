@@ -265,14 +265,12 @@ export function useCampaignRemove() {
       queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
       queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-      if (Array.isArray(id))
-        id.forEach(id =>
-          queryClient.invalidateQueries({
-            queryKey: ['useCampaignDetail', id],
-          }),
-        )
-      else
-        queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
+      for (const campaign of Array.isArray(id) ? id : [id]) {
+        queryClient.invalidateQueries({
+          queryKey: ['useCampaignDetail', campaign],
+        })
+        queryClient.removeQueries({ queryKey: ['useCampaignMember', campaign] })
+      }
 
       toast({
         title: t('components.toast.delete.success', { type }),
