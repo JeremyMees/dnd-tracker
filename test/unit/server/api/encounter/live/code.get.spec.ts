@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
+import { mockStorage } from '~~/test/unit/stubs/storage'
 import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import handler from '~~/server/api/encounter/live/code.get'
 
@@ -61,6 +62,10 @@ function eventWithCode(code: string) {
 }
 
 describe('GET /api/encounter/live/code', () => {
+  beforeEach(() => {
+    mockStorage()
+  })
+
   it('returns the code, expiry and claimable player/npc rows for an active session', async () => {
     mockFrom({
       live_sessions: mockChain({ data: session, error: null }),
@@ -172,6 +177,21 @@ describe('GET /api/encounter/live/code', () => {
     await expect(handler(eventWithCode('ABC234'))).rejects.toMatchObject({
       statusCode: 404,
       statusMessage: 'Encounter not found',
+    })
+  })
+
+  it('throws a 429 after too many code lookups from the same IP', async () => {
+    mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
+
+    for (let i = 0; i < 30; i++) {
+      await expect(handler(eventWithCode('ZZZZZZ'))).rejects.toMatchObject({
+        statusCode: 404,
+      })
+    }
+
+    await expect(handler(eventWithCode('ZZZZZZ'))).rejects.toMatchObject({
+      statusCode: 429,
+      statusMessage: 'Too many requests',
     })
   })
 })

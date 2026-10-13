@@ -1,7 +1,14 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { claimableRowTypes } from '~~/constants/validation'
+import { FIVE_MINUTES } from '~~/constants/time'
 
 export default defineEventHandler(async (event): Promise<LiveCodeSession> => {
+  await assertRateLimit(event, {
+    key: 'live-code',
+    limit: 30,
+    windowMs: FIVE_MINUTES,
+  })
+
   const { code } = getQuery(event)
 
   if (!code || typeof code !== 'string' || code.length !== 6) {
