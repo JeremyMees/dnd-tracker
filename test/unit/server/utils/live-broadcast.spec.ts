@@ -381,6 +381,48 @@ describe('live-broadcast', () => {
       expect(patch).toEqual({ armorClass: 15, tempArmorClass: 5 })
     })
 
+    it('clamps armor class at zero when negative values are not allowed', async () => {
+      const supabase = supabaseWithSheet({
+        rows: [row],
+        settings: { negative: false },
+      })
+
+      const patch = await buildAcPatch(supabase, 7, 'row-1', {
+        type: 'ac',
+        acType: 'remove',
+        amount: 20,
+      })
+
+      expect(patch).toEqual({ armorClass: 0, tempArmorClass: 0 })
+    })
+
+    it('clamps armor class at zero when the setting is missing', async () => {
+      const supabase = supabaseWithSheet({ rows: [row], settings: {} })
+
+      const patch = await buildAcPatch(supabase, 7, 'row-1', {
+        type: 'ac',
+        acType: 'remove',
+        amount: 20,
+      })
+
+      expect(patch.armorClass).toBe(0)
+    })
+
+    it('keeps negative armor class when the encounter allows it', async () => {
+      const supabase = supabaseWithSheet({
+        rows: [row],
+        settings: { negative: true },
+      })
+
+      const patch = await buildAcPatch(supabase, 7, 'row-1', {
+        type: 'ac',
+        acType: 'remove',
+        amount: 20,
+      })
+
+      expect(patch.armorClass).toBe(-5)
+    })
+
     it('throws a 404 when the row does not exist on the encounter', async () => {
       const supabase = supabaseWithSheet({ rows: [] })
 

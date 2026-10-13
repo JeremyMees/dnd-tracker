@@ -98,6 +98,25 @@ export const acFunctions = {
     overrideReset('armorClass', row, amount),
 }
 
+export function handleAcChanges(
+  amount: number,
+  type: DndAcType,
+  item: InitiativeSheetRow,
+  allowNegative: boolean,
+): InitiativeSheetRow {
+  const row = { ...item }
+
+  if (type === 'add') acFunctions.add(row, amount)
+  else if (type === 'remove') acFunctions.remove(row, amount)
+  else if (type === 'temp') acFunctions.temp(row, amount)
+  else if (type === 'override') acFunctions.override(row, amount)
+  else if (type === 'override-reset') acFunctions.overrideReset(row, amount)
+
+  if (!allowNegative && row.armorClass && row.armorClass < 0) row.armorClass = 0
+
+  return row
+}
+
 export function handleHpChanges(
   amount: number,
   type: DndHpType,

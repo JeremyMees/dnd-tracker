@@ -6,7 +6,7 @@ import { openPopover } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface AcTestMethods {
-  handleAcChanges: (
+  changeAc: (
     amount: number,
     type: 'add' | 'remove' | 'temp' | 'override' | 'override-reset',
   ) => InitiativeSheetRow
@@ -113,7 +113,7 @@ describe('Initiative table row ac', async () => {
     })
 
     const vm = component.vm as unknown as AcTestMethods
-    const updatedRow = vm.handleAcChanges(15, 'remove')
+    const updatedRow = vm.changeAc(15, 'remove')
     await vm.updateRow(updatedRow)
 
     expect(updatedRow.armorClass).toBe(0)
@@ -144,13 +144,13 @@ describe('Initiative table row ac', async () => {
     })
 
     const vm = component.vm as unknown as AcTestMethods
-    const updatedRow = vm.handleAcChanges(15, 'remove')
+    const updatedRow = vm.changeAc(15, 'remove')
     await vm.updateRow(updatedRow)
 
     expect(updatedRow.armorClass).toBe(-5)
   })
 
-  describe('handleAcChanges', () => {
+  describe('changeAc', () => {
     it('Should add to the armor class', async () => {
       const component = await mountWithTooltips(Ac, {
         props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
@@ -158,7 +158,7 @@ describe('Initiative table row ac', async () => {
       })
 
       const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.handleAcChanges(5, 'add')
+      const updatedRow = vm.changeAc(5, 'add')
 
       expect(updatedRow.armorClass).toBe(15)
     })
@@ -170,7 +170,7 @@ describe('Initiative table row ac', async () => {
       })
 
       const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.handleAcChanges(3, 'temp')
+      const updatedRow = vm.changeAc(3, 'temp')
 
       expect(updatedRow.tempArmorClass).toBe(3)
     })
@@ -182,7 +182,7 @@ describe('Initiative table row ac', async () => {
       })
 
       const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.handleAcChanges(25, 'override')
+      const updatedRow = vm.changeAc(25, 'override')
 
       expect(updatedRow.maxArmorClass).toBe(25)
       expect(updatedRow.maxArmorClassOld).toBe(20)
@@ -202,7 +202,7 @@ describe('Initiative table row ac', async () => {
       })
 
       const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.handleAcChanges(20, 'override-reset')
+      const updatedRow = vm.changeAc(20, 'override-reset')
 
       expect(updatedRow.maxArmorClass).toBe(20)
       expect(updatedRow.maxArmorClassOld).toBeUndefined()

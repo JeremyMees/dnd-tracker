@@ -176,6 +176,60 @@ describe('dnd/hp-ac', () => {
     })
   })
 
+  describe('handleAcChanges', () => {
+    const row = {
+      ...sheet.rows[0]!,
+      armorClass: 10,
+      maxArmorClass: 20,
+      maxArmorClassOld: undefined,
+      tempArmorClass: 0,
+    }
+
+    it.each([
+      ['add', 5, { armorClass: 15, tempArmorClass: 0 }],
+      ['remove', 4, { armorClass: 6, tempArmorClass: 0 }],
+      ['temp', 3, { armorClass: 10, tempArmorClass: 3 }],
+      [
+        'override',
+        25,
+        { armorClass: 15, maxArmorClass: 25, maxArmorClassOld: 20 },
+      ],
+    ] as const)('Should apply %s', (type, amount, expected) => {
+      expect(handleAcChanges(amount, type, row, false)).toMatchObject(expected)
+    })
+
+    it('Should reset an override back to the old base', () => {
+      const overridden = {
+        ...row,
+        armorClass: 15,
+        maxArmorClass: 25,
+        maxArmorClassOld: 20,
+      }
+
+      expect(
+        handleAcChanges(20, 'override-reset', overridden, false),
+      ).toMatchObject({
+        armorClass: 20,
+        maxArmorClass: 20,
+        maxArmorClassOld: undefined,
+      })
+    })
+
+    it('Should clamp negative armor class to zero when not allowed', () => {
+      expect(handleAcChanges(15, 'remove', row, false).armorClass).toBe(0)
+    })
+
+    it('Should keep negative armor class when allowed', () => {
+      expect(handleAcChanges(15, 'remove', row, true).armorClass).toBe(-5)
+    })
+
+    it('Should not change the given row', () => {
+      handleAcChanges(5, 'add', row, false)
+
+      expect(row.armorClass).toBe(10)
+    })
+  })
+
   describe('getHP/getAC', () => {
     it('should read hitPoints from row shape', () => {
       const row = {

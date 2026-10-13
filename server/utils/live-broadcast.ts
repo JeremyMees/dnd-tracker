@@ -151,7 +151,7 @@ export async function buildAcPatch(
 ): Promise<Partial<InitiativeSheetRow>> {
   const { data: sheet } = await supabase
     .from('initiative_sheets')
-    .select('rows')
+    .select('rows, settings')
     .eq('id', encounter)
     .single()
 
@@ -161,9 +161,12 @@ export async function buildAcPatch(
     throw createError({ statusCode: 404, statusMessage: 'Row not found' })
   }
 
-  const updated = { ...row }
-
-  acFunctions[action.acType](updated, action.amount)
+  const updated = handleAcChanges(
+    action.amount,
+    action.acType,
+    row,
+    sheet?.settings?.negative ?? false,
+  )
 
   return {
     armorClass: updated.armorClass,
