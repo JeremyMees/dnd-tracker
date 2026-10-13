@@ -16,9 +16,9 @@ const options: ChoiceCardOption<'scratch' | 'bestiary'>[] = [
 
 let wrapper: VueWrapper | undefined
 
-async function mountChoiceCards(description?: string) {
+async function mountChoiceCards(description?: string, back = false) {
   wrapper = await mountSuspended(ChoiceCards, {
-    props: { title: 'Where do you start?', description, options },
+    props: { title: 'Where do you start?', description, options, back },
   })
 
   return wrapper
@@ -39,7 +39,7 @@ describe('ChoiceCards', () => {
   it('Should label the group with the title', async () => {
     const component = await mountChoiceCards()
 
-    const group = component.get('[role="group"]')
+    const group = component.get('fieldset')
     const heading = component.get('h3')
 
     expect(heading.text()).toBe('Where do you start?')
@@ -55,13 +55,13 @@ describe('ChoiceCards', () => {
   it('Should leave out the description when not given', async () => {
     const component = await mountChoiceCards()
 
-    expect(component.findAll('header p')).toHaveLength(0)
+    expect(component.find('[test-id="step-description"]').exists()).toBe(false)
   })
 
   it('Should render a button per option', async () => {
     const component = await mountChoiceCards()
 
-    const buttons = component.findAll('button')
+    const buttons = component.findAll('button[test-id^="choice-"]')
 
     expect(buttons).toHaveLength(2)
     expect(buttons[0]!.attributes('type')).toBe('button')
@@ -92,5 +92,20 @@ describe('ChoiceCards', () => {
     await component.get('[test-id="choice-bestiary"]').trigger('click')
 
     expect(component.emitted('select')).toEqual([['bestiary']])
+  })
+
+  it('Should not offer to go back by default', async () => {
+    const component = await mountChoiceCards()
+
+    expect(component.find('[test-id="step-back"]').exists()).toBe(false)
+  })
+
+  it('Should emit back from the back button', async () => {
+    const component = await mountChoiceCards(undefined, true)
+
+    await component.get('[test-id="step-back"]').trigger('click')
+
+    expect(component.emitted('back')).toHaveLength(1)
+    expect(component.emitted('select')).toBeUndefined()
   })
 })

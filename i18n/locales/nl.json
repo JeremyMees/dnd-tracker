@@ -1077,6 +1077,7 @@
       "pickType": "Wat ga je maken?",
       "pickTypeInfo": "Kies een type om te beginnen, je kan het later nog aanpassen",
       "changeType": "Type wijzigen",
+      "changeStart": "Startpunt wijzigen",
       "pickSource": "Hoe wil je beginnen?",
       "pickSourceInfo": "Bouw je wezen van nul op, of kopieer een monster uit het bestiarium en maak het helemaal van jou",
       "pickMonster": "Kies een monster om van te starten",

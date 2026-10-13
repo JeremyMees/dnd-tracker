@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StepHeader > Should match snapshot 1`] = `
+"<header class="flex flex-col gap-2 items-start"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-foreground hover:text-background h-8 rounded-md px-3 text-xs self-start" test-id="step-back" type="button"><span class="iconify i-tabler:arrow-left" aria-hidden="true"></span> actions.back</button>
+  <div>
+    <h3 class="text-xl sm:text-2xl font-semibold text-balance">Pick a monster</h3>
+    <p test-id="step-description" class="mt-1 text-sm text-muted-foreground text-pretty">Any monster will do</p>
+  </div>
+</header>"
+`;

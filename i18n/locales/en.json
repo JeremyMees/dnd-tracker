@@ -1077,6 +1077,7 @@
       "pickType": "What are you creating?",
       "pickTypeInfo": "Pick a type to get started, you can still change it later",
       "changeType": "Change type",
+      "changeStart": "Change starting point",
       "pickSource": "How do you want to start?",
       "pickSourceInfo": "Build your creature from the ground up, or copy a monster from the bestiary and make it your own",
       "pickMonster": "Pick a monster to start from",

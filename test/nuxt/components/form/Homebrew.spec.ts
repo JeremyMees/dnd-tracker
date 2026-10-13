@@ -2,7 +2,8 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Homebrew from '~/components/form/Homebrew.vue'
-import { homebrewType } from '~~/constants/validation'
+import HomebrewStart from '~/components/form/HomebrewStart.vue'
+import TooltipAtom from '~/components/atoms/Tooltip.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { mockCampaignFull } from '~~/test/fixtures/campaign'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
@@ -691,21 +692,11 @@ describe('Homebrew', () => {
       return component.get<HTMLFormElement>('form').element
     }
 
-    it('Should start with a card per homebrew type when creating', async () => {
+    it('Should open on the start screen when creating', async () => {
       const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
 
-      for (const type of homebrewType) {
-        expect(component.find(`[test-id="choice-${type}"]`).exists()).toBe(true)
-      }
+      expect(component.findComponent(HomebrewStart).props('step')).toBe('type')
       expect(form(component).style.display).toBe('none')
-    })
-
-    it('Should describe each type on its card', async () => {
-      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
-
-      expect(component.get('[test-id="choice-lair"]').text()).toContain(
-        'components.homebrewModal.types.lair',
-      )
     })
 
     it('Should show the form with the picked type', async () => {
@@ -834,16 +825,6 @@ describe('Homebrew', () => {
       expect(isFormShown(component)).toBe(false)
     })
 
-    it('Should go back to the type cards from the start cards', async () => {
-      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
-
-      await click(component, 'choice-monster')
-      await click(component, 'step-back')
-
-      expect(component.find('[test-id="choice-npc"]').exists()).toBe(true)
-      expect(component.find('[test-id="choice-scratch"]').exists()).toBe(false)
-    })
-
     it('Should show an empty creature form when starting from scratch', async () => {
       const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
 
@@ -860,30 +841,6 @@ describe('Homebrew', () => {
         name: 'Grommash',
         type: 'monster',
       })
-    })
-
-    it('Should show the bestiary without the add button', async () => {
-      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
-
-      await click(component, 'choice-monster')
-      await click(component, 'choice-bestiary')
-
-      const bestiary = component.findComponent(FormBestiaryStub)
-
-      expect(bestiary.exists()).toBe(true)
-      expect(bestiary.props('addable')).toBe(false)
-      expect(isFormShown(component)).toBe(false)
-    })
-
-    it('Should go back to the start cards from the bestiary', async () => {
-      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
-
-      await click(component, 'choice-monster')
-      await click(component, 'choice-bestiary')
-      await click(component, 'step-back')
-
-      expect(component.findComponent(FormBestiaryStub).exists()).toBe(false)
-      expect(component.find('[test-id="choice-bestiary"]').exists()).toBe(true)
     })
 
     it('Should prefill the form with the remixed monster', async () => {
@@ -965,6 +922,55 @@ describe('Homebrew', () => {
       expect(
         component.get<HTMLInputElement>('input[name="name"]').element.value,
       ).toBe('Grommash')
+    })
+  })
+
+  describe('Back button label', () => {
+    function backLabel(component: Awaited<ReturnType<typeof mountHomebrew>>) {
+      return component
+        .findAllComponents(TooltipAtom)
+        .find(tooltip => tooltip.find('[test-id="prev"]').exists())!
+        .props('text')
+    }
+
+    async function click(
+      component: Awaited<ReturnType<typeof mountHomebrew>>,
+      testId: string,
+    ) {
+      await component.get(`[test-id="${testId}"]`).trigger('click')
+      await nextTick()
+    }
+
+    it('Should offer to change the type on the first tab of a new homebrew', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await click(component, 'choice-npc')
+
+      expect(backLabel(component)).toBe('components.homebrewModal.changeType')
+    })
+
+    it('Should offer to change the starting point for a new creature', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await click(component, 'choice-monster')
+      await click(component, 'choice-scratch')
+
+      expect(backLabel(component)).toBe('components.homebrewModal.changeStart')
+    })
+
+    it('Should say previous on the later tabs', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await click(component, 'choice-npc')
+      await click(component, 'next')
+
+      expect(backLabel(component)).toBe('actions.prev')
+    })
+
+    it('Should say previous when editing', async () => {
+      const component = await mountHomebrew({ item: mockHomebrewItem })
+
+      expect(backLabel(component)).toBe('actions.prev')
     })
   })
 

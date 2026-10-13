@@ -6,7 +6,7 @@ import {
 } from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import type { InvalidSubmissionContext } from 'vee-validate'
-import { homebrewType, maxCampaignHomebrews } from '~~/constants/validation'
+import { maxCampaignHomebrews } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -58,38 +58,8 @@ const canGoBack = computed(() => tabIndex.value > 0 || isNew)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 
 const isNew = !props.item && !props.row && !props.template
-const step = ref<'type' | 'source' | 'bestiary' | 'form'>(
-  isNew ? 'type' : 'form',
-)
+const step = ref<HomebrewStartStep | 'form'>(isNew ? 'type' : 'form')
 const basedOn = ref<string>()
-const typeOptions = computed<ChoiceCardOption<HomebrewType>[]>(() =>
-  homebrewType.map(type => ({
-    value: type,
-    label: t(`general.${type}`),
-    description: t(`components.homebrewModal.types.${type}`),
-    icon: homebrewIcon(type),
-    iconClass: homebrewColor(type),
-  })),
-)
-
-type Source = 'scratch' | 'bestiary'
-
-const sourceOptions = computed<ChoiceCardOption<Source>[]>(() => [
-  {
-    value: 'scratch',
-    label: t('components.homebrewModal.sources.scratch.label'),
-    description: t('components.homebrewModal.sources.scratch.description'),
-    icon: 'tabler:pencil-plus',
-    iconClass: 'text-primary',
-  },
-  {
-    value: 'bestiary',
-    label: t('components.homebrewModal.sources.bestiary.label'),
-    description: t('components.homebrewModal.sources.bestiary.description'),
-    icon: 'tabler:books',
-    iconClass: homebrewColor('monster'),
-  },
-])
 
 const form = useForm({
   validationSchema: homebrewFormSchema({
@@ -265,6 +235,14 @@ async function addRows(submission: HomebrewSubmission): Promise<boolean> {
   return true
 }
 
+const backLabel = computed(() => {
+  if (!isNew || tabIndex.value > 0) return t('actions.prev')
+
+  return form.values.type === 'monster'
+    ? t('components.homebrewModal.changeStart')
+    : t('components.homebrewModal.changeType')
+})
+
 function goBack(): void {
   if (tabIndex.value > 0) activeTab.value = tabs[tabIndex.value - 1]!
   else step.value = form.values.type === 'monster' ? 'source' : 'type'
@@ -275,31 +253,24 @@ function showForm(): void {
   step.value = 'form'
 }
 
-function pickType(type: HomebrewType): void {
+function startFromType(type: HomebrewType): void {
   form.setFieldValue('type', type)
-
-  if (type === 'monster') step.value = 'source'
-  else showForm()
+  showForm()
 }
 
-function pickSource(picked: Source): void {
-  if (picked === 'bestiary') {
-    step.value = 'bestiary'
-    return
-  }
-
+function startFromScratch(): void {
   if (basedOn.value) {
     form.resetForm(
       { values: homebrewInitialValues({ name: '', type: 'monster' }) },
       { force: true },
     )
     basedOn.value = undefined
-  }
+  } else form.setFieldValue('type', 'monster')
 
   showForm()
 }
 
-function pickMonster(monster: DndMonster): void {
+function startFromMonster(monster: DndMonster): void {
   form.resetForm(
     {
       values: homebrewInitialValues(monsterToRow(monster), {
@@ -314,59 +285,13 @@ function pickMonster(monster: DndMonster): void {
 </script>
 
 <template>
-  <ChoiceCards
-    v-if="step === 'type'"
-    :title="$t('components.homebrewModal.pickType')"
-    :description="$t('components.homebrewModal.pickTypeInfo')"
-    :options="typeOptions"
-    @select="pickType"
+  <FormHomebrewStart
+    v-if="step !== 'form'"
+    v-model:step="step"
+    @type="startFromType"
+    @scratch="startFromScratch"
+    @monster="startFromMonster"
   />
-  <div v-else-if="step === 'source'">
-    <UiButton
-      test-id="step-back"
-      type="button"
-      variant="foreground-ghost"
-      size="sm"
-      @click="step = 'type'"
-    >
-      <Icon name="tabler:arrow-left" aria-hidden="true" />
-      {{ $t('actions.back') }}
-    </UiButton>
-    <ChoiceCards
-      :title="$t('components.homebrewModal.pickSource')"
-      :description="$t('components.homebrewModal.pickSourceInfo')"
-      :options="sourceOptions"
-      @select="pickSource"
-    />
-  </div>
-  <div v-else-if="step === 'bestiary'" class="flex flex-col gap-4">
-    <div class="flex flex-col items-start gap-2">
-      <UiButton
-        test-id="step-back"
-        type="button"
-        variant="foreground-ghost"
-        size="sm"
-        @click="step = 'source'"
-      >
-        <Icon name="tabler:arrow-left" aria-hidden="true" />
-        {{ $t('actions.back') }}
-      </UiButton>
-      <div>
-        <h3 class="text-xl font-semibold">
-          {{ $t('components.homebrewModal.pickMonster') }}
-        </h3>
-        <p class="text-sm text-muted-foreground text-pretty">
-          {{ $t('components.homebrewModal.pickMonsterInfo') }}
-          <Icon
-            name="tabler:wand"
-            class="size-4 align-text-bottom text-warning"
-            aria-hidden="true"
-          />
-        </p>
-      </div>
-    </div>
-    <FormBestiary :addable="false" persist="local" @remix="pickMonster" />
-  </div>
   <UiFormWrapper v-show="step === 'form'" @submit="onSubmit">
     <p
       v-if="basedOn"
@@ -461,13 +386,7 @@ function pickMonster(monster: DndMonster): void {
       </div>
 
       <div class="flex justify-end gap-2">
-        <Tooltip
-          :text="
-            isNew && tabIndex === 0
-              ? $t('components.homebrewModal.changeType')
-              : $t('actions.prev')
-          "
-        >
+        <Tooltip :text="backLabel">
           <UiButton
             test-id="prev"
             type="button"
