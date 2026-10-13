@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { ONE_HOUR } from '~~/constants/time'
 
 const bodySchema = z.object({
   name: z.string().min(3).max(30).optional(),
@@ -7,6 +8,12 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async event => {
+  await assertRateLimit(event, {
+    key: 'contact-request',
+    limit: 5,
+    windowMs: ONE_HOUR,
+  })
+
   const body = await readValidatedBody(event, bodySchema.parse)
   const { plunkApiKey } = useRuntimeConfig()
 
