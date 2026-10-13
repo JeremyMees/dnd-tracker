@@ -2,6 +2,7 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Homebrew from '~/components/form/Homebrew.vue'
+import { homebrewType } from '~~/constants/validation'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { mockCampaignFull } from '~~/test/fixtures/campaign'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
@@ -140,8 +141,8 @@ describe('Homebrew', () => {
     expect(tabs[0]!.attributes('aria-selected')).toBe('true')
   })
 
-  it('Should not go back from the first tab', async () => {
-    const component = await mountHomebrew()
+  it('Should not go back from the first tab when editing', async () => {
+    const component = await mountHomebrew({ item: mockHomebrewItem })
 
     expect(
       component.get('[test-id="prev"]').attributes('disabled'),
@@ -675,6 +676,123 @@ describe('Homebrew', () => {
     await mountHomebrew({ campaignId: mockCampaignFull.id })
 
     expect(homebrewCountEnabled.value).toBe(false)
+  })
+
+  describe('Picking a type', () => {
+    function form(component: Awaited<ReturnType<typeof mountHomebrew>>) {
+      return component.get<HTMLFormElement>('form').element
+    }
+
+    it('Should start with a card per homebrew type when creating', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      for (const type of homebrewType) {
+        expect(component.find(`[test-id="choice-${type}"]`).exists()).toBe(true)
+      }
+      expect(form(component).style.display).toBe('none')
+    })
+
+    it('Should describe each type on its card', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      expect(component.get('[test-id="choice-lair"]').text()).toContain(
+        'components.homebrewModal.types.lair',
+      )
+    })
+
+    it('Should show the form with the picked type', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await component.get('[test-id="choice-npc"]').trigger('click')
+      await nextTick()
+
+      expect(component.find('[test-id="choice-npc"]').exists()).toBe(false)
+      expect(form(component).style.display).toBe('')
+
+      await fillName(component)
+      await submitForm(component)
+
+      expect(createOptions().data).toMatchObject({ type: 'npc' })
+    })
+
+    it('Should go back to the type cards from the first tab', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await component.get('[test-id="choice-npc"]').trigger('click')
+      await nextTick()
+
+      expect(
+        component.get('[test-id="prev"]').attributes('disabled'),
+      ).toBeUndefined()
+
+      await component.get('[test-id="prev"]').trigger('click')
+      await nextTick()
+
+      expect(component.find('[test-id="choice-npc"]').exists()).toBe(true)
+      expect(form(component).style.display).toBe('none')
+    })
+
+    it('Should keep the entered values when changing the type', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await component.get('[test-id="choice-npc"]').trigger('click')
+      await nextTick()
+      await fillName(component)
+      await component.get('[test-id="prev"]').trigger('click')
+      await nextTick()
+      await component.get('[test-id="choice-monster"]').trigger('click')
+      await nextTick()
+      await submitForm(component)
+
+      expect(createOptions().data).toMatchObject({
+        name: 'Grommash',
+        type: 'monster',
+      })
+    })
+
+    it('Should open on the info tab after picking a type', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await component.get('[test-id="choice-npc"]').trigger('click')
+      await nextTick()
+      await component.get('[test-id="next"]').trigger('click')
+      await nextTick()
+      await component.get('[test-id="prev"]').trigger('click')
+      await nextTick()
+      await component.get('[test-id="prev"]').trigger('click')
+      await nextTick()
+      await component.get('[test-id="choice-player"]').trigger('click')
+      await nextTick()
+
+      expect(
+        component.findAll('[role="tab"]')[0]!.attributes('aria-selected'),
+      ).toBe('true')
+    })
+
+    it('Should skip the type cards when editing a campaign homebrew', async () => {
+      const component = await mountHomebrew({ item: mockHomebrewItem })
+
+      expect(component.find('[test-id="choice-player"]').exists()).toBe(false)
+      expect(form(component).style.display).toBe('')
+    })
+
+    it('Should skip the type cards when remixing a monster', async () => {
+      const component = await mountHomebrew({
+        withSheet: true,
+        template: { name: 'Goblin', type: 'monster' },
+      })
+
+      expect(component.find('[test-id="choice-player"]').exists()).toBe(false)
+    })
+
+    it('Should skip the type cards when editing a row', async () => {
+      const component = await mountHomebrew({
+        withSheet: true,
+        row: sheet.rows[0]!,
+      })
+
+      expect(component.find('[test-id="choice-player"]').exists()).toBe(false)
+    })
   })
 
   describe('Remixing a monster', () => {

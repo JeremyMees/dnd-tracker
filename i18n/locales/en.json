@@ -1073,7 +1073,17 @@
       "max": "Max campaign homebrews",
       "actionPage": "Action page",
       "infoPage": "Info page",
-      "invalid": "Can't save yet, check {tabs} for fields that still need fixing"
+      "invalid": "Can't save yet, check {tabs} for fields that still need fixing",
+      "pickType": "What are you creating?",
+      "pickTypeInfo": "Pick a type to get started, you can still change it later",
+      "changeType": "Change type",
+      "types": {
+        "player": "A character at the table, run by one of your players",
+        "summon": "A familiar, conjured creature or companion that fights alongside its summoner",
+        "npc": "A friendly or neutral face the party meets along the way",
+        "monster": "A foe to fight, from a lowly goblin to an ancient dragon",
+        "lair": "Lair actions that take their own turn in the initiative order"
+      }
     },
     "homebrewTable": {
       "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself.",

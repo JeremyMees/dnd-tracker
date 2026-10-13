@@ -1073,7 +1073,17 @@
       "max": "Max campagne homebrews",
       "actionPage": "Actie pagina",
       "infoPage": "Info pagina",
-      "invalid": "Nog niet opgeslagen, kijk bij {tabs} welke velden nog aangepast moeten worden"
+      "invalid": "Nog niet opgeslagen, kijk bij {tabs} welke velden nog aangepast moeten worden",
+      "pickType": "Wat ga je maken?",
+      "pickTypeInfo": "Kies een type om te beginnen, je kan het later nog aanpassen",
+      "changeType": "Type wijzigen",
+      "types": {
+        "player": "Een personage aan tafel, gespeeld door een van je spelers",
+        "summon": "Een familiar, opgeroepen wezen of metgezel dat naast zijn oproeper vecht",
+        "npc": "Een vriendelijk of neutraal gezicht dat de groep onderweg tegenkomt",
+        "monster": "Een vijand om te bevechten, van een nederige goblin tot een oude draak",
+        "lair": "Lair acties die hun eigen beurt krijgen in de initiative volgorde"
+      }
     },
     "homebrewTable": {
       "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht passen, maar dat betekent niet dat je ze niet zelf kunt maken.",

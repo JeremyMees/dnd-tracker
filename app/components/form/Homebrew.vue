@@ -69,8 +69,20 @@ function tabOf(path: string): Tab {
 
 const activeTab = ref<Tab>('info')
 const tabIndex = computed(() => tabs.indexOf(activeTab.value))
-const canGoBack = computed(() => tabIndex.value > 0)
+const canGoBack = computed(() => tabIndex.value > 0 || isNew)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
+
+const isNew = !props.item && !props.row && !props.template
+const step = ref<'type' | 'form'>(isNew ? 'type' : 'form')
+const typeOptions = computed<ChoiceCardOption<HomebrewType>[]>(() =>
+  homebrewType.map(type => ({
+    value: type,
+    label: t(`general.${type}`),
+    description: t(`components.homebrewModal.types.${type}`),
+    icon: homebrewIcon(type),
+    iconClass: homebrewColor(type),
+  })),
+)
 
 const formSchema = z
   .object({
@@ -356,10 +368,28 @@ async function addRows(submission: Submission): Promise<boolean> {
 
   return true
 }
+
+function goBack(): void {
+  if (tabIndex.value > 0) activeTab.value = tabs[tabIndex.value - 1]!
+  else step.value = 'type'
+}
+
+function pickType(type: HomebrewType): void {
+  form.setFieldValue('type', type)
+  activeTab.value = 'info'
+  step.value = 'form'
+}
 </script>
 
 <template>
-  <UiFormWrapper @submit="onSubmit">
+  <ChoiceCards
+    v-if="step === 'type'"
+    :title="$t('components.homebrewModal.pickType')"
+    :description="$t('components.homebrewModal.pickTypeInfo')"
+    :options="typeOptions"
+    @select="pickType"
+  />
+  <UiFormWrapper v-show="step === 'form'" @submit="onSubmit">
     <UiTabs v-model="activeTab">
       <UiTabsList class="grid w-full grid-cols-4">
         <UiTabsTrigger v-for="tab in tabs" :key="tab" :value="tab">
@@ -440,7 +470,13 @@ async function addRows(submission: Submission): Promise<boolean> {
       </div>
 
       <div class="flex justify-end gap-2">
-        <Tooltip :text="$t('actions.prev')">
+        <Tooltip
+          :text="
+            isNew && tabIndex === 0
+              ? $t('components.homebrewModal.changeType')
+              : $t('actions.prev')
+          "
+        >
           <UiButton
             test-id="prev"
             type="button"
@@ -448,7 +484,7 @@ async function addRows(submission: Submission): Promise<boolean> {
             size="icon"
             class="min-w-10"
             :disabled="!canGoBack"
-            @click="activeTab = tabs[tabIndex - 1]!"
+            @click="goBack"
           >
             <Icon name="tabler:arrow-left" />
           </UiButton>

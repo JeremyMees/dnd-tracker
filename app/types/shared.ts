@@ -17,6 +17,12 @@ export interface Option<T> {
   value: T
 }
 
+export interface ChoiceCardOption<T> extends Option<T> {
+  icon: string
+  iconClass?: string
+  description?: string
+}
+
 export interface Route {
   label: string
   url: keyof RouteMapI18n
