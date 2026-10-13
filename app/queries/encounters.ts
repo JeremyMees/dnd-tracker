@@ -38,11 +38,7 @@ export function useEncounterListing(
     select: ({ data, count, totalPages }) => ({
       amount: count,
       pages: totalPages,
-      encounters: data?.map(encounter => ({
-        ...encounter,
-        homebrew_items: sbCount('homebrew_items', encounter),
-        initiative_sheets: sbCount('initiative_sheets', encounter),
-      })),
+      encounters: data ?? undefined,
     }),
     placeholderData: keepPreviousData,
     enabled,
@@ -207,14 +203,7 @@ export function useEncounterCopy() {
 
   return useMutation({
     mutationFn: async ({ data }: { data: EncounterItem } & QueryDefaults) => {
-      const {
-        campaign,
-        createdBy,
-        id,
-        homebrew_items,
-        initiative_sheets,
-        ...enc
-      } = data
+      const { campaign, createdBy, id, ...enc } = data
 
       const { error } = await supabase.from('initiative_sheets').insert([
         {

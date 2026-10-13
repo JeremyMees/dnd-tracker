@@ -263,8 +263,6 @@ export interface EncounterItem extends Omit<
 > {
   createdBy: MinimalProfile
   campaign: CampaignMinimal
-  homebrew_items: number
-  initiative_sheets: number
 }
 
 export interface InitiativeSheet extends Omit<InitiativeRow, 'campaign'> {

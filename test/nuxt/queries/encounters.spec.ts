@@ -35,8 +35,6 @@ const encounterItem: EncounterItem = {
     createdBy: { id: '1', username: 'Test User', avatar: 'avatar-url' },
     team: [],
   },
-  homebrew_items: 0,
-  initiative_sheets: 0,
   settings: {
     spacing: 'normal',
     modified: false,
@@ -53,16 +51,10 @@ describe('encounters queries', () => {
   })
 
   describe('useEncounterListing', () => {
-    it('maps the query result into amount, pages, and encounters with sub-counts', async () => {
+    it('maps the query result into amount, pages, and encounters', async () => {
       mockSupabaseFrom({
         initiative_sheets: mockChain({
-          data: [
-            {
-              ...encounterItem,
-              homebrew_items: [{ count: 2 }],
-              initiative_sheets: [{ count: 4 }],
-            },
-          ],
+          data: [encounterItem],
           error: null,
           count: 1,
         }),
@@ -81,9 +73,7 @@ describe('encounters queries', () => {
       expect(vm.data).toEqual({
         amount: 1,
         pages: 1,
-        encounters: [
-          expect.objectContaining({ homebrew_items: 2, initiative_sheets: 4 }),
-        ],
+        encounters: [encounterItem],
       })
     })
 

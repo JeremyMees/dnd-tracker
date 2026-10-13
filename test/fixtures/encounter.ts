@@ -15,8 +15,6 @@ export const mockEncounterItem: EncounterItem = {
     createdBy: { id: '1', username: 'Test User', avatar: 'avatar-url' },
     team: [],
   },
-  homebrew_items: 0,
-  initiative_sheets: 0,
   settings: {
     spacing: 'normal',
     modified: false,
