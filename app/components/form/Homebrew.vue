@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import {
-  useHomebrewCount,
-  useHomebrewCreate,
-  useHomebrewUpdate,
-} from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import type { InvalidSubmissionContext } from 'vee-validate'
-import { maxCampaignHomebrews } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -77,24 +71,20 @@ const form = useForm({
 })
 
 const saveToCampaign = ref<boolean>(false)
-const isLinked = computed(() => isDefined(props.row?.homebrew))
-const { data: homebrewCount } = useHomebrewCount(
-  props.campaignId ?? 0,
-  computed(
-    () =>
-      isDefined(props.campaignId) &&
-      !!props.sheet &&
-      canSaveToCampaign.value &&
-      !isLinked.value,
-  ),
-)
-const isCampaignFull = computed(
-  () => !isLinked.value && (homebrewCount.value ?? 0) >= maxCampaignHomebrews,
-)
 const formError = ref<string>('')
 
-const { mutateAsync: createHomebrew } = useHomebrewCreate()
-const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
+const {
+  isLinked,
+  isFull: isCampaignFull,
+  create: createInCampaign,
+  update: updateInCampaign,
+  sync: syncToCampaign,
+} = useCampaignHomebrewSync({
+  campaignId: props.campaignId,
+  linkedId: props.row?.homebrew,
+  countEnabled: () => !!props.sheet && canSaveToCampaign.value,
+  onError: error => (formError.value = error),
+})
 
 type SubmitMode = 'editRow' | 'addRows' | 'updateHomebrew' | 'createHomebrew'
 
@@ -138,51 +128,12 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
   })
 }
 
-function onError(error: string): void {
-  formError.value = error
-}
-
-async function createInCampaign(data: HomebrewData): Promise<number | null> {
-  if (!props.campaignId) return null
-
-  try {
-    return await createHomebrew({
-      data: { ...data, campaign: props.campaignId } as HomebrewItemInsert,
-      onError,
-    })
-  } catch {
-    return null
-  }
-}
-
-async function updateInCampaign(
-  id: number,
-  data: HomebrewData,
-): Promise<boolean> {
-  try {
-    await updateHomebrew({ data, id, onError })
-
-    return true
-  } catch {
-    return false
-  }
-}
-
-async function syncToCampaign(
-  data: HomebrewData,
-): Promise<number | undefined | null> {
-  const linked = props.row?.homebrew
-
-  if (!saveToCampaign.value || !props.campaignId) return linked
-  if (!isDefined(linked)) return createInCampaign(data)
-
-  return (await updateInCampaign(linked, data)) ? linked : null
-}
-
 async function editRow(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.update || !props.row) return false
 
-  const homebrew = await syncToCampaign(submission.homebrew)
+  const homebrew = saveToCampaign.value
+    ? await syncToCampaign(submission.homebrew)
+    : props.row.homebrew
 
   if (homebrew === null) return false
 
@@ -208,10 +159,9 @@ async function addRows(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.update) return false
 
   const { initiative, initiativeModifier } = submission
-  const homebrew =
-    saveToCampaign.value && props.campaignId
-      ? await createInCampaign(submission.homebrew)
-      : undefined
+  const homebrew = saveToCampaign.value
+    ? await syncToCampaign(submission.homebrew)
+    : undefined
 
   if (homebrew === null) return false
 
