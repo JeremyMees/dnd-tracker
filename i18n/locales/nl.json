@@ -1077,6 +1077,21 @@
       "pickType": "Wat ga je maken?",
       "pickTypeInfo": "Kies een type om te beginnen, je kan het later nog aanpassen",
       "changeType": "Type wijzigen",
+      "pickSource": "Hoe wil je beginnen?",
+      "pickSourceInfo": "Bouw je wezen van nul op, of kopieer een monster uit het bestiarium en maak het helemaal van jou",
+      "pickMonster": "Kies een monster om van te starten",
+      "pickMonsterInfo": "Klik op de toverstaf bij een monster om zijn stats naar je homebrew te kopiëren",
+      "basedOn": "Gebaseerd op {name}",
+      "sources": {
+        "scratch": {
+          "label": "Van nul beginnen",
+          "description": "Een leeg stat block, je vult elk detail zelf in"
+        },
+        "bestiary": {
+          "label": "Vanuit het bestiarium",
+          "description": "Kopieer een bestaand monster en pas het aan zoals je wil"
+        }
+      },
       "types": {
         "player": "Een personage aan tafel, gespeeld door een van je spelers",
         "summon": "Een familiar, opgeroepen wezen of metgezel dat naast zijn oproeper vecht",

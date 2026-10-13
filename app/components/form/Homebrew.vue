@@ -73,7 +73,10 @@ const canGoBack = computed(() => tabIndex.value > 0 || isNew)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
 
 const isNew = !props.item && !props.row && !props.template
-const step = ref<'type' | 'form'>(isNew ? 'type' : 'form')
+const step = ref<'type' | 'source' | 'bestiary' | 'form'>(
+  isNew ? 'type' : 'form',
+)
+const basedOn = ref<string>()
 const typeOptions = computed<ChoiceCardOption<HomebrewType>[]>(() =>
   homebrewType.map(type => ({
     value: type,
@@ -83,6 +86,25 @@ const typeOptions = computed<ChoiceCardOption<HomebrewType>[]>(() =>
     iconClass: homebrewColor(type),
   })),
 )
+
+type Source = 'scratch' | 'bestiary'
+
+const sourceOptions = computed<ChoiceCardOption<Source>[]>(() => [
+  {
+    value: 'scratch',
+    label: t('components.homebrewModal.sources.scratch.label'),
+    description: t('components.homebrewModal.sources.scratch.description'),
+    icon: 'tabler:pencil-plus',
+    iconClass: 'text-primary',
+  },
+  {
+    value: 'bestiary',
+    label: t('components.homebrewModal.sources.bestiary.label'),
+    description: t('components.homebrewModal.sources.bestiary.description'),
+    icon: 'tabler:books',
+    iconClass: homebrewColor('monster'),
+  },
+])
 
 const formSchema = z
   .object({
@@ -138,43 +160,46 @@ const source = props.row
     }
   : (props.item ?? props.template)
 
+function toFormValues(from: typeof source, amount?: number) {
+  return {
+    type: from?.type || 'player',
+    summoner: props.row?.summoner?.id,
+    name: from?.name || '',
+    player: from?.player || '',
+    amount,
+    initiative: undefined,
+    initiativeModifier: toIntegerOrUndefined(from?.initiativeModifier),
+    armorClass: from?.armorClass || undefined,
+    hitPoints: from?.hitPoints || undefined,
+    link: from?.link || '',
+    hitDice: from?.hitDice || '',
+    armorDetail: from?.armorDetail || '',
+    proficiencyBonus: from?.proficiencyBonus || undefined,
+    passivePerception: from?.passivePerception || undefined,
+    speed: from?.speed || undefined,
+    sight: from?.sight || undefined,
+    languages: from?.languages || [],
+    abilityScores: from?.abilityScores || undefined,
+    modifiers: from?.modifiers || undefined,
+    savingThrows: from?.savingThrows || undefined,
+    skillBonuses: from?.skillBonuses || undefined,
+    resistancesAndImmunities: {
+      damageImmunities: from?.resistancesAndImmunities?.damageImmunities ?? [],
+      damageResistances:
+        from?.resistancesAndImmunities?.damageResistances ?? [],
+      damageVulnerabilities:
+        from?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+      conditionImmunities:
+        from?.resistancesAndImmunities?.conditionImmunities ?? [],
+    },
+    traits: (from?.traits ?? []) as { name: string; desc: string }[],
+    actions: from?.actions ?? [],
+  }
+}
+
 const form = useForm({
   validationSchema: formSchema,
-  initialValues: {
-    type: source?.type || 'player',
-    summoner: props.row?.summoner?.id,
-    name: source?.name || '',
-    player: source?.player || '',
-    amount: props.template ? 1 : undefined,
-    initiative: undefined,
-    initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),
-    armorClass: source?.armorClass || undefined,
-    hitPoints: source?.hitPoints || undefined,
-    link: source?.link || '',
-    hitDice: source?.hitDice || '',
-    armorDetail: source?.armorDetail || '',
-    proficiencyBonus: source?.proficiencyBonus || undefined,
-    passivePerception: source?.passivePerception || undefined,
-    speed: source?.speed || undefined,
-    sight: source?.sight || undefined,
-    languages: source?.languages || [],
-    abilityScores: source?.abilityScores || undefined,
-    modifiers: source?.modifiers || undefined,
-    savingThrows: source?.savingThrows || undefined,
-    skillBonuses: source?.skillBonuses || undefined,
-    resistancesAndImmunities: {
-      damageImmunities:
-        source?.resistancesAndImmunities?.damageImmunities ?? [],
-      damageResistances:
-        source?.resistancesAndImmunities?.damageResistances ?? [],
-      damageVulnerabilities:
-        source?.resistancesAndImmunities?.damageVulnerabilities ?? [],
-      conditionImmunities:
-        source?.resistancesAndImmunities?.conditionImmunities ?? [],
-    },
-    traits: (source?.traits ?? []) as { name: string; desc: string }[],
-    actions: source?.actions ?? [],
-  },
+  initialValues: toFormValues(source, props.template ? 1 : undefined),
 })
 
 const saveToCampaign = ref<boolean>(false)
@@ -371,13 +396,47 @@ async function addRows(submission: Submission): Promise<boolean> {
 
 function goBack(): void {
   if (tabIndex.value > 0) activeTab.value = tabs[tabIndex.value - 1]!
-  else step.value = 'type'
+  else step.value = form.values.type === 'monster' ? 'source' : 'type'
+}
+
+function showForm(): void {
+  activeTab.value = 'info'
+  step.value = 'form'
 }
 
 function pickType(type: HomebrewType): void {
   form.setFieldValue('type', type)
-  activeTab.value = 'info'
-  step.value = 'form'
+
+  if (type === 'monster') step.value = 'source'
+  else showForm()
+}
+
+function pickSource(picked: Source): void {
+  if (picked === 'bestiary') {
+    step.value = 'bestiary'
+    return
+  }
+
+  if (basedOn.value) {
+    form.resetForm(
+      { values: toFormValues({ name: '', type: 'monster' }) },
+      { force: true },
+    )
+    basedOn.value = undefined
+  }
+
+  showForm()
+}
+
+function pickMonster(monster: DndMonster): void {
+  form.resetForm(
+    {
+      values: toFormValues(monsterToRow(monster), props.sheet ? 1 : undefined),
+    },
+    { force: true },
+  )
+  basedOn.value = monster.name
+  showForm()
 }
 </script>
 
@@ -389,7 +448,66 @@ function pickType(type: HomebrewType): void {
     :options="typeOptions"
     @select="pickType"
   />
+  <div v-else-if="step === 'source'">
+    <UiButton
+      test-id="step-back"
+      type="button"
+      variant="foreground-ghost"
+      size="sm"
+      @click="step = 'type'"
+    >
+      <Icon name="tabler:arrow-left" aria-hidden="true" />
+      {{ $t('actions.back') }}
+    </UiButton>
+    <ChoiceCards
+      :title="$t('components.homebrewModal.pickSource')"
+      :description="$t('components.homebrewModal.pickSourceInfo')"
+      :options="sourceOptions"
+      @select="pickSource"
+    />
+  </div>
+  <div v-else-if="step === 'bestiary'" class="flex flex-col gap-4">
+    <div class="flex flex-col items-start gap-2">
+      <UiButton
+        test-id="step-back"
+        type="button"
+        variant="foreground-ghost"
+        size="sm"
+        @click="step = 'source'"
+      >
+        <Icon name="tabler:arrow-left" aria-hidden="true" />
+        {{ $t('actions.back') }}
+      </UiButton>
+      <div>
+        <h3 class="text-xl font-semibold">
+          {{ $t('components.homebrewModal.pickMonster') }}
+        </h3>
+        <p class="text-sm text-muted-foreground text-pretty">
+          {{ $t('components.homebrewModal.pickMonsterInfo') }}
+          <Icon
+            name="tabler:wand"
+            class="size-4 align-text-bottom text-warning"
+            aria-hidden="true"
+          />
+        </p>
+      </div>
+    </div>
+    <FormBestiary :addable="false" persist="local" @remix="pickMonster" />
+  </div>
   <UiFormWrapper v-show="step === 'form'" @submit="onSubmit">
+    <p
+      v-if="basedOn"
+      test-id="based-on"
+      class="flex items-center gap-2 text-sm text-muted-foreground"
+    >
+      <Icon
+        name="tabler:books"
+        class="size-4 min-w-4"
+        :class="homebrewColor('monster')"
+        aria-hidden="true"
+      />
+      {{ $t('components.homebrewModal.basedOn', { name: basedOn }) }}
+    </p>
     <UiTabs v-model="activeTab">
       <UiTabsList class="grid w-full grid-cols-4">
         <UiTabsTrigger v-for="tab in tabs" :key="tab" :value="tab">

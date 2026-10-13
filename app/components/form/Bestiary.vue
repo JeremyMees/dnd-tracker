@@ -11,15 +11,18 @@ const props = withDefaults(
     system?: DndGameSystem
     preSelectedDocuments?: string[]
     persist?: FilterPersistence
+    addable?: boolean
   }>(),
   {
     system: '5e-2024',
     preSelectedDocuments: () => ['srd-2024'],
     persist: 'none',
+    addable: true,
   },
 )
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const injected = inject(INITIATIVE_SHEET, undefined)
+const canAdd = computed(() => props.addable && !!injected)
 
 const { toast } = useToast()
 const { t } = useI18n()
@@ -140,20 +143,18 @@ function resetFilters(): void {
 }
 
 async function addMonster(monster: DndMonster): Promise<void> {
-  if (!sheet.value) return
+  const sheet = injected?.sheet.value
+
+  if (!injected || !sheet) return
 
   const rows = [
-    ...sheet.value.rows,
-    createInitiativeRow(
-      monsterToRow(monster),
-      'monster',
-      sheet.value.rows.length,
-    ),
+    ...sheet.rows,
+    createInitiativeRow(monsterToRow(monster), 'monster', sheet.rows.length),
   ]
 
   const sortedRows = indexCorrect(rows)
 
-  await update({ rows: sortedRows })
+  await injected.update({ rows: sortedRows })
 
   toast({
     title: t('components.initiativeTable.bestiary.added', {
@@ -278,7 +279,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
           :id="j === 0 ? 'el' : ''"
           :key="hit.id"
           :monster="hit"
-          addable
+          :addable="canAdd"
           remixable
           @add="addMonster"
           @remix="$emit('remix', $event)"

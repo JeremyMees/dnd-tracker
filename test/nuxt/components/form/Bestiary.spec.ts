@@ -241,6 +241,27 @@ describe('Bestiary', () => {
     expect(toast).not.toHaveBeenCalled()
   })
 
+  it('Should hide the add button when not addable', async () => {
+    const component = await mountBestiary({ addable: false }).mount()
+
+    const card = component.findComponent(MonsterCard)
+
+    expect(card.props('addable')).toBe(false)
+    expect(card.props('remixable')).toBe(true)
+  })
+
+  it('Should only offer to remix outside an encounter', async () => {
+    const component = await mountWithTooltips(Bestiary)
+
+    const card = component.findComponent(MonsterCard)
+
+    expect(card.props('addable')).toBe(false)
+
+    await card.vm.$emit('remix', dndMonsterFixture)
+
+    expect(component.emitted('remix')![0]).toEqual([dndMonsterFixture])
+  })
+
   it('Should refetch with the search term once it settles', async () => {
     vi.useFakeTimers()
 
