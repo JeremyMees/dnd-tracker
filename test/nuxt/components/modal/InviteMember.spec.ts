@@ -1,4 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { maxCampaignMembers } from '~~/constants/validation'
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -159,7 +160,7 @@ describe('InviteMember modal', () => {
   })
 
   it('Should refuse a search once the team is full', async () => {
-    const team = Array.from({ length: 9 }, (_, index) => ({
+    const team = Array.from({ length: maxCampaignMembers - 1 }, (_, index) => ({
       ...mockTeamMember,
       id: index,
       user: {

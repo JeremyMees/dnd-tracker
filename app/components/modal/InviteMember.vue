@@ -116,7 +116,11 @@ function validateUser(email: string): string | undefined {
     return 'alreadyInvited'
   else if (foundUsers.value.some(({ profile }) => matches(profile.email)))
     return 'alreadySelected'
-  else if ([...foundUsers.value, ...team, ...join_campaign].length >= 9)
+  else if (
+    isCampaignTeamFull(
+      foundUsers.value.length + team.length + join_campaign.length,
+    )
+  )
     return 'maxMembers'
   else if (
     matches(createdBy.email) ||

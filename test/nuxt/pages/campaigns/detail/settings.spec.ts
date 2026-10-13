@@ -1,4 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { maxCampaignMembers } from '~~/constants/validation'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Settings from '~/pages/campaigns/[id]-[title]/settings.vue'
@@ -189,8 +190,24 @@ describe('Campaign settings page', () => {
     })
   })
 
+  it('Should allow inviting while the campaign has room', async () => {
+    const team = Array.from({ length: maxCampaignMembers - 2 }, (_, index) => ({
+      ...mockTeamMember,
+      id: index + 1,
+      user: { ...mockTeamMember.user, id: `member-${index}` },
+    }))
+
+    const { component } = await mountPage({
+      current: { ...mockCampaignFull, team },
+    })
+
+    expect(
+      component.get('[test-id="invite"]').attributes('disabled'),
+    ).toBeUndefined()
+  })
+
   it('Should not allow inviting when the campaign is full', async () => {
-    const team = Array.from({ length: 9 }, (_, index) => ({
+    const team = Array.from({ length: maxCampaignMembers - 1 }, (_, index) => ({
       ...mockTeamMember,
       id: index + 1,
       user: { ...mockTeamMember.user, id: `member-${index}` },

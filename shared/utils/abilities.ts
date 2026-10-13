@@ -1,16 +1,24 @@
+import { maxCampaignMembers } from '~~/constants/validation'
+
 type Campaign = CampaignItem | CampaignFull | CampaignMinimal
 type Encounter = EncounterItem
 
 export const isOwner = (item: Campaign | Encounter, id: string) =>
   item.createdBy.id === id
+
 export const isAdmin = (item: TeamMember[], id: string) =>
   !!item.find(u => u.user.id === id && u.role === 'Admin')
+
 export const isMember = (item: TeamMember[], id: string) =>
   !!item.find(u => u.user.id === id)
+
 export const isOwnerOrAdmin = (
   campaign: { createdBy: { id: string }; team: TeamMember[] },
   id: string,
 ) => campaign.createdBy.id === id || isAdmin(campaign.team, id)
+
+export const isCampaignTeamFull = (membersBesidesOwner: number) =>
+  membersBesidesOwner + 1 >= maxCampaignMembers
 
 export const isNotCampaignOwner = defineAbility(
   (user: AuthUser, campaign: Campaign) => {
