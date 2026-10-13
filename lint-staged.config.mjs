@@ -1,4 +1,8 @@
 export default {
-  '**/*.{js,ts,vue,css,json}': () => ['eslint .', 'prettier . --check'],
-  '**/*.{js,ts,vue}': () => 'nuxt typecheck',
+  '*.{js,mjs,ts,vue}': [
+    'eslint --no-warn-ignored',
+    'prettier --check',
+    () => 'nuxt typecheck',
+  ],
+  '*.{css,json,md,yml,yaml}': 'prettier --check --ignore-unknown',
 }
