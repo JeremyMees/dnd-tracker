@@ -94,10 +94,6 @@ export function formatDate(date: string | Date): string {
   return formatter.format(new Date(date))
 }
 
-export function isDefined<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined
-}
-
 export function timeRemaining(expiresAt: string | Date, now: number): string {
   const ms = new Date(expiresAt).getTime() - now
 

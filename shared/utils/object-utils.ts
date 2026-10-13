@@ -17,7 +17,7 @@ export function removeEmptyKeys<T>(
   const result: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(object)) {
-    if (value !== undefined && value !== null) {
+    if (isDefined(value)) {
       if (!deep) result[key] = value
 
       result[key] =
