@@ -210,6 +210,49 @@ describe('dnd/row', () => {
     })
   })
 
+  describe('appendRows', () => {
+    const existing = [
+      { id: 'a', name: 'Aragorn', initiative: 12, index: 0 },
+      { id: 'b', name: 'Boromir', initiative: 5, index: 1 },
+    ] as InitiativeSheetRow[]
+
+    it('Should add a new row for every given row', () => {
+      const result = appendRows(existing, [
+        { name: 'Goblin', type: 'monster' },
+        { name: 'Wolf', type: 'summon' },
+      ])
+
+      expect(result).toHaveLength(4)
+      expect(result.find(r => r.name === 'Goblin')!.type).toBe('monster')
+      expect(result.find(r => r.name === 'Wolf')!.type).toBe('summon')
+    })
+
+    it('Should sort the rows by initiative and reindex them', () => {
+      const result = appendRows(existing, [
+        { name: 'Goblin', type: 'monster', initiative: 20 },
+      ])
+
+      expect(result.map(r => r.name)).toEqual(['Goblin', 'Aragorn', 'Boromir'])
+      expect(result.map(r => r.index)).toEqual([0, 1, 2])
+    })
+
+    it('Should give copies of the same row their own id', () => {
+      const goblin = { name: 'Goblin', type: 'monster' as const }
+
+      const result = appendRows([], [goblin, goblin, goblin])
+
+      expect(new Set(result.map(r => r.id)).size).toBe(3)
+    })
+
+    it('Should leave the given rows untouched', () => {
+      const rows = [...existing]
+
+      appendRows(rows, [{ name: 'Goblin', type: 'monster' }])
+
+      expect(rows).toEqual(existing)
+    })
+  })
+
   describe('monsterToRow', () => {
     it('should turn a bestiary monster into monster row data', () => {
       const row = monsterToRow(dndMonsterFixture)

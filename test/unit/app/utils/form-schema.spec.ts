@@ -6,6 +6,8 @@ import {
   initiativePets,
   initiativeWidgets,
 } from '~~/constants/validation'
+import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
+import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 describe('form-schema', () => {
   describe('skillBonusesSchema', () => {
@@ -861,6 +863,141 @@ describe('form-schema', () => {
         initiativeSettingsSchema.safeParse(initiativeSettingsInitialValues())
           .success,
       ).toBeTruthy()
+    })
+  })
+
+  describe('homebrewFormSchema', () => {
+    const t = (key: string) => key
+
+    function schema(isEncounter = false, isEditingRow = false) {
+      return homebrewFormSchema({ isEncounter, isEditingRow, t })
+    }
+
+    function values(overrides: Record<string, unknown> = {}) {
+      return {
+        ...homebrewInitialValues({ name: 'Grommash', type: 'player' }),
+        ...overrides,
+      }
+    }
+
+    function issueAt(result: { error?: z.ZodError }, path: string) {
+      return result.error?.issues.find(issue => issue.path.join('.') === path)
+    }
+
+    it('Should accept the initial values with a name', () => {
+      expect(schema().safeParse(values()).success).toBeTruthy()
+    })
+
+    it('Should reject a name shorter than three characters', () => {
+      expect(schema().safeParse(values({ name: 'Al' })).success).toBeFalsy()
+    })
+
+    it('Should reject an invalid hit dice expression with its own message', () => {
+      const result = schema().safeParse(values({ hitDice: 'abc' }))
+
+      expect(issueAt(result, 'hitDice')?.message).toBe('zod.hitDiceExpression')
+    })
+
+    it('Should accept a valid hit dice expression', () => {
+      expect(
+        schema().safeParse(values({ hitDice: '2d6' })).success,
+      ).toBeTruthy()
+    })
+
+    it.each(['monster', 'summon'])(
+      'Should require an amount for a new %s in an encounter',
+      type => {
+        const result = schema(true).safeParse(
+          values({ type, summoner: 'row-1' }),
+        )
+
+        expect(issueAt(result, 'amount')?.message).toBe('zod.required')
+      },
+    )
+
+    it('Should not require an amount outside an encounter', () => {
+      expect(
+        schema().safeParse(values({ type: 'monster' })).success,
+      ).toBeTruthy()
+    })
+
+    it('Should not require an amount when editing a row', () => {
+      expect(
+        schema(true, true).safeParse(values({ type: 'monster' })).success,
+      ).toBeTruthy()
+    })
+
+    it('Should require a summoner for a summon in an encounter', () => {
+      const result = schema(true).safeParse(
+        values({ type: 'summon', amount: 1 }),
+      )
+
+      expect(issueAt(result, 'summoner')?.message).toBe('zod.required')
+    })
+
+    it('Should not require a summoner outside an encounter', () => {
+      expect(
+        schema().safeParse(values({ type: 'summon' })).success,
+      ).toBeTruthy()
+    })
+  })
+
+  describe('homebrewInitialValues', () => {
+    it('Should start an empty player without a source', () => {
+      const values = homebrewInitialValues()
+
+      expect(values).toMatchObject({
+        type: 'player',
+        name: '',
+        player: '',
+        link: '',
+        hitDice: '',
+        languages: [],
+        traits: [],
+        actions: [],
+        resistancesAndImmunities: {
+          damageImmunities: [],
+          damageResistances: [],
+          damageVulnerabilities: [],
+          conditionImmunities: [],
+        },
+      })
+      expect(values.amount).toBeUndefined()
+      expect(values.hitPoints).toBeUndefined()
+    })
+
+    it('Should map a campaign homebrew and its empty columns', () => {
+      const values = homebrewInitialValues(mockHomebrewItem)
+
+      expect(values).toMatchObject({
+        type: 'monster',
+        name: 'Goblin Boss',
+        player: '',
+        link: '',
+        armorClass: 17,
+        hitPoints: 21,
+        initiativeModifier: 2,
+        languages: [],
+        traits: [],
+      })
+      expect(values.abilityScores).toBeUndefined()
+    })
+
+    it('Should pass the amount and summoner through', () => {
+      expect(
+        homebrewInitialValues(undefined, { amount: 3, summoner: 'row-1' }),
+      ).toMatchObject({ amount: 3, summoner: 'row-1' })
+    })
+
+    it('Should map a monster from the bestiary', () => {
+      const values = homebrewInitialValues(monsterToRow(dndMonsterFixture))
+
+      expect(values).toMatchObject({
+        type: 'monster',
+        name: dndMonsterFixture.name,
+        hitPoints: dndMonsterFixture.hitPoints,
+        armorClass: dndMonsterFixture.armorClass,
+      })
     })
   })
 

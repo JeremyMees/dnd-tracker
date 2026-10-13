@@ -147,14 +147,9 @@ async function addMonster(monster: DndMonster): Promise<void> {
 
   if (!injected || !sheet) return
 
-  const rows = [
-    ...sheet.rows,
-    createInitiativeRow(monsterToRow(monster), 'monster', sheet.rows.length),
-  ]
-
-  const sortedRows = indexCorrect(rows)
-
-  await injected.update({ rows: sortedRows })
+  await injected.update({
+    rows: appendRows(sheet.rows, [monsterToRow(monster)]),
+  })
 
   toast({
     title: t('components.initiativeTable.bestiary.added', {

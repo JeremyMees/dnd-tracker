@@ -124,6 +124,18 @@ export const createInitiativeRow = (
   }
 }
 
+export function appendRows(
+  rows: InitiativeSheetRow[],
+  added: (Partial<InitiativeSheetRow> & { name: string; type: HomebrewType })[],
+): InitiativeSheetRow[] {
+  return indexCorrect([
+    ...rows,
+    ...added.map((row, i) =>
+      createInitiativeRow(row, row.type, rows.length + i),
+    ),
+  ])
+}
+
 export const monsterToRow = (
   monster: DndMonster,
 ): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {

@@ -97,25 +97,21 @@ const table = useTable({
 async function addHomebrews(addAll: boolean): Promise<void> {
   if (!sheet.value) return
 
-  const rows = [...sheet.value.rows]
   const selection = addAll
     ? data.value?.homebrews.filter(hb => hb.type !== 'summon') || []
     : selected.value
 
-  selection.forEach((hb: HomebrewItemRow) => {
-    const row: Partial<InitiativeSheetRow> & { name: string } = {
-      ...homebrewToRow(hb),
-      ...(hb.type === 'summon' && summoner.value
-        ? { summoner: summoner.value }
-        : {}),
-    }
-
-    rows.push(createInitiativeRow(row, hb.type, rows.length))
+  await update({
+    rows: appendRows(
+      sheet.value.rows,
+      selection.map(hb => ({
+        ...homebrewToRow(hb),
+        ...(hb.type === 'summon' && summoner.value
+          ? { summoner: summoner.value }
+          : {}),
+      })),
+    ),
   })
-
-  const sortedRows = indexCorrect(rows)
-
-  await update({ rows: sortedRows })
 
   emit('close')
 }

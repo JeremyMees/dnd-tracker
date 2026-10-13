@@ -219,6 +219,39 @@ describe('dnd/hp-ac', () => {
     })
   })
 
+  describe('withBaseStats', () => {
+    const row = {
+      ...sheet.rows[0]!,
+      hitPoints: 4,
+      maxHitPoints: 40,
+      armorClass: 12,
+      maxArmorClass: 14,
+      maxHitPointsOld: undefined,
+      maxArmorClassOld: undefined,
+    }
+
+    it('Should swap the current hit points and armor class for the base ones', () => {
+      expect(withBaseStats(row)).toMatchObject({
+        hitPoints: 40,
+        armorClass: 14,
+      })
+    })
+
+    it('Should prefer the base from before an override', () => {
+      expect(
+        withBaseStats({ ...row, maxHitPointsOld: 30, maxArmorClassOld: 11 }),
+      ).toMatchObject({ hitPoints: 30, armorClass: 11 })
+    })
+
+    it('Should keep the other fields of the row', () => {
+      const result = withBaseStats(row)
+
+      expect(result.id).toBe(row.id)
+      expect(result.name).toBe(row.name)
+      expect(result.maxHitPoints).toBe(40)
+    })
+  })
+
   describe('getHealthBand', () => {
     it.each([
       [80, 100, 'healthy'],

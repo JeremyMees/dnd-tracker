@@ -6,7 +6,6 @@ import {
 } from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import type { InvalidSubmissionContext } from 'vee-validate'
-import * as z from 'zod'
 import { homebrewType, maxCampaignHomebrews } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
@@ -44,30 +43,16 @@ const canSaveToCampaign = computed(() => {
   return !!id && !!campaign && isOwnerOrAdmin(campaign, id)
 })
 
-const tabs = ['info', 'stats', 'traits', 'actions'] as const
+const tabs = homebrewTabs
 
-type Tab = (typeof tabs)[number]
-
-const tabFields: Partial<Record<Tab, string[]>> = {
-  stats: ['abilityScores', 'modifiers', 'savingThrows', 'skillBonuses'],
-  traits: ['traits', 'resistancesAndImmunities'],
-  actions: ['actions'],
-}
-
-const tabLabels = computed<Record<Tab, string>>(() => ({
+const tabLabels = computed<Record<HomebrewTab, string>>(() => ({
   info: t('general.info'),
   stats: t('general.stats'),
   traits: t('general.trait', 2),
   actions: t('general.action', 2),
 }))
 
-function tabOf(path: string): Tab {
-  const field = path.split(/[.[]/)[0]!
-
-  return tabs.find(tab => tabFields[tab]?.includes(field)) ?? 'info'
-}
-
-const activeTab = ref<Tab>('info')
+const activeTab = ref<HomebrewTab>('info')
 const tabIndex = computed(() => tabs.indexOf(activeTab.value))
 const canGoBack = computed(() => tabIndex.value > 0 || isNew)
 const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
@@ -106,100 +91,19 @@ const sourceOptions = computed<ChoiceCardOption<Source>[]>(() => [
   },
 ])
 
-const formSchema = z
-  .object({
-    type: z.enum(homebrewType),
-    amount: z.int().gte(1).lte(15).optional(),
-    summoner: z.string().max(50).optional().or(z.literal('')),
-    name: z.string().min(3).max(50),
-    player: z.string().min(3).max(30).optional().or(z.literal('')),
-    initiative: z.int().gte(1).lte(50).optional(),
-    initiativeModifier: z.int().gte(-20).lte(20).optional(),
-    armorClass: z.int().gte(1).lte(100).optional(),
-    hitPoints: z.int().gte(1).lte(1000).optional(),
-    link: z.string().url().optional().or(z.literal('')),
-    hitDice: z
-      .string()
-      .min(3)
-      .max(15)
-      .regex(hitDiceExpression, { error: () => t('zod.hitDiceExpression') })
-      .optional()
-      .or(z.literal('')),
-    armorDetail: z.string().max(100).optional().or(z.literal('')),
-    proficiencyBonus: z.int().gte(0).lte(10).optional(),
-    passivePerception: z.int().gte(0).lte(50).optional(),
-    speed: speedSchema.optional(),
-    sight: sightSchema.optional(),
-    languages: z.array(z.string().min(1).max(50)).max(20),
-    abilityScores: abilityScoresSchema.optional(),
-    modifiers: abilityBonusSchema.optional(),
-    savingThrows: abilityBonusSchema.optional(),
-    skillBonuses: skillBonusesSchema.optional(),
-    resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
-    traits: z.array(traitSchema).max(40),
-    actions: z.array(actionSchema).max(40),
-  })
-  .refine(
-    data =>
-      !props.isEncounter ||
-      !!props.row ||
-      !(['monster', 'summon'].includes(data.type) && !data.amount),
-    { error: () => t('zod.required'), path: ['amount'] },
-  )
-  .refine(
-    data =>
-      !props.isEncounter || !(['summon'].includes(data.type) && !data.summoner),
-    { error: () => t('zod.required'), path: ['summoner'] },
-  )
-
-const source = props.row
-  ? {
-      ...props.row,
-      hitPoints: getBaseHP(props.row),
-      armorClass: getBaseAC(props.row),
-    }
-  : (props.item ?? props.template)
-
-function toFormValues(from: typeof source, amount?: number) {
-  return {
-    type: from?.type || 'player',
-    summoner: props.row?.summoner?.id,
-    name: from?.name || '',
-    player: from?.player || '',
-    amount,
-    initiative: undefined,
-    initiativeModifier: toIntegerOrUndefined(from?.initiativeModifier),
-    armorClass: from?.armorClass || undefined,
-    hitPoints: from?.hitPoints || undefined,
-    link: from?.link || '',
-    hitDice: from?.hitDice || '',
-    armorDetail: from?.armorDetail || '',
-    proficiencyBonus: from?.proficiencyBonus || undefined,
-    passivePerception: from?.passivePerception || undefined,
-    speed: from?.speed || undefined,
-    sight: from?.sight || undefined,
-    languages: from?.languages || [],
-    abilityScores: from?.abilityScores || undefined,
-    modifiers: from?.modifiers || undefined,
-    savingThrows: from?.savingThrows || undefined,
-    skillBonuses: from?.skillBonuses || undefined,
-    resistancesAndImmunities: {
-      damageImmunities: from?.resistancesAndImmunities?.damageImmunities ?? [],
-      damageResistances:
-        from?.resistancesAndImmunities?.damageResistances ?? [],
-      damageVulnerabilities:
-        from?.resistancesAndImmunities?.damageVulnerabilities ?? [],
-      conditionImmunities:
-        from?.resistancesAndImmunities?.conditionImmunities ?? [],
-    },
-    traits: (from?.traits ?? []) as { name: string; desc: string }[],
-    actions: from?.actions ?? [],
-  }
-}
-
 const form = useForm({
-  validationSchema: formSchema,
-  initialValues: toFormValues(source, props.template ? 1 : undefined),
+  validationSchema: homebrewFormSchema({
+    isEncounter: props.isEncounter,
+    isEditingRow: !!props.row,
+    t,
+  }),
+  initialValues: homebrewInitialValues(
+    props.row ? withBaseStats(props.row) : (props.item ?? props.template),
+    {
+      amount: props.template ? 1 : undefined,
+      summoner: props.row?.summoner?.id,
+    },
+  ),
 })
 
 const saveToCampaign = ref<boolean>(false)
@@ -222,17 +126,6 @@ const formError = ref<string>('')
 const { mutateAsync: createHomebrew } = useHomebrewCreate()
 const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
 
-type HomebrewData = Omit<HomebrewItemUpdate, NotUpdatable>
-
-interface Submission {
-  row: InitiativeSheetRowInsert
-  homebrew: HomebrewData
-  amount?: number
-  initiative?: number
-  initiativeModifier?: number
-  summoner?: string
-}
-
 type SubmitMode = 'editRow' | 'addRows' | 'updateHomebrew' | 'createHomebrew'
 
 const mode = computed<SubmitMode | undefined>(() => {
@@ -243,7 +136,7 @@ const mode = computed<SubmitMode | undefined>(() => {
 
 const submitters: Record<
   SubmitMode,
-  (submission: Submission) => Promise<boolean>
+  (submission: HomebrewSubmission) => Promise<boolean>
 > = {
   editRow,
   addRows,
@@ -258,14 +151,11 @@ const onSubmit = form.handleSubmit(async values => {
 
   if (!mode.value) return
 
-  if (await submitters[mode.value](toSubmission(values))) emit('close')
+  if (await submitters[mode.value](toHomebrewSubmission(values))) emit('close')
 }, onInvalidSubmit)
 
 function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
-  const invalidPaths = Object.keys(errors).filter(path => errors[path])
-  const invalidTabs = tabs.filter(tab =>
-    invalidPaths.some(path => tabOf(path) === tab),
-  )
+  const invalidTabs = invalidHomebrewTabs(errors)
 
   if (!invalidTabs.length) return
 
@@ -280,24 +170,6 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
 
 function onError(error: string): void {
   formError.value = error
-}
-
-function toSubmission(values: z.output<typeof formSchema>): Submission {
-  const { amount, initiative, initiativeModifier, summoner, ...data } = values
-
-  return {
-    row: data as InitiativeSheetRowInsert,
-    homebrew: {
-      ...data,
-      ...(isDefined(initiativeModifier)
-        ? { initiativeModifier: initiativeModifier.toString() }
-        : {}),
-    } as HomebrewData,
-    amount,
-    initiative,
-    initiativeModifier,
-    summoner,
-  }
 }
 
 async function createInCampaign(data: HomebrewData): Promise<number | null> {
@@ -337,7 +209,7 @@ async function syncToCampaign(
   return (await updateInCampaign(linked, data)) ? linked : null
 }
 
-async function editRow(submission: Submission): Promise<boolean> {
+async function editRow(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.update || !props.row) return false
 
   const homebrew = await syncToCampaign(submission.homebrew)
@@ -362,7 +234,7 @@ async function editRow(submission: Submission): Promise<boolean> {
   return true
 }
 
-async function addRows(submission: Submission): Promise<boolean> {
+async function addRows(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.update) return false
 
   const { initiative, initiativeModifier } = submission
@@ -373,7 +245,7 @@ async function addRows(submission: Submission): Promise<boolean> {
 
   if (homebrew === null) return false
 
-  const row: Partial<InitiativeSheetRow> & { name: string } = {
+  const row = {
     ...submission.row,
     homebrew,
     summoner: toSummoner(props.sheet.rows, submission.summoner),
@@ -383,13 +255,12 @@ async function addRows(submission: Submission): Promise<boolean> {
     ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
   }
 
-  const rows = [...props.sheet.rows]
-
-  for (let i = 0; i < (submission.amount ?? 1); i++) {
-    rows.push(createInitiativeRow(row, submission.row.type, rows.length))
-  }
-
-  await props.update({ rows: indexCorrect(rows) })
+  await props.update({
+    rows: appendRows(
+      props.sheet.rows,
+      Array.from({ length: submission.amount ?? 1 }, () => row),
+    ),
+  })
 
   return true
 }
@@ -419,7 +290,7 @@ function pickSource(picked: Source): void {
 
   if (basedOn.value) {
     form.resetForm(
-      { values: toFormValues({ name: '', type: 'monster' }) },
+      { values: homebrewInitialValues({ name: '', type: 'monster' }) },
       { force: true },
     )
     basedOn.value = undefined
@@ -431,7 +302,9 @@ function pickSource(picked: Source): void {
 function pickMonster(monster: DndMonster): void {
   form.resetForm(
     {
-      values: toFormValues(monsterToRow(monster), props.sheet ? 1 : undefined),
+      values: homebrewInitialValues(monsterToRow(monster), {
+        amount: props.sheet ? 1 : undefined,
+      }),
     },
     { force: true },
   )

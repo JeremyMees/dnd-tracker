@@ -220,6 +220,10 @@ export function getBaseAC(
   return row.maxArmorClassOld ?? row.maxArmorClass
 }
 
+export function withBaseStats<T extends InitiativeSheetRow>(row: T) {
+  return { ...row, hitPoints: getBaseHP(row), armorClass: getBaseAC(row) }
+}
+
 export function getHealthBand(
   hitPoints?: number,
   maxHitPoints?: number,
