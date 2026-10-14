@@ -105,37 +105,6 @@ export function useCampaignMinimalListing(id: string) {
   })
 }
 
-export function useCampaignMinimalDetail(id?: number) {
-  const supabase = useSupabaseClient<DB>()
-
-  if (!id) return
-
-  return useQuery({
-    queryKey: ['useCampaignMinimalDetail', id],
-    queryFn: async () =>
-      await supabase
-        .from('campaigns')
-        .select(
-          `
-        id,
-        title,
-        createdBy(id, username, avatar),
-        team(
-          id,
-          role,
-          user(id, username, avatar)
-        )
-      `,
-        )
-        .eq('id', id)
-        .single(),
-    select: ({ data, error }) => {
-      if (error) throw createError(error)
-      else return data
-    },
-  })
-}
-
 export function useCampaignCount() {
   const supabase = useSupabaseClient<DB>()
 

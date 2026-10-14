@@ -13,7 +13,6 @@ import {
   useCampaignCreate,
   useCampaignDetail,
   useCampaignListing,
-  useCampaignMinimalDetail,
   useCampaignMinimalListing,
   useCampaignRemove,
   useCampaignUpdate,
@@ -131,51 +130,6 @@ describe('campaigns queries', () => {
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
       expect(vm.error).toMatchObject({ message: 'boom' })
-    })
-  })
-
-  describe('useCampaignMinimalDetail', () => {
-    it('returns undefined without hitting the database when no id is given', async () => {
-      const from = mockSupabaseFrom({
-        campaigns: mockChain({ data: null, error: null }),
-      })
-
-      const { vm } = await mountHook(() => ({
-        result: useCampaignMinimalDetail(),
-      }))
-
-      expect(vm.result).toBeUndefined()
-      expect(from).not.toHaveBeenCalled()
-    })
-
-    it('fetches the campaign when an id is given', async () => {
-      mockSupabaseFrom({
-        campaigns: mockChain({ data: { id: 5, title: 'Cave' }, error: null }),
-      })
-
-      const { vm } = await mountHook(() => ({
-        result: useCampaignMinimalDetail(5),
-      }))
-
-      await vi.waitFor(() => expect(vm.result?.data.value).toBeDefined())
-
-      expect(vm.result?.data.value).toEqual({ id: 5, title: 'Cave' })
-    })
-
-    it('surfaces a supabase error', async () => {
-      mockSupabaseFrom({
-        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
-      })
-
-      const { vm } = await mountHook(() => {
-        useQueryClient().setDefaultOptions({ queries: { retry: false } })
-
-        return { result: useCampaignMinimalDetail(5) }
-      })
-
-      await vi.waitFor(() => expect(vm.result?.isError.value).toBe(true))
-
-      expect(vm.result?.error.value).toMatchObject({ message: 'boom' })
     })
   })
 
