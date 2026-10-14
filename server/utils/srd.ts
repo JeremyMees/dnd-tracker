@@ -21,15 +21,6 @@ const monsterOrderColumns = [
 
 type MonsterOrderColumn = (typeof monsterOrderColumns)[number]
 
-export interface SrdListingQuery {
-  type: DndContentType
-  page: number
-  search: string
-  documents: string[]
-  ordering: DndSortBy
-  cr?: number
-}
-
 function isMonsterOrderColumn(value: string): value is MonsterOrderColumn {
   return (monsterOrderColumns as readonly string[]).includes(value)
 }

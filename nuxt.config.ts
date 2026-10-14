@@ -142,6 +142,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    imports: { dirs: ['types/*.ts'] },
     moduleSideEffects: ['zod/compile'],
     externals: {
       inline: ['sanitize-html'],

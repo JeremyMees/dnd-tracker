@@ -83,11 +83,6 @@ export function toPlayerSheet(
   }
 }
 
-export interface OwnSeat {
-  row: string | undefined
-  kicked: boolean
-}
-
 export async function resolveOwnRowId(
   seatToken: unknown,
   session: LiveSessionTokenPayload,
