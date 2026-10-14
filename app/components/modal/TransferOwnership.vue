@@ -63,9 +63,11 @@ const onSubmit = form.handleSubmit(async values => {
     return
   }
 
-  queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', campaignId] })
-  queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-  queryClient.removeQueries({ queryKey: ['useCampaignMember', campaignId] })
+  queryClient.invalidateQueries({
+    queryKey: queryKeys.campaignDetail(campaignId),
+  })
+  queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+  queryClient.removeQueries({ queryKey: queryKeys.campaignMember(campaignId) })
 
   toast({
     description: t('components.transferOwnershipModal.toast.success.title', {

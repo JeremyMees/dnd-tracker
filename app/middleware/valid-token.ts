@@ -50,5 +50,5 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
 
   if (error) return navigateTo(localePath('no-access'))
 
-  queryClient.setQueryData(['useJoinCampaign', token], data)
+  queryClient.setQueryData(queryKeys.joinCampaign(token), data)
 })

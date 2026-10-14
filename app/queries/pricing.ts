@@ -48,7 +48,7 @@ export function usePricingListing() {
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['usePricingListing'],
+    queryKey: queryKeys.pricingListing(),
     queryFn: async () => {
       try {
         const response = await $fetch<StripePrice[]>('/api/stripe/products')

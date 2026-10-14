@@ -20,7 +20,7 @@ export function useJoinTokenRemove() {
     },
     onSuccess: (_data, { campaign }) => {
       queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', campaign],
+        queryKey: queryKeys.campaignDetail(campaign),
       })
     },
     onError: error => {
@@ -52,11 +52,13 @@ export function useTeamMemberUpdate() {
     },
     onSuccess: (_data, { campaign }) => {
       queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', campaign],
+        queryKey: queryKeys.campaignDetail(campaign),
       })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-      queryClient.removeQueries({ queryKey: ['useCampaignMember', campaign] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+      queryClient.removeQueries({
+        queryKey: queryKeys.campaignMember(campaign),
+      })
     },
   })
 }
@@ -77,11 +79,13 @@ export function useTeamMemberRemove() {
     },
     onSuccess: (_data, { campaign }) => {
       queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', campaign],
+        queryKey: queryKeys.campaignDetail(campaign),
       })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-      queryClient.removeQueries({ queryKey: ['useCampaignMember', campaign] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+      queryClient.removeQueries({
+        queryKey: queryKeys.campaignMember(campaign),
+      })
     },
     onError: error => {
       toast({

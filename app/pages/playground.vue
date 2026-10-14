@@ -25,10 +25,9 @@ function getQueryData(): void {
   const token = route.query.token as string
 
   if (token) {
-    const encounter = queryClient.getQueryData<InitiativeSheet>([
-      'useInitiativeSheetPlayground',
-      token,
-    ])
+    const encounter = queryClient.getQueryData<InitiativeSheet>(
+      queryKeys.initiativeSheetPlayground(token),
+    )
 
     if (encounter) data.value = encounter
     else isError.value = true

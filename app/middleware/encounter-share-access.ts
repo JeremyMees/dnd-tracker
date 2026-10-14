@@ -14,12 +14,12 @@ export default defineNuxtRouteMiddleware(async to => {
     if (!encounter) throw createError('No encounter found')
 
     queryClient.setQueryData(
-      ['useInitiativeSheetPlayground', to.query.token],
+      queryKeys.initiativeSheetPlayground(to.query.token),
       encounter,
     )
   } catch {
     queryClient.removeQueries({
-      queryKey: ['useInitiativeSheetPlayground', to.query.token],
+      queryKey: queryKeys.initiativeSheetPlayground(to.query.token),
     })
     return navigateTo(localePath('index'))
   }

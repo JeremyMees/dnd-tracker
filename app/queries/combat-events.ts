@@ -8,7 +8,7 @@ export function useCombatEvents(
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCombatEvents', encounterId],
+    queryKey: queryKeys.combatEvents(encounterId),
     enabled: () => (enabled === undefined ? true : toValue(enabled)),
     queryFn: async () => {
       const { data, error } = await supabase
@@ -36,7 +36,7 @@ export function useCombatEventsClear() {
       })
     },
     onSuccess: (_result, { encounterId }) => {
-      queryClient.setQueryData(['useCombatEvents', encounterId], [])
+      queryClient.setQueryData(queryKeys.combatEvents(encounterId), [])
     },
     onError: error => {
       toast({

@@ -4,7 +4,7 @@ export function useCampaignDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignDetail', id],
+    queryKey: queryKeys.campaignDetail(id),
     queryFn: async () =>
       await supabase
         .from('campaigns')
@@ -35,7 +35,7 @@ export function useCampaignDetail(id: number) {
 
 export function useCampaignListing(data: ComputedRef<SbFilter>) {
   return useQuery({
-    queryKey: ['useCampaignListing', data],
+    queryKey: queryKeys.campaignListing(data),
     queryFn: () =>
       sbQuery<CampaignItem>({
         table: 'campaigns',
@@ -73,7 +73,7 @@ export function useCampaignMinimalListing(id: string) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignMinimal', id],
+    queryKey: queryKeys.campaignMinimal(id),
     queryFn: async () =>
       await supabase.from('campaigns').select(`
         id,
@@ -103,7 +103,7 @@ export function useCampaignCount() {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignCount'],
+    queryKey: queryKeys.campaignCount(),
     queryFn: async () =>
       await supabase
         .from('campaigns')
@@ -124,9 +124,9 @@ export function useCampaignCreate() {
       if (error) throw createError(error)
     },
     invalidate: () => [
-      ['useCampaignListing'],
-      ['useCampaignCount'],
-      ['useCampaignMinimal'],
+      queryKeys.campaignListing(),
+      queryKeys.campaignCount(),
+      queryKeys.campaignMinimal(),
     ],
   })
 }
@@ -152,10 +152,10 @@ export function useCampaignUpdate() {
       if (error) throw createError(error)
     },
     invalidate: ({ id }) => [
-      ['useCampaignListing'],
-      ['useCampaignCount'],
-      ['useCampaignMinimal'],
-      ['useCampaignDetail', id],
+      queryKeys.campaignListing(),
+      queryKeys.campaignCount(),
+      queryKeys.campaignMinimal(),
+      queryKeys.campaignDetail(id),
     ],
   })
 }
@@ -176,12 +176,12 @@ export function useCampaignRemove() {
       if (error) throw createError(error)
     },
     invalidate: ({ id }) => [
-      ['useCampaignListing'],
-      ['useCampaignCount'],
-      ['useCampaignMinimal'],
-      ...toArray(id).map(campaign => ['useCampaignDetail', campaign]),
+      queryKeys.campaignListing(),
+      queryKeys.campaignCount(),
+      queryKeys.campaignMinimal(),
+      ...toArray(id).map(campaign => queryKeys.campaignDetail(campaign)),
     ],
     remove: ({ id }) =>
-      toArray(id).map(campaign => ['useCampaignMember', campaign]),
+      toArray(id).map(campaign => queryKeys.campaignMember(campaign)),
   })
 }

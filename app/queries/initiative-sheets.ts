@@ -6,7 +6,7 @@ export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useInitiativeSheetDetail', id],
+    queryKey: queryKeys.initiativeSheetDetail(id),
     queryFn: async () => {
       const { data, error } = await supabase
         .from('initiative_sheets')
@@ -65,16 +65,15 @@ export function useInitiativeSheetDetailUpdate() {
     },
     onMutate: async ({ data, id }) => {
       await queryClient.cancelQueries({
-        queryKey: ['useInitiativeSheetDetail', id],
+        queryKey: queryKeys.initiativeSheetDetail(id),
       })
 
-      const previous = queryClient.getQueryData<InitiativeSheet>([
-        'useInitiativeSheetDetail',
-        id,
-      ])
+      const previous = queryClient.getQueryData<InitiativeSheet>(
+        queryKeys.initiativeSheetDetail(id),
+      )
 
       queryClient.setQueryData(
-        ['useInitiativeSheetDetail', id],
+        queryKeys.initiativeSheetDetail(id),
         (old: InitiativeSheet) => {
           if (!old) return old
 
@@ -91,7 +90,7 @@ export function useInitiativeSheetDetailUpdate() {
       if (context?.previous) {
         // roll back the optimistic update
         queryClient.setQueryData(
-          ['useInitiativeSheetDetail', id],
+          queryKeys.initiativeSheetDetail(id),
           context.previous,
         )
       }
@@ -179,17 +178,16 @@ export function useInitiativeSheetPatch() {
     },
     onMutate: async ({ id, rowId, patch }) => {
       await queryClient.cancelQueries({
-        queryKey: ['useInitiativeSheetDetail', id],
+        queryKey: queryKeys.initiativeSheetDetail(id),
       })
 
-      const previous = queryClient.getQueryData<InitiativeSheet>([
-        'useInitiativeSheetDetail',
-        id,
-      ])
+      const previous = queryClient.getQueryData<InitiativeSheet>(
+        queryKeys.initiativeSheetDetail(id),
+      )
       const before = previous?.rows.find(row => row.id === rowId)
 
       queryClient.setQueryData(
-        ['useInitiativeSheetDetail', id],
+        queryKeys.initiativeSheetDetail(id),
         (old: InitiativeSheet) => {
           if (!old) return old
 
@@ -208,10 +206,9 @@ export function useInitiativeSheetPatch() {
         const drafts = diffRow(before, { ...before, ...patch })
 
         if (drafts.length) {
-          previousEvents = queryClient.getQueryData<CombatEventRow[]>([
-            'useCombatEvents',
-            id,
-          ])
+          previousEvents = queryClient.getQueryData<CombatEventRow[]>(
+            queryKeys.combatEvents(id),
+          )
 
           const optimisticEvents = drafts
             .slice()
@@ -229,7 +226,7 @@ export function useInitiativeSheetPatch() {
             }))
 
           queryClient.setQueryData<CombatEventRow[]>(
-            ['useCombatEvents', id],
+            queryKeys.combatEvents(id),
             (old = []) => [...optimisticEvents, ...old],
           )
         }
@@ -240,14 +237,14 @@ export function useInitiativeSheetPatch() {
     onError: (error, { id, rowId, patch }, context) => {
       if (context?.previous) {
         queryClient.setQueryData(
-          ['useInitiativeSheetDetail', id],
+          queryKeys.initiativeSheetDetail(id),
           context.previous,
         )
       }
 
       if (context?.previousEvents !== undefined) {
         queryClient.setQueryData(
-          ['useCombatEvents', id],
+          queryKeys.combatEvents(id),
           context.previousEvents,
         )
       }

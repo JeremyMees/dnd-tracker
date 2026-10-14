@@ -28,10 +28,9 @@ const data = ref<JoinCampaign>()
 const isLoading = ref<boolean>(true)
 
 onMounted(() => {
-  const cache = queryClient.getQueryData<JoinCampaign>([
-    'useJoinCampaign',
-    route.query.token,
-  ])
+  const cache = queryClient.getQueryData<JoinCampaign>(
+    queryKeys.joinCampaign(route.query.token),
+  )
 
   if (cache) data.value = cache
   else navigateTo(localePath('no-access'))
@@ -75,12 +74,12 @@ async function answerInvite(accept: boolean): Promise<void> {
     }
 
     queryClient.removeQueries({
-      queryKey: ['useJoinCampaign', route.query.token],
+      queryKey: queryKeys.joinCampaign(route.query.token),
     })
     queryClient.removeQueries({
-      queryKey: ['useCampaignMember', data.value.campaign.id],
+      queryKey: queryKeys.campaignMember(data.value.campaign.id),
     })
-    queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+    queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
     navigateTo(localePath(url))
   } catch (error) {
     toast({

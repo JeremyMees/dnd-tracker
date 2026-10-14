@@ -12,10 +12,10 @@ export default defineNuxtRouteMiddleware(async to => {
       { query: { code } },
     )
 
-    queryClient.setQueryData(['useLiveCode', code], session)
+    queryClient.setQueryData(queryKeys.liveCode(code), session)
   } catch (error) {
     queryClient.setQueryData(
-      ['useLiveCodeError', code],
+      queryKeys.liveCodeError(code),
       (error as { statusCode?: number })?.statusCode ?? 500,
     )
   }

@@ -72,7 +72,7 @@ async function handleSearch(): Promise<void> {
     if (error) throw createError(error)
 
     const user = await queryClient.query({
-      queryKey: ['useCampaignMemberLookup', { email }],
+      queryKey: queryKeys.campaignMemberLookup(email),
       queryFn: async () =>
         await $fetch<MinimalProfile | null>('/api/campaign/member-lookup', {
           method: 'POST',
@@ -148,9 +148,9 @@ const onSubmit = form.handleSubmit(async values => {
       translateError(getErrorMessage(err) ?? '') || t('general.error.text')
   } finally {
     queryClient.invalidateQueries({
-      queryKey: ['useCampaignDetail', props.current.id],
+      queryKey: queryKeys.campaignDetail(props.current.id),
     })
-    queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
+    queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
   }
 })
 

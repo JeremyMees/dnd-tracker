@@ -5,7 +5,7 @@ export function useFeatureListing(data: ComputedRef<SbFilter>) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useFeatureListing', data],
+    queryKey: queryKeys.featureListing(data),
     queryFn: async () => {
       const result = await sbQuery<FeatureRow & { voted: FeatureVotes }>({
         table: 'features',
@@ -50,7 +50,7 @@ export function useFeatureCount() {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useFeatureCount'],
+    queryKey: queryKeys.featureCount(),
     queryFn: async () =>
       await supabase
         .from('features')
@@ -70,7 +70,7 @@ export function useFeatureCreate() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useFeatureListing'], ['useFeatureCount']],
+    invalidate: () => [queryKeys.featureListing(), queryKeys.featureCount()],
   })
 }
 
@@ -93,7 +93,7 @@ export function useFeatureVote() {
       if (error) throw createError(error)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['useFeatureListing'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.featureListing() })
     },
     onError: error => {
       toast({

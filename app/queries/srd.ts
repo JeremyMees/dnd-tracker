@@ -20,7 +20,7 @@ export function useSrdListing(
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useSrdListing', data],
+    queryKey: queryKeys.srdListing(data),
     queryFn: async () => {
       try {
         return await $fetch<DndListingResult>('/api/srd/listing', {
@@ -47,7 +47,7 @@ export function useSrdDocuments() {
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useSrdDocuments'],
+    queryKey: queryKeys.srdDocuments(),
     queryFn: async () => {
       try {
         return await $fetch<DndDocument[]>('/api/srd/documents')
@@ -73,7 +73,7 @@ export async function prefetchConditionsListing() {
 
   return queryClient
     .query({
-      queryKey: ['useConditionsListing'],
+      queryKey: queryKeys.conditionsListing(),
       queryFn: () => $fetch<DndCondition[]>('/api/srd/conditions'),
       staleTime: ONE_DAY,
       gcTime: ONE_DAY,
@@ -86,7 +86,7 @@ export function useConditionsListing() {
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useConditionsListing'],
+    queryKey: queryKeys.conditionsListing(),
     queryFn: async () => {
       try {
         return await $fetch<DndCondition[]>('/api/srd/conditions')
@@ -113,7 +113,7 @@ export function useSrdMonsterListing(
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useSrdMonsterListing', data],
+    queryKey: queryKeys.srdMonsterListing(data),
     queryFn: async () => {
       try {
         return await $fetch<DndListingResult>('/api/srd/listing', {

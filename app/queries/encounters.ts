@@ -6,7 +6,7 @@ export function useEncounterListing(
   perPage = 10,
 ) {
   return useQuery({
-    queryKey: ['useEncounterListing', data, perPage],
+    queryKey: queryKeys.encounterListing(data, perPage),
     queryFn: () =>
       sbQuery<EncounterItem>({
         table: 'initiative_sheets',
@@ -43,7 +43,7 @@ export function useEncounterCount(enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useEncounterCount'],
+    queryKey: queryKeys.encounterCount(),
     queryFn: async () =>
       await supabase
         .from('initiative_sheets')
@@ -66,7 +66,10 @@ export function useEncounterCreate() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useEncounterListing'], ['useEncounterCount']],
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }
 
@@ -90,7 +93,10 @@ export function useEncounterUpdate() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useEncounterListing'], ['useEncounterCount']],
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }
 
@@ -105,7 +111,10 @@ export function useEncounterRemove() {
         ),
       )
     },
-    invalidate: () => [['useEncounterListing'], ['useEncounterCount']],
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }
 
@@ -129,6 +138,9 @@ export function useEncounterCopy() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useEncounterListing'], ['useEncounterCount']],
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }

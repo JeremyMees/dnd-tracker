@@ -1,5 +1,4 @@
 import { useQueryClient } from '@tanstack/vue-query'
-import { liveStateQueryKey } from '~/queries/live'
 import { useToast } from '~/components/ui/toast'
 
 function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
@@ -64,7 +63,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
 
     if (!token || !seatToken || !rowId.value) return false
 
-    const key = liveStateQueryKey(token, seatToken)
+    const key = queryKeys.liveState(token, seatToken)
     const previous = queryClient.getQueryData<LiveStateResponse>(key)
 
     if (previous) {
@@ -128,7 +127,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
       })
 
       queryClient.invalidateQueries({
-        queryKey: liveStateQueryKey(token, seatToken),
+        queryKey: queryKeys.liveState(token, seatToken),
       })
 
       return true

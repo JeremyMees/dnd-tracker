@@ -6,7 +6,7 @@ export function useNoteListing(
   perPage = 10,
 ) {
   return useQuery({
-    queryKey: ['useNoteListing', data, perPage],
+    queryKey: queryKeys.noteListing(data, perPage),
     queryFn: () =>
       sbQuery<NoteRow>({
         table: 'notes',
@@ -29,7 +29,7 @@ export function useNoteCount(id: number, enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useNoteCount', id],
+    queryKey: queryKeys.noteCount(id),
     queryFn: async () =>
       await supabase
         .from('notes')
@@ -51,7 +51,7 @@ export function useNoteCreate() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useNoteListing'], ['useNoteCount']],
+    invalidate: () => [queryKeys.noteListing(), queryKeys.noteCount()],
   })
 }
 
@@ -72,7 +72,7 @@ export function useNoteUpdate() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useNoteListing'], ['useNoteCount']],
+    invalidate: () => [queryKeys.noteListing(), queryKeys.noteCount()],
   })
 }
 
@@ -91,6 +91,6 @@ export function useNoteRemove() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useNoteListing'], ['useNoteCount']],
+    invalidate: () => [queryKeys.noteListing(), queryKeys.noteCount()],
   })
 }

@@ -1,5 +1,5 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
-import { useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient, type QueryKey } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
 export function useRealTimeInitiativeSheet(
@@ -21,8 +21,8 @@ export function useRealTimeInitiativeSheet(
     return isPro(user.value)
   })
 
-  function queryKey(): unknown[] {
-    return ['useInitiativeSheetDetail', id]
+  function queryKey(): QueryKey {
+    return queryKeys.initiativeSheetDetail(id)
   }
 
   function refetch(): void {
@@ -59,7 +59,7 @@ export function useRealTimeInitiativeSheet(
       ),
     })
 
-    queryClient.invalidateQueries({ queryKey: ['useCombatEvents', id] })
+    queryClient.invalidateQueries({ queryKey: queryKeys.combatEvents(id) })
   }
 
   function applySync(payload: SheetSyncEvent): void {

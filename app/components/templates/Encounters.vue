@@ -115,8 +115,8 @@ async function removeItems(ids: number[]): Promise<void> {
 }
 
 function invalidateQueries(): void {
-  queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-  queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
+  queryClient.invalidateQueries({ queryKey: queryKeys.encounterListing() })
+  queryClient.invalidateQueries({ queryKey: queryKeys.encounterCount() })
 }
 </script>
 

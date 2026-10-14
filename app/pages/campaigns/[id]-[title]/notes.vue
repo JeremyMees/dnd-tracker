@@ -93,8 +93,8 @@ async function removeItems(ids: number[]): Promise<void> {
 }
 
 function invalidateQueries(): void {
-  queryClient.invalidateQueries({ queryKey: ['useNoteListing'] })
-  queryClient.invalidateQueries({ queryKey: ['useNoteCount'] })
+  queryClient.invalidateQueries({ queryKey: queryKeys.noteListing() })
+  queryClient.invalidateQueries({ queryKey: queryKeys.noteCount() })
 }
 
 async function sendNoteAsMail(

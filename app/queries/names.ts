@@ -20,7 +20,7 @@ export function useRandomNames(data: ComputedRef<NameFilters>) {
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useRandomNames', data],
+    queryKey: queryKeys.randomNames(data),
     queryFn: async () => {
       try {
         return await $fetch<string[]>('/api/names', {

@@ -88,8 +88,8 @@ async function removeItems(ids: number[]): Promise<void> {
 }
 
 function invalidateQueries(): void {
-  queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
-  queryClient.invalidateQueries({ queryKey: ['useHomebrewCount'] })
+  queryClient.invalidateQueries({ queryKey: queryKeys.homebrewListing() })
+  queryClient.invalidateQueries({ queryKey: queryKeys.homebrewCount() })
 }
 </script>
 

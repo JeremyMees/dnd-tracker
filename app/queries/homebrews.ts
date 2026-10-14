@@ -6,7 +6,7 @@ export function useHomebrewListing(
   perPage = 10,
 ) {
   return useQuery({
-    queryKey: ['useHomebrewListing', data, perPage],
+    queryKey: queryKeys.homebrewListing(data, perPage),
     queryFn: () =>
       sbQuery<HomebrewItemRow>({
         table: 'homebrew_items',
@@ -30,7 +30,7 @@ export function useHomebrewCount(id: number, enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useHomebrewCount', id],
+    queryKey: queryKeys.homebrewCount(id),
     queryFn: async () =>
       await supabase
         .from('homebrew_items')
@@ -60,7 +60,7 @@ export function useHomebrewCreate() {
 
       return created.id
     },
-    invalidate: () => [['useHomebrewListing'], ['useHomebrewCount']],
+    invalidate: () => [queryKeys.homebrewListing(), queryKeys.homebrewCount()],
   })
 }
 
@@ -86,7 +86,7 @@ export function useHomebrewUpdate() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useHomebrewListing'], ['useHomebrewCount']],
+    invalidate: () => [queryKeys.homebrewListing(), queryKeys.homebrewCount()],
   })
 }
 
@@ -105,6 +105,6 @@ export function useHomebrewRemove() {
 
       if (error) throw createError(error)
     },
-    invalidate: () => [['useHomebrewListing'], ['useHomebrewCount']],
+    invalidate: () => [queryKeys.homebrewListing(), queryKeys.homebrewCount()],
   })
 }

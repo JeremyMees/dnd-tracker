@@ -1,6 +1,5 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
-import { useQueryClient } from '@tanstack/vue-query'
-import { liveStateQueryKey } from '~/queries/live'
+import { useQueryClient, type QueryKey } from '@tanstack/vue-query'
 
 export function useLiveRealtime(
   token: ComputedRef<string | undefined>,
@@ -17,8 +16,8 @@ export function useLiveRealtime(
 
   let channel: RealtimeChannel | undefined
 
-  function queryKey(): unknown[] {
-    return liveStateQueryKey(token.value, seatToken.value)
+  function queryKey(): QueryKey {
+    return queryKeys.liveState(token.value, seatToken.value)
   }
 
   function refetch(): void {
