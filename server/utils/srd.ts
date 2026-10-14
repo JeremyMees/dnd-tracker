@@ -30,10 +30,6 @@ export interface SrdListingQuery {
   cr?: number
 }
 
-export function escapeLike(value: string): string {
-  return value.replace(/[\\%_]/g, match => `\\${match}`)
-}
-
 function isMonsterOrderColumn(value: string): value is MonsterOrderColumn {
   return (monsterOrderColumns as readonly string[]).includes(value)
 }
@@ -84,7 +80,7 @@ export async function srdListing(
   const supabase = serverSupabaseServiceRole<DB>(event)
   const from = query.page * pageSize
   const to = from + pageSize - 1
-  const pattern = `%${escapeLike(query.search)}%`
+  const pattern = `%${escapeLikePattern(query.search)}%`
 
   // open5e conditions under 2014 core document this is a workaround
   const documents =

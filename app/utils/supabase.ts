@@ -42,8 +42,7 @@ export function sbOrQuery(keys: string[], search: string): string {
   let queryString = ''
 
   keys.forEach((key: string, i: number) => {
-    const escapedSearch = search.replace(/([%_])/g, '\\$1')
-    queryString += `${i ? ',' : ''}${key}.ilike.*${escapedSearch}*`
+    queryString += `${i ? ',' : ''}${key}.ilike.*${escapeLikePattern(search)}*`
   })
 
   return queryString

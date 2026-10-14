@@ -120,6 +120,11 @@ describe('supabase', () => {
       expect(result).toBe('title.ilike.*test\\%\\_*')
     })
 
+    it('should escape a backslash so it matches literally', () => {
+      const result = sbOrQuery(['title'], 'C:\\maps')
+      expect(result).toBe('title.ilike.*C:\\\\maps*')
+    })
+
     it('should handle empty keys array', () => {
       const result = sbOrQuery([], 'test')
       expect(result).toBe('')
