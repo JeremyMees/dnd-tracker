@@ -40,7 +40,7 @@ export default defineNuxtConfig({
     { path: '~/components/animation', prefix: 'Animation' },
   ],
 
-  imports: { dirs: ['@@/types/*.ts', 'types/*.ts'] },
+  imports: { dirs: ['types/*.ts'] },
 
   typescript: {
     tsConfig: {

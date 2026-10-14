@@ -43,12 +43,6 @@ export interface DataTableExposed<TData extends RowData = { id: number }> {
   vueTable: Table<ListingFeatures, TData>
 }
 
-export interface TableHeader {
-  label: string
-  sort: boolean
-  id: string
-}
-
 export type FeatureVote = 'like' | 'dislike'
 
 export interface FeatureVotes {
