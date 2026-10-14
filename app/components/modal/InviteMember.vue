@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
+import { roleType } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -26,7 +27,7 @@ const formSchema = z.object({
     .array(
       z.object({
         id: z.string(),
-        role: z.string(),
+        role: z.enum(roleType),
         profile: z.object({
           id: z.string(),
           username: z.string(),
@@ -47,7 +48,7 @@ const form = useForm({
 
 interface FoundUser {
   id: string
-  role: string
+  role: (typeof roleType)[number]
   profile: MinimalProfile & { email: string }
 }
 
@@ -154,8 +155,6 @@ const onSubmit = form.handleSubmit(async values => {
 })
 
 async function addTeamMember(member: FoundUser): Promise<void> {
-  if (member.role !== 'Admin' && member.role !== 'Viewer') return
-
   await $fetch('/api/emails/campaign-invite', {
     method: 'POST',
     body: {

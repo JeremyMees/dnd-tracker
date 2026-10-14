@@ -1,11 +1,12 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import * as z from 'zod'
 import { ONE_WEEK } from '~~/constants/time'
+import { roleType } from '~~/constants/validation'
 
 const bodySchema = z.object({
   campaignId: z.number().int().positive(),
   userId: z.uuid(),
-  role: z.enum(['Admin', 'Player', 'Viewer']),
+  role: z.enum(roleType),
   locale: z.enum(['nl', 'en']),
 })
 

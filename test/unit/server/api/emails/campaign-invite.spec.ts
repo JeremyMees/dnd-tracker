@@ -261,6 +261,15 @@ describe('POST /api/emails/campaign-invite', () => {
     ).rejects.toMatchObject({ statusCode: 401 })
   })
 
+  it('throws a validation error for the removed player role', async () => {
+    await expect(
+      handler(mockEvent({ method: 'POST', body: body({ role: 'Player' }) })),
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      statusMessage: 'Validation Error',
+    })
+  })
+
   it('throws a validation error for an owner role', async () => {
     await expect(
       handler(mockEvent({ method: 'POST', body: body({ role: 'Owner' }) })),
