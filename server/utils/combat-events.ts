@@ -45,15 +45,10 @@ async function incrementSheetVersion(
   return version
 }
 
-interface SheetActionBroadcast {
-  row: string
-  patch: Partial<InitiativeSheetRow>
-}
-
 export async function broadcastSheetAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  action: SheetActionBroadcast,
+  action: Omit<SheetActionEvent, 'version'>,
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
   const channel = supabase.channel(`sheet:${encounterId}`)
@@ -64,7 +59,7 @@ export async function broadcastSheetAction(
 export async function broadcastSheetSync(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  sheet: Partial<InitiativeSheet>,
+  sheet: SheetSyncEvent['sheet'],
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
   const channel = supabase.channel(`sheet:${encounterId}`)

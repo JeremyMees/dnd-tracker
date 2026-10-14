@@ -57,6 +57,14 @@ export type LiveAction = LiveRowAction | { type: 'endTurn' }
 
 export type LiveAllowActions = Record<LiveAction['type'], boolean>
 
+export interface LiveSessionResponse {
+  token: string
+  uuid: string
+  code: string
+  expiresAt: string
+  seats: LiveSeat[]
+}
+
 export interface LiveJoinResponse {
   sessionToken: string
   seatToken: string

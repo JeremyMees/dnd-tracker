@@ -7,11 +7,6 @@ export interface Toast {
   variant: ToastProps['variant']
 }
 
-export interface ToastItem extends ToastProps {
-  title: [string, Record<string, unknown>?]
-  description: [string, Record<string, unknown>?]
-}
-
 export type ModalComponent =
   | 'FeatureRequest'
   | 'Campaign'

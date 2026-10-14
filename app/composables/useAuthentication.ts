@@ -1,7 +1,5 @@
 import { FIVE_MINUTES } from '~~/constants/time'
 
-export type AuthUser = ProfileRow
-
 interface Credentials {
   email: string
   password: string

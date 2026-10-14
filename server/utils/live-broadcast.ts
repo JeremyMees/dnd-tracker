@@ -2,11 +2,6 @@ import type { serverSupabaseServiceRole } from '#supabase/server'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { z } from 'zod'
 
-interface LiveActionBroadcast {
-  row: string
-  patch: Partial<InitiativeSheetRow>
-}
-
 async function incrementLiveVersion(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
@@ -24,7 +19,7 @@ async function incrementLiveVersion(
 export async function broadcastLiveAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  action: LiveActionBroadcast,
+  action: Omit<LiveActionEvent, 'version'>,
 ): Promise<void> {
   const version = await incrementLiveVersion(supabase, session)
   const channel = supabase.channel(`live:${session}`)
@@ -35,7 +30,7 @@ export async function broadcastLiveAction(
 export async function broadcastLiveState(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  sheet: PlayerSheet,
+  sheet: LiveSyncEvent['sheet'],
 ): Promise<void> {
   const version = await incrementLiveVersion(supabase, session)
   const channel = supabase.channel(`live:${session}`)

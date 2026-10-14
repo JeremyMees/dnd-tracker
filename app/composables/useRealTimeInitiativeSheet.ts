@@ -2,17 +2,6 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
-interface SheetActionEvent {
-  version: number
-  row: string
-  patch: Partial<InitiativeSheetRow>
-}
-
-interface SheetSyncEvent {
-  version: number
-  sheet: Partial<InitiativeSheet>
-}
-
 export function useRealTimeInitiativeSheet(
   id: number,
   data: Ref<InitiativeSheet | undefined>,

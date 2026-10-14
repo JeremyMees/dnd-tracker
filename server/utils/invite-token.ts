@@ -1,11 +1,5 @@
 import { errors } from 'jose'
 
-export interface InviteTokenPayload {
-  campaign: number
-  user: string
-  role: UserRole
-}
-
 export async function verifyInviteToken(
   token: string,
 ): Promise<InviteTokenPayload> {
