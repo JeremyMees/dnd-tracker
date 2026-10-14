@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/vue-query'
 import type { UserAttributes } from '@supabase/supabase-js'
 import { useToast } from '~/components/ui/toast'
 
@@ -6,7 +5,7 @@ export function useProfileUpdate() {
   const supabase = useSupabaseClient<DB>()
   const user = useState<ProfileRow | null>('auth-user', () => null)
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       data,
       id,
@@ -36,17 +35,9 @@ export function useProfileUpdate() {
         if (error) throw createError(error)
       }
     },
-    onSuccess: (_data, { data, onSuccess }) => {
-      if (onSuccess) onSuccess()
-
+    onSuccess: (_data, { data }) => {
       const { password: _password, ...rest } = data
       user.value = { ...user.value!, ...rest }
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }
@@ -57,7 +48,7 @@ export function useProfileRemove() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({ id }: { id: string } & QueryDefaults) => {
       const { error } = await supabase.from('profiles').delete().eq('id', id)
 
@@ -72,20 +63,12 @@ export function useProfileRemove() {
 
       await logout()
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
+    onError: error => {
       toast({
         title: t('general.error.failed.accountDelete'),
         description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }

@@ -1,9 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-} from '@tanstack/vue-query'
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useFeatureListing(data: ComputedRef<SbFilter>) {
@@ -85,7 +80,7 @@ export function useFeatureVote() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       id,
       vote,
@@ -97,22 +92,15 @@ export function useFeatureVote() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['useFeatureListing'] })
     },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
+    onError: error => {
       toast({
         title: t('general.error.failed.vote'),
         description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }

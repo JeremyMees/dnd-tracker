@@ -41,7 +41,7 @@ export function useInitiativeSheetDetailUpdate() {
   const { t } = useI18n()
   const { mutateAsync: sync } = useInitiativeSheetSync()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       data,
       id,
@@ -84,12 +84,10 @@ export function useInitiativeSheetDetailUpdate() {
 
       return { previous }
     },
-    onSuccess: (_data, { id, onSuccess }) => {
+    onSuccess: (_data, { id }) => {
       sync({ id }).catch(() => {})
-
-      if (onSuccess) onSuccess()
     },
-    onError: (error, { onError, id, data }, context) => {
+    onError: (error, { id, data }, context) => {
       if (context?.previous) {
         // roll back the optimistic update
         queryClient.setQueryData(
@@ -98,8 +96,6 @@ export function useInitiativeSheetDetailUpdate() {
         )
       }
 
-      if (onError) onError(error.message)
-
       toast({
         title: t(
           `pages.encounter.toasts.updateFailed.${failedFieldKey(data, UPDATE_FAILED_FIELDS, 'generic')}`,
@@ -107,9 +103,6 @@ export function useInitiativeSheetDetailUpdate() {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }
@@ -167,7 +160,7 @@ export function useInitiativeSheetPatch() {
   const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       id,
       rowId,
@@ -244,10 +237,7 @@ export function useInitiativeSheetPatch() {
 
       return { previous, previousEvents }
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-    },
-    onError: (error, { onError, id, rowId, patch }, context) => {
+    onError: (error, { id, rowId, patch }, context) => {
       if (context?.previous) {
         queryClient.setQueryData(
           ['useInitiativeSheetDetail', id],
@@ -262,8 +252,6 @@ export function useInitiativeSheetPatch() {
         )
       }
 
-      if (onError) onError(error.message)
-
       const name = context?.previous?.rows.find(row => row.id === rowId)?.name
 
       toast({
@@ -276,9 +264,6 @@ export function useInitiativeSheetPatch() {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }

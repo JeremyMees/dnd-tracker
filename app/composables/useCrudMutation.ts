@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast/use-toast'
 
 export function useCrudMutation<TVariables extends QueryDefaults, TData = void>(
@@ -10,11 +10,9 @@ export function useCrudMutation<TVariables extends QueryDefaults, TData = void>(
 
   const type = t(options.type).toLowerCase()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: options.mutationFn,
     onSuccess: (_data, variables) => {
-      if (variables.onSuccess) variables.onSuccess()
-
       for (const queryKey of options.invalidate(variables)) {
         queryClient.invalidateQueries({ queryKey })
       }
@@ -31,17 +29,12 @@ export function useCrudMutation<TVariables extends QueryDefaults, TData = void>(
           : { description: message, variant: 'success' },
       )
     },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
+    onError: error => {
       toast({
         title: t(`components.toast.${options.action}.error`, { type }),
         description: t(`general.error.reasons.${getFailureReason(error)}`),
         variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }
