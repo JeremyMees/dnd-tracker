@@ -2,11 +2,6 @@ import type { RealtimeChannel } from '@supabase/supabase-js'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/components/ui/toast'
 
-export type UpdateInitiativeSheetData = Omit<
-  Partial<InitiativeSheet>,
-  NotUpdatable | 'campaign'
->
-
 interface SheetActionEvent {
   version: number
   row: string

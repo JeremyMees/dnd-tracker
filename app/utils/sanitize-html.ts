@@ -1,7 +1,5 @@
 import { allowedHTMLAttr, allowedHTMLTags } from '~~/constants/html-policy'
 
-export type HtmlSanitizer = (dirty: string) => string
-
 let pending: Promise<typeof import('dompurify').default> | undefined
 
 function loadPurifier(): Promise<typeof import('dompurify').default> {

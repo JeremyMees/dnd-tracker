@@ -3,13 +3,6 @@ import type { EventHint } from '@sentry/nuxt'
 
 type BugReportAttachment = NonNullable<EventHint['attachments']>[number]
 
-export interface BugReport {
-  message: string
-  name?: string
-  email?: string
-  screenshot?: File
-}
-
 export async function fileToAttachment(
   file: File,
 ): Promise<BugReportAttachment> {

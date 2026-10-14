@@ -1,8 +1,3 @@
-export interface FilterCodec<T> {
-  parse: (raw: string) => T | undefined
-  serialize: (value: T) => string
-}
-
 export function oneOfFilterCodec<T>(values: readonly T[]): FilterCodec<T> {
   return {
     parse: raw => values.find(value => String(value) === raw),

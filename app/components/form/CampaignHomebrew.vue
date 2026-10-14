@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import type { Row, RowSelectionState, SortingState } from '@tanstack/vue-table'
 import { FlexRender, useTable } from '@tanstack/vue-table'
-import {
-  type HomebrewSelectFeatures,
-  homebrewSelectFeatures,
-} from '~/tables/features'
+import { homebrewSelectFeatures } from '~/tables/features'
 import { generateColumns, initialState } from '~/tables/homebrew-select-listing'
 import { useHomebrewListing } from '~/queries/homebrews'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'

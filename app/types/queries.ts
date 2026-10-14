@@ -3,3 +3,8 @@ export interface QueryDefaults {
   onSuccess?: () => void
   onSettled?: (error?: string) => void
 }
+
+export type UpdateInitiativeSheetData = Omit<
+  Partial<InitiativeSheet>,
+  NotUpdatable | 'campaign'
+>

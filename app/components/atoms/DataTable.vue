@@ -7,7 +7,7 @@ import type {
   TableOptions,
 } from '@tanstack/vue-table'
 import { FlexRender, useTable } from '@tanstack/vue-table'
-import { type ListingFeatures, listingFeatures } from '~/tables/features'
+import { listingFeatures } from '~/tables/features'
 
 const emit = defineEmits<{
   remove: [number[]]

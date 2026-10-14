@@ -3,7 +3,6 @@ import {
   type TableState,
   type Row,
 } from '@tanstack/vue-table'
-import type { ListingFeatures } from './features'
 
 import { expandButton, iconButton, selectButton } from './generate-functions'
 import { NuxtTime } from '#components'

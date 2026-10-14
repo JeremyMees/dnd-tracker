@@ -1,5 +1,4 @@
 import type { RowData, Table } from '@tanstack/vue-table'
-import type { ListingFeatures } from '~/tables/features'
 import type { ToastProps } from '~/components/ui/toast'
 
 export interface Toast {
@@ -38,6 +37,20 @@ export interface Modal {
 }
 
 export type ConfirmCallback = (confirmed: boolean) => unknown
+
+export interface ConfirmConfig {
+  title?: string
+  description?: string
+  confirmText?: string
+  declineText?: string
+}
+
+export interface PopulatedConfirmConfig extends Required<ConfirmConfig> {
+  uuid: string
+  loading: boolean
+  closing: boolean
+  callback: ConfirmCallback
+}
 
 export interface DataTableExposed<TData extends RowData = { id: number }> {
   vueTable: Table<ListingFeatures, TData>
