@@ -66,41 +66,16 @@ export function useFeatureCount() {
 
 export function useFeatureCreate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.featureRequest').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.featureRequest',
+    action: 'create',
     mutationFn: async ({ data }: { data: FeatureInsert } & QueryDefaults) => {
       const { error } = await supabase.from('features').insert([data])
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useFeatureListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useFeatureCount'] })
-
-      toast({
-        description: t('components.toast.create.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.create.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useFeatureListing'], ['useFeatureCount']],
   })
 }
 

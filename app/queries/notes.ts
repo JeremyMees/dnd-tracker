@@ -1,10 +1,4 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 
 export function useNoteListing(
   data: ComputedRef<SbFilter>,
@@ -48,53 +42,25 @@ export function useNoteCount(id: number, enabled: ComputedRef<boolean>) {
 
 export function useNoteCreate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.note').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.note',
+    action: 'create',
     mutationFn: async ({ data }: { data: NoteInsert } & QueryDefaults) => {
       const { error } = await supabase.from('notes').insert([data])
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useNoteListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useNoteCount'] })
-
-      toast({
-        description: t('components.toast.create.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.create.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useNoteListing'], ['useNoteCount']],
   })
 }
 
 export function useNoteUpdate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.note').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.note',
+    action: 'update',
     mutationFn: async ({
       data,
       id,
@@ -106,41 +72,16 @@ export function useNoteUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useNoteListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useNoteCount'] })
-
-      toast({
-        description: t('components.toast.update.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.update.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useNoteListing'], ['useNoteCount']],
   })
 }
 
 export function useNoteRemove() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.note').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.note',
+    action: 'delete',
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
       let query = supabase.from('notes').delete()
 
@@ -150,28 +91,6 @@ export function useNoteRemove() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useNoteListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useNoteCount'] })
-
-      toast({
-        title: t('components.toast.delete.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.delete.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useNoteListing'], ['useNoteCount']],
   })
 }

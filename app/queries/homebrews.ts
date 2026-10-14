@@ -1,10 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-} from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 
 export function useHomebrewListing(
   data: ComputedRef<SbFilter>,
@@ -49,13 +43,10 @@ export function useHomebrewCount(id: number, enabled: ComputedRef<boolean>) {
 
 export function useHomebrewCreate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.homebrew').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.homebrew',
+    action: 'create',
     mutationFn: async ({
       data,
     }: { data: HomebrewItemInsert } & QueryDefaults) => {
@@ -69,41 +60,16 @@ export function useHomebrewCreate() {
 
       return created.id
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useHomebrewCount'] })
-
-      toast({
-        description: t('components.toast.create.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.create.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useHomebrewListing'], ['useHomebrewCount']],
   })
 }
 
 export function useHomebrewUpdate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.homebrew').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.homebrew',
+    action: 'update',
     mutationFn: async ({
       data,
       id,
@@ -120,41 +86,16 @@ export function useHomebrewUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useHomebrewCount'] })
-
-      toast({
-        description: t('components.toast.update.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.update.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useHomebrewListing'], ['useHomebrewCount']],
   })
 }
 
 export function useHomebrewRemove() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.homebrew').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.homebrew',
+    action: 'delete',
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
       let query = supabase.from('homebrew_items').delete()
 
@@ -164,28 +105,6 @@ export function useHomebrewRemove() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useHomebrewListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useHomebrewCount'] })
-
-      toast({
-        title: t('components.toast.delete.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.delete.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [['useHomebrewListing'], ['useHomebrewCount']],
   })
 }

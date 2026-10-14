@@ -84,3 +84,7 @@ export function isEqualArray<T>(arr1: T[], arr2: T[]): boolean {
 
   return true
 }
+
+export function toArray<T>(value: T | T[]): T[] {
+  return Array.isArray(value) ? value : [value]
+}
