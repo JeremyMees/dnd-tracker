@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import vue from '@vitejs/plugin-vue'
 import { offline } from 'c15t/vue'
+import { skipStubEntryFsCache } from './test/nuxt/nuxt-env.ts'
 import { nuxtAliases, nuxtAutoImports } from './test/unit/nuxt-env.ts'
 
 const ignoredLogs = [
@@ -23,6 +24,7 @@ export default defineConfig({
         },
       },
       await defineVitestProject({
+        plugins: [skipStubEntryFsCache()],
         test: {
           globals: true,
           name: 'nuxt',
