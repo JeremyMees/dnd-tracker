@@ -201,8 +201,6 @@ export default defineNuxtConfig({
     sourcemaps: {
       filesToDeleteAfterUpload: ['./.vercel/output/static/**/*.map'],
     },
-
-    autoInjectServerSentry: 'top-level-import',
   },
 
   shadcn: {
