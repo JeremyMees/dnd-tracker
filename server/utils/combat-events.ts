@@ -1,5 +1,4 @@
 import type { serverSupabaseServiceRole } from '#supabase/server'
-import type { CombatEventDraft } from '~~/shared/utils/dnd/combat-events'
 
 interface LogCombatEventsParams {
   encounterId: number

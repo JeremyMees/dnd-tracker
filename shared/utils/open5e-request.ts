@@ -14,15 +14,6 @@ const pathMap = new Map<Open5eType, string>([
   ['documents', 'documents'],
 ])
 
-export type Open5eQueryParams = Record<
-  string,
-  string | number | boolean | undefined | null
->
-
-export interface Open5eRequestError extends Error {
-  status?: number
-}
-
 export function open5eUrl(type: Open5eType, params: Open5eQueryParams): string {
   const path = pathMap.get(type)
 

@@ -1,10 +1,5 @@
 import { checkDeathSaves } from './death-saves'
 
-export interface CombatEventDraft {
-  type: CombatEventType
-  payload: { [key: string]: Json | undefined }
-}
-
 function countNewlyTrue(before: boolean[], after: boolean[]): number {
   return after.filter((value, index) => value && !before[index]).length
 }

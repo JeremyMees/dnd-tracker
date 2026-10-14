@@ -306,9 +306,7 @@ export const diceTypes = [
   'd12',
   'd20',
   'd100',
-] as const satisfies readonly DndDice[]
-
-export type DndRollableDice = (typeof diceTypes)[number]
+] as const satisfies readonly DndRollableDice[]
 
 export const distanceUnits: DndDistanceUnit[] = ['feet', 'miles']
 

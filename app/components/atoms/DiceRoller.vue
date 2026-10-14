@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '~/components/ui/toast/use-toast'
-import { diceTypes, type DndRollableDice } from '~~/constants/dnd'
+import { diceTypes } from '~~/constants/dnd'
 
 const emit = defineEmits<{ rolled: [amount: number] }>()
 

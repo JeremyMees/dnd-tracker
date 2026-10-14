@@ -281,3 +281,12 @@ export interface Open5eEndpointMap {
   armor: Open5eArmor
   documents: Open5eDocument
 }
+
+export type Open5eQueryParams = Record<
+  string,
+  string | number | boolean | undefined | null
+>
+
+export interface Open5eRequestError extends Error {
+  status?: number
+}
