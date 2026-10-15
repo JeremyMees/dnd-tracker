@@ -174,6 +174,8 @@ export interface TurnAdvance {
   saves: TurnReminder[]
 }
 
+export type TurnReminders = Pick<TurnAdvance, 'expired' | 'saves'>
+
 export type TurnSheet = Pick<
   InitiativeSheet,
   'id' | 'title' | 'round' | 'activeIndex' | 'rows' | 'settings'

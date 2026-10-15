@@ -134,7 +134,7 @@ export function useInitiativeSheet(
     const isAtEnd = sheet.value.activeIndex + 1 >= sheet.value.rows.length
     const activeIndex = isAtEnd ? 0 : sheet.value.activeIndex + 1
 
-    nextTurn()
+    nextTurn().catch(() => undefined)
 
     const index = sheet.value.rows[activeIndex] ? activeIndex : 0
 

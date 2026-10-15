@@ -827,6 +827,12 @@
       "stabilized": "{rowName} stabiliseerde",
       "died": "{rowName} stierf"
     },
+    "turnReminders": {
+      "expired": "{condition} op {name} is afgelopen",
+      "save": "{name}: {ability} save DC {dc} om {condition} te beëindigen",
+      "saved": "Geslaagd",
+      "failed": "Gefaald"
+    },
     "conditionDuration": {
       "title": "Duur",
       "pending": "Duur voor {name}",

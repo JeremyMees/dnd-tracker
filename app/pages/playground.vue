@@ -66,14 +66,16 @@ async function handlePatchRow(
   }
 }
 
-async function handleNextTurn(): Promise<void> {
+async function handleNextTurn(): Promise<TurnReminders | undefined> {
   const target = isTourActive.value ? tourData : data
 
   if (!target.value) return
 
-  const { activeIndex, round, rows } = advanceTurn(target.value)
+  const { activeIndex, round, rows, expired, saves } = advanceTurn(target.value)
 
   target.value = { ...target.value, activeIndex, round, rows }
+
+  return { expired, saves }
 }
 
 provide(INITIATIVE_SHEET, {

@@ -8,13 +8,22 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ loading: boolean; encounterId?: number }>()
 
-const { activeRow, sheet, update, nextTurn } = validateInject(INITIATIVE_SHEET)
+const { activeRow, sheet, update, patchRow, nextTurn } =
+  validateInject(INITIATIVE_SHEET)
+
+const showTurnReminders = useTurnReminders(sheet, patchRow)
+
+async function nextTurnWithReminders(): Promise<void> {
+  const reminders = await nextTurn()
+
+  if (reminders) showTurnReminders(reminders)
+}
 
 const { previous, next, reset, active, expanded, selected, columnVisibility } =
   useInitiativeSheet(
     computed(() => sheet.value),
     update,
-    nextTurn,
+    nextTurnWithReminders,
   )
 
 syncRef(activeRow, active, { direction: 'rtl' })

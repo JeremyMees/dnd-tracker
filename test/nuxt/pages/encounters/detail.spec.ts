@@ -106,7 +106,7 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
-  nextTurn: () => Promise<void>
+  nextTurn: () => Promise<TurnReminders | undefined>
   activeRow: InitiativeSheetRow | undefined
 }
 
@@ -465,11 +465,19 @@ describe('Encounter detail page', () => {
     expect(patch).not.toHaveBeenCalled()
   })
 
-  it('Should advance the turn through useInitiativeSheetTurn', async () => {
+  it('Should advance the turn through useInitiativeSheetTurn and return the reminders', async () => {
+    const expired: TurnReminder[] = [
+      {
+        rowId: 'ylqr4a611g',
+        rowName: 'Sister Iarnă',
+        condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+      },
+    ]
+    turn.mockResolvedValue({ sheet: {}, expired, saves: [] })
+
     const { probe } = await mountPage()
 
-    await probe.nextTurn()
-
+    await expect(probe.nextTurn()).resolves.toEqual({ expired, saves: [] })
     expect(turn).toHaveBeenCalledWith({ id: 2 })
   })
 

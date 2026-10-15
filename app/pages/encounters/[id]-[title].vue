@@ -58,10 +58,12 @@ async function handlePatchRow(
   await patch({ id, rowId, patch: rowPatch })
 }
 
-async function handleNextTurn(): Promise<void> {
+async function handleNextTurn(): Promise<TurnReminders | undefined> {
   if (!data.value) return
 
-  await turn({ id })
+  const { expired, saves } = await turn({ id })
+
+  return { expired, saves }
 }
 
 provide(INITIATIVE_SHEET, {

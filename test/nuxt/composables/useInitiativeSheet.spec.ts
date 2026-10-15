@@ -1,3 +1,4 @@
+import { flushPromises } from '@vue/test-utils'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { sheet } from '../../fixtures/initiative-sheet'
@@ -29,7 +30,7 @@ const update = async (
 
 const nextTurnFn = vi.fn()
 
-const nextTurn = async () => {
+const nextTurn = async (): Promise<void> => {
   const { activeIndex, round, rows } = advanceTurn(mockSheet.value)
 
   Object.assign(mockSheet.value, { activeIndex, round, rows })
@@ -80,6 +81,15 @@ describe('useInitiativeSheet', async () => {
 
     expect(mockSheet.value.activeIndex).toBe(0)
     expect(mockSheet.value.round).toBe(2)
+  })
+
+  it('Should swallow a failed turn advance', async () => {
+    const { next } = useInitiativeSheet(sheetComputed, update, () =>
+      Promise.reject(new Error('boom')),
+    )
+
+    expect(() => next()).not.toThrow()
+    await flushPromises()
   })
 
   it('Should go to last row when the first row is active the round is not 1 and previous is called', async () => {

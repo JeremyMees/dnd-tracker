@@ -1,4 +1,6 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -16,6 +18,7 @@ interface Props {
 }
 
 const mockUpdate = vi.fn()
+const mockNextTurn = vi.fn().mockResolvedValue(undefined)
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
 
@@ -23,7 +26,8 @@ const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
     update: mockUpdate,
-    nextTurn: vi.fn(),
+    patchRow: vi.fn(),
+    nextTurn: mockNextTurn,
     activeRow: mockActiveRow,
   },
 }
@@ -150,6 +154,27 @@ describe('Initiative table', () => {
     expect(
       component.find('[test-id="live-session-trigger"]').exists(),
     ).toBeTruthy()
+  })
+
+  it('Should toast the reminders the next turn returns', async () => {
+    const expired: TurnReminder = {
+      rowId: sheet.rows[0]!.id,
+      rowName: sheet.rows[0]!.name,
+      condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+    }
+    mockNextTurn.mockResolvedValueOnce({ expired: [expired], saves: [] })
+
+    const component = await mountWithTooltips(Table, {
+      props,
+      provide,
+      global,
+    })
+
+    await component.findComponent({ name: 'InitiativeHeader' }).vm.$emit('next')
+    await flushPromises()
+
+    expect(mockNextTurn).toHaveBeenCalled()
+    expect(toast.info).toHaveBeenCalledWith('components.turnReminders.expired')
   })
 
   it('Should display empty state when no data is available', async () => {

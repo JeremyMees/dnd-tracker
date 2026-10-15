@@ -6,6 +6,7 @@ const { toast } = vi.hoisted(() => ({
     error: vi.fn(),
     info: vi.fn(),
     warning: vi.fn(),
+    dismiss: vi.fn(),
   }),
 }))
 
