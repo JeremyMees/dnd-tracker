@@ -1,6 +1,7 @@
 import type { Row } from '@tanstack/vue-table'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
+import ActionsTable from '~/components/atoms/ActionsTable.vue'
 import TooltipAtom from '~/components/atoms/Tooltip.vue'
 import { expandedMarkup } from '~/tables/homebrew-listing'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
@@ -8,9 +9,9 @@ import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 let wrapper: VueWrapper | undefined
 
-async function initiativeModifierLabel(
+async function mountExpandedMarkup(
   initiativeModifier: string | null,
-): Promise<string> {
+): Promise<VueWrapper> {
   const row = {
     original: { ...mockHomebrewItem, initiativeModifier },
   } as Row<ListingFeatures, HomebrewItemRow>
@@ -20,6 +21,12 @@ async function initiativeModifierLabel(
   )
 
   return wrapper
+}
+
+async function initiativeModifierLabel(
+  initiativeModifier: string | null,
+): Promise<string> {
+  return (await mountExpandedMarkup(initiativeModifier))
     .findAllComponents(TooltipAtom)
     .find(tooltip => tooltip.props('text') === 'general.initiativeModifier')!
     .text()
@@ -45,5 +52,13 @@ describe('Homebrew listing expanded markup', () => {
 
   it('Should show a dash without an initiative modifier', async () => {
     expect(await initiativeModifierLabel(null)).toBe('-')
+  })
+
+  it('Should pass the numeric homebrew id to the actions table as a string', async () => {
+    const component = await mountExpandedMarkup(null)
+
+    expect(component.getComponent(ActionsTable).props('id')).toBe(
+      String(mockHomebrewItem.id),
+    )
   })
 })

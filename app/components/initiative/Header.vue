@@ -138,6 +138,9 @@ const liveOpen = ref<boolean>(false)
             <UiDialogTitle>
               {{ $t('components.liveSession.title') }}
             </UiDialogTitle>
+            <UiDialogDescription>
+              {{ $t('components.liveSession.description') }}
+            </UiDialogDescription>
           </UiDialogHeader>
           <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
         </UiDialogScrollContent>

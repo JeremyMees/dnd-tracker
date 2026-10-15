@@ -1,4 +1,8 @@
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import {
+  mockComponent,
+  mockNuxtImport,
+  mountSuspended,
+} from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from '~/app.vue'
 
@@ -22,6 +26,11 @@ const { useConfirmDialogsMock, useHealthCheckMock, routeMock } = vi.hoisted(
 mockNuxtImport('useConfirmDialogs', () => useConfirmDialogsMock)
 mockNuxtImport('useHealthCheck', () => useHealthCheckMock)
 mockNuxtImport('useRoute', () => () => routeMock)
+
+mockComponent('ConfirmDialog', {
+  props: ['uuid', 'title'],
+  template: '<div test-id="confirm-dialog">{{ title }}</div>',
+})
 
 const stubs = {
   NuxtRouteAnnouncer: { template: '<div test-id="route-announcer" />' },
@@ -99,10 +108,6 @@ describe('app', async () => {
   })
 
   it('Should render one entry per open dialog', async () => {
-    const empty = await mountSuspended(App, { global: { stubs } })
-    const baseline = empty.element.querySelector('[test-id="modal-group"]')!
-      .parentElement!.childNodes.length
-
     useConfirmDialogsMock.mockReturnValue({
       dialogs: ref([
         {
@@ -126,10 +131,19 @@ describe('app', async () => {
     })
 
     const component = await mountSuspended(App, { global: { stubs } })
-    const withDialogs = component.element.querySelector(
-      '[test-id="modal-group"]',
-    )!.parentElement!.childNodes.length
 
-    expect(withDialogs - baseline).toBe(2)
+    await vi.waitFor(() =>
+      expect(
+        component
+          .findAll('[test-id="confirm-dialog"]')
+          .map(dialog => dialog.text()),
+      ).toEqual(['First', 'Second']),
+    )
+  })
+
+  it('Should not render a dialog when none are open', async () => {
+    const component = await mountSuspended(App, { global: { stubs } })
+
+    expect(component.find('[test-id="confirm-dialog"]').exists()).toBe(false)
   })
 })

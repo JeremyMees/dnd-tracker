@@ -23,21 +23,21 @@ vi.mock('~/composables/useAuthentication', () => ({
 vi.mock('~/composables/useUi', () => ({
   useUi: () => ({
     playRoutes: [
-      { label: 'play1', url: '/play1', icon: 'tabler:play' },
-      { label: 'play2', url: '/play2' },
+      { label: 'play1', url: 'encounters', icon: 'tabler:play' },
+      { label: 'play2', url: 'campaigns' },
     ],
     routes: [
-      { label: 'home', url: '/', icon: 'tabler:home' },
-      { label: 'about', url: '/about' },
+      { label: 'home', url: 'index', icon: 'tabler:home' },
+      { label: 'about', url: 'contact' },
     ],
     profileRoutes: [
       {
         label: 'profile',
-        url: '/profile',
+        url: 'profile',
         requireAuth: true,
         icon: 'tabler:user',
       },
-      { label: 'public', url: '/public', requireAuth: false },
+      { label: 'public', url: 'pricing', requireAuth: false },
     ],
   }),
 }))

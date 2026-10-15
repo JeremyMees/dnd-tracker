@@ -725,6 +725,7 @@
   "components": {
     "liveSession": {
       "title": "Live session",
+      "description": "Share the room code so players can follow initiative and act on their own turn.",
       "start": "Start live session",
       "code": "Room code",
       "expiresIn": "Ends in {time}",

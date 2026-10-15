@@ -56,7 +56,7 @@ vi.mock('@formkit/auto-animate/vue', () => ({
 
 mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
-  locale: { value: 'en' },
+  locale: ref('en'),
   locales: [
     { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
     { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },

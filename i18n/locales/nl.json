@@ -725,6 +725,7 @@
   "components": {
     "liveSession": {
       "title": "Live sessie",
+      "description": "Deel de kamercode zodat spelers de initiatiefvolgorde kunnen volgen en op hun eigen beurt kunnen handelen.",
       "start": "Start live sessie",
       "code": "Kamercode",
       "expiresIn": "Verloopt over {time}",
