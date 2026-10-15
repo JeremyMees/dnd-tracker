@@ -12,13 +12,7 @@ export default defineEventHandler(async event => {
 
   const encounter = await requireEncounterAccess(event, body.encounter, user.id)
 
-  const { data: session } = await supabase
-    .from('live_sessions')
-    .select('uuid, expiresAt')
-    .eq('encounter', encounter.id)
-    .is('endedAt', null)
-    .gt('expiresAt', new Date().toISOString())
-    .maybeSingle()
+  const session = await activeLiveSession(supabase, encounter.id)
 
   if (!session) return { synced: false }
 
@@ -32,7 +26,7 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
   }
 
-  await broadcastLiveState(supabase, session.uuid, toPlayerSheet(sheet))
+  await broadcastLiveState(supabase, session, toPlayerSheet(sheet))
 
   return { synced: true }
 })

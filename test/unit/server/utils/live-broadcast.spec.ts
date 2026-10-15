@@ -5,6 +5,7 @@ import {
   serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
 import {
+  activeLiveSession,
   broadcastLiveAction,
   broadcastLiveEnded,
   broadcastLiveSeats,
@@ -20,6 +21,30 @@ function supabaseWithSheet(data: Record<string, unknown>) {
 }
 
 describe('live-broadcast', () => {
+  describe('activeLiveSession', () => {
+    it('returns the uuid of the open, unexpired session for the encounter', async () => {
+      const chain = mockChain({ data: { uuid: 'session-uuid' }, error: null })
+
+      mockFrom({ live_sessions: chain })
+
+      await expect(
+        activeLiveSession(serverSupabaseServiceRole({} as never), 7),
+      ).resolves.toBe('session-uuid')
+
+      expect(chain.eq).toHaveBeenCalledWith('encounter', 7)
+      expect(chain.is).toHaveBeenCalledWith('endedAt', null)
+      expect(chain.gt).toHaveBeenCalledWith('expiresAt', expect.any(String))
+    })
+
+    it('returns undefined when the encounter has no live session', async () => {
+      mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
+
+      await expect(
+        activeLiveSession(serverSupabaseServiceRole({} as never), 7),
+      ).resolves.toBeUndefined()
+    })
+  })
+
   describe('broadcastLiveAction', () => {
     it('increments the session version and broadcasts the patch over the session channel', async () => {
       mockFrom({}, { rpc: mockChain({ data: 4, error: null }) })

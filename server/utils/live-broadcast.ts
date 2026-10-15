@@ -16,6 +16,21 @@ async function incrementLiveVersion(
   return version
 }
 
+export async function activeLiveSession(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounter: number,
+): Promise<string | undefined> {
+  const { data: session } = await supabase
+    .from('live_sessions')
+    .select('uuid')
+    .eq('encounter', encounter)
+    .is('endedAt', null)
+    .gt('expiresAt', new Date().toISOString())
+    .maybeSingle()
+
+  return session?.uuid
+}
+
 export async function broadcastLiveAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
