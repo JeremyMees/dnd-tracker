@@ -1,7 +1,7 @@
 import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Profile from '~/pages/profile.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
@@ -100,6 +100,10 @@ describe('Profile page', () => {
     updateProfile.mockResolvedValue(undefined)
     removeProfile.mockResolvedValue(undefined)
     useFetch.mockResolvedValue({ data: ref(null) })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('Should set the page seo', async () => {
@@ -457,6 +461,7 @@ describe('Profile page', () => {
       useConsentActiveUI(),
     )
 
+    vi.useFakeTimers()
     await component.get('[test-id="privacy-settings"]').trigger('click')
 
     expect(activeUI.value).toBe('manager')

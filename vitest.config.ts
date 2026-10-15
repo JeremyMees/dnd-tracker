@@ -32,7 +32,22 @@ export default defineConfig({
           environment: 'nuxt',
           environmentOptions: {
             nuxt: {
-              overrides: { c15t: { mode: offline(), colorScheme: 'light' } },
+              overrides: {
+                c15t: {
+                  mode: offline({
+                    policyRules: [
+                      {
+                        id: 'test',
+                        match: { isDefault: true },
+                        model: 'none',
+                        prompt: 'none',
+                        rights: ['disclosure', 'preferences'],
+                      },
+                    ],
+                  }),
+                  colorScheme: 'light',
+                },
+              },
             },
           },
           setupFiles: ['./test/nuxt/unit.setup.ts'],
