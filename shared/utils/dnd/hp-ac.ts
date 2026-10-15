@@ -1,3 +1,5 @@
+import { bloodiedConditionId } from '~~/constants/dnd'
+
 type ModifierType = 'hitPoints' | 'armorClass'
 
 function heal(
@@ -293,4 +295,8 @@ export function withBloodied(
   }
 
   return row
+}
+
+export function withoutBloodied(conditions: DndCondition[]): DndCondition[] {
+  return conditions.filter(({ id }) => id !== bloodiedConditionId)
 }

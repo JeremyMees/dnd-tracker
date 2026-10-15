@@ -351,6 +351,20 @@ describe('dnd/hp-ac', () => {
     )
   })
 
+  describe('withoutBloodied', () => {
+    it('drops only the bloodied condition', () => {
+      const prone: DndCondition = { id: 'prone', name: 'Prone', desc: '' }
+      const bloodied: DndCondition = {
+        id: 'bloodied',
+        name: 'Bloodied',
+        desc: '',
+      }
+
+      expect(withoutBloodied([prone, bloodied])).toEqual([prone])
+      expect(withoutBloodied([])).toEqual([])
+    })
+  })
+
   describe('withBloodied', () => {
     const bloodied: DndCondition = {
       id: 'bloodied',

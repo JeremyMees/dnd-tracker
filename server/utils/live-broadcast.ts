@@ -61,15 +61,19 @@ export function sanitizeBroadcastPatch(
 ): Partial<PlayerRow> {
   if (row.type !== 'player') return patch
 
+  const conditions = patch.conditions && withoutBloodied(patch.conditions)
+
   if (actionType === 'hp') {
     return {
       healthBand: getHealthBand(row.hitPoints, row.maxHitPoints),
       concentration: patch.concentration,
-      conditions: patch.conditions,
+      conditions,
     }
   }
 
   if (actionType === 'deathSaves') return {}
+
+  if (actionType === 'conditions') return { conditions }
 
   return patch
 }

@@ -12,7 +12,9 @@ import {
   buildAcPatch,
   buildHpPatch,
   liveActionSchema,
+  sanitizeBroadcastPatch,
 } from '~~/server/utils/live-broadcast'
+import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 function supabaseWithSheet(data: Record<string, unknown>) {
   mockFrom({
@@ -143,6 +145,60 @@ describe('live-broadcast', () => {
         type: 'kicked',
         seat: 'seat-1',
       })
+    })
+  })
+
+  describe('sanitizeBroadcastPatch', () => {
+    const prone = { id: 'prone', name: 'Prone', desc: '' }
+    const conditions = [prone, storedBloodiedCondition]
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'player',
+      conditions,
+      hitPoints: 40,
+      maxHitPoints: 100,
+    }
+
+    it('sends a player hp change as a health band without bloodied', () => {
+      expect(
+        sanitizeBroadcastPatch(row, 'hp', {
+          hitPoints: 40,
+          concentration: false,
+          conditions,
+        }),
+      ).toEqual({
+        healthBand: 'bloodied',
+        concentration: false,
+        conditions: [prone],
+      })
+    })
+
+    it('drops bloodied from a player conditions change', () => {
+      expect(sanitizeBroadcastPatch(row, 'conditions', { conditions })).toEqual(
+        { conditions: [prone] },
+      )
+    })
+
+    it('sends nothing for a player death saves change', () => {
+      expect(
+        sanitizeBroadcastPatch(row, 'deathSaves', {
+          deathSaves: {
+            fail: [true, false, false],
+            save: [false, false, false],
+          },
+        }),
+      ).toEqual({})
+    })
+
+    it('passes a non-player patch through untouched', () => {
+      const patch = { hitPoints: 40, conditions }
+
+      expect(sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'hp', patch)).toBe(
+        patch,
+      )
     })
   })
 
