@@ -31,7 +31,9 @@ export default defineConfig({
           include: ['test/nuxt/**/*.{test,spec}.ts'],
           environment: 'nuxt',
           environmentOptions: {
-            nuxt: { overrides: { c15t: { mode: offline() } } },
+            nuxt: {
+              overrides: { c15t: { mode: offline(), colorScheme: 'light' } },
+            },
           },
           setupFiles: ['./test/nuxt/unit.setup.ts'],
         },
