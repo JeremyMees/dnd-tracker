@@ -25,10 +25,9 @@ function getQueryData(): void {
   const token = route.query.token as string
 
   if (token) {
-    const encounter = queryClient.getQueryData<InitiativeSheet>([
-      'useInitiativeSheetPlayground',
-      token,
-    ])
+    const encounter = queryClient.getQueryData<InitiativeSheet>(
+      queryKeys.initiativeSheetPlayground(token),
+    )
 
     if (encounter) data.value = encounter
     else isError.value = true
@@ -67,10 +66,23 @@ async function handlePatchRow(
   }
 }
 
+async function handleNextTurn(): Promise<TurnReminders | undefined> {
+  const target = isTourActive.value ? tourData : data
+
+  if (!target.value) return
+
+  const { activeIndex, round, rows, expired, saves } = advanceTurn(target.value)
+
+  target.value = { ...target.value, activeIndex, round, rows }
+
+  return { expired, saves }
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: computed(() => (isTourActive.value ? tourData.value : data.value)),
   update: handleUpdate,
   patchRow: handlePatchRow,
+  nextTurn: handleNextTurn,
   activeRow,
 })
 </script>

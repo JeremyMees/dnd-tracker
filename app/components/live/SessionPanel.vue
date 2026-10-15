@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{
@@ -8,7 +8,6 @@ const props = defineProps<{
 }>()
 
 const { t, locale } = useI18n()
-const { toast } = useToast()
 const clipboard = useClipboard()
 const { ask } = useConfirm()
 const user = useAuthenticatedUser()
@@ -62,10 +61,7 @@ function copyLink(): void {
 
   clipboard.copy(link.value)
 
-  toast({
-    description: t('actions.copyClipboard'),
-    variant: 'info',
-  })
+  toast.info(t('actions.copyClipboard'))
 }
 
 function endSession(): void {

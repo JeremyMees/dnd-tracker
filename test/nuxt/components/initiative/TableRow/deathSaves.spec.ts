@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import DeathSaves from '~/components/initiative/TableRow/DeathSaves.vue'
@@ -13,14 +14,7 @@ interface DeathSavesTestMethods {
 }
 
 const mockPatchRow = vi.fn()
-const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({
-    toast: mockToast,
-  }),
-}))
 
 const provide = {
   [INITIATIVE_SHEET]: {
@@ -44,45 +38,33 @@ describe('Initiative table row death saves', async () => {
     expect(component.html()).toMatchSnapshot()
   })
 
-  it('Should not render for lair type', async () => {
-    const component = await mountSuspended(DeathSaves, {
-      props: {
-        item: { ...props.item, type: 'lair' },
-      },
-      provide,
-    })
-
-    expect(component.find('[test-id="container"]').exists()).toBeFalsy()
-  })
-
-  it('Should not render for summon type', async () => {
-    const component = await mountSuspended(DeathSaves, {
-      props: {
-        item: { ...props.item, type: 'summon' },
-      },
-      provide,
-    })
-
-    expect(component.find('[test-id="container"]').exists()).toBeFalsy()
-  })
-
-  it('Should render for player type', async () => {
-    const component = await mountSuspended(DeathSaves, {
-      props: {
-        item: {
-          ...props.item,
-          type: 'player',
-          deathSaves: {
-            save: [false, false, false],
-            fail: [false, false, false],
-          },
+  it.each<InitiativeSheetRow['type']>(['lair', 'summon', 'monster'])(
+    'Should not render for %s type',
+    async type => {
+      const component = await mountSuspended(DeathSaves, {
+        props: {
+          item: { ...props.item, type },
         },
-      },
-      provide,
-    })
+        provide,
+      })
 
-    expect(component.find('[test-id="container"]').exists()).toBeTruthy()
-  })
+      expect(component.find('[test-id="container"]').exists()).toBeFalsy()
+    },
+  )
+
+  it.each<InitiativeSheetRow['type']>(['npc', 'player'])(
+    'Should render for %s type',
+    async type => {
+      const component = await mountSuspended(DeathSaves, {
+        props: {
+          item: { ...props.item, type },
+        },
+        provide,
+      })
+
+      expect(component.find('[test-id="container"]').exists()).toBeTruthy()
+    },
+  )
 
   it('Should render 3 save and 3 fail buttons', async () => {
     const component = await mountSuspended(DeathSaves, { props, provide })
@@ -219,13 +201,14 @@ describe('Initiative table row death saves', async () => {
     const buttons = component.findAll('[test-id="save"]')
     await buttons[2]!.trigger('click')
 
-    expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching('components.initiativeTable.stable.title'),
-      description: expect.stringMatching(
-        'components.initiativeTable.stable.textDeathSaves',
-      ),
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      expect.stringMatching('components.initiativeTable.stable.title'),
+      {
+        description: expect.stringMatching(
+          'components.initiativeTable.stable.textDeathSaves',
+        ),
+      },
+    )
   })
 
   it('Should show died toast when all fails are triggered', async () => {
@@ -246,13 +229,14 @@ describe('Initiative table row death saves', async () => {
     const buttons = component.findAll('[test-id="fail"]')
     await buttons[2]!.trigger('click')
 
-    expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching('components.initiativeTable.died.title'),
-      description: expect.stringMatching(
-        'components.initiativeTable.died.textDeathSaves',
-      ),
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      expect.stringMatching('components.initiativeTable.died.title'),
+      {
+        description: expect.stringMatching(
+          'components.initiativeTable.died.textDeathSaves',
+        ),
+      },
+    )
   })
 
   it('Should not show toast when saves/fails are not complete', async () => {
@@ -273,6 +257,6 @@ describe('Initiative table row death saves', async () => {
     const buttons = component.findAll('[test-id="save"]')
     await buttons[1]!.trigger('click')
 
-    expect(mockToast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 })

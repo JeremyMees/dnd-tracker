@@ -3,7 +3,6 @@ import {
   type TableState,
   type Row,
 } from '@tanstack/vue-table'
-import type { ListingFeatures } from './features'
 import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   actionsTable,
@@ -106,6 +105,9 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
 
 export function expandedMarkup(row: Row<ListingFeatures, HomebrewItemRow>) {
   const { t } = useI18n()
+  const initiativeModifier = toIntegerOrUndefined(
+    row.original.initiativeModifier,
+  )
 
   return h(
     'div',
@@ -129,8 +131,8 @@ export function expandedMarkup(row: Row<ListingFeatures, HomebrewItemRow>) {
           }),
           iconLabelElement({
             icon: 'tabler:bolt',
-            label: row.original.initiativeModifier
-              ? `+${row.original.initiativeModifier}`
+            label: isDefined(initiativeModifier)
+              ? formatBonus(initiativeModifier)
               : '-',
             tooltip: t('general.initiativeModifier'),
             color: 'text-warning',

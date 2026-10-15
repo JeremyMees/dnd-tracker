@@ -16,7 +16,7 @@ const { user } = useAuthentication()
       </UiDropdownMenuItem>
     </template>
     <UiDropdownMenuItem as-child>
-      <YbugButton type="menu" />
+      <BugReportButton type="menu" />
     </UiDropdownMenuItem>
     <UiDropdownMenuSeparator />
     <div class="px-2 py-[6px] space-y-2">

@@ -1,3 +1,5 @@
+import { abilityTypeMap } from '~~/constants/dnd'
+
 export function formatBonus(val: number): string {
   return val >= 0 ? `+${val}` : `${val}`
 }
@@ -27,4 +29,12 @@ export function formatUsageLimits(limits: DndUsageLimits): string {
     case 'perRest':
       return `${limits.param}/rest`
   }
+}
+
+export function formatAbilityShort(ability: DndAbility): string {
+  return (
+    Object.entries(abilityTypeMap).find(
+      ([, value]) => value === ability,
+    )?.[0] ?? ability
+  )
 }

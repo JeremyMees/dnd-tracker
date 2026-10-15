@@ -1,5 +1,4 @@
 import { mockStorage, setStorageItem } from './storage'
-import type { EmailTemplate } from '~~/server/utils/email'
 
 const templates: Record<EmailTemplate, string> = {
   CampaignInvite:

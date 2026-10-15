@@ -6,6 +6,15 @@ export function scrollToId(id: string): void {
   }
 }
 
+export function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+
+  return (
+    target.isContentEditable ||
+    ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+  )
+}
+
 export function randomString(): string {
   return (Math.random() + 1).toString(36).substring(7)
 }
@@ -92,10 +101,6 @@ export function formatDate(date: string | Date): string {
   })
 
   return formatter.format(new Date(date))
-}
-
-export function isDefined<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined
 }
 
 export function timeRemaining(expiresAt: string | Date, now: number): string {

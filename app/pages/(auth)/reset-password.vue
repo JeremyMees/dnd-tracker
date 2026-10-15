@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
 useSeo('Reset password')
 
 const { t } = useI18n()
-const { toast } = useToast()
 const localePath = useLocalePath()
 const route = useRoute()
 const supabase = useSupabaseClient<DB>()
@@ -19,10 +18,8 @@ function checkIfError(): void {
   if (error) {
     navigateTo(localePath('forgot-password'))
 
-    toast({
-      title: t('pages.resetPassword.toast.error.title'),
+    toast.error(t('pages.resetPassword.toast.error.title'), {
       description: t('pages.resetPassword.toast.error.text'),
-      variant: 'destructive',
     })
   }
 }
@@ -55,10 +52,7 @@ const onSubmit = form.handleSubmit(async values => {
 
     if (error) throw createError(error)
 
-    toast({
-      description: t('pages.resetPassword.toast.success.text'),
-      variant: 'success',
-    })
+    toast.success(t('pages.resetPassword.toast.success.text'))
 
     navigateTo(localePath('index'))
   } catch (err) {

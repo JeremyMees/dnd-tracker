@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -10,7 +11,6 @@ const {
   invalidateQueries,
   navigateTo,
   removeQueries,
-  toast,
   useSeo,
 } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
@@ -18,12 +18,7 @@ const {
   invalidateQueries: vi.fn(),
   navigateTo: vi.fn(),
   removeQueries: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
@@ -140,11 +135,10 @@ describe('Campaign join page', () => {
 
     await join()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.campaign.join.toast.accept.title',
-      description: 'pages.campaign.join.toast.accept.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'pages.campaign.join.toast.accept.title',
+      { description: 'pages.campaign.join.toast.accept.text' },
+    )
     expect(removeQueries).toHaveBeenCalledWith({
       queryKey: ['useJoinCampaign', 'invite-token'],
     })
@@ -183,11 +177,10 @@ describe('Campaign join page', () => {
 
     await decline()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.campaign.join.toast.decline.title',
-      description: 'pages.campaign.join.toast.decline.text',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'pages.campaign.join.toast.decline.title',
+      { description: 'pages.campaign.join.toast.decline.text' },
+    )
     expect(removeQueries).toHaveBeenCalledWith({
       queryKey: ['useJoinCampaign', 'invite-token'],
     })
@@ -214,11 +207,10 @@ describe('Campaign join page', () => {
 
     await join()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.failed.inviteAccept',
-      description: 'general.error.reasons.rejected',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'general.error.failed.inviteAccept',
+      { description: 'general.error.reasons.rejected' },
+    )
     expect(removeQueries).not.toHaveBeenCalled()
     expect(invalidateQueries).not.toHaveBeenCalled()
     expect(navigateTo).not.toHaveBeenCalled()
@@ -233,11 +225,10 @@ describe('Campaign join page', () => {
 
     await decline()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.failed.inviteDecline',
-      description: 'general.error.reasons.notFound',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'general.error.failed.inviteDecline',
+      { description: 'general.error.reasons.notFound' },
+    )
   })
 
   it('Should answer again after a failed request', async () => {

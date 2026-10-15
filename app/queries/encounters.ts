@@ -1,10 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-} from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 
 export function useEncounterListing(
   data: ComputedRef<SbFilter>,
@@ -12,7 +6,7 @@ export function useEncounterListing(
   perPage = 10,
 ) {
   return useQuery({
-    queryKey: ['useEncounterListing', data, perPage],
+    queryKey: queryKeys.encounterListing(data, perPage),
     queryFn: () =>
       sbQuery<EncounterItem>({
         table: 'initiative_sheets',
@@ -38,11 +32,7 @@ export function useEncounterListing(
     select: ({ data, count, totalPages }) => ({
       amount: count,
       pages: totalPages,
-      encounters: data?.map(encounter => ({
-        ...encounter,
-        homebrew_items: sbCount('homebrew_items', encounter),
-        initiative_sheets: sbCount('initiative_sheets', encounter),
-      })),
+      encounters: data ?? undefined,
     }),
     placeholderData: keepPreviousData,
     enabled,
@@ -53,7 +43,7 @@ export function useEncounterCount(enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useEncounterCount'],
+    queryKey: queryKeys.encounterCount(),
     queryFn: async () =>
       await supabase
         .from('initiative_sheets')
@@ -65,13 +55,10 @@ export function useEncounterCount(enabled: ComputedRef<boolean>) {
 
 export function useEncounterCreate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.encounter').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.encounter',
+    action: 'create',
     mutationFn: async ({
       data,
     }: { data: InitiativeInsert } & QueryDefaults) => {
@@ -79,41 +66,19 @@ export function useEncounterCreate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
-
-      toast({
-        description: t('components.toast.create.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.create.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }
 
 export function useEncounterUpdate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.encounter').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.encounter',
+    action: 'update',
     mutationFn: async ({
       data,
       id,
@@ -128,93 +93,39 @@ export function useEncounterUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
-
-      toast({
-        description: t('components.toast.update.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.update.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }
 
 export function useEncounterRemove() {
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
-
-  const type = t('general.encounter').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.encounter',
+    action: 'delete',
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
-      const ids = Array.isArray(id) ? id : [id]
-
       await Promise.all(
-        ids.map(single =>
+        toArray(id).map(single =>
           $fetch(`/api/encounter/${single}`, { method: 'DELETE' }),
         ),
       )
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
-
-      toast({
-        title: t('components.toast.delete.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.delete.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }
 
 export function useEncounterCopy() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.encounter').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.encounter',
+    action: 'copy',
     mutationFn: async ({ data }: { data: EncounterItem } & QueryDefaults) => {
-      const {
-        campaign,
-        createdBy,
-        id,
-        homebrew_items,
-        initiative_sheets,
-        ...enc
-      } = data
+      const { campaign, createdBy, id, ...enc } = data
 
       const { error } = await supabase.from('initiative_sheets').insert([
         {
@@ -227,28 +138,9 @@ export function useEncounterCopy() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
-
-      toast({
-        description: t('components.toast.copy.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.copy.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [
+      queryKeys.encounterListing(),
+      queryKeys.encounterCount(),
+    ],
   })
 }

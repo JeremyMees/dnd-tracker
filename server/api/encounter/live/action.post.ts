@@ -75,21 +75,11 @@ export default defineEventHandler(async event => {
   }
 
   if (body.action.type === 'endTurn') {
-    const isAtEnd = sheet.activeIndex + 1 >= sheet.rows.length
-    const activeIndex = isAtEnd ? 0 : sheet.activeIndex + 1
-    const round = isAtEnd ? sheet.round + 1 : sheet.round
-
-    const { data: updated, error } = await supabase
-      .from('initiative_sheets')
-      .update({ activeIndex, round })
-      .eq('id', payload.encounter)
-      .select('id, title, round, activeIndex, rows, settings')
-      .single()
-
-    if (error) throw createError(postgresErrorToH3Error(error))
-
-    await broadcastLiveState(supabase, payload.session, toPlayerSheet(updated))
-    await broadcastSheetSync(supabase, payload.encounter, updated)
+    await advanceEncounterTurn(supabase, payload.encounter, sheet, {
+      actorName: seat.name,
+      session: payload.session,
+      broadcastReminders: true,
+    })
 
     return { synced: true }
   }

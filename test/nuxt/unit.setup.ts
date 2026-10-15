@@ -38,13 +38,25 @@ vi.mock('~/plugins/session.client', () => ({
   default: () => {},
 }))
 
+vi.mock('~/plugins/sentry-user.client', () => ({
+  default: () => {},
+}))
+
+vi.mock('~/plugins/sentry-supabase.client', () => ({
+  default: () => {},
+}))
+
+vi.mock('~/plugins/consent-scripts.client', () => ({
+  default: () => {},
+}))
+
 vi.mock('@formkit/auto-animate/vue', () => ({
   vAutoAnimate: {},
 }))
 
 mockNuxtImport('useI18n', () => () => ({
   t: (key: string) => key,
-  locale: { value: 'en' },
+  locale: ref('en'),
   locales: [
     { code: 'nl', language: 'nl-BE', name: 'Nederlands', icon: '🇧🇪' },
     { code: 'en', language: 'en-US', name: 'English', icon: '🇬🇧' },

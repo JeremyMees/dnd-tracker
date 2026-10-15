@@ -1,5 +1,5 @@
 function hasDeathSaves(type: HomebrewType): boolean {
-  return !['summon', 'lair'].includes(type)
+  return ['player', 'npc'].includes(type)
 }
 
 function checkDeathSaves(deathSaves: DndDeathSaves): {

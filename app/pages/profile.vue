@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
+import { useHasConsentPreferences } from '#c15t/composables'
 import { useProfileUpdate, useProfileRemove } from '~/queries/profiles'
 
 definePageMeta({ auth: true })
 useSeo('Profile')
 
 const user = useAuthenticatedUser()
-const { toast } = useToast()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
+const consentActiveUI = useConsentActiveUI()
+const hasConsentPreferences = useHasConsentPreferences()
 
 const avatar = ref<Avatar>({
   url: user.value.avatar || '',
@@ -26,10 +28,8 @@ async function updateAvatar(avatar: Avatar): Promise<void> {
       avatarOptions: avatar.extra as Record<string, string | number>,
     })
   } catch (error) {
-    toast({
-      title: t('general.error.failed.avatar'),
+    toast.error(t('general.error.failed.avatar'), {
       description: getErrorMessage(error),
-      variant: 'destructive',
     })
   }
 }
@@ -41,10 +41,7 @@ const handleUpdateProfile = useThrottleFn(
         data,
         id: user.value.id,
         onSuccess: () => {
-          toast({
-            description: t('pages.profile.toast.success.text'),
-            variant: 'success',
-          })
+          toast.success(t('pages.profile.toast.success.text'))
         },
       })
     } catch (error) {
@@ -74,10 +71,7 @@ async function handleRemoveUser(): Promise<void> {
         onSuccess: () => {
           navigateTo(localePath('index'))
 
-          toast({
-            description: t('pages.profile.toast.delete.text'),
-            variant: 'success',
-          })
+          toast.success(t('pages.profile.toast.delete.text'))
         },
       })
     },
@@ -192,6 +186,30 @@ function subscriptionState(user: AuthUser): string {
           <FormProfilePassword :update="handleUpdateProfile" />
         </div>
       </div>
+      <template v-if="hasConsentPreferences">
+        <UiSeparator />
+        <div
+          class="flex flex-col md:flex-row justify-between gap-x-10 gap-y-4 py-6"
+        >
+          <div class="md:min-w-[300px] flex-1">
+            <h2>
+              {{ $t('pages.profile.privacy.title') }}
+            </h2>
+            <p class="pt-2 text-muted-foreground">
+              {{ $t('pages.profile.privacy.subtitle') }}
+            </p>
+          </div>
+          <div class="md:max-w-md flex-1">
+            <UiButton
+              test-id="privacy-settings"
+              variant="secondary"
+              @click="consentActiveUI = 'manager'"
+            >
+              {{ $t('pages.profile.privacy.manage') }}
+            </UiButton>
+          </div>
+        </div>
+      </template>
       <UiSeparator />
       <div class="flex flex-wrap gap-x-4 gap-y-2 pt-6 justify-end">
         <UiButton

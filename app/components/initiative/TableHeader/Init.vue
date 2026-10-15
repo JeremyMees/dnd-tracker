@@ -71,6 +71,7 @@ const onSubmit = form.handleSubmit(async values => {
   const { ignore, selectedCreatures } = values
 
   const rows = [...sheet.value.rows]
+  const changed: string[] = []
 
   selectedCreatures.forEach(({ id, amount, initiative }) => {
     if (amount !== undefined) {
@@ -82,14 +83,19 @@ const onSubmit = form.handleSubmit(async values => {
         if (!ignore && isDefined(initiative) && !isNaN(initiative))
           init += initiative
 
-        if (rows[index])
-          rows[index] = { ...rows[index], initiative: Math.max(init, 0) }
+        const row = rows[index]
+        const rolled = Math.max(init, 0)
+
+        if (row && row.initiative !== rolled) {
+          rows[index] = { ...row, initiative: rolled }
+          changed.push(row.id)
+        }
       }
     }
   })
 
   try {
-    await update({ rows })
+    await update({ rows: placeByInitiative(rows, changed) })
   } catch {
     return
   }
@@ -113,7 +119,7 @@ const onSubmit = form.handleSubmit(async values => {
       </UiPopoverTrigger>
       <UiPopoverContent
         test-id="popover-content"
-        class="max-w-[800px] max-h-[600px]"
+        class="max-w-[min(800px,calc(100vw-2rem))] max-h-[600px]"
       >
         <UiPopoverHeader>
           <UiPopoverTitle>

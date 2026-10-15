@@ -1,5 +1,12 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
-import { sbRange, sbPages, sbCount, sbQuery, sbOrQuery } from '~/utils/supabase'
+import {
+  sbRange,
+  sbPages,
+  sbCount,
+  sbQuery,
+  sbOrQuery,
+  sbQuoteValue,
+} from '~/utils/supabase'
 import type { SbFetchOptions } from '~~/shared/types/supabase'
 
 let mockQueryResult: Record<string, unknown> = {
@@ -104,20 +111,50 @@ describe('supabase', () => {
     })
   })
 
+  describe('sbQuoteValue', () => {
+    it('should wrap the value in double quotes', () => {
+      expect(sbQuoteValue('test')).toBe('"test"')
+    })
+
+    it('should escape double quotes and backslashes', () => {
+      expect(sbQuoteValue('say "hi" \\o/')).toBe('"say \\"hi\\" \\\\o/"')
+    })
+  })
+
   describe('sbOrQuery', () => {
     it('should create a valid query string for single field', () => {
       const result = sbOrQuery(['title'], 'test')
-      expect(result).toBe('title.ilike.*test*')
+      expect(result).toBe('title.ilike."%test%"')
     })
 
     it('should create a valid query string for multiple fields', () => {
       const result = sbOrQuery(['title', 'description'], 'test')
-      expect(result).toBe('title.ilike.*test*,description.ilike.*test*')
+      expect(result).toBe('title.ilike."%test%",description.ilike."%test%"')
     })
 
     it('should escape special characters', () => {
       const result = sbOrQuery(['title'], 'test%_')
-      expect(result).toBe('title.ilike.*test\\%\\_*')
+      expect(result).toBe('title.ilike."%test\\\\%\\\\_%"')
+    })
+
+    it('should escape a backslash so it matches literally', () => {
+      const result = sbOrQuery(['title'], 'C:\\maps')
+      expect(result).toBe('title.ilike."%C:\\\\\\\\maps%"')
+    })
+
+    it('should keep commas and brackets inside the quoted value', () => {
+      const result = sbOrQuery(
+        ['title', 'description'],
+        'Owlbear (young), Goblin.',
+      )
+      expect(result).toBe(
+        'title.ilike."%Owlbear (young), Goblin.%",description.ilike."%Owlbear (young), Goblin.%"',
+      )
+    })
+
+    it('should escape a double quote in the search', () => {
+      const result = sbOrQuery(['title'], 'the "Boss"')
+      expect(result).toBe('title.ilike."%the \\"Boss\\"%"')
     })
 
     it('should handle empty keys array', () => {

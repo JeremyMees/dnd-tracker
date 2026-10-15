@@ -135,6 +135,26 @@ describe('Initiative history panel', () => {
     )
   })
 
+  it('Should describe an expired condition event with its own icon', async () => {
+    events.value = [
+      makeEvent({
+        type: 'condition_expired',
+        payload: { rowName: 'Elara', condition: { id: 'p', name: 'Prone' } },
+      }),
+    ]
+
+    const component = await mountSuspended(HistoryPanel, {
+      props: { encounterId: 2 },
+    })
+
+    expect(component.get('[test-id="event"]').text()).toContain(
+      'components.combatLog.conditionExpired',
+    )
+    expect(component.get('[test-id="event"]').html()).toContain(
+      'tabler:hourglass-off',
+    )
+  })
+
   it('Should describe a broken concentration event', async () => {
     events.value = [
       makeEvent({

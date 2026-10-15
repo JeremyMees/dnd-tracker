@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import type { DataTable, LimitCta } from '#components'
 import { generateColumns, initialState } from '~/tables/encounter-listing'
 import {
@@ -15,7 +15,6 @@ const props = defineProps<{
   fetchReady: boolean
 }>()
 
-const { toast } = useToast()
 const modal = useModal()
 const clipboard = useClipboard()
 const { ask } = useConfirm()
@@ -76,15 +75,10 @@ async function shareEncounter(item: EncounterItem): Promise<void> {
 
     clipboard.copy(url)
 
-    toast({
-      description: `${item.title} ${t('actions.copyClipboard').toLowerCase()}`,
-      variant: 'info',
-    })
+    toast.info(`${item.title} ${t('actions.copyClipboard').toLowerCase()}`)
   } catch (error) {
-    toast({
-      title: t('general.error.failed.shareLink'),
+    toast.error(t('general.error.failed.shareLink'), {
       description: t(`general.error.reasons.${getFailureReason(error)}`),
-      variant: 'destructive',
     })
   }
 }
@@ -115,8 +109,8 @@ async function removeItems(ids: number[]): Promise<void> {
 }
 
 function invalidateQueries(): void {
-  queryClient.invalidateQueries({ queryKey: ['useEncounterListing'] })
-  queryClient.invalidateQueries({ queryKey: ['useEncounterCount'] })
+  queryClient.invalidateQueries({ queryKey: queryKeys.encounterListing() })
+  queryClient.invalidateQueries({ queryKey: queryKeys.encounterCount() })
 }
 </script>
 

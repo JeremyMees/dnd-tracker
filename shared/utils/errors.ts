@@ -26,14 +26,6 @@ export function getErrorMessage(error: unknown): string | undefined {
   return undefined
 }
 
-export type FailureReason =
-  | 'offline'
-  | 'unauthorized'
-  | 'forbidden'
-  | 'notFound'
-  | 'rateLimited'
-  | 'rejected'
-
 function readProp(value: unknown, key: string): unknown {
   if (typeof value !== 'object' || value === null || !(key in value)) {
     return undefined
@@ -75,15 +67,6 @@ export function getFailureReason(error: unknown): FailureReason {
 
   return 'rejected'
 }
-
-export type AuthFailure =
-  | 'emailInUse'
-  | 'emailInvalid'
-  | 'weakPassword'
-  | 'samePassword'
-  | 'sessionExpired'
-  | 'invalidCredentials'
-  | 'emailNotConfirmed'
 
 const AUTH_FAILURES: Record<string, AuthFailure> = {
   user_already_exists: 'emailInUse',

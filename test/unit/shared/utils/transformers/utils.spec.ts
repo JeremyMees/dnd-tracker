@@ -175,10 +175,10 @@ describe('transformers/utils', () => {
       expect(mapAbility('wis')).toBe('wisdom')
     })
 
-    it('returns wisdom fallback for unknowns', () => {
-      expect(mapAbility('unknown')).toBe('wisdom')
-      expect(mapAbility(null)).toBe('wisdom')
-      expect(mapAbility('unknown', 'charisma')).toBe('charisma')
+    it('returns null when there is no known ability', () => {
+      expect(mapAbility('unknown')).toBeNull()
+      expect(mapAbility('')).toBeNull()
+      expect(mapAbility(null)).toBeNull()
     })
   })
 

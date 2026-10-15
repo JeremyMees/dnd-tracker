@@ -54,6 +54,23 @@ export function formatAttackDice(
   return `${count}${type}`
 }
 
+export function formatAttackDamage(
+  attack: Pick<
+    DndAttack,
+    | 'damageDieCount'
+    | 'damageDieType'
+    | 'extraDamageDieCount'
+    | 'extraDamageDieType'
+  >,
+): string | undefined {
+  const dice = [
+    formatAttackDice(attack.damageDieCount, attack.damageDieType),
+    formatAttackDice(attack.extraDamageDieCount, attack.extraDamageDieType),
+  ].filter(isDefined)
+
+  return dice.length ? dice.join(' + ') : undefined
+}
+
 export function parseAttackDice(
   expr?: string | null,
 ): { damageDieCount: number; damageDieType: DndDice } | undefined {

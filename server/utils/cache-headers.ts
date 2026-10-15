@@ -3,12 +3,6 @@ import { ONE_DAY, ONE_SECOND, ONE_WEEK, TEN_MINUTES } from '~~/constants/time'
 
 const MAX_AGE_CEILING = 31536000
 
-export interface CacheTier {
-  maxAge: number
-  staleWhileRevalidate: number
-  staleIfError: number
-}
-
 export const STATIC_LIST_CACHE: CacheTier = {
   maxAge: ONE_DAY,
   staleWhileRevalidate: ONE_WEEK,

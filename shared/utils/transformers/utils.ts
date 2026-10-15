@@ -121,9 +121,8 @@ export function mapClasses(value: string | null | undefined): DndClass[] {
 
 export function mapAbility(
   value: string | null | undefined,
-  fallback: DndAbility = 'wisdom',
-): DndAbility {
-  return abilityMap[normalizeKey(value)] ?? fallback
+): DndAbility | null {
+  return abilityMap[normalizeKey(value)] ?? null
 }
 
 export function mapShapeType(

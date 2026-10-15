@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -6,14 +7,12 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useCampaignCount,
   useCampaignCreate,
   useCampaignDetail,
   useCampaignListing,
-  useCampaignMinimalDetail,
   useCampaignMinimalListing,
   useCampaignRemove,
   useCampaignUpdate,
@@ -134,51 +133,6 @@ describe('campaigns queries', () => {
     })
   })
 
-  describe('useCampaignMinimalDetail', () => {
-    it('returns undefined without hitting the database when no id is given', async () => {
-      const from = mockSupabaseFrom({
-        campaigns: mockChain({ data: null, error: null }),
-      })
-
-      const { vm } = await mountHook(() => ({
-        result: useCampaignMinimalDetail(),
-      }))
-
-      expect(vm.result).toBeUndefined()
-      expect(from).not.toHaveBeenCalled()
-    })
-
-    it('fetches the campaign when an id is given', async () => {
-      mockSupabaseFrom({
-        campaigns: mockChain({ data: { id: 5, title: 'Cave' }, error: null }),
-      })
-
-      const { vm } = await mountHook(() => ({
-        result: useCampaignMinimalDetail(5),
-      }))
-
-      await vi.waitFor(() => expect(vm.result?.data.value).toBeDefined())
-
-      expect(vm.result?.data.value).toEqual({ id: 5, title: 'Cave' })
-    })
-
-    it('surfaces a supabase error', async () => {
-      mockSupabaseFrom({
-        campaigns: mockChain({ data: null, error: { message: 'boom' } }),
-      })
-
-      const { vm } = await mountHook(() => {
-        useQueryClient().setDefaultOptions({ queries: { retry: false } })
-
-        return { result: useCampaignMinimalDetail(5) }
-      })
-
-      await vi.waitFor(() => expect(vm.result?.isError.value).toBe(true))
-
-      expect(vm.result?.error.value).toMatchObject({ message: 'boom' })
-    })
-  })
-
   describe('useCampaignCount', () => {
     it('returns the count', async () => {
       mockSupabaseFrom({
@@ -225,9 +179,7 @@ describe('campaigns queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignMinimal'],
       })
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -260,11 +212,10 @@ describe('campaigns queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.create.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.create.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -286,9 +237,7 @@ describe('campaigns queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 5],
       })
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -314,11 +263,10 @@ describe('campaigns queries', () => {
         vm.mutateAsync({ id: 5, data: { title: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.update.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.update.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -339,6 +287,33 @@ describe('campaigns queries', () => {
 
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 5],
+      })
+    })
+
+    it('forgets the cached membership of every removed campaign', async () => {
+      mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useCampaignRemove(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCampaignMember', 5], { id: 5 })
+      vm.queryClient.setQueryData(['useCampaignMember', 6], { id: 6 })
+      vm.queryClient.setQueryData(['useCampaignMember', 7], { id: 7 })
+
+      await vm.mutateAsync({ id: [5, 6] })
+
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 5]),
+      ).toBeUndefined()
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 6]),
+      ).toBeUndefined()
+      expect(vm.queryClient.getQueryData(['useCampaignMember', 7])).toEqual({
+        id: 7,
       })
     })
 
@@ -375,9 +350,7 @@ describe('campaigns queries', () => {
 
       expect(spies.onSuccess).toHaveBeenCalledOnce()
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('reports an error and toasts on failure', async () => {
@@ -392,11 +365,10 @@ describe('campaigns queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.delete.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.delete.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

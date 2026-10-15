@@ -1,4 +1,6 @@
+import { expectNoToast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { maxCampaignMembers } from '~~/constants/validation'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Settings from '~/pages/campaigns/[id]-[title]/settings.vue'
@@ -17,7 +19,6 @@ const {
   open,
   removeJoinCampaignToken,
   removeTeamMember,
-  toast,
   useSeo,
 } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -25,12 +26,7 @@ const {
   open: vi.fn(),
   removeJoinCampaignToken: vi.fn(),
   removeTeamMember: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('~/queries/team-members', () => ({
@@ -189,8 +185,24 @@ describe('Campaign settings page', () => {
     })
   })
 
+  it('Should allow inviting while the campaign has room', async () => {
+    const team = Array.from({ length: maxCampaignMembers - 2 }, (_, index) => ({
+      ...mockTeamMember,
+      id: index + 1,
+      user: { ...mockTeamMember.user, id: `member-${index}` },
+    }))
+
+    const { component } = await mountPage({
+      current: { ...mockCampaignFull, team },
+    })
+
+    expect(
+      component.get('[test-id="invite"]').attributes('disabled'),
+    ).toBeUndefined()
+  })
+
   it('Should not allow inviting when the campaign is full', async () => {
-    const team = Array.from({ length: 9 }, (_, index) => ({
+    const team = Array.from({ length: maxCampaignMembers - 1 }, (_, index) => ({
       ...mockTeamMember,
       id: index + 1,
       user: { ...mockTeamMember.user, id: `member-${index}` },
@@ -321,7 +333,7 @@ describe('Campaign settings page', () => {
     await confirmCallback()(true)
 
     expect(removeOptions()).not.toHaveProperty('onError')
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should revoke the token of an invited member instead', async () => {

@@ -1,3 +1,4 @@
+import { expectNoToast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises, type VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -16,7 +17,6 @@ const {
   open,
   removeCampaign,
   removeTeamMember,
-  toast,
   useSeo,
 } = vi.hoisted(() => ({
   allows: vi.fn(),
@@ -26,12 +26,7 @@ const {
   open: vi.fn(),
   removeCampaign: vi.fn(),
   removeTeamMember: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
@@ -440,7 +435,7 @@ describe('Campaigns page', () => {
       member: 5,
       campaign: campaign.id,
     })
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should offer a refresh when the listing fails', async () => {

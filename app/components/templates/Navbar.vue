@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import {
   navigationMenuTriggerStyle,
   navigationMenuContentStyle,
@@ -7,7 +7,6 @@ import {
 
 const { user, logout } = useAuthentication()
 const { playRoutes, routes, profileRoutes } = useUi()
-const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const isSmall = useMediaQuery('(max-width: 1024px)')
@@ -34,10 +33,8 @@ async function logoutUser(): Promise<void> {
     await logout()
     isOpen.value = false
   } catch (error) {
-    toast({
-      title: t('general.error.failed.logout'),
+    toast.error(t('general.error.failed.logout'), {
       description: t(`general.error.reasons.${getFailureReason(error)}`),
-      variant: 'destructive',
     })
   }
 }
@@ -175,7 +172,7 @@ async function logoutUser(): Promise<void> {
                       </NuxtLink>
                     </template>
                     <UiDropdownMenuSeparator />
-                    <YbugButton
+                    <BugReportButton
                       type="menu"
                       :class="navigationMenuContentStyle()"
                     />
@@ -259,7 +256,7 @@ async function logoutUser(): Promise<void> {
                 </UiDropdownMenuItem>
               </template>
               <UiDropdownMenuItem as-child>
-                <YbugButton type="menu" />
+                <BugReportButton type="menu" />
               </UiDropdownMenuItem>
               <UiDropdownMenuSeparator />
               <div class="px-2 py-[6px] space-y-2">

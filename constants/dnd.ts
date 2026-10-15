@@ -81,6 +81,8 @@ export const damageTypes: DndDamageType[] = [
   'thunder',
 ]
 
+export const bloodiedConditionId = 'bloodied'
+
 export const conditionTypes: DndConditionType[] = [
   'blinded',
   'charmed',
@@ -306,9 +308,7 @@ export const diceTypes = [
   'd12',
   'd20',
   'd100',
-] as const satisfies readonly DndDice[]
-
-export type DndRollableDice = (typeof diceTypes)[number]
+] as const satisfies readonly DndRollableDice[]
 
 export const distanceUnits: DndDistanceUnit[] = ['feet', 'miles']
 
@@ -346,3 +346,5 @@ export const resistanceTypeMap: Record<DndResistanceType, string> = {
   damageVulnerabilities: 'Damage vulnerabilities',
   conditionImmunities: 'Condition immunities',
 }
+
+export const defaultSrdDocuments = ['srd-2024']

@@ -1,5 +1,4 @@
 import type { Marked } from 'marked'
-import type { HtmlSanitizer } from '~/utils/sanitize-html'
 
 const renderer = shallowRef<{ marked: Marked; sanitize: HtmlSanitizer }>()
 let pending: Promise<void> | undefined

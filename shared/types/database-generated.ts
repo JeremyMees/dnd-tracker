@@ -484,6 +484,7 @@ export type Database = {
           documentKey: string
           grantsStealthDisadvantage: boolean
           id: string
+          manual: boolean
           name: string
           strengthScoreRequired: number | null
           syncedAt: string
@@ -497,6 +498,7 @@ export type Database = {
           documentKey: string
           grantsStealthDisadvantage: boolean
           id: string
+          manual?: boolean
           name: string
           strengthScoreRequired?: number | null
           syncedAt?: string
@@ -510,6 +512,7 @@ export type Database = {
           documentKey?: string
           grantsStealthDisadvantage?: boolean
           id?: string
+          manual?: boolean
           name?: string
           strengthScoreRequired?: number | null
           syncedAt?: string
@@ -524,6 +527,7 @@ export type Database = {
           hasLevels: boolean | null
           id: string
           level: number | null
+          manual: boolean
           name: string
           syncedAt: string
         }
@@ -533,6 +537,7 @@ export type Database = {
           hasLevels?: boolean | null
           id: string
           level?: number | null
+          manual?: boolean
           name: string
           syncedAt?: string
         }
@@ -542,6 +547,7 @@ export type Database = {
           hasLevels?: boolean | null
           id?: string
           level?: number | null
+          manual?: boolean
           name?: string
           syncedAt?: string
         }
@@ -552,6 +558,7 @@ export type Database = {
           displayName: string
           gamesystemKey: string
           id: string
+          manual: boolean
           name: string
           permalink: string
           publicationDate: string | null
@@ -563,6 +570,7 @@ export type Database = {
           displayName: string
           gamesystemKey: string
           id: string
+          manual?: boolean
           name: string
           permalink?: string
           publicationDate?: string | null
@@ -574,6 +582,7 @@ export type Database = {
           displayName?: string
           gamesystemKey?: string
           id?: string
+          manual?: boolean
           name?: string
           permalink?: string
           publicationDate?: string | null
@@ -592,6 +601,7 @@ export type Database = {
           documentKey: string
           id: string
           isMagicItem: boolean
+          manual: boolean
           name: string
           rarity: Json
           requiresAttunement: boolean
@@ -610,6 +620,7 @@ export type Database = {
           documentKey: string
           id: string
           isMagicItem?: boolean
+          manual?: boolean
           name: string
           rarity: Json
           requiresAttunement: boolean
@@ -628,6 +639,7 @@ export type Database = {
           documentKey?: string
           id?: string
           isMagicItem?: boolean
+          manual?: boolean
           name?: string
           rarity?: Json
           requiresAttunement?: boolean
@@ -655,6 +667,7 @@ export type Database = {
           id: string
           initiativeBonus: number
           languages: Json
+          manual: boolean
           modifiers: Json
           name: string
           passivePerception: number
@@ -683,6 +696,7 @@ export type Database = {
           id: string
           initiativeBonus: number
           languages?: Json
+          manual?: boolean
           modifiers: Json
           name: string
           passivePerception: number
@@ -711,6 +725,7 @@ export type Database = {
           id?: string
           initiativeBonus?: number
           languages?: Json
+          manual?: boolean
           modifiers?: Json
           name?: string
           passivePerception?: number
@@ -742,6 +757,7 @@ export type Database = {
           higherLevel: string
           id: string
           level: number
+          manual: boolean
           material: boolean
           materialConsumed: boolean
           materialCost: number | null
@@ -752,7 +768,7 @@ export type Database = {
           rangeUnit: string
           reactionCondition: string | null
           ritual: boolean
-          savingThrowAbility: string
+          savingThrowAbility: string | null
           school: string
           shapeSize: number | null
           shapeSizeUnit: string
@@ -777,6 +793,7 @@ export type Database = {
           higherLevel: string
           id: string
           level: number
+          manual?: boolean
           material: boolean
           materialConsumed: boolean
           materialCost?: number | null
@@ -787,7 +804,7 @@ export type Database = {
           rangeUnit: string
           reactionCondition?: string | null
           ritual: boolean
-          savingThrowAbility: string
+          savingThrowAbility?: string | null
           school: string
           shapeSize?: number | null
           shapeSizeUnit: string
@@ -812,6 +829,7 @@ export type Database = {
           higherLevel?: string
           id?: string
           level?: number
+          manual?: boolean
           material?: boolean
           materialConsumed?: boolean
           materialCost?: number | null
@@ -822,7 +840,7 @@ export type Database = {
           rangeUnit?: string
           reactionCondition?: string | null
           ritual?: boolean
-          savingThrowAbility?: string
+          savingThrowAbility?: string | null
           school?: string
           shapeSize?: number | null
           shapeSizeUnit?: string
@@ -845,6 +863,7 @@ export type Database = {
           isImprovised: boolean
           isSimple: boolean
           longRange: number
+          manual: boolean
           name: string
           properties: Json
           range: number
@@ -859,6 +878,7 @@ export type Database = {
           isImprovised: boolean
           isSimple: boolean
           longRange: number
+          manual?: boolean
           name: string
           properties?: Json
           range: number
@@ -873,6 +893,7 @@ export type Database = {
           isImprovised?: boolean
           isSimple?: boolean
           longRange?: number
+          manual?: boolean
           name?: string
           properties?: Json
           range?: number

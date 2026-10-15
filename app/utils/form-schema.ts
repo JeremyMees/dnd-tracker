@@ -11,6 +11,7 @@ import {
 import {
   abilityType,
   actionType,
+  homebrewType,
   initiativeSpacingOptions,
   initiativeDefaultRows,
   initiativePets,
@@ -146,6 +147,7 @@ export const initiativeSettingsSchema = z.object({
     .optional()
     .transform(val => (val === 'none' ? undefined : val)),
   negative: z.boolean(),
+  bloodied: z.boolean(),
 })
 
 export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
@@ -157,5 +159,102 @@ export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
     widgets: isModified ? settings?.widgets || [] : [...initiativeWidgets],
     pet: settings?.pet || undefined,
     negative: settings?.negative || false,
+    bloodied: isBloodiedEnabled(settings),
+  }
+}
+
+export function homebrewFormSchema({
+  isEncounter,
+  isEditingRow,
+  t,
+}: {
+  isEncounter: boolean
+  isEditingRow: boolean
+  t: (key: string) => string
+}) {
+  return z
+    .object({
+      type: z.enum(homebrewType),
+      amount: z.int().gte(1).lte(15).optional(),
+      summoner: z.string().max(50).optional().or(z.literal('')),
+      name: z.string().min(3).max(50),
+      player: z.string().min(3).max(30).optional().or(z.literal('')),
+      initiative: z.int().gte(1).lte(50).optional(),
+      initiativeModifier: z.int().gte(-20).lte(20).optional(),
+      armorClass: z.int().gte(1).lte(100).optional(),
+      hitPoints: z.int().gte(1).lte(1000).optional(),
+      link: z.string().url().optional().or(z.literal('')),
+      hitDice: z
+        .string()
+        .min(3)
+        .max(15)
+        .regex(hitDiceExpression, { error: () => t('zod.hitDiceExpression') })
+        .optional()
+        .or(z.literal('')),
+      armorDetail: z.string().max(100).optional().or(z.literal('')),
+      proficiencyBonus: z.int().gte(0).lte(10).optional(),
+      passivePerception: z.int().gte(0).lte(50).optional(),
+      speed: speedSchema.optional(),
+      sight: sightSchema.optional(),
+      languages: z.array(z.string().min(1).max(50)).max(20),
+      abilityScores: abilityScoresSchema.optional(),
+      modifiers: abilityBonusSchema.optional(),
+      savingThrows: abilityBonusSchema.optional(),
+      skillBonuses: skillBonusesSchema.optional(),
+      resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
+      traits: z.array(traitSchema).max(40),
+      actions: z.array(actionSchema).max(40),
+    })
+    .refine(
+      data =>
+        !isEncounter ||
+        isEditingRow ||
+        !(['monster', 'summon'].includes(data.type) && !data.amount),
+      { error: () => t('zod.required'), path: ['amount'] },
+    )
+    .refine(
+      data => !isEncounter || !(data.type === 'summon' && !data.summoner),
+      { error: () => t('zod.required'), path: ['summoner'] },
+    )
+}
+
+export function homebrewInitialValues(
+  source?: HomebrewFormSource,
+  { amount, summoner }: { amount?: number; summoner?: string } = {},
+) {
+  return {
+    type: source?.type || 'player',
+    summoner,
+    name: source?.name || '',
+    player: source?.player || '',
+    amount,
+    initiative: undefined,
+    initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),
+    armorClass: source?.armorClass || undefined,
+    hitPoints: source?.hitPoints || undefined,
+    link: source?.link || '',
+    hitDice: source?.hitDice || '',
+    armorDetail: source?.armorDetail || '',
+    proficiencyBonus: source?.proficiencyBonus || undefined,
+    passivePerception: source?.passivePerception || undefined,
+    speed: source?.speed || undefined,
+    sight: source?.sight || undefined,
+    languages: source?.languages || [],
+    abilityScores: source?.abilityScores || undefined,
+    modifiers: source?.modifiers || undefined,
+    savingThrows: source?.savingThrows || undefined,
+    skillBonuses: source?.skillBonuses || undefined,
+    resistancesAndImmunities: {
+      damageImmunities:
+        source?.resistancesAndImmunities?.damageImmunities ?? [],
+      damageResistances:
+        source?.resistancesAndImmunities?.damageResistances ?? [],
+      damageVulnerabilities:
+        source?.resistancesAndImmunities?.damageVulnerabilities ?? [],
+      conditionImmunities:
+        source?.resistancesAndImmunities?.conditionImmunities ?? [],
+    },
+    traits: (source?.traits ?? []) as { name: string; desc: string }[],
+    actions: source?.actions ?? [],
   }
 }

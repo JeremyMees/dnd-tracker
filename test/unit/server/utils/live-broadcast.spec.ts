@@ -5,21 +5,51 @@ import {
   serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
 import {
+  activeLiveSession,
   broadcastLiveAction,
   broadcastLiveEnded,
   broadcastLiveSeats,
   buildAcPatch,
   buildHpPatch,
   liveActionSchema,
+  sanitizeBroadcastPatch,
 } from '~~/server/utils/live-broadcast'
+import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 function supabaseWithSheet(data: Record<string, unknown>) {
-  mockFrom({ initiative_sheets: mockChain({ data, error: null }) })
+  mockFrom({
+    initiative_sheets: mockChain({ data, error: null }),
+    srd_conditions: mockChain({ data: null, error: null }),
+  })
 
   return serverSupabaseServiceRole({} as never)
 }
 
 describe('live-broadcast', () => {
+  describe('activeLiveSession', () => {
+    it('returns the uuid of the open, unexpired session for the encounter', async () => {
+      const chain = mockChain({ data: { uuid: 'session-uuid' }, error: null })
+
+      mockFrom({ live_sessions: chain })
+
+      await expect(
+        activeLiveSession(serverSupabaseServiceRole({} as never), 7),
+      ).resolves.toBe('session-uuid')
+
+      expect(chain.eq).toHaveBeenCalledWith('encounter', 7)
+      expect(chain.is).toHaveBeenCalledWith('endedAt', null)
+      expect(chain.gt).toHaveBeenCalledWith('expiresAt', expect.any(String))
+    })
+
+    it('returns undefined when the encounter has no live session', async () => {
+      mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
+
+      await expect(
+        activeLiveSession(serverSupabaseServiceRole({} as never), 7),
+      ).resolves.toBeUndefined()
+    })
+  })
+
   describe('broadcastLiveAction', () => {
     it('increments the session version and broadcasts the patch over the session channel', async () => {
       mockFrom({}, { rpc: mockChain({ data: 4, error: null }) })
@@ -115,6 +145,60 @@ describe('live-broadcast', () => {
         type: 'kicked',
         seat: 'seat-1',
       })
+    })
+  })
+
+  describe('sanitizeBroadcastPatch', () => {
+    const prone = { id: 'prone', name: 'Prone', desc: '' }
+    const conditions = [prone, storedBloodiedCondition]
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'player',
+      conditions,
+      hitPoints: 40,
+      maxHitPoints: 100,
+    }
+
+    it('sends a player hp change as a health band without bloodied', () => {
+      expect(
+        sanitizeBroadcastPatch(row, 'hp', {
+          hitPoints: 40,
+          concentration: false,
+          conditions,
+        }),
+      ).toEqual({
+        healthBand: 'bloodied',
+        concentration: false,
+        conditions: [prone],
+      })
+    })
+
+    it('drops bloodied from a player conditions change', () => {
+      expect(sanitizeBroadcastPatch(row, 'conditions', { conditions })).toEqual(
+        { conditions: [prone] },
+      )
+    })
+
+    it('sends nothing for a player death saves change', () => {
+      expect(
+        sanitizeBroadcastPatch(row, 'deathSaves', {
+          deathSaves: {
+            fail: [true, false, false],
+            save: [false, false, false],
+          },
+        }),
+      ).toEqual({})
+    })
+
+    it('passes a non-player patch through untouched', () => {
+      const patch = { hitPoints: 40, conditions }
+
+      expect(sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'hp', patch)).toBe(
+        patch,
+      )
     })
   })
 
@@ -241,6 +325,86 @@ describe('live-broadcast', () => {
       })
     })
 
+    it('adds the stored bloodied condition when damage drops the row to half hp', async () => {
+      const chain = mockChain({
+        data: {
+          id: 'bloodied',
+          name: 'Bloodied',
+          desc: 'At half hit points or fewer.',
+          level: null,
+          hasLevels: null,
+        },
+        error: null,
+      })
+
+      mockFrom({
+        initiative_sheets: mockChain({
+          data: { rows: [{ ...row, hitPoints: 80 }], settings: {} },
+          error: null,
+        }),
+        srd_conditions: chain,
+      })
+
+      const patch = await buildHpPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'row-1',
+        { type: 'hp', hpType: 'damage', amount: 40 },
+      )
+
+      expect(chain.eq).toHaveBeenCalledWith('id', 'bloodied')
+      expect(patch.conditions).toEqual([
+        {
+          id: 'bloodied',
+          name: 'Bloodied',
+          desc: 'At half hit points or fewer.',
+        },
+      ])
+    })
+
+    it('removes bloodied when a heal lifts the row above half hp', async () => {
+      const bloodied = { id: 'bloodied', name: 'Bloodied', desc: '' }
+
+      mockFrom({
+        initiative_sheets: mockChain({
+          data: {
+            rows: [{ ...row, hitPoints: 40, conditions: [bloodied] }],
+            settings: {},
+          },
+          error: null,
+        }),
+        srd_conditions: mockChain({ data: bloodied, error: null }),
+      })
+
+      const patch = await buildHpPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'row-1',
+        { type: 'hp', hpType: 'heal', amount: 20 },
+      )
+
+      expect(patch.conditions).toEqual([])
+    })
+
+    it('skips the bloodied lookup when the sheet has it switched off', async () => {
+      const from = mockFrom({
+        initiative_sheets: mockChain({
+          data: { rows: [row], settings: { bloodied: false } },
+          error: null,
+        }),
+      })
+
+      const patch = await buildHpPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'row-1',
+        { type: 'hp', hpType: 'damage', amount: 5 },
+      )
+
+      expect(from).not.toHaveBeenCalledWith('srd_conditions')
+      expect(patch.conditions).toEqual([])
+    })
+
     it('clamps damage to zero when negative hp is not allowed', async () => {
       const supabase = supabaseWithSheet({
         rows: [{ ...row, hitPoints: 5, tempHitPoints: 0 }],
@@ -294,7 +458,7 @@ describe('live-broadcast', () => {
       })
 
       expect(patch.deathSaves).toEqual({
-        fail: [true, true, false],
+        fail: [true, false, false],
         save: [false, false, false],
       })
     })
@@ -379,6 +543,48 @@ describe('live-broadcast', () => {
       })
 
       expect(patch).toEqual({ armorClass: 15, tempArmorClass: 5 })
+    })
+
+    it('clamps armor class at zero when negative values are not allowed', async () => {
+      const supabase = supabaseWithSheet({
+        rows: [row],
+        settings: { negative: false },
+      })
+
+      const patch = await buildAcPatch(supabase, 7, 'row-1', {
+        type: 'ac',
+        acType: 'remove',
+        amount: 20,
+      })
+
+      expect(patch).toEqual({ armorClass: 0, tempArmorClass: 0 })
+    })
+
+    it('clamps armor class at zero when the setting is missing', async () => {
+      const supabase = supabaseWithSheet({ rows: [row], settings: {} })
+
+      const patch = await buildAcPatch(supabase, 7, 'row-1', {
+        type: 'ac',
+        acType: 'remove',
+        amount: 20,
+      })
+
+      expect(patch.armorClass).toBe(0)
+    })
+
+    it('keeps negative armor class when the encounter allows it', async () => {
+      const supabase = supabaseWithSheet({
+        rows: [row],
+        settings: { negative: true },
+      })
+
+      const patch = await buildAcPatch(supabase, 7, 'row-1', {
+        type: 'ac',
+        acType: 'remove',
+        amount: 20,
+      })
+
+      expect(patch.armorClass).toBe(-5)
     })
 
     it('throws a 404 when the row does not exist on the encounter', async () => {

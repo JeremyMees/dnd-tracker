@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { toPlayerSheet } from '~~/server/utils/player-portal'
+import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
+
+const prone = { id: 'prone', name: 'Prone', desc: '' }
+const conditions = [prone, storedBloodiedCondition]
 
 function playerRow(overrides: Partial<InitiativeSheetRow> = {}) {
   return {
@@ -146,6 +150,44 @@ describe('toPlayerSheet', () => {
 
     expect(result.rows[0]!).not.toHaveProperty('hitPoints')
     expect(result.rows[0]!).not.toHaveProperty('healthBand')
+  })
+
+  it.each([
+    ['a player row viewed by someone else', playerRow({ conditions })],
+    ['a monster shown as a health band', monsterRow({ conditions })],
+  ])('hides bloodied on %s, next to its health band', (_, row) => {
+    const result = toPlayerSheet(sheet({ rows: [row] }))
+
+    expect(result.rows[0]!.healthBand).toBeDefined()
+    expect(result.rows[0]!.conditions).toEqual([prone])
+  })
+
+  it('hides bloodied on a monster whose health is hidden', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [monsterRow({ conditions })],
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          live: { hideMonsterHealth: true },
+        },
+      }),
+    )
+
+    expect(result.rows[0]!.conditions).toEqual([prone])
+  })
+
+  it('keeps bloodied on rows that show their real hit points', () => {
+    const own = toPlayerSheet(
+      sheet({ rows: [playerRow({ conditions })] }),
+      'row-1',
+    )
+    const npc = toPlayerSheet(
+      sheet({ rows: [playerRow({ type: 'npc', conditions })] }),
+    )
+
+    expect(own.rows[0]!.conditions).toEqual(conditions)
+    expect(npc.rows[0]!.conditions).toEqual(conditions)
   })
 
   it('keeps monster armor class by default', () => {

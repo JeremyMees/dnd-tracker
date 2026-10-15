@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import * as z from 'zod'
 import HomebrewInformation from '~/components/form/HomebrewInformation.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
-import { mountWithForm } from '~~/test/nuxt/stubs/form'
+import { isHidden, mountWithForm } from '~~/test/nuxt/stubs/form'
 
 async function mountHomebrewInformation(
   type?: string,
@@ -32,10 +32,6 @@ function isAdvancedHidden(
   return isHidden(
     component.get('[test-id="advanced-content"]').element as HTMLElement,
   )
-}
-
-function isHidden(el: HTMLElement) {
-  return el.style.display === 'none'
 }
 
 describe('HomebrewInformation', () => {

@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 import { TEN_MINUTES, ONE_DAY } from '~~/constants/time'
 
 function listingQuery(type: DndContentType, filters: DndContentFilters) {
@@ -15,22 +15,20 @@ function listingQuery(type: DndContentType, filters: DndContentFilters) {
 
 export function useSrdListing(
   data: ComputedRef<{ type: DndContentType; filters: DndContentFilters }>,
+  enabled: MaybeRefOrGetter<boolean> = true,
 ) {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useSrdListing', data],
+    queryKey: queryKeys.srdListing(data),
     queryFn: async () => {
       try {
         return await $fetch<DndListingResult>('/api/srd/listing', {
           query: listingQuery(data.value.type, data.value.filters),
         })
       } catch (error) {
-        toast({
-          title: t('general.error.loadFailed.content'),
+        toast.error(t('general.error.loadFailed.content'), {
           description: t(`general.error.reasons.${getFailureReason(error)}`),
-          variant: 'destructive',
         })
 
         throw error
@@ -39,23 +37,21 @@ export function useSrdListing(
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
     retry: false,
+    enabled,
   })
 }
 
 export function useSrdDocuments() {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useSrdDocuments'],
+    queryKey: queryKeys.srdDocuments(),
     queryFn: async () => {
       try {
         return await $fetch<DndDocument[]>('/api/srd/documents')
       } catch (error) {
-        toast({
-          title: t('general.error.loadFailed.documents'),
+        toast.error(t('general.error.loadFailed.documents'), {
           description: t(`general.error.reasons.${getFailureReason(error)}`),
-          variant: 'destructive',
         })
 
         throw error
@@ -73,7 +69,7 @@ export async function prefetchConditionsListing() {
 
   return queryClient
     .query({
-      queryKey: ['useConditionsListing'],
+      queryKey: queryKeys.conditionsListing(),
       queryFn: () => $fetch<DndCondition[]>('/api/srd/conditions'),
       staleTime: ONE_DAY,
       gcTime: ONE_DAY,
@@ -82,19 +78,16 @@ export async function prefetchConditionsListing() {
 }
 
 export function useConditionsListing() {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useConditionsListing'],
+    queryKey: queryKeys.conditionsListing(),
     queryFn: async () => {
       try {
         return await $fetch<DndCondition[]>('/api/srd/conditions')
       } catch (error) {
-        toast({
-          title: t('general.error.loadFailed.conditions'),
+        toast.error(t('general.error.loadFailed.conditions'), {
           description: t(`general.error.reasons.${getFailureReason(error)}`),
-          variant: 'destructive',
         })
 
         throw error
@@ -109,21 +102,18 @@ export function useConditionsListing() {
 export function useSrdMonsterListing(
   data: ComputedRef<{ filters: DndContentFilters }>,
 ) {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useSrdMonsterListing', data],
+    queryKey: queryKeys.srdMonsterListing(data),
     queryFn: async () => {
       try {
         return await $fetch<DndListingResult>('/api/srd/listing', {
           query: listingQuery('monsters', data.value.filters),
         })
       } catch (error) {
-        toast({
-          title: t('general.error.loadFailed.monsters'),
+        toast.error(t('general.error.loadFailed.monsters'), {
           description: t(`general.error.reasons.${getFailureReason(error)}`),
-          variant: 'destructive',
         })
 
         throw error

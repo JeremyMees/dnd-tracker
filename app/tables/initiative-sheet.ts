@@ -3,7 +3,6 @@ import {
   type TableState,
   type Row,
 } from '@tanstack/vue-table'
-import type { InitiativeFeatures } from './features'
 import { hasAbilityScores, hasCreatureStats } from '~~/shared/utils/dnd/checks'
 import {
   abilityScoresElement,

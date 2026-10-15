@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -7,7 +8,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useJoinTokenRemove,
@@ -76,11 +76,10 @@ describe('team-members queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(invalidateSpy).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.inviteRevoke',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.inviteRevoke',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -106,6 +105,23 @@ describe('team-members queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 1],
       })
+    })
+
+    it('forgets the cached campaign membership so access is checked again', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => ({
+        ...useTeamMemberUpdate(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCampaignMember', 1], { id: 1 })
+
+      await vm.mutateAsync({ id: 3, campaign: 1, data: { role: 'Viewer' } })
+
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 1]),
+      ).toBeUndefined()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -172,6 +188,27 @@ describe('team-members queries', () => {
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
 
+    it('forgets the cached campaign membership after leaving or removing', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => ({
+        ...useTeamMemberRemove(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCampaignMember', 1], { id: 1 })
+      vm.queryClient.setQueryData(['useCampaignMember', 2], { id: 2 })
+
+      await vm.mutateAsync({ member: 3, campaign: 1 })
+
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 1]),
+      ).toBeUndefined()
+      expect(vm.queryClient.getQueryData(['useCampaignMember', 2])).toEqual({
+        id: 2,
+      })
+    })
+
     it('toasts that the member was not removed and why', async () => {
       mockSupabaseFrom({
         team: mockChain({ data: null, error: { message: 'boom' } }),
@@ -185,11 +222,10 @@ describe('team-members queries', () => {
       ).rejects.toThrow('boom')
 
       expect(onError).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.memberRemove',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.memberRemove',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

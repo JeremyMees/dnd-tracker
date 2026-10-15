@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -6,7 +7,6 @@ import {
   mockChain,
   mockSupabaseFrom,
   mountHook,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import { useCombatEvents, useCombatEventsClear } from '~/queries/combat-events'
 
@@ -139,11 +139,10 @@ describe('combat-events queries', () => {
         'forbidden',
       )
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'pages.encounter.toasts.combatLogClearFailed',
-        description: 'general.error.reasons.forbidden',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'pages.encounter.toasts.combatLogClearFailed',
+        { description: 'general.error.reasons.forbidden' },
+      )
     })
   })
 })

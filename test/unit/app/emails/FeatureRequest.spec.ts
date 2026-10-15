@@ -5,7 +5,6 @@ import {
   renderEmailTemplate,
   type CompiledEmail,
 } from '~~/test/unit/utils/email'
-import type { EmailValues } from '~~/server/utils/email'
 
 const values: EmailValues['FeatureRequest'] = {
   date: '3-8-2026',

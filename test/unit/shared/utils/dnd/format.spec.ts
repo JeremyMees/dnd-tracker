@@ -75,4 +75,17 @@ describe('dnd/format', () => {
       expect(formatBonus(-5)).toBe('-5')
     })
   })
+
+  describe('formatAbilityShort', () => {
+    it.each([
+      ['strength', 'STR'],
+      ['dexterity', 'DEX'],
+      ['constitution', 'CON'],
+      ['intelligence', 'INT'],
+      ['wisdom', 'WIS'],
+      ['charisma', 'CHA'],
+    ] as const)('shortens %s to %s', (ability, short) => {
+      expect(formatAbilityShort(ability)).toBe(short)
+    })
+  })
 })

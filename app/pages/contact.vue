@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
 useSeo('Contact')
 
 const { t } = useI18n()
-const { toast } = useToast()
 const localePath = useLocalePath()
 
 const formSchema = z.object({
@@ -35,20 +34,15 @@ const onSubmit = form.handleSubmit(async values => {
       body: values,
     })
 
-    toast({
-      description: t('pages.contact.success'),
-      variant: 'success',
-    })
+    toast.success(t('pages.contact.success'))
 
     navigateTo(localePath('index'))
   } catch (err) {
     formError.value =
       getErrorMessage(err) || 'An error occurred during contact request'
 
-    toast({
+    toast.error(t('general.mail.fail.title'), {
       description: t('general.mail.fail.text'),
-      title: t('general.mail.fail.title'),
-      variant: 'destructive',
     })
   }
 })

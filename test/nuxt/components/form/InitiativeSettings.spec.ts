@@ -56,6 +56,7 @@ describe('InitiativeSettings', () => {
         widgets: [...initiativeWidgets],
         pet: 'cat',
         negative: false,
+        bloodied: true,
         modified: true,
       },
     })

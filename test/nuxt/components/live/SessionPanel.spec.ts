@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LiveSessionPanel from '~/components/live/SessionPanel.vue'
@@ -5,16 +6,11 @@ import { authUser } from '~~/test/fixtures/auth-user'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
 
-const { ask, toast, mockClipboard, start, stop } = vi.hoisted(() => ({
+const { ask, mockClipboard, start, stop } = vi.hoisted(() => ({
   ask: vi.fn(),
-  toast: vi.fn(),
   mockClipboard: vi.fn(),
   start: vi.fn(),
   stop: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -240,10 +236,7 @@ describe('LiveSessionPanel', () => {
     expect(mockClipboard).toHaveBeenCalledWith(
       expect.stringContaining('/live?code=ABC123'),
     )
-    expect(toast).toHaveBeenCalledWith({
-      description: 'actions.copyClipboard',
-      variant: 'info',
-    })
+    expect(toast.info).toHaveBeenCalledWith('actions.copyClipboard')
   })
 
   it('Should not copy or toast when there is no session link yet', async () => {
@@ -256,7 +249,7 @@ describe('LiveSessionPanel', () => {
     await component.find('[test-id="copy-link"]').trigger('click')
 
     expect(mockClipboard).not.toHaveBeenCalled()
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should ask for confirmation and stop the session when ending it', async () => {

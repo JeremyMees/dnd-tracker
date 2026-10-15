@@ -37,13 +37,15 @@ const onSubmit = form.handleSubmit(async values => {
 
   if (index === -1 || !rows[index]) return
 
-  rows[index] = {
-    ...rows[index],
-    initiative: Math.max(0, initiative + (modifier ?? 0)),
-  }
+  const updated = Math.max(0, initiative + (modifier ?? 0))
+  const changed = rows[index].initiative !== updated
+
+  rows[index] = { ...rows[index], initiative: updated }
 
   try {
-    await update({ rows })
+    await update({
+      rows: changed ? placeByInitiative(rows, [props.item.id]) : rows,
+    })
   } catch {
     return
   }

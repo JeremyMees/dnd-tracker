@@ -1,11 +1,7 @@
 import type { serverSupabaseServiceRole } from '#supabase/server'
+import { bloodiedConditionId } from '~~/constants/dnd'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { z } from 'zod'
-
-interface LiveActionBroadcast {
-  row: string
-  patch: Partial<InitiativeSheetRow>
-}
 
 async function incrementLiveVersion(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
@@ -21,10 +17,25 @@ async function incrementLiveVersion(
   return version
 }
 
+export async function activeLiveSession(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounter: number,
+): Promise<string | undefined> {
+  const { data: session } = await supabase
+    .from('live_sessions')
+    .select('uuid')
+    .eq('encounter', encounter)
+    .is('endedAt', null)
+    .gt('expiresAt', new Date().toISOString())
+    .maybeSingle()
+
+  return session?.uuid
+}
+
 export async function broadcastLiveAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  action: LiveActionBroadcast,
+  action: Omit<LiveActionEvent, 'version'>,
 ): Promise<void> {
   const version = await incrementLiveVersion(supabase, session)
   const channel = supabase.channel(`live:${session}`)
@@ -35,7 +46,7 @@ export async function broadcastLiveAction(
 export async function broadcastLiveState(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  sheet: PlayerSheet,
+  sheet: LiveSyncEvent['sheet'],
 ): Promise<void> {
   const version = await incrementLiveVersion(supabase, session)
   const channel = supabase.channel(`live:${session}`)
@@ -50,15 +61,19 @@ export function sanitizeBroadcastPatch(
 ): Partial<PlayerRow> {
   if (row.type !== 'player') return patch
 
+  const conditions = patch.conditions && withoutBloodied(patch.conditions)
+
   if (actionType === 'hp') {
     return {
       healthBand: getHealthBand(row.hitPoints, row.maxHitPoints),
       concentration: patch.concentration,
-      conditions: patch.conditions,
+      conditions,
     }
   }
 
   if (actionType === 'deathSaves') return {}
+
+  if (actionType === 'conditions') return { conditions }
 
   return patch
 }
@@ -133,13 +148,16 @@ export async function buildHpPatch(
     row,
     sheet?.settings.negative ?? false,
   )
+  const bloodied = isBloodiedEnabled(sheet?.settings)
+    ? await srdCondition(supabase, bloodiedConditionId)
+    : undefined
 
   return {
     hitPoints: updated.hitPoints,
     tempHitPoints: updated.tempHitPoints,
     deathSaves: updated.deathSaves,
     concentration: updated.concentration,
-    conditions: updated.conditions,
+    conditions: withBloodied(updated, bloodied).conditions,
   }
 }
 
@@ -151,7 +169,7 @@ export async function buildAcPatch(
 ): Promise<Partial<InitiativeSheetRow>> {
   const { data: sheet } = await supabase
     .from('initiative_sheets')
-    .select('rows')
+    .select('rows, settings')
     .eq('id', encounter)
     .single()
 
@@ -161,9 +179,12 @@ export async function buildAcPatch(
     throw createError({ statusCode: 404, statusMessage: 'Row not found' })
   }
 
-  const updated = { ...row }
-
-  acFunctions[action.acType](updated, action.amount)
+  const updated = handleAcChanges(
+    action.amount,
+    action.acType,
+    row,
+    sheet?.settings?.negative ?? false,
+  )
 
   return {
     armorClass: updated.armorClass,

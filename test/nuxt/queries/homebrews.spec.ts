@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   clearQueryCache,
@@ -5,7 +6,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useHomebrewCount,
@@ -114,9 +114,7 @@ describe('homebrews queries', () => {
       expect(chain.select).toHaveBeenCalledWith('id')
       expect(chain.single).toHaveBeenCalled()
       expect(id).toBe(7)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -158,11 +156,10 @@ describe('homebrews queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(spies.onSuccess).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.create.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.create.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -182,9 +179,7 @@ describe('homebrews queries', () => {
       expect(chain.eq).toHaveBeenCalledWith('id', 4)
       expect(chain.select).toHaveBeenCalledWith('id')
       expect(chain.single).toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -212,11 +207,10 @@ describe('homebrews queries', () => {
         vm.mutateAsync({ id: 4, data: { name: 'Orc' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.update.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.update.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -231,9 +225,7 @@ describe('homebrews queries', () => {
       await vm.mutateAsync({ id: 4 })
 
       expect(from.mock.results[0]!.value.eq).toHaveBeenCalledWith('id', 4)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('deletes multiple homebrew items', async () => {
@@ -263,11 +255,10 @@ describe('homebrews queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.delete.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.delete.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

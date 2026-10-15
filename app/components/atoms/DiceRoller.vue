@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
-import { diceTypes, type DndRollableDice } from '~~/constants/dnd'
+import { toast } from 'vue-sonner'
+import { diceTypes } from '~~/constants/dnd'
 
 const emit = defineEmits<{ rolled: [amount: number] }>()
 
@@ -13,7 +13,6 @@ withDefaults(
   },
 )
 
-const { toast } = useToast()
 const { t } = useI18n()
 
 const toRoll = ref<Record<DndRollableDice, number>>({
@@ -42,48 +41,52 @@ function calculateDndDiceRoll() {
     0,
   )
 
-  toast({
-    title: t(
+  toast(
+    t(
       'components.diceRoll.rolled',
       { amount: values[0]?.length ?? 0, dice: keys.join(', ') },
       keys.length,
     ),
-    description: h('div', { class: 'flex flex-col gap-y-1' }, [
-      ...Object.entries(rolled).map(([dice, numbers]) =>
-        h('span', [
-          h('span', { class: 'font-bold' }, `${dice}: `),
-          h(
-            'span',
-            numbers
-              ?.map((num, index) => [
-                h(
-                  'span',
-                  {
-                    class: {
-                      'text-success': num === +dice.replace('d', ''),
-                      'text-destructive': num === 1,
-                    },
-                  },
-                  num,
-                ),
-                index < numbers.length - 1 ? ', ' : '',
-              ])
-              .flat(),
+    {
+      description: markRaw(() =>
+        h('div', { class: 'flex flex-col gap-y-1' }, [
+          ...Object.entries(rolled).map(([dice, numbers]) =>
+            h('span', [
+              h('span', { class: 'font-bold' }, `${dice}: `),
+              h(
+                'span',
+                numbers
+                  ?.map((num, index) => [
+                    h(
+                      'span',
+                      {
+                        class: {
+                          'text-success': num === +dice.replace('d', ''),
+                          'text-destructive': num === 1,
+                        },
+                      },
+                      num,
+                    ),
+                    index < numbers.length - 1 ? ', ' : '',
+                  ])
+                  .flat(),
+              ),
+            ]),
           ),
+          Object.values(rolled).flat().length > 1 &&
+            h('span', { class: 'flex flex-row' }, [
+              h('span', { class: 'font-bold mr-2' }, `${t('general.total')}:`),
+              h(
+                'span',
+                Object.values(rolled)
+                  .flat()
+                  .reduce((a, b) => a + b, 0),
+              ),
+            ]),
         ]),
       ),
-      Object.values(rolled).flat().length > 1 &&
-        h('span', { class: 'flex flex-row' }, [
-          h('span', { class: 'font-bold mr-2' }, `${t('general.total')}:`),
-          h(
-            'span',
-            Object.values(rolled)
-              .flat()
-              .reduce((a, b) => a + b, 0),
-          ),
-        ]),
-    ]),
-  })
+    },
+  )
 
   toRoll.value = { d4: 0, d6: 0, d8: 0, d10: 0, d12: 0, d20: 0, d100: 0 }
   emit('rolled', amount)

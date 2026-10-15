@@ -65,7 +65,7 @@ export type SrdConditionInsert =
   DB['public']['Tables']['srd_conditions']['Insert']
 
 // Sync bookkeeping the app never returns
-type SrdMeta = 'documentKey' | 'syncedAt'
+export type SrdMeta = 'documentKey' | 'syncedAt' | 'manual'
 type Satisfies<T extends U, U> = T
 export type SrdDocument = Satisfies<Omit<SrdDocumentRow, SrdMeta>, DndDocument>
 export type SrdMonster = Satisfies<Omit<SrdMonsterRow, SrdMeta>, DndMonster>
@@ -101,6 +101,7 @@ export type CombatEventType =
   | 'ac'
   | 'condition_added'
   | 'condition_removed'
+  | 'condition_expired'
   | 'death_save'
   | 'concentration_broken'
   | 'concentration_started'
@@ -159,6 +160,33 @@ export interface InitiativeSheetRow {
   resistancesAndImmunities?: DndResistancesAndImmunities
 }
 
+export interface TurnReminder {
+  rowId: string
+  rowName: string
+  condition: DndCondition
+}
+
+export interface TurnAdvance {
+  activeIndex: number
+  round: number
+  rows: InitiativeSheetRow[]
+  expired: TurnReminder[]
+  saves: TurnReminder[]
+}
+
+export type TurnReminders = Pick<TurnAdvance, 'expired' | 'saves'>
+
+export type TurnSheet = Pick<
+  InitiativeSheet,
+  'id' | 'title' | 'round' | 'activeIndex' | 'rows' | 'settings'
+>
+
+export interface TurnResult {
+  sheet: TurnSheet
+  expired: TurnReminder[]
+  saves: TurnReminder[]
+}
+
 export type InitiativeSheetRowInsert = Omit<
   InitiativeSheetRow,
   | 'campaign'
@@ -178,6 +206,7 @@ export interface InitiativeSettings {
   widgets?: InitiativeWidget[]
   pet?: InitiativePet
   negative?: boolean
+  bloodied?: boolean
   live?: {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean
@@ -263,8 +292,6 @@ export interface EncounterItem extends Omit<
 > {
   createdBy: MinimalProfile
   campaign: CampaignMinimal
-  homebrew_items: number
-  initiative_sheets: number
 }
 
 export interface InitiativeSheet extends Omit<InitiativeRow, 'campaign'> {

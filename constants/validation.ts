@@ -1,5 +1,14 @@
 export const maxHealthAndArmour = 1000
 export const maxCampaignHomebrews = 100
+export const maxCampaignMembers = 15
+
+export const maxBugReportScreenshotSize = 5 * 1024 * 1024
+export const bugReportScreenshotTypes = [
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif',
+]
 
 export const initiativeSpacingOptions = [
   'compact',

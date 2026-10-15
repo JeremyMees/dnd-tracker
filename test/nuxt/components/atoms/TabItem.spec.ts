@@ -14,7 +14,7 @@ interface Props {
 }
 
 const props: Props = {
-  link: '/home',
+  link: '/campaigns/1-test/notes',
   icon: 'home',
   label: 'Home',
   disabled: false,
@@ -26,8 +26,8 @@ mockComponent('Icon', {
 
 describe('TabItem', async () => {
   mockNuxtImport('useRoute', () => () => ({
-    fullPath: '/home',
-    path: '/home',
+    fullPath: '/campaigns/1-test/notes',
+    path: '/campaigns/1-test/notes',
     query: {},
   }))
 
@@ -39,7 +39,7 @@ describe('TabItem', async () => {
 
   it('Should show inactive state', async () => {
     const component = await mountSuspended(TabItem, {
-      props: { ...props, link: '/other-path' },
+      props: { ...props, link: '/campaigns/1-test/settings' },
     })
 
     expect(component.attributes('class')).toContain(

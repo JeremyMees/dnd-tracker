@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ModalVariant } from '~/types/component'
-
 defineEmits<{ close: [] }>()
 
 withDefaults(

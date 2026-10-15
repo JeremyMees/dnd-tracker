@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/vue-query'
-import { liveStateQueryKey } from '~/queries/live'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
   return {
@@ -42,16 +41,13 @@ function failureDescriptionKey(error: unknown): string {
 export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
   const { seat } = useLiveSeat()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   const pending = ref(false)
 
   function notifyFailure(type: LiveAction['type'], error: unknown): void {
-    toast({
-      title: t(`pages.live.actionFailed.${type}`),
+    toast.error(t(`pages.live.actionFailed.${type}`), {
       description: t(failureDescriptionKey(error)),
-      variant: 'destructive',
     })
   }
 
@@ -64,7 +60,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
 
     if (!token || !seatToken || !rowId.value) return false
 
-    const key = liveStateQueryKey(token, seatToken)
+    const key = queryKeys.liveState(token, seatToken)
     const previous = queryClient.getQueryData<LiveStateResponse>(key)
 
     if (previous) {
@@ -128,7 +124,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
       })
 
       queryClient.invalidateQueries({
-        queryKey: liveStateQueryKey(token, seatToken),
+        queryKey: queryKeys.liveState(token, seatToken),
       })
 
       return true

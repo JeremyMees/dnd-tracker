@@ -4,6 +4,7 @@ import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
   useInitiativeSheetPatch,
+  useInitiativeSheetTurn,
 } from '~/queries/initiative-sheets'
 
 definePageMeta({
@@ -19,10 +20,12 @@ const id = validateParamId('id' in route.params ? route.params.id : undefined)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const { mutateAsync: patch } = useInitiativeSheetPatch()
-const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
-  id,
-  data,
-)
+const { mutateAsync: turn } = useInitiativeSheetTurn()
+const {
+  enabled: realtimeData,
+  updateQueryData,
+  onTurnReminders,
+} = useRealTimeInitiativeSheet(id, data)
 const { sync: syncLiveSession } = useLiveSession(id)
 
 useSeo(() => data.value?.title)
@@ -56,10 +59,20 @@ async function handlePatchRow(
   await patch({ id, rowId, patch: rowPatch })
 }
 
+async function handleNextTurn(): Promise<TurnReminders | undefined> {
+  if (!data.value) return
+
+  const { expired, saves } = await turn({ id })
+
+  return { expired, saves }
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: data,
   update: handleUpdate,
   patchRow: handlePatchRow,
+  nextTurn: handleNextTurn,
+  onTurnReminders,
   activeRow,
 })
 </script>

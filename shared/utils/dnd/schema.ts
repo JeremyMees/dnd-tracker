@@ -1,10 +1,25 @@
 import { z } from 'zod'
+import { abilityType } from '~~/constants/validation'
 import { sanitizeCondition } from './row'
 
 export const deathSavesSchema = z.object({
   save: z.tuple([z.boolean(), z.boolean(), z.boolean()]),
   fail: z.tuple([z.boolean(), z.boolean(), z.boolean()]),
 })
+
+export const conditionDurationSchema = z
+  .object({
+    rowId: z.string().min(1),
+    timing: z.enum(['start', 'end']),
+    rounds: z.int().min(1).max(100).nullish(),
+    save: z
+      .object({
+        ability: z.enum(abilityType),
+        dc: z.int().min(1).max(30),
+      })
+      .nullish(),
+  })
+  .refine(duration => !!duration.rounds || !!duration.save)
 
 export const conditionSchema = z
   .object({
@@ -13,5 +28,6 @@ export const conditionSchema = z
     desc: z.string(),
     level: z.number().nullish(),
     hasLevels: z.boolean().nullish(),
+    duration: conditionDurationSchema.nullish(),
   })
   .transform(sanitizeCondition)

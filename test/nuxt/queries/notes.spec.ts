@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   clearQueryCache,
@@ -5,7 +6,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useNoteCount,
@@ -109,9 +109,7 @@ describe('notes queries', () => {
       expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith([
         { title: 'Session 1' },
       ])
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -148,11 +146,10 @@ describe('notes queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(spies.onSuccess).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.create.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.create.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -170,9 +167,7 @@ describe('notes queries', () => {
 
       expect(chain.update).toHaveBeenCalledWith({ title: 'Renamed' })
       expect(chain.eq).toHaveBeenCalledWith('id', 8)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -198,11 +193,10 @@ describe('notes queries', () => {
         vm.mutateAsync({ id: 8, data: { title: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.update.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.update.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -217,9 +211,7 @@ describe('notes queries', () => {
       await vm.mutateAsync({ id: 8 })
 
       expect(from.mock.results[0]!.value.eq).toHaveBeenCalledWith('id', 8)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('deletes multiple notes', async () => {
@@ -249,11 +241,10 @@ describe('notes queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.delete.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.delete.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

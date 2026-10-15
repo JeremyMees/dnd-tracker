@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     '@sentry/nuxt/module',
     '@formkit/auto-animate/nuxt',
     '@maizzle/nuxt',
+    'c15t/vue',
   ],
 
   components: [
@@ -39,7 +40,7 @@ export default defineNuxtConfig({
     { path: '~/components/animation', prefix: 'Animation' },
   ],
 
-  imports: { dirs: ['@@/types/*.ts', 'types/*.ts'] },
+  imports: { dirs: ['types/*.ts'] },
 
   typescript: {
     tsConfig: {
@@ -50,7 +51,11 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  css: ['~/assets/css/global.css', '~/assets/css/driver.css'],
+  css: [
+    '~/assets/css/global.css',
+    '~/assets/css/driver.css',
+    'vue-sonner/style.css',
+  ],
 
   site: {
     url: seo.url,
@@ -96,7 +101,6 @@ export default defineNuxtConfig({
       appDomain: process.env.NUXT_PUBLIC_SITE_URL,
       appVersion: packageJSON.version,
       maintenanceMode: process.env.NUXT_PUBLIC_MAINTENANCE_MODE,
-      c15tUrl: process.env.NUXT_PUBLIC_C15T_URL,
       gId: process.env.NUXT_PUBLIC_GA_MEASUREMENT_ID,
       sentry: {
         dsn: process.env.SENTRY_DSN,
@@ -142,6 +146,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    imports: { dirs: ['types/*.ts'] },
     moduleSideEffects: ['zod/compile'],
     externals: {
       inline: ['sanitize-html'],
@@ -160,8 +165,6 @@ export default defineNuxtConfig({
         '@tiptap/vue-3',
         '@vue/devtools-core',
         '@vue/devtools-kit',
-        'c15t',
-        '@c15t/scripts/google-tag',
         'class-variance-authority',
         'cn',
         'dompurify',
@@ -170,7 +173,6 @@ export default defineNuxtConfig({
         'reka-ui',
         'vee-validate',
         'vue-draggable-plus',
-        'ybug-vue',
         'zod',
       ],
     },
@@ -196,11 +198,13 @@ export default defineNuxtConfig({
     org: 'kees',
     project: 'dnd-tracker',
 
+    release: {
+      name: `dnd-tracker@${packageJSON.version}`,
+    },
+
     sourcemaps: {
       filesToDeleteAfterUpload: ['./.vercel/output/static/**/*.map'],
     },
-
-    autoInjectServerSentry: 'top-level-import',
   },
 
   shadcn: {
@@ -231,5 +235,15 @@ export default defineNuxtConfig({
     static: { source: [] },
     url: { base: { url: seo.url, tags: ['img'] } },
     plaintext: true,
+  },
+
+  c15t: {
+    theme: {
+      typography: { fontFamily: "'Geist', sans-serif" },
+      radius: {
+        md: 'calc(var(--radius) - 2px)',
+        lg: 'calc(var(--radius) * 2)',
+      },
+    },
   },
 })

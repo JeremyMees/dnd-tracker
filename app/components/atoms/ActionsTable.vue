@@ -95,13 +95,10 @@ function hasRoll(attack: DndAttack): boolean {
                   v-if="allowRoll && id && hasRoll(attack)"
                   :id="id"
                   :attack-bonus="attack.toHitMod"
-                  :damage-dice="
-                    formatAttackDice(
-                      attack.damageDieCount,
-                      attack.damageDieType,
-                    )
+                  :damage-dice="formatAttackDamage(attack)"
+                  :damage-bonus="
+                    (attack.damageBonus ?? 0) + (attack.extraDamageBonus ?? 0)
                   "
-                  :damage-bonus="attack.damageBonus ?? 0"
                 />
 
                 <span

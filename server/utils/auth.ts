@@ -1,12 +1,5 @@
 import { serverSupabaseServiceRole, serverSupabaseUser } from '#supabase/server'
-import type { JwtPayload } from '@supabase/supabase-js'
 import type { H3Event } from 'h3'
-
-export interface SessionUser {
-  id: string
-  email?: string
-  claims: JwtPayload
-}
 
 export async function requireUser(event: H3Event): Promise<SessionUser> {
   const claims = await serverSupabaseUser(event)
@@ -17,13 +10,6 @@ export async function requireUser(event: H3Event): Promise<SessionUser> {
   }
 
   return { id, email: claims.email, claims }
-}
-
-export interface CampaignAccess {
-  id: number
-  title: string
-  createdBy: string
-  role: UserRole
 }
 
 export async function requireCampaignAccess(
@@ -68,12 +54,6 @@ export async function requireCampaignAccess(
     createdBy: campaign.createdBy,
     role,
   }
-}
-
-export interface EncounterAccess {
-  id: number
-  campaign: number | null
-  createdBy: string
 }
 
 export async function requireEncounterAccess(

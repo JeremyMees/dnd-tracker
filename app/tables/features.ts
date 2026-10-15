@@ -44,7 +44,3 @@ export const homebrewSelectFeatures = tableFeatures({
   sortedRowModel: createSortedRowModel(),
   sortFns: { alphanumeric: sortFn_alphanumeric, text: sortFn_text },
 })
-
-export type ListingFeatures = typeof listingFeatures
-export type InitiativeFeatures = typeof initiativeFeatures
-export type HomebrewSelectFeatures = typeof homebrewSelectFeatures

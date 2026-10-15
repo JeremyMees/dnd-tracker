@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises, type VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -17,7 +18,6 @@ const {
   open,
   removeEncounter,
   copyEncounter,
-  toast,
 } = vi.hoisted(() => ({
   allows: vi.fn(),
   ask: vi.fn(),
@@ -28,11 +28,6 @@ const {
   open: vi.fn(),
   removeEncounter: vi.fn(),
   copyEncounter: vi.fn(),
-  toast: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
@@ -446,10 +441,9 @@ describe('Encounters', () => {
     expect(clipboardCopy).toHaveBeenCalledWith(
       expect.stringContaining('share-token'),
     )
-    expect(toast).toHaveBeenCalledWith({
-      description: 'Goblin Ambush actions.copyclipboard',
-      variant: 'info',
-    })
+    expect(toast.info).toHaveBeenCalledWith(
+      'Goblin Ambush actions.copyclipboard',
+    )
   })
 
   it('Should toast an error when sharing fails to return a token', async () => {
@@ -460,10 +454,8 @@ describe('Encounters', () => {
     await columnOptions?.onShare(mockEncounterItem)
 
     expect(clipboardCopy).not.toHaveBeenCalled()
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.failed.shareLink',
+    expect(toast.error).toHaveBeenCalledWith('general.error.failed.shareLink', {
       description: 'general.error.reasons.rejected',
-      variant: 'destructive',
     })
   })
 
@@ -474,10 +466,8 @@ describe('Encounters', () => {
 
     await columnOptions?.onShare(mockEncounterItem)
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.failed.shareLink',
+    expect(toast.error).toHaveBeenCalledWith('general.error.failed.shareLink', {
       description: 'general.error.reasons.rejected',
-      variant: 'destructive',
     })
   })
 

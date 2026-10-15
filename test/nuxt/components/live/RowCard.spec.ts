@@ -264,6 +264,27 @@ describe('LiveRowCard', () => {
     expect(grid.findAll('[test-id="fail"]')).toHaveLength(3)
   })
 
+  it.each(['monster', 'summon', 'lair'] as const)(
+    'hides the death saves grid for %s rows',
+    async type => {
+      const component = await mountWithTooltips(LiveRowCard, {
+        props: {
+          row: {
+            ...baseRow,
+            type,
+            deathSaves: {
+              save: [true, false, false],
+              fail: [true, true, false],
+            },
+          },
+          active: false,
+        },
+      })
+
+      expect(component.find('[test-id="death-saves"]').exists()).toBe(false)
+    },
+  )
+
   it('highlights the death saves grid as stabilized when all saves succeed', async () => {
     const component = await mountWithTooltips(LiveRowCard, {
       props: {

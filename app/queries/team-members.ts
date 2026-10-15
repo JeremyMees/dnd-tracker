@@ -1,13 +1,12 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { useQueryClient } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
 
 export function useJoinTokenRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       id,
     }: { id: number; campaign: number } & QueryDefaults) => {
@@ -18,24 +17,15 @@ export function useJoinTokenRemove() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { campaign, onSuccess }) => {
-      if (onSuccess) onSuccess()
-
+    onSuccess: (_data, { campaign }) => {
       queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', campaign],
+        queryKey: queryKeys.campaignDetail(campaign),
       })
     },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('general.error.failed.inviteRevoke'),
+    onError: error => {
+      toast.error(t('general.error.failed.inviteRevoke'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }
@@ -44,7 +34,7 @@ export function useTeamMemberUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       data,
       id,
@@ -57,20 +47,15 @@ export function useTeamMemberUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { campaign, onSuccess }) => {
+    onSuccess: (_data, { campaign }) => {
       queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', campaign],
+        queryKey: queryKeys.campaignDetail(campaign),
       })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-
-      if (onSuccess) onSuccess()
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+      queryClient.removeQueries({
+        queryKey: queryKeys.campaignMember(campaign),
+      })
     },
   })
 }
@@ -78,10 +63,9 @@ export function useTeamMemberUpdate() {
 export function useTeamMemberRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       member,
     }: { member: number; campaign: number } & QueryDefaults) => {
@@ -89,26 +73,20 @@ export function useTeamMemberRemove() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { campaign, onSuccess }) => {
+    onSuccess: (_data, { campaign }) => {
       queryClient.invalidateQueries({
-        queryKey: ['useCampaignDetail', campaign],
+        queryKey: queryKeys.campaignDetail(campaign),
       })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-
-      if (onSuccess) onSuccess()
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+      queryClient.removeQueries({
+        queryKey: queryKeys.campaignMember(campaign),
+      })
     },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('general.error.failed.memberRemove'),
+    onError: error => {
+      toast.error(t('general.error.failed.memberRemove'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }

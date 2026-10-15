@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const { user } = useAuthentication()
+</script>
+
 <template>
   <div class="container-max px-4 pb-2 flex flex-col gap-10">
     <NuxtLinkLocale
@@ -128,7 +132,7 @@
             />
             {{ $t('components.navbar.changelog') }}
           </NuxtLinkLocale>
-          <YbugButton type="footer" />
+          <BugReportButton type="footer" />
         </div>
       </div>
       <div>
@@ -172,6 +176,18 @@
             />
             {{ $t('components.navbar.legal') }}
           </NuxtLinkLocale>
+          <ConsentDialogLink
+            v-if="!user"
+            class="flex items-center text-sm cursor-pointer"
+            test-id="footer-privacy-settings"
+          >
+            <Icon
+              name="tabler:adjustments-horizontal"
+              class="min-w-4 min-h-4 mr-2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            {{ $t('components.navbar.privacySettings') }}
+          </ConsentDialogLink>
         </div>
       </div>
     </div>

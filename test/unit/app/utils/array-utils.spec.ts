@@ -176,4 +176,16 @@ describe('array-utils', () => {
       expect(isEqualArray([Number.NaN], [Number.NaN])).toBe(false)
     })
   })
+
+  describe('toArray', () => {
+    it('should wrap a single value in an array', () => {
+      expect(toArray(5)).toEqual([5])
+    })
+
+    it('should return an array as is', () => {
+      const array = [1, 2]
+
+      expect(toArray(array)).toBe(array)
+    })
+  })
 })

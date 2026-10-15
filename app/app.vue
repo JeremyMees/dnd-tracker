@@ -1,14 +1,9 @@
 <script setup lang="ts">
 const { dialogs, handlers } = useConfirmDialogs()
 const route = useRoute()
+const { locale } = useI18n()
 
 useHealthCheck()
-
-const nuxtReady = ref<boolean>(false)
-
-onNuxtReady(() => {
-  nuxtReady.value = true
-})
 
 const pageName = computed<string>(() =>
   !route.name || typeof route.name !== 'string'
@@ -21,13 +16,12 @@ const pageName = computed<string>(() =>
   <AnimationMotionProvider>
     <TooltipProvider>
       <div>
+        <ConsentRoot :language="locale" />
         <NuxtRouteAnnouncer />
         <NuxtLoadingIndicator
           color="linear-gradient(to right,#7333E0 70%,#D926AA 100%)"
           error-color="#F87272"
         />
-
-        <LazyConsentBanner v-if="nuxtReady" />
 
         <ClientOnly>
           <UiToaster />

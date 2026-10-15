@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import DiceRoller from '~/components/atoms/DiceRoller.vue'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
@@ -13,18 +14,10 @@ interface DiceRollerVM {
 
 const props: Props = { styled: true }
 
-const mockToast = vi.fn()
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({
-    toast: mockToast,
-  }),
-}))
-
 const DescriptionHost = defineComponent({
   props: ['node'],
   render() {
-    return this.node
+    return h(this.node)
   },
 })
 
@@ -169,11 +162,11 @@ describe('DiceRoller', () => {
         d100: 0,
       })
 
-      expect(mockToast).toHaveBeenCalledTimes(1)
-      const call = mockToast.mock.calls[0]![0]
-      expect(call.title).toBe('components.diceRoll.rolled')
+      expect(toast).toHaveBeenCalledTimes(1)
+      const [title, options] = toast.mock.calls[0]!
+      expect(title).toBe('components.diceRoll.rolled')
 
-      const description = await renderDescription(call.description)
+      const description = await renderDescription(options.description)
       expect(description.find('.text-destructive').exists()).toBe(true)
       expect(description.find('.text-success').exists()).toBe(false)
       expect(description.text()).not.toContain('general.total')
@@ -194,10 +187,10 @@ describe('DiceRoller', () => {
 
       expect(component.emitted('rolled')![0]).toEqual([32])
 
-      const call = mockToast.mock.calls[0]![0]
-      expect(call.title).toBe('components.diceRoll.rolled')
+      const [title, options] = toast.mock.calls[0]!
+      expect(title).toBe('components.diceRoll.rolled')
 
-      const description = await renderDescription(call.description)
+      const description = await renderDescription(options.description)
       expect(description.find('.text-success').exists()).toBe(true)
       expect(description.find('.text-destructive').exists()).toBe(true)
       expect(description.text()).toContain('general.total')
@@ -219,10 +212,10 @@ describe('DiceRoller', () => {
 
       expect(component.emitted('rolled')![0]).toEqual([7])
 
-      const call = mockToast.mock.calls[0]![0]
-      expect(call.title).toBe('components.diceRoll.rolled')
+      const [title, options] = toast.mock.calls[0]!
+      expect(title).toBe('components.diceRoll.rolled')
 
-      const description = await renderDescription(call.description)
+      const description = await renderDescription(options.description)
       expect(description.text()).toContain('d4')
       expect(description.text()).toContain('d6')
       expect(description.text()).toContain('general.total')
@@ -238,10 +231,10 @@ describe('DiceRoller', () => {
 
       expect(component.emitted('rolled')![0]).toEqual([0])
 
-      const call = mockToast.mock.calls[0]![0]
-      expect(call.title).toBe('components.diceRoll.rolled')
+      const [title, options] = toast.mock.calls[0]!
+      expect(title).toBe('components.diceRoll.rolled')
 
-      const description = await renderDescription(call.description)
+      const description = await renderDescription(options.description)
       expect(description.text()).not.toContain('general.total')
     })
   })

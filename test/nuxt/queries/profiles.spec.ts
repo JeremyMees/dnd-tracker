@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -8,7 +9,6 @@ import {
   mountHook,
   mutationSpies,
   supabaseAuthUpdateUser,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import { useProfileRemove, useProfileUpdate } from '~/queries/profiles'
 
@@ -171,11 +171,10 @@ describe('profiles queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(logout).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.accountDelete',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.accountDelete',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

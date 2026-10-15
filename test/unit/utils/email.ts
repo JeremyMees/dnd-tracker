@@ -3,7 +3,6 @@ import { loadNuxtConfig } from '@nuxt/kit'
 import { render } from '@maizzle/framework'
 import seo from '~~/constants/seo'
 import { fillEmailTemplate } from '~~/server/utils/email'
-import type { EmailTemplate } from '~~/server/utils/email'
 
 export type CompiledEmail = { html: string; text: string }
 

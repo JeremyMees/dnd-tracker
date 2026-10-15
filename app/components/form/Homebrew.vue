@@ -1,13 +1,6 @@
 <script setup lang="ts">
-import {
-  useHomebrewCount,
-  useHomebrewCreate,
-  useHomebrewUpdate,
-} from '~/queries/homebrews'
 import { useForm } from 'vee-validate'
 import type { InvalidSubmissionContext } from 'vee-validate'
-import * as z from 'zod'
-import { homebrewType, maxCampaignHomebrews } from '~~/constants/validation'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -36,6 +29,7 @@ const props = withDefaults(
 
 const { t, locale } = useI18n()
 const { user } = useAuthentication()
+const bloodied = useBloodiedCondition(() => props.sheet?.settings)
 
 const canSaveToCampaign = computed(() => {
   const id = user.value?.id
@@ -44,157 +38,57 @@ const canSaveToCampaign = computed(() => {
   return !!id && !!campaign && isOwnerOrAdmin(campaign, id)
 })
 
-const tabs = ['info', 'stats', 'traits', 'actions'] as const
-
-type Tab = (typeof tabs)[number]
-
-const tabFields: Partial<Record<Tab, string[]>> = {
-  stats: ['abilityScores', 'modifiers', 'savingThrows', 'skillBonuses'],
-  traits: ['traits', 'resistancesAndImmunities'],
-  actions: ['actions'],
-}
-
-const tabLabels = computed<Record<Tab, string>>(() => ({
+const tabLabels = computed<Record<HomebrewTab, string>>(() => ({
   info: t('general.info'),
   stats: t('general.stats'),
   traits: t('general.trait', 2),
   actions: t('general.action', 2),
 }))
 
-function tabOf(path: string): Tab {
-  const field = path.split(/[.[]/)[0]!
+const {
+  current,
+  isFirst: isFirstTab,
+  isLast: isLastTab,
+  goTo: goToTab,
+  goToNext: goToNextTab,
+  goToPrevious: goToPreviousTab,
+} = useStepper([...homebrewTabs], 'info')
+const activeTab = computed({ get: () => current.value, set: goToTab })
 
-  return tabs.find(tab => tabFields[tab]?.includes(field)) ?? 'info'
-}
-
-const activeTab = ref<Tab>('info')
-const tabIndex = computed(() => tabs.indexOf(activeTab.value))
-const canGoBack = computed(() => tabIndex.value > 0)
-const canGoForward = computed(() => tabIndex.value < tabs.length - 1)
-
-const formSchema = z
-  .object({
-    type: z.enum(homebrewType),
-    amount: z.int().gte(1).lte(15).optional(),
-    summoner: z.string().max(50).optional().or(z.literal('')),
-    name: z.string().min(3).max(50),
-    player: z.string().min(3).max(30).optional().or(z.literal('')),
-    initiative: z.int().gte(1).lte(50).optional(),
-    initiativeModifier: z.int().gte(-20).lte(20).optional(),
-    armorClass: z.int().gte(1).lte(100).optional(),
-    hitPoints: z.int().gte(1).lte(1000).optional(),
-    link: z.string().url().optional().or(z.literal('')),
-    hitDice: z
-      .string()
-      .min(3)
-      .max(15)
-      .regex(hitDiceExpression, { error: () => t('zod.hitDiceExpression') })
-      .optional()
-      .or(z.literal('')),
-    armorDetail: z.string().max(100).optional().or(z.literal('')),
-    proficiencyBonus: z.int().gte(0).lte(10).optional(),
-    passivePerception: z.int().gte(0).lte(50).optional(),
-    speed: speedSchema.optional(),
-    sight: sightSchema.optional(),
-    languages: z.array(z.string().min(1).max(50)).max(20),
-    abilityScores: abilityScoresSchema.optional(),
-    modifiers: abilityBonusSchema.optional(),
-    savingThrows: abilityBonusSchema.optional(),
-    skillBonuses: skillBonusesSchema.optional(),
-    resistancesAndImmunities: resistancesAndImmunitiesSchema.optional(),
-    traits: z.array(traitSchema).max(40),
-    actions: z.array(actionSchema).max(40),
-  })
-  .refine(
-    data =>
-      !props.isEncounter ||
-      !!props.row ||
-      !(['monster', 'summon'].includes(data.type) && !data.amount),
-    { error: () => t('zod.required'), path: ['amount'] },
-  )
-  .refine(
-    data =>
-      !props.isEncounter || !(['summon'].includes(data.type) && !data.summoner),
-    { error: () => t('zod.required'), path: ['summoner'] },
-  )
-
-const source = props.row
-  ? {
-      ...props.row,
-      hitPoints: getBaseHP(props.row),
-      armorClass: getBaseAC(props.row),
-    }
-  : (props.item ?? props.template)
+const isNew = !props.item && !props.row && !props.template
+const step = ref<HomebrewStartStep | 'form'>(isNew ? 'type' : 'form')
+const basedOn = ref<string>()
 
 const form = useForm({
-  validationSchema: formSchema,
-  initialValues: {
-    type: source?.type || 'player',
-    summoner: props.row?.summoner?.id,
-    name: source?.name || '',
-    player: source?.player || '',
-    amount: props.template ? 1 : undefined,
-    initiative: undefined,
-    initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),
-    armorClass: source?.armorClass || undefined,
-    hitPoints: source?.hitPoints || undefined,
-    link: source?.link || '',
-    hitDice: source?.hitDice || '',
-    armorDetail: source?.armorDetail || '',
-    proficiencyBonus: source?.proficiencyBonus || undefined,
-    passivePerception: source?.passivePerception || undefined,
-    speed: source?.speed || undefined,
-    sight: source?.sight || undefined,
-    languages: source?.languages || [],
-    abilityScores: source?.abilityScores || undefined,
-    modifiers: source?.modifiers || undefined,
-    savingThrows: source?.savingThrows || undefined,
-    skillBonuses: source?.skillBonuses || undefined,
-    resistancesAndImmunities: {
-      damageImmunities:
-        source?.resistancesAndImmunities?.damageImmunities ?? [],
-      damageResistances:
-        source?.resistancesAndImmunities?.damageResistances ?? [],
-      damageVulnerabilities:
-        source?.resistancesAndImmunities?.damageVulnerabilities ?? [],
-      conditionImmunities:
-        source?.resistancesAndImmunities?.conditionImmunities ?? [],
+  validationSchema: homebrewFormSchema({
+    isEncounter: props.isEncounter,
+    isEditingRow: !!props.row,
+    t,
+  }),
+  initialValues: homebrewInitialValues(
+    props.row ? withBaseStats(props.row) : (props.item ?? props.template),
+    {
+      amount: props.template ? 1 : undefined,
+      summoner: props.row?.summoner?.id,
     },
-    traits: (source?.traits ?? []) as { name: string; desc: string }[],
-    actions: source?.actions ?? [],
-  },
+  ),
 })
 
 const saveToCampaign = ref<boolean>(false)
-const isLinked = computed(() => isDefined(props.row?.homebrew))
-const { data: homebrewCount } = useHomebrewCount(
-  props.campaignId ?? 0,
-  computed(
-    () =>
-      isDefined(props.campaignId) &&
-      !!props.sheet &&
-      canSaveToCampaign.value &&
-      !isLinked.value,
-  ),
-)
-const isCampaignFull = computed(
-  () => !isLinked.value && (homebrewCount.value ?? 0) >= maxCampaignHomebrews,
-)
 const formError = ref<string>('')
 
-const { mutateAsync: createHomebrew } = useHomebrewCreate()
-const { mutateAsync: updateHomebrew } = useHomebrewUpdate()
-
-type HomebrewData = Omit<HomebrewItemUpdate, NotUpdatable>
-
-interface Submission {
-  row: InitiativeSheetRowInsert
-  homebrew: HomebrewData
-  amount?: number
-  initiative?: number
-  initiativeModifier?: number
-  summoner?: string
-}
+const {
+  isLinked,
+  isFull: isCampaignFull,
+  create: createInCampaign,
+  update: updateInCampaign,
+  sync: syncToCampaign,
+} = useCampaignHomebrewSync({
+  campaignId: props.campaignId,
+  linkedId: props.row?.homebrew,
+  countEnabled: () => !!props.sheet && canSaveToCampaign.value,
+  onError: error => (formError.value = error),
+})
 
 type SubmitMode = 'editRow' | 'addRows' | 'updateHomebrew' | 'createHomebrew'
 
@@ -206,7 +100,7 @@ const mode = computed<SubmitMode | undefined>(() => {
 
 const submitters: Record<
   SubmitMode,
-  (submission: Submission) => Promise<boolean>
+  (submission: HomebrewSubmission) => Promise<boolean>
 > = {
   editRow,
   addRows,
@@ -221,18 +115,15 @@ const onSubmit = form.handleSubmit(async values => {
 
   if (!mode.value) return
 
-  if (await submitters[mode.value](toSubmission(values))) emit('close')
+  if (await submitters[mode.value](toHomebrewSubmission(values))) emit('close')
 }, onInvalidSubmit)
 
 function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
-  const invalidPaths = Object.keys(errors).filter(path => errors[path])
-  const invalidTabs = tabs.filter(tab =>
-    invalidPaths.some(path => tabOf(path) === tab),
-  )
+  const invalidTabs = invalidHomebrewTabs(errors)
 
   if (!invalidTabs.length) return
 
-  if (!invalidTabs.includes(activeTab.value)) activeTab.value = invalidTabs[0]!
+  if (!invalidTabs.includes(activeTab.value)) goToTab(invalidTabs[0]!)
 
   formError.value = t('components.homebrewModal.invalid', {
     tabs: new Intl.ListFormat(locale.value, { type: 'conjunction' }).format(
@@ -241,69 +132,12 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
   })
 }
 
-function onError(error: string): void {
-  formError.value = error
-}
-
-function toSubmission(values: z.output<typeof formSchema>): Submission {
-  const { amount, initiative, initiativeModifier, summoner, ...data } = values
-
-  return {
-    row: data as InitiativeSheetRowInsert,
-    homebrew: {
-      ...data,
-      ...(isDefined(initiativeModifier)
-        ? { initiativeModifier: initiativeModifier.toString() }
-        : {}),
-    } as HomebrewData,
-    amount,
-    initiative,
-    initiativeModifier,
-    summoner,
-  }
-}
-
-async function createInCampaign(data: HomebrewData): Promise<number | null> {
-  if (!props.campaignId) return null
-
-  try {
-    return await createHomebrew({
-      data: { ...data, campaign: props.campaignId } as HomebrewItemInsert,
-      onError,
-    })
-  } catch {
-    return null
-  }
-}
-
-async function updateInCampaign(
-  id: number,
-  data: HomebrewData,
-): Promise<boolean> {
-  try {
-    await updateHomebrew({ data, id, onError })
-
-    return true
-  } catch {
-    return false
-  }
-}
-
-async function syncToCampaign(
-  data: HomebrewData,
-): Promise<number | undefined | null> {
-  const linked = props.row?.homebrew
-
-  if (!saveToCampaign.value || !props.campaignId) return linked
-  if (!isDefined(linked)) return createInCampaign(data)
-
-  return (await updateInCampaign(linked, data)) ? linked : null
-}
-
-async function editRow(submission: Submission): Promise<boolean> {
+async function editRow(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.update || !props.row) return false
 
-  const homebrew = await syncToCampaign(submission.homebrew)
+  const homebrew = saveToCampaign.value
+    ? await syncToCampaign(submission.homebrew)
+    : props.row.homebrew
 
   if (homebrew === null) return false
 
@@ -319,24 +153,23 @@ async function editRow(submission: Submission): Promise<boolean> {
   )
 
   await props.update({
-    rows: replaceRow(props.sheet.rows, edited),
+    rows: replaceRow(props.sheet.rows, withBloodied(edited, bloodied.value)),
   })
 
   return true
 }
 
-async function addRows(submission: Submission): Promise<boolean> {
+async function addRows(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.update) return false
 
   const { initiative, initiativeModifier } = submission
-  const homebrew =
-    saveToCampaign.value && props.campaignId
-      ? await createInCampaign(submission.homebrew)
-      : undefined
+  const homebrew = saveToCampaign.value
+    ? await syncToCampaign(submission.homebrew)
+    : undefined
 
   if (homebrew === null) return false
 
-  const row: Partial<InitiativeSheetRow> & { name: string } = {
+  const row = {
     ...submission.row,
     homebrew,
     summoner: toSummoner(props.sheet.rows, submission.summoner),
@@ -346,58 +179,110 @@ async function addRows(submission: Submission): Promise<boolean> {
     ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
   }
 
-  const rows = [...props.sheet.rows]
-
-  for (let i = 0; i < (submission.amount ?? 1); i++) {
-    rows.push(createInitiativeRow(row, submission.row.type, rows.length))
-  }
-
-  await props.update({ rows: indexCorrect(rows) })
+  await props.update({
+    rows: appendRows(
+      props.sheet.rows,
+      Array.from({ length: submission.amount ?? 1 }, () => row),
+    ),
+  })
 
   return true
+}
+
+const backLabel = computed(() => {
+  if (!isNew || !isFirstTab.value) return t('actions.prev')
+
+  return form.values.type === 'monster'
+    ? t('components.homebrewModal.changeStart')
+    : t('components.homebrewModal.changeType')
+})
+
+function goBack(): void {
+  if (!isFirstTab.value) goToPreviousTab()
+  else step.value = form.values.type === 'monster' ? 'source' : 'type'
+}
+
+function showForm(): void {
+  goToTab('info')
+  step.value = 'form'
+}
+
+function startFromType(type: HomebrewType): void {
+  form.setFieldValue('type', type)
+  showForm()
+}
+
+function startFromScratch(): void {
+  if (basedOn.value) {
+    form.resetForm(
+      { values: homebrewInitialValues({ name: '', type: 'monster' }) },
+      { force: true },
+    )
+    basedOn.value = undefined
+  } else form.setFieldValue('type', 'monster')
+
+  showForm()
+}
+
+function startFromMonster(monster: DndMonster): void {
+  form.resetForm(
+    {
+      values: homebrewInitialValues(monsterToRow(monster), {
+        amount: props.sheet ? 1 : undefined,
+      }),
+    },
+    { force: true },
+  )
+  basedOn.value = monster.name
+  showForm()
 }
 </script>
 
 <template>
-  <UiFormWrapper @submit="onSubmit">
-    <UiTabs v-model="activeTab">
+  <FormHomebrewStart
+    v-if="step !== 'form'"
+    v-model:step="step"
+    @type="startFromType"
+    @scratch="startFromScratch"
+    @monster="startFromMonster"
+  />
+  <UiFormWrapper v-show="step === 'form'" @submit="onSubmit">
+    <p
+      v-if="basedOn"
+      test-id="based-on"
+      class="flex items-center gap-2 text-sm text-muted-foreground"
+    >
+      <Icon
+        name="tabler:books"
+        class="size-4 min-w-4"
+        :class="homebrewColor('monster')"
+        aria-hidden="true"
+      />
+      {{ $t('components.homebrewModal.basedOn', { name: basedOn }) }}
+    </p>
+    <UiTabs v-model="activeTab" :unmount-on-hide="false">
       <UiTabsList class="grid w-full grid-cols-4">
-        <UiTabsTrigger v-for="tab in tabs" :key="tab" :value="tab">
+        <UiTabsTrigger v-for="tab in homebrewTabs" :key="tab" :value="tab">
           {{ tabLabels[tab] }}
         </UiTabsTrigger>
       </UiTabsList>
 
-      <div
-        v-show="activeTab === 'info'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      <UiTabsContent value="info" class="space-y-2">
         <FormHomebrewInformation
           :sheet="props.sheet"
           :type="form.values.type"
           :row-id="row?.id"
         />
-      </div>
-
-      <div
-        v-show="activeTab === 'stats'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      </UiTabsContent>
+      <UiTabsContent value="stats" class="space-y-2">
         <FormHomebrewStats />
-      </div>
-
-      <div
-        v-show="activeTab === 'traits'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      </UiTabsContent>
+      <UiTabsContent value="traits" class="space-y-2">
         <FormHomebrewTraits />
-      </div>
-
-      <div
-        v-show="activeTab === 'actions'"
-        class="space-y-2 mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
+      </UiTabsContent>
+      <UiTabsContent value="actions" class="space-y-2">
         <FormHomebrewActions :sheet="props.sheet" />
-      </div>
+      </UiTabsContent>
     </UiTabs>
 
     <div class="flex flex-col gap-y-4">
@@ -439,37 +324,13 @@ async function addRows(submission: Submission): Promise<boolean> {
         {{ formError }}
       </div>
 
-      <div class="flex justify-end gap-2">
-        <Tooltip :text="$t('actions.prev')">
-          <UiButton
-            test-id="prev"
-            type="button"
-            variant="foreground"
-            size="icon"
-            class="min-w-10"
-            :disabled="!canGoBack"
-            @click="activeTab = tabs[tabIndex - 1]!"
-          >
-            <Icon name="tabler:arrow-left" />
-          </UiButton>
-        </Tooltip>
-        <Tooltip :text="$t('actions.next')">
-          <UiButton
-            test-id="next"
-            type="button"
-            variant="foreground"
-            size="icon"
-            class="min-w-10"
-            :disabled="!canGoForward"
-            @click="activeTab = tabs[tabIndex + 1]!"
-          >
-            <Icon name="tabler:arrow-right" />
-          </UiButton>
-        </Tooltip>
-        <UiButton type="submit" class="w-full md:w-fit">
-          {{ $t('actions.save') }}
-        </UiButton>
-      </div>
+      <FormTabNav
+        :can-go-back="isNew || !isFirstTab"
+        :can-go-forward="!isLastTab"
+        :back-label="backLabel"
+        @back="goBack"
+        @next="goToNextTab"
+      />
     </div>
   </UiFormWrapper>
 </template>

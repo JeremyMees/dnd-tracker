@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import TransferOwnershipModal from '~/components/modal/TransferOwnership.vue'
@@ -9,19 +10,15 @@ import {
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
-const { fetchMock, invalidateQueries, toast } = vi.hoisted(() => ({
+const { fetchMock, invalidateQueries, removeQueries } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
   invalidateQueries: vi.fn(),
-  toast: vi.fn(),
+  removeQueries: vi.fn(),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ invalidateQueries }),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
+  useQueryClient: () => ({ invalidateQueries, removeQueries }),
 }))
 
 mockNuxtImport('$fetch', () => fetchMock)
@@ -144,15 +141,24 @@ describe('TransferOwnership modal', () => {
     })
   })
 
+  it('Should forget the cached membership so the old owner loses owner access', async () => {
+    const component = await mountTransferOwnershipModal()
+
+    await fillForm(component, 'Remove', mockTeamMember.user.id)
+    await submitForm(component)
+
+    expect(removeQueries).toHaveBeenCalledWith({
+      queryKey: ['useCampaignMember', current.id],
+    })
+  })
+
   it('Should toast and emit finished and close on success', async () => {
     const component = await mountTransferOwnershipModal()
 
     await fillForm(component, 'Remove', mockTeamMember.user.id)
     await submitForm(component)
 
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'success' }),
-    )
+    expect(toast.success).toHaveBeenCalled()
     expect(component.emitted('finished')).toBeTruthy()
     expect(component.emitted('close')).toBeTruthy()
   })
@@ -167,7 +173,7 @@ describe('TransferOwnership modal', () => {
     await nextTick()
 
     expect(component.get('[test-id="error"]').text()).toBe('Transfer failed')
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
     expect(component.emitted('finished')).toBeFalsy()
   })
 })

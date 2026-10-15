@@ -1,13 +1,6 @@
 import type { UseStorageOptions } from '@vueuse/core'
 import type { LocationQuery } from 'vue-router'
 
-export type FilterPersistence = 'url' | 'local' | 'session' | 'none'
-
-export interface UseFilterStateOptions<T> {
-  persist?: FilterPersistence
-  codecs?: { [K in keyof T]?: FilterCodec<T[K]> }
-}
-
 const STORAGE_PREFIX = 'dnd-tracker:filters:'
 
 export function useFilterState<T extends Record<string, unknown>>(

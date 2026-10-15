@@ -133,6 +133,7 @@
     "disadvantageAbb": "Dis.",
     "straight": "Straight",
     "toHit": "To hit",
+    "naturalOneMiss": "Natuurlijke 1, de aanval mist",
     "widget": "Widget | Widgets",
     "all": "Alles",
     "more": "Meer",
@@ -396,8 +397,22 @@
       }
     },
     "error": {
-      "404": "Oh nee...",
-      "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan.",
+      "notFound": {
+        "title": "Oh nee...",
+        "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan."
+      },
+      "unauthorized": {
+        "title": "Wie gaat daar?",
+        "text": "Je moet ingelogd zijn om deze pagina te bekijken."
+      },
+      "forbidden": {
+        "title": "Geen toegang",
+        "text": "Je hebt geen toegang tot deze pagina. Vraag de eigenaar van de campagne of het encounter om je toegang te geven."
+      },
+      "generic": {
+        "title": "Er ging iets mis",
+        "text": "Een kritieke misser aan onze kant. Probeer het zo opnieuw en laat het ons weten als het blijft gebeuren."
+      },
       "goHome": "Naar de startpagina"
     },
     "maintenance": {
@@ -586,6 +601,11 @@
         "title": "Wachtwoord wijzigende Magie",
         "subtitle": "Betoverende Beveiliging"
       },
+      "privacy": {
+        "title": "Privacyinstellingen",
+        "subtitle": "Kies welke cookies mee op avontuur mogen",
+        "manage": "Cookies beheren"
+      },
       "updateImage": "Foto updaten",
       "delete": "Profiel Verwijderen",
       "toast": {
@@ -720,6 +740,7 @@
   "components": {
     "liveSession": {
       "title": "Live sessie",
+      "description": "Deel de kamercode zodat spelers de initiatiefvolgorde kunnen volgen en op hun eigen beurt kunnen handelen.",
       "start": "Start live sessie",
       "code": "Kamercode",
       "expiresIn": "Verloopt over {time}",
@@ -796,6 +817,7 @@
       },
       "conditionAdded": "{rowName} kreeg {condition}",
       "conditionRemoved": "{rowName} verloor {condition}",
+      "conditionExpired": "{condition} op {rowName} is afgelopen",
       "concentrationBroken": "{rowName} verloor concentratie",
       "concentrationStarted": "{rowName} begon te concentreren",
       "deathSave": {
@@ -804,6 +826,47 @@
       },
       "stabilized": "{rowName} stabiliseerde",
       "died": "{rowName} stierf"
+    },
+    "turnReminders": {
+      "expired": "{condition} op {name} is afgelopen",
+      "save": "{name}: {ability} save DC {dc} om {condition} te beëindigen",
+      "saved": "Geslaagd",
+      "failed": "Gefaald"
+    },
+    "conditionDuration": {
+      "title": "Duur",
+      "pending": "Duur voor {name}",
+      "presets": {
+        "endOfNextTurn": "Tot het einde van zijn volgende beurt",
+        "startOfNextTurn": "Tot het begin van de volgende beurt van {name}",
+        "oneMinute": "1 minuut (10 rondes)"
+      },
+      "rounds": "Rondes",
+      "timing": "Geteld bij",
+      "timings": {
+        "start": "Begin van de beurt",
+        "end": "Einde van de beurt"
+      },
+      "row": "Beurt van",
+      "save": "Eindigt met save",
+      "set": "Duur instellen",
+      "custom": "Aangepast",
+      "spell": "Invullen vanuit een spell",
+      "spellPlaceholder": "Zoek een spell, zoals Hold Person",
+      "edit": "Duur aanpassen",
+      "add": "Duur toevoegen",
+      "clear": "Geen duur",
+      "required": "Vul de rondes of een save in",
+      "roundsLeft": "Nog {count} ronde | Nog {count} rondes",
+      "saveEnds": "Eindigt bij een geslaagde save",
+      "summary": {
+        "start": "Nog {count} ronde, geteld bij het begin van de beurt van {name} | Nog {count} rondes, geteld bij het begin van de beurt van {name}",
+        "end": "Nog {count} ronde, geteld bij het einde van de beurt van {name} | Nog {count} rondes, geteld bij het einde van de beurt van {name}",
+        "save": {
+          "start": "{ability} save DC {dc} bij het begin van de beurt van {name}",
+          "end": "{ability} save DC {dc} bij het einde van de beurt van {name}"
+        }
+      }
     },
     "combatSummary": {
       "title": "Gevecht samenvatting",
@@ -896,7 +959,7 @@
     "initiativeTable": {
       "died": {
         "title": "{name} is gestorven",
-        "textMinHP": "{name} heeft te veel negatieve hp en is dood",
+        "textMassiveDamage": "{name} kreeg schade gelijk aan zijn maximum hp en stierf op slag",
         "textDeathSaves": "{name} heeft 3 keer gefaald bij death saves en is dood"
       },
       "stable": {
@@ -935,25 +998,6 @@
     "avatarPicker": {
       "options": "In/uitschakelen avatar opties",
       "deprecated": "Je hebt een oude avatar, kies een nieuwe"
-    },
-    "ConsentBanner": {
-      "rejectAll": "Weiger alle",
-      "acceptAll": "Accepteer alle",
-      "customize": "Aanpassen",
-      "saveSettings": "Instellingen opslaan",
-      "policy": "Cookiebeleid",
-      "necessary": "Noodzakelijk",
-      "necessaryText": "Deze cookies zijn essentieel voor de goede werking van de website. Ze zorgen voor basisfunctionaliteiten en beveiligingsfuncties van de website, anoniem.",
-      "measurement": "Analyse",
-      "measurementText": "Deze cookies helpen ons te begrijpen hoe bezoekers omgaan met de website door anonieme gegevens te verzamelen en te rapporteren.",
-      "banner": {
-        "title": "Wij hechten veel waarde aan uw privacy",
-        "text": "Deze website maakt gebruik van cookies om uw browse-ervaring te verbeteren en het websiteverkeer te analyseren."
-      },
-      "settings": {
-        "title": "Privacy instellingen",
-        "text": "Pas hier je privacy-instellingen aan. Je kunt kiezen welke soorten cookies en trackingtechnologieën je toestaat."
-      }
     },
     "hero": {
       "title": "Voer meeslepende D&D campagnes op jouw manier",
@@ -1087,7 +1131,33 @@
       "max": "Max campagne homebrews",
       "actionPage": "Actie pagina",
       "infoPage": "Info pagina",
-      "invalid": "Nog niet opgeslagen, kijk bij {tabs} welke velden nog aangepast moeten worden"
+      "invalid": "Nog niet opgeslagen, kijk bij {tabs} welke velden nog aangepast moeten worden",
+      "pickType": "Wat ga je maken?",
+      "pickTypeInfo": "Kies een type om te beginnen, je kan het later nog aanpassen",
+      "changeType": "Type wijzigen",
+      "changeStart": "Startpunt wijzigen",
+      "pickSource": "Hoe wil je beginnen?",
+      "pickSourceInfo": "Bouw je wezen van nul op, of kopieer een monster uit het bestiarium en maak het helemaal van jou",
+      "pickMonster": "Kies een monster om van te starten",
+      "pickMonsterInfo": "Klik op de toverstaf bij een monster om zijn stats naar je homebrew te kopiëren",
+      "basedOn": "Gebaseerd op {name}",
+      "sources": {
+        "scratch": {
+          "label": "Van nul beginnen",
+          "description": "Een leeg stat block, je vult elk detail zelf in"
+        },
+        "bestiary": {
+          "label": "Vanuit het bestiarium",
+          "description": "Kopieer een bestaand monster en pas het aan zoals je wil"
+        }
+      },
+      "types": {
+        "player": "Een personage aan tafel, gespeeld door een van je spelers",
+        "summon": "Een familiar, opgeroepen wezen of metgezel dat naast zijn oproeper vecht",
+        "npc": "Een vriendelijk of neutraal gezicht dat de groep onderweg tegenkomt",
+        "monster": "Een vijand om te bevechten, van een nederige goblin tot een oude draak",
+        "lair": "Lair acties die hun eigen beurt krijgen in de initiative volgorde"
+      }
     },
     "homebrewTable": {
       "nothing": "We hebben geen homebrew gevonden die bij deze zoekopdracht passen, maar dat betekent niet dat je ze niet zelf kunt maken.",
@@ -1158,6 +1228,7 @@
       "cookie": "Cookie",
       "privacy": "Privacy",
       "legal": "Legal",
+      "privacySettings": "Privacyinstellingen",
       "illustrations": "Illustraties door"
     },
     "confirmationModal": {
@@ -1197,6 +1268,7 @@
         "wolf-rider": "Wolf rijder"
       },
       "negative": "Sta HP en AC toe negatief te zijn",
+      "bloodied": "Voeg Bloodied automatisch toe bij de helft van de HP of minder",
       "noActiveWidgets": "Geen actieve widgets. Gebruik het settings icoon om widgets in te schakelen."
     },
     "infoCard": {
@@ -1213,6 +1285,24 @@
       "nothing": "Er is geen badge gevonden met deze code",
       "already": "De code is al geclaimd",
       "claim": "Ontvang badge"
+    },
+    "bugReportModal": {
+      "title": "Bug melden",
+      "message": "Wat ging er mis?",
+      "messagePlaceholder": "Beschrijf wat je deed, wat je verwachtte en wat er in de plaats gebeurde",
+      "emailDescription": "Optioneel, zodat we je kunnen contacteren",
+      "screenshot": "Screenshot",
+      "screenshotDescription": "Optioneel. PNG, JPG, WEBP of GIF, max 5 MB",
+      "send": "Rapport versturen",
+      "success": {
+        "title": "Bug rapport verstuurd",
+        "text": "Bedankt om ons te helpen de app te verbeteren!"
+      },
+      "errors": {
+        "screenshotType": "Enkel PNG, JPG, WEBP of GIF afbeeldingen zijn toegestaan",
+        "screenshotSize": "De screenshot mag maximaal 5 MB zijn",
+        "send": "We konden je bug rapport niet versturen. Probeer het later opnieuw."
+      }
     },
     "addFeatureRequestModal": {
       "title": "Feature request maken"

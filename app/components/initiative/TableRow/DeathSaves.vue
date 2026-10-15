@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { patchRow } = validateInject(INITIATIVE_SHEET)
 
-const { toast } = useToast()
 const { t } = useI18n()
 
-const { checkDeathSaves } = deathSavesFunctions
+const { checkDeathSaves, hasDeathSaves } = deathSavesFunctions
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
   if (!props.item.deathSaves) return
@@ -27,15 +26,21 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
   if ((saved && !failed && save) || (!saved && failed && !save)) {
     const toastType = saved ? 'stable' : 'died'
 
-    toast({
-      title: t(`components.initiativeTable.${toastType}.title`, {
+    const show = toastType === 'stable' ? toast.success : toast.error
+
+    show(
+      t(`components.initiativeTable.${toastType}.title`, {
         name: props.item.name,
       }),
-      description: t(`components.initiativeTable.${toastType}.textDeathSaves`, {
-        name: props.item.name,
-      }),
-      variant: toastType === 'stable' ? 'success' : 'destructive',
-    })
+      {
+        description: t(
+          `components.initiativeTable.${toastType}.textDeathSaves`,
+          {
+            name: props.item.name,
+          },
+        ),
+      },
+    )
   }
 
   patchRow(props.item.id, { deathSaves })
@@ -44,7 +49,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
 
 <template>
   <div
-    v-if="item.type !== 'lair' && item.type !== 'summon'"
+    v-if="hasDeathSaves(item.type)"
     test-id="container"
     class="grid gap-1 w-fit mx-auto"
     :class="{

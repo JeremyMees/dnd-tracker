@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises, type VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -15,7 +16,6 @@ const {
   open,
   removeNote,
   startCoolDown,
-  toast,
   useSeo,
 } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -26,12 +26,7 @@ const {
   open: vi.fn(),
   removeNote: vi.fn(),
   startCoolDown: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
@@ -369,10 +364,7 @@ describe('Campaign notes page', () => {
     await mailSend()(['frodo@shire.com'])
 
     expect(startCoolDown).toHaveBeenCalledWith(mockNote.id, 15)
-    expect(toast).toHaveBeenCalledWith({
-      description: 'general.mail.success.title',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith('general.mail.success.title')
   })
 
   it('Should not mail the note without a campaign', async () => {
@@ -396,10 +388,8 @@ describe('Campaign notes page', () => {
     await mailSend()(['frodo@shire.com'])
 
     expect(startCoolDown).not.toHaveBeenCalled()
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.failed.noteMail',
+    expect(toast.error).toHaveBeenCalledWith('general.error.failed.noteMail', {
       description: 'general.error.reasons.rejected',
-      variant: 'destructive',
     })
   })
 

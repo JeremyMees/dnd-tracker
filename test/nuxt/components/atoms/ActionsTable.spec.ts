@@ -255,6 +255,34 @@ describe('ActionsTable', async () => {
     ).toBeTruthy()
   })
 
+  it('Should pass the extra damage dice and bonus to the roll button', async () => {
+    const component = await mountWithTooltips(ActionsTable, {
+      props: {
+        actions: [
+          {
+            ...baseAction,
+            attacks: [
+              {
+                ...baseAttack,
+                extraDamageDieCount: 2,
+                extraDamageDieType: 'd6',
+                extraDamageBonus: 3,
+              },
+            ],
+          },
+        ],
+        allowRoll: true,
+        id: 'test-id',
+      },
+      provide,
+    })
+
+    const roll = component.findComponent({ name: 'InitiativeActionRoll' })
+
+    expect(roll.props('damageDice')).toBe('1d10 + 2d6')
+    expect(roll.props('damageBonus')).toBe(13)
+  })
+
   it('Should not render the roll button when the attack has neither a hit mod nor damage dice', async () => {
     const component = await mountWithTooltips(ActionsTable, {
       props: {

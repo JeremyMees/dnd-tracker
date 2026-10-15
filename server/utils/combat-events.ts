@@ -1,5 +1,4 @@
 import type { serverSupabaseServiceRole } from '#supabase/server'
-import type { CombatEventDraft } from '~~/shared/utils/dnd/combat-events'
 
 interface LogCombatEventsParams {
   encounterId: number
@@ -45,15 +44,10 @@ async function incrementSheetVersion(
   return version
 }
 
-interface SheetActionBroadcast {
-  row: string
-  patch: Partial<InitiativeSheetRow>
-}
-
 export async function broadcastSheetAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  action: SheetActionBroadcast,
+  action: Omit<SheetActionEvent, 'version'>,
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
   const channel = supabase.channel(`sheet:${encounterId}`)
@@ -64,12 +58,17 @@ export async function broadcastSheetAction(
 export async function broadcastSheetSync(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  sheet: Partial<InitiativeSheet>,
+  sheet: SheetSyncEvent['sheet'],
+  reminders?: TurnReminders,
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
   const channel = supabase.channel(`sheet:${encounterId}`)
 
-  await channel.httpSend('sync', { version, sheet })
+  await channel.httpSend('sync', {
+    version,
+    sheet,
+    ...(reminders && { reminders }),
+  })
 }
 
 export async function broadcastSheetDeleted(

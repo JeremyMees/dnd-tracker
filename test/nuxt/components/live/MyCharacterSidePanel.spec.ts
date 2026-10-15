@@ -4,9 +4,9 @@ import LiveMyCharacterSidePanel from '~/components/live/MyCharacterSidePanel.vue
 import { playerRow as baseRow } from '~~/test/fixtures/player-portal'
 
 const ControlsProbe = defineComponent({
-  props: ['row', 'active'],
+  props: ['row', 'rows', 'active'],
   template:
-    '<div test-id="controls-probe" :data-active="active">{{ row.id }}</div>',
+    '<div test-id="controls-probe" :data-active="active" :data-rows="rows.map(r => r.id).join()">{{ row.id }}</div>',
 })
 
 const stubs = { LiveMyCharacterControls: ControlsProbe }
@@ -29,10 +29,12 @@ const ownRow: PlayerRow = {
 
 const otherRow: PlayerRow = { ...baseRow, id: 'row-2', name: 'Goblin 1' }
 
+const rows = [ownRow, otherRow]
+
 describe('LiveMyCharacterSidePanel', () => {
   it('shows the controls when the row is taking its turn', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: { row: ownRow, activeRow: ownRow, allow },
+      props: { row: ownRow, rows, activeRow: ownRow, allow },
       global: { stubs },
     })
 
@@ -40,12 +42,15 @@ describe('LiveMyCharacterSidePanel', () => {
     expect(
       component.get('[test-id="controls-probe"]').attributes('data-active'),
     ).toBe('true')
+    expect(
+      component.get('[test-id="controls-probe"]').attributes('data-rows'),
+    ).toBe(rows.map(row => row.id).join())
     expect(component.find('[test-id="waiting"]').exists()).toBe(false)
   })
 
   it('highlights the panel when the row is taking its turn', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: { row: ownRow, activeRow: ownRow, allow },
+      props: { row: ownRow, rows, activeRow: ownRow, allow },
       global: { stubs },
     })
 
@@ -57,7 +62,7 @@ describe('LiveMyCharacterSidePanel', () => {
 
   it('shows the waiting state with your own status while another row acts', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: { row: ownRow, activeRow: otherRow, allow },
+      props: { row: ownRow, rows, activeRow: otherRow, allow },
       global: { stubs },
     })
 
@@ -78,6 +83,7 @@ describe('LiveMyCharacterSidePanel', () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
       props: {
         row: { ...baseRow, healthBand: 'critical' },
+        rows,
         activeRow: otherRow,
         allow,
       },

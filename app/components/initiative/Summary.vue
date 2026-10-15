@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { aggregateCombatStats } from '~~/shared/utils/dnd/combat-stats'
 import { useCombatEvents } from '~/queries/combat-events'
 
@@ -16,7 +16,6 @@ const emit = defineEmits<{
   keepPlaying: []
 }>()
 
-const { toast } = useToast()
 const { t } = useI18n()
 const { active: liveActive } = useLiveSession(props.encounterId)
 
@@ -43,10 +42,8 @@ async function share(): Promise<void> {
 
     shared.value = true
   } catch (error) {
-    toast({
-      title: t('general.error.failed.summaryShare'),
+    toast.error(t('general.error.failed.summaryShare'), {
       description: t(`general.error.reasons.${getFailureReason(error)}`),
-      variant: 'destructive',
     })
   } finally {
     sharing.value = false

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useEncounterCreate, useEncounterUpdate } from '~/queries/encounters'
 import { useCampaignMinimalListing } from '~/queries/campaigns'
 import { useForm } from 'vee-validate'
@@ -13,7 +13,6 @@ const props = defineProps<{
 }>()
 
 const user = useAuthenticatedUser()
-const { toast } = useToast()
 const { t } = useI18n()
 
 const formSchema = z
@@ -47,10 +46,8 @@ const { data: campaigns, error } = useCampaignMinimalListing(user.value.id)
 
 watch(error, err => {
   if (err) {
-    toast({
-      title: t('general.error.loadFailed.campaigns'),
+    toast.error(t('general.error.loadFailed.campaigns'), {
       description: t(`general.error.reasons.${getFailureReason(err)}`),
-      variant: 'destructive',
     })
 
     emit('close')

@@ -1,21 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { clearQueryCache, fetchMock, mountHook } from '~~/test/nuxt/stubs/query'
-import { liveStateQueryKey, useLiveState } from '~/queries/live'
+import { useLiveState } from '~/queries/live'
 
 describe('live queries', () => {
   beforeEach(async () => {
     fetchMock.mockReset()
     await clearQueryCache()
-  })
-
-  describe('liveStateQueryKey', () => {
-    it('builds a key from the token and seat token', () => {
-      expect(liveStateQueryKey('token', 'seat-token')).toEqual([
-        'useLiveState',
-        'token',
-        'seat-token',
-      ])
-    })
   })
 
   describe('useLiveState', () => {

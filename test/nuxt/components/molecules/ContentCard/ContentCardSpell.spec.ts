@@ -62,7 +62,7 @@ describe('ContentCardSpell', async () => {
       attackRoll: undefined,
       damageRoll: undefined,
       damageTypes: [],
-      savingThrowAbility: undefined,
+      savingThrowAbility: null,
       reactionCondition: undefined,
       materialCost: undefined,
       materialConsumed: undefined,

@@ -1,4 +1,5 @@
 export type DndDice = 'd100' | 'd20' | 'd12' | 'd10' | 'd8' | 'd6' | 'd4' | 'd3'
+export type DndRollableDice = Exclude<DndDice, 'd3'>
 
 export type DndDiceSide = 4 | 6 | 8 | 10 | 12 | 20 | 100
 
@@ -305,7 +306,7 @@ export interface DndSpell {
   materialCost?: number | null
   materialConsumed: boolean
   targetCount: number | null
-  savingThrowAbility: DndAbility
+  savingThrowAbility: DndAbility | null
   attackRoll: boolean
   damageRoll: string
   damageTypes: DndDamageType[]
@@ -455,12 +456,37 @@ export interface DndDocument {
   permalink: string
 }
 
+export type DndConditionTiming = 'start' | 'end'
+
+export type DndConditionPreset =
+  'endOfNextTurn' | 'startOfNextTurn' | 'oneMinute'
+
+export interface DndConditionSave {
+  ability: DndAbility
+  dc: number
+}
+
+export interface DndConditionDurationPrefill {
+  rowId: string
+  timing: DndConditionTiming
+  rounds?: number
+  ability?: DndAbility
+}
+
+export interface DndConditionDuration {
+  rowId: string
+  timing: DndConditionTiming
+  rounds?: number | null
+  save?: DndConditionSave | null
+}
+
 export interface DndCondition {
   name: string
   id: string
   desc: string
   level?: number | null
   hasLevels?: boolean | null
+  duration?: DndConditionDuration | null
 }
 
 export type DndItem =

@@ -38,10 +38,9 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
-  const cachedData = queryClient.getQueryData<InitiativeSheet>([
-    'useInitiativeSheetDetail',
-    id,
-  ])
+  const cachedData = queryClient.getQueryData<InitiativeSheet>(
+    queryKeys.initiativeSheetDetail(id),
+  )
 
   if (cachedData) return { data: cachedData }
 
@@ -68,7 +67,7 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
 
   if (error) throw createError(error)
 
-  queryClient.setQueryData(['useInitiativeSheetDetail', id], data)
+  queryClient.setQueryData(queryKeys.initiativeSheetDetail(id), data)
 
   return { data }
 }

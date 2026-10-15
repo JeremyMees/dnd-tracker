@@ -1,9 +1,14 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import ActionRoll from '~/components/initiative/ActionRoll.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import {
+  bloodiedCondition,
+  storedBloodiedCondition,
+} from '~~/test/fixtures/bloodied-condition'
 import { closePopover, openPopover } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
@@ -16,6 +21,7 @@ interface RollResult {
   damageRolled: Record<number, number[]>
   totalDamage: number
   rollType: RollType
+  miss: boolean
 }
 
 interface ActionRollVM {
@@ -28,14 +34,12 @@ interface ActionRollVM {
 }
 
 const mockPatchRow = vi.fn()
-const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
+const mockConditions = ref<DndCondition[]>([])
 
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({
-    toast: mockToast,
-  }),
+vi.mock('~/queries/srd', () => ({
+  useConditionsListing: () => ({ data: mockConditions }),
 }))
 
 const provide = {
@@ -58,6 +62,7 @@ let component: VueWrapper<InstanceType<typeof ActionRoll>>
 describe('ActionRoll component', () => {
   beforeEach(() => {
     mockSheet.value = sheet
+    mockConditions.value = []
   })
 
   it('Should match snapshot', async () => {
@@ -227,6 +232,67 @@ describe('ActionRoll component', () => {
     })
   })
 
+  describe('Damage dice', () => {
+    it('Should roll every die when several dice share the same sides', async () => {
+      component = await mountWithTooltips(ActionRoll, {
+        props: { ...props, damageDice: '2d6 + 1d6' },
+        provide,
+      })
+
+      const vm = component.vm as unknown as ActionRollVM
+      vm.onRoll('straight')
+      await nextTick()
+
+      expect(vm.result?.damageRolled[6]?.length).toBe(3)
+    })
+  })
+
+  describe('Natural 1', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('Should mark a natural 1 as a miss and hide the target form', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+      const vm = component.vm as unknown as ActionRollVM
+
+      await openPopover(component)
+      vm.onRoll('straight')
+      await nextTick()
+
+      expect(vm.result?.miss).toBe(true)
+      expect(document.body.querySelector('[test-id="miss"]')).toBeTruthy()
+      expect(document.body.querySelector('[test-id="submit"]')).toBeNull()
+    })
+
+    it('Should not mark other rolls as a miss', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+      const vm = component.vm as unknown as ActionRollVM
+
+      await openPopover(component)
+      vm.onRoll('straight')
+      await nextTick()
+
+      expect(vm.result?.miss).toBe(false)
+      expect(document.body.querySelector('[test-id="miss"]')).toBeNull()
+      expect(document.body.querySelector('[test-id="submit"]')).toBeTruthy()
+    })
+
+    it('Should not apply damage after a natural 1', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+      const vm = component.vm as unknown as ActionRollVM
+
+      vm.onRoll('straight')
+      vm.form.setFieldValue('target', sheet.rows[1]!.id)
+      await vm.onSubmit()
+
+      expect(mockPatchRow).not.toHaveBeenCalled()
+    })
+  })
+
   describe('Critical hits', () => {
     it('Should double the damage dice rolled on a natural 20', async () => {
       const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
@@ -379,6 +445,14 @@ describe('ActionRoll component', () => {
     }
     const targetId = sheet.rows[0]!.id
 
+    beforeEach(() => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
     it('Should update the target, toast a concentration warning and close the popover', async () => {
       component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
@@ -392,16 +466,79 @@ describe('ActionRoll component', () => {
       await vm.onSubmit()
 
       expect(mockPatchRow).toHaveBeenCalledWith(targetId, { tempHitPoints: 3 })
-      expect(mockToast).toHaveBeenCalledWith({
-        title: expect.stringMatching(
-          'components.initiativeTable.concentration.title',
-        ),
-        description: expect.stringMatching(
-          'components.initiativeTable.concentration.text',
-        ),
-        variant: 'info',
-      })
+      expect(toast.info).toHaveBeenCalledWith(
+        expect.stringMatching('components.initiativeTable.concentration.title'),
+        {
+          description: expect.stringMatching(
+            'components.initiativeTable.concentration.text',
+          ),
+        },
+      )
       expect(vm.popoverOpen).toBeFalsy()
+    })
+
+    it('Should add bloodied when the damage drops the target to half hp', async () => {
+      const target = {
+        ...sheet.rows[0]!,
+        hitPoints: 52,
+        tempHitPoints: undefined,
+        concentration: false,
+      }
+
+      mockConditions.value = [bloodiedCondition]
+      mockSheet.value = { ...sheet, rows: [target, ...sheet.rows.slice(1)] }
+
+      component = await mountWithTooltips(ActionRoll, {
+        props: submitProps,
+        provide,
+      })
+      const vm = component.vm as unknown as ActionRollVM
+
+      vm.onRoll('straight')
+      vm.form.setFieldValue('target', targetId)
+      await vm.onSubmit()
+
+      expect(mockPatchRow).toHaveBeenCalledWith(targetId, {
+        hitPoints: 50,
+        conditions: [...target.conditions, storedBloodiedCondition],
+      })
+    })
+
+    it('Should add two death save failures when a critical hit lands on a target at 0 hp', async () => {
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+      const target = {
+        ...sheet.rows[0]!,
+        hitPoints: 0,
+        tempHitPoints: undefined,
+        deathSaves: {
+          fail: [false, false, false],
+          save: [false, false, false],
+        },
+      } as InitiativeSheetRow
+
+      mockSheet.value = { ...sheet, rows: [target, ...sheet.rows.slice(1)] }
+
+      component = await mountWithTooltips(ActionRoll, {
+        props: submitProps,
+        provide,
+      })
+      const vm = component.vm as unknown as ActionRollVM
+
+      vm.onRoll('straight')
+      vm.form.setFieldValue('target', targetId)
+      await vm.onSubmit()
+
+      expect(mockPatchRow).toHaveBeenCalledWith(
+        targetId,
+        expect.objectContaining({
+          deathSaves: {
+            fail: [true, true, false],
+            save: [false, false, false],
+          },
+        }),
+      )
+
+      randomSpy.mockRestore()
     })
 
     it('Should not update when the selected target no longer exists on submit', async () => {

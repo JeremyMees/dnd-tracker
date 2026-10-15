@@ -21,19 +21,6 @@ const monsterOrderColumns = [
 
 type MonsterOrderColumn = (typeof monsterOrderColumns)[number]
 
-export interface SrdListingQuery {
-  type: DndContentType
-  page: number
-  search: string
-  documents: string[]
-  ordering: DndSortBy
-  cr?: number
-}
-
-export function escapeLike(value: string): string {
-  return value.replace(/[\\%_]/g, match => `\\${match}`)
-}
-
 function isMonsterOrderColumn(value: string): value is MonsterOrderColumn {
   return (monsterOrderColumns as readonly string[]).includes(value)
 }
@@ -60,14 +47,12 @@ function srdError(message: string, cause: unknown): never {
   throw createError({ statusCode: 500, statusMessage: message, cause })
 }
 
-type WithoutMeta<T> = T extends unknown
-  ? Omit<T, 'documentKey' | 'syncedAt'>
-  : never
+type WithoutMeta<T> = T extends unknown ? Omit<T, SrdMeta> : never
 
-function stripMeta<T extends { documentKey: string; syncedAt: string }>(
-  row: T,
-): WithoutMeta<T> {
-  const { documentKey, syncedAt, ...item } = row
+function stripMeta<
+  T extends { documentKey: string; syncedAt: string; manual: boolean },
+>(row: T): WithoutMeta<T> {
+  const { documentKey, syncedAt, manual, ...item } = row
 
   return item as WithoutMeta<T>
 }
@@ -84,7 +69,7 @@ export async function srdListing(
   const supabase = serverSupabaseServiceRole<DB>(event)
   const from = query.page * pageSize
   const to = from + pageSize - 1
-  const pattern = `%${escapeLike(query.search)}%`
+  const pattern = `%${escapeLikePattern(query.search)}%`
 
   // open5e conditions under 2014 core document this is a workaround
   const documents =
@@ -148,7 +133,20 @@ export async function srdDocuments(event: H3Event): Promise<DndDocument[]> {
 
   if (error) srdError('Could not read the stored documents', error)
 
-  return data.map(({ syncedAt, ...document }) => document)
+  return data.map(({ syncedAt, manual, ...document }) => document)
+}
+
+export async function srdCondition(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  id: string,
+): Promise<DndCondition | undefined> {
+  const { data } = await supabase
+    .from('srd_conditions')
+    .select('id, name, desc, level, hasLevels')
+    .eq('id', id)
+    .maybeSingle()
+
+  return data ?? undefined
 }
 
 export async function srdConditions(

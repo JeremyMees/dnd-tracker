@@ -60,7 +60,7 @@ interface SrdSpellOverride {
   rangeUnit: DndDistanceUnit
   shapeSizeUnit: DndDistanceUnit
   shapeType: DndShapeType | null
-  savingThrowAbility: DndAbility
+  savingThrowAbility: DndAbility | null
   castingOptions: DndSpellCastingOption[]
 }
 

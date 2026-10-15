@@ -66,6 +66,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
@@ -93,6 +94,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, round: 3, rows: [row], settings: {} },
           error: null,
@@ -160,6 +162,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
@@ -247,6 +250,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, rows: [npcRow], settings: {} },
           error: null,
@@ -422,6 +426,71 @@ describe('POST /api/encounter/live/action', () => {
       expect.objectContaining({
         version: 9,
         sheet: expect.objectContaining({ round: 1, activeIndex: 1 }),
+      }),
+    )
+  })
+
+  it('expires a timed condition, credits the seat and sends the reminders to the DM when the turn ends', async () => {
+    const token = await seatToken()
+    const otherRow = { ...row, id: 'row-2' }
+    const prone = {
+      id: 'prone',
+      name: 'Prone',
+      desc: 'On the ground.',
+      duration: { rowId: 'row-1', timing: 'end' as const, rounds: 1 },
+    }
+    const combatEvents = mockChain({ data: null, error: null })
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: [
+          mockChain({
+            data: {
+              activeIndex: 0,
+              round: 1,
+              rows: [{ ...row, conditions: [prone] }, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+        ],
+        combat_events: combatEvents,
+      },
+      { rpc: mockChain({ data: 9, error: null }) },
+    )
+
+    await handler(
+      actionEvent({ seatToken: token, action: { type: 'endTurn' } }),
+    )
+
+    expect(combatEvents.insert).toHaveBeenCalledWith([
+      expect.objectContaining({
+        rowId: 'row-1',
+        type: 'condition_expired',
+        actorName: 'Elara',
+      }),
+    ])
+    expect(
+      serverSupabaseServiceRole({} as never).channel('sheet:7').httpSend,
+    ).toHaveBeenCalledWith(
+      'sync',
+      expect.objectContaining({
+        reminders: {
+          expired: [{ rowId: 'row-1', rowName: row.name, condition: prone }],
+          saves: [],
+        },
       }),
     )
   })

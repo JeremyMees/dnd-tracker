@@ -3,6 +3,7 @@ import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockFetch } from '~~/test/unit/stubs/fetch'
 import { mockEmailTemplates } from '~~/test/unit/stubs/email'
+import { mockStorage } from '~~/test/unit/stubs/storage'
 import handler from '~~/server/api/emails/contact-request.post'
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -16,6 +17,7 @@ function body(overrides: Record<string, unknown> = {}) {
 
 describe('POST /api/emails/contact-request', () => {
   beforeEach(() => {
+    mockStorage()
     mockEmailTemplates()
     mockFetch.mockReset()
     mockRuntimeConfig({ plunkApiKey: 'plunk-key' })
@@ -86,5 +88,21 @@ describe('POST /api/emails/contact-request', () => {
       statusCode: 400,
       statusMessage: 'Validation Error',
     })
+  })
+
+  it('throws a 429 after too many contact requests from the same IP', async () => {
+    mockFetch.mockResolvedValue({ success: true })
+
+    for (let i = 0; i < 5; i++) {
+      await handler(mockEvent({ method: 'POST', body: body() }))
+    }
+
+    await expect(
+      handler(mockEvent({ method: 'POST', body: body() })),
+    ).rejects.toMatchObject({
+      statusCode: 429,
+      statusMessage: 'Too many requests',
+    })
+    expect(mockFetch).toHaveBeenCalledTimes(5)
   })
 })

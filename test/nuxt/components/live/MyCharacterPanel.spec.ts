@@ -4,9 +4,9 @@ import LiveMyCharacterPanel from '~/components/live/MyCharacterPanel.vue'
 import { playerRow as baseRow } from '~~/test/fixtures/player-portal'
 
 const ControlsProbe = defineComponent({
-  props: ['row', 'active'],
+  props: ['row', 'rows', 'active'],
   template:
-    '<div test-id="controls-probe" :data-active="active">{{ row.id }}</div>',
+    '<div test-id="controls-probe" :data-active="active" :data-rows="rows.map(r => r.id).join()">{{ row.id }}</div>',
 })
 
 const stubs = { LiveMyCharacterControls: ControlsProbe }
@@ -22,6 +22,8 @@ const allow: LiveAllowActions = {
 
 const otherRow: PlayerRow = { ...baseRow, id: 'row-2', name: 'Goblin 1' }
 
+const rows = [baseRow, otherRow]
+
 function isHidden(wrapper: {
   attributes: (key: string) => string | undefined
 }): boolean {
@@ -31,7 +33,7 @@ function isHidden(wrapper: {
 describe('LiveMyCharacterPanel', () => {
   it('expands the controls when the row is taking its turn', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, activeRow: baseRow, allow },
+      props: { row: baseRow, rows, activeRow: baseRow, allow },
       global: { stubs },
     })
 
@@ -40,12 +42,15 @@ describe('LiveMyCharacterPanel', () => {
       'pages.live.yourTurn',
     )
     expect(component.get('[test-id="controls-probe"]').text()).toBe(baseRow.id)
+    expect(
+      component.get('[test-id="controls-probe"]').attributes('data-rows'),
+    ).toBe(rows.map(row => row.id).join())
     expect(isHidden(component.get('[test-id="controls"]'))).toBe(false)
   })
 
   it('shows who is taking its turn while waiting, collapsed and inert', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, activeRow: otherRow, allow },
+      props: { row: baseRow, rows, activeRow: otherRow, allow },
       global: { stubs },
     })
 
@@ -59,7 +64,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('collapses the controls when the toggle is clicked', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, activeRow: baseRow, allow },
+      props: { row: baseRow, rows, activeRow: baseRow, allow },
       global: { stubs },
     })
 
@@ -72,7 +77,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('re-expands the controls once the row becomes active again', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, activeRow: otherRow, allow },
+      props: { row: baseRow, rows, activeRow: otherRow, allow },
       global: { stubs },
     })
 
@@ -83,7 +88,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('collapses the controls once the row is no longer active', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, activeRow: baseRow, allow },
+      props: { row: baseRow, rows, activeRow: baseRow, allow },
       global: { stubs },
     })
 
@@ -96,7 +101,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('does not toggle while waiting for the turn', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, activeRow: otherRow, allow },
+      props: { row: baseRow, rows, activeRow: otherRow, allow },
       global: { stubs },
     })
 

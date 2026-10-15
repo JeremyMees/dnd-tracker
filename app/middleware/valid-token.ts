@@ -1,11 +1,5 @@
 import { useQueryClient } from '@tanstack/vue-query'
 
-interface Invite {
-  campaign: number
-  user: string
-  role: UserRole
-}
-
 export default defineNuxtRouteMiddleware(async ({ query }) => {
   const supabase = useSupabaseClient<DB>()
   const localePath = useLocalePath()
@@ -17,10 +11,10 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
     return navigateTo(localePath('index'))
   }
 
-  let invite: Invite
+  let invite: InviteTokenPayload
 
   try {
-    invite = await $fetch<Invite>('/api/campaign/validate-join', {
+    invite = await $fetch<InviteTokenPayload>('/api/campaign/validate-join', {
       method: 'POST',
       body: { token },
     })
@@ -56,5 +50,5 @@ export default defineNuxtRouteMiddleware(async ({ query }) => {
 
   if (error) return navigateTo(localePath('no-access'))
 
-  queryClient.setQueryData(['useJoinCampaign', token], data)
+  queryClient.setQueryData(queryKeys.joinCampaign(token), data)
 })

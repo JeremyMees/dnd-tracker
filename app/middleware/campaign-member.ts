@@ -103,10 +103,9 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
 
-  const cachedData = queryClient.getQueryData<CampaignMember>([
-    'useCampaignMember',
-    id,
-  ])
+  const cachedData = queryClient.getQueryData<CampaignMember>(
+    queryKeys.campaignMember(id),
+  )
 
   if (cachedData) return { data: cachedData }
 
@@ -132,7 +131,7 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
 
   if (error) throw createError(error)
 
-  queryClient.setQueryData(['useCampaignMember', id], data)
+  queryClient.setQueryData(queryKeys.campaignMember(id), data)
 
   return { data }
 }

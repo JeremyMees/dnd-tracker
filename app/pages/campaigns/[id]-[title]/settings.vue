@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useTeamMemberRemove, useJoinTokenRemove } from '~/queries/team-members'
+import { maxCampaignMembers } from '~~/constants/validation'
 
 useSeo('Campaign settings')
 
@@ -88,7 +89,7 @@ async function remove(
       <div class="lg:min-w-[300px] lg:max-w-[300px]">
         <h2>
           {{ $t('pages.campaign.settings.access') }}
-          <span class="text-[12px]"> (max 10) </span>
+          <span class="text-[12px]"> (max {{ maxCampaignMembers }}) </span>
         </h2>
       </div>
       <div class="grow max-w-4xl">
@@ -183,8 +184,10 @@ async function remove(
               test-id="invite"
               :aria-label="$t('pages.campaign.settings.add')"
               :disabled="
-                [...(current?.team || []), ...(current?.join_campaign || [])]
-                  .length >= 9
+                isCampaignTeamFull(
+                  (current?.team.length ?? 0) +
+                    (current?.join_campaign.length ?? 0),
+                )
               "
               @click="invite"
             >

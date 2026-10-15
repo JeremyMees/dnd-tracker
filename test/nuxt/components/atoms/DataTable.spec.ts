@@ -3,7 +3,6 @@ import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { describe, expect, it, vi } from 'vitest'
 import DataTable from '~/components/atoms/DataTable.vue'
-import type { ListingFeatures } from '~/tables/features'
 import { expandButton, selectButton } from '~/tables/generate-functions'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 

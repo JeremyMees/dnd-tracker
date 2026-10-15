@@ -8,6 +8,7 @@ function toPlayerRow(
 ): PlayerRow {
   const isMonster = row.type === 'monster'
   const hidePlayerHealth = row.type === 'player' && !isOwnRow
+  const hideHitPoints = isMonster || hidePlayerHealth
 
   const playerRow: PlayerRow = {
     id: row.id,
@@ -16,7 +17,9 @@ function toPlayerRow(
     name:
       isMonster && hideMonsterNames ? `Monster ${monsterOrdinal}` : row.name,
     type: row.type,
-    conditions: row.conditions,
+    conditions: hideHitPoints
+      ? withoutBloodied(row.conditions)
+      : row.conditions,
     concentration: row.concentration,
     player: row.player,
   }
@@ -81,11 +84,6 @@ export function toPlayerSheet(
       endTurn: allow?.endTurn ?? true,
     },
   }
-}
-
-export interface OwnSeat {
-  row: string | undefined
-  kicked: boolean
 }
 
 export async function resolveOwnRowId(

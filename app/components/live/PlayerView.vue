@@ -70,6 +70,7 @@ const activeRow = computed(() => props.sheet?.rows[props.sheet.activeIndex])
       <LiveMyCharacterSidePanel
         v-if="isDesktop && ownRow"
         :row="ownRow"
+        :rows="sheet?.rows ?? []"
         :active-row="activeRow"
         :allow="allow"
       />
@@ -78,6 +79,7 @@ const activeRow = computed(() => props.sheet?.rows[props.sheet.activeIndex])
     <LiveMyCharacterPanel
       v-if="!isDesktop && ownRow"
       :row="ownRow"
+      :rows="sheet?.rows ?? []"
       :active-row="activeRow"
       :allow="allow"
     />

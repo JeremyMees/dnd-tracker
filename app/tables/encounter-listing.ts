@@ -1,5 +1,4 @@
 import { createColumnHelper, type TableState } from '@tanstack/vue-table'
-import type { ListingFeatures } from './features'
 import {
   iconButton,
   linkButton,

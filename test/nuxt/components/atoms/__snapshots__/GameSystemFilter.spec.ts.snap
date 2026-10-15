@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`GameSystemFilter > Should match snapshot 1`] = `
-"<button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="" data-state="closed" test-id="trigger" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">5e-2014 <span class="iconify i-tabler:chevron-down ml-auto my-auto size-4 text-muted-foreground" aria-hidden="true"></span></button>
+"<button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-0" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">5e-2014 <span class="iconify i-tabler:chevron-down ml-auto my-auto size-4 text-muted-foreground" aria-hidden="true"></span></button>
 <div class="max-h-[600px]">
   <div class="flex flex-col gap-y-2">
     <div><label for="system" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.gameSystemLabel

@@ -6,6 +6,7 @@ import {
   serverSupabaseServiceRole,
   serverSupabaseUser,
 } from '~~/test/unit/stubs/supabase'
+import { toPlayerSheet } from '~~/server/utils/player-portal'
 import handler from '~~/server/api/encounter/[id]/patch-row.post'
 
 const row: InitiativeSheetRow = {
@@ -50,6 +51,7 @@ describe('POST /api/encounter/[id]/patch-row', () => {
           }),
         ],
         combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({ data: null, error: null }),
       },
       {
         rpc: [
@@ -98,6 +100,60 @@ describe('POST /api/encounter/[id]/patch-row', () => {
       row: 'row-1',
       patch: { hitPoints: 6 },
     })
+  })
+
+  it('pushes the patched sheet to an active live session', async () => {
+    const sheet = {
+      id: 7,
+      title: 'Ambush',
+      round: 2,
+      activeIndex: 0,
+      rows: [row],
+      settings: { spacing: 'normal', modified: false },
+    }
+
+    mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({ data: sheet, error: null }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({
+          data: { uuid: 'session-uuid' },
+          error: null,
+        }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, hitPoints: 6 }, error: null }),
+          mockChain({ data: 5, error: null }),
+          mockChain({ data: 9, error: null }),
+        ],
+      },
+    )
+
+    await handler(patchEvent({ rowId: 'row-1', patch: { hitPoints: 6 } }))
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
+      p_session: 'session-uuid',
+    })
+    expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'sync',
+      {
+        version: 9,
+        sheet: toPlayerSheet({
+          ...sheet,
+          rows: [{ ...row, hitPoints: 6 }],
+        } as unknown as InitiativeSheet),
+      },
+    )
   })
 
   it('throws a 401 when the request is not authenticated', async () => {
@@ -163,6 +219,7 @@ describe('POST /api/encounter/[id]/patch-row', () => {
           }),
         ],
         combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({ data: null, error: null }),
       },
       {
         rpc: [

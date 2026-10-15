@@ -133,6 +133,7 @@
     "disadvantageAbb": "Dis.",
     "straight": "Straight",
     "toHit": "To hit",
+    "naturalOneMiss": "Natural 1, the attack misses",
     "widget": "Widget | Widgets",
     "all": "All",
     "more": "More",
@@ -396,8 +397,22 @@
       }
     },
     "error": {
-      "404": "Oh no..",
-      "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go.",
+      "notFound": {
+        "title": "Oh no..",
+        "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go."
+      },
+      "unauthorized": {
+        "title": "Who goes there?",
+        "text": "You need to be logged in to see this page."
+      },
+      "forbidden": {
+        "title": "No entry",
+        "text": "You don't have access to this page. Ask the owner of the campaign or encounter to give you access."
+      },
+      "generic": {
+        "title": "Something went wrong",
+        "text": "A critical fail on our side. Try again in a moment, and let us know if it keeps happening."
+      },
       "goHome": "Back to home"
     },
     "maintenance": {
@@ -586,6 +601,11 @@
         "title": "Password changing Sorcery",
         "subtitle": "Spellbound Security"
       },
+      "privacy": {
+        "title": "Privacy settings",
+        "subtitle": "Choose which cookies may join your party",
+        "manage": "Manage cookies"
+      },
       "updateImage": "Update image",
       "delete": "Delete profile",
       "toast": {
@@ -720,6 +740,7 @@
   "components": {
     "liveSession": {
       "title": "Live session",
+      "description": "Share the room code so players can follow initiative and act on their own turn.",
       "start": "Start live session",
       "code": "Room code",
       "expiresIn": "Ends in {time}",
@@ -796,6 +817,7 @@
       },
       "conditionAdded": "{rowName} gained {condition}",
       "conditionRemoved": "{rowName} lost {condition}",
+      "conditionExpired": "{condition} on {rowName} ran out",
       "concentrationBroken": "{rowName} lost concentration",
       "concentrationStarted": "{rowName} started concentrating",
       "deathSave": {
@@ -804,6 +826,47 @@
       },
       "stabilized": "{rowName} stabilized",
       "died": "{rowName} died"
+    },
+    "turnReminders": {
+      "expired": "{condition} on {name} ran out",
+      "save": "{name}: {ability} save DC {dc} to end {condition}",
+      "saved": "Saved",
+      "failed": "Failed"
+    },
+    "conditionDuration": {
+      "title": "Duration",
+      "pending": "Duration for {name}",
+      "presets": {
+        "endOfNextTurn": "Until the end of its next turn",
+        "startOfNextTurn": "Until the start of {name}'s next turn",
+        "oneMinute": "1 minute (10 rounds)"
+      },
+      "rounds": "Rounds",
+      "timing": "Counted at",
+      "timings": {
+        "start": "Start of turn",
+        "end": "End of turn"
+      },
+      "row": "Turn of",
+      "save": "Save ends",
+      "set": "Set duration",
+      "custom": "Custom",
+      "spell": "Fill in from a spell",
+      "spellPlaceholder": "Search a spell, like Hold Person",
+      "edit": "Change duration",
+      "add": "Add duration",
+      "clear": "No duration",
+      "required": "Set the rounds or a save",
+      "roundsLeft": "{count} round left | {count} rounds left",
+      "saveEnds": "Ends on a successful save",
+      "summary": {
+        "start": "{count} round left, counted at the start of {name}'s turn | {count} rounds left, counted at the start of {name}'s turn",
+        "end": "{count} round left, counted at the end of {name}'s turn | {count} rounds left, counted at the end of {name}'s turn",
+        "save": {
+          "start": "{ability} save DC {dc} at the start of {name}'s turn",
+          "end": "{ability} save DC {dc} at the end of {name}'s turn"
+        }
+      }
     },
     "combatSummary": {
       "title": "Encounter summary",
@@ -896,7 +959,7 @@
     "initiativeTable": {
       "died": {
         "title": "{name} is dead",
-        "textMinHP": "{name} has too many negative hp and is dead",
+        "textMassiveDamage": "{name} took damage equal to their hit point maximum and died instantly",
         "textDeathSaves": "{name} failed his death saves three times and is dead"
       },
       "stable": {
@@ -935,25 +998,6 @@
     "avatarPicker": {
       "options": "Toggle avatar options",
       "deprecated": "You have a old avatar, please update it."
-    },
-    "ConsentBanner": {
-      "rejectAll": "Reject all",
-      "acceptAll": "Accept all",
-      "customize": "Customize",
-      "saveSettings": "Save settings",
-      "policy": "Cookie policy",
-      "necessary": "Necessary",
-      "necessaryText": "These cookies are essential for the website to function properly. They ensure basic functionalities and security features of the website, anonymously.",
-      "measurement": "Analytics",
-      "measurementText": "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.",
-      "banner": {
-        "title": "We value your privacy",
-        "text": "This site uses cookies to improve your browsing experience, analyze site traffic."
-      },
-      "settings": {
-        "title": "Privacy Settings",
-        "text": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you allow."
-      }
     },
     "hero": {
       "title": "Run immersive D&D campaigns your way",
@@ -1087,7 +1131,33 @@
       "max": "Max campaign homebrews",
       "actionPage": "Action page",
       "infoPage": "Info page",
-      "invalid": "Can't save yet, check {tabs} for fields that still need fixing"
+      "invalid": "Can't save yet, check {tabs} for fields that still need fixing",
+      "pickType": "What are you creating?",
+      "pickTypeInfo": "Pick a type to get started, you can still change it later",
+      "changeType": "Change type",
+      "changeStart": "Change starting point",
+      "pickSource": "How do you want to start?",
+      "pickSourceInfo": "Build your creature from the ground up, or copy a monster from the bestiary and make it your own",
+      "pickMonster": "Pick a monster to start from",
+      "pickMonsterInfo": "Click the wand on a monster to copy its stats into your homebrew",
+      "basedOn": "Based on {name}",
+      "sources": {
+        "scratch": {
+          "label": "Start from scratch",
+          "description": "An empty stat block, you fill in every detail yourself"
+        },
+        "bestiary": {
+          "label": "Start from the bestiary",
+          "description": "Copy an existing monster and tweak it however you like"
+        }
+      },
+      "types": {
+        "player": "A character at the table, run by one of your players",
+        "summon": "A familiar, conjured creature or companion that fights alongside its summoner",
+        "npc": "A friendly or neutral face the party meets along the way",
+        "monster": "A foe to fight, from a lowly goblin to an ancient dragon",
+        "lair": "Lair actions that take their own turn in the initiative order"
+      }
     },
     "homebrewTable": {
       "nothing": "We haven't found any homebrew that matches this search, but that doesn't mean you can't create it yourself.",
@@ -1158,6 +1228,7 @@
       "cookie": "Cookie",
       "privacy": "Privacy",
       "legal": "Legal",
+      "privacySettings": "Privacy settings",
       "illustrations": "Illustrations by"
     },
     "confirmationModal": {
@@ -1197,6 +1268,7 @@
         "wolf-rider": "Wolf rider"
       },
       "negative": "Allow HP and AC to be negative",
+      "bloodied": "Add Bloodied automatically at half HP or lower",
       "noActiveWidgets": "No active widgets. Use the settings icon to enable widgets."
     },
     "infoCard": {
@@ -1213,6 +1285,24 @@
       "nothing": "No badge found with this code",
       "already": "Code is already claimed",
       "claim": "Claim badge"
+    },
+    "bugReportModal": {
+      "title": "Report a bug",
+      "message": "What went wrong?",
+      "messagePlaceholder": "Describe what you did, what you expected and what happened instead",
+      "emailDescription": "Optional, so we can follow up with you",
+      "screenshot": "Screenshot",
+      "screenshotDescription": "Optional. PNG, JPG, WEBP or GIF, max 5 MB",
+      "send": "Send report",
+      "success": {
+        "title": "Bug report sent",
+        "text": "Thanks for helping us improve the app!"
+      },
+      "errors": {
+        "screenshotType": "Only PNG, JPG, WEBP or GIF images are allowed",
+        "screenshotSize": "The screenshot can be at most 5 MB",
+        "send": "We couldn't send your bug report. Please try again later."
+      }
     },
     "addFeatureRequestModal": {
       "title": "Create feature request"

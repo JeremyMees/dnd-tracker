@@ -21,6 +21,124 @@ describe('dnd/row', () => {
       expect(result[2]?.initiative).toBe(10)
       expect(result[2]?.index).toBe(2)
     })
+
+    it('should sort a rolled 0 above unrolled rows', () => {
+      const rows = [
+        { id: 'unrolled', initiative: -1 },
+        { id: 'missing' },
+        { id: 'zero', initiative: 0 },
+      ] as InitiativeSheetRow[]
+
+      expect(indexCorrect(rows).map(row => row.id)).toEqual([
+        'zero',
+        'unrolled',
+        'missing',
+      ])
+    })
+
+    it('should keep the manual order of tied rows', () => {
+      const rows = [
+        { id: 'b', initiative: 12, initiativeModifier: 1 },
+        { id: 'a', initiative: 12, initiativeModifier: 4 },
+        { id: 'c', initiative: 18 },
+      ] as InitiativeSheetRow[]
+
+      expect(indexCorrect(rows).map(row => row.id)).toEqual(['c', 'b', 'a'])
+    })
+  })
+
+  describe('placeByInitiative', () => {
+    const rows = [
+      { id: 'high', initiative: 18, type: 'monster' },
+      { id: 'tie-low', initiative: 12, initiativeModifier: 1, type: 'monster' },
+      { id: 'tie-mid', initiative: 12, initiativeModifier: 3, type: 'npc' },
+      { id: 'low', initiative: 4, type: 'monster' },
+    ] as InitiativeSheetRow[]
+
+    it('should place a row above tied rows with a lower modifier', () => {
+      const moved = {
+        id: 'moved',
+        initiative: 12,
+        initiativeModifier: 2,
+        type: 'monster',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([...rows, moved], ['moved']).map(row => row.id),
+      ).toEqual(['high', 'moved', 'tie-low', 'tie-mid', 'low'])
+    })
+
+    it('should place a row after tied rows with the same modifier', () => {
+      const tied = [
+        { id: 'tie-5', initiative: 12, initiativeModifier: 5, type: 'monster' },
+        { id: 'tie-2', initiative: 12, initiativeModifier: 2, type: 'monster' },
+        { id: 'low', initiative: 4, type: 'monster' },
+      ] as InitiativeSheetRow[]
+      const moved = {
+        id: 'moved',
+        initiative: 12,
+        initiativeModifier: 2,
+        type: 'monster',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([moved, ...tied], ['moved']).map(row => row.id),
+      ).toEqual(['tie-5', 'tie-2', 'moved', 'low'])
+    })
+
+    it('should place a player before a tied non-player with the same modifier', () => {
+      const player = {
+        id: 'player',
+        initiative: 12,
+        initiativeModifier: 1,
+        type: 'player',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([...rows, player], ['player']).map(row => row.id),
+      ).toEqual(['high', 'player', 'tie-low', 'tie-mid', 'low'])
+    })
+
+    it('should keep the added order of rows without a rolled initiative', () => {
+      const unrolled = [
+        {
+          id: 'goblin',
+          initiative: -1,
+          initiativeModifier: 1,
+          type: 'monster',
+        },
+      ] as InitiativeSheetRow[]
+      const player = {
+        id: 'player',
+        initiative: -1,
+        initiativeModifier: 4,
+        type: 'player',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([...unrolled, player], ['player']).map(row => row.id),
+      ).toEqual(['goblin', 'player'])
+    })
+
+    it('should leave the order of rows that are not placed untouched', () => {
+      expect(placeByInitiative(rows, []).map(row => row.id)).toEqual([
+        'high',
+        'tie-low',
+        'tie-mid',
+        'low',
+      ])
+    })
+
+    it('should place several rows at once', () => {
+      const first = { id: 'first', initiative: 20 } as InitiativeSheetRow
+      const last = { id: 'last', initiative: 1 } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([last, ...rows, first], ['last', 'first']).map(
+          row => row.id,
+        ),
+      ).toEqual(['first', 'high', 'tie-low', 'tie-mid', 'low', 'last'])
+    })
   })
 
   describe('sanitizeRowNumbers', () => {
@@ -90,6 +208,58 @@ describe('dnd/row', () => {
           desc: 'On the ground.',
           level: null,
           hasLevels: null,
+        }),
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+    })
+
+    it('keeps a duration and drops its empty fields', () => {
+      expect(
+        sanitizeCondition({
+          id: 'prone',
+          name: 'Prone',
+          desc: 'On the ground.',
+          duration: {
+            rowId: 'row-1',
+            timing: 'start',
+            rounds: '2' as unknown as number,
+            save: null,
+          },
+        }),
+      ).toStrictEqual({
+        id: 'prone',
+        name: 'Prone',
+        desc: 'On the ground.',
+        duration: { rowId: 'row-1', timing: 'start', rounds: 2 },
+      })
+    })
+
+    it('keeps a duration save', () => {
+      expect(
+        sanitizeCondition({
+          id: 'paralyzed',
+          name: 'Paralyzed',
+          desc: 'Cannot move.',
+          duration: {
+            rowId: 'row-1',
+            timing: 'end',
+            rounds: null,
+            save: { ability: 'wisdom', dc: 14 },
+          },
+        }).duration,
+      ).toStrictEqual({
+        rowId: 'row-1',
+        timing: 'end',
+        save: { ability: 'wisdom', dc: 14 },
+      })
+    })
+
+    it('drops a null duration', () => {
+      expect(
+        sanitizeCondition({
+          id: 'prone',
+          name: 'Prone',
+          desc: 'On the ground.',
+          duration: null,
         }),
       ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
     })
@@ -207,6 +377,62 @@ describe('dnd/row', () => {
       expect(row.traits).toEqual(traits)
       expect(row.proficiencyBonus).toBe(2)
       expect(row.passivePerception).toBe(12)
+    })
+  })
+
+  describe('appendRows', () => {
+    const existing = [
+      { id: 'a', name: 'Aragorn', initiative: 12, index: 0 },
+      { id: 'b', name: 'Boromir', initiative: 5, index: 1 },
+    ] as InitiativeSheetRow[]
+
+    it('Should add a new row for every given row', () => {
+      const result = appendRows(existing, [
+        { name: 'Goblin', type: 'monster' },
+        { name: 'Wolf', type: 'summon' },
+      ])
+
+      expect(result).toHaveLength(4)
+      expect(result.find(r => r.name === 'Goblin')!.type).toBe('monster')
+      expect(result.find(r => r.name === 'Wolf')!.type).toBe('summon')
+    })
+
+    it('Should sort the rows by initiative and reindex them', () => {
+      const result = appendRows(existing, [
+        { name: 'Goblin', type: 'monster', initiative: 20 },
+      ])
+
+      expect(result.map(r => r.name)).toEqual(['Goblin', 'Aragorn', 'Boromir'])
+      expect(result.map(r => r.index)).toEqual([0, 1, 2])
+    })
+
+    it('Should place a new row above tied rows with a lower modifier', () => {
+      const result = appendRows(existing, [
+        {
+          name: 'Goblin',
+          type: 'monster',
+          initiative: 12,
+          initiativeModifier: 2,
+        },
+      ])
+
+      expect(result.map(r => r.name)).toEqual(['Goblin', 'Aragorn', 'Boromir'])
+    })
+
+    it('Should give copies of the same row their own id', () => {
+      const goblin = { name: 'Goblin', type: 'monster' as const }
+
+      const result = appendRows([], [goblin, goblin, goblin])
+
+      expect(new Set(result.map(r => r.id)).size).toBe(3)
+    })
+
+    it('Should leave the given rows untouched', () => {
+      const rows = [...existing]
+
+      appendRows(rows, [{ name: 'Goblin', type: 'monster' }])
+
+      expect(rows).toEqual(existing)
     })
   })
 

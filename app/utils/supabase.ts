@@ -38,15 +38,14 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   }
 }
 
+export function sbQuoteValue(value: string): string {
+  return `"${value.replace(/(["\\])/g, '\\$1')}"`
+}
+
 export function sbOrQuery(keys: string[], search: string): string {
-  let queryString = ''
+  const pattern = sbQuoteValue(`%${escapeLikePattern(search)}%`)
 
-  keys.forEach((key: string, i: number) => {
-    const escapedSearch = search.replace(/([%_])/g, '\\$1')
-    queryString += `${i ? ',' : ''}${key}.ilike.*${escapedSearch}*`
-  })
-
-  return queryString
+  return keys.map(key => `${key}.ilike.${pattern}`).join(',')
 }
 
 export function sbRange(page: number, perPage: number): SbRange {

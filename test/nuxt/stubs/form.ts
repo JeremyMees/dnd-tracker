@@ -28,6 +28,10 @@ interface FormWrapper {
   }
 }
 
+export function isHidden(el: Element): boolean {
+  return (el as HTMLElement).style.display === 'none'
+}
+
 export async function settle(ticks = 6): Promise<void> {
   for (let tick = 0; tick < ticks; tick++) {
     if (vi.isFakeTimers()) await vi.advanceTimersByTimeAsync(1)
@@ -73,6 +77,22 @@ export async function mountWithForm(
   await flushPromises()
 
   return { component: wrapper, form }
+}
+
+export async function selectFile(
+  component: VueWrapper,
+  selector: string,
+  file: File | null,
+): Promise<void> {
+  const input = component.get(selector)
+
+  Object.defineProperty(input.element, 'files', {
+    value: file ? [file] : [],
+    configurable: true,
+  })
+  await input.trigger('input')
+  await input.trigger('change')
+  await flushPromises()
 }
 
 export async function submitForm(

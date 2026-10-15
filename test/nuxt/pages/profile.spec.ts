@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -5,27 +6,15 @@ import Profile from '~/pages/profile.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const {
-  ask,
-  navigateTo,
-  removeProfile,
-  toast,
-  updateProfile,
-  useFetch,
-  useSeo,
-} = vi.hoisted(() => ({
-  ask: vi.fn(),
-  navigateTo: vi.fn(),
-  removeProfile: vi.fn(),
-  toast: vi.fn(),
-  updateProfile: vi.fn(),
-  useFetch: vi.fn(),
-  useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
+const { ask, navigateTo, removeProfile, updateProfile, useFetch, useSeo } =
+  vi.hoisted(() => ({
+    ask: vi.fn(),
+    navigateTo: vi.fn(),
+    removeProfile: vi.fn(),
+    updateProfile: vi.fn(),
+    useFetch: vi.fn(),
+    useSeo: vi.fn(),
+  }))
 
 vi.mock('~/queries/profiles', () => ({
   useProfileUpdate: () => ({ mutateAsync: updateProfile }),
@@ -45,7 +34,13 @@ vi.mock('~/components/atoms/AvatarPicker.vue', () => ({
   },
 }))
 
+vi.mock('#c15t/composables', async importOriginal => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useHasConsentPreferences: () => hasConsentPreferences,
+}))
+
 const user = ref<AuthUser>({ ...authUser })
+const hasConsentPreferences = ref(true)
 
 mockNuxtImport('useSeo', () => useSeo)
 mockNuxtImport('useAuthenticatedUser', () => () => user)
@@ -100,6 +95,7 @@ function confirmCallback(): (confirmed: boolean) => Promise<void> {
 describe('Profile page', () => {
   beforeEach(() => {
     user.value = { ...authUser }
+    hasConsentPreferences.value = true
 
     updateProfile.mockResolvedValue(undefined)
     removeProfile.mockResolvedValue(undefined)
@@ -347,10 +343,9 @@ describe('Profile page', () => {
 
     await updateProfileData({ name: 'Bilbo' })
 
-    expect(toast).toHaveBeenCalledWith({
-      description: 'pages.profile.toast.success.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'pages.profile.toast.success.text',
+    )
   })
 
   it('Should throw the translated reason without a toast when the update fails', async () => {
@@ -364,7 +359,7 @@ describe('Profile page', () => {
       'general.error.reasons.forbidden',
     )
 
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should translate the reused password error', async () => {
@@ -390,10 +385,8 @@ describe('Profile page', () => {
     })
 
     await vi.waitFor(() => {
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.avatar',
+      expect(toast.error).toHaveBeenCalledWith('general.error.failed.avatar', {
         description: 'general.error.reasons.rejected',
-        variant: 'destructive',
       })
     })
   })
@@ -442,10 +435,9 @@ describe('Profile page', () => {
     await confirmCallback()(true)
 
     expect(navigateTo).toHaveBeenCalledWith('/')
-    expect(toast).toHaveBeenCalledWith({
-      description: 'pages.profile.toast.delete.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'pages.profile.toast.delete.text',
+    )
   })
 
   it('Should leave the failure toast to the removal mutation', async () => {
@@ -456,6 +448,25 @@ describe('Profile page', () => {
 
     expect(removeProfile.mock.calls[0]?.[0]).not.toHaveProperty('onError')
     expect(navigateTo).not.toHaveBeenCalled()
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
+  })
+
+  it('Should open the consent preferences from the privacy settings button', async () => {
+    const { component } = await mountPage()
+    const activeUI = useNuxtApp().vueApp.runWithContext(() =>
+      useConsentActiveUI(),
+    )
+
+    await component.get('[test-id="privacy-settings"]').trigger('click')
+
+    expect(activeUI.value).toBe('manager')
+  })
+
+  it('Should hide the privacy settings when the policy offers no preferences', async () => {
+    hasConsentPreferences.value = false
+
+    const { component } = await mountPage()
+
+    expect(component.find('[test-id="privacy-settings"]').exists()).toBe(false)
   })
 })

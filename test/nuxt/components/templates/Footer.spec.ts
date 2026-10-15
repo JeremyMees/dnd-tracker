@@ -1,10 +1,18 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import YbugButton from '~/components/atoms/YbugButton.vue'
+import BugReportButton from '~/components/atoms/BugReportButton.vue'
 import Footer from '~/components/templates/Footer.vue'
+import { authUser } from '~~/test/fixtures/auth-user'
+
+const user = ref<AuthUser | null>(null)
+
+vi.mock('~/composables/useAuthentication', () => ({
+  useAuthentication: () => ({ user }),
+}))
 
 describe('Footer', () => {
   beforeEach(() => {
+    user.value = null
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-05-01'))
   })
@@ -87,10 +95,12 @@ describe('Footer', () => {
     ).toBe('/updates/changelog')
   })
 
-  it('Should render the ybug feedback button as a footer button', async () => {
+  it('Should render the bug report button as a footer button', async () => {
     const component = await mountSuspended(Footer)
 
-    expect(component.findComponent(YbugButton).props('type')).toBe('footer')
+    expect(component.findComponent(BugReportButton).props('type')).toBe(
+      'footer',
+    )
   })
 
   it('Should render the policy links', async () => {
@@ -104,6 +114,27 @@ describe('Footer', () => {
     )
     expect(component.get('[test-id="footer-legal"]').attributes('href')).toBe(
       '/policies/legal',
+    )
+  })
+
+  it('Should open the consent preferences from the privacy settings link', async () => {
+    const component = await mountSuspended(Footer)
+    const activeUI = useNuxtApp().vueApp.runWithContext(() =>
+      useConsentActiveUI(),
+    )
+
+    await component.get('[test-id="footer-privacy-settings"]').trigger('click')
+
+    expect(activeUI.value).toBe('manager')
+  })
+
+  it('Should hide the privacy settings link for a logged in user', async () => {
+    user.value = authUser
+
+    const component = await mountSuspended(Footer)
+
+    expect(component.find('[test-id="footer-privacy-settings"]').exists()).toBe(
+      false,
     )
   })
 

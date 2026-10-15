@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useRandomNames } from '~/queries/names'
 import { raceOptions, genderOptions } from '~~/constants/names'
 
@@ -14,7 +14,6 @@ const props = withDefaults(
 )
 
 const { copy } = useClipboard()
-const { toast } = useToast()
 const { t } = useI18n()
 
 const selectedRace = ref<DndRace | 'random'>('random')
@@ -33,10 +32,7 @@ const names = computed<string[]>(() => data.value ?? [])
 function handleCopy(name: string): void {
   copy(name)
 
-  toast({
-    title: t('components.nameGenerator.toast.title', { name }),
-    variant: 'info',
-  })
+  toast.info(t('components.nameGenerator.toast.title', { name }))
 }
 </script>
 

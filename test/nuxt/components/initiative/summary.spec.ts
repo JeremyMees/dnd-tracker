@@ -1,3 +1,4 @@
+import { resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import {
   mockNuxtImport,
   mountSuspended,
@@ -11,12 +12,6 @@ import { clickInDialog, dialogText, inDialog } from '~~/test/nuxt/stubs/dialog'
 const events = shallowRef<CombatEventRow[] | undefined>([])
 const isPending = ref(false)
 const liveActive = ref(false)
-
-const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
 
 vi.mock('~/queries/combat-events', () => ({
   useCombatEvents: () => ({ data: events, isPending }),
@@ -96,7 +91,7 @@ describe('Initiative summary', () => {
     liveActive.value = false
     shareCalls.length = 0
     shareFails = false
-    toast.mockClear()
+    resetToast()
     useLiveSessionMock.mockReturnValue({ active: liveActive })
   })
 
@@ -181,11 +176,10 @@ describe('Initiative summary', () => {
     await clickInDialog('share')
 
     await vi.waitFor(() => {
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.summaryShare',
-        description: 'general.error.reasons.forbidden',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.summaryShare',
+        { description: 'general.error.reasons.forbidden' },
+      )
     })
     expect(dialogText('share')).not.toContain(
       'components.combatSummary.actions.shared',

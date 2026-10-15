@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -18,10 +19,10 @@ const {
   setQueryData,
   subscribe,
   syncLiveSession,
-  toast,
   unsubscribe,
   update,
   patch,
+  turn,
   useSeo,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
@@ -32,10 +33,10 @@ const {
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
   syncLiveSession: vi.fn(),
-  toast: vi.fn(),
   unsubscribe: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
+  turn: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -43,10 +44,6 @@ const channel = { on, subscribe, unsubscribe }
 
 on.mockReturnValue(channel)
 subscribe.mockReturnValue(channel)
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -61,6 +58,7 @@ vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
   useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
+  useInitiativeSheetTurn: () => ({ mutateAsync: turn }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -108,6 +106,8 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  nextTurn: () => Promise<TurnReminders | undefined>
+  onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
   activeRow: InitiativeSheetRow | undefined
 }
 
@@ -348,11 +348,10 @@ describe('Encounter detail page', () => {
 
     emitBroadcast('deleted', {})
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.encounter.toasts.removed.title',
-      description: 'pages.encounter.toasts.removed.text',
-      variant: 'warning',
-    })
+    expect(toast.warning).toHaveBeenCalledWith(
+      'pages.encounter.toasts.removed.title',
+      { description: 'pages.encounter.toasts.removed.text' },
+    )
     expect(navigateTo).toHaveBeenCalledWith('/encounters')
     expect(setQueryData).not.toHaveBeenCalled()
   })
@@ -465,5 +464,53 @@ describe('Encounter detail page', () => {
     await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
 
     expect(patch).not.toHaveBeenCalled()
+  })
+
+  it('Should advance the turn through useInitiativeSheetTurn and return the reminders', async () => {
+    const expired: TurnReminder[] = [
+      {
+        rowId: 'ylqr4a611g',
+        rowName: 'Sister Iarnă',
+        condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+      },
+    ]
+    turn.mockResolvedValue({ sheet: {}, expired, saves: [] })
+
+    const { probe } = await mountPage()
+
+    await expect(probe.nextTurn()).resolves.toEqual({ expired, saves: [] })
+    expect(turn).toHaveBeenCalledWith({ id: 2 })
+  })
+
+  it('Should hand the reminders of a portal turn to the table', async () => {
+    const reminders: TurnReminders = {
+      expired: [
+        {
+          rowId: 'ylqr4a611g',
+          rowName: 'Sister Iarnă',
+          condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+        },
+      ],
+      saves: [],
+    }
+    const listener = vi.fn()
+
+    const { probe } = await mountPage()
+
+    probe.onTurnReminders(listener)
+    emitBroadcast('sync', { version: 3, sheet, reminders })
+
+    expect(listener).toHaveBeenCalledWith(reminders)
+  })
+
+  it('Should not advance the turn when there is no encounter', async () => {
+    data.value = undefined
+
+    const { component } = await mountPage()
+    const probe = component.findComponent(SheetProbe).vm as unknown as Probe
+
+    await probe.nextTurn()
+
+    expect(turn).not.toHaveBeenCalled()
   })
 })

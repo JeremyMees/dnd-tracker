@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useToast } from '~/components/ui/toast/use-toast'
-import { crOptions, gameSystems } from '~~/constants/dnd'
+import { toast } from 'vue-sonner'
+import { crOptions, defaultSrdDocuments, gameSystems } from '~~/constants/dnd'
 import { useSrdDocuments, useSrdMonsterListing } from '~/queries/srd'
 
 defineEmits<{ remix: [monster: DndMonster] }>()
@@ -11,17 +11,19 @@ const props = withDefaults(
     system?: DndGameSystem
     preSelectedDocuments?: string[]
     persist?: FilterPersistence
+    addable?: boolean
   }>(),
   {
     system: '5e-2024',
-    preSelectedDocuments: () => ['srd-2024'],
+    preSelectedDocuments: () => [...defaultSrdDocuments],
     persist: 'none',
+    addable: true,
   },
 )
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const injected = inject(INITIATIVE_SHEET, undefined)
+const canAdd = computed(() => props.addable && !!injected)
 
-const { toast } = useToast()
 const { t } = useI18n()
 
 const limit = 20
@@ -140,28 +142,20 @@ function resetFilters(): void {
 }
 
 async function addMonster(monster: DndMonster): Promise<void> {
-  if (!sheet.value) return
+  const sheet = injected?.sheet.value
 
-  const rows = [
-    ...sheet.value.rows,
-    createInitiativeRow(
-      monsterToRow(monster),
-      'monster',
-      sheet.value.rows.length,
-    ),
-  ]
+  if (!injected || !sheet) return
 
-  const sortedRows = indexCorrect(rows)
+  await injected.update({
+    rows: appendRows(sheet.rows, [monsterToRow(monster)]),
+  })
 
-  await update({ rows: sortedRows })
-
-  toast({
-    title: t('components.initiativeTable.bestiary.added', {
+  toast.success(
+    t('components.initiativeTable.bestiary.added', {
       name: monster.name,
     }),
-    description: t('components.initiativeTable.bestiary.addedDescription'),
-    variant: 'success',
-  })
+    { description: t('components.initiativeTable.bestiary.addedDescription') },
+  )
 }
 </script>
 
@@ -278,7 +272,7 @@ async function addMonster(monster: DndMonster): Promise<void> {
           :id="j === 0 ? 'el' : ''"
           :key="hit.id"
           :monster="hit"
-          addable
+          :addable="canAdd"
           remixable
           @add="addMonster"
           @remix="$emit('remix', $event)"

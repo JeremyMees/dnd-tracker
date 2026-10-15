@@ -194,7 +194,7 @@ export function actionsTable(
   item: HomebrewItemRow | InitiativeSheetRow,
   type: 'initiative' | 'campaign',
 ) {
-  const id = item.id as string
+  const id = String(item.id)
   const actions = item.actions ?? []
 
   return h(ActionsTable, {

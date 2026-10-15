@@ -1,16 +1,11 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-} from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
 
 export function useFeatureListing(data: ComputedRef<SbFilter>) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useFeatureListing', data],
+    queryKey: queryKeys.featureListing(data),
     queryFn: async () => {
       const result = await sbQuery<FeatureRow & { voted: FeatureVotes }>({
         table: 'features',
@@ -55,7 +50,7 @@ export function useFeatureCount() {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useFeatureCount'],
+    queryKey: queryKeys.featureCount(),
     queryFn: async () =>
       await supabase
         .from('features')
@@ -66,51 +61,25 @@ export function useFeatureCount() {
 
 export function useFeatureCreate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.featureRequest').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.featureRequest',
+    action: 'create',
     mutationFn: async ({ data }: { data: FeatureInsert } & QueryDefaults) => {
       const { error } = await supabase.from('features').insert([data])
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useFeatureListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useFeatureCount'] })
-
-      toast({
-        description: t('components.toast.create.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.create.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [queryKeys.featureListing(), queryKeys.featureCount()],
   })
 }
 
 export function useFeatureVote() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       id,
       vote,
@@ -122,22 +91,13 @@ export function useFeatureVote() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useFeatureListing'] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.featureListing() })
     },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('general.error.failed.vote'),
+    onError: error => {
+      toast.error(t('general.error.failed.vote'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
     },
   })
 }

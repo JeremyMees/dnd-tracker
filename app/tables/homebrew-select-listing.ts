@@ -1,5 +1,4 @@
 import { createColumnHelper, type TableState } from '@tanstack/vue-table'
-import type { HomebrewSelectFeatures } from './features'
 import {
   iconLabelElement,
   homebrewTag,

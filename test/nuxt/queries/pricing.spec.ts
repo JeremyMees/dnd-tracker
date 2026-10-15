@@ -1,10 +1,6 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import {
-  clearQueryCache,
-  fetchMock,
-  mountHook,
-  toast,
-} from '~~/test/nuxt/stubs/query'
+import { clearQueryCache, fetchMock, mountHook } from '~~/test/nuxt/stubs/query'
 import { usePricingListing } from '~/queries/pricing'
 
 describe('pricing queries', () => {
@@ -68,11 +64,10 @@ describe('pricing queries', () => {
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
       expect(fetchMock).toHaveBeenCalledTimes(1)
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.pricing',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.pricing',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

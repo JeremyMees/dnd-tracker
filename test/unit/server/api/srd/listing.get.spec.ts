@@ -11,7 +11,7 @@ import handler from '~~/server/api/srd/listing.get'
 const SYNCED_AT = '2026-09-01T00:00:00.000Z'
 
 function row(item: DndItem, documentKey = 'srd-2024') {
-  return { ...item, documentKey, syncedAt: SYNCED_AT }
+  return { ...item, documentKey, syncedAt: SYNCED_AT, manual: false }
 }
 
 function listingEvent(query: Record<string, string> = {}) {

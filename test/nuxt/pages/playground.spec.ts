@@ -42,6 +42,7 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  nextTurn: () => Promise<TurnReminders | undefined>
 }
 
 async function mountPlayground() {
@@ -202,6 +203,58 @@ describe('Playground page', () => {
       probe.sheet?.rows.find(row => row.id === untouched.id)?.hitPoints,
     ).toBe(untouched.hitPoints)
     expect(tourData.value?.rows.find(row => row.id === '1')?.hitPoints).toBe(50)
+  })
+
+  it('Should advance the turn locally and count condition durations down', async () => {
+    const pinnedProne = { id: 'prone', name: 'Prone', desc: 'On the ground.' }
+    const timed: InitiativeSheetRow = {
+      id: 'timed',
+      index: 0,
+      initiative: 15,
+      name: 'Goblin',
+      type: 'monster',
+      conditions: [
+        {
+          id: 'prone',
+          name: 'Prone',
+          desc: 'On the ground.',
+          duration: {
+            rowId: 'timed',
+            timing: 'end',
+            rounds: 1,
+          },
+        },
+      ],
+    }
+    startTour.mockImplementation(async () => {
+      isTourActive.value = true
+      tourData.value = {
+        ...playgroundSheet,
+        activeIndex: 0,
+        round: 1,
+        rows: [timed, { ...timed, id: 'other', conditions: [] }],
+        infoCards: [pinnedProne],
+      }
+    })
+
+    const { probe } = await mountPlayground()
+
+    const reminders = await probe.nextTurn()
+    await nextTick()
+
+    expect(probe.sheet?.activeIndex).toBe(1)
+    expect(probe.sheet?.rows[0]?.conditions).toEqual([])
+    expect(probe.sheet?.infoCards).toEqual([pinnedProne])
+    expect(reminders).toEqual({
+      expired: [
+        {
+          rowId: 'timed',
+          rowName: 'Goblin',
+          condition: timed.conditions[0],
+        },
+      ],
+      saves: [],
+    })
   })
 
   it('Should no-op patchRow for a row that does not exist', async () => {

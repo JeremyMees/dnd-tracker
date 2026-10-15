@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { maxCampaignMembers } from '~~/constants/validation'
 import {
   isOwner,
   isAdmin,
   isMember,
   isOwnerOrAdmin,
+  isCampaignTeamFull,
   isNotCampaignOwner,
   isCampaignOwner,
   isCampaignAdmin,
@@ -94,6 +96,22 @@ describe('abilities', () => {
         isAdmin(mockCampaign.team as TeamMember[], 'member-101'),
       ).toBeFalsy()
       expect(isAdmin(mockCampaign.team as TeamMember[], userId)).toBeFalsy()
+    })
+  })
+
+  describe('isCampaignTeamFull', () => {
+    it('Should have room while the owner and members stay below the maximum', () => {
+      expect(isCampaignTeamFull(maxCampaignMembers - 2)).toBe(false)
+    })
+
+    it('Should be full once the owner and members reach the maximum', () => {
+      expect(isCampaignTeamFull(maxCampaignMembers - 1)).toBe(true)
+    })
+
+    it('Should allow fifteen people including the owner', () => {
+      expect(maxCampaignMembers).toBe(15)
+      expect(isCampaignTeamFull(13)).toBe(false)
+      expect(isCampaignTeamFull(14)).toBe(true)
     })
   })
 

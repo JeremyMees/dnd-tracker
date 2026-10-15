@@ -45,18 +45,16 @@ onMounted(() => {
 
   if (!initialCode.value) return
 
-  const session = queryClient.getQueryData<LiveCodeSession>([
-    'useLiveCode',
-    initialCode.value,
-  ])
+  const session = queryClient.getQueryData<LiveCodeSession>(
+    queryKeys.liveCode(initialCode.value),
+  )
 
   if (session) validated.value = session
   else {
     initialErrorStatus.value =
-      queryClient.getQueryData<number>([
-        'useLiveCodeError',
-        initialCode.value,
-      ]) ?? 500
+      queryClient.getQueryData<number>(
+        queryKeys.liveCodeError(initialCode.value),
+      ) ?? 500
   }
 })
 

@@ -104,6 +104,38 @@ describe('dnd/dice', () => {
     })
   })
 
+  describe('formatAttackDamage', () => {
+    it('should combine the damage and extra damage dice', () => {
+      expect(
+        formatAttackDamage({
+          damageDieCount: 2,
+          damageDieType: 'd6',
+          extraDamageDieCount: 1,
+          extraDamageDieType: 'd8',
+        }),
+      ).toBe('2d6 + 1d8')
+    })
+
+    it('should return only the damage dice without extra damage', () => {
+      expect(
+        formatAttackDamage({ damageDieCount: 2, damageDieType: 'd6' }),
+      ).toBe('2d6')
+    })
+
+    it('should return only the extra damage dice without damage dice', () => {
+      expect(
+        formatAttackDamage({
+          extraDamageDieCount: 3,
+          extraDamageDieType: 'd4',
+        }),
+      ).toBe('3d4')
+    })
+
+    it('should return undefined without any dice', () => {
+      expect(formatAttackDamage({})).toBeUndefined()
+    })
+  })
+
   describe('parseAttackDice', () => {
     it('should parse a valid dice expression', () => {
       expect(parseAttackDice('2d6')).toEqual({

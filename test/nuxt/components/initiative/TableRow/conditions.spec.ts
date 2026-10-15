@@ -7,6 +7,7 @@ import NumberField from '~/components/ui/number-field/NumberField.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import conditions from '~~/test/fixtures/conditions.json'
+import { isHidden } from '~~/test/nuxt/stubs/form'
 
 interface Props {
   item: InitiativeSheetRow
@@ -15,11 +16,10 @@ interface Props {
 type Condition = InitiativeSheetRow['conditions'][0]
 
 interface ConditionsVM {
-  selected: Condition[]
   popoverOpen: boolean
   removeCondition: (name: string) => void
   updateCondition: (conditions: Condition[]) => void
-  toggleSelected: (item: Condition) => void
+  addCondition: (condition: Condition) => void
 }
 
 const mockPatchRow = vi.fn()
@@ -44,6 +44,7 @@ vi.mock('~/queries/srd', () => ({
   useSrdDocuments: () => ({
     data: ref([]),
   }),
+  useSrdListing: () => ({ data: ref(undefined) }),
 }))
 
 describe('Initiative table row conditions', async () => {
@@ -128,6 +129,159 @@ describe('Initiative table row conditions', async () => {
     )
   })
 
+  describe('Durations', () => {
+    const timed: Condition = {
+      ...(conditions[0] as Condition),
+      duration: { rowId: sheet.rows[1]!.id, timing: 'end', rounds: 2 },
+    }
+    const saveEnds: Condition = {
+      ...(conditions[1] as Condition),
+      duration: {
+        rowId: sheet.rows[0]!.id,
+        timing: 'end',
+        save: { ability: 'wisdom', dc: 13 },
+      },
+    }
+
+    function mountWith(conditionList: Condition[]) {
+      return mountSuspended(Conditions, {
+        props: { item: { ...props.item, conditions: conditionList } },
+        provide,
+      })
+    }
+
+    it('Should show the rounds left on the badge', async () => {
+      const component = await mountWith([timed])
+
+      const duration = component.get('[test-id="duration"]')
+
+      expect(duration.text()).toContain('2')
+    })
+
+    it('Should mark a save-only duration without a round count', async () => {
+      const component = await mountWith([saveEnds])
+
+      expect(component.get('[test-id="duration"]').text()).not.toMatch(/\d/)
+    })
+
+    it('Should not mark conditions without a duration', async () => {
+      const component = await mountWith([conditions[0] as Condition])
+
+      expect(component.find('[test-id="duration"]').exists()).toBe(false)
+    })
+
+    it('Should describe the duration in the condition popover', async () => {
+      const component = await mountWith([
+        {
+          ...timed,
+          duration: { ...timed.duration!, save: saveEnds.duration!.save },
+        },
+      ])
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(
+        document.body.querySelector('[test-id="duration-rounds"]')?.textContent,
+      ).toContain('components.conditionDuration.summary.end')
+      expect(
+        document.body.querySelector('[test-id="duration-save"]')?.textContent,
+      ).toContain('components.conditionDuration.summary.save.end')
+    })
+
+    function bodyEl(testId: string): HTMLElement {
+      return document.body.querySelector(`[test-id="${testId}"]`)!
+    }
+
+    it('Should hide the duration editor until the toggle is pressed', async () => {
+      const component = await mountWith([timed])
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(isHidden(bodyEl('duration-editor'))).toBe(true)
+      expect(bodyEl('duration-toggle').getAttribute('aria-expanded')).toBe(
+        'false',
+      )
+      expect(bodyEl('duration-toggle').textContent).toContain(
+        'components.conditionDuration.edit',
+      )
+
+      bodyEl('duration-toggle').click()
+      await nextTick()
+
+      expect(isHidden(bodyEl('duration-editor'))).toBe(false)
+      expect(bodyEl('duration-toggle').getAttribute('aria-expanded')).toBe(
+        'true',
+      )
+    })
+
+    it('Should offer to add a duration when there is none', async () => {
+      const component = await mountWith([conditions[0] as Condition])
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(bodyEl('duration-none').textContent).toContain(
+        'components.conditionDuration.clear',
+      )
+      expect(bodyEl('duration-toggle').textContent).toContain(
+        'components.conditionDuration.add',
+      )
+    })
+
+    it('Should close the duration editor once a duration is chosen', async () => {
+      const component = await mountWith([timed])
+
+      await component.findComponent(Badge).trigger('click')
+      bodyEl('duration-toggle').click()
+      await nextTick()
+
+      await component
+        .findComponent({ name: 'FormConditionDuration' })
+        .vm.$emit('update', null)
+
+      expect(isHidden(bodyEl('duration-editor'))).toBe(true)
+    })
+
+    it('Should patch only the conditions when a duration is set', async () => {
+      const component = await mountWith([
+        conditions[0] as Condition,
+        conditions[1] as Condition,
+      ])
+
+      await component.findComponent(Badge).trigger('click')
+      await component
+        .findComponent({ name: 'FormConditionDuration' })
+        .vm.$emit('update', timed.duration)
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [timed, conditions[1]],
+      })
+    })
+
+    it('Should clear the duration', async () => {
+      const component = await mountWith([timed])
+
+      await component.findComponent(Badge).trigger('click')
+      await component
+        .findComponent({ name: 'FormConditionDuration' })
+        .vm.$emit('update', null)
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [{ ...timed, duration: null }],
+      })
+    })
+
+    it('Should keep a duration when another condition is added', async () => {
+      const component = await mountWith([timed])
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.addCondition(conditions[1] as Condition)
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [timed, conditions[1]],
+      })
+    })
+  })
+
   describe('removeCondition', () => {
     it('Should patch the row with the matching condition removed', async () => {
       const component = await mountSuspended(Conditions, { props, provide })
@@ -171,12 +325,9 @@ describe('Initiative table row conditions', async () => {
   })
 
   describe('updateCondition', () => {
-    it('Should patch the row with the new conditions and close the popover', async () => {
+    it('Should patch the row with the new conditions', async () => {
       const component = await mountSuspended(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
-
-      vm.popoverOpen = true
-      await nextTick()
 
       vm.updateCondition([conditions[2] as Condition])
 
@@ -184,7 +335,6 @@ describe('Initiative table row conditions', async () => {
       expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
         conditions: [conditions[2]],
       })
-      expect(vm.popoverOpen).toBeFalsy()
     })
   })
 
@@ -199,83 +349,10 @@ describe('Initiative table row conditions', async () => {
     })
   })
 
-  describe('toggleSelected', () => {
-    it('Should add a condition to selected when not already present', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.toggleSelected(conditions[0] as Condition)
-
-      expect(vm.selected.map(c => c.id)).toEqual([conditions[0]!.id])
-    })
-
-    it('Should remove a condition from selected when toggled again', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.toggleSelected(conditions[0] as Condition)
-      vm.toggleSelected(conditions[0] as Condition)
-
-      expect(vm.selected).toHaveLength(0)
-    })
-  })
-
-  describe('popoverOpen watcher', () => {
-    it('Should populate selected with the item conditions when the popover opens', async () => {
-      const component = await mountSuspended(Conditions, {
-        props: {
-          item: {
-            ...props.item,
-            conditions: [
-              conditions[0] as Condition,
-              conditions[1] as Condition,
-            ],
-          },
-        },
-        provide,
-      })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.popoverOpen = true
-      await nextTick()
-
-      expect(vm.selected.map(c => c.id)).toEqual([
-        conditions[0]!.id,
-        conditions[1]!.id,
-      ])
-    })
-
-    it('Should clear selected when the popover closes', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.popoverOpen = true
-      await nextTick()
-      vm.popoverOpen = false
-      await nextTick()
-
-      expect(vm.selected).toHaveLength(0)
-    })
-  })
-
   describe('Add condition popover', () => {
-    it('Should render an option for every available condition', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
-      const vm = component.vm as unknown as ConditionsVM
-
-      vm.popoverOpen = true
-      await nextTick()
-
-      const options = component
-        .findAllComponents(Badge)
-        .filter(badge => badge.attributes('test-id') === 'option')
-
-      expect(options).toHaveLength(conditions.length)
-    })
-
-    it('Should select and update a condition through the popover UI', async () => {
+    async function openPicker(item: InitiativeSheetRow = props.item) {
       const component = await mountSuspended(Conditions, {
-        props: { item: { ...props.item, conditions: [] } },
+        props: { item },
         provide,
       })
       const vm = component.vm as unknown as ConditionsVM
@@ -283,49 +360,43 @@ describe('Initiative table row conditions', async () => {
       vm.popoverOpen = true
       await nextTick()
 
-      const option = component
-        .findAllComponents(Badge)
-        .find(badge => badge.text() === conditions[0]!.name)
+      return component.findComponent({ name: 'ConditionPicker' })
+    }
 
-      await option!.trigger('click')
+    it('Should pass the listing, applied conditions and turn order to the picker', async () => {
+      const picker = await openPicker()
 
-      const updateButton = component
-        .findAllComponents(Button)
-        .find(button => button.attributes('test-id') === 'update')
-
-      await updateButton!.trigger('click')
-
-      expect(mockPatchRow).toHaveBeenCalledTimes(1)
-      expect(mockPatchRow).toHaveBeenCalledWith(
-        props.item.id,
-        expect.objectContaining({
-          conditions: expect.arrayContaining([
-            expect.objectContaining({ id: conditions[0]!.id }),
-          ]),
-        }),
-      )
-      expect(vm.popoverOpen).toBeFalsy()
+      expect(picker.props()).toMatchObject({
+        conditions,
+        applied: props.item.conditions,
+        rows: sheet.rows,
+        activeRowId: sheet.rows[sheet.activeIndex]!.id,
+      })
     })
 
-    it('Should deselect a condition when its option is clicked twice', async () => {
-      const component = await mountSuspended(Conditions, {
-        props: {
-          item: { ...props.item, conditions: [conditions[0] as Condition] },
-        },
-        provide,
+    it('Should append a picked condition to the row', async () => {
+      const picker = await openPicker({ ...props.item, conditions: [] })
+      const duration: DndConditionDuration = {
+        rowId: props.item.id,
+        timing: 'end',
+        rounds: 1,
+      }
+
+      await picker.vm.$emit('add', { ...conditions[0], duration })
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [{ ...conditions[0], duration }],
       })
-      const vm = component.vm as unknown as ConditionsVM
+    })
 
-      vm.popoverOpen = true
-      await nextTick()
+    it('Should remove a condition the picker removes', async () => {
+      const picker = await openPicker()
 
-      const option = component
-        .findAllComponents(Badge)
-        .find(badge => badge.text() === conditions[0]!.name)
+      await picker.vm.$emit('remove', props.item.conditions[0])
 
-      await option!.trigger('click')
-
-      expect(vm.selected).toHaveLength(0)
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [],
+      })
     })
   })
 

@@ -1,10 +1,10 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import Navbar from '~/components/templates/Navbar.vue'
 
 const logoutMock = vi.fn()
-const toastMock = vi.fn()
 const userMock = ref<{ name: string; avatar: string } | null>({
   name: 'Test User',
   avatar: '/avatar.png',
@@ -23,27 +23,23 @@ vi.mock('~/composables/useAuthentication', () => ({
 vi.mock('~/composables/useUi', () => ({
   useUi: () => ({
     playRoutes: [
-      { label: 'play1', url: '/play1', icon: 'tabler:play' },
-      { label: 'play2', url: '/play2' },
+      { label: 'play1', url: 'encounters', icon: 'tabler:play' },
+      { label: 'play2', url: 'campaigns' },
     ],
     routes: [
-      { label: 'home', url: '/', icon: 'tabler:home' },
-      { label: 'about', url: '/about' },
+      { label: 'home', url: 'index', icon: 'tabler:home' },
+      { label: 'about', url: 'contact' },
     ],
     profileRoutes: [
       {
         label: 'profile',
-        url: '/profile',
+        url: 'profile',
         requireAuth: true,
         icon: 'tabler:user',
       },
-      { label: 'public', url: '/public', requireAuth: false },
+      { label: 'public', url: 'pricing', requireAuth: false },
     ],
   }),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast: toastMock }),
 }))
 
 const isSmallMock = ref(false)
@@ -96,10 +92,8 @@ describe('Navbar', () => {
 
     await vm.logoutUser()
 
-    expect(toastMock).toHaveBeenCalledWith({
-      title: 'general.error.failed.logout',
+    expect(toast.error).toHaveBeenCalledWith('general.error.failed.logout', {
       description: 'general.error.reasons.rejected',
-      variant: 'destructive',
     })
   })
 

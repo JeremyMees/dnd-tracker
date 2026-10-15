@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useInitiativeSheetDetail', id],
+    queryKey: queryKeys.initiativeSheetDetail(id),
     queryFn: async () => {
       const { data, error } = await supabase
         .from('initiative_sheets')
@@ -37,11 +37,10 @@ export function useInitiativeSheetDetail(id: number) {
 export function useInitiativeSheetDetailUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
   const { mutateAsync: sync } = useInitiativeSheetSync()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       data,
       id,
@@ -65,16 +64,15 @@ export function useInitiativeSheetDetailUpdate() {
     },
     onMutate: async ({ data, id }) => {
       await queryClient.cancelQueries({
-        queryKey: ['useInitiativeSheetDetail', id],
+        queryKey: queryKeys.initiativeSheetDetail(id),
       })
 
-      const previous = queryClient.getQueryData<InitiativeSheet>([
-        'useInitiativeSheetDetail',
-        id,
-      ])
+      const previous = queryClient.getQueryData<InitiativeSheet>(
+        queryKeys.initiativeSheetDetail(id),
+      )
 
       queryClient.setQueryData(
-        ['useInitiativeSheetDetail', id],
+        queryKeys.initiativeSheetDetail(id),
         (old: InitiativeSheet) => {
           if (!old) return old
 
@@ -84,32 +82,24 @@ export function useInitiativeSheetDetailUpdate() {
 
       return { previous }
     },
-    onSuccess: (_data, { id, onSuccess }) => {
+    onSuccess: (_data, { id }) => {
       sync({ id }).catch(() => {})
-
-      if (onSuccess) onSuccess()
     },
-    onError: (error, { onError, id, data }, context) => {
+    onError: (error, { id, data }, context) => {
       if (context?.previous) {
         // roll back the optimistic update
         queryClient.setQueryData(
-          ['useInitiativeSheetDetail', id],
+          queryKeys.initiativeSheetDetail(id),
           context.previous,
         )
       }
 
-      if (onError) onError(error.message)
-
-      toast({
-        title: t(
+      toast.error(
+        t(
           `pages.encounter.toasts.updateFailed.${failedFieldKey(data, UPDATE_FAILED_FIELDS, 'generic')}`,
         ),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
+        { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+      )
     },
   })
 }
@@ -118,6 +108,68 @@ export function useInitiativeSheetSync() {
   return useMutation({
     mutationFn: async ({ id }: { id: number }) => {
       await $fetch(`/api/encounter/${id}/sync`, { method: 'POST' })
+    },
+  })
+}
+
+export function useInitiativeSheetTurn() {
+  const queryClient = useQueryClient()
+  const { t } = useI18n()
+
+  return useCallbackMutation({
+    mutationFn: ({ id }: { id: number } & QueryDefaults) =>
+      $fetch<TurnResult>(`/api/encounter/${id}/turn`, { method: 'POST' }),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.initiativeSheetDetail(id),
+      })
+
+      const previous = queryClient.getQueryData<InitiativeSheet>(
+        queryKeys.initiativeSheetDetail(id),
+      )
+
+      if (previous) {
+        const { activeIndex, round, rows } = advanceTurn(previous)
+
+        queryClient.setQueryData(queryKeys.initiativeSheetDetail(id), {
+          ...previous,
+          activeIndex,
+          round,
+          rows,
+        })
+      }
+
+      return { previous }
+    },
+    onSuccess: ({ sheet, expired }, { id }) => {
+      queryClient.setQueryData(
+        queryKeys.initiativeSheetDetail(id),
+        (old: InitiativeSheet | undefined) =>
+          old && {
+            ...old,
+            activeIndex: sheet.activeIndex,
+            round: sheet.round,
+            rows: sheet.rows,
+          },
+      )
+
+      if (expired.length) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.combatEvents(id),
+        })
+      }
+    },
+    onError: (error, { id }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(
+          queryKeys.initiativeSheetDetail(id),
+          context.previous,
+        )
+      }
+
+      toast.error(t('pages.encounter.toasts.updateFailed.turn'), {
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+      })
     },
   })
 }
@@ -164,10 +216,9 @@ function failedFieldKey(
 
 export function useInitiativeSheetPatch() {
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
-  return useMutation({
+  return useCallbackMutation({
     mutationFn: async ({
       id,
       rowId,
@@ -186,17 +237,16 @@ export function useInitiativeSheetPatch() {
     },
     onMutate: async ({ id, rowId, patch }) => {
       await queryClient.cancelQueries({
-        queryKey: ['useInitiativeSheetDetail', id],
+        queryKey: queryKeys.initiativeSheetDetail(id),
       })
 
-      const previous = queryClient.getQueryData<InitiativeSheet>([
-        'useInitiativeSheetDetail',
-        id,
-      ])
+      const previous = queryClient.getQueryData<InitiativeSheet>(
+        queryKeys.initiativeSheetDetail(id),
+      )
       const before = previous?.rows.find(row => row.id === rowId)
 
       queryClient.setQueryData(
-        ['useInitiativeSheetDetail', id],
+        queryKeys.initiativeSheetDetail(id),
         (old: InitiativeSheet) => {
           if (!old) return old
 
@@ -215,10 +265,9 @@ export function useInitiativeSheetPatch() {
         const drafts = diffRow(before, { ...before, ...patch })
 
         if (drafts.length) {
-          previousEvents = queryClient.getQueryData<CombatEventRow[]>([
-            'useCombatEvents',
-            id,
-          ])
+          previousEvents = queryClient.getQueryData<CombatEventRow[]>(
+            queryKeys.combatEvents(id),
+          )
 
           const optimisticEvents = drafts
             .slice()
@@ -236,7 +285,7 @@ export function useInitiativeSheetPatch() {
             }))
 
           queryClient.setQueryData<CombatEventRow[]>(
-            ['useCombatEvents', id],
+            queryKeys.combatEvents(id),
             (old = []) => [...optimisticEvents, ...old],
           )
         }
@@ -244,41 +293,32 @@ export function useInitiativeSheetPatch() {
 
       return { previous, previousEvents }
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-    },
-    onError: (error, { onError, id, rowId, patch }, context) => {
+    onError: (error, { id, rowId, patch }, context) => {
       if (context?.previous) {
         queryClient.setQueryData(
-          ['useInitiativeSheetDetail', id],
+          queryKeys.initiativeSheetDetail(id),
           context.previous,
         )
       }
 
       if (context?.previousEvents !== undefined) {
         queryClient.setQueryData(
-          ['useCombatEvents', id],
+          queryKeys.combatEvents(id),
           context.previousEvents,
         )
       }
 
-      if (onError) onError(error.message)
-
       const name = context?.previous?.rows.find(row => row.id === rowId)?.name
 
-      toast({
-        title: name
+      toast.error(
+        name
           ? t(
               `pages.encounter.toasts.patchFailed.${failedFieldKey(patch, PATCH_FAILED_FIELDS, 'row')}`,
               { name },
             )
           : t('pages.encounter.toasts.patchFailed.generic'),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
+        { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+      )
     },
   })
 }

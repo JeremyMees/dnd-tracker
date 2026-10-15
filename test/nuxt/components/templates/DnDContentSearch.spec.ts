@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
@@ -32,7 +33,6 @@ mockNuxtImport('useRoute', () => () => ({
 }))
 
 const mockUpdate = vi.fn()
-const mockToast = vi.fn()
 
 const mockItem = dndArmorFixture
 const status = ref('success')
@@ -45,10 +45,6 @@ let filterRef:
   ComputedRef<{ type: DndContentType; filters: DndContentFilters }> | undefined
 
 const { scrollToIdMock } = vi.hoisted(() => ({ scrollToIdMock: vi.fn() }))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast: mockToast }),
-}))
 
 vi.mock('~/utils/ui-helpers', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -173,15 +169,14 @@ describe('DnDContentSearch', async () => {
     await contentCard.vm.$emit('pin', dndArmorFixture)
     await vi.advanceTimersByTimeAsync(600)
 
-    expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching(
-        'components.dndContentSearch.toast.maxTitle',
-      ),
-      description: expect.stringMatching(
-        'components.dndContentSearch.toast.maxText',
-      ),
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      expect.stringMatching('components.dndContentSearch.toast.maxTitle'),
+      {
+        description: expect.stringMatching(
+          'components.dndContentSearch.toast.maxText',
+        ),
+      },
+    )
   })
 
   it('Should show loading state', async () => {
@@ -362,7 +357,7 @@ describe('DnDContentSearch', async () => {
     expect(mockUpdate).toHaveBeenCalledWith({
       infoCards: [mockItem, open5eV2ArmorListingFixture[1]],
     })
-    expect(mockToast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should unpin an item', async () => {
@@ -386,6 +381,65 @@ describe('DnDContentSearch', async () => {
     await vi.advanceTimersByTimeAsync(600)
 
     expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+  })
+
+  describe('Pinned conditions with a duration on a row', () => {
+    const blinded = {
+      id: 'srd-2024_blinded',
+      name: 'Blinded',
+      desc: "A blinded creature can't see.",
+    }
+    const timedSheet: InitiativeSheet = {
+      ...sheet,
+      rows: [
+        {
+          ...sheet.rows[0]!,
+          conditions: [
+            {
+              ...blinded,
+              duration: { rowId: sheet.rows[0]!.id, timing: 'end', rounds: 2 },
+            },
+          ],
+        },
+        ...sheet.rows.slice(1),
+      ],
+    }
+
+    it('Should pin the condition without a duration and leave the rows alone', async () => {
+      data.value = { items: [blinded], pages: 1 }
+
+      const component = await mountWithTooltips(DnDContentSearch, {
+        props: {
+          ...props,
+          allowPin: true,
+          sheet: { ...timedSheet, infoCards: [] },
+        },
+      })
+
+      vi.useFakeTimers()
+      await component.findComponent({ name: 'ContentCard' }).vm.$emit('pin')
+      await vi.advanceTimersByTimeAsync(600)
+
+      expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [blinded] })
+    })
+
+    it('Should unpin the condition and leave the row duration alone', async () => {
+      data.value = { items: [blinded], pages: 1 }
+
+      const component = await mountWithTooltips(DnDContentSearch, {
+        props: {
+          ...props,
+          allowPin: true,
+          sheet: { ...timedSheet, infoCards: [blinded] },
+        },
+      })
+
+      vi.useFakeTimers()
+      await component.findComponent({ name: 'ContentCard' }).vm.$emit('unpin')
+      await vi.advanceTimersByTimeAsync(600)
+
+      expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+    })
   })
 
   it('Should not pin or unpin without a sheet or update handler', async () => {

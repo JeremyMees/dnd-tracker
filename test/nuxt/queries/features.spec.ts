@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -7,7 +8,6 @@ import {
   mountHook,
   mutationSpies,
   supabaseRpc,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useFeatureCount,
@@ -155,9 +155,7 @@ describe('features queries', () => {
       expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith([
         { title: 'Idea', text: 'desc' },
       ])
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('reports an error and toasts on failure', async () => {
@@ -178,11 +176,10 @@ describe('features queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(spies.onSuccess).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.create.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.create.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -247,10 +244,8 @@ describe('features queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.vote',
+      expect(toast.error).toHaveBeenCalledWith('general.error.failed.vote', {
         description: 'general.error.reasons.rejected',
-        variant: 'destructive',
       })
     })
   })

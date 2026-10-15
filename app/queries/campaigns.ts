@@ -1,16 +1,10 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-} from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 
 export function useCampaignDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignDetail', id],
+    queryKey: queryKeys.campaignDetail(id),
     queryFn: async () =>
       await supabase
         .from('campaigns')
@@ -41,7 +35,7 @@ export function useCampaignDetail(id: number) {
 
 export function useCampaignListing(data: ComputedRef<SbFilter>) {
   return useQuery({
-    queryKey: ['useCampaignListing', data],
+    queryKey: queryKeys.campaignListing(data),
     queryFn: () =>
       sbQuery<CampaignItem>({
         table: 'campaigns',
@@ -79,7 +73,7 @@ export function useCampaignMinimalListing(id: string) {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignMinimal', id],
+    queryKey: queryKeys.campaignMinimal(id),
     queryFn: async () =>
       await supabase.from('campaigns').select(`
         id,
@@ -105,42 +99,11 @@ export function useCampaignMinimalListing(id: string) {
   })
 }
 
-export function useCampaignMinimalDetail(id?: number) {
-  const supabase = useSupabaseClient<DB>()
-
-  if (!id) return
-
-  return useQuery({
-    queryKey: ['useCampaignMinimalDetail', id],
-    queryFn: async () =>
-      await supabase
-        .from('campaigns')
-        .select(
-          `
-        id,
-        title,
-        createdBy(id, username, avatar),
-        team(
-          id,
-          role,
-          user(id, username, avatar)
-        )
-      `,
-        )
-        .eq('id', id)
-        .single(),
-    select: ({ data, error }) => {
-      if (error) throw createError(error)
-      else return data
-    },
-  })
-}
-
 export function useCampaignCount() {
   const supabase = useSupabaseClient<DB>()
 
   return useQuery({
-    queryKey: ['useCampaignCount'],
+    queryKey: queryKeys.campaignCount(),
     queryFn: async () =>
       await supabase
         .from('campaigns')
@@ -151,54 +114,29 @@ export function useCampaignCount() {
 
 export function useCampaignCreate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.campaign').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.campaign',
+    action: 'create',
     mutationFn: async ({ data }: { data: CampaignInsert } & QueryDefaults) => {
       const { error } = await supabase.from('campaigns').insert([data])
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-
-      toast({
-        description: t('components.toast.create.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.create.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: () => [
+      queryKeys.campaignListing(),
+      queryKeys.campaignCount(),
+      queryKeys.campaignMinimal(),
+    ],
   })
 }
 
 export function useCampaignUpdate() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.campaign').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.campaign',
+    action: 'update',
     mutationFn: async ({
       data,
       id,
@@ -213,43 +151,21 @@ export function useCampaignUpdate() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { id, onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
-
-      toast({
-        description: t('components.toast.update.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.update.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: ({ id }) => [
+      queryKeys.campaignListing(),
+      queryKeys.campaignCount(),
+      queryKeys.campaignMinimal(),
+      queryKeys.campaignDetail(id),
+    ],
   })
 }
 
 export function useCampaignRemove() {
   const supabase = useSupabaseClient<DB>()
-  const queryClient = useQueryClient()
-  const { toast } = useToast()
-  const { t } = useI18n()
 
-  const type = t('general.campaign').toLowerCase()
-
-  return useMutation({
+  return useCrudMutation({
+    type: 'general.campaign',
+    action: 'delete',
     mutationFn: async ({ id }: { id: number | number[] } & QueryDefaults) => {
       let query = supabase.from('campaigns').delete()
 
@@ -259,37 +175,13 @@ export function useCampaignRemove() {
 
       if (error) throw createError(error)
     },
-    onSuccess: (_data, { id, onSuccess }) => {
-      if (onSuccess) onSuccess()
-
-      queryClient.invalidateQueries({ queryKey: ['useCampaignListing'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignCount'] })
-      queryClient.invalidateQueries({ queryKey: ['useCampaignMinimal'] })
-      if (Array.isArray(id))
-        id.forEach(id =>
-          queryClient.invalidateQueries({
-            queryKey: ['useCampaignDetail', id],
-          }),
-        )
-      else
-        queryClient.invalidateQueries({ queryKey: ['useCampaignDetail', id] })
-
-      toast({
-        title: t('components.toast.delete.success', { type }),
-        variant: 'success',
-      })
-    },
-    onError: (error, { onError }) => {
-      if (onError) onError(error.message)
-
-      toast({
-        title: t('components.toast.delete.error', { type }),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
-    },
-    onSettled: (_data, error, { onSettled }) => {
-      if (onSettled) onSettled(error?.message)
-    },
+    invalidate: ({ id }) => [
+      queryKeys.campaignListing(),
+      queryKeys.campaignCount(),
+      queryKeys.campaignMinimal(),
+      ...toArray(id).map(campaign => queryKeys.campaignDetail(campaign)),
+    ],
+    remove: ({ id }) =>
+      toArray(id).map(campaign => queryKeys.campaignMember(campaign)),
   })
 }

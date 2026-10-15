@@ -4,7 +4,6 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
-const { add, remove, temp, override, overrideReset } = acFunctions
 
 const popoverOpen = shallowRef<boolean>(false)
 
@@ -19,20 +18,13 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   popoverOpen.value = false
 }
 
-function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
-  const row = { ...props.item }
-
-  if (type === 'add') add(row, amount)
-  else if (type === 'remove') remove(row, amount)
-  else if (type === 'temp') temp(row, amount)
-  else if (type === 'override') override(row, amount)
-  else if (type === 'override-reset') overrideReset(row, amount)
-
-  // when ac is an negative number change it to 0
-  const resetNegative = sheet.value?.settings?.negative === false
-  if (resetNegative && row.armorClass && row.armorClass < 0) row.armorClass = 0
-
-  return row
+function changeAc(amount: number, type: DndAcType): InitiativeSheetRow {
+  return handleAcChanges(
+    amount,
+    type,
+    props.item,
+    sheet.value?.settings?.negative ?? false,
+  )
 }
 </script>
 
@@ -146,7 +138,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           v-if="hasArmorClass"
           :item="item"
           :sheet="sheet"
-          :handle-ac-changes="handleAcChanges"
+          :handle-ac-changes="changeAc"
           :update-row="updateRow"
         />
 
@@ -155,7 +147,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
         <FormAcUpdateBase
           :item="item"
           :sheet="sheet"
-          :handle-ac-changes="handleAcChanges"
+          :handle-ac-changes="changeAc"
           :update-row="updateRow"
         />
 
@@ -165,7 +157,7 @@ function handleAcChanges(amount: number, type: DndAcType): InitiativeSheetRow {
           v-if="hasArmorClass"
           :item="item"
           :sheet="sheet"
-          :handle-ac-changes="handleAcChanges"
+          :handle-ac-changes="changeAc"
           :update-row="updateRow"
         />
       </UiPopoverContent>

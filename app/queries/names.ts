@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 interface NameFilters {
   amount: number
@@ -16,21 +16,18 @@ function nameQuery({ amount, race, gender }: NameFilters) {
 }
 
 export function useRandomNames(data: ComputedRef<NameFilters>) {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useQuery({
-    queryKey: ['useRandomNames', data],
+    queryKey: queryKeys.randomNames(data),
     queryFn: async () => {
       try {
         return await $fetch<string[]>('/api/names', {
           query: nameQuery(data.value),
         })
       } catch (error) {
-        toast({
-          title: t('general.error.loadFailed.names'),
+        toast.error(t('general.error.loadFailed.names'), {
           description: t(`general.error.reasons.${getFailureReason(error)}`),
-          variant: 'destructive',
         })
 
         throw error
@@ -43,7 +40,6 @@ export function useRandomNames(data: ComputedRef<NameFilters>) {
 }
 
 export function useRandomName() {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useMutation({
@@ -53,10 +49,8 @@ export function useRandomName() {
       return name
     },
     onError: error => {
-      toast({
-        title: t('general.error.loadFailed.names'),
+      toast.error(t('general.error.loadFailed.names'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })

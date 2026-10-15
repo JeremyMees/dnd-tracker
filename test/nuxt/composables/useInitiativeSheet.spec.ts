@@ -1,3 +1,4 @@
+import { flushPromises } from '@vue/test-utils'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { sheet } from '../../fixtures/initiative-sheet'
@@ -27,11 +28,25 @@ const update = async (
   updateFn(payload)
 }
 
+const nextTurnFn = vi.fn()
+
+const nextTurn = async (): Promise<void> => {
+  const { activeIndex, round, rows } = advanceTurn(mockSheet.value)
+
+  Object.assign(mockSheet.value, { activeIndex, round, rows })
+
+  nextTurnFn()
+}
+
 describe('useInitiativeSheet', async () => {
   beforeEach(() => (mockSheet.value = { ...sheet }))
 
   it('Should set the first row as selected and navigate properly', async () => {
-    const { next, previous } = useInitiativeSheet(sheetComputed, update)
+    const { next, previous } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
 
     expect(mockSheet.value.activeIndex).toBe(0)
 
@@ -44,9 +59,21 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.activeIndex).toBe(0)
   })
 
+  it('Should advance through nextTurn instead of a direct update', async () => {
+    const { next } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+    updateFn.mockClear()
+    nextTurnFn.mockClear()
+
+    next()
+
+    expect(nextTurnFn).toHaveBeenCalledTimes(1)
+    expect(updateFn).not.toHaveBeenCalled()
+  })
+
   it('Should go to first row when the last row is active and next is called', async () => {
     mockSheet.value.activeIndex = sheet.rows.length - 1
-    const { next } = useInitiativeSheet(sheetComputed, update)
+    const { next } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     expect(mockSheet.value.round).toBe(1)
 
@@ -56,10 +83,19 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.round).toBe(2)
   })
 
+  it('Should swallow a failed turn advance', async () => {
+    const { next } = useInitiativeSheet(sheetComputed, update, () =>
+      Promise.reject(new Error('boom')),
+    )
+
+    expect(() => next()).not.toThrow()
+    await flushPromises()
+  })
+
   it('Should go to last row when the first row is active the round is not 1 and previous is called', async () => {
     mockSheet.value.round = 2
 
-    const { previous } = useInitiativeSheet(sheetComputed, update)
+    const { previous } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     expect(mockSheet.value.round).toBe(2)
 
@@ -70,7 +106,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should not go to last row when the first row is active and previous is called', async () => {
-    const { previous } = useInitiativeSheet(sheetComputed, update)
+    const { previous } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     expect(mockSheet.value.activeIndex).toBe(0)
     expect(mockSheet.value.round).toBe(1)
@@ -85,7 +121,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.activeIndex = mockSheet.value.rows.length - 1
     mockSheet.value.round = 4
 
-    const { reset } = useInitiativeSheet(sheetComputed, update)
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
     expect(mockSheet.value.round).toBe(4)
@@ -106,7 +142,7 @@ describe('useInitiativeSheet', async () => {
     const maxAcOld = firstItem.maxArmorClassOld
     const maxHpOld = firstItem.maxHitPointsOld
 
-    const { reset } = useInitiativeSheet(sheetComputed, update)
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
     expect(mockSheet.value.round).toBe(4)
@@ -152,7 +188,11 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should show all columns by default', async () => {
-    const { columnVisibility } = useInitiativeSheet(sheetComputed, update)
+    const { columnVisibility } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -172,7 +212,11 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.rows = ['armorClass', 'hitPoints']
     mockSheet.value.settings.modified = true
 
-    const { columnVisibility } = useInitiativeSheet(sheetComputed, update)
+    const { columnVisibility } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -192,7 +236,11 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.rows = []
     mockSheet.value.settings.modified = true
 
-    const { columnVisibility } = useInitiativeSheet(sheetComputed, update)
+    const { columnVisibility } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -209,13 +257,13 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should expose the active row based on the current selection', () => {
-    const { active } = useInitiativeSheet(sheetComputed, update)
+    const { active } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     expect(active.value).toEqual(sheet.rows[0])
   })
 
   it('Should re-select the active row when the rows change without an existing match', async () => {
-    const { selected } = useInitiativeSheet(sheetComputed, update)
+    const { selected } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
     selected.value = { 'some-other-id': true }
 
@@ -226,7 +274,11 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should have no active row when the selection matches no row', () => {
-    const { selected, active } = useInitiativeSheet(sheetComputed, update)
+    const { selected, active } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
 
     selected.value = { 'unknown-id': true }
 
@@ -238,6 +290,7 @@ describe('useInitiativeSheet', async () => {
       key: string
       shiftKey: boolean
       metaKey: boolean
+      target?: EventTarget | null
       preventDefault: () => void
     }) => void
 
@@ -247,7 +300,11 @@ describe('useInitiativeSheet', async () => {
 
     function pressKey(
       key: string,
-      modifiers: { shiftKey?: boolean; metaKey?: boolean } = {},
+      modifiers: {
+        shiftKey?: boolean
+        metaKey?: boolean
+        target?: EventTarget | null
+      } = {},
     ): void {
       latestHandler()({
         key,
@@ -259,7 +316,7 @@ describe('useInitiativeSheet', async () => {
     }
 
     it('Should ignore key strokes without a shift or meta modifier', () => {
-      useInitiativeSheet(sheetComputed, update)
+      useInitiativeSheet(sheetComputed, update, nextTurn)
 
       pressKey('ArrowRight')
 
@@ -267,7 +324,7 @@ describe('useInitiativeSheet', async () => {
     })
 
     it('Should navigate to the next row on shift+ArrowRight', () => {
-      useInitiativeSheet(sheetComputed, update)
+      useInitiativeSheet(sheetComputed, update, nextTurn)
 
       pressKey('ArrowRight', { shiftKey: true })
 
@@ -277,7 +334,7 @@ describe('useInitiativeSheet', async () => {
     it('Should navigate to the previous row on meta+ArrowLeft', () => {
       mockSheet.value.activeIndex = 1
 
-      useInitiativeSheet(sheetComputed, update)
+      useInitiativeSheet(sheetComputed, update, nextTurn)
 
       pressKey('ArrowLeft', { metaKey: true })
 
@@ -285,7 +342,7 @@ describe('useInitiativeSheet', async () => {
     })
 
     it('Should expand the active row on shift+Enter and collapse it again', () => {
-      const { expanded } = useInitiativeSheet(sheetComputed, update)
+      const { expanded } = useInitiativeSheet(sheetComputed, update, nextTurn)
 
       const currentId = sheet.rows[0]!.id
 
@@ -298,10 +355,24 @@ describe('useInitiativeSheet', async () => {
       expect(expanded.value).toEqual({})
     })
 
+    it.each(['input', 'textarea', 'select'])(
+      'Should ignore shortcuts while typing in a %s',
+      tag => {
+        const { expanded } = useInitiativeSheet(sheetComputed, update, nextTurn)
+        const target = document.createElement(tag)
+
+        pressKey('ArrowRight', { shiftKey: true, target })
+        pressKey('Enter', { shiftKey: true, target })
+
+        expect(mockSheet.value.activeIndex).toBe(0)
+        expect(expanded.value).toEqual({})
+      },
+    )
+
     it('Should do nothing when there is no sheet', () => {
       mockSheet.value = undefined as unknown as InitiativeSheet
 
-      useInitiativeSheet(sheetComputed, update)
+      useInitiativeSheet(sheetComputed, update, nextTurn)
 
       expect(() => pressKey('ArrowRight', { shiftKey: true })).not.toThrow()
     })
@@ -309,7 +380,7 @@ describe('useInitiativeSheet', async () => {
     it('Should do nothing when the active row cannot be found', () => {
       mockSheet.value.activeIndex = 999
 
-      useInitiativeSheet(sheetComputed, update)
+      useInitiativeSheet(sheetComputed, update, nextTurn)
       updateFn.mockClear()
 
       expect(() => pressKey('ArrowRight', { shiftKey: true })).not.toThrow()

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import type { Row, RowSelectionState, SortingState } from '@tanstack/vue-table'
 import { FlexRender, useTable } from '@tanstack/vue-table'
-import {
-  type HomebrewSelectFeatures,
-  homebrewSelectFeatures,
-} from '~/tables/features'
+import { homebrewSelectFeatures } from '~/tables/features'
 import { generateColumns, initialState } from '~/tables/homebrew-select-listing'
 import { useHomebrewListing } from '~/queries/homebrews'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
@@ -97,25 +94,21 @@ const table = useTable({
 async function addHomebrews(addAll: boolean): Promise<void> {
   if (!sheet.value) return
 
-  const rows = [...sheet.value.rows]
   const selection = addAll
     ? data.value?.homebrews.filter(hb => hb.type !== 'summon') || []
     : selected.value
 
-  selection.forEach((hb: HomebrewItemRow) => {
-    const row: Partial<InitiativeSheetRow> & { name: string } = {
-      ...homebrewToRow(hb),
-      ...(hb.type === 'summon' && summoner.value
-        ? { summoner: summoner.value }
-        : {}),
-    }
-
-    rows.push(createInitiativeRow(row, hb.type, rows.length))
+  await update({
+    rows: appendRows(
+      sheet.value.rows,
+      selection.map(hb => ({
+        ...homebrewToRow(hb),
+        ...(hb.type === 'summon' && summoner.value
+          ? { summoner: summoner.value }
+          : {}),
+      })),
+    ),
   })
-
-  const sortedRows = indexCorrect(rows)
-
-  await update({ rows: sortedRows })
 
   emit('close')
 }

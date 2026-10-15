@@ -1,33 +1,17 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
-import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
-
-export type UpdateInitiativeSheetData = Omit<
-  Partial<InitiativeSheet>,
-  NotUpdatable | 'campaign'
->
-
-interface SheetActionEvent {
-  version: number
-  row: string
-  patch: Partial<InitiativeSheetRow>
-}
-
-interface SheetSyncEvent {
-  version: number
-  sheet: Partial<InitiativeSheet>
-}
+import { useQueryClient, type QueryKey } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
 
 export function useRealTimeInitiativeSheet(
   id: number,
   data: Ref<InitiativeSheet | undefined>,
 ) {
   const user = useAuthenticatedUser()
-  const { toast } = useToast()
   const { t } = useI18n()
   const localePath = useLocalePath()
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const turnReminders = createEventHook<TurnReminders>()
 
   let channel: RealtimeChannel | undefined
 
@@ -37,8 +21,8 @@ export function useRealTimeInitiativeSheet(
     return isPro(user.value)
   })
 
-  function queryKey(): unknown[] {
-    return ['useInitiativeSheetDetail', id]
+  function queryKey(): QueryKey {
+    return queryKeys.initiativeSheetDetail(id)
   }
 
   function refetch(): void {
@@ -75,7 +59,7 @@ export function useRealTimeInitiativeSheet(
       ),
     })
 
-    queryClient.invalidateQueries({ queryKey: ['useCombatEvents', id] })
+    queryClient.invalidateQueries({ queryKey: queryKeys.combatEvents(id) })
   }
 
   function applySync(payload: SheetSyncEvent): void {
@@ -89,13 +73,13 @@ export function useRealTimeInitiativeSheet(
 
       return { ...old, ...payload.sheet, version: payload.version }
     })
+
+    if (payload.reminders) turnReminders.trigger(payload.reminders)
   }
 
   function applyDeleted(): void {
-    toast({
-      title: t('pages.encounter.toasts.removed.title'),
+    toast.warning(t('pages.encounter.toasts.removed.title'), {
       description: t('pages.encounter.toasts.removed.text'),
-      variant: 'warning',
     })
 
     navigateTo(localePath('encounters'))
@@ -132,5 +116,6 @@ export function useRealTimeInitiativeSheet(
   return {
     enabled,
     updateQueryData,
+    onTurnReminders: turnReminders.on,
   }
 }
