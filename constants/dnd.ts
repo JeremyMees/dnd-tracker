@@ -81,6 +81,8 @@ export const damageTypes: DndDamageType[] = [
   'thunder',
 ]
 
+export const bloodiedConditionId = 'bloodied'
+
 export const conditionTypes: DndConditionType[] = [
   'blinded',
   'charmed',

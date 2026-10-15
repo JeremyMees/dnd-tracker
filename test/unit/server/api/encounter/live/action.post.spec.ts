@@ -66,6 +66,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
@@ -93,6 +94,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, round: 3, rows: [row], settings: {} },
           error: null,
@@ -160,6 +162,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, rows: [row], settings: {} },
           error: null,
@@ -247,6 +250,7 @@ describe('POST /api/encounter/live/action', () => {
     mockFrom(
       {
         live_sessions: mockChain({ data: session, error: null }),
+        srd_conditions: mockChain({ data: null, error: null }),
         initiative_sheets: mockChain({
           data: { activeIndex: 0, rows: [npcRow], settings: {} },
           error: null,

@@ -29,6 +29,7 @@ const props = withDefaults(
 
 const { t, locale } = useI18n()
 const { user } = useAuthentication()
+const bloodied = useBloodiedCondition(() => props.sheet?.settings)
 
 const canSaveToCampaign = computed(() => {
   const id = user.value?.id
@@ -152,7 +153,7 @@ async function editRow(submission: HomebrewSubmission): Promise<boolean> {
   )
 
   await props.update({
-    rows: replaceRow(props.sheet.rows, edited),
+    rows: replaceRow(props.sheet.rows, withBloodied(edited, bloodied.value)),
   })
 
   return true

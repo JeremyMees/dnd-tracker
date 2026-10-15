@@ -15,7 +15,10 @@ import {
 } from '~~/server/utils/live-broadcast'
 
 function supabaseWithSheet(data: Record<string, unknown>) {
-  mockFrom({ initiative_sheets: mockChain({ data, error: null }) })
+  mockFrom({
+    initiative_sheets: mockChain({ data, error: null }),
+    srd_conditions: mockChain({ data: null, error: null }),
+  })
 
   return serverSupabaseServiceRole({} as never)
 }
@@ -264,6 +267,86 @@ describe('live-broadcast', () => {
         concentration: false,
         conditions: [],
       })
+    })
+
+    it('adds the stored bloodied condition when damage drops the row to half hp', async () => {
+      const chain = mockChain({
+        data: {
+          id: 'bloodied',
+          name: 'Bloodied',
+          desc: 'At half hit points or fewer.',
+          level: null,
+          hasLevels: null,
+        },
+        error: null,
+      })
+
+      mockFrom({
+        initiative_sheets: mockChain({
+          data: { rows: [{ ...row, hitPoints: 80 }], settings: {} },
+          error: null,
+        }),
+        srd_conditions: chain,
+      })
+
+      const patch = await buildHpPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'row-1',
+        { type: 'hp', hpType: 'damage', amount: 40 },
+      )
+
+      expect(chain.eq).toHaveBeenCalledWith('id', 'bloodied')
+      expect(patch.conditions).toEqual([
+        {
+          id: 'bloodied',
+          name: 'Bloodied',
+          desc: 'At half hit points or fewer.',
+        },
+      ])
+    })
+
+    it('removes bloodied when a heal lifts the row above half hp', async () => {
+      const bloodied = { id: 'bloodied', name: 'Bloodied', desc: '' }
+
+      mockFrom({
+        initiative_sheets: mockChain({
+          data: {
+            rows: [{ ...row, hitPoints: 40, conditions: [bloodied] }],
+            settings: {},
+          },
+          error: null,
+        }),
+        srd_conditions: mockChain({ data: bloodied, error: null }),
+      })
+
+      const patch = await buildHpPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'row-1',
+        { type: 'hp', hpType: 'heal', amount: 20 },
+      )
+
+      expect(patch.conditions).toEqual([])
+    })
+
+    it('skips the bloodied lookup when the sheet has it switched off', async () => {
+      const from = mockFrom({
+        initiative_sheets: mockChain({
+          data: { rows: [row], settings: { bloodied: false } },
+          error: null,
+        }),
+      })
+
+      const patch = await buildHpPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'row-1',
+        { type: 'hp', hpType: 'damage', amount: 5 },
+      )
+
+      expect(from).not.toHaveBeenCalledWith('srd_conditions')
+      expect(patch.conditions).toEqual([])
     })
 
     it('clamps damage to zero when negative hp is not allowed', async () => {

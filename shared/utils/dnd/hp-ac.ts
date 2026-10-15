@@ -258,3 +258,39 @@ export function getHealthBand(
   if (ratio <= 0.5) return 'bloodied'
   return 'healthy'
 }
+
+export function isBloodied(hitPoints?: number, maxHitPoints?: number): boolean {
+  if (!hitPoints || !maxHitPoints) return false
+
+  return hitPoints > 0 && hitPoints <= maxHitPoints / 2
+}
+
+export function isBloodiedEnabled(settings?: InitiativeSettings): boolean {
+  return settings?.bloodied !== false
+}
+
+export function withBloodied(
+  row: InitiativeSheetRow,
+  bloodied?: DndCondition,
+): InitiativeSheetRow {
+  if (!bloodied) return row
+
+  const applied = row.conditions.some(({ id }) => id === bloodied.id)
+  const bloodiedNow = isBloodied(row.hitPoints, row.maxHitPoints)
+
+  if (bloodiedNow && !applied) {
+    return {
+      ...row,
+      conditions: [...row.conditions, sanitizeCondition(bloodied)],
+    }
+  }
+
+  if (!bloodiedNow && applied) {
+    return {
+      ...row,
+      conditions: row.conditions.filter(({ id }) => id !== bloodied.id),
+    }
+  }
+
+  return row
+}

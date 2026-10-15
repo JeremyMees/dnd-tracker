@@ -136,6 +136,19 @@ export async function srdDocuments(event: H3Event): Promise<DndDocument[]> {
   return data.map(({ syncedAt, manual, ...document }) => document)
 }
 
+export async function srdCondition(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  id: string,
+): Promise<DndCondition | undefined> {
+  const { data } = await supabase
+    .from('srd_conditions')
+    .select('id, name, desc, level, hasLevels')
+    .eq('id', id)
+    .maybeSingle()
+
+  return data ?? undefined
+}
+
 export async function srdConditions(
   event: H3Event,
   documentKey: string,

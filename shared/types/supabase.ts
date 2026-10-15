@@ -178,6 +178,7 @@ export interface InitiativeSettings {
   widgets?: InitiativeWidget[]
   pet?: InitiativePet
   negative?: boolean
+  bloodied?: boolean
   live?: {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean

@@ -5,6 +5,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
+const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 
 const { t } = useI18n()
 const { toast } = useToast()
@@ -26,7 +27,10 @@ function handleToasts(toasts: ToastItem[]): void {
 }
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  const patch = buildCombatPatch(props.item, { ...props.item, ...row })
+  const patch = buildCombatPatch(
+    props.item,
+    withBloodied({ ...props.item, ...row }, bloodied.value),
+  )
 
   await patchRow(props.item.id, patch)
   popoverOpen.value = false

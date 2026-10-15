@@ -1211,6 +1211,7 @@
         "wolf-rider": "Wolf rider"
       },
       "negative": "Allow HP and AC to be negative",
+      "bloodied": "Add Bloodied automatically at half HP or lower",
       "noActiveWidgets": "No active widgets. Use the settings icon to enable widgets."
     },
     "infoCard": {

@@ -133,4 +133,18 @@ import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
       </UiFormLabel>
     </UiFormItem>
   </UiFormField>
+  <UiFormField v-slot="{ value, handleChange }" name="bloodied">
+    <UiFormItem class="flex items-center gap-2">
+      <UiFormControl>
+        <UiSwitch
+          class="mb-0"
+          :model-value="value"
+          @update:model-value="handleChange"
+        />
+      </UiFormControl>
+      <UiFormLabel>
+        {{ $t('components.initiativeSettings.bloodied') }}
+      </UiFormLabel>
+    </UiFormItem>
+  </UiFormField>
 </template>

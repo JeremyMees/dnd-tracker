@@ -12,6 +12,7 @@ const props = defineProps<{
 }>()
 
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
+const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 
 const { t } = useI18n()
 const { toast } = useToast()
@@ -108,7 +109,7 @@ const onSubmit = form.handleSubmit(async values => {
 
   handleToasts(toasts)
 
-  const patch = buildCombatPatch(target, row)
+  const patch = buildCombatPatch(target, withBloodied(row, bloodied.value))
 
   try {
     await patchRow(values.target, patch)

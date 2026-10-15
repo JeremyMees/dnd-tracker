@@ -1211,6 +1211,7 @@
         "wolf-rider": "Wolf rijder"
       },
       "negative": "Sta HP en AC toe negatief te zijn",
+      "bloodied": "Voeg Bloodied automatisch toe bij de helft van de HP of minder",
       "noActiveWidgets": "Geen actieve widgets. Gebruik het settings icoon om widgets in te schakelen."
     },
     "infoCard": {

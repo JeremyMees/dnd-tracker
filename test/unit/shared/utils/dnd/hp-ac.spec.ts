@@ -319,4 +319,94 @@ describe('dnd/hp-ac', () => {
       expect(getHealthBand(hitPoints, maxHitPoints)).toBe(band)
     })
   })
+
+  describe('isBloodied', () => {
+    it.each([
+      [50, 100, true],
+      [1, 100, true],
+      [5, 9, false],
+      [4, 9, true],
+      [51, 100, false],
+      [0, 100, false],
+      [-5, 100, false],
+      [5, 0, false],
+      [undefined, 100, false],
+      [50, undefined, false],
+    ])('treats %s/%s hp as bloodied: %s', (hitPoints, maxHitPoints, result) => {
+      expect(isBloodied(hitPoints, maxHitPoints)).toBe(result)
+    })
+  })
+
+  describe('isBloodiedEnabled', () => {
+    it.each([
+      [undefined, true],
+      [{ spacing: 'normal', modified: false }, true],
+      [{ spacing: 'normal', modified: false, bloodied: true }, true],
+      [{ spacing: 'normal', modified: false, bloodied: false }, false],
+    ] as [InitiativeSettings | undefined, boolean][])(
+      'reads %o as enabled: %s',
+      (settings, result) => {
+        expect(isBloodiedEnabled(settings)).toBe(result)
+      },
+    )
+  })
+
+  describe('withBloodied', () => {
+    const bloodied: DndCondition = {
+      id: 'bloodied',
+      name: 'Bloodied',
+      desc: 'At half hit points or fewer.',
+      level: null,
+      hasLevels: null,
+    }
+    const prone: DndCondition = { id: 'prone', name: 'Prone', desc: '' }
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'monster',
+      conditions: [prone],
+      hitPoints: 40,
+      maxHitPoints: 100,
+    }
+
+    it('adds a sanitized bloodied condition at half hp or lower', () => {
+      expect(withBloodied(row, bloodied).conditions).toEqual([
+        prone,
+        {
+          id: 'bloodied',
+          name: 'Bloodied',
+          desc: 'At half hit points or fewer.',
+        },
+      ])
+    })
+
+    it('removes bloodied once the row is above half hp', () => {
+      const healed = { ...row, hitPoints: 80, conditions: [prone, bloodied] }
+
+      expect(withBloodied(healed, bloodied).conditions).toEqual([prone])
+    })
+
+    it('removes bloodied when the row drops to 0 hp', () => {
+      const downed = { ...row, hitPoints: 0, conditions: [bloodied] }
+
+      expect(withBloodied(downed, bloodied).conditions).toEqual([])
+    })
+
+    it('returns the same row when nothing changes', () => {
+      const applied = { ...row, conditions: [bloodied] }
+      const healthy = { ...row, hitPoints: 90 }
+
+      expect(withBloodied(applied, bloodied)).toBe(applied)
+      expect(withBloodied(healthy, bloodied)).toBe(healthy)
+    })
+
+    it('leaves the row alone without a bloodied condition to apply', () => {
+      const applied = { ...row, hitPoints: 90, conditions: [bloodied] }
+
+      expect(withBloodied(row)).toBe(row)
+      expect(withBloodied(applied)).toBe(applied)
+    })
+  })
 })

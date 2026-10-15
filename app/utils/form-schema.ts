@@ -147,6 +147,7 @@ export const initiativeSettingsSchema = z.object({
     .optional()
     .transform(val => (val === 'none' ? undefined : val)),
   negative: z.boolean(),
+  bloodied: z.boolean(),
 })
 
 export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
@@ -158,6 +159,7 @@ export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
     widgets: isModified ? settings?.widgets || [] : [...initiativeWidgets],
     pet: settings?.pet || undefined,
     negative: settings?.negative || false,
+    bloodied: isBloodiedEnabled(settings),
   }
 }
 

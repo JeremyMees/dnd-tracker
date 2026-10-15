@@ -4,6 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ActionRoll from '~/components/initiative/ActionRoll.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import {
+  bloodiedCondition,
+  storedBloodiedCondition,
+} from '~~/test/fixtures/bloodied-condition'
 import { closePopover, openPopover } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
@@ -31,6 +35,11 @@ const mockPatchRow = vi.fn()
 const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
+const mockConditions = ref<DndCondition[]>([])
+
+vi.mock('~/queries/srd', () => ({
+  useConditionsListing: () => ({ data: mockConditions }),
+}))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({
@@ -58,6 +67,7 @@ let component: VueWrapper<InstanceType<typeof ActionRoll>>
 describe('ActionRoll component', () => {
   beforeEach(() => {
     mockSheet.value = sheet
+    mockConditions.value = []
   })
 
   it('Should match snapshot', async () => {
@@ -402,6 +412,33 @@ describe('ActionRoll component', () => {
         variant: 'info',
       })
       expect(vm.popoverOpen).toBeFalsy()
+    })
+
+    it('Should add bloodied when the damage drops the target to half hp', async () => {
+      const target = {
+        ...sheet.rows[0]!,
+        hitPoints: 52,
+        tempHitPoints: undefined,
+        concentration: false,
+      }
+
+      mockConditions.value = [bloodiedCondition]
+      mockSheet.value = { ...sheet, rows: [target, ...sheet.rows.slice(1)] }
+
+      component = await mountWithTooltips(ActionRoll, {
+        props: submitProps,
+        provide,
+      })
+      const vm = component.vm as unknown as ActionRollVM
+
+      vm.onRoll('straight')
+      vm.form.setFieldValue('target', targetId)
+      await vm.onSubmit()
+
+      expect(mockPatchRow).toHaveBeenCalledWith(targetId, {
+        hitPoints: 50,
+        conditions: [...target.conditions, storedBloodiedCondition],
+      })
     })
 
     it('Should not update when the selected target no longer exists on submit', async () => {

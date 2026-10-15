@@ -9,6 +9,10 @@ import { mockCampaignFull } from '~~/test/fixtures/campaign'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import {
+  bloodiedCondition,
+  storedBloodiedCondition,
+} from '~~/test/fixtures/bloodied-condition'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
@@ -35,6 +39,12 @@ vi.mock('~/queries/homebrews', () => ({
 
     return { data: homebrewCount }
   },
+}))
+
+const mockConditions = ref<DndCondition[]>([])
+
+vi.mock('~/queries/srd', () => ({
+  useConditionsListing: () => ({ data: mockConditions }),
 }))
 
 mockNuxtImport('useAuthentication', () => () => ({ user: currentUser }))
@@ -130,6 +140,7 @@ describe('Homebrew', () => {
   beforeEach(() => {
     currentUser.value = { id: authUser.id }
     homebrewCount.value = 0
+    mockConditions.value = []
     createHomebrew.mockResolvedValue(undefined)
     updateHomebrew.mockResolvedValue(undefined)
     update.mockResolvedValue(undefined)
@@ -1196,6 +1207,29 @@ describe('Homebrew', () => {
       await submitForm(component)
 
       expect(editedRow()).toMatchObject({ hitPoints: 120, maxHitPoints: 120 })
+    })
+
+    it('Should drop bloodied when a new base resets the row to full hit points', async () => {
+      const bloodied = {
+        ...damaged,
+        conditions: [...damaged.conditions, storedBloodiedCondition],
+      }
+
+      mockConditions.value = [bloodiedCondition]
+
+      const component = await mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+        campaignId: mockCampaignFull.id,
+        row: bloodied,
+        rows: sheet.rows.map(r => (r.id === bloodied.id ? bloodied : r)),
+      })
+
+      await component.get('input[name="hitPoints"]').setValue(120)
+      await flushPromises()
+      await submitForm(component)
+
+      expect(editedRow()?.conditions).toEqual(damaged.conditions)
     })
   })
 })

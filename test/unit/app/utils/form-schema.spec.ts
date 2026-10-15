@@ -683,6 +683,7 @@ describe('form-schema', () => {
       widgets: [...initiativeWidgets],
       pet: initiativePets[0],
       negative: false,
+      bloodied: true,
     }
 
     it('Should accept a valid settings object', () => {
@@ -704,7 +705,7 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should require spacing, rows, widgets and negative', () => {
+    it('Should require spacing, rows, widgets, negative and bloodied', () => {
       const { spacing: _, ...noSpacing } = valid
       expect(initiativeSettingsSchema.safeParse(noSpacing).success).toBeFalsy()
 
@@ -716,6 +717,9 @@ describe('form-schema', () => {
 
       const { negative: ____, ...noNegative } = valid
       expect(initiativeSettingsSchema.safeParse(noNegative).success).toBeFalsy()
+
+      const { bloodied: _____, ...noBloodied } = valid
+      expect(initiativeSettingsSchema.safeParse(noBloodied).success).toBeFalsy()
     })
 
     it('Should accept empty rows and widgets arrays', () => {
@@ -803,6 +807,7 @@ describe('form-schema', () => {
       expect(values.spacing).toBe('normal')
       expect(values.pet).toBeUndefined()
       expect(values.negative).toBe(false)
+      expect(values.bloodied).toBe(true)
     })
 
     it('Should check all rows and widgets when settings are not modified', () => {
@@ -825,6 +830,7 @@ describe('form-schema', () => {
         widgets: ['note'],
         pet: initiativePets[0],
         negative: true,
+        bloodied: false,
       })
 
       expect(values.rows).toEqual(['armorClass', 'hitPoints'])
@@ -832,6 +838,7 @@ describe('form-schema', () => {
       expect(values.spacing).toBe('cozy')
       expect(values.pet).toBe(initiativePets[0])
       expect(values.negative).toBe(true)
+      expect(values.bloodied).toBe(false)
     })
 
     it('Should respect an empty selection when modified (nothing checked)', () => {
@@ -856,6 +863,7 @@ describe('form-schema', () => {
       expect(values.widgets).toEqual([])
       expect(values.pet).toBeUndefined()
       expect(values.negative).toBe(false)
+      expect(values.bloodied).toBe(true)
     })
 
     it('Should produce values that satisfy the settings schema', () => {

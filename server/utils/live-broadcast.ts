@@ -1,4 +1,5 @@
 import type { serverSupabaseServiceRole } from '#supabase/server'
+import { bloodiedConditionId } from '~~/constants/dnd'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { z } from 'zod'
 
@@ -143,13 +144,16 @@ export async function buildHpPatch(
     row,
     sheet?.settings.negative ?? false,
   )
+  const bloodied = isBloodiedEnabled(sheet?.settings)
+    ? await srdCondition(supabase, bloodiedConditionId)
+    : undefined
 
   return {
     hitPoints: updated.hitPoints,
     tempHitPoints: updated.tempHitPoints,
     deathSaves: updated.deathSaves,
     concentration: updated.concentration,
-    conditions: updated.conditions,
+    conditions: withBloodied(updated, bloodied).conditions,
   }
 }
 

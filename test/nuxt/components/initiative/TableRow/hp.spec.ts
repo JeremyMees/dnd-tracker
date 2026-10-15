@@ -2,6 +2,10 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Hp from '~/components/initiative/TableRow/Hp.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
+import {
+  bloodiedCondition,
+  storedBloodiedCondition,
+} from '~~/test/fixtures/bloodied-condition'
 import { openPopover } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
@@ -19,6 +23,11 @@ interface Props {
 const mockPatchRow = vi.fn()
 const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
+const mockConditions = ref<DndCondition[]>([])
+
+vi.mock('~/queries/srd', () => ({
+  useConditionsListing: () => ({ data: mockConditions }),
+}))
 
 vi.mock('~/components/ui/toast/use-toast', () => ({
   useToast: () => ({
@@ -40,6 +49,7 @@ const props: Props = {
 describe('Initiative table row hp', async () => {
   beforeEach(() => {
     mockSheet.value = sheet
+    mockConditions.value = []
   })
 
   it('Should match snapshot', async () => {
@@ -110,6 +120,59 @@ describe('Initiative table row hp', async () => {
     await vm.updateRow({ hitPoints: 15 })
 
     expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, { hitPoints: 15 })
+  })
+
+  it('Should add bloodied when an hp change drops the row to half hp', async () => {
+    mockConditions.value = [bloodiedCondition]
+
+    const item = { ...props.item, hitPoints: 80, maxHitPoints: 100 }
+    const component = await mountWithTooltips(Hp, { props: { item }, provide })
+
+    await (component.vm as unknown as HpTestMethods).updateRow({
+      hitPoints: 50,
+    })
+
+    expect(mockPatchRow).toHaveBeenCalledWith(item.id, {
+      hitPoints: 50,
+      conditions: [...item.conditions, storedBloodiedCondition],
+    })
+  })
+
+  it('Should remove bloodied when an hp change lifts the row above half hp', async () => {
+    mockConditions.value = [bloodiedCondition]
+
+    const item = {
+      ...props.item,
+      hitPoints: 40,
+      maxHitPoints: 100,
+      conditions: [storedBloodiedCondition],
+    }
+    const component = await mountWithTooltips(Hp, { props: { item }, provide })
+
+    await (component.vm as unknown as HpTestMethods).updateRow({
+      hitPoints: 100,
+    })
+
+    expect(mockPatchRow).toHaveBeenCalledWith(item.id, {
+      hitPoints: 100,
+      conditions: [],
+    })
+  })
+
+  it('Should leave conditions alone when the sheet has automatic bloodied switched off', async () => {
+    const settings: InitiativeSettings = { ...sheet.settings, bloodied: false }
+
+    mockConditions.value = [bloodiedCondition]
+    mockSheet.value = { ...sheet, settings }
+
+    const item = { ...props.item, hitPoints: 80, maxHitPoints: 100 }
+    const component = await mountWithTooltips(Hp, { props: { item }, provide })
+
+    await (component.vm as unknown as HpTestMethods).updateRow({
+      hitPoints: 50,
+    })
+
+    expect(mockPatchRow).toHaveBeenCalledWith(item.id, { hitPoints: 50 })
   })
 
   it('Should trigger toasts through the toast composable', async () => {
