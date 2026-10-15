@@ -187,9 +187,11 @@ export function damageHitPoints(
     })
   }
 
-  if (downed && (row.concentration || row.conditions.length)) {
+  const lasting = row.conditions.filter(condition => condition.hasLevels)
+
+  if (downed && (row.concentration || row.conditions.length > lasting.length)) {
     row.concentration = false
-    row.conditions = []
+    row.conditions = lasting
 
     toasts.push({
       title: ['components.initiativeTable.downed.title', { name: row.name }],

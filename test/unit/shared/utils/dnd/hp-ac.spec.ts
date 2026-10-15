@@ -379,6 +379,44 @@ describe('dnd/hp-ac', () => {
         ])
       })
 
+      it('keeps leveled conditions like exhaustion when downed', () => {
+        const exhaustion: DndCondition = {
+          desc: 'Exhaustion',
+          name: 'Exhaustion',
+          id: 'exhaustion',
+          hasLevels: true,
+          level: 2,
+        }
+        const row = buildRow({
+          conditions: [
+            { desc: 'Prone', name: 'Prone', id: 'prone' },
+            exhaustion,
+          ],
+        })
+
+        const toasts = damageHitPoints(row, 10, options)
+
+        expect(row.conditions).toEqual([exhaustion])
+        expect(toasts).toHaveLength(1)
+      })
+
+      it('returns no toasts when downed with only leveled conditions', () => {
+        const row = buildRow({
+          conditions: [
+            {
+              desc: 'Exhaustion',
+              name: 'Exhaustion',
+              id: 'exhaustion',
+              hasLevels: true,
+              level: 1,
+            },
+          ],
+        })
+
+        expect(damageHitPoints(row, 10, options)).toEqual([])
+        expect(row.conditions).toHaveLength(1)
+      })
+
       it('returns no toasts when downed without concentration or conditions', () => {
         expect(damageHitPoints(buildRow(), 10, options)).toEqual([])
       })
