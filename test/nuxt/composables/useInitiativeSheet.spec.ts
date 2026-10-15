@@ -238,6 +238,7 @@ describe('useInitiativeSheet', async () => {
       key: string
       shiftKey: boolean
       metaKey: boolean
+      target?: EventTarget | null
       preventDefault: () => void
     }) => void
 
@@ -247,7 +248,11 @@ describe('useInitiativeSheet', async () => {
 
     function pressKey(
       key: string,
-      modifiers: { shiftKey?: boolean; metaKey?: boolean } = {},
+      modifiers: {
+        shiftKey?: boolean
+        metaKey?: boolean
+        target?: EventTarget | null
+      } = {},
     ): void {
       latestHandler()({
         key,
@@ -297,6 +302,20 @@ describe('useInitiativeSheet', async () => {
 
       expect(expanded.value).toEqual({})
     })
+
+    it.each(['input', 'textarea', 'select'])(
+      'Should ignore shortcuts while typing in a %s',
+      tag => {
+        const { expanded } = useInitiativeSheet(sheetComputed, update)
+        const target = document.createElement(tag)
+
+        pressKey('ArrowRight', { shiftKey: true, target })
+        pressKey('Enter', { shiftKey: true, target })
+
+        expect(mockSheet.value.activeIndex).toBe(0)
+        expect(expanded.value).toEqual({})
+      },
+    )
 
     it('Should do nothing when there is no sheet', () => {
       mockSheet.value = undefined as unknown as InitiativeSheet

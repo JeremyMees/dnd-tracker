@@ -46,7 +46,8 @@ export function useInitiativeSheet(
   })
 
   onKeyStroke(['ArrowLeft', 'ArrowRight', 'Enter'], e => {
-    if ((!e.shiftKey && !e.metaKey) || !sheet.value) return
+    if ((!e.shiftKey && !e.metaKey) || !sheet.value || isTypingTarget(e.target))
+      return
 
     e.preventDefault()
 
