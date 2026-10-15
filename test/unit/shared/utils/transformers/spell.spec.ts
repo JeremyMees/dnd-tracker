@@ -32,6 +32,19 @@ describe('transformers/spell', () => {
       expect(spell.materialSpecified).toBe('powdered rhubarb leaf')
     })
 
+    it('keeps a missing saving throw empty instead of guessing one', () => {
+      expect(toSpell(open5eV2SpellFixture).savingThrowAbility).toBeNull()
+    })
+
+    it('maps the saving throw ability when the spell has one', () => {
+      const spell = toSpell({
+        ...open5eV2SpellFixture,
+        saving_throw_ability: 'wisdom',
+      })
+
+      expect(spell.savingThrowAbility).toBe('wisdom')
+    })
+
     it('maps damage types', () => {
       const spell = toSpell(open5eV2SpellFixture)
 

@@ -161,7 +161,7 @@ exports[`ContentCard - spell (expanded) > Should match snapshot when expanded 1`
       <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Attack roll:</span> general.yes</p>
       <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage roll:</span> 4d4</p>
       <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Damage types:</span> acid</p>
-      <p class="mt-1 text-muted-foreground"><span class="font-bold text-foreground">Saving throw:</span> wisdom</p>
+      <!--v-if-->
       <div data-orientation="horizontal" role="separator" class="shrink-0 bg-border relative h-px w-full my-2"></div>
       <!--v-if-->
       <!--v-if-->

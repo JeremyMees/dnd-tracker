@@ -768,7 +768,7 @@ export type Database = {
           rangeUnit: string
           reactionCondition: string | null
           ritual: boolean
-          savingThrowAbility: string
+          savingThrowAbility: string | null
           school: string
           shapeSize: number | null
           shapeSizeUnit: string
@@ -804,7 +804,7 @@ export type Database = {
           rangeUnit: string
           reactionCondition?: string | null
           ritual: boolean
-          savingThrowAbility: string
+          savingThrowAbility?: string | null
           school: string
           shapeSize?: number | null
           shapeSizeUnit: string
@@ -840,7 +840,7 @@ export type Database = {
           rangeUnit?: string
           reactionCondition?: string | null
           ritual?: boolean
-          savingThrowAbility?: string
+          savingThrowAbility?: string | null
           school?: string
           shapeSize?: number | null
           shapeSizeUnit?: string

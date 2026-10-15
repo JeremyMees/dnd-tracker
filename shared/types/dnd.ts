@@ -306,7 +306,7 @@ export interface DndSpell {
   materialCost?: number | null
   materialConsumed: boolean
   targetCount: number | null
-  savingThrowAbility: DndAbility
+  savingThrowAbility: DndAbility | null
   attackRoll: boolean
   damageRoll: string
   damageTypes: DndDamageType[]
