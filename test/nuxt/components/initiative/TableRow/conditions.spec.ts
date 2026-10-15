@@ -128,6 +128,109 @@ describe('Initiative table row conditions', async () => {
     )
   })
 
+  describe('Durations', () => {
+    const timed: Condition = {
+      ...(conditions[0] as Condition),
+      duration: { rowId: sheet.rows[1]!.id, timing: 'end', rounds: 2 },
+    }
+    const saveEnds: Condition = {
+      ...(conditions[1] as Condition),
+      duration: {
+        rowId: sheet.rows[0]!.id,
+        timing: 'end',
+        save: { ability: 'wisdom', dc: 13 },
+      },
+    }
+
+    function mountWith(conditionList: Condition[]) {
+      return mountSuspended(Conditions, {
+        props: { item: { ...props.item, conditions: conditionList } },
+        provide,
+      })
+    }
+
+    it('Should show the rounds left on the badge', async () => {
+      const component = await mountWith([timed])
+
+      const duration = component.get('[test-id="duration"]')
+
+      expect(duration.text()).toContain('2')
+    })
+
+    it('Should mark a save-only duration without a round count', async () => {
+      const component = await mountWith([saveEnds])
+
+      expect(component.get('[test-id="duration"]').text()).not.toMatch(/\d/)
+    })
+
+    it('Should not mark conditions without a duration', async () => {
+      const component = await mountWith([conditions[0] as Condition])
+
+      expect(component.find('[test-id="duration"]').exists()).toBe(false)
+    })
+
+    it('Should describe the duration in the condition popover', async () => {
+      const component = await mountWith([
+        {
+          ...timed,
+          duration: { ...timed.duration!, save: saveEnds.duration!.save },
+        },
+      ])
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(
+        document.body.querySelector('[test-id="duration-rounds"]')?.textContent,
+      ).toContain('components.conditionDuration.summary.end')
+      expect(
+        document.body.querySelector('[test-id="duration-save"]')?.textContent,
+      ).toContain('components.conditionDuration.summary.save.end')
+    })
+
+    it('Should patch only the conditions when a duration is set', async () => {
+      const component = await mountWith([
+        conditions[0] as Condition,
+        conditions[1] as Condition,
+      ])
+
+      await component.findComponent(Badge).trigger('click')
+      await component
+        .findComponent({ name: 'FormConditionDuration' })
+        .vm.$emit('update', timed.duration)
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [timed, conditions[1]],
+      })
+    })
+
+    it('Should clear the duration', async () => {
+      const component = await mountWith([timed])
+
+      await component.findComponent(Badge).trigger('click')
+      await component
+        .findComponent({ name: 'FormConditionDuration' })
+        .vm.$emit('update', null)
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [{ ...timed, duration: null }],
+      })
+    })
+
+    it('Should keep a duration when another condition is added', async () => {
+      const component = await mountWith([timed])
+      const vm = component.vm as unknown as ConditionsVM
+
+      vm.popoverOpen = true
+      await nextTick()
+      vm.toggleSelected(conditions[1] as Condition)
+      vm.updateCondition(vm.selected)
+
+      expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+        conditions: [timed, conditions[1]],
+      })
+    })
+  })
+
   describe('removeCondition', () => {
     it('Should patch the row with the matching condition removed', async () => {
       const component = await mountSuspended(Conditions, { props, provide })

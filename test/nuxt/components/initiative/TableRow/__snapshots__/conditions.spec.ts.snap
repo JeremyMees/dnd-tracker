@@ -5,7 +5,9 @@ exports[`Initiative table row conditions > Should match snapshot 1`] = `
   <!--teleport start-->
   <!--teleport end-->
   <div test-id="conditions" class="flex flex-wrap justify-center md:justify-start gap-1"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-2" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed">
-      <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" test-id="badge">Paralyzed </div>
+      <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-foreground bg-foreground/50 text-background hover:bg-foreground/60 whitespace-nowrap" test-id="badge">Paralyzed
+        <!--v-if-->
+      </div>
     </button>
     <!--teleport start-->
     <!--teleport end-->

@@ -178,4 +178,48 @@ describe('dnd/turn', () => {
       })
     })
   })
+
+  describe('conditionDurationPreset', () => {
+    it('ends at the end of the affected row its next turn', () => {
+      expect(
+        conditionDurationPreset('endOfNextTurn', {
+          rowId: 'target',
+          activeRowId: 'caster',
+        }),
+      ).toEqual({ rowId: 'target', timing: 'end', rounds: 1 })
+    })
+
+    it('skips the current turn when the affected row is the active one', () => {
+      expect(
+        conditionDurationPreset('endOfNextTurn', {
+          rowId: 'target',
+          activeRowId: 'target',
+        }),
+      ).toEqual({ rowId: 'target', timing: 'end', rounds: 2 })
+    })
+
+    it('ends at the start of the active row its next turn', () => {
+      expect(
+        conditionDurationPreset('startOfNextTurn', {
+          rowId: 'target',
+          activeRowId: 'caster',
+        }),
+      ).toEqual({ rowId: 'caster', timing: 'start', rounds: 1 })
+    })
+
+    it('lasts ten rounds counted on the active row its turn', () => {
+      expect(
+        conditionDurationPreset('oneMinute', {
+          rowId: 'target',
+          activeRowId: 'caster',
+        }),
+      ).toEqual({ rowId: 'caster', timing: 'start', rounds: 10 })
+    })
+
+    it('falls back to the affected row without an active row', () => {
+      expect(
+        conditionDurationPreset('startOfNextTurn', { rowId: 'target' }),
+      ).toEqual({ rowId: 'target', timing: 'start', rounds: 1 })
+    })
+  })
 })

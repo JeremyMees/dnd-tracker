@@ -70,3 +70,20 @@ export function advanceTurn(
 
   return { activeIndex, round, rows, expired, saves }
 }
+
+export function conditionDurationPreset(
+  preset: DndConditionPreset,
+  { rowId, activeRowId }: { rowId: string; activeRowId?: string },
+): DndConditionDuration {
+  const actorId = activeRowId ?? rowId
+
+  if (preset === 'endOfNextTurn') {
+    return { rowId, timing: 'end', rounds: rowId === activeRowId ? 2 : 1 }
+  }
+
+  if (preset === 'startOfNextTurn') {
+    return { rowId: actorId, timing: 'start', rounds: 1 }
+  }
+
+  return { rowId: actorId, timing: 'start', rounds: 10 }
+}

@@ -4,7 +4,7 @@ import { useConditionsListing } from '~/queries/srd'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { patchRow } = validateInject(INITIATIVE_SHEET)
+const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 
 const selected = ref<DndCondition[]>([])
 const popoverOpen = ref<boolean>(false)
@@ -22,6 +22,26 @@ function removeCondition(name: string): void {
 function updateCondition(conditions: DndCondition[]): void {
   patchRow(props.item.id, { conditions })
   popoverOpen.value = false
+}
+
+const rows = computed(() => sheet.value?.rows ?? [])
+const activeRowId = computed(
+  () => sheet.value?.rows[sheet.value.activeIndex]?.id,
+)
+
+function durationRowName(duration: DndConditionDuration): string {
+  return (
+    rows.value.find(row => row.id === duration.rowId)?.name ?? props.item.name
+  )
+}
+
+function updateDuration(
+  name: string,
+  duration: DndConditionDuration | null,
+): void {
+  updateCondition(
+    props.item.conditions.map(c => (c.name === name ? { ...c, duration } : c)),
+  )
 }
 
 function toggleSelected(item: DndCondition): void {
@@ -96,6 +116,30 @@ function toggleSelected(item: DndCondition): void {
           <UiBadge test-id="badge" class="whitespace-nowrap">
             {{ condition.name }}
             {{ condition.level ? `(${condition.level})` : '' }}
+            <span
+              v-if="condition.duration"
+              test-id="duration"
+              class="inline-flex items-center gap-0.5"
+            >
+              <Icon
+                :name="
+                  condition.duration.rounds ? 'tabler:hourglass' : 'tabler:dice'
+                "
+                class="size-3"
+                aria-hidden="true"
+              />
+              {{ condition.duration.rounds }}
+              <span class="sr-only">
+                {{
+                  condition.duration.rounds
+                    ? $t(
+                        'components.conditionDuration.roundsLeft',
+                        condition.duration.rounds,
+                      )
+                    : $t('components.conditionDuration.saveEnds')
+                }}
+              </span>
+            </span>
           </UiBadge>
         </UiPopoverTrigger>
         <UiPopoverContent>
@@ -131,6 +175,52 @@ function toggleSelected(item: DndCondition): void {
               <UiNumberFieldIncrement />
             </UiNumberFieldContent>
           </UiNumberField>
+          <div class="flex flex-col gap-y-2 mt-4">
+            <p class="font-semibold text-sm">
+              {{ $t('components.conditionDuration.title') }}
+            </p>
+            <p
+              v-if="condition.duration?.rounds"
+              test-id="duration-rounds"
+              class="text-sm text-muted-foreground"
+            >
+              {{
+                $t(
+                  `components.conditionDuration.summary.${condition.duration.timing}`,
+                  {
+                    count: condition.duration.rounds,
+                    name: durationRowName(condition.duration),
+                  },
+                  condition.duration.rounds,
+                )
+              }}
+            </p>
+            <p
+              v-if="condition.duration?.save"
+              test-id="duration-save"
+              class="text-sm text-muted-foreground"
+            >
+              {{
+                $t(
+                  `components.conditionDuration.summary.save.${condition.duration.timing}`,
+                  {
+                    ability: formatAbilityShort(
+                      condition.duration.save.ability,
+                    ),
+                    dc: condition.duration.save.dc,
+                    name: durationRowName(condition.duration),
+                  },
+                )
+              }}
+            </p>
+            <FormConditionDuration
+              :item="item"
+              :condition="condition"
+              :rows="rows"
+              :active-row-id="activeRowId"
+              @update="updateDuration(condition.name, $event)"
+            />
+          </div>
           <div class="flex justify-end mt-4">
             <UiButton
               test-id="remove"

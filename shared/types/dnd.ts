@@ -458,6 +458,9 @@ export interface DndDocument {
 
 export type DndConditionTiming = 'start' | 'end'
 
+export type DndConditionPreset =
+  'endOfNextTurn' | 'startOfNextTurn' | 'oneMinute'
+
 export interface DndConditionSave {
   ability: DndAbility
   dc: number

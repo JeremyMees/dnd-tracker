@@ -826,6 +826,36 @@
       "stabilized": "{rowName} stabilized",
       "died": "{rowName} died"
     },
+    "conditionDuration": {
+      "title": "Duration",
+      "presets": {
+        "endOfNextTurn": "Until the end of its next turn",
+        "startOfNextTurn": "Until the start of {name}'s next turn",
+        "oneMinute": "1 minute (10 rounds)"
+      },
+      "rounds": "Rounds",
+      "timing": "Counted at",
+      "timings": {
+        "start": "Start of turn",
+        "end": "End of turn"
+      },
+      "row": "Turn of",
+      "save": "Save ends",
+      "set": "Set duration",
+      "custom": "Custom",
+      "clear": "No duration",
+      "required": "Set the rounds or a save",
+      "roundsLeft": "{count} round left | {count} rounds left",
+      "saveEnds": "Ends on a successful save",
+      "summary": {
+        "start": "{count} round left, counted at the start of {name}'s turn | {count} rounds left, counted at the start of {name}'s turn",
+        "end": "{count} round left, counted at the end of {name}'s turn | {count} rounds left, counted at the end of {name}'s turn",
+        "save": {
+          "start": "{ability} save DC {dc} at the start of {name}'s turn",
+          "end": "{ability} save DC {dc} at the end of {name}'s turn"
+        }
+      }
+    },
     "combatSummary": {
       "title": "Encounter summary",
       "description": "How the fight went for everyone involved",

@@ -388,6 +388,65 @@ describe('DnDContentSearch', async () => {
     expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
   })
 
+  describe('Pinned conditions with a duration on a row', () => {
+    const blinded = {
+      id: 'srd-2024_blinded',
+      name: 'Blinded',
+      desc: "A blinded creature can't see.",
+    }
+    const timedSheet: InitiativeSheet = {
+      ...sheet,
+      rows: [
+        {
+          ...sheet.rows[0]!,
+          conditions: [
+            {
+              ...blinded,
+              duration: { rowId: sheet.rows[0]!.id, timing: 'end', rounds: 2 },
+            },
+          ],
+        },
+        ...sheet.rows.slice(1),
+      ],
+    }
+
+    it('Should pin the condition without a duration and leave the rows alone', async () => {
+      data.value = { items: [blinded], pages: 1 }
+
+      const component = await mountWithTooltips(DnDContentSearch, {
+        props: {
+          ...props,
+          allowPin: true,
+          sheet: { ...timedSheet, infoCards: [] },
+        },
+      })
+
+      vi.useFakeTimers()
+      await component.findComponent({ name: 'ContentCard' }).vm.$emit('pin')
+      await vi.advanceTimersByTimeAsync(600)
+
+      expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [blinded] })
+    })
+
+    it('Should unpin the condition and leave the row duration alone', async () => {
+      data.value = { items: [blinded], pages: 1 }
+
+      const component = await mountWithTooltips(DnDContentSearch, {
+        props: {
+          ...props,
+          allowPin: true,
+          sheet: { ...timedSheet, infoCards: [blinded] },
+        },
+      })
+
+      vi.useFakeTimers()
+      await component.findComponent({ name: 'ContentCard' }).vm.$emit('unpin')
+      await vi.advanceTimersByTimeAsync(600)
+
+      expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+    })
+  })
+
   it('Should not pin or unpin without a sheet or update handler', async () => {
     const component = await mountWithTooltips(DnDContentSearch, {
       props: {},

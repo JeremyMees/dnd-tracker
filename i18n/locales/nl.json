@@ -826,6 +826,36 @@
       "stabilized": "{rowName} stabiliseerde",
       "died": "{rowName} stierf"
     },
+    "conditionDuration": {
+      "title": "Duur",
+      "presets": {
+        "endOfNextTurn": "Tot het einde van zijn volgende beurt",
+        "startOfNextTurn": "Tot het begin van de volgende beurt van {name}",
+        "oneMinute": "1 minuut (10 rondes)"
+      },
+      "rounds": "Rondes",
+      "timing": "Geteld bij",
+      "timings": {
+        "start": "Begin van de beurt",
+        "end": "Einde van de beurt"
+      },
+      "row": "Beurt van",
+      "save": "Eindigt met save",
+      "set": "Duur instellen",
+      "custom": "Aangepast",
+      "clear": "Geen duur",
+      "required": "Vul de rondes of een save in",
+      "roundsLeft": "Nog {count} ronde | Nog {count} rondes",
+      "saveEnds": "Eindigt bij een geslaagde save",
+      "summary": {
+        "start": "Nog {count} ronde, geteld bij het begin van de beurt van {name} | Nog {count} rondes, geteld bij het begin van de beurt van {name}",
+        "end": "Nog {count} ronde, geteld bij het einde van de beurt van {name} | Nog {count} rondes, geteld bij het einde van de beurt van {name}",
+        "save": {
+          "start": "{ability} save DC {dc} bij het begin van de beurt van {name}",
+          "end": "{ability} save DC {dc} bij het einde van de beurt van {name}"
+        }
+      }
+    },
     "combatSummary": {
       "title": "Gevecht samenvatting",
       "description": "Hoe het gevecht verliep voor iedereen",
