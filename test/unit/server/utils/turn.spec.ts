@@ -156,6 +156,30 @@ describe('turn', () => {
       )
     })
 
+    it('adds the reminders to the sheet broadcast when asked to', async () => {
+      const updated = updatedSheet([{ ...rowOne, conditions: [] }, rowTwo])
+      const supabase = mockDatabase({ updated })
+
+      await advanceEncounterTurn(
+        supabase,
+        7,
+        { activeIndex: 0, round: 1, rows: [rowOne, rowTwo] },
+        { broadcastReminders: true },
+      )
+
+      expect(supabase.channel('sheet:7').httpSend).toHaveBeenCalledWith(
+        'sync',
+        {
+          version: 4,
+          sheet: updated,
+          reminders: {
+            expired: [{ rowId: 'row-1', rowName: 'Goblin', condition: prone }],
+            saves: [],
+          },
+        },
+      )
+    })
+
     it('pushes the new turn to an active live session', async () => {
       const updated = updatedSheet([rowTwo, rowTwo])
       const supabase = mockDatabase({

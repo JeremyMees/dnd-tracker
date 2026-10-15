@@ -4,6 +4,7 @@ interface AdvanceEncounterTurnOptions {
   actorId?: string | null
   actorName?: string | null
   session?: string
+  broadcastReminders?: boolean
 }
 
 function expiredEvents(
@@ -31,7 +32,12 @@ export async function advanceEncounterTurn(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
   sheet: Pick<InitiativeSheet, 'activeIndex' | 'round' | 'rows'>,
-  { actorId, actorName, session }: AdvanceEncounterTurnOptions = {},
+  {
+    actorId,
+    actorName,
+    session,
+    broadcastReminders,
+  }: AdvanceEncounterTurnOptions = {},
 ): Promise<TurnResult> {
   const advance = advanceTurn(sheet)
   const rowsChanged = advance.rows.some(
@@ -78,7 +84,14 @@ export async function advanceEncounterTurn(
     await broadcastLiveState(supabase, liveSession, toPlayerSheet(updated))
   }
 
-  await broadcastSheetSync(supabase, encounterId, updated)
+  const reminders = { expired: advance.expired, saves: advance.saves }
 
-  return { sheet: updated, expired: advance.expired, saves: advance.saves }
+  await broadcastSheetSync(
+    supabase,
+    encounterId,
+    updated,
+    broadcastReminders ? reminders : undefined,
+  )
+
+  return { sheet: updated, ...reminders }
 }

@@ -177,6 +177,31 @@ describe('Initiative table', () => {
     expect(toast.info).toHaveBeenCalledWith('components.turnReminders.expired')
   })
 
+  it('Should toast the reminders of a turn ended from the portal', async () => {
+    const turnReminders = createEventHook<TurnReminders>()
+    const expired: TurnReminder = {
+      rowId: sheet.rows[0]!.id,
+      rowName: sheet.rows[0]!.name,
+      condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+    }
+
+    await mountWithTooltips(Table, {
+      props,
+      provide: {
+        [INITIATIVE_SHEET]: {
+          ...provide[INITIATIVE_SHEET],
+          onTurnReminders: turnReminders.on,
+        },
+      },
+      global,
+    })
+
+    await turnReminders.trigger({ expired: [expired], saves: [] })
+
+    expect(mockNextTurn).not.toHaveBeenCalled()
+    expect(toast.info).toHaveBeenCalledWith('components.turnReminders.expired')
+  })
+
   it('Should display empty state when no data is available', async () => {
     mockSheet.value = undefined
 

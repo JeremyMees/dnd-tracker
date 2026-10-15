@@ -7,4 +7,5 @@ export interface SheetActionEvent {
 export interface SheetSyncEvent {
   version: number
   sheet: Partial<InitiativeSheet>
+  reminders?: TurnReminders
 }

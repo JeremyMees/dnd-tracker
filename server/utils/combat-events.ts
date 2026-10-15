@@ -59,11 +59,16 @@ export async function broadcastSheetSync(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
   sheet: SheetSyncEvent['sheet'],
+  reminders?: TurnReminders,
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
   const channel = supabase.channel(`sheet:${encounterId}`)
 
-  await channel.httpSend('sync', { version, sheet })
+  await channel.httpSend('sync', {
+    version,
+    sheet,
+    ...(reminders && { reminders }),
+  })
 }
 
 export async function broadcastSheetDeleted(

@@ -78,6 +78,7 @@ export default defineEventHandler(async event => {
     await advanceEncounterTurn(supabase, payload.encounter, sheet, {
       actorName: seat.name,
       session: payload.session,
+      broadcastReminders: true,
     })
 
     return { synced: true }

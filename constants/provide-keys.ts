@@ -1,3 +1,5 @@
+import type { EventHookOn } from '@vueuse/core'
+
 export const INITIATIVE_SHEET: InjectionKey<{
   sheet: Ref<InitiativeSheet | undefined>
   update: (
@@ -5,5 +7,6 @@ export const INITIATIVE_SHEET: InjectionKey<{
   ) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
+  onTurnReminders?: EventHookOn<TurnReminders>
   activeRow: Ref<InitiativeSheetRow | undefined>
 }> = Symbol('initiativeSheet')

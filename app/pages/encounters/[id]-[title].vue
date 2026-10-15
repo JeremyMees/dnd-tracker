@@ -21,10 +21,11 @@ const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const { mutateAsync: patch } = useInitiativeSheetPatch()
 const { mutateAsync: turn } = useInitiativeSheetTurn()
-const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
-  id,
-  data,
-)
+const {
+  enabled: realtimeData,
+  updateQueryData,
+  onTurnReminders,
+} = useRealTimeInitiativeSheet(id, data)
 const { sync: syncLiveSession } = useLiveSession(id)
 
 useSeo(() => data.value?.title)
@@ -71,6 +72,7 @@ provide(INITIATIVE_SHEET, {
   update: handleUpdate,
   patchRow: handlePatchRow,
   nextTurn: handleNextTurn,
+  onTurnReminders,
   activeRow,
 })
 </script>

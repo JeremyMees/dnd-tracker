@@ -430,7 +430,7 @@ describe('POST /api/encounter/live/action', () => {
     )
   })
 
-  it('expires a timed condition and credits the seat when the turn ends', async () => {
+  it('expires a timed condition, credits the seat and sends the reminders to the DM when the turn ends', async () => {
     const token = await seatToken()
     const otherRow = { ...row, id: 'row-2' }
     const prone = {
@@ -482,6 +482,17 @@ describe('POST /api/encounter/live/action', () => {
         actorName: 'Elara',
       }),
     ])
+    expect(
+      serverSupabaseServiceRole({} as never).channel('sheet:7').httpSend,
+    ).toHaveBeenCalledWith(
+      'sync',
+      expect.objectContaining({
+        reminders: {
+          expired: [{ rowId: 'row-1', rowName: row.name, condition: prone }],
+          saves: [],
+        },
+      }),
+    )
   })
 
   it('wraps to the first row and increments the round when ending the last turn', async () => {

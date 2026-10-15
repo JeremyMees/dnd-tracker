@@ -50,6 +50,7 @@ mockNuxtImport('useSupabaseClient', () => () => ({
 interface Probe {
   enabled: boolean
   updateQueryData: (payload: Record<string, unknown>) => void
+  onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
 }
 
 const Probe = defineComponent({
@@ -279,6 +280,58 @@ describe('useRealTimeInitiativeSheet', () => {
       emitBroadcast('sync', { version: 5, sheet })
 
       expect(setQueryData).not.toHaveBeenCalled()
+    })
+
+    it('Should pass the reminders of a portal turn to the listeners', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 2 })
+
+      const listener = vi.fn()
+      const { vm } = await mountProbe()
+
+      vm.onTurnReminders(listener)
+
+      const reminders: TurnReminders = {
+        expired: [
+          {
+            rowId: sheet.rows[0]!.id,
+            rowName: sheet.rows[0]!.name,
+            condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+          },
+        ],
+        saves: [],
+      }
+
+      emitBroadcast('sync', { version: 3, sheet, reminders })
+
+      expect(listener).toHaveBeenCalledWith(reminders)
+    })
+
+    it('Should not notify the listeners for a sync without reminders', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 2 })
+
+      const listener = vi.fn()
+      const { vm } = await mountProbe()
+
+      vm.onTurnReminders(listener)
+      emitBroadcast('sync', { version: 3, sheet })
+
+      expect(listener).not.toHaveBeenCalled()
+    })
+
+    it('Should not notify the listeners for a stale sync', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 5 })
+
+      const listener = vi.fn()
+      const { vm } = await mountProbe()
+
+      vm.onTurnReminders(listener)
+      emitBroadcast('sync', {
+        version: 5,
+        sheet,
+        reminders: { expired: [], saves: [] },
+      })
+
+      expect(listener).not.toHaveBeenCalled()
     })
 
     it('Should accept a sync broadcast even with no cached state yet', async () => {

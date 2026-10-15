@@ -159,6 +159,27 @@ describe('combat-events', () => {
         sheet: { round: 2 },
       })
     })
+
+    it('adds the turn reminders to the broadcast when given', async () => {
+      mockFrom({}, { rpc: mockChain({ data: 9, error: null }) })
+
+      const reminders = { expired: [], saves: [] }
+
+      await broadcastSheetSync(
+        serverSupabaseServiceRole({} as never),
+        7,
+        { round: 2 },
+        reminders,
+      )
+
+      expect(
+        serverSupabaseServiceRole({} as never).channel('sheet:7').httpSend,
+      ).toHaveBeenCalledWith('sync', {
+        version: 9,
+        sheet: { round: 2 },
+        reminders,
+      })
+    })
   })
 
   describe('broadcastSheetDeleted', () => {

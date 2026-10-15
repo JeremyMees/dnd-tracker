@@ -11,6 +11,7 @@ export function useRealTimeInitiativeSheet(
   const localePath = useLocalePath()
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const turnReminders = createEventHook<TurnReminders>()
 
   let channel: RealtimeChannel | undefined
 
@@ -72,6 +73,8 @@ export function useRealTimeInitiativeSheet(
 
       return { ...old, ...payload.sheet, version: payload.version }
     })
+
+    if (payload.reminders) turnReminders.trigger(payload.reminders)
   }
 
   function applyDeleted(): void {
@@ -113,5 +116,6 @@ export function useRealTimeInitiativeSheet(
   return {
     enabled,
     updateQueryData,
+    onTurnReminders: turnReminders.on,
   }
 }

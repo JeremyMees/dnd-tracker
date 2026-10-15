@@ -107,6 +107,7 @@ interface Probe {
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
+  onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
   activeRow: InitiativeSheetRow | undefined
 }
 
@@ -479,6 +480,27 @@ describe('Encounter detail page', () => {
 
     await expect(probe.nextTurn()).resolves.toEqual({ expired, saves: [] })
     expect(turn).toHaveBeenCalledWith({ id: 2 })
+  })
+
+  it('Should hand the reminders of a portal turn to the table', async () => {
+    const reminders: TurnReminders = {
+      expired: [
+        {
+          rowId: 'ylqr4a611g',
+          rowName: 'Sister Iarnă',
+          condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+        },
+      ],
+      saves: [],
+    }
+    const listener = vi.fn()
+
+    const { probe } = await mountPage()
+
+    probe.onTurnReminders(listener)
+    emitBroadcast('sync', { version: 3, sheet, reminders })
+
+    expect(listener).toHaveBeenCalledWith(reminders)
   })
 
   it('Should not advance the turn when there is no encounter', async () => {
