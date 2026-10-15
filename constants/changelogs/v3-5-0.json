@@ -1,0 +1,111 @@
+{
+  "version": "v3.5.0",
+  "date": "2026-10-15",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Give conditions a duration in rounds, counted at the start or end of a chosen creature's turn, with an optional save that ends them"
+        },
+        {
+          "text": "Conditions with a duration count down every turn and are removed automatically when they run out"
+        },
+        {
+          "text": "Turn reminders show which conditions ran out and which saves to roll, with Saved and Failed buttons"
+        },
+        {
+          "text": "Fill in a condition duration from a spell, like Hold Person"
+        },
+        {
+          "text": "Players can set durations on their own conditions in the player portal"
+        },
+        {
+          "text": "Add the Bloodied condition automatically when a creature drops to half its hit points"
+        },
+        {
+          "text": "Start a homebrew creature from scratch or from a bestiary monster"
+        },
+        {
+          "text": "Report a bug with a screenshot from the new bug report form"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Pick one condition at a time and choose its duration right away"
+        },
+        {
+          "text": "Expired conditions show up in the combat log"
+        },
+        {
+          "text": "Initiative ties are broken by the initiative modifier when a creature is added or rolled, and the order you set by hand is kept"
+        },
+        {
+          "text": "Notifications stack instead of replacing each other"
+        },
+        {
+          "text": "New cookie banner with a privacy settings link in the footer and on your profile"
+        },
+        {
+          "text": "The error page explains what went wrong instead of always saying the page was not found"
+        },
+        {
+          "text": "Popovers fit on small phone screens"
+        },
+        {
+          "text": "Campaigns can have up to 15 members including the owner"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Damage at 0 hit points added two failed death saves instead of one, or two on a critical hit"
+        },
+        {
+          "text": "Monsters and lair actions made death saves; only players and NPCs do now"
+        },
+        {
+          "text": "Instant death from massive damage was only detected with negative hit points turned on"
+        },
+        {
+          "text": "Exhaustion was removed when a creature dropped to 0 hit points"
+        },
+        {
+          "text": "An initiative of 0 was sorted below creatures that had not rolled yet"
+        },
+        {
+          "text": "Turn shortcuts moved the turn while typing in a field"
+        },
+        {
+          "text": "Attack rolls skipped the extra damage dice and a natural 1 still hit"
+        },
+        {
+          "text": "Spells without a saving throw showed a Wisdom save"
+        },
+        {
+          "text": "Changes made by the DM did not always reach the player portal"
+        },
+        {
+          "text": "Players could lower their armor class below 0 from the player portal"
+        },
+        {
+          "text": "Negative initiative modifiers on homebrew showed an extra plus sign"
+        },
+        {
+          "text": "Searching lists failed when the text contained commas, brackets, quotes or backslashes"
+        },
+        {
+          "text": "Campaign access was not updated right away after leaving, a role change, an ownership transfer or deleting the campaign"
+        },
+        {
+          "text": "The contact form and live room codes are protected against spam and guessing"
+        }
+      ]
+    }
+  ]
+}
