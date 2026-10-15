@@ -47,14 +47,12 @@ function srdError(message: string, cause: unknown): never {
   throw createError({ statusCode: 500, statusMessage: message, cause })
 }
 
-type WithoutMeta<T> = T extends unknown
-  ? Omit<T, 'documentKey' | 'syncedAt'>
-  : never
+type WithoutMeta<T> = T extends unknown ? Omit<T, SrdMeta> : never
 
-function stripMeta<T extends { documentKey: string; syncedAt: string }>(
-  row: T,
-): WithoutMeta<T> {
-  const { documentKey, syncedAt, ...item } = row
+function stripMeta<
+  T extends { documentKey: string; syncedAt: string; manual: boolean },
+>(row: T): WithoutMeta<T> {
+  const { documentKey, syncedAt, manual, ...item } = row
 
   return item as WithoutMeta<T>
 }
@@ -135,7 +133,7 @@ export async function srdDocuments(event: H3Event): Promise<DndDocument[]> {
 
   if (error) srdError('Could not read the stored documents', error)
 
-  return data.map(({ syncedAt, ...document }) => document)
+  return data.map(({ syncedAt, manual, ...document }) => document)
 }
 
 export async function srdConditions(

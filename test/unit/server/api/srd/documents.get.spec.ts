@@ -18,6 +18,7 @@ function documentRow(id: string, gamesystemKey: DndGameSystem) {
     publicationDate: '2024-01-01',
     permalink: `https://example.com/${id}`,
     syncedAt: SYNCED_AT,
+    manual: false,
   }
 }
 
@@ -31,9 +32,9 @@ function stubDocuments(data: unknown[]): SupabaseChain {
 
 describe('GET /api/srd/documents', () => {
   it('returns the stored documents without their sync bookkeeping', async () => {
-    const { syncedAt, ...document } = documentRow('srd-2024', '5e-2024')
+    const { syncedAt, manual, ...document } = documentRow('srd-2024', '5e-2024')
 
-    stubDocuments([{ ...document, syncedAt }])
+    stubDocuments([{ ...document, syncedAt, manual }])
 
     await expect(handler(mockEvent())).resolves.toEqual([document])
   })

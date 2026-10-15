@@ -102,6 +102,7 @@ function contentRows(
         ...transformOpen5eItem(type, item as unknown as Open5eItem),
         documentKey: item.document.key,
         syncedAt,
+        manual: false,
       })
     } catch (error) {
       failed.push(`${item.key} (${getErrorMessage(error)})`)
@@ -125,6 +126,7 @@ function documentRows(
     permalink: document.permalink || '',
     publicationDate: document.publication_date || null,
     syncedAt,
+    manual: false,
   }))
 }
 
@@ -172,6 +174,7 @@ async function sweep(
   const { error, count } = await supabase
     .from(table)
     .delete({ count: 'exact' })
+    .eq('manual', false)
     .lt('syncedAt', syncedAt)
 
   if (error) throw new Error(`${table}: sweep failed - ${error.message}`)

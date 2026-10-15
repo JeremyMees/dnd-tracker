@@ -65,7 +65,7 @@ export type SrdConditionInsert =
   DB['public']['Tables']['srd_conditions']['Insert']
 
 // Sync bookkeeping the app never returns
-type SrdMeta = 'documentKey' | 'syncedAt'
+export type SrdMeta = 'documentKey' | 'syncedAt' | 'manual'
 type Satisfies<T extends U, U> = T
 export type SrdDocument = Satisfies<Omit<SrdDocumentRow, SrdMeta>, DndDocument>
 export type SrdMonster = Satisfies<Omit<SrdMonsterRow, SrdMeta>, DndMonster>

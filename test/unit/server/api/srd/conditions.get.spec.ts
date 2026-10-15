@@ -18,7 +18,12 @@ function stubConditions(data: unknown[]): SupabaseChain {
 describe('GET /api/srd/conditions', () => {
   it('returns the stored conditions without their sync bookkeeping', async () => {
     stubConditions([
-      { ...dndConditionFixture, documentKey: 'core', syncedAt: SYNCED_AT },
+      {
+        ...dndConditionFixture,
+        documentKey: 'core',
+        syncedAt: SYNCED_AT,
+        manual: true,
+      },
     ])
 
     await expect(handler(mockEvent())).resolves.toEqual([dndConditionFixture])
