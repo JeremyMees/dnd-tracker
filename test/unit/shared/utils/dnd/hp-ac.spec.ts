@@ -42,6 +42,17 @@ describe('dnd/hp-ac', () => {
       expect(result.row.deathSaves?.fail).toEqual([true, true, true])
     })
 
+    it('should not add death save failures to a monster at 0 hp', () => {
+      const row = {
+        ...mockRow,
+        type: 'monster',
+        hitPoints: 0,
+      } as InitiativeSheetRow
+      const result = handleHpChanges(10, 'damage', row, false)
+
+      expect(result.row.deathSaves?.fail).toEqual([true, false, false])
+    })
+
     it('should show stable toast when saves are successful', () => {
       const row = {
         ...mockRow,

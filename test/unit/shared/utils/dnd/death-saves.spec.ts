@@ -5,7 +5,7 @@ describe('dnd/deathsaves', () => {
     it('should return correct values for different homebrew types', () => {
       expect(hasDeathSaves('summon')).toBeFalsy()
       expect(hasDeathSaves('lair')).toBeFalsy()
-      expect(hasDeathSaves('monster')).toBeTruthy()
+      expect(hasDeathSaves('monster')).toBeFalsy()
       expect(hasDeathSaves('player')).toBeTruthy()
       expect(hasDeathSaves('npc')).toBeTruthy()
     })

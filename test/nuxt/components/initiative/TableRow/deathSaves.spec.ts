@@ -44,45 +44,33 @@ describe('Initiative table row death saves', async () => {
     expect(component.html()).toMatchSnapshot()
   })
 
-  it('Should not render for lair type', async () => {
-    const component = await mountSuspended(DeathSaves, {
-      props: {
-        item: { ...props.item, type: 'lair' },
-      },
-      provide,
-    })
-
-    expect(component.find('[test-id="container"]').exists()).toBeFalsy()
-  })
-
-  it('Should not render for summon type', async () => {
-    const component = await mountSuspended(DeathSaves, {
-      props: {
-        item: { ...props.item, type: 'summon' },
-      },
-      provide,
-    })
-
-    expect(component.find('[test-id="container"]').exists()).toBeFalsy()
-  })
-
-  it('Should render for player type', async () => {
-    const component = await mountSuspended(DeathSaves, {
-      props: {
-        item: {
-          ...props.item,
-          type: 'player',
-          deathSaves: {
-            save: [false, false, false],
-            fail: [false, false, false],
-          },
+  it.each<InitiativeSheetRow['type']>(['lair', 'summon', 'monster'])(
+    'Should not render for %s type',
+    async type => {
+      const component = await mountSuspended(DeathSaves, {
+        props: {
+          item: { ...props.item, type },
         },
-      },
-      provide,
-    })
+        provide,
+      })
 
-    expect(component.find('[test-id="container"]').exists()).toBeTruthy()
-  })
+      expect(component.find('[test-id="container"]').exists()).toBeFalsy()
+    },
+  )
+
+  it.each<InitiativeSheetRow['type']>(['npc', 'player'])(
+    'Should render for %s type',
+    async type => {
+      const component = await mountSuspended(DeathSaves, {
+        props: {
+          item: { ...props.item, type },
+        },
+        provide,
+      })
+
+      expect(component.find('[test-id="container"]').exists()).toBeTruthy()
+    },
+  )
 
   it('Should render 3 save and 3 fail buttons', async () => {
     const component = await mountSuspended(DeathSaves, { props, provide })

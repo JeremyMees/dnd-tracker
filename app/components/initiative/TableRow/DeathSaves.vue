@@ -9,7 +9,7 @@ const { patchRow } = validateInject(INITIATIVE_SHEET)
 const { toast } = useToast()
 const { t } = useI18n()
 
-const { checkDeathSaves } = deathSavesFunctions
+const { checkDeathSaves, hasDeathSaves } = deathSavesFunctions
 
 function updateDeathSave(saveIndex: number, save: boolean): void {
   if (!props.item.deathSaves) return
@@ -44,7 +44,7 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
 
 <template>
   <div
-    v-if="item.type !== 'lair' && item.type !== 'summon'"
+    v-if="hasDeathSaves(item.type)"
     test-id="container"
     class="grid gap-1 w-fit mx-auto"
     :class="{

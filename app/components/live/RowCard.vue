@@ -7,6 +7,9 @@ const props = defineProps<{
 const { ownRowId } = useLiveSeat()
 
 const own = computed(() => ownRowId.value === props.row.id)
+const deathSaves = computed(() =>
+  hasDeathSaves(props.row.type) ? props.row.deathSaves : undefined,
+)
 </script>
 
 <template>
@@ -67,15 +70,8 @@ const own = computed(() => ownRowId.value === props.row.id)
         </UiBadge>
       </div>
 
-      <Tooltip
-        v-if="row.deathSaves && row.type !== 'monster'"
-        :text="$t('general.deathSaves')"
-      >
-        <LiveDeathSaves
-          test-id="death-saves"
-          :saves="row.deathSaves"
-          disabled
-        />
+      <Tooltip v-if="deathSaves" :text="$t('general.deathSaves')">
+        <LiveDeathSaves test-id="death-saves" :saves="deathSaves" disabled />
       </Tooltip>
     </UiCardContent>
   </UiCard>
