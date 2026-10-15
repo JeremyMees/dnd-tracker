@@ -1,3 +1,5 @@
+import { bloodiedConditionId } from '~~/constants/dnd'
+
 type Metric = Exclude<CombatAward, 'died' | 'unscathed'>
 
 const METRICS: { award: Metric; value: (stats: CombatantStats) => number }[] = [
@@ -55,7 +57,9 @@ function applyEvent(stats: CombatantStats, event: CombatStatsEvent): void {
       }
       break
     case 'condition_added':
-      stats.conditionsSuffered += 1
+      if (payload.condition?.id !== bloodiedConditionId) {
+        stats.conditionsSuffered += 1
+      }
       break
     case 'concentration_broken':
       stats.concentrationBroken += 1

@@ -109,6 +109,18 @@ describe('aggregateCombatStats', () => {
     expect(result.conditionsApplied).toBe(2)
   })
 
+  it('leaves the automatic bloodied condition out of the condition counts', () => {
+    const { byId, result } = statsFor([
+      event('a', 'condition_added', {
+        condition: { id: 'bloodied', name: 'Bloodied' },
+      }),
+      event('a', 'condition_added', { condition: { id: '1', name: 'Prone' } }),
+    ])
+
+    expect(byId.a?.conditionsSuffered).toBe(1)
+    expect(result.conditionsApplied).toBe(1)
+  })
+
   it('rolls per-combatant numbers up into the global totals', () => {
     const { result } = statsFor([
       damage('a', 10, 20, 10),
