@@ -828,6 +828,7 @@
     },
     "conditionDuration": {
       "title": "Duur",
+      "pending": "Duur voor {name}",
       "presets": {
         "endOfNextTurn": "Tot het einde van zijn volgende beurt",
         "startOfNextTurn": "Tot het begin van de volgende beurt van {name}",
@@ -843,6 +844,8 @@
       "save": "Eindigt met save",
       "set": "Duur instellen",
       "custom": "Aangepast",
+      "edit": "Duur aanpassen",
+      "add": "Duur toevoegen",
       "clear": "Geen duur",
       "required": "Vul de rondes of een save in",
       "roundsLeft": "Nog {count} ronde | Nog {count} rondes",

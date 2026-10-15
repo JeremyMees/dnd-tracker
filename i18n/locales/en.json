@@ -828,6 +828,7 @@
     },
     "conditionDuration": {
       "title": "Duration",
+      "pending": "Duration for {name}",
       "presets": {
         "endOfNextTurn": "Until the end of its next turn",
         "startOfNextTurn": "Until the start of {name}'s next turn",
@@ -843,6 +844,8 @@
       "save": "Save ends",
       "set": "Set duration",
       "custom": "Custom",
+      "edit": "Change duration",
+      "add": "Add duration",
       "clear": "No duration",
       "required": "Set the rounds or a save",
       "roundsLeft": "{count} round left | {count} rounds left",

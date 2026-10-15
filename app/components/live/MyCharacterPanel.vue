@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   row: PlayerRow
+  rows: PlayerRow[]
   allow: LiveAllowActions
   activeRow?: PlayerRow
 }>()
@@ -65,7 +66,12 @@ function toggle(): void {
     <AnimationExpandHeight>
       <div v-show="!collapsed" test-id="controls">
         <div class="max-h-[45vh] overflow-y-auto px-4 pb-4">
-          <LiveMyCharacterControls :row="row" :active="active" :allow="allow" />
+          <LiveMyCharacterControls
+            :row="row"
+            :rows="rows"
+            :active="active"
+            :allow="allow"
+          />
         </div>
       </div>
     </AnimationExpandHeight>

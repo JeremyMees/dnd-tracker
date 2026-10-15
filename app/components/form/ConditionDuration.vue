@@ -5,10 +5,11 @@ import { abilityTypeMap } from '~~/constants/dnd'
 import { abilityType } from '~~/constants/validation'
 
 const props = defineProps<{
-  item: InitiativeSheetRow
+  item: Pick<InitiativeSheetRow, 'id' | 'name'>
   condition: DndCondition
-  rows: InitiativeSheetRow[]
+  rows: Pick<InitiativeSheetRow, 'id' | 'name'>[]
   activeRowId?: string
+  allowNone?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -89,6 +90,17 @@ function applyPreset(preset: DndConditionPreset): void {
   <div class="flex flex-col gap-y-4">
     <div class="flex flex-wrap gap-2">
       <UiButton
+        v-if="allowNone"
+        test-id="none"
+        type="button"
+        size="sm"
+        variant="foreground"
+        class="border-2"
+        @click="emit('update', null)"
+      >
+        {{ $t('components.conditionDuration.clear') }}
+      </UiButton>
+      <UiButton
         v-for="preset in presets"
         :key="preset"
         :test-id="`preset-${preset}`"
@@ -105,7 +117,7 @@ function applyPreset(preset: DndConditionPreset): void {
         }}
       </UiButton>
       <UiButton
-        v-if="condition.duration"
+        v-if="!allowNone && condition.duration"
         test-id="clear"
         type="button"
         size="sm"

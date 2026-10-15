@@ -17,13 +17,17 @@ const prone: DndCondition = { id: 'prone', name: 'Prone', desc: 'Down.' }
 
 let wrapper: VueWrapper | undefined
 
-async function mount(condition: DndCondition = prone): Promise<VueWrapper> {
+async function mount(
+  condition: DndCondition = prone,
+  allowNone = false,
+): Promise<VueWrapper> {
   wrapper = await mountSuspended(ConditionDuration, {
     props: {
       item,
       condition,
       rows: sheet.rows,
       activeRowId: active.id,
+      allowNone,
     },
   })
 
@@ -148,6 +152,21 @@ describe('ConditionDuration', () => {
     const component = await mount()
 
     expect(component.find('[test-id="clear"]').exists()).toBe(false)
+  })
+
+  it('Should offer no duration first while adding and emit null for it', async () => {
+    const component = await mount(prone, true)
+
+    await component.get('[test-id="none"]').trigger('click')
+
+    expect(component.emitted('update')).toEqual([[null]])
+    expect(component.find('[test-id="clear"]').exists()).toBe(false)
+  })
+
+  it('Should not offer no duration outside of adding', async () => {
+    const component = await mount()
+
+    expect(component.find('[test-id="none"]').exists()).toBe(false)
   })
 
   it('Should emit null when the duration is cleared', async () => {

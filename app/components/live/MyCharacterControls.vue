@@ -3,6 +3,7 @@ import { useConditionsListing } from '~/queries/srd'
 
 const props = defineProps<{
   row: PlayerRow
+  rows: PlayerRow[]
   active: boolean
   allow: LiveAllowActions
 }>()
@@ -35,13 +36,8 @@ async function toggleConcentration(): Promise<void> {
   await apply({ type: 'concentration', value }, { concentration: value })
 }
 
-async function toggleCondition(condition: DndCondition): Promise<void> {
+async function applyConditions(value: DndCondition[]): Promise<void> {
   if (locked.value || !props.allow.conditions) return
-
-  const exists = props.row.conditions.some(c => c.id === condition.id)
-  const value = exists
-    ? props.row.conditions.filter(c => c.id !== condition.id)
-    : [...props.row.conditions, condition]
 
   await apply({ type: 'conditions', value }, { conditions: value })
 }
@@ -108,26 +104,18 @@ async function toggleCondition(condition: DndCondition): Promise<void> {
       <span class="text-xs font-bold text-muted-foreground">
         {{ $t('pages.encounter.update.conditions') }}
       </span>
-      <div class="flex flex-wrap gap-2">
-        <UiBadge
-          v-for="condition in conditionsList"
-          :key="condition.name"
-          test-id="condition"
-          :variant="
-            row.conditions.map(c => c.id).includes(condition.id)
-              ? 'destructive'
-              : 'outline'
-          "
-          class="cursor-pointer"
-          :class="{
-            'opacity-50 pointer-events-none':
-              locked || conditionsPending || !allow.conditions,
-          }"
-          @click="toggleCondition(condition)"
-        >
-          {{ condition.name }}
-        </UiBadge>
-      </div>
+      <ConditionPicker
+        :conditions="conditionsList ?? []"
+        :applied="row.conditions"
+        :item="row"
+        :rows="rows"
+        :active-row-id="row.id"
+        :disabled="locked || conditionsPending || !allow.conditions"
+        @add="applyConditions([...row.conditions, $event])"
+        @remove="
+          applyConditions(row.conditions.filter(c => c.id !== $event.id))
+        "
+      />
     </div>
   </div>
 </template>

@@ -17,6 +17,15 @@ const row: PlayerRow = {
   armorClass: 14,
 }
 
+const goblin: PlayerRow = {
+  id: 'row-2',
+  index: 1,
+  initiative: 8,
+  name: 'Goblin',
+  type: 'monster',
+  conditions: [],
+}
+
 const apply = vi.fn().mockResolvedValue(undefined)
 const endTurn = vi.fn().mockResolvedValue(undefined)
 const pending = ref(false)
@@ -47,6 +56,7 @@ function mountControls(
   return mountSuspended(MyCharacterControls, {
     props: {
       row: { ...row, ...overrides },
+      rows: [row, goblin],
       active,
       allow: { ...defaultAllow, ...allow },
     },
@@ -189,26 +199,47 @@ describe('LiveMyCharacterControls', () => {
     )
   })
 
-  it('toggles a condition on instantly, without an update button', async () => {
-    const blinded = conditions[0]!
+  it('passes the conditions, own row and visible rows to the picker', async () => {
+    const component = await mountControls()
+
+    expect(
+      component.findComponent({ name: 'ConditionPicker' }).props(),
+    ).toMatchObject({
+      conditions,
+      applied: [],
+      item: row,
+      rows: [row, goblin],
+      activeRowId: row.id,
+      disabled: false,
+    })
+  })
+
+  it('adds a picked condition with its duration', async () => {
+    const blinded = {
+      ...conditions[0]!,
+      duration: { rowId: row.id, timing: 'end', rounds: 2 },
+    }
 
     const component = await mountControls()
 
-    await component.get('[test-id="condition"]').trigger('click')
+    await component
+      .findComponent({ name: 'ConditionPicker' })
+      .vm.$emit('add', blinded)
 
     expect(apply).toHaveBeenCalledWith(
       { type: 'conditions', value: [blinded] },
       { conditions: [blinded] },
     )
-    expect(component.find('[test-id="update-conditions"]').exists()).toBe(false)
   })
 
-  it('toggles a condition off when it is already applied', async () => {
+  it('removes a condition the picker removes', async () => {
     const blinded = conditions[0]!
 
     const component = await mountControls({ conditions: [blinded] })
 
-    await component.get('[test-id="condition"]').trigger('click')
+    await component
+      .findComponent({ name: 'ConditionPicker' })
+      .vm.$emit('remove', blinded)
 
     expect(apply).toHaveBeenCalledWith(
       { type: 'conditions', value: [] },
@@ -240,9 +271,9 @@ describe('LiveMyCharacterControls', () => {
       component.get('[test-id="concentration"]').attributes('disabled'),
     ).toBeDefined()
 
-    await component.get('[test-id="condition"]').trigger('click')
-
-    expect(apply).not.toHaveBeenCalled()
+    expect(
+      component.findComponent({ name: 'ConditionPicker' }).props('disabled'),
+    ).toBe(true)
   })
 
   it("disables hp and ac actions when it is not the row's turn", async () => {
@@ -295,8 +326,11 @@ describe('LiveMyCharacterControls', () => {
 
   it('disables conditions when the DM has disallowed them', async () => {
     const component = await mountControls({}, true, { conditions: false })
+    const picker = component.findComponent({ name: 'ConditionPicker' })
 
-    await component.get('[test-id="condition"]').trigger('click')
+    expect(picker.props('disabled')).toBe(true)
+
+    await picker.vm.$emit('add', conditions[0])
 
     expect(apply).not.toHaveBeenCalled()
   })

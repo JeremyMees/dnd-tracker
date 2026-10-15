@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   row: PlayerRow
+  rows: PlayerRow[]
   allow: LiveAllowActions
   activeRow?: PlayerRow
 }>()
@@ -43,6 +44,7 @@ const active = computed(() => props.row.id === props.activeRow?.id)
     <LiveMyCharacterControls
       v-if="active"
       :row="row"
+      :rows="rows"
       :active="active"
       :allow="allow"
     />

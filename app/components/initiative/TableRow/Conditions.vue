@@ -6,12 +6,10 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 
-const selected = ref<DndCondition[]>([])
 const popoverOpen = ref<boolean>(false)
+const editingDuration = shallowRef<string>()
 
 const { data: conditions, isPending } = useConditionsListing()
-
-watch(popoverOpen, open => (selected.value = open ? props.item.conditions : []))
 
 function removeCondition(name: string): void {
   patchRow(props.item.id, {
@@ -21,7 +19,10 @@ function removeCondition(name: string): void {
 
 function updateCondition(conditions: DndCondition[]): void {
   patchRow(props.item.id, { conditions })
-  popoverOpen.value = false
+}
+
+function addCondition(condition: DndCondition): void {
+  patchRow(props.item.id, { conditions: [...props.item.conditions, condition] })
 }
 
 const rows = computed(() => sheet.value?.rows ?? [])
@@ -42,16 +43,11 @@ function updateDuration(
   updateCondition(
     props.item.conditions.map(c => (c.name === name ? { ...c, duration } : c)),
   )
+  editingDuration.value = undefined
 }
 
-function toggleSelected(item: DndCondition): void {
-  const arr = [...selected.value]
-  const index: number = arr.findIndex(s => s.id === item.id)
-
-  if (index === -1) arr.push(item)
-  else arr.splice(index, 1)
-
-  selected.value = arr
+function toggleDurationEditor(id: string): void {
+  editingDuration.value = editingDuration.value === id ? undefined : id
 }
 </script>
 
@@ -78,32 +74,15 @@ function toggleSelected(item: DndCondition): void {
             {{ $t('pages.encounter.update.conditions') }}
           </UiPopoverTitle>
         </UiPopoverHeader>
-        <div class="flex flex-wrap gap-2">
-          <UiBadge
-            v-for="condition in conditions"
-            :key="condition.name"
-            test-id="option"
-            :variant="
-              selected.map(s => s.name).includes(condition.name)
-                ? 'default'
-                : 'outline'
-            "
-            class="cursor-pointer"
-            @click="toggleSelected(condition)"
-          >
-            {{ condition.name }}
-          </UiBadge>
-        </div>
-        <div class="flex justify-end mt-4">
-          <UiButton
-            test-id="update"
-            variant="foreground"
-            :aria-label="$t('actions.update')"
-            @click="updateCondition(selected)"
-          >
-            {{ $t('actions.update') }}
-          </UiButton>
-        </div>
+        <ConditionPicker
+          :conditions="conditions ?? []"
+          :applied="item.conditions"
+          :item="item"
+          :rows="rows"
+          :active-row-id="activeRowId"
+          @add="addCondition"
+          @remove="removeCondition($event.name)"
+        />
       </UiPopoverContent>
     </UiPopover>
     <div
@@ -111,7 +90,11 @@ function toggleSelected(item: DndCondition): void {
       test-id="conditions"
       class="flex flex-wrap justify-center md:justify-start gap-1"
     >
-      <UiPopover v-for="condition in item.conditions" :key="condition.name">
+      <UiPopover
+        v-for="condition in item.conditions"
+        :key="condition.name"
+        @update:open="open => !open && (editingDuration = undefined)"
+      >
         <UiPopoverTrigger>
           <UiBadge test-id="badge" class="whitespace-nowrap">
             {{ condition.name }}
@@ -213,13 +196,50 @@ function toggleSelected(item: DndCondition): void {
                 )
               }}
             </p>
-            <FormConditionDuration
-              :item="item"
-              :condition="condition"
-              :rows="rows"
-              :active-row-id="activeRowId"
-              @update="updateDuration(condition.name, $event)"
-            />
+            <p
+              v-if="!condition.duration"
+              test-id="duration-none"
+              class="text-sm text-muted-foreground"
+            >
+              {{ $t('components.conditionDuration.clear') }}
+            </p>
+            <UiButton
+              test-id="duration-toggle"
+              type="button"
+              variant="secondary"
+              class="w-full justify-between"
+              :aria-expanded="editingDuration === condition.id"
+              @click="toggleDurationEditor(condition.id)"
+            >
+              {{
+                $t(
+                  condition.duration
+                    ? 'components.conditionDuration.edit'
+                    : 'components.conditionDuration.add',
+                )
+              }}
+              <Icon
+                name="tabler:chevron-down"
+                class="transition-transform duration-200"
+                :class="{ 'rotate-180': editingDuration === condition.id }"
+                aria-hidden="true"
+              />
+            </UiButton>
+            <AnimationExpand>
+              <div
+                v-show="editingDuration === condition.id"
+                test-id="duration-editor"
+                class="border rounded-lg p-4"
+              >
+                <FormConditionDuration
+                  :item="item"
+                  :condition="condition"
+                  :rows="rows"
+                  :active-row-id="activeRowId"
+                  @update="updateDuration(condition.name, $event)"
+                />
+              </div>
+            </AnimationExpand>
           </div>
           <div class="flex justify-end mt-4">
             <UiButton

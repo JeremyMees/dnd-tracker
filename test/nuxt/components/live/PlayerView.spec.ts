@@ -15,15 +15,15 @@ const ListProbe = defineComponent({
 })
 
 const SidePanelProbe = defineComponent({
-  props: ['row', 'activeRow', 'allow'],
+  props: ['row', 'rows', 'activeRow', 'allow'],
   template:
-    '<div test-id="side-panel-probe" :data-active-row="activeRow?.id" :data-allow="JSON.stringify(allow)">{{ row.name }}</div>',
+    '<div test-id="side-panel-probe" :data-rows="rows.length" :data-active-row="activeRow?.id" :data-allow="JSON.stringify(allow)">{{ row.name }}</div>',
 })
 
 const PanelProbe = defineComponent({
-  props: ['row', 'activeRow', 'allow'],
+  props: ['row', 'rows', 'activeRow', 'allow'],
   template:
-    '<div test-id="panel-probe" :data-active-row="activeRow?.id">{{ row.name }}</div>',
+    '<div test-id="panel-probe" :data-rows="rows.length" :data-active-row="activeRow?.id">{{ row.name }}</div>',
 })
 
 const stubs = {
@@ -89,6 +89,9 @@ describe('LivePlayerView', () => {
     expect(component.find('[test-id="list-probe"]').exists()).toBe(false)
     expect(component.find('[test-id="side-panel-probe"]').exists()).toBe(true)
     expect(component.find('[test-id="panel-probe"]').exists()).toBe(false)
+    expect(
+      component.get('[test-id="side-panel-probe"]').attributes('data-rows'),
+    ).toBe(String(sheet.rows.length))
   })
 
   it('renders the card list and bottom panel on mobile', async () => {
@@ -104,6 +107,9 @@ describe('LivePlayerView', () => {
     expect(component.find('[test-id="table-probe"]').exists()).toBe(false)
     expect(component.find('[test-id="panel-probe"]').exists()).toBe(true)
     expect(component.find('[test-id="side-panel-probe"]').exists()).toBe(false)
+    expect(
+      component.get('[test-id="panel-probe"]').attributes('data-rows'),
+    ).toBe(String(sheet.rows.length))
   })
 
   it('does not show the my-character panel without a claimed seat', async () => {
