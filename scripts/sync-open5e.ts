@@ -27,11 +27,12 @@ interface Target {
   type: Open5eType
   table: SrdTable
   chunk: number
+  pageSize?: number
 }
 
 const targets: Target[] = [
   { type: 'documents', table: 'srd_documents', chunk: 500 },
-  { type: 'monsters', table: 'srd_monsters', chunk: 250 },
+  { type: 'monsters', table: 'srd_monsters', chunk: 250, pageSize: 100 },
   { type: 'spells', table: 'srd_spells', chunk: 500 },
   { type: 'magicitems', table: 'srd_magic_items', chunk: 500 },
   { type: 'weapons', table: 'srd_weapons', chunk: 500 },
@@ -58,14 +59,17 @@ const supabase = createClient<DB>(
   { auth: { persistSession: false, autoRefreshToken: false } },
 )
 
-async function fetchAll<T>(type: Open5eType): Promise<T[]> {
+async function fetchAll<T>(
+  type: Open5eType,
+  pageSize: number = PAGE_SIZE,
+): Promise<T[]> {
   const items: T[] = []
   let page = 1
 
   while (true) {
     const response = await requestOpen5e<T>(
       type,
-      { page, limit: PAGE_SIZE },
+      { page, limit: pageSize },
       REQUEST_TIMEOUT,
     )
 
@@ -176,13 +180,13 @@ async function sweep(
 }
 
 async function syncTarget(target: Target, syncedAt: string): Promise<boolean> {
-  const { type, table, chunk } = target
+  const { type, table, chunk, pageSize } = target
   const label = table.padEnd(16)
 
   let items: WithDocument[]
 
   try {
-    items = await fetchAll<WithDocument>(type)
+    items = await fetchAll<WithDocument>(type, pageSize)
   } catch (error) {
     console.error(
       `${label} fetch failed, left untouched - ${getErrorMessage(error)}`,
