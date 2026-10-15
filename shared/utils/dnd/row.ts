@@ -79,6 +79,21 @@ export function sanitizeRowNumbers(
   return sanitized
 }
 
+function sanitizeDuration(
+  duration: DndConditionDuration,
+): DndConditionDuration {
+  const rounds = toIntegerOrUndefined(duration.rounds)
+  const dc = toIntegerOrUndefined(duration.save?.dc)
+
+  return {
+    rowId: duration.rowId,
+    timing: duration.timing,
+    ...(rounds !== undefined && { rounds }),
+    ...(duration.save &&
+      dc !== undefined && { save: { ability: duration.save.ability, dc } }),
+  }
+}
+
 export function sanitizeCondition(condition: DndCondition): DndCondition {
   const level = toIntegerOrUndefined(condition.level)
 
@@ -89,6 +104,9 @@ export function sanitizeCondition(condition: DndCondition): DndCondition {
     ...(level !== undefined && { level }),
     ...(typeof condition.hasLevels === 'boolean' && {
       hasLevels: condition.hasLevels,
+    }),
+    ...(condition.duration && {
+      duration: sanitizeDuration(condition.duration),
     }),
   }
 }

@@ -72,6 +72,74 @@ describe('dnd/schema', () => {
       ).toStrictEqual({ id: 'blinded', name: 'Blinded', desc: 'Cannot see.' })
     })
 
+    describe('duration', () => {
+      const prone = { id: 'prone', name: 'Prone', desc: 'On the ground.' }
+
+      it('accepts rounds tied to a turn and drops a null save', () => {
+        expect(
+          conditionSchema.parse({
+            ...prone,
+            duration: { rowId: 'row-1', timing: 'end', rounds: 1, save: null },
+          }),
+        ).toStrictEqual({
+          ...prone,
+          duration: { rowId: 'row-1', timing: 'end', rounds: 1 },
+        })
+      })
+
+      it('accepts a save without rounds', () => {
+        expect(
+          conditionSchema.parse({
+            ...prone,
+            duration: {
+              rowId: 'row-1',
+              timing: 'end',
+              save: { ability: 'wisdom', dc: 13 },
+            },
+          }).duration,
+        ).toStrictEqual({
+          rowId: 'row-1',
+          timing: 'end',
+          save: { ability: 'wisdom', dc: 13 },
+        })
+      })
+
+      it('drops a null duration', () => {
+        expect(
+          conditionSchema.parse({ ...prone, duration: null }),
+        ).toStrictEqual(prone)
+      })
+
+      it('rejects a duration without rounds or a save', () => {
+        expect(() =>
+          conditionSchema.parse({
+            ...prone,
+            duration: { rowId: 'row-1', timing: 'end' },
+          }),
+        ).toThrow()
+      })
+
+      it.each([
+        ['an unknown timing', { rowId: 'row-1', timing: 'later', rounds: 1 }],
+        ['zero rounds', { rowId: 'row-1', timing: 'end', rounds: 0 }],
+        ['an empty row id', { rowId: '', timing: 'end', rounds: 1 }],
+        [
+          'an unknown save ability',
+          { rowId: 'row-1', timing: 'end', save: { ability: 'luck', dc: 10 } },
+        ],
+        [
+          'a save dc above 30',
+          {
+            rowId: 'row-1',
+            timing: 'end',
+            save: { ability: 'wisdom', dc: 31 },
+          },
+        ],
+      ])('rejects %s', (_, duration) => {
+        expect(() => conditionSchema.parse({ ...prone, duration })).toThrow()
+      })
+    })
+
     it('rejects a missing desc', () => {
       expect(() =>
         conditionSchema.parse({ id: 'blinded', name: 'Blinded' }),

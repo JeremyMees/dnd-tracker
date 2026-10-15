@@ -212,6 +212,58 @@ describe('dnd/row', () => {
       ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
     })
 
+    it('keeps a duration and drops its empty fields', () => {
+      expect(
+        sanitizeCondition({
+          id: 'prone',
+          name: 'Prone',
+          desc: 'On the ground.',
+          duration: {
+            rowId: 'row-1',
+            timing: 'start',
+            rounds: '2' as unknown as number,
+            save: null,
+          },
+        }),
+      ).toStrictEqual({
+        id: 'prone',
+        name: 'Prone',
+        desc: 'On the ground.',
+        duration: { rowId: 'row-1', timing: 'start', rounds: 2 },
+      })
+    })
+
+    it('keeps a duration save', () => {
+      expect(
+        sanitizeCondition({
+          id: 'paralyzed',
+          name: 'Paralyzed',
+          desc: 'Cannot move.',
+          duration: {
+            rowId: 'row-1',
+            timing: 'end',
+            rounds: null,
+            save: { ability: 'wisdom', dc: 14 },
+          },
+        }).duration,
+      ).toStrictEqual({
+        rowId: 'row-1',
+        timing: 'end',
+        save: { ability: 'wisdom', dc: 14 },
+      })
+    })
+
+    it('drops a null duration', () => {
+      expect(
+        sanitizeCondition({
+          id: 'prone',
+          name: 'Prone',
+          desc: 'On the ground.',
+          duration: null,
+        }),
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+    })
+
     it('keeps level and hasLevels when set', () => {
       expect(
         sanitizeCondition({

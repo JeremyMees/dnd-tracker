@@ -456,12 +456,27 @@ export interface DndDocument {
   permalink: string
 }
 
+export type DndConditionTiming = 'start' | 'end'
+
+export interface DndConditionSave {
+  ability: DndAbility
+  dc: number
+}
+
+export interface DndConditionDuration {
+  rowId: string
+  timing: DndConditionTiming
+  rounds?: number | null
+  save?: DndConditionSave | null
+}
+
 export interface DndCondition {
   name: string
   id: string
   desc: string
   level?: number | null
   hasLevels?: boolean | null
+  duration?: DndConditionDuration | null
 }
 
 export type DndItem =

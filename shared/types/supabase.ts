@@ -159,6 +159,20 @@ export interface InitiativeSheetRow {
   resistancesAndImmunities?: DndResistancesAndImmunities
 }
 
+export interface TurnReminder {
+  rowId: string
+  rowName: string
+  condition: DndCondition
+}
+
+export interface TurnAdvance {
+  activeIndex: number
+  round: number
+  rows: InitiativeSheetRow[]
+  expired: TurnReminder[]
+  saves: TurnReminder[]
+}
+
 export type InitiativeSheetRowInsert = Omit<
   InitiativeSheetRow,
   | 'campaign'
