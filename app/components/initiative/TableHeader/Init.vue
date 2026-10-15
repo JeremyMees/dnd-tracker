@@ -119,7 +119,7 @@ const onSubmit = form.handleSubmit(async values => {
       </UiPopoverTrigger>
       <UiPopoverContent
         test-id="popover-content"
-        class="max-w-[800px] max-h-[600px]"
+        class="max-w-[min(800px,calc(100vw-2rem))] max-h-[600px]"
       >
         <UiPopoverHeader>
           <UiPopoverTitle>
