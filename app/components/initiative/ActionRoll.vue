@@ -105,6 +105,7 @@ const onSubmit = form.handleSubmit(async values => {
     'damage',
     target,
     sheet.value?.settings?.negative ?? false,
+    { critical: result.value?.attackRoll === 20 },
   )
 
   handleToasts(toasts)

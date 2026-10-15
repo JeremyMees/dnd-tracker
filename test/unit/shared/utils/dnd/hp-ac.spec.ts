@@ -26,9 +26,18 @@ describe('dnd/hp-ac', () => {
       expect(result.toasts).toHaveLength(0)
     })
 
-    it('should add death save failures when taking damage at 0 hp', () => {
+    it('should add one death save failure when taking damage at 0 hp', () => {
       const row = { ...mockRow, hitPoints: 0 }
       const result = handleHpChanges(10, 'damage', row, false)
+
+      expect(result.row.deathSaves?.fail).toEqual([true, true, false])
+    })
+
+    it('should add two death save failures when taking a critical hit at 0 hp', () => {
+      const row = { ...mockRow, hitPoints: 0 }
+      const result = handleHpChanges(10, 'damage', row, false, {
+        critical: true,
+      })
 
       expect(result.row.deathSaves?.fail).toEqual([true, true, true])
     })

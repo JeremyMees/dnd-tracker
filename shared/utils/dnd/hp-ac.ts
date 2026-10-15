@@ -124,6 +124,7 @@ export function handleHpChanges(
   type: DndHpType,
   item: InitiativeSheetRow,
   allowNegative: boolean,
+  { critical = false }: { critical?: boolean } = {},
 ): { row: InitiativeSheetRow; toasts: ToastItem[] } {
   const toasts: ToastItem[] = []
   const row = { ...item }
@@ -141,16 +142,14 @@ export function handleHpChanges(
 
     const downed = typeof row.hitPoints === 'number' && row.hitPoints <= 0
 
-    // When the creature has 0hp and get damage, add 2 death save failures
+    // When the creature has 0hp and get damage, add 1 death save failure (2 on a critical hit)
     if (hasDeathSaves(row.type) && noHp) {
-      if (!row.deathSaves) {
-        row.deathSaves = {
-          fail: [false, false, false],
-          save: [false, false, false],
-        }
+      row.deathSaves ??= {
+        fail: [false, false, false],
+        save: [false, false, false],
       }
 
-      row.deathSaves = applyDeathSave(row.deathSaves, 'fail', 2)
+      row.deathSaves = applyDeathSave(row.deathSaves, 'fail', critical ? 2 : 1)
     }
 
     if (row.concentration && !downed) {

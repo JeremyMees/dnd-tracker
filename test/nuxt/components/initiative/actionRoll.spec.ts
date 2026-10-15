@@ -441,6 +441,43 @@ describe('ActionRoll component', () => {
       })
     })
 
+    it('Should add two death save failures when a critical hit lands on a target at 0 hp', async () => {
+      const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+      const target = {
+        ...sheet.rows[0]!,
+        hitPoints: 0,
+        tempHitPoints: undefined,
+        deathSaves: {
+          fail: [false, false, false],
+          save: [false, false, false],
+        },
+      } as InitiativeSheetRow
+
+      mockSheet.value = { ...sheet, rows: [target, ...sheet.rows.slice(1)] }
+
+      component = await mountWithTooltips(ActionRoll, {
+        props: submitProps,
+        provide,
+      })
+      const vm = component.vm as unknown as ActionRollVM
+
+      vm.onRoll('straight')
+      vm.form.setFieldValue('target', targetId)
+      await vm.onSubmit()
+
+      expect(mockPatchRow).toHaveBeenCalledWith(
+        targetId,
+        expect.objectContaining({
+          deathSaves: {
+            fail: [true, true, false],
+            save: [false, false, false],
+          },
+        }),
+      )
+
+      randomSpy.mockRestore()
+    })
+
     it('Should not update when the selected target no longer exists on submit', async () => {
       component = await mountWithTooltips(ActionRoll, {
         props: submitProps,
