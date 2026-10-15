@@ -36,6 +36,7 @@ const result = ref<{
   damageRolled: Record<number, number[]>
   totalDamage: number
   rollType: RollType
+  miss: boolean
 }>()
 
 const targets = computed(() => {
@@ -57,21 +58,18 @@ function onRoll(type: RollType) {
   const dices = parseDamageDice(props.damageDice)
   const damageRolled: Record<number, number[]> = {}
 
-  for (const { count, sides } of dices) {
-    damageRolled[sides] = rollDice(sides, count).flat()
-  }
+  const rolls = attackRoll === 20 ? [...dices, ...dices] : dices
 
-  if (attackRoll === 20) {
-    for (const { count, sides } of dices) {
-      damageRolled[sides] = [
-        ...(damageRolled[sides] ?? []),
-        ...rollDice(sides, count).flat(),
-      ]
-    }
+  for (const { count, sides } of rolls) {
+    damageRolled[sides] = [
+      ...(damageRolled[sides] ?? []),
+      ...rollDice(sides, count).flat(),
+    ]
   }
 
   result.value = {
     rollType: type,
+    miss: attackRoll === 1,
     attackRoll,
     attackTotal: attackRoll + (props.attackBonus ?? 0),
     rolledToHit,
@@ -94,7 +92,7 @@ function handleToasts(toasts: ToastItem[]): void {
 }
 
 const onSubmit = form.handleSubmit(async values => {
-  if (!sheet.value) return
+  if (!sheet.value || result.value?.miss) return
 
   const target = sheet.value.rows.find(row => row.id === values.target)
 
@@ -230,6 +228,9 @@ const onSubmit = form.handleSubmit(async values => {
                 </span>
               </span>
             </div>
+            <p v-if="result.miss" test-id="miss" class="text-destructive">
+              {{ $t('general.naturalOneMiss') }}
+            </p>
             <div>
               {{ $t('actions.damage') }}: {{ result.totalDamage }}
               <span
@@ -253,9 +254,15 @@ const onSubmit = form.handleSubmit(async values => {
             </div>
           </div>
 
-          <UiSeparator v-if="targets?.length" class="bg-muted" />
+          <UiSeparator
+            v-if="targets?.length && !result.miss"
+            class="bg-muted"
+          />
 
-          <UiFormWrapper v-if="targets?.length" @submit="onSubmit">
+          <UiFormWrapper
+            v-if="targets?.length && !result.miss"
+            @submit="onSubmit"
+          >
             <UiFormField v-slot="{ componentField }" name="target">
               <UiFormItem>
                 <UiFormLabel>{{

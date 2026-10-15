@@ -1,6 +1,6 @@
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import ActionRoll from '~/components/initiative/ActionRoll.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -20,6 +20,7 @@ interface RollResult {
   damageRolled: Record<number, number[]>
   totalDamage: number
   rollType: RollType
+  miss: boolean
 }
 
 interface ActionRollVM {
@@ -237,6 +238,67 @@ describe('ActionRoll component', () => {
     })
   })
 
+  describe('Damage dice', () => {
+    it('Should roll every die when several dice share the same sides', async () => {
+      component = await mountWithTooltips(ActionRoll, {
+        props: { ...props, damageDice: '2d6 + 1d6' },
+        provide,
+      })
+
+      const vm = component.vm as unknown as ActionRollVM
+      vm.onRoll('straight')
+      await nextTick()
+
+      expect(vm.result?.damageRolled[6]?.length).toBe(3)
+    })
+  })
+
+  describe('Natural 1', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('Should mark a natural 1 as a miss and hide the target form', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+      const vm = component.vm as unknown as ActionRollVM
+
+      await openPopover(component)
+      vm.onRoll('straight')
+      await nextTick()
+
+      expect(vm.result?.miss).toBe(true)
+      expect(document.body.querySelector('[test-id="miss"]')).toBeTruthy()
+      expect(document.body.querySelector('[test-id="submit"]')).toBeNull()
+    })
+
+    it('Should not mark other rolls as a miss', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+      const vm = component.vm as unknown as ActionRollVM
+
+      await openPopover(component)
+      vm.onRoll('straight')
+      await nextTick()
+
+      expect(vm.result?.miss).toBe(false)
+      expect(document.body.querySelector('[test-id="miss"]')).toBeNull()
+      expect(document.body.querySelector('[test-id="submit"]')).toBeTruthy()
+    })
+
+    it('Should not apply damage after a natural 1', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+      const vm = component.vm as unknown as ActionRollVM
+
+      vm.onRoll('straight')
+      vm.form.setFieldValue('target', sheet.rows[1]!.id)
+      await vm.onSubmit()
+
+      expect(mockPatchRow).not.toHaveBeenCalled()
+    })
+  })
+
   describe('Critical hits', () => {
     it('Should double the damage dice rolled on a natural 20', async () => {
       const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
@@ -388,6 +450,14 @@ describe('ActionRoll component', () => {
       id: sheet.rows[1]!.id,
     }
     const targetId = sheet.rows[0]!.id
+
+    beforeEach(() => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
 
     it('Should update the target, toast a concentration warning and close the popover', async () => {
       component = await mountWithTooltips(ActionRoll, {
