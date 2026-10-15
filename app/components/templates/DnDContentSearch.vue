@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useSrdListing, useSrdDocuments } from '~/queries/srd'
 import { gameSystems } from '~~/constants/dnd'
 
@@ -27,7 +27,6 @@ const props = withDefaults(
   },
 )
 
-const { toast } = useToast()
 const { t } = useI18n()
 
 const showPinned = ref<boolean>(false)
@@ -110,10 +109,8 @@ async function handlePinToggle(
 
   if (remove) cards = cards.filter(i => i.id !== content.id)
   else if (cards.length >= 10) {
-    toast({
-      title: t('components.dndContentSearch.toast.maxTitle'),
+    toast.error(t('components.dndContentSearch.toast.maxTitle'), {
       description: t('components.dndContentSearch.toast.maxText'),
-      variant: 'destructive',
     })
   } else cards.push(content)
 

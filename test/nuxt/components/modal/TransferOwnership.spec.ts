@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import TransferOwnershipModal from '~/components/modal/TransferOwnership.vue'
@@ -9,22 +10,15 @@ import {
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
-const { fetchMock, invalidateQueries, removeQueries, toast } = vi.hoisted(
-  () => ({
-    fetchMock: vi.fn(),
-    invalidateQueries: vi.fn(),
-    removeQueries: vi.fn(),
-    toast: vi.fn(),
-  }),
-)
+const { fetchMock, invalidateQueries, removeQueries } = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
+  invalidateQueries: vi.fn(),
+  removeQueries: vi.fn(),
+}))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useQueryClient: () => ({ invalidateQueries, removeQueries }),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 mockNuxtImport('$fetch', () => fetchMock)
@@ -164,9 +158,7 @@ describe('TransferOwnership modal', () => {
     await fillForm(component, 'Remove', mockTeamMember.user.id)
     await submitForm(component)
 
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'success' }),
-    )
+    expect(toast.success).toHaveBeenCalled()
     expect(component.emitted('finished')).toBeTruthy()
     expect(component.emitted('close')).toBeTruthy()
   })
@@ -181,7 +173,7 @@ describe('TransferOwnership modal', () => {
     await nextTick()
 
     expect(component.get('[test-id="error"]').text()).toBe('Transfer failed')
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
     expect(component.emitted('finished')).toBeFalsy()
   })
 })

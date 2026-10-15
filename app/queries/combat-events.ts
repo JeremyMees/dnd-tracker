@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export function useCombatEvents(
   encounterId: number,
@@ -26,7 +26,6 @@ export function useCombatEvents(
 
 export function useCombatEventsClear() {
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useMutation({
@@ -39,10 +38,8 @@ export function useCombatEventsClear() {
       queryClient.setQueryData(queryKeys.combatEvents(encounterId), [])
     },
     onError: error => {
-      toast({
-        title: t('pages.encounter.toasts.combatLogClearFailed'),
+      toast.error(t('pages.encounter.toasts.combatLogClearFailed'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })

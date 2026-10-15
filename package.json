@@ -82,6 +82,7 @@
     "vue": "latest",
     "vue-draggable-plus": "^0.6.1",
     "vue-router": "latest",
+    "vue-sonner": "^2.0.9",
     "zod": "^4.6.7"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import { createSharedComposable } from '@vueuse/core'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 interface LiveSeatsSession {
   uuid: string
@@ -18,7 +18,6 @@ function _useLiveSeats(
   encounterId: number,
   session: Ref<LiveSeatsSession | undefined>,
 ) {
-  const { toast } = useToast()
   const { t } = useI18n()
   const supabase = useSupabaseClient<DB>()
 
@@ -103,10 +102,8 @@ function _useLiveSeats(
 
       seats.value = seats.value.filter(s => s.seat !== seat)
     } catch (error) {
-      toast({
-        title: t('components.liveSession.failed.kick'),
+      toast.error(t('components.liveSession.failed.kick'), {
         description: errorDescription(error),
-        variant: 'destructive',
       })
     }
   }
@@ -120,10 +117,8 @@ function _useLiveSeats(
 
       seats.value = seats.value.map(s => (s.seat === seat ? { ...s, row } : s))
     } catch (error) {
-      toast({
-        title: t('components.liveSession.failed.reassign'),
+      toast.error(t('components.liveSession.failed.reassign'), {
         description: errorDescription(error),
-        variant: 'destructive',
       })
     }
   }

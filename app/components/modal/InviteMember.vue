@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { roleType } from '~~/constants/validation'
@@ -10,7 +10,6 @@ const emit = defineEmits<{ close: [] }>()
 const props = defineProps<{ current: CampaignFull }>()
 
 const user = useAuthenticatedUser()
-const { toast } = useToast()
 const { t, locale } = useI18n()
 const queryClient = useQueryClient()
 
@@ -136,10 +135,8 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     await Promise.all(values.users.map(async user => addTeamMember(user)))
 
-    toast({
-      title: t('components.inviteMember.toast.invited.title'),
+    toast.success(t('components.inviteMember.toast.invited.title'), {
       description: t('components.inviteMember.toast.invited.text'),
-      variant: 'success',
     })
 
     emit('close')

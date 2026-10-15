@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import type { VueWrapper } from '@vue/test-utils'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
@@ -6,7 +7,6 @@ import { useLiveSeats } from '~/composables/useLiveSeats'
 
 const {
   fetchMock,
-  toast,
   on,
   subscribe,
   unsubscribe,
@@ -15,7 +15,6 @@ const {
   channelFn,
 } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
-  toast: vi.fn(),
   on: vi.fn(),
   subscribe: vi.fn(),
   unsubscribe: vi.fn(),
@@ -25,10 +24,6 @@ const {
 }))
 
 const channel = { on, subscribe, unsubscribe, presenceState }
-
-vi.mock('~/components/ui/toast', () => ({
-  useToast: () => ({ toast }),
-}))
 
 mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('useSupabaseClient', () => () => ({
@@ -231,11 +226,10 @@ describe('useLiveSeats', () => {
 
     await vm.kick('seat-1')
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.kick',
-      description: 'pages.encounter.liveSession.errors.seatNotFound',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.kick',
+      { description: 'pages.encounter.liveSession.errors.seatNotFound' },
+    )
     expect(vm.seats).toEqual([seatA])
   })
 
@@ -254,11 +248,10 @@ describe('useLiveSeats', () => {
 
     await vm.kick('seat-1')
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.kick',
-      description: 'general.error.reasons.rejected',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.kick',
+      { description: 'general.error.reasons.rejected' },
+    )
   })
 
   it('Should reassign a seat to a new row locally', async () => {
@@ -291,10 +284,9 @@ describe('useLiveSeats', () => {
 
     await vm.reassign('seat-1', 'row-2')
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.reassign',
-      description: 'pages.encounter.liveSession.errors.rowClaimed',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.reassign',
+      { description: 'pages.encounter.liveSession.errors.rowClaimed' },
+    )
   })
 })

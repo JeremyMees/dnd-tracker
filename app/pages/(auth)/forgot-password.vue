@@ -2,13 +2,12 @@
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 definePageMeta({ middleware: ['abort-authenticated'] })
 useSeo('Forgot password')
 
 const { t } = useI18n()
-const { toast } = useToast()
 const localePath = useLocalePath()
 const supabase = useSupabaseClient<DB>()
 
@@ -32,10 +31,8 @@ const onSubmit = form.handleSubmit(async values => {
 
     if (error) throw createError(error)
 
-    toast({
-      title: t('pages.forgotPassword.toast.success.title'),
+    toast.success(t('pages.forgotPassword.toast.success.title'), {
       description: t('pages.forgotPassword.toast.success.text'),
-      variant: 'success',
     })
 
     navigateTo(localePath('login'))

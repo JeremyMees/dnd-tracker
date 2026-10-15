@@ -1,23 +1,19 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import type { VueWrapper } from '@vue/test-utils'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLiveMyAction } from '~/composables/useLiveMyAction'
 
-const { fetchMock, getQueryData, setQueryData, toast } = vi.hoisted(() => ({
+const { fetchMock, getQueryData, setQueryData } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
   getQueryData: vi.fn(),
   setQueryData: vi.fn(),
-  toast: vi.fn(),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useQueryClient: () => ({ getQueryData, setQueryData }),
-}))
-
-vi.mock('~/components/ui/toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 mockNuxtImport('$fetch', () => fetchMock)
@@ -185,10 +181,8 @@ describe('useLiveMyAction', () => {
       ['useLiveState', 'session-token', 'seat-token'],
       cachedState,
     ])
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.live.actionFailed.hp',
+    expect(toast.error).toHaveBeenCalledWith('pages.live.actionFailed.hp', {
       description: 'general.error.reasons.rejected',
-      variant: 'destructive',
     })
   })
 
@@ -215,11 +209,10 @@ describe('useLiveMyAction', () => {
 
       await vm.apply({ type: 'conditions', value: [] }, { conditions: [] })
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'pages.live.actionFailed.conditions',
-        description: `pages.live.actionErrors.${reason}`,
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'pages.live.actionFailed.conditions',
+        { description: `pages.live.actionErrors.${reason}` },
+      )
     },
   )
 
@@ -236,10 +229,8 @@ describe('useLiveMyAction', () => {
 
     await vm.apply({ type: 'ac', acType: 'add', amount: 1 }, {})
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.live.actionFailed.ac',
+    expect(toast.error).toHaveBeenCalledWith('pages.live.actionFailed.ac', {
       description: 'general.error.reasons.rateLimited',
-      variant: 'destructive',
     })
   })
 
@@ -256,11 +247,10 @@ describe('useLiveMyAction', () => {
     const ended = await vm.endTurn()
 
     expect(ended).toBe(false)
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.live.actionFailed.endTurn',
-      description: 'pages.live.actionErrors.notYourTurn',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'pages.live.actionFailed.endTurn',
+      { description: 'pages.live.actionErrors.notYourTurn' },
+    )
   })
 
   it('does nothing without a claimed seat', async () => {
@@ -306,9 +296,7 @@ describe('useLiveMyAction', () => {
     await vm.apply({ type: 'hp', hpType: 'heal', amount: 5 }, { hitPoints: 15 })
 
     expect(setQueryData).not.toHaveBeenCalled()
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'destructive' }),
-    )
+    expect(toast.error).toHaveBeenCalled()
   })
 
   it('does not reconcile the cache on success when there is nothing cached afterwards', async () => {

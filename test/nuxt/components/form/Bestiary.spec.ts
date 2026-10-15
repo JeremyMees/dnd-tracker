@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Bestiary from '~/components/form/Bestiary.vue'
@@ -9,8 +10,6 @@ import { createInitiativeSheetProvide } from '~~/test/nuxt/stubs/initiative'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { touchArgs } from '~~/test/nuxt/stubs/queries'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
-
-const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
 
 const monstersStatus = ref('success')
 const documentsStatus = ref('success')
@@ -34,10 +33,6 @@ function createDocument(key: string, gamesystem: DndGameSystem = '5e-2024') {
 }
 
 const monsterListingArgs = vi.fn()
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
 
 vi.mock('~/queries/srd', () => ({
   useSrdMonsterListing: (filters: ComputedRef<unknown>) => {
@@ -220,9 +215,7 @@ describe('Bestiary', () => {
       .vm.$emit('add', dndMonsterFixture)
     await flushPromises()
 
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'success' }),
-    )
+    expect(toast.success).toHaveBeenCalled()
   })
 
   it('Should not add a monster without a sheet', async () => {
@@ -238,7 +231,7 @@ describe('Bestiary', () => {
     await flushPromises()
 
     expect(injected.update).not.toHaveBeenCalled()
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should hide the add button when not addable', async () => {

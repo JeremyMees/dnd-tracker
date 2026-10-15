@@ -1,22 +1,18 @@
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 export function useHealthCheck() {
   const { t } = useI18n()
-  const { toast } = useToast()
 
   const isOnline = useOnline()
 
   watch(
     () => isOnline.value,
     () => {
-      toast({
-        title: t(
-          `components.healthCheck.${isOnline.value ? 'online' : 'offline'}.title`,
-        ),
-        description: t(
-          `components.healthCheck.${isOnline.value ? 'online' : 'offline'}.text`,
-        ),
-        variant: isOnline.value ? 'success' : 'destructive',
+      const status = isOnline.value ? 'online' : 'offline'
+      const show = isOnline.value ? toast.success : toast.error
+
+      show(t(`components.healthCheck.${status}.title`), {
+        description: t(`components.healthCheck.${status}.text`),
       })
     },
   )

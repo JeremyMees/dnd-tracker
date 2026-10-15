@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Hp from '~/components/initiative/TableRow/Hp.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
@@ -21,18 +22,11 @@ interface Props {
 }
 
 const mockPatchRow = vi.fn()
-const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
 const mockConditions = ref<DndCondition[]>([])
 
 vi.mock('~/queries/srd', () => ({
   useConditionsListing: () => ({ data: mockConditions }),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({
-    toast: mockToast,
-  }),
 }))
 
 const provide = {
@@ -187,10 +181,8 @@ describe('Initiative table row hp', async () => {
       },
     ])
 
-    expect(mockToast).toHaveBeenCalledWith({
-      title: 'toast.title',
+    expect(toast).toHaveBeenCalledWith('toast.title', {
       description: 'toast.description',
-      variant: 'default',
     })
   })
 

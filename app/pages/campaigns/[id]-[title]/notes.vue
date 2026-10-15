@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import type { DataTable } from '#components'
 import {
   generateColumns,
@@ -19,7 +19,6 @@ const props = defineProps<{
   fetchReady: boolean
 }>()
 
-const { toast } = useToast()
 const modal = useModal()
 const { ask } = useConfirm()
 const { t } = useI18n()
@@ -118,15 +117,10 @@ async function sendNoteAsMail(
 
     startCoolDown(note.id, 15)
 
-    toast({
-      description: t('general.mail.success.title'),
-      variant: 'success',
-    })
+    toast.success(t('general.mail.success.title'))
   } catch (error) {
-    toast({
-      title: t('general.error.failed.noteMail'),
+    toast.error(t('general.error.failed.noteMail'), {
       description: t(`general.error.reasons.${getFailureReason(error)}`),
-      variant: 'destructive',
     })
   }
 }

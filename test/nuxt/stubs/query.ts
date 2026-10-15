@@ -1,5 +1,6 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { vi } from 'vitest'
+import '~~/test/nuxt/stubs/toast'
 
 export { clearQueryCache, mountHook } from '~~/test/nuxt/stubs/query-client'
 
@@ -48,23 +49,17 @@ export function mockChain(result: Record<string, unknown>): SupabaseChain {
   return chain
 }
 
-const { fetchMock, toast, supabaseFrom, supabaseRpc, supabaseAuthUpdateUser } =
+const { fetchMock, supabaseFrom, supabaseRpc, supabaseAuthUpdateUser } =
   vi.hoisted(() => {
     return {
       fetchMock: vi.fn(),
-      toast: vi.fn(),
       supabaseFrom: vi.fn(),
       supabaseRpc: vi.fn(),
       supabaseAuthUpdateUser: vi.fn().mockResolvedValue({ error: null }),
     }
   })
 
-export { fetchMock, supabaseAuthUpdateUser, supabaseRpc, toast }
-
-vi.mock('~/components/ui/toast', () => ({ useToast: () => ({ toast }) }))
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
+export { fetchMock, supabaseAuthUpdateUser, supabaseRpc }
 
 mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('useSupabaseClient', () => () => ({

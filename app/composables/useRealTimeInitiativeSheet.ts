@@ -1,13 +1,12 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import { useQueryClient, type QueryKey } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 export function useRealTimeInitiativeSheet(
   id: number,
   data: Ref<InitiativeSheet | undefined>,
 ) {
   const user = useAuthenticatedUser()
-  const { toast } = useToast()
   const { t } = useI18n()
   const localePath = useLocalePath()
   const supabase = useSupabaseClient<DB>()
@@ -76,10 +75,8 @@ export function useRealTimeInitiativeSheet(
   }
 
   function applyDeleted(): void {
-    toast({
-      title: t('pages.encounter.toasts.removed.title'),
+    toast.warning(t('pages.encounter.toasts.removed.title'), {
       description: t('pages.encounter.toasts.removed.text'),
-      variant: 'warning',
     })
 
     navigateTo(localePath('encounters'))

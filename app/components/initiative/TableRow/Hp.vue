@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
@@ -7,24 +6,13 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 
-const { t } = useI18n()
-const { toast } = useToast()
-
 const popoverOpen = shallowRef<boolean>(false)
 
 const hasHp = computed(
   () => isDefined(props.item.hitPoints) && isDefined(props.item.maxHitPoints),
 )
 
-function handleToasts(toasts: ToastItem[]): void {
-  toasts.forEach(({ title, description, variant }) => {
-    toast({
-      title: t(title[0], title[1] ?? {}),
-      description: t(description[0], description[1] ?? {}),
-      variant,
-    })
-  })
-}
+const handleToasts = useToastItems()
 
 async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
   const patch = buildCombatPatch(

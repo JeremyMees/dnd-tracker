@@ -1,16 +1,12 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import type { VueWrapper } from '@vue/test-utils'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useHealthCheck } from '~/composables/useHealthCheck'
 
-const { fetchMock, toast } = vi.hoisted(() => ({
+const { fetchMock } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
-  toast: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 mockNuxtImport('$fetch', () => fetchMock)
@@ -65,13 +61,13 @@ describe('useHealthCheck', () => {
     await vi.advanceTimersByTimeAsync(600000)
 
     expect(fetchMock).not.toHaveBeenCalled()
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('does not toast about connectivity on initial mount', async () => {
     await mountProbe()
 
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('toasts when the connection goes offline', async () => {
@@ -80,11 +76,10 @@ describe('useHealthCheck', () => {
     isOnline.value = false
     await flushPromises()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.healthCheck.offline.title',
-      description: 'components.healthCheck.offline.text',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.healthCheck.offline.title',
+      { description: 'components.healthCheck.offline.text' },
+    )
   })
 
   it('toasts when the connection comes back online', async () => {
@@ -95,10 +90,9 @@ describe('useHealthCheck', () => {
     isOnline.value = true
     await flushPromises()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.healthCheck.online.title',
-      description: 'components.healthCheck.online.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'components.healthCheck.online.title',
+      { description: 'components.healthCheck.online.text' },
+    )
   })
 })

@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -6,15 +7,10 @@ import ResetPassword from '~/pages/(auth)/reset-password.vue'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const { navigateTo, toast, updateUser, useSeo } = vi.hoisted(() => ({
+const { navigateTo, updateUser, useSeo } = vi.hoisted(() => ({
   navigateTo: vi.fn(),
-  toast: vi.fn(),
   updateUser: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 const query = ref<Record<string, string>>({})
@@ -77,18 +73,17 @@ describe('Reset password page', () => {
     await mountPage()
 
     expect(navigateTo).toHaveBeenCalledWith('/forgot-password')
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.resetPassword.toast.error.title',
-      description: 'pages.resetPassword.toast.error.text',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'pages.resetPassword.toast.error.title',
+      { description: 'pages.resetPassword.toast.error.text' },
+    )
   })
 
   it('Should stay on the page for a valid link', async () => {
     await mountPage()
 
     expect(navigateTo).not.toHaveBeenCalled()
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should update the password of the user', async () => {
@@ -106,10 +101,9 @@ describe('Reset password page', () => {
     await fillForm(component, password)
     await submitForm(component)
 
-    expect(toast).toHaveBeenCalledWith({
-      description: 'pages.resetPassword.toast.success.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'pages.resetPassword.toast.success.text',
+    )
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
 

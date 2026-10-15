@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest'
 import DnDContentSearch from '~/components/templates/DnDContentSearch.vue'
@@ -32,7 +33,6 @@ mockNuxtImport('useRoute', () => () => ({
 }))
 
 const mockUpdate = vi.fn()
-const mockToast = vi.fn()
 
 const mockItem = dndArmorFixture
 const status = ref('success')
@@ -45,10 +45,6 @@ let filterRef:
   ComputedRef<{ type: DndContentType; filters: DndContentFilters }> | undefined
 
 const { scrollToIdMock } = vi.hoisted(() => ({ scrollToIdMock: vi.fn() }))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast: mockToast }),
-}))
 
 vi.mock('~/utils/ui-helpers', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -173,15 +169,14 @@ describe('DnDContentSearch', async () => {
     await contentCard.vm.$emit('pin', dndArmorFixture)
     await vi.advanceTimersByTimeAsync(600)
 
-    expect(mockToast).toHaveBeenCalledWith({
-      title: expect.stringMatching(
-        'components.dndContentSearch.toast.maxTitle',
-      ),
-      description: expect.stringMatching(
-        'components.dndContentSearch.toast.maxText',
-      ),
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      expect.stringMatching('components.dndContentSearch.toast.maxTitle'),
+      {
+        description: expect.stringMatching(
+          'components.dndContentSearch.toast.maxText',
+        ),
+      },
+    )
   })
 
   it('Should show loading state', async () => {
@@ -362,7 +357,7 @@ describe('DnDContentSearch', async () => {
     expect(mockUpdate).toHaveBeenCalledWith({
       infoCards: [mockItem, open5eV2ArmorListingFixture[1]],
     })
-    expect(mockToast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should unpin an item', async () => {

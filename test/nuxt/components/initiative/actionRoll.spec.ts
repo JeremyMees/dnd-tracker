@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -33,19 +34,12 @@ interface ActionRollVM {
 }
 
 const mockPatchRow = vi.fn()
-const mockToast = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
 const mockConditions = ref<DndCondition[]>([])
 
 vi.mock('~/queries/srd', () => ({
   useConditionsListing: () => ({ data: mockConditions }),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({
-    toast: mockToast,
-  }),
 }))
 
 const provide = {
@@ -472,15 +466,14 @@ describe('ActionRoll component', () => {
       await vm.onSubmit()
 
       expect(mockPatchRow).toHaveBeenCalledWith(targetId, { tempHitPoints: 3 })
-      expect(mockToast).toHaveBeenCalledWith({
-        title: expect.stringMatching(
-          'components.initiativeTable.concentration.title',
-        ),
-        description: expect.stringMatching(
-          'components.initiativeTable.concentration.text',
-        ),
-        variant: 'info',
-      })
+      expect(toast.info).toHaveBeenCalledWith(
+        expect.stringMatching('components.initiativeTable.concentration.title'),
+        {
+          description: expect.stringMatching(
+            'components.initiativeTable.concentration.text',
+          ),
+        },
+      )
       expect(vm.popoverOpen).toBeFalsy()
     })
 

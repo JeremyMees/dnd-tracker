@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -18,7 +19,6 @@ const {
   setQueryData,
   subscribe,
   syncLiveSession,
-  toast,
   unsubscribe,
   update,
   patch,
@@ -33,7 +33,6 @@ const {
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
   syncLiveSession: vi.fn(),
-  toast: vi.fn(),
   unsubscribe: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
@@ -45,10 +44,6 @@ const channel = { on, subscribe, unsubscribe }
 
 on.mockReturnValue(channel)
 subscribe.mockReturnValue(channel)
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -352,11 +347,10 @@ describe('Encounter detail page', () => {
 
     emitBroadcast('deleted', {})
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.encounter.toasts.removed.title',
-      description: 'pages.encounter.toasts.removed.text',
-      variant: 'warning',
-    })
+    expect(toast.warning).toHaveBeenCalledWith(
+      'pages.encounter.toasts.removed.title',
+      { description: 'pages.encounter.toasts.removed.text' },
+    )
     expect(navigateTo).toHaveBeenCalledWith('/encounters')
     expect(setQueryData).not.toHaveBeenCalled()
   })

@@ -1,5 +1,5 @@
 import type { UserAttributes } from '@supabase/supabase-js'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 export function useProfileUpdate() {
   const supabase = useSupabaseClient<DB>()
@@ -45,7 +45,6 @@ export function useProfileUpdate() {
 export function useProfileRemove() {
   const supabase = useSupabaseClient<DB>()
   const { logout } = useAuthentication()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useCallbackMutation({
@@ -64,10 +63,8 @@ export function useProfileRemove() {
       await logout()
     },
     onError: error => {
-      toast({
-        title: t('general.error.failed.accountDelete'),
+      toast.error(t('general.error.failed.accountDelete'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })

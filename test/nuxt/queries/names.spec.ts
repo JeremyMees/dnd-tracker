@@ -1,11 +1,7 @@
+import { resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
-import {
-  clearQueryCache,
-  fetchMock,
-  mountHook,
-  toast,
-} from '~~/test/nuxt/stubs/query'
+import { clearQueryCache, fetchMock, mountHook } from '~~/test/nuxt/stubs/query'
 import { useRandomName, useRandomNames } from '~/queries/names'
 
 let mounted: VueWrapper | undefined
@@ -29,7 +25,7 @@ function request(index = 0) {
 describe('names queries', () => {
   beforeEach(async () => {
     fetchMock.mockReset()
-    toast.mockReset()
+    resetToast()
     clearNuxtState()
     await clearQueryCache()
   })
@@ -169,11 +165,10 @@ describe('names queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.names',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.names',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
 
     it('does not retry a failed generation', async () => {
@@ -230,11 +225,10 @@ describe('names queries', () => {
 
       await expect(vm.mutateAsync()).rejects.toThrow('nope')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.names',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.names',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

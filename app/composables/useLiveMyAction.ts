@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
   return {
@@ -41,16 +41,13 @@ function failureDescriptionKey(error: unknown): string {
 export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
   const { seat } = useLiveSeat()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   const pending = ref(false)
 
   function notifyFailure(type: LiveAction['type'], error: unknown): void {
-    toast({
-      title: t(`pages.live.actionFailed.${type}`),
+    toast.error(t(`pages.live.actionFailed.${type}`), {
       description: t(failureDescriptionKey(error)),
-      variant: 'destructive',
     })
   }
 

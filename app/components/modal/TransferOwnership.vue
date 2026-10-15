@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { campaignTransferRole } from '~~/constants/validation'
@@ -12,7 +12,6 @@ const emit = defineEmits<{
 
 const props = defineProps<{ current: CampaignFull }>()
 
-const { toast } = useToast()
 const { t } = useI18n()
 const queryClient = useQueryClient()
 
@@ -69,12 +68,11 @@ const onSubmit = form.handleSubmit(async values => {
   queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
   queryClient.removeQueries({ queryKey: queryKeys.campaignMember(campaignId) })
 
-  toast({
-    description: t('components.transferOwnershipModal.toast.success.title', {
+  toast.success(
+    t('components.transferOwnershipModal.toast.success.title', {
       username: newOwner.user.username,
     }),
-    variant: 'success',
-  })
+  )
 
   emit('finished')
   emit('close')

@@ -1,16 +1,12 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import type { VueWrapper } from '@vue/test-utils'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLiveSession } from '~/composables/useLiveSession'
 
-const { fetchMock, toast } = vi.hoisted(() => ({
+const { fetchMock } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
-  toast: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 mockNuxtImport('$fetch', () => fetchMock)
@@ -95,7 +91,7 @@ describe('useLiveSession', () => {
     })
     expect(vm.session).toBeUndefined()
     expect(vm.active).toBe(false)
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should still populate session state when a check finds an existing session', async () => {
@@ -143,11 +139,10 @@ describe('useLiveSession', () => {
 
     await vm.start()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.start',
-      description: 'pages.encounter.liveSession.errors.proRequired',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.start',
+      { description: 'pages.encounter.liveSession.errors.proRequired' },
+    )
     expect(vm.session).toBeUndefined()
     expect(vm.loading).toBe(false)
   })
@@ -159,11 +154,10 @@ describe('useLiveSession', () => {
 
     await vm.start()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.start',
-      description: 'general.error.reasons.rejected',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.start',
+      { description: 'general.error.reasons.rejected' },
+    )
   })
 
   it('Should fall back to a generic error for an unrecognized slug', async () => {
@@ -182,11 +176,10 @@ describe('useLiveSession', () => {
 
     await vm.start()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.start',
-      description: 'general.error.reasons.rejected',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.start',
+      { description: 'general.error.reasons.rejected' },
+    )
   })
 
   it('Should explain an unrecognized failure from its status code', async () => {
@@ -204,11 +197,10 @@ describe('useLiveSession', () => {
 
     await vm.start()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.start',
-      description: 'general.error.reasons.rateLimited',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.start',
+      { description: 'general.error.reasons.rateLimited' },
+    )
   })
 
   it('Should stop a live session', async () => {
@@ -333,11 +325,10 @@ describe('useLiveSession', () => {
 
     await vm.stop()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.liveSession.failed.end',
-      description: 'pages.encounter.liveSession.errors.noActiveSession',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'components.liveSession.failed.end',
+      { description: 'pages.encounter.liveSession.errors.noActiveSession' },
+    )
     expect(vm.loading).toBe(false)
   })
 })

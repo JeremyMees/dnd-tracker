@@ -1,10 +1,9 @@
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 export function useJoinTokenRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useCallbackMutation({
@@ -24,10 +23,8 @@ export function useJoinTokenRemove() {
       })
     },
     onError: error => {
-      toast({
-        title: t('general.error.failed.inviteRevoke'),
+      toast.error(t('general.error.failed.inviteRevoke'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })
@@ -66,7 +63,6 @@ export function useTeamMemberUpdate() {
 export function useTeamMemberRemove() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useCallbackMutation({
@@ -88,10 +84,8 @@ export function useTeamMemberRemove() {
       })
     },
     onError: error => {
-      toast({
-        title: t('general.error.failed.memberRemove'),
+      toast.error(t('general.error.failed.memberRemove'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })

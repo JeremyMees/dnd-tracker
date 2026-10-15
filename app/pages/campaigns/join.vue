@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 useSeo('Join campaign')
 
@@ -9,7 +9,6 @@ definePageMeta({
   middleware: ['valid-token'],
 })
 
-const { toast } = useToast()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
@@ -55,21 +54,17 @@ async function answerInvite(accept: boolean): Promise<void> {
       : 'index'
 
     if (accept) {
-      toast({
-        title: t('pages.campaign.join.toast.accept.title'),
+      toast.success(t('pages.campaign.join.toast.accept.title'), {
         description: t('pages.campaign.join.toast.accept.text', {
           campaign: data.value.campaign.title,
           role: data.value.role,
         }),
-        variant: 'success',
       })
     } else {
-      toast({
-        title: t('pages.campaign.join.toast.decline.title'),
+      toast.error(t('pages.campaign.join.toast.decline.title'), {
         description: t('pages.campaign.join.toast.decline.text', {
           campaign: data.value.campaign.title,
         }),
-        variant: 'destructive',
       })
     }
 
@@ -82,15 +77,14 @@ async function answerInvite(accept: boolean): Promise<void> {
     queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
     navigateTo(localePath(url))
   } catch (error) {
-    toast({
-      title: t(
+    toast.error(
+      t(
         accept
           ? 'general.error.failed.inviteAccept'
           : 'general.error.failed.inviteDecline',
       ),
-      description: t(`general.error.reasons.${getFailureReason(error)}`),
-      variant: 'destructive',
-    })
+      { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+    )
   } finally {
     isLoading.value = false
   }

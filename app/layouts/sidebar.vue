@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 defineProps<{
   header?: string
@@ -9,7 +9,6 @@ defineProps<{
 const { user, logout } = useAuthentication()
 const route = useRoute()
 const { playRoutes, routes, profileRoutes, homeRoute } = useUi()
-const { toast } = useToast()
 const { t } = useI18n()
 const sidebar = ref()
 
@@ -19,10 +18,8 @@ async function logoutUser(): Promise<void> {
   try {
     await logout()
   } catch (error) {
-    toast({
-      title: t('general.error.failed.logout'),
+    toast.error(t('general.error.failed.logout'), {
       description: t(`general.error.reasons.${getFailureReason(error)}`),
-      variant: 'destructive',
     })
   }
 }

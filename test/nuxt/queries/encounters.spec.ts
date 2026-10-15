@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -7,7 +8,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useEncounterCopy,
@@ -145,9 +145,7 @@ describe('encounters queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useEncounterCount'],
       })
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('toasts an error when the insert fails', async () => {
@@ -171,11 +169,10 @@ describe('encounters queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(spies.onSuccess).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.create.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.create.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -210,9 +207,7 @@ describe('encounters queries', () => {
 
       expect(chain.update).toHaveBeenCalledWith({ title: 'Renamed' })
       expect(chain.eq).toHaveBeenCalledWith('id', 3)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -243,11 +238,10 @@ describe('encounters queries', () => {
         vm.mutateAsync({ id: 3, data: { title: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.update.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.update.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -265,9 +259,7 @@ describe('encounters queries', () => {
       })
       expect(spies.onSuccess).toHaveBeenCalledOnce()
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('deletes every id in bulk through the server route', async () => {
@@ -300,11 +292,10 @@ describe('encounters queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(invalidateSpy).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.delete.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.delete.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -324,9 +315,7 @@ describe('encounters queries', () => {
       expect(inserted.createdBy).toBe('1')
       expect(inserted.campaign).toBe(2)
       expect(inserted.id).toBeUndefined()
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -360,10 +349,8 @@ describe('encounters queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.copy.error',
+      expect(toast.error).toHaveBeenCalledWith('components.toast.copy.error', {
         description: 'general.error.reasons.rejected',
-        variant: 'destructive',
       })
     })
   })

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export function useFeatureListing(data: ComputedRef<SbFilter>) {
   const supabase = useSupabaseClient<DB>()
@@ -77,7 +77,6 @@ export function useFeatureCreate() {
 export function useFeatureVote() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useCallbackMutation({
@@ -96,10 +95,8 @@ export function useFeatureVote() {
       queryClient.invalidateQueries({ queryKey: queryKeys.featureListing() })
     },
     onError: error => {
-      toast({
-        title: t('general.error.failed.vote'),
+      toast.error(t('general.error.failed.vote'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })

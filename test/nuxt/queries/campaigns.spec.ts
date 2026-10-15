@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -6,7 +7,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useCampaignCount,
@@ -179,9 +179,7 @@ describe('campaigns queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignMinimal'],
       })
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -214,11 +212,10 @@ describe('campaigns queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.create.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.create.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -240,9 +237,7 @@ describe('campaigns queries', () => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: ['useCampaignDetail', 5],
       })
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('hands the caller its callbacks on success', async () => {
@@ -268,11 +263,10 @@ describe('campaigns queries', () => {
         vm.mutateAsync({ id: 5, data: { title: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.update.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.update.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -356,9 +350,7 @@ describe('campaigns queries', () => {
 
       expect(spies.onSuccess).toHaveBeenCalledOnce()
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
-      expect(toast).toHaveBeenCalledWith(
-        expect.objectContaining({ variant: 'success' }),
-      )
+      expect(toast.success).toHaveBeenCalled()
     })
 
     it('reports an error and toasts on failure', async () => {
@@ -373,11 +365,10 @@ describe('campaigns queries', () => {
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'components.toast.delete.error',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.delete.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

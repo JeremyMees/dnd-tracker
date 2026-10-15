@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { maxCampaignMembers } from '~~/constants/validation'
 import { flushPromises } from '@vue/test-utils'
@@ -10,18 +11,13 @@ import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
-const { fetchMock, invalidateQueries, toast } = vi.hoisted(() => ({
+const { fetchMock, invalidateQueries } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
   invalidateQueries: vi.fn(),
-  toast: vi.fn(),
 }))
 
 const lookup = vi.fn()
 const sendInvite = vi.fn()
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
-}))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -288,9 +284,7 @@ describe('InviteMember modal', () => {
     await submitForm(component)
     await flushPromises()
 
-    expect(toast).toHaveBeenCalledWith(
-      expect.objectContaining({ variant: 'success' }),
-    )
+    expect(toast.success).toHaveBeenCalled()
     expect(invalidateQueries).toHaveBeenCalled()
     expect(component.emitted('close')).toBeTruthy()
   })

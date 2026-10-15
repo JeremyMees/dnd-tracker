@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -5,15 +6,10 @@ import Contact from '~/pages/contact.vue'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const { fetchMock, navigateTo, toast, useSeo } = vi.hoisted(() => ({
+const { fetchMock, navigateTo, useSeo } = vi.hoisted(() => ({
   fetchMock: vi.fn(),
   navigateTo: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 mockNuxtImport('useSeo', () => useSeo)
@@ -94,10 +90,7 @@ describe('Contact page', () => {
     await fillForm(component, question)
     await submitForm(component)
 
-    expect(toast).toHaveBeenCalledWith({
-      description: 'pages.contact.success',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith('pages.contact.success')
     expect(navigateTo).toHaveBeenCalledWith('/')
   })
 
@@ -159,10 +152,8 @@ describe('Contact page', () => {
     expect(component.get('[test-id="error"]').text()).toBe(
       'Mail server exploded',
     )
-    expect(toast).toHaveBeenCalledWith({
+    expect(toast.error).toHaveBeenCalledWith('general.mail.fail.title', {
       description: 'general.mail.fail.text',
-      title: 'general.mail.fail.title',
-      variant: 'destructive',
     })
     expect(navigateTo).not.toHaveBeenCalled()
   })

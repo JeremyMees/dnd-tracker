@@ -1,13 +1,5 @@
 export type ToastVariant =
-  | 'default'
-  | 'destructive'
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'help'
+  'default' | 'destructive' | 'info' | 'success' | 'warning'
 
 export interface ToastItem {
   title: [string, Record<string, unknown>?]

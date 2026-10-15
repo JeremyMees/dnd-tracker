@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -7,7 +8,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useInitiativeSheetDetail,
@@ -421,11 +421,10 @@ describe('initiative-sheets queries', () => {
           vm.mutateAsync({ id: 7, rowId: 'row-1', patch }),
         ).rejects.toThrow('boom')
 
-        expect(toast).toHaveBeenCalledWith({
-          title: `pages.encounter.toasts.patchFailed.${field}`,
-          description: 'general.error.reasons.rejected',
-          variant: 'destructive',
-        })
+        expect(toast.error).toHaveBeenCalledWith(
+          `pages.encounter.toasts.patchFailed.${field}`,
+          { description: 'general.error.reasons.rejected' },
+        )
       },
     )
 
@@ -440,11 +439,10 @@ describe('initiative-sheets queries', () => {
         vm.mutateAsync({ id: 7, rowId: 'row-1', patch: { hitPoints: 6 } }),
       ).rejects.toThrow('forbidden')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'pages.encounter.toasts.patchFailed.generic',
-        description: 'general.error.reasons.forbidden',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'pages.encounter.toasts.patchFailed.generic',
+        { description: 'general.error.reasons.forbidden' },
+      )
     })
   })
 
@@ -573,11 +571,10 @@ describe('initiative-sheets queries', () => {
       expect(
         vm.queryClient.getQueryData(['useInitiativeSheetDetail', 7]),
       ).toEqual(cachedSheet)
-      expect(toast).toHaveBeenCalledWith({
-        title: 'pages.encounter.toasts.updateFailed.turn',
-        description: expect.stringContaining('general.error.reasons.'),
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'pages.encounter.toasts.updateFailed.turn',
+        { description: expect.stringContaining('general.error.reasons.') },
+      )
     })
 
     it('does nothing optimistic without a cached sheet', async () => {
@@ -833,11 +830,10 @@ describe('initiative-sheets queries', () => {
 
         await expect(vm.mutateAsync({ id: 7, data })).rejects.toThrow('boom')
 
-        expect(toast).toHaveBeenCalledWith({
-          title: `pages.encounter.toasts.updateFailed.${field}`,
-          description: 'general.error.reasons.rejected',
-          variant: 'destructive',
-        })
+        expect(toast.error).toHaveBeenCalledWith(
+          `pages.encounter.toasts.updateFailed.${field}`,
+          { description: 'general.error.reasons.rejected' },
+        )
       },
     )
 
@@ -855,11 +851,10 @@ describe('initiative-sheets queries', () => {
         vm.mutateAsync({ id: 7, data: { activeIndex: 1 } }),
       ).rejects.toThrow('denied')
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'pages.encounter.toasts.updateFailed.turn',
-        description: 'general.error.reasons.forbidden',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'pages.encounter.toasts.updateFailed.turn',
+        { description: 'general.error.reasons.forbidden' },
+      )
     })
 
     it('reports the error without a cached sheet to roll back to', async () => {

@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
@@ -8,9 +9,8 @@ import { mockEncounterItem } from '~~/test/fixtures/encounter'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 import { selectOption } from '~~/test/nuxt/stubs/popover'
 
-const { addEncounter, toast, updateEncounter } = vi.hoisted(() => ({
+const { addEncounter, updateEncounter } = vi.hoisted(() => ({
   addEncounter: vi.fn(),
-  toast: vi.fn(),
   updateEncounter: vi.fn(),
 }))
 
@@ -27,10 +27,6 @@ vi.mock('~/queries/encounters', () => ({
 
 vi.mock('~/queries/campaigns', () => ({
   useCampaignMinimalListing: () => ({ data: campaigns, error }),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -265,11 +261,10 @@ describe('Encounter modal', () => {
     error.value = Object.assign(new Error('denied'), { statusCode: 403 })
     await flushPromises()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'general.error.loadFailed.campaigns',
-      description: 'general.error.reasons.forbidden',
-      variant: 'destructive',
-    })
+    expect(toast.error).toHaveBeenCalledWith(
+      'general.error.loadFailed.campaigns',
+      { description: 'general.error.reasons.forbidden' },
+    )
     expect(component.emitted('close')).toBeTruthy()
   })
 })

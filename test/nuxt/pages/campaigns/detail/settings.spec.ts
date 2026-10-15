@@ -1,3 +1,4 @@
+import { expectNoToast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { maxCampaignMembers } from '~~/constants/validation'
 import { flushPromises } from '@vue/test-utils'
@@ -18,7 +19,6 @@ const {
   open,
   removeJoinCampaignToken,
   removeTeamMember,
-  toast,
   useSeo,
 } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -26,12 +26,7 @@ const {
   open: vi.fn(),
   removeJoinCampaignToken: vi.fn(),
   removeTeamMember: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('~/queries/team-members', () => ({
@@ -338,7 +333,7 @@ describe('Campaign settings page', () => {
     await confirmCallback()(true)
 
     expect(removeOptions()).not.toHaveProperty('onError')
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 
   it('Should revoke the token of an invited member instead', async () => {

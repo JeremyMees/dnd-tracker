@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { useHasConsentPreferences } from '#c15t/composables'
 import { useProfileUpdate, useProfileRemove } from '~/queries/profiles'
 
@@ -7,7 +7,6 @@ definePageMeta({ auth: true })
 useSeo('Profile')
 
 const user = useAuthenticatedUser()
-const { toast } = useToast()
 const { t } = useI18n()
 const { ask } = useConfirm()
 const localePath = useLocalePath()
@@ -29,10 +28,8 @@ async function updateAvatar(avatar: Avatar): Promise<void> {
       avatarOptions: avatar.extra as Record<string, string | number>,
     })
   } catch (error) {
-    toast({
-      title: t('general.error.failed.avatar'),
+    toast.error(t('general.error.failed.avatar'), {
       description: getErrorMessage(error),
-      variant: 'destructive',
     })
   }
 }
@@ -44,10 +41,7 @@ const handleUpdateProfile = useThrottleFn(
         data,
         id: user.value.id,
         onSuccess: () => {
-          toast({
-            description: t('pages.profile.toast.success.text'),
-            variant: 'success',
-          })
+          toast.success(t('pages.profile.toast.success.text'))
         },
       })
     } catch (error) {
@@ -77,10 +71,7 @@ async function handleRemoveUser(): Promise<void> {
         onSuccess: () => {
           navigateTo(localePath('index'))
 
-          toast({
-            description: t('pages.profile.toast.delete.text'),
-            variant: 'success',
-          })
+          toast.success(t('pages.profile.toast.delete.text'))
         },
       })
     },

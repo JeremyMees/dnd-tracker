@@ -1,10 +1,9 @@
 import { createSharedComposable } from '@vueuse/core'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 const liveSessionErrors = new Set(['pro-required', 'no-active-session'])
 
 function _useLiveSession(encounterId: number) {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   const session = ref<LiveSessionResponse>()
@@ -44,10 +43,8 @@ function _useLiveSession(encounterId: number) {
 
       if (response) session.value = response
     } catch (error) {
-      toast({
-        title: t('components.liveSession.failed.start'),
+      toast.error(t('components.liveSession.failed.start'), {
         description: errorDescription(error),
-        variant: 'destructive',
       })
     } finally {
       loading.value = false
@@ -80,10 +77,8 @@ function _useLiveSession(encounterId: number) {
 
       session.value = undefined
     } catch (error) {
-      toast({
-        title: t('components.liveSession.failed.end'),
+      toast.error(t('components.liveSession.failed.end'), {
         description: errorDescription(error),
-        variant: 'destructive',
       })
     } finally {
       loading.value = false

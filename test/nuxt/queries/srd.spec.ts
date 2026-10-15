@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
 import {
@@ -5,12 +6,7 @@ import {
   dndMonsterFixture,
   dndSpellFixture,
 } from '~~/test/fixtures/open5e'
-import {
-  clearQueryCache,
-  fetchMock,
-  mountHook,
-  toast,
-} from '~~/test/nuxt/stubs/query'
+import { clearQueryCache, fetchMock, mountHook } from '~~/test/nuxt/stubs/query'
 import {
   prefetchConditionsListing,
   useConditionsListing,
@@ -159,11 +155,10 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.content',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.content',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -186,11 +181,10 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.documents',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.documents',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -213,11 +207,10 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.conditions',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.conditions',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -309,11 +302,10 @@ describe('srd queries', () => {
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
 
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.loadFailed.monsters',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.loadFailed.monsters',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

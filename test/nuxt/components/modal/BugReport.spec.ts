@@ -1,3 +1,4 @@
+import { expectNoToast, resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import BugReportModal from '~/components/modal/BugReport.vue'
@@ -5,12 +6,9 @@ import { authUser } from '~~/test/fixtures/auth-user'
 import { selectFile, submitForm } from '~~/test/nuxt/stubs/form'
 import { maxBugReportScreenshotSize } from '~~/constants/validation'
 
-const { sendBugReport, toast } = vi.hoisted(() => ({
+const { sendBugReport } = vi.hoisted(() => ({
   sendBugReport: vi.fn(),
-  toast: vi.fn(),
 }))
-
-vi.mock('~/components/ui/toast', () => ({ useToast: () => ({ toast }) }))
 
 mockNuxtImport('sendBugReport', () => sendBugReport)
 
@@ -29,7 +27,7 @@ describe('Bug report modal', () => {
   beforeEach(() => {
     user.value = { ...authUser }
     sendBugReport.mockReset().mockResolvedValue('event-id')
-    toast.mockReset()
+    resetToast()
   })
 
   it('Should match snapshot', async () => {
@@ -116,11 +114,10 @@ describe('Bug report modal', () => {
     await component.get('[test-id="message"]').setValue(message)
     await submitForm(component)
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.bugReportModal.success.title',
-      description: 'components.bugReportModal.success.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'components.bugReportModal.success.title',
+      { description: 'components.bugReportModal.success.text' },
+    )
     expect(component.emitted('close')).toBeTruthy()
   })
 
@@ -135,7 +132,7 @@ describe('Bug report modal', () => {
     expect(component.get('[test-id="error"]').text()).toBe(
       'components.bugReportModal.errors.send',
     )
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
     expect(component.emitted('close')).toBeFalsy()
   })
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { crOptions, gameSystems } from '~~/constants/dnd'
 import { useSrdDocuments, useSrdMonsterListing } from '~/queries/srd'
 
@@ -24,7 +24,6 @@ const props = withDefaults(
 const injected = inject(INITIATIVE_SHEET, undefined)
 const canAdd = computed(() => props.addable && !!injected)
 
-const { toast } = useToast()
 const { t } = useI18n()
 
 const limit = 20
@@ -151,13 +150,12 @@ async function addMonster(monster: DndMonster): Promise<void> {
     rows: appendRows(sheet.rows, [monsterToRow(monster)]),
   })
 
-  toast({
-    title: t('components.initiativeTable.bestiary.added', {
+  toast.success(
+    t('components.initiativeTable.bestiary.added', {
       name: monster.name,
     }),
-    description: t('components.initiativeTable.bestiary.addedDescription'),
-    variant: 'success',
-  })
+    { description: t('components.initiativeTable.bestiary.addedDescription') },
+  )
 }
 </script>
 

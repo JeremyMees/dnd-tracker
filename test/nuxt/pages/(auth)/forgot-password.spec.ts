@@ -1,3 +1,4 @@
+import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -6,15 +7,10 @@ import ForgotPassword from '~/pages/(auth)/forgot-password.vue'
 import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 
-const { navigateTo, resetPasswordForEmail, toast, useSeo } = vi.hoisted(() => ({
+const { navigateTo, resetPasswordForEmail, useSeo } = vi.hoisted(() => ({
   navigateTo: vi.fn(),
   resetPasswordForEmail: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 mockNuxtImport('useSeo', () => useSeo)
@@ -92,11 +88,10 @@ describe('Forgot password page', () => {
     await fillForm(component, email)
     await submitForm(component)
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.forgotPassword.toast.success.title',
-      description: 'pages.forgotPassword.toast.success.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'pages.forgotPassword.toast.success.title',
+      { description: 'pages.forgotPassword.toast.success.text' },
+    )
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
@@ -117,7 +112,7 @@ describe('Forgot password page', () => {
     expect(component.get('[test-id="error"]').text()).toBe(
       'general.error.reasons.rateLimited',
     )
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
     expect(navigateTo).not.toHaveBeenCalled()
   })
 

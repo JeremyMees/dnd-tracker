@@ -1,3 +1,4 @@
+import { resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -5,7 +6,6 @@ import {
   clearQueryCache,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import { useCrudMutation } from '~/composables/useCrudMutation'
 
@@ -35,7 +35,7 @@ async function setup(
 describe('useCrudMutation', () => {
   beforeEach(async () => {
     await clearQueryCache()
-    toast.mockClear()
+    resetToast()
   })
 
   afterEach(() => {
@@ -67,10 +67,9 @@ describe('useCrudMutation', () => {
 
     await vm.mutation.mutateAsync({ id: 3 })
 
-    expect(toast).toHaveBeenCalledWith({
-      description: 'components.toast.update.success',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'components.toast.update.success',
+    )
   })
 
   it('shows the success message as the title for a delete', async () => {
@@ -78,10 +77,9 @@ describe('useCrudMutation', () => {
 
     await vm.mutation.mutateAsync({ id: 3 })
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.toast.delete.success',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'components.toast.delete.success',
+    )
   })
 
   it('hands the caller its callbacks on success', async () => {
@@ -111,10 +109,8 @@ describe('useCrudMutation', () => {
     expect(spies.onError).toHaveBeenCalledWith('boom')
     expect(spies.onSettled).toHaveBeenCalledWith('boom')
     expect(spies.onSuccess).not.toHaveBeenCalled()
-    expect(toast).toHaveBeenCalledWith({
-      title: 'components.toast.copy.error',
+    expect(toast.error).toHaveBeenCalledWith('components.toast.copy.error', {
       description: 'general.error.reasons.rejected',
-      variant: 'destructive',
     })
   })
 })

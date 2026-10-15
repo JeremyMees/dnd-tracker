@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 
 const proItems: ProductPricingItem[] = [
   { label: 'pages.pricing.update', icon: 'check' },
@@ -44,7 +44,6 @@ const productDefaults: ProductPricing[] = [
 ]
 
 export function usePricingListing() {
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useQuery({
@@ -63,10 +62,8 @@ export function usePricingListing() {
 
         return products
       } catch (error) {
-        toast({
-          title: t('general.error.loadFailed.pricing'),
+        toast.error(t('general.error.loadFailed.pricing'), {
           description: t(`general.error.reasons.${getFailureReason(error)}`),
-          variant: 'destructive',
         })
 
         throw error

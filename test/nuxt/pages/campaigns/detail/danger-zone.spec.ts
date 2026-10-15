@@ -1,3 +1,4 @@
+import { expectNoToast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -9,19 +10,12 @@ import {
   mockTeamMember,
 } from '~~/test/fixtures/campaign'
 
-const { ask, navigateTo, open, removeCampaign, toast, useSeo } = vi.hoisted(
-  () => ({
-    ask: vi.fn(),
-    navigateTo: vi.fn(),
-    open: vi.fn(),
-    removeCampaign: vi.fn(),
-    toast: vi.fn(),
-    useSeo: vi.fn(),
-  }),
-)
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
+const { ask, navigateTo, open, removeCampaign, useSeo } = vi.hoisted(() => ({
+  ask: vi.fn(),
+  navigateTo: vi.fn(),
+  open: vi.fn(),
+  removeCampaign: vi.fn(),
+  useSeo: vi.fn(),
 }))
 
 vi.mock('~/queries/campaigns', () => ({
@@ -229,6 +223,6 @@ describe('Campaign danger zone page', () => {
 
     expect(removeOptions()).not.toHaveProperty('onError')
     expect(navigateTo).not.toHaveBeenCalled()
-    expect(toast).not.toHaveBeenCalled()
+    expectNoToast()
   })
 })

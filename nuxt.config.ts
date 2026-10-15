@@ -51,7 +51,11 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  css: ['~/assets/css/global.css', '~/assets/css/driver.css'],
+  css: [
+    '~/assets/css/global.css',
+    '~/assets/css/driver.css',
+    'vue-sonner/style.css',
+  ],
 
   site: {
     url: seo.url,

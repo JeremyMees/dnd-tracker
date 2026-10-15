@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export function useInitiativeSheetDetail(id: number) {
   const supabase = useSupabaseClient<DB>()
@@ -37,7 +37,6 @@ export function useInitiativeSheetDetail(id: number) {
 export function useInitiativeSheetDetailUpdate() {
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
   const { mutateAsync: sync } = useInitiativeSheetSync()
 
@@ -95,13 +94,12 @@ export function useInitiativeSheetDetailUpdate() {
         )
       }
 
-      toast({
-        title: t(
+      toast.error(
+        t(
           `pages.encounter.toasts.updateFailed.${failedFieldKey(data, UPDATE_FAILED_FIELDS, 'generic')}`,
         ),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
+        { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+      )
     },
   })
 }
@@ -116,7 +114,6 @@ export function useInitiativeSheetSync() {
 
 export function useInitiativeSheetTurn() {
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useCallbackMutation({
@@ -170,10 +167,8 @@ export function useInitiativeSheetTurn() {
         )
       }
 
-      toast({
-        title: t('pages.encounter.toasts.updateFailed.turn'),
+      toast.error(t('pages.encounter.toasts.updateFailed.turn'), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })
@@ -221,7 +216,6 @@ function failedFieldKey(
 
 export function useInitiativeSheetPatch() {
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   return useCallbackMutation({
@@ -316,16 +310,15 @@ export function useInitiativeSheetPatch() {
 
       const name = context?.previous?.rows.find(row => row.id === rowId)?.name
 
-      toast({
-        title: name
+      toast.error(
+        name
           ? t(
               `pages.encounter.toasts.patchFailed.${failedFieldKey(patch, PATCH_FAILED_FIELDS, 'row')}`,
               { name },
             )
           : t('pages.encounter.toasts.patchFailed.generic'),
-        description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
-      })
+        { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+      )
     },
   })
 }

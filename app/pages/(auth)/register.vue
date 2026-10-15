@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 import { defaultAvatar } from '~~/constants/default-avatar'
 
 definePageMeta({ middleware: ['abort-authenticated'] })
@@ -9,7 +9,6 @@ useSeo('Register')
 
 const { t } = useI18n()
 const { register } = useAuthentication()
-const { toast } = useToast()
 const localePath = useLocalePath()
 
 const avatar = ref<Avatar>(defaultAvatar)
@@ -57,10 +56,8 @@ const onSubmit = form.handleSubmit(async values => {
       avatarOptions: avatar.value.extra,
     })
 
-    toast({
-      title: t('pages.register.toast.success.title'),
+    toast.success(t('pages.register.toast.success.title'), {
       description: t('pages.register.toast.success.text'),
-      variant: 'success',
     })
 
     navigateTo(localePath('login'))

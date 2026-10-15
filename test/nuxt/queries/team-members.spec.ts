@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -7,7 +8,6 @@ import {
   mockSupabaseFrom,
   mountHook,
   mutationSpies,
-  toast,
 } from '~~/test/nuxt/stubs/query'
 import {
   useJoinTokenRemove,
@@ -76,11 +76,10 @@ describe('team-members queries', () => {
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(invalidateSpy).not.toHaveBeenCalled()
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.inviteRevoke',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.inviteRevoke',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 
@@ -223,11 +222,10 @@ describe('team-members queries', () => {
       ).rejects.toThrow('boom')
 
       expect(onError).toHaveBeenCalledWith('boom')
-      expect(toast).toHaveBeenCalledWith({
-        title: 'general.error.failed.memberRemove',
-        description: 'general.error.reasons.rejected',
-        variant: 'destructive',
-      })
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.memberRemove',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

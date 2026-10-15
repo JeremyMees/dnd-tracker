@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useToast } from '~/components/ui/toast/use-toast'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
@@ -13,9 +12,6 @@ const props = defineProps<{
 
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 const bloodied = useBloodiedCondition(() => sheet.value?.settings)
-
-const { t } = useI18n()
-const { toast } = useToast()
 
 type RollType = 'advantage' | 'straight' | 'disadvantage'
 
@@ -81,15 +77,7 @@ function onRoll(type: RollType) {
   }
 }
 
-function handleToasts(toasts: ToastItem[]): void {
-  toasts.forEach(({ title, description, variant }) => {
-    toast({
-      title: t(title[0], title[1] ?? {}),
-      description: t(description[0], description[1] ?? {}),
-      variant,
-    })
-  })
-}
+const handleToasts = useToastItems()
 
 const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value || result.value?.miss) return

@@ -6,12 +6,10 @@ exports[`app > Should match snapshot 1`] = `
   <!--v-if-->
   <!--v-if-->
   <div test-id="route-announcer"></div>
-  <div class="nuxt-loading-indicator" style="position: fixed; top: 0px; right: 0px; left: 0px; pointer-events: none; width: auto; height: 3px; opacity: 0; background: linear-gradient(to right, #7333E0 70%, #D926AA 100%); transform: scaleX(0%); transform-origin: left; transition: transform 0.1s, height 0.4s, opacity 0.4s; z-index: 999999;"></div>
-  <div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events: none;">
-    <!--v-if-->
-    <ol tabindex="-1" class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"></ol>
-    <!--v-if-->
-  </div>
+  <div class="nuxt-loading-indicator" style="position: fixed; top: 0px; right: 0px; left: 0px; pointer-events: none; width: auto; height: 3px; opacity: 0; background: linear-gradient(to right, #7333E0 70%, #D926AA 100%); transform: scaleX(0%); transform-origin: left; transition: transform 0.1s, height 0.4s, opacity 0.4s; z-index: 999999;"></div><!-- Remove item from normal navigation flow, only available via hotkey -->
+  <section aria-label="Notifications alt+T" tabindex="-1" aria-live="polite" aria-relevant="additions text" aria-atomic="false">
+    <ol data-sonner-toaster="" data-sonner-theme="light" class="toaster group" dir="ltr" tabindex="-1" data-theme="light" data-rich-colors="true" data-y-position="bottom" data-x-position="right" style="--front-toast-height: 0px; --width: 356px; --gap: 14px; --normal-bg: color-mix(in oklab, var(--muted-foreground) 50%, transparent); --normal-border: var(--muted-foreground); --normal-text: var(--foreground); --success-bg: color-mix(in oklab, var(--success) 50%, transparent); --success-border: var(--success); --success-text: var(--foreground); --info-bg: color-mix(in oklab, var(--info) 50%, transparent); --info-border: var(--info); --info-text: var(--foreground); --warning-bg: color-mix(in oklab, var(--warning) 50%, transparent); --warning-border: var(--warning); --warning-text: var(--foreground); --error-bg: color-mix(in oklab, var(--destructive) 50%, transparent); --error-border: var(--destructive); --error-text: var(--foreground); --border-radius: var(--radius); --offset-top: 24px; --offset-right: 24px; --offset-bottom: 24px; --offset-left: 24px; --mobile-offset-top: 16px; --mobile-offset-right: 16px; --mobile-offset-bottom: 16px; --mobile-offset-left: 16px;"></ol>
+  </section>
   <div test-id="modal-group"></div>
   <div class="flex flex-col min-h-screen">
     <div test-id="nuxt-page"></div>

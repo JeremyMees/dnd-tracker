@@ -1,3 +1,4 @@
+import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,15 +8,10 @@ import { fillForm, submitForm } from '~~/test/nuxt/stubs/form'
 import { nuxtLayoutStub } from '~~/test/nuxt/stubs/layout'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
-const { navigateTo, register, toast, useSeo } = vi.hoisted(() => ({
+const { navigateTo, register, useSeo } = vi.hoisted(() => ({
   navigateTo: vi.fn(),
   register: vi.fn(),
-  toast: vi.fn(),
   useSeo: vi.fn(),
-}))
-
-vi.mock('~/components/ui/toast/use-toast', () => ({
-  useToast: () => ({ toast }),
 }))
 
 vi.mock('~/components/atoms/AvatarPicker.vue', () => ({
@@ -165,11 +161,10 @@ describe('Register page', () => {
     await fillAccount()
     await submit()
 
-    expect(toast).toHaveBeenCalledWith({
-      title: 'pages.register.toast.success.title',
-      description: 'pages.register.toast.success.text',
-      variant: 'success',
-    })
+    expect(toast.success).toHaveBeenCalledWith(
+      'pages.register.toast.success.title',
+      { description: 'pages.register.toast.success.text' },
+    )
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 

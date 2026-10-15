@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
-import { useToast } from '~/components/ui/toast'
+import { toast } from 'vue-sonner'
 import {
   bugReportScreenshotTypes,
   maxBugReportScreenshotSize,
@@ -10,7 +10,6 @@ import {
 const emit = defineEmits<{ close: [] }>()
 
 const { t } = useI18n()
-const { toast } = useToast()
 const { user } = useAuthentication()
 
 const schema = z.object({
@@ -42,10 +41,8 @@ const onSubmit = handleSubmit(async values => {
       screenshot: values.screenshot,
     })
 
-    toast({
-      title: t('components.bugReportModal.success.title'),
+    toast.success(t('components.bugReportModal.success.title'), {
       description: t('components.bugReportModal.success.text'),
-      variant: 'success',
     })
 
     emit('close')

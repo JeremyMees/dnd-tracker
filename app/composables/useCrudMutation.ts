@@ -1,11 +1,10 @@
 import { useQueryClient } from '@tanstack/vue-query'
-import { useToast } from '~/components/ui/toast/use-toast'
+import { toast } from 'vue-sonner'
 
 export function useCrudMutation<TVariables extends QueryDefaults, TData = void>(
   options: CrudMutationOptions<TVariables, TData>,
 ) {
   const queryClient = useQueryClient()
-  const { toast } = useToast()
   const { t } = useI18n()
 
   const type = t(options.type).toLowerCase()
@@ -23,17 +22,11 @@ export function useCrudMutation<TVariables extends QueryDefaults, TData = void>(
 
       const message = t(`components.toast.${options.action}.success`, { type })
 
-      toast(
-        options.action === 'delete'
-          ? { title: message, variant: 'success' }
-          : { description: message, variant: 'success' },
-      )
+      toast.success(message)
     },
     onError: error => {
-      toast({
-        title: t(`components.toast.${options.action}.error`, { type }),
+      toast.error(t(`components.toast.${options.action}.error`, { type }), {
         description: t(`general.error.reasons.${getFailureReason(error)}`),
-        variant: 'destructive',
       })
     },
   })
