@@ -3,13 +3,46 @@ export function indexCorrect(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
 
   // Sort the array based on the initiative value in descending order
   sortedObjects.sort((a, b) => {
-    if (!a.initiative && !b.initiative) return 0
-    if (!a.initiative) return 1
-    if (!b.initiative) return -1
+    if (a.initiative == null && b.initiative == null) return 0
+    if (a.initiative == null) return 1
+    if (b.initiative == null) return -1
     return b.initiative - a.initiative
   })
 
   return sortedObjects.map((obj, index) => ({ ...obj, index }))
+}
+
+function goesBefore(
+  row: InitiativeSheetRow,
+  other: InitiativeSheetRow,
+): boolean {
+  if (row.initiative !== other.initiative) {
+    return (row.initiative ?? -1) > (other.initiative ?? -1)
+  }
+
+  if ((row.initiative ?? -1) < 0) return false
+
+  const modifier = row.initiativeModifier ?? 0
+  const otherModifier = other.initiativeModifier ?? 0
+
+  if (modifier !== otherModifier) return modifier > otherModifier
+
+  return row.type === 'player' && other.type !== 'player'
+}
+
+export function placeByInitiative(
+  rows: InitiativeSheetRow[],
+  ids: string[],
+): InitiativeSheetRow[] {
+  const placed = rows.filter(row => !ids.includes(row.id))
+
+  for (const row of rows.filter(row => ids.includes(row.id))) {
+    const position = placed.findIndex(other => goesBefore(row, other))
+
+    placed.splice(position === -1 ? placed.length : position, 0, row)
+  }
+
+  return placed
 }
 
 export function getCurrentRowIndex(sheet: InitiativeSheet, id: string): number {
@@ -128,12 +161,16 @@ export function appendRows(
   rows: InitiativeSheetRow[],
   added: (Partial<InitiativeSheetRow> & { name: string; type: HomebrewType })[],
 ): InitiativeSheetRow[] {
-  return indexCorrect([
-    ...rows,
-    ...added.map((row, i) =>
-      createInitiativeRow(row, row.type, rows.length + i),
+  const created = added.map((row, i) =>
+    createInitiativeRow(row, row.type, rows.length + i),
+  )
+
+  return indexCorrect(
+    placeByInitiative(
+      [...rows, ...created],
+      created.map(row => row.id),
     ),
-  ])
+  )
 }
 
 export const monsterToRow = (

@@ -312,6 +312,86 @@ describe('Initiative table row init', async () => {
       expect(vm.popoverOpen).toBe(false)
     })
 
+    it('Should place the row among tied rows when its initiative changes', async () => {
+      const moved = {
+        ...sheet.rows[0]!,
+        id: 'moved',
+        initiative: 4,
+        initiativeModifier: 2,
+      }
+      mockSheet.value = {
+        ...sheet,
+        rows: [
+          {
+            ...sheet.rows[1]!,
+            id: 'tie-low',
+            initiative: 12,
+            initiativeModifier: 1,
+          },
+          {
+            ...sheet.rows[1]!,
+            id: 'tie-high',
+            initiative: 12,
+            initiativeModifier: 3,
+          },
+          moved,
+        ],
+      }
+
+      const component = await mountWithTooltips(Init, {
+        props: { item: moved },
+        provide,
+      })
+      const vm = component.vm as unknown as InitVM
+
+      vm.form.setValues({ initiative: 12, modifier: 0 })
+      await vm.onSubmit()
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      expect(payload.rows.map(row => row.id)).toEqual([
+        'moved',
+        'tie-low',
+        'tie-high',
+      ])
+    })
+
+    it('Should keep the manual order when the initiative stays the same', async () => {
+      const item = {
+        ...sheet.rows[0]!,
+        id: 'item',
+        initiative: 12,
+        initiativeModifier: 4,
+      }
+      mockSheet.value = {
+        ...sheet,
+        rows: [
+          {
+            ...sheet.rows[1]!,
+            id: 'first',
+            initiative: 12,
+            initiativeModifier: 1,
+          },
+          item,
+        ],
+      }
+
+      const component = await mountWithTooltips(Init, {
+        props: { item },
+        provide,
+      })
+      const vm = component.vm as unknown as InitVM
+
+      vm.form.setValues({ initiative: 12, modifier: 0 })
+      await vm.onSubmit()
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      expect(payload.rows.map(row => row.id)).toEqual(['first', 'item'])
+    })
+
     it('Should keep the popover open when update throws', async () => {
       mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
 

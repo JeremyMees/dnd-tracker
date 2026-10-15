@@ -377,6 +377,32 @@ describe('Initiative TableHeader Init', () => {
       })
     })
 
+    it('Should place rolled rows and keep the manual order of the others', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [
+          { ...sheet.rows[0]!, id: 'b', initiative: 12, initiativeModifier: 5 },
+          { ...sheet.rows[0]!, id: 'a', initiative: 12, initiativeModifier: 1 },
+          { ...sheet.rows[0]!, id: 'c', initiative: 8, initiativeModifier: 3 },
+        ],
+      }
+
+      const component = await mountSuspended(Init, { props, provide })
+      const vm = component.vm as unknown as InitVM
+
+      vm.form.setValues({
+        selectedTypes: [],
+        ignore: true,
+        selectedCreatures: [{ id: 'c', amount: 12, initiative: 3 }],
+      })
+      await vm.onSubmit()
+
+      const payload = mockUpdate.mock.calls[0]?.[0] as {
+        rows: InitiativeSheetRow[]
+      }
+      expect(payload.rows.map(row => row.id)).toEqual(['b', 'c', 'a'])
+    })
+
     it('Should skip rows without an amount', async () => {
       mockSheet.value = {
         ...sheet,
