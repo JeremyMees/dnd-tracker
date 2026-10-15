@@ -5,7 +5,7 @@ import type { NuxtError } from '#app'
 
 useSeo('Error')
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     error?: NuxtError
   }>(),
@@ -13,6 +13,16 @@ withDefaults(
     error: undefined,
   },
 )
+
+const variant = computed(() => {
+  const status = props.error?.status
+
+  if (!status || status === 404) return 'notFound'
+  if (status === 401) return 'unauthorized'
+  if (status === 403) return 'forbidden'
+
+  return 'generic'
+})
 </script>
 
 <template>
@@ -24,11 +34,11 @@ withDefaults(
         <div class="text-[100px] font-black">
           {{ error?.status }}
         </div>
-        <h1 class="text-primary">
-          {{ $t('pages.error.404') }}
+        <h1 test-id="title" class="text-primary">
+          {{ $t(`pages.error.${variant}.title`) }}
         </h1>
-        <p class="text-muted-foreground">
-          {{ $t('pages.error.text') }}
+        <p test-id="text" class="text-muted-foreground">
+          {{ $t(`pages.error.${variant}.text`) }}
         </p>
         <div class="flex flex-wrap gap-x-4">
           <UiButton as-child>

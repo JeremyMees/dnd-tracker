@@ -30,6 +30,30 @@ describe('error', async () => {
     expect(component.text()).toContain('404')
   })
 
+  it.each([
+    [undefined, 'notFound'],
+    [404, 'notFound'],
+    [401, 'unauthorized'],
+    [403, 'forbidden'],
+    [500, 'generic'],
+    [429, 'generic'],
+  ])('Should show the %s error text', async (status, variant) => {
+    const component = await mountSuspended(Error, {
+      props: {
+        error: status
+          ? ({ statusCode: status, status } as unknown as NuxtError)
+          : undefined,
+      },
+    })
+
+    expect(component.get('[test-id="title"]').text()).toBe(
+      `pages.error.${variant}.title`,
+    )
+    expect(component.get('[test-id="text"]').text()).toBe(
+      `pages.error.${variant}.text`,
+    )
+  })
+
   it('Should render no status when no error is provided', async () => {
     const component = await mountSuspended(Error)
 

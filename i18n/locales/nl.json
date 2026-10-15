@@ -397,8 +397,22 @@
       }
     },
     "error": {
-      "404": "Oh nee...",
-      "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan.",
+      "notFound": {
+        "title": "Oh nee...",
+        "text": "We hebben overal gezocht maar konden niet vinden waar je naar op zoek bent. Laten we een betere plek voor je vinden om naartoe te gaan."
+      },
+      "unauthorized": {
+        "title": "Wie gaat daar?",
+        "text": "Je moet ingelogd zijn om deze pagina te bekijken."
+      },
+      "forbidden": {
+        "title": "Geen toegang",
+        "text": "Je hebt geen toegang tot deze pagina. Vraag de eigenaar van de campagne of het encounter om je toegang te geven."
+      },
+      "generic": {
+        "title": "Er ging iets mis",
+        "text": "Een kritieke misser aan onze kant. Probeer het zo opnieuw en laat het ons weten als het blijft gebeuren."
+      },
       "goHome": "Naar de startpagina"
     },
     "maintenance": {

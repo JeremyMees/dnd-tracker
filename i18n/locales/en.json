@@ -397,8 +397,22 @@
       }
     },
     "error": {
-      "404": "Oh no..",
-      "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go.",
+      "notFound": {
+        "title": "Oh no..",
+        "text": "We searched everywhere but couldn't find what you're looking for. Let's find a better place for you to go."
+      },
+      "unauthorized": {
+        "title": "Who goes there?",
+        "text": "You need to be logged in to see this page."
+      },
+      "forbidden": {
+        "title": "No entry",
+        "text": "You don't have access to this page. Ask the owner of the campaign or encounter to give you access."
+      },
+      "generic": {
+        "title": "Something went wrong",
+        "text": "A critical fail on our side. Try again in a moment, and let us know if it keeps happening."
+      },
       "goHome": "Back to home"
     },
     "maintenance": {
