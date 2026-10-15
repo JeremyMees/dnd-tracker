@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toast } from 'vue-sonner'
 import { useSrdListing, useSrdDocuments } from '~/queries/srd'
-import { gameSystems } from '~~/constants/dnd'
+import { defaultSrdDocuments, gameSystems } from '~~/constants/dnd'
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +19,7 @@ const props = withDefaults(
     variant: 'secondary',
     allowPin: false,
     system: '5e-2024',
-    preSelectedDocuments: () => ['srd-2024'],
+    preSelectedDocuments: () => [...defaultSrdDocuments],
     class: '',
     sheet: undefined,
     update: undefined,

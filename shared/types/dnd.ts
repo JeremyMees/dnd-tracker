@@ -466,6 +466,13 @@ export interface DndConditionSave {
   dc: number
 }
 
+export interface DndConditionDurationPrefill {
+  rowId: string
+  timing: DndConditionTiming
+  rounds?: number
+  ability?: DndAbility
+}
+
 export interface DndConditionDuration {
   rowId: string
   timing: DndConditionTiming

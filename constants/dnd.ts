@@ -346,3 +346,5 @@ export const resistanceTypeMap: Record<DndResistanceType, string> = {
   damageVulnerabilities: 'Damage vulnerabilities',
   conditionImmunities: 'Condition immunities',
 }
+
+export const defaultSrdDocuments = ['srd-2024']

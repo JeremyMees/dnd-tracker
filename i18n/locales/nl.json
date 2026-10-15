@@ -851,6 +851,8 @@
       "save": "Eindigt met save",
       "set": "Duur instellen",
       "custom": "Aangepast",
+      "spell": "Invullen vanuit een spell",
+      "spellPlaceholder": "Zoek een spell, zoals Hold Person",
       "edit": "Duur aanpassen",
       "add": "Duur toevoegen",
       "clear": "Geen duur",

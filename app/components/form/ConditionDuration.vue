@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
-import { abilityTypeMap } from '~~/constants/dnd'
+import { abilityTypeMap, defaultSrdDocuments } from '~~/constants/dnd'
 import { abilityType } from '~~/constants/validation'
+import { useSrdListing } from '~/queries/srd'
 
 const props = defineProps<{
   item: Pick<InitiativeSheetRow, 'id' | 'name'>
@@ -19,6 +20,26 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const showCustom = shallowRef(false)
+const spellSearch = shallowRef('')
+const debouncedSpellSearch = refDebounced(spellSearch, 300)
+
+const { data: spellListing } = useSrdListing(
+  computed(() => ({
+    type: 'spells' as const,
+    filters: {
+      page: 0,
+      search: debouncedSpellSearch.value.trim(),
+      documents: defaultSrdDocuments,
+    },
+  })),
+  () => debouncedSpellSearch.value.trim().length >= 2,
+)
+
+const spellResults = computed(() =>
+  spellListing.value?.type === 'spells'
+    ? spellListing.value.items.slice(0, 5)
+    : [],
+)
 
 const presets: DndConditionPreset[] = [
   'endOfNextTurn',
@@ -74,6 +95,16 @@ const onSubmit = form.handleSubmit(values => {
       values.dc && { save: { ability: values.ability, dc: values.dc } }),
   })
 })
+
+function applySpell(spell: DndSpell): void {
+  const { rowId, timing, rounds, ability } = spellDurationPrefill(spell, {
+    rowId: props.item.id,
+    activeRowId: props.activeRowId,
+  })
+
+  form.setValues({ rowId, timing, rounds, ability, dc: undefined }, false)
+  spellSearch.value = ''
+}
 
 function applyPreset(preset: DndConditionPreset): void {
   emit(
@@ -152,6 +183,32 @@ function applyPreset(preset: DndConditionPreset): void {
         test-id="custom-form"
         @submit="onSubmit"
       >
+        <div class="flex flex-col gap-y-2">
+          <UiLabel for="spell-search">
+            {{ $t('components.conditionDuration.spell') }}
+          </UiLabel>
+          <UiInput
+            id="spell-search"
+            v-model="spellSearch"
+            test-id="spell-search"
+            :placeholder="$t('components.conditionDuration.spellPlaceholder')"
+          />
+          <ul v-if="spellResults.length" class="flex flex-col gap-y-1">
+            <li v-for="spell in spellResults" :key="spell.id">
+              <UiButton
+                test-id="spell-option"
+                type="button"
+                size="sm"
+                variant="tertiary-ghost"
+                class="w-full justify-between"
+                @click="applySpell(spell)"
+              >
+                {{ spell.name }}
+                <span class="text-muted-foreground">{{ spell.duration }}</span>
+              </UiButton>
+            </li>
+          </ul>
+        </div>
         <div class="grid grid-cols-2 gap-2">
           <UiFormField v-slot="{ componentField }" name="rounds">
             <UiFormItem>

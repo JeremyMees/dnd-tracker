@@ -37,6 +37,7 @@ vi.mock('~/queries/srd', () => ({
     data: ref(conditions),
     isPending: ref(false),
   }),
+  useSrdListing: () => ({ data: ref(undefined) }),
 }))
 
 const defaultAllow: LiveAllowActions = {

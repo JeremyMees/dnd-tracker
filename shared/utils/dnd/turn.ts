@@ -87,3 +87,38 @@ export function conditionDurationPreset(
 
   return { rowId: actorId, timing: 'start', rounds: 10 }
 }
+
+const SPELL_DURATION_ROUNDS: Record<string, number> = {
+  round: 1,
+  turn: 1,
+  minute: 10,
+  hour: 600,
+}
+
+export function spellDurationRounds(duration: string): number | undefined {
+  const match = duration
+    .trim()
+    .toLowerCase()
+    .match(/^(\d+)\s+(round|turn|minute|hour)s?$/)
+
+  if (!match) return undefined
+
+  const rounds = Number(match[1]) * SPELL_DURATION_ROUNDS[match[2]!]!
+
+  return rounds <= 100 ? rounds : undefined
+}
+
+export function spellDurationPrefill(
+  spell: Pick<DndSpell, 'duration' | 'savingThrowAbility'>,
+  { rowId, activeRowId }: { rowId: string; activeRowId?: string },
+): DndConditionDurationPrefill {
+  const rounds = spellDurationRounds(spell.duration)
+  const ability = spell.savingThrowAbility ?? undefined
+
+  return {
+    rowId: ability ? rowId : (activeRowId ?? rowId),
+    timing: ability ? 'end' : 'start',
+    ...(rounds && { rounds }),
+    ...(ability && { ability }),
+  }
+}

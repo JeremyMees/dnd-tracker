@@ -851,6 +851,8 @@
       "save": "Save ends",
       "set": "Set duration",
       "custom": "Custom",
+      "spell": "Fill in from a spell",
+      "spellPlaceholder": "Search a spell, like Hold Person",
       "edit": "Change duration",
       "add": "Add duration",
       "clear": "No duration",

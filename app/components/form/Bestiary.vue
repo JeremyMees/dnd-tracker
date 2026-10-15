@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { toast } from 'vue-sonner'
-import { crOptions, gameSystems } from '~~/constants/dnd'
+import { crOptions, defaultSrdDocuments, gameSystems } from '~~/constants/dnd'
 import { useSrdDocuments, useSrdMonsterListing } from '~/queries/srd'
 
 defineEmits<{ remix: [monster: DndMonster] }>()
@@ -15,7 +15,7 @@ const props = withDefaults(
   }>(),
   {
     system: '5e-2024',
-    preSelectedDocuments: () => ['srd-2024'],
+    preSelectedDocuments: () => [...defaultSrdDocuments],
     persist: 'none',
     addable: true,
   },

@@ -15,6 +15,7 @@ function listingQuery(type: DndContentType, filters: DndContentFilters) {
 
 export function useSrdListing(
   data: ComputedRef<{ type: DndContentType; filters: DndContentFilters }>,
+  enabled: MaybeRefOrGetter<boolean> = true,
 ) {
   const { t } = useI18n()
 
@@ -36,6 +37,7 @@ export function useSrdListing(
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
     retry: false,
+    enabled,
   })
 }
 

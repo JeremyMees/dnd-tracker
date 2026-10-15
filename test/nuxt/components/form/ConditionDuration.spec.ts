@@ -1,10 +1,36 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import ConditionDuration from '~/components/form/ConditionDuration.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { isHidden } from '~~/test/nuxt/stubs/form'
+
+const { listingCalls, spellListing } = vi.hoisted(() => ({
+  listingCalls: [] as {
+    data: { value: { filters: DndContentFilters } }
+    enabled: () => boolean
+  }[],
+  spellListing: { value: undefined as unknown },
+}))
+
+vi.mock('~/queries/srd', () => ({
+  useSrdListing: (
+    data: { value: { filters: DndContentFilters } },
+    enabled: () => boolean,
+  ) => {
+    listingCalls.push({ data, enabled })
+
+    return { data: spellListing }
+  },
+}))
+
+const holdPerson = {
+  id: 'srd_hold-person',
+  name: 'Hold Person',
+  duration: '1 minute',
+  savingThrowAbility: 'wisdom',
+} as DndSpell
 
 interface ConditionDurationVM {
   form: { setValues: (values: Record<string, unknown>) => void }
@@ -49,6 +75,8 @@ async function submit(
 describe('ConditionDuration', () => {
   afterEach(() => {
     wrapper?.unmount()
+    listingCalls.length = 0
+    spellListing.value = undefined
   })
 
   it.each([
@@ -178,5 +206,58 @@ describe('ConditionDuration', () => {
     await component.get('[test-id="clear"]').trigger('click')
 
     expect(component.emitted('update')).toEqual([[null]])
+  })
+
+  describe('Spell prefill', () => {
+    it('Should only search once two characters are typed', async () => {
+      vi.useFakeTimers()
+      const component = await mount()
+      const listing = listingCalls.at(-1)!
+
+      expect(listing.enabled()).toBe(false)
+
+      await component.get('[test-id="spell-search"]').setValue('Ho')
+      await vi.advanceTimersByTimeAsync(300)
+
+      expect(listing.enabled()).toBe(true)
+      expect(listing.data.value.filters).toEqual({
+        page: 0,
+        search: 'Ho',
+        documents: ['srd-2024'],
+      })
+
+      vi.useRealTimers()
+    })
+
+    it('Should fill the custom form from a picked spell and keep the dc for the dm', async () => {
+      spellListing.value = { type: 'spells', items: [holdPerson], pages: 1 }
+
+      const component = await mount()
+
+      await component.get('[test-id="spell-option"]').trigger('click')
+      await submit(component, { dc: 14 })
+
+      expect(component.emitted('update')).toEqual([
+        [
+          {
+            rowId: item.id,
+            timing: 'end',
+            rounds: 10,
+            save: { ability: 'wisdom', dc: 14 },
+          },
+        ],
+      ])
+    })
+
+    it('Should not submit a spell save without a dc', async () => {
+      spellListing.value = { type: 'spells', items: [holdPerson], pages: 1 }
+
+      const component = await mount()
+
+      await component.get('[test-id="spell-option"]').trigger('click')
+      await (component.vm as unknown as ConditionDurationVM).onSubmit()
+
+      expect(component.emitted('update')).toBeUndefined()
+    })
   })
 })

@@ -44,6 +44,7 @@ vi.mock('~/queries/srd', () => ({
   useSrdDocuments: () => ({
     data: ref([]),
   }),
+  useSrdListing: () => ({ data: ref(undefined) }),
 }))
 
 describe('Initiative table row conditions', async () => {

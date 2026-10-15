@@ -222,4 +222,71 @@ describe('dnd/turn', () => {
       ).toEqual({ rowId: 'target', timing: 'start', rounds: 1 })
     })
   })
+
+  describe('spellDurationRounds', () => {
+    it.each([
+      ['1 round', 1],
+      ['6 rounds', 6],
+      ['1 turn', 1],
+      ['1 minute', 10],
+      ['10 minutes', 100],
+      ['1 Minute', 10],
+    ])('turns %s into %s rounds', (duration, rounds) => {
+      expect(spellDurationRounds(duration)).toBe(rounds)
+    })
+
+    it.each([
+      'instantaneous',
+      '1 hour',
+      '8 hours',
+      'until dispelled',
+      '1d4+2 rounds',
+      'special',
+    ])('gives no rounds for %s', duration => {
+      expect(spellDurationRounds(duration)).toBeUndefined()
+    })
+  })
+
+  describe('spellDurationPrefill', () => {
+    it('counts a save spell on the affected row its turn end', () => {
+      expect(
+        spellDurationPrefill(
+          { duration: '1 minute', savingThrowAbility: 'wisdom' },
+          { rowId: 'target', activeRowId: 'caster' },
+        ),
+      ).toEqual({
+        rowId: 'target',
+        timing: 'end',
+        rounds: 10,
+        ability: 'wisdom',
+      })
+    })
+
+    it('counts a spell without a save on the caster its turn start', () => {
+      expect(
+        spellDurationPrefill(
+          { duration: '1 round', savingThrowAbility: null },
+          { rowId: 'target', activeRowId: 'caster' },
+        ),
+      ).toEqual({ rowId: 'caster', timing: 'start', rounds: 1 })
+    })
+
+    it('leaves the rounds out when the spell outlasts a fight', () => {
+      expect(
+        spellDurationPrefill(
+          { duration: '8 hours', savingThrowAbility: 'charisma' },
+          { rowId: 'target' },
+        ),
+      ).toEqual({ rowId: 'target', timing: 'end', ability: 'charisma' })
+    })
+
+    it('falls back to the affected row without an active row', () => {
+      expect(
+        spellDurationPrefill(
+          { duration: '1 minute', savingThrowAbility: null },
+          { rowId: 'target' },
+        ),
+      ).toEqual({ rowId: 'target', timing: 'start', rounds: 10 })
+    })
+  })
 })
