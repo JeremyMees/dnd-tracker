@@ -119,6 +119,130 @@ export function handleAcChanges(
   return row
 }
 
+export function hasNoHitPoints(row: InitiativeSheetRow): boolean {
+  return typeof row.hitPoints === 'number' && row.hitPoints <= 0
+}
+
+export function isInstantDeath(
+  row: InitiativeSheetRow,
+  amount: number,
+): boolean {
+  if (!hasDeathSaves(row.type)) return false
+  if (typeof row.hitPoints !== 'number') return false
+  if (typeof row.maxHitPoints !== 'number') return false
+
+  const leftover =
+    amount - (row.tempHitPoints ?? 0) - Math.max(row.hitPoints, 0)
+
+  return leftover >= row.maxHitPoints
+}
+
+export function healHitPoints(row: InitiativeSheetRow, amount: number): void {
+  if (hasDeathSaves(row.type) && hasNoHitPoints(row)) {
+    row.deathSaves = resetDeathSaves()
+  }
+
+  heal('hitPoints', row, amount)
+}
+
+export function damageHitPoints(
+  row: InitiativeSheetRow,
+  amount: number,
+  { critical, instantDeath }: { critical: boolean; instantDeath: boolean },
+): ToastItem[] {
+  const toasts: ToastItem[] = []
+  const noHp = hasNoHitPoints(row)
+
+  damage('hitPoints', row, amount)
+
+  const downed = hasNoHitPoints(row)
+
+  // When the creature has 0hp and get damage, add 1 death save failure (2 on a critical hit)
+  if (hasDeathSaves(row.type) && noHp) {
+    row.deathSaves = applyDeathSave(
+      row.deathSaves ?? {
+        fail: [false, false, false],
+        save: [false, false, false],
+      },
+      'fail',
+      critical ? 2 : 1,
+    )
+  }
+
+  if (instantDeath) {
+    row.deathSaves = {
+      fail: [true, true, true],
+      save: [false, false, false],
+    }
+  }
+
+  if (row.concentration && !downed) {
+    toasts.push({
+      title: ['components.initiativeTable.concentration.title'],
+      description: [
+        'components.initiativeTable.concentration.text',
+        { name: row.name, dc: concentrationDC(amount) },
+      ],
+      variant: 'info',
+    })
+  }
+
+  if (downed && (row.concentration || row.conditions.length)) {
+    row.concentration = false
+    row.conditions = []
+
+    toasts.push({
+      title: ['components.initiativeTable.downed.title', { name: row.name }],
+      description: [
+        'components.initiativeTable.downed.text',
+        { name: row.name },
+      ],
+      variant: 'info',
+    })
+  }
+
+  return toasts
+}
+
+export function deathSaveToasts(
+  row: InitiativeSheetRow,
+  { wasDead, instantDeath }: { wasDead: boolean; instantDeath: boolean },
+): ToastItem[] {
+  if (!row.deathSaves) return []
+
+  const { failed, saved } = checkDeathSaves(row.deathSaves)
+
+  if (failed && !saved && !wasDead) {
+    return [
+      {
+        title: ['components.initiativeTable.died.title', { name: row.name }],
+        description: [
+          instantDeath
+            ? 'components.initiativeTable.died.textMassiveDamage'
+            : 'components.initiativeTable.died.textDeathSaves',
+          { name: row.name },
+        ],
+        variant: 'info',
+      },
+    ]
+  }
+
+  if (!failed && saved) {
+    return [
+      {
+        title: ['components.initiativeTable.stable.title', { name: row.name }],
+        description: [
+          'components.initiativeTable.stable.textDeathSaves',
+          { name: row.name },
+        ],
+        variant: 'info',
+      },
+    ]
+  }
+
+  return []
+}
+
 export function handleHpChanges(
   amount: number,
   type: DndHpType,
@@ -128,87 +252,18 @@ export function handleHpChanges(
 ): { row: InitiativeSheetRow; toasts: ToastItem[] } {
   const toasts: ToastItem[] = []
   const row = { ...item }
-  const noHp = typeof row.hitPoints === 'number' && row.hitPoints <= 0
+  const instantDeath = type === 'damage' && isInstantDeath(row, amount)
+  const wasDead = !!row.deathSaves && checkDeathSaves(row.deathSaves).failed
 
-  if (type === 'heal') {
-    if (hasDeathSaves(row.type) && noHp) row.deathSaves = resetDeathSaves()
-
-    heal('hitPoints', row, amount)
-  } else if (type === 'temp') temp('hitPoints', row, amount)
+  if (type === 'heal') healHitPoints(row, amount)
+  else if (type === 'temp') temp('hitPoints', row, amount)
   else if (type === 'override') override('hitPoints', row, amount)
   else if (type === 'override-reset') overrideReset('hitPoints', row, amount)
   else if (type === 'damage') {
-    damage('hitPoints', row, amount)
-
-    const downed = typeof row.hitPoints === 'number' && row.hitPoints <= 0
-
-    // When the creature has 0hp and get damage, add 1 death save failure (2 on a critical hit)
-    if (hasDeathSaves(row.type) && noHp) {
-      row.deathSaves ??= {
-        fail: [false, false, false],
-        save: [false, false, false],
-      }
-
-      row.deathSaves = applyDeathSave(row.deathSaves, 'fail', critical ? 2 : 1)
-    }
-
-    if (row.concentration && !downed) {
-      toasts.push({
-        title: ['components.initiativeTable.concentration.title'],
-        description: [
-          'components.initiativeTable.concentration.text',
-          { name: row.name, dc: concentrationDC(amount) },
-        ],
-        variant: 'info',
-      })
-    }
-
-    if (downed && (row.concentration || row.conditions.length)) {
-      row.concentration = false
-      row.conditions = []
-
-      toasts.push({
-        title: ['components.initiativeTable.downed.title', { name: row.name }],
-        description: [
-          'components.initiativeTable.downed.text',
-          { name: row.name },
-        ],
-        variant: 'info',
-      })
-    }
+    toasts.push(...damageHitPoints(row, amount, { critical, instantDeath }))
   }
 
-  // when user is dies because of going to much in the negative hp
-  const dead =
-    row.hitPoints &&
-    row.maxHitPoints &&
-    row.hitPoints < 0 &&
-    Math.abs(row.hitPoints) >= row.maxHitPoints
-  const { failed, saved } = row.deathSaves
-    ? checkDeathSaves(row.deathSaves)
-    : { failed: false, saved: false }
-
-  if (dead || (failed && !saved)) {
-    toasts.push({
-      title: ['components.initiativeTable.died.title', { name: row.name }],
-      description: [
-        'components.initiativeTable.died.textMinHP',
-        { name: row.name },
-      ],
-      variant: 'info',
-    })
-  }
-
-  if (!failed && saved) {
-    toasts.push({
-      title: ['components.initiativeTable.stable.title', { name: row.name }],
-      description: [
-        'components.initiativeTable.stable.textDeathSaves',
-        { name: row.name },
-      ],
-      variant: 'info',
-    })
-  }
+  toasts.push(...deathSaveToasts(row, { wasDead, instantDeath }))
 
   // when hitPoints is a negative number change it to 0
   if (!allowNegative && row.hitPoints && row.hitPoints < 0) row.hitPoints = 0

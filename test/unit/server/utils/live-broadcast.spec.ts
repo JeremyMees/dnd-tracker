@@ -458,7 +458,7 @@ describe('live-broadcast', () => {
       })
 
       expect(patch.deathSaves).toEqual({
-        fail: [true, true, false],
+        fail: [true, false, false],
         save: [false, false, false],
       })
     })

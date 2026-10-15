@@ -53,6 +53,111 @@ describe('dnd/hp-ac', () => {
       expect(result.row.deathSaves?.fail).toEqual([true, false, false])
     })
 
+    describe('death', () => {
+      const died = (description: string) => ({
+        title: [
+          'components.initiativeTable.died.title',
+          { name: 'Sister Iarnă' },
+        ],
+        description: [description, { name: 'Sister Iarnă' }],
+        variant: 'info',
+      })
+
+      it('should kill instantly when the leftover damage reaches max hp without negative hp', () => {
+        const row = { ...mockRow, tempHitPoints: 0 }
+        const result = handleHpChanges(110, 'damage', row, false)
+
+        expect(result.row.hitPoints).toBe(0)
+        expect(result.row.deathSaves).toEqual({
+          fail: [true, true, true],
+          save: [false, false, false],
+        })
+        expect(result.toasts).toContainEqual(
+          died('components.initiativeTable.died.textMassiveDamage'),
+        )
+      })
+
+      it('should kill instantly when the leftover damage reaches max hp with negative hp', () => {
+        const row = { ...mockRow, tempHitPoints: 0 }
+        const result = handleHpChanges(110, 'damage', row, true)
+
+        expect(result.row.hitPoints).toBe(-100)
+        expect(result.toasts).toContainEqual(
+          died('components.initiativeTable.died.textMassiveDamage'),
+        )
+      })
+
+      it('should kill instantly when damage at 0 hp reaches max hp', () => {
+        const row = { ...mockRow, hitPoints: 0, tempHitPoints: 0 }
+        const result = handleHpChanges(100, 'damage', row, false)
+
+        expect(result.row.deathSaves?.fail).toEqual([true, true, true])
+        expect(result.toasts).toContainEqual(
+          died('components.initiativeTable.died.textMassiveDamage'),
+        )
+      })
+
+      it('should let temp hp absorb damage before checking for instant death', () => {
+        const result = handleHpChanges(114, 'damage', mockRow, false)
+
+        expect(result.row.deathSaves?.fail).toEqual([true, false, false])
+        expect(result.toasts).not.toContainEqual(
+          died('components.initiativeTable.died.textMassiveDamage'),
+        )
+      })
+
+      it('should not kill instantly when the leftover damage stays below max hp', () => {
+        const row = { ...mockRow, tempHitPoints: 0 }
+        const result = handleHpChanges(109, 'damage', row, false)
+
+        expect(result.row.deathSaves?.fail).toEqual([true, false, false])
+      })
+
+      it('should not apply instant death to rows without death saves', () => {
+        const row = {
+          ...mockRow,
+          type: 'monster',
+          tempHitPoints: 0,
+        } as InitiativeSheetRow
+        const result = handleHpChanges(500, 'damage', row, false)
+
+        expect(result.row.deathSaves?.fail).toEqual([true, false, false])
+        expect(result.toasts).not.toContainEqual(
+          died('components.initiativeTable.died.textMassiveDamage'),
+        )
+      })
+
+      it('should toast the failed death saves when the last failure is added', () => {
+        const row = { ...mockRow, hitPoints: 0, tempHitPoints: 0 }
+        const result = handleHpChanges(5, 'damage', row, false, {
+          critical: true,
+        })
+
+        expect(result.toasts).toContainEqual(
+          died('components.initiativeTable.died.textDeathSaves'),
+        )
+      })
+
+      it('should not toast again when the row was already dead', () => {
+        const row = {
+          ...mockRow,
+          hitPoints: 0,
+          tempHitPoints: 0,
+          deathSaves: {
+            fail: [true, true, true],
+            save: [false, false, false],
+          },
+        } as InitiativeSheetRow
+        const result = handleHpChanges(500, 'damage', row, false)
+
+        expect(
+          result.toasts.some(
+            toast => toast.title[0] === 'components.initiativeTable.died.title',
+          ),
+        ).toBe(false)
+      })
+    })
+
     it('should show stable toast when saves are successful', () => {
       const row = {
         ...mockRow,
@@ -76,6 +181,284 @@ describe('dnd/hp-ac', () => {
       const result = handleHpChanges(15, 'damage', row, false)
 
       expect(result.row.hitPoints).toBe(0)
+    })
+  })
+
+  describe('hp helpers', () => {
+    const buildRow = (overrides: Partial<InitiativeSheetRow> = {}) =>
+      ({
+        ...sheet.rows[0]!,
+        type: 'player',
+        hitPoints: 10,
+        maxHitPoints: 100,
+        tempHitPoints: 0,
+        concentration: false,
+        conditions: [],
+        deathSaves: undefined,
+        ...overrides,
+      }) as InitiativeSheetRow
+
+    const allFailed: DndDeathSaves = {
+      fail: [true, true, true],
+      save: [false, false, false],
+    }
+
+    describe('hasNoHitPoints', () => {
+      it.each([
+        [0, true],
+        [-5, true],
+        [1, false],
+        [undefined, false],
+      ])('returns %s → %s', (hitPoints, expected) => {
+        expect(hasNoHitPoints(buildRow({ hitPoints }))).toBe(expected)
+      })
+    })
+
+    describe('isInstantDeath', () => {
+      it('is true when the leftover damage reaches max hp', () => {
+        expect(isInstantDeath(buildRow(), 110)).toBe(true)
+      })
+
+      it('is false when the leftover damage stays below max hp', () => {
+        expect(isInstantDeath(buildRow(), 109)).toBe(false)
+      })
+
+      it('lets temp hp absorb damage first', () => {
+        expect(isInstantDeath(buildRow({ tempHitPoints: 5 }), 114)).toBe(false)
+        expect(isInstantDeath(buildRow({ tempHitPoints: 5 }), 115)).toBe(true)
+      })
+
+      it('ignores negative hp below zero', () => {
+        expect(isInstantDeath(buildRow({ hitPoints: -50 }), 100)).toBe(true)
+      })
+
+      it('is false for rows without death saves', () => {
+        expect(isInstantDeath(buildRow({ type: 'monster' }), 500)).toBe(false)
+      })
+
+      it('is false without hit points or max hit points', () => {
+        expect(isInstantDeath(buildRow({ hitPoints: undefined }), 500)).toBe(
+          false,
+        )
+        expect(isInstantDeath(buildRow({ maxHitPoints: undefined }), 500)).toBe(
+          false,
+        )
+      })
+    })
+
+    describe('healHitPoints', () => {
+      it('heals up to max hit points', () => {
+        const row = buildRow({ hitPoints: 95 })
+
+        healHitPoints(row, 10)
+
+        expect(row.hitPoints).toBe(100)
+      })
+
+      it('resets death saves when healing a downed player', () => {
+        const row = buildRow({ hitPoints: 0, deathSaves: allFailed })
+
+        healHitPoints(row, 5)
+
+        expect(row.hitPoints).toBe(5)
+        expect(row.deathSaves).toEqual({
+          fail: [false, false, false],
+          save: [false, false, false],
+        })
+      })
+
+      it('keeps death saves when the row still had hit points', () => {
+        const deathSaves: DndDeathSaves = {
+          fail: [true, false, false],
+          save: [false, false, false],
+        }
+        const row = buildRow({ deathSaves })
+
+        healHitPoints(row, 5)
+
+        expect(row.deathSaves).toBe(deathSaves)
+      })
+
+      it('keeps death saves for rows without death saves', () => {
+        const row = buildRow({
+          type: 'monster',
+          hitPoints: 0,
+          deathSaves: allFailed,
+        } as Partial<InitiativeSheetRow>)
+
+        healHitPoints(row, 5)
+
+        expect(row.deathSaves).toBe(allFailed)
+      })
+    })
+
+    describe('damageHitPoints', () => {
+      const options = { critical: false, instantDeath: false }
+
+      it('removes temp hit points before hit points', () => {
+        const row = buildRow({ tempHitPoints: 5 })
+
+        damageHitPoints(row, 8, options)
+
+        expect(row.tempHitPoints).toBe(0)
+        expect(row.hitPoints).toBe(7)
+      })
+
+      it('starts death saves with one failure when hit at 0 hp', () => {
+        const row = buildRow({ hitPoints: 0 })
+
+        damageHitPoints(row, 5, options)
+
+        expect(row.deathSaves).toEqual({
+          fail: [true, false, false],
+          save: [false, false, false],
+        })
+      })
+
+      it('adds two failures on a critical hit at 0 hp', () => {
+        const row = buildRow({ hitPoints: 0 })
+
+        damageHitPoints(row, 5, { ...options, critical: true })
+
+        expect(row.deathSaves?.fail).toEqual([true, true, false])
+      })
+
+      it('does not add failures when the hit only drops the row to 0 hp', () => {
+        const row = buildRow()
+
+        damageHitPoints(row, 10, options)
+
+        expect(row.deathSaves).toBeUndefined()
+      })
+
+      it('fails every death save on instant death', () => {
+        const row = buildRow()
+
+        damageHitPoints(row, 110, { ...options, instantDeath: true })
+
+        expect(row.deathSaves).toEqual(allFailed)
+      })
+
+      it('returns a concentration toast when the row stays up', () => {
+        const row = buildRow({ concentration: true })
+
+        expect(damageHitPoints(row, 4, options)).toEqual([
+          {
+            title: ['components.initiativeTable.concentration.title'],
+            description: [
+              'components.initiativeTable.concentration.text',
+              { name: 'Sister Iarnă', dc: 10 },
+            ],
+            variant: 'info',
+          },
+        ])
+      })
+
+      it('drops concentration and conditions with a toast when downed', () => {
+        const row = buildRow({
+          concentration: true,
+          conditions: [{ desc: 'Prone', name: 'Prone', id: 'prone' }],
+        })
+
+        const toasts = damageHitPoints(row, 10, options)
+
+        expect(row.concentration).toBe(false)
+        expect(row.conditions).toEqual([])
+        expect(toasts).toEqual([
+          {
+            title: [
+              'components.initiativeTable.downed.title',
+              { name: 'Sister Iarnă' },
+            ],
+            description: [
+              'components.initiativeTable.downed.text',
+              { name: 'Sister Iarnă' },
+            ],
+            variant: 'info',
+          },
+        ])
+      })
+
+      it('returns no toasts when downed without concentration or conditions', () => {
+        expect(damageHitPoints(buildRow(), 10, options)).toEqual([])
+      })
+    })
+
+    describe('deathSaveToasts', () => {
+      const options = { wasDead: false, instantDeath: false }
+      const died = (description: string) => ({
+        title: [
+          'components.initiativeTable.died.title',
+          { name: 'Sister Iarnă' },
+        ],
+        description: [description, { name: 'Sister Iarnă' }],
+        variant: 'info',
+      })
+
+      it('returns nothing without death saves', () => {
+        expect(deathSaveToasts(buildRow(), options)).toEqual([])
+      })
+
+      it('returns the died toast for failed death saves', () => {
+        const row = buildRow({ deathSaves: allFailed })
+
+        expect(deathSaveToasts(row, options)).toEqual([
+          died('components.initiativeTable.died.textDeathSaves'),
+        ])
+      })
+
+      it('returns the massive damage text on instant death', () => {
+        const row = buildRow({ deathSaves: allFailed })
+
+        expect(
+          deathSaveToasts(row, { ...options, instantDeath: true }),
+        ).toEqual([died('components.initiativeTable.died.textMassiveDamage')])
+      })
+
+      it('returns nothing when the row was already dead', () => {
+        const row = buildRow({ deathSaves: allFailed })
+
+        expect(deathSaveToasts(row, { ...options, wasDead: true })).toEqual([])
+      })
+
+      it('returns the stable toast for successful death saves', () => {
+        const row = buildRow({
+          deathSaves: { fail: [false, false, false], save: [true, true, true] },
+        })
+
+        expect(deathSaveToasts(row, options)).toEqual([
+          {
+            title: [
+              'components.initiativeTable.stable.title',
+              { name: 'Sister Iarnă' },
+            ],
+            description: [
+              'components.initiativeTable.stable.textDeathSaves',
+              { name: 'Sister Iarnă' },
+            ],
+            variant: 'info',
+          },
+        ])
+      })
+
+      it('returns nothing when both saves and failures are full', () => {
+        const row = buildRow({
+          deathSaves: { fail: [true, true, true], save: [true, true, true] },
+        })
+
+        expect(deathSaveToasts(row, options)).toEqual([])
+      })
+
+      it('returns nothing while death saves are still in progress', () => {
+        const row = buildRow({
+          deathSaves: {
+            fail: [true, false, false],
+            save: [true, false, false],
+          },
+        })
+
+        expect(deathSaveToasts(row, options)).toEqual([])
+      })
     })
   })
 

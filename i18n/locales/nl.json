@@ -902,7 +902,7 @@
     "initiativeTable": {
       "died": {
         "title": "{name} is gestorven",
-        "textMinHP": "{name} heeft te veel negatieve hp en is dood",
+        "textMassiveDamage": "{name} kreeg schade gelijk aan zijn maximum hp en stierf op slag",
         "textDeathSaves": "{name} heeft 3 keer gefaald bij death saves en is dood"
       },
       "stable": {
