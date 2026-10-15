@@ -14,6 +14,7 @@ import {
   useInitiativeSheetDetailUpdate,
   useInitiativeSheetPatch,
   useInitiativeSheetSync,
+  useInitiativeSheetTurn,
 } from '~/queries/initiative-sheets'
 
 const row: InitiativeSheetRow = {
@@ -444,6 +445,154 @@ describe('initiative-sheets queries', () => {
         description: 'general.error.reasons.forbidden',
         variant: 'destructive',
       })
+    })
+  })
+
+  describe('useInitiativeSheetTurn', () => {
+    const prone: DndCondition = {
+      id: 'prone',
+      name: 'Prone',
+      desc: 'On the ground.',
+      duration: { rowId: 'row-1', timing: 'end', rounds: 1 },
+    }
+    const timedRow = { ...row, conditions: [prone] }
+    const otherRow = { ...row, id: 'row-2', name: 'Goblin' }
+    const cachedSheet = {
+      id: 7,
+      title: 'Ambush',
+      round: 1,
+      activeIndex: 0,
+      rows: [timedRow, otherRow],
+    }
+
+    function turnResult(expired: TurnReminder[] = []): TurnResult {
+      return {
+        sheet: {
+          id: 7,
+          title: 'Ambush',
+          round: 1,
+          activeIndex: 1,
+          rows: [row, otherRow],
+          settings: { spacing: 'normal', modified: false },
+        },
+        expired,
+        saves: [],
+      }
+    }
+
+    it('advances the cached turn optimistically, then applies the server result', async () => {
+      let resolve: (value: TurnResult) => void = () => {}
+      fetchMock.mockReturnValue(
+        new Promise<TurnResult>(done => {
+          resolve = done
+        }),
+      )
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetTurn(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], cachedSheet)
+
+      const promise = vm.mutateAsync({ id: 7 })
+
+      await vi.waitFor(() => {
+        const cached = vm.queryClient.getQueryData<InitiativeSheet>([
+          'useInitiativeSheetDetail',
+          7,
+        ])
+        expect(cached?.activeIndex).toBe(1)
+        expect(cached?.rows[0]?.conditions).toEqual([])
+      })
+
+      resolve(turnResult())
+      await promise
+
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/turn', {
+        method: 'POST',
+      })
+      expect(
+        vm.queryClient.getQueryData<InitiativeSheet>([
+          'useInitiativeSheetDetail',
+          7,
+        ]),
+      ).toMatchObject({
+        title: 'Ambush',
+        activeIndex: 1,
+        rows: [row, otherRow],
+      })
+    })
+
+    it('refreshes the combat log when a condition expired', async () => {
+      fetchMock.mockResolvedValue(
+        turnResult([{ rowId: 'row-1', rowName: 'Elara', condition: prone }]),
+      )
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetTurn(),
+        queryClient: useQueryClient(),
+      }))
+      const invalidate = vi.spyOn(vm.queryClient, 'invalidateQueries')
+
+      await vm.mutateAsync({ id: 7 })
+
+      expect(invalidate).toHaveBeenCalledWith({
+        queryKey: ['useCombatEvents', 7],
+      })
+    })
+
+    it('leaves the combat log alone when nothing expired', async () => {
+      fetchMock.mockResolvedValue(turnResult())
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetTurn(),
+        queryClient: useQueryClient(),
+      }))
+      const invalidate = vi.spyOn(vm.queryClient, 'invalidateQueries')
+
+      await vm.mutateAsync({ id: 7 })
+
+      expect(invalidate).not.toHaveBeenCalled()
+    })
+
+    it('rolls back and explains a failed turn', async () => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('conflict'), { statusCode: 409 }),
+      )
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetTurn(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], cachedSheet)
+
+      await expect(vm.mutateAsync({ id: 7 })).rejects.toThrow('conflict')
+
+      expect(
+        vm.queryClient.getQueryData(['useInitiativeSheetDetail', 7]),
+      ).toEqual(cachedSheet)
+      expect(toast).toHaveBeenCalledWith({
+        title: 'pages.encounter.toasts.updateFailed.turn',
+        description: expect.stringContaining('general.error.reasons.'),
+        variant: 'destructive',
+      })
+    })
+
+    it('does nothing optimistic without a cached sheet', async () => {
+      fetchMock.mockResolvedValue(turnResult())
+
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetTurn(),
+        queryClient: useQueryClient(),
+      }))
+
+      await vm.mutateAsync({ id: 7 })
+
+      expect(
+        vm.queryClient.getQueryData(['useInitiativeSheetDetail', 7]),
+      ).toBeUndefined()
     })
   })
 

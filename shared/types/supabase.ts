@@ -101,6 +101,7 @@ export type CombatEventType =
   | 'ac'
   | 'condition_added'
   | 'condition_removed'
+  | 'condition_expired'
   | 'death_save'
   | 'concentration_broken'
   | 'concentration_started'
@@ -169,6 +170,17 @@ export interface TurnAdvance {
   activeIndex: number
   round: number
   rows: InitiativeSheetRow[]
+  expired: TurnReminder[]
+  saves: TurnReminder[]
+}
+
+export type TurnSheet = Pick<
+  InitiativeSheet,
+  'id' | 'title' | 'round' | 'activeIndex' | 'rows' | 'settings'
+>
+
+export interface TurnResult {
+  sheet: TurnSheet
   expired: TurnReminder[]
   saves: TurnReminder[]
 }

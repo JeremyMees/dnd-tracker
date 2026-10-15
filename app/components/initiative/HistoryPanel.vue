@@ -33,6 +33,11 @@ function describeEvent(event: CombatEventRow): string {
         rowName,
         condition: payload.condition?.name,
       })
+    case 'condition_expired':
+      return t('components.combatLog.conditionExpired', {
+        rowName,
+        condition: payload.condition?.name,
+      })
     case 'concentration_broken':
       return t('components.combatLog.concentrationBroken', { rowName })
     case 'concentration_started':
@@ -62,6 +67,8 @@ function eventIcon(type: CombatEventType): string {
       return 'tabler:bolt'
     case 'condition_removed':
       return 'tabler:bolt-off'
+    case 'condition_expired':
+      return 'tabler:hourglass-off'
     case 'concentration_broken':
       return 'tabler:circle-dotted'
     case 'concentration_started':

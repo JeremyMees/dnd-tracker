@@ -66,10 +66,21 @@ async function handlePatchRow(
   }
 }
 
+async function handleNextTurn(): Promise<void> {
+  const target = isTourActive.value ? tourData : data
+
+  if (!target.value) return
+
+  const { activeIndex, round, rows } = advanceTurn(target.value)
+
+  target.value = { ...target.value, activeIndex, round, rows }
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: computed(() => (isTourActive.value ? tourData.value : data.value)),
   update: handleUpdate,
   patchRow: handlePatchRow,
+  nextTurn: handleNextTurn,
   activeRow,
 })
 </script>

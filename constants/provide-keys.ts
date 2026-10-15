@@ -4,5 +4,6 @@ export const INITIATIVE_SHEET: InjectionKey<{
     payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
   ) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  nextTurn: () => Promise<void>
   activeRow: Ref<InitiativeSheetRow | undefined>
 }> = Symbol('initiativeSheet')

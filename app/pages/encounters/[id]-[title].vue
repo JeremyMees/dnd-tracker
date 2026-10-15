@@ -4,6 +4,7 @@ import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
   useInitiativeSheetPatch,
+  useInitiativeSheetTurn,
 } from '~/queries/initiative-sheets'
 
 definePageMeta({
@@ -19,6 +20,7 @@ const id = validateParamId('id' in route.params ? route.params.id : undefined)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const { mutateAsync: patch } = useInitiativeSheetPatch()
+const { mutateAsync: turn } = useInitiativeSheetTurn()
 const { enabled: realtimeData, updateQueryData } = useRealTimeInitiativeSheet(
   id,
   data,
@@ -56,10 +58,17 @@ async function handlePatchRow(
   await patch({ id, rowId, patch: rowPatch })
 }
 
+async function handleNextTurn(): Promise<void> {
+  if (!data.value) return
+
+  await turn({ id })
+}
+
 provide(INITIATIVE_SHEET, {
   sheet: data,
   update: handleUpdate,
   patchRow: handlePatchRow,
+  nextTurn: handleNextTurn,
   activeRow,
 })
 </script>

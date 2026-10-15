@@ -817,6 +817,7 @@
       },
       "conditionAdded": "{rowName} kreeg {condition}",
       "conditionRemoved": "{rowName} verloor {condition}",
+      "conditionExpired": "{condition} op {rowName} is afgelopen",
       "concentrationBroken": "{rowName} verloor concentratie",
       "concentrationStarted": "{rowName} begon te concentreren",
       "deathSave": {

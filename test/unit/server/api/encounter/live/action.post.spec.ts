@@ -430,6 +430,60 @@ describe('POST /api/encounter/live/action', () => {
     )
   })
 
+  it('expires a timed condition and credits the seat when the turn ends', async () => {
+    const token = await seatToken()
+    const otherRow = { ...row, id: 'row-2' }
+    const prone = {
+      id: 'prone',
+      name: 'Prone',
+      desc: 'On the ground.',
+      duration: { rowId: 'row-1', timing: 'end' as const, rounds: 1 },
+    }
+    const combatEvents = mockChain({ data: null, error: null })
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: [
+          mockChain({
+            data: {
+              activeIndex: 0,
+              round: 1,
+              rows: [{ ...row, conditions: [prone] }, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+        ],
+        combat_events: combatEvents,
+      },
+      { rpc: mockChain({ data: 9, error: null }) },
+    )
+
+    await handler(
+      actionEvent({ seatToken: token, action: { type: 'endTurn' } }),
+    )
+
+    expect(combatEvents.insert).toHaveBeenCalledWith([
+      expect.objectContaining({
+        rowId: 'row-1',
+        type: 'condition_expired',
+        actorName: 'Elara',
+      }),
+    ])
+  })
+
   it('wraps to the first row and increments the round when ending the last turn', async () => {
     const token = await seatToken()
     const otherRow = { ...row, id: 'row-2' }

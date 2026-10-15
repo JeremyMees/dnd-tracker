@@ -5,6 +5,7 @@ export function useInitiativeSheet(
   update: (
     payload: Omit<Partial<InitiativeSheet>, NotUpdatable>,
   ) => Promise<void>,
+  nextTurn: () => Promise<void>,
 ) {
   const defaultColumns = ['index', 'name', 'initiative']
   const hidableColumns = [
@@ -132,9 +133,8 @@ export function useInitiativeSheet(
 
     const isAtEnd = sheet.value.activeIndex + 1 >= sheet.value.rows.length
     const activeIndex = isAtEnd ? 0 : sheet.value.activeIndex + 1
-    const round = isAtEnd ? sheet.value.round + 1 : sheet.value.round
 
-    update({ activeIndex, round })
+    nextTurn()
 
     const index = sheet.value.rows[activeIndex] ? activeIndex : 0
 

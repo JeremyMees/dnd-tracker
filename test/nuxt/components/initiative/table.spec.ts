@@ -23,6 +23,7 @@ const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
     update: mockUpdate,
+    nextTurn: vi.fn(),
     activeRow: mockActiveRow,
   },
 }

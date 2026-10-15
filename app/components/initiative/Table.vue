@@ -8,12 +8,13 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ loading: boolean; encounterId?: number }>()
 
-const { activeRow, sheet, update } = validateInject(INITIATIVE_SHEET)
+const { activeRow, sheet, update, nextTurn } = validateInject(INITIATIVE_SHEET)
 
 const { previous, next, reset, active, expanded, selected, columnVisibility } =
   useInitiativeSheet(
     computed(() => sheet.value),
     update,
+    nextTurn,
   )
 
 syncRef(activeRow, active, { direction: 'rtl' })

@@ -817,6 +817,7 @@
       },
       "conditionAdded": "{rowName} gained {condition}",
       "conditionRemoved": "{rowName} lost {condition}",
+      "conditionExpired": "{condition} on {rowName} ran out",
       "concentrationBroken": "{rowName} lost concentration",
       "concentrationStarted": "{rowName} started concentrating",
       "deathSave": {

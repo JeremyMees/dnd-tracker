@@ -22,6 +22,7 @@ const {
   unsubscribe,
   update,
   patch,
+  turn,
   useSeo,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
@@ -36,6 +37,7 @@ const {
   unsubscribe: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
+  turn: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -61,6 +63,7 @@ vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
   useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
+  useInitiativeSheetTurn: () => ({ mutateAsync: turn }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -108,6 +111,7 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  nextTurn: () => Promise<void>
   activeRow: InitiativeSheetRow | undefined
 }
 
@@ -465,5 +469,24 @@ describe('Encounter detail page', () => {
     await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
 
     expect(patch).not.toHaveBeenCalled()
+  })
+
+  it('Should advance the turn through useInitiativeSheetTurn', async () => {
+    const { probe } = await mountPage()
+
+    await probe.nextTurn()
+
+    expect(turn).toHaveBeenCalledWith({ id: 2 })
+  })
+
+  it('Should not advance the turn when there is no encounter', async () => {
+    data.value = undefined
+
+    const { component } = await mountPage()
+    const probe = component.findComponent(SheetProbe).vm as unknown as Probe
+
+    await probe.nextTurn()
+
+    expect(turn).not.toHaveBeenCalled()
   })
 })

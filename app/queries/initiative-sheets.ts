@@ -114,6 +114,71 @@ export function useInitiativeSheetSync() {
   })
 }
 
+export function useInitiativeSheetTurn() {
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const { t } = useI18n()
+
+  return useCallbackMutation({
+    mutationFn: ({ id }: { id: number } & QueryDefaults) =>
+      $fetch<TurnResult>(`/api/encounter/${id}/turn`, { method: 'POST' }),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.initiativeSheetDetail(id),
+      })
+
+      const previous = queryClient.getQueryData<InitiativeSheet>(
+        queryKeys.initiativeSheetDetail(id),
+      )
+
+      if (previous) {
+        const { activeIndex, round, rows } = advanceTurn(previous)
+
+        queryClient.setQueryData(queryKeys.initiativeSheetDetail(id), {
+          ...previous,
+          activeIndex,
+          round,
+          rows,
+        })
+      }
+
+      return { previous }
+    },
+    onSuccess: ({ sheet, expired }, { id }) => {
+      queryClient.setQueryData(
+        queryKeys.initiativeSheetDetail(id),
+        (old: InitiativeSheet | undefined) =>
+          old && {
+            ...old,
+            activeIndex: sheet.activeIndex,
+            round: sheet.round,
+            rows: sheet.rows,
+          },
+      )
+
+      if (expired.length) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.combatEvents(id),
+        })
+      }
+    },
+    onError: (error, { id }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(
+          queryKeys.initiativeSheetDetail(id),
+          context.previous,
+        )
+      }
+
+      toast({
+        title: t('pages.encounter.toasts.updateFailed.turn'),
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+        variant: 'destructive',
+      })
+    },
+  })
+}
+
 const PATCH_FAILED_FIELDS = [
   ['conditions', ['conditions']],
   [
