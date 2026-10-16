@@ -1158,9 +1158,12 @@
       "changeType": "Change type",
       "changeStart": "Change starting point",
       "pickSource": "How do you want to start?",
-      "pickSourceInfo": "Build your creature from the ground up, or copy a monster from the bestiary and make it your own",
+      "pickSourceInfo": "Build your creature from the ground up, copy a monster from the bestiary, or import one from a file",
       "pickMonster": "Pick a monster to start from",
       "pickMonsterInfo": "Click the wand on a monster to copy its stats into your homebrew",
+      "pickFile": "Import a creature",
+      "pickFileInfo": "Pick a JSON, CSV or Markdown file. When it holds more than one creature, choose the one to start from.",
+      "pickFileCreature": "Creatures in the file",
       "basedOn": "Based on {name}",
       "sources": {
         "scratch": {
@@ -1170,6 +1173,10 @@
         "bestiary": {
           "label": "Start from the bestiary",
           "description": "Copy an existing monster and tweak it however you like"
+        },
+        "file": {
+          "label": "Import from a file",
+          "description": "Use a creature exported from this app, Improved Initiative, Kobold Fight Club or 5e.tools"
         }
       },
       "types": {

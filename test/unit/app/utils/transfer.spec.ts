@@ -119,6 +119,30 @@ describe('transfer', () => {
     })
   })
 
+  describe('homebrewTransferToRow', () => {
+    it('Should turn an imported creature into form values', () => {
+      expect(
+        homebrewTransferToRow({
+          ...toHomebrewTransfer(homebrew),
+          initiativeModifier: '-1',
+        }),
+      ).toEqual({
+        name: 'Goblin Boss',
+        type: 'monster',
+        actions: [],
+        armorClass: 17,
+        hitPoints: 21,
+        initiativeModifier: -1,
+      })
+    })
+
+    it('Should fall back to a monster without a type', () => {
+      expect(homebrewTransferToRow({ name: 'Orc', actions: [] }).type).toBe(
+        'monster',
+      )
+    })
+  })
+
   describe('createTransferFile', () => {
     it('Should wrap the items with the format, kind and version', () => {
       vi.useFakeTimers()

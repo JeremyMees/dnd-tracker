@@ -3,6 +3,9 @@ import { homebrewType } from '~~/constants/validation'
 
 export const maxTransferFileSize = 2 * 1024 * 1024
 
+export const creatureFileTypes =
+  'application/json,.json,text/csv,.csv,text/markdown,.md,.markdown,text/plain,.txt'
+
 export class TransferError extends Error {
   constructor(
     public reason: TransferErrorReason,
@@ -103,6 +106,18 @@ export function toHomebrewTransfer(item: HomebrewItemRow): HomebrewTransfer {
   const { id, campaign, createdAt, ...homebrew } = item
 
   return homebrew
+}
+
+export function homebrewTransferToRow(
+  item: HomebrewTransfer,
+): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } {
+  const { initiativeModifier, type, ...rest } = item
+
+  return {
+    ...nullsToUndefined(rest),
+    type: type ?? 'monster',
+    initiativeModifier: toIntegerOrUndefined(initiativeModifier),
+  }
 }
 
 export function createTransferFile<K extends TransferKind>(

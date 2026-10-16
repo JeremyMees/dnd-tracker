@@ -57,7 +57,7 @@ const activeTab = computed({ get: () => current.value, set: goToTab })
 
 const isNew = !props.item && !props.row && !props.template
 const step = ref<HomebrewStartStep | 'form'>(isNew ? 'type' : 'form')
-const basedOn = ref<string>()
+const basedOn = ref<{ name: string; source: 'bestiary' | 'file' }>()
 
 const form = useForm({
   validationSchema: homebrewFormSchema({
@@ -233,7 +233,20 @@ function startFromMonster(monster: DndMonster): void {
     },
     { force: true },
   )
-  basedOn.value = monster.name
+  basedOn.value = { name: monster.name, source: 'bestiary' }
+  showForm()
+}
+
+function startFromCreature(creature: HomebrewTransfer): void {
+  form.resetForm(
+    {
+      values: homebrewInitialValues(homebrewTransferToRow(creature), {
+        amount: props.sheet ? 1 : undefined,
+      }),
+    },
+    { force: true },
+  )
+  basedOn.value = { name: creature.name, source: 'file' }
   showForm()
 }
 </script>
@@ -245,6 +258,7 @@ function startFromMonster(monster: DndMonster): void {
     @type="startFromType"
     @scratch="startFromScratch"
     @monster="startFromMonster"
+    @creature="startFromCreature"
   />
   <UiFormWrapper v-show="step === 'form'" @submit="onSubmit">
     <p
@@ -253,12 +267,16 @@ function startFromMonster(monster: DndMonster): void {
       class="flex items-center gap-2 text-sm text-muted-foreground"
     >
       <Icon
-        name="tabler:books"
+        :name="
+          basedOn.source === 'file' ? 'tabler:file-import' : 'tabler:books'
+        "
         class="size-4 min-w-4"
-        :class="homebrewColor('monster')"
+        :class="
+          basedOn.source === 'file' ? 'text-info' : homebrewColor('monster')
+        "
         aria-hidden="true"
       />
-      {{ $t('components.homebrewModal.basedOn', { name: basedOn }) }}
+      {{ $t('components.homebrewModal.basedOn', { name: basedOn.name }) }}
     </p>
     <UiTabs v-model="activeTab" :unmount-on-hide="false">
       <UiTabsList class="grid w-full grid-cols-4">
