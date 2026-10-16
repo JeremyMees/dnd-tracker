@@ -1,3 +1,4 @@
+import type { VNode } from 'vue'
 import { createColumnHelper, type TableState } from '@tanstack/vue-table'
 import {
   iconButton,
@@ -18,6 +19,16 @@ interface ColumnOptions {
 export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
   const { t } = useI18n()
   const user = useAuthenticatedUser()
+
+  function leaveButton(campaign: CampaignItem): VNode {
+    return iconButton({
+      icon: 'tabler:door-exit',
+      content: t('actions.leave'),
+      variant: 'warning-ghost',
+      cb: () => onLeave(campaign),
+      disabled: isOwner(campaign, user.value.id),
+    })
+  }
   return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
@@ -108,19 +119,13 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       id: 'actions',
       cell: ({ row }) =>
         h('div', { class: 'flex justify-end' }, [
-          permission({
-            ability: isCampaignMember,
-            args: [row.original],
-            children: [
-              iconButton({
-                icon: 'tabler:door-exit',
-                content: t('actions.leave'),
-                variant: 'warning-ghost',
-                cb: () => onLeave(row.original),
-                disabled: isOwner(row.original, user.value.id),
+          isCampaignSuspendedFor(row.original.createdBy, user.value.id)
+            ? leaveButton(row.original)
+            : permission({
+                ability: isCampaignMember,
+                args: [row.original],
+                children: [leaveButton(row.original)],
               }),
-            ],
-          }),
           permission({
             ability: isCampaignAdmin,
             args: [row.original],

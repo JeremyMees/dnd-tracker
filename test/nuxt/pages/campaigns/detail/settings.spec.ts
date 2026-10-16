@@ -2,7 +2,7 @@ import { expectNoToast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { maxCampaignMembers } from '~~/constants/validation'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Settings from '~/pages/campaigns/[id]-[title]/settings.vue'
 import { authUser } from '~~/test/fixtures/auth-user'
 import {
@@ -43,7 +43,7 @@ mockNuxtImport('useModal', () => () => ({ open }))
 mockNuxtImport('useConfirm', () => () => ({ ask }))
 
 const RoleFormStub = defineComponent({
-  props: ['member', 'campaignId'],
+  props: ['member', 'campaignId', 'ownerIsPro'],
   template: '<div test-id="role" />',
 })
 
@@ -65,6 +65,13 @@ const self = {
   user: { ...mockTeamMember.user, id: authUser.id },
 }
 
+let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+const freeOwnerCampaign: CampaignFull = {
+  ...mockCampaignFull,
+  createdBy: { ...mockCampaignFull.createdBy, subscriptionType: 'free' },
+}
+
 async function mountPage(overrides: { current?: CampaignFull } = {}) {
   const component = await mountWithTooltips(Settings, {
     props: {
@@ -74,6 +81,8 @@ async function mountPage(overrides: { current?: CampaignFull } = {}) {
     },
     global: { stubs },
   })
+
+  wrapper = component
 
   await flushPromises()
 
@@ -105,6 +114,11 @@ describe('Campaign settings page', () => {
 
     removeTeamMember.mockResolvedValue(undefined)
     removeJoinCampaignToken.mockResolvedValue(undefined)
+  })
+
+  afterEach(() => {
+    wrapper?.unmount()
+    wrapper = undefined
   })
 
   it('Should set the page seo', async () => {
@@ -146,6 +160,24 @@ describe('Campaign settings page', () => {
 
     expect(form.props('member')).toEqual(mockTeamMember)
     expect(form.props('campaignId')).toBe(campaignPageProps.campaignId)
+  })
+
+  it('Should tell the role form whether the owner is on pro', async () => {
+    const { component } = await mountPage({
+      current: { ...mockCampaignFull, team: [mockTeamMember] },
+    })
+
+    expect(component.findComponent(RoleFormStub).props('ownerIsPro')).toBe(true)
+  })
+
+  it('Should tell the role form when the owner is on the free plan', async () => {
+    const { component } = await mountPage({
+      current: { ...freeOwnerCampaign, team: [mockTeamMember] },
+    })
+
+    expect(component.findComponent(RoleFormStub).props('ownerIsPro')).toBe(
+      false,
+    )
   })
 
   it('Should never remove the owner', async () => {
@@ -199,6 +231,23 @@ describe('Campaign settings page', () => {
     expect(
       component.get('[test-id="invite"]').attributes('disabled'),
     ).toBeUndefined()
+  })
+
+  it('Should not hint at pro when the owner is on pro', async () => {
+    const { component } = await mountPage()
+
+    expect(component.find('[test-id="invite-needs-pro"]').exists()).toBe(false)
+  })
+
+  it('Should not allow inviting when the owner is on the free plan', async () => {
+    const { component } = await mountPage({ current: freeOwnerCampaign })
+
+    expect(
+      component.get('[test-id="invite"]').attributes('disabled'),
+    ).toBeDefined()
+    expect(component.get('[test-id="invite-needs-pro"]').text()).toContain(
+      'pages.campaign.settings.needsPro',
+    )
   })
 
   it('Should not allow inviting when the campaign is full', async () => {

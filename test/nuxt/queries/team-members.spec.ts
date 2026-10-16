@@ -1,4 +1,5 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -9,11 +10,15 @@ import {
   mountHook,
   mutationSpies,
 } from '~~/test/nuxt/stubs/query'
+import { authUser } from '~~/test/fixtures/auth-user'
 import {
+  useCampaignLeave,
   useJoinTokenRemove,
   useTeamMemberRemove,
   useTeamMemberUpdate,
 } from '~/queries/team-members'
+
+mockNuxtImport('useAuthenticatedUser', () => () => ref(authUser))
 
 describe('team-members queries', () => {
   beforeEach(async () => {
@@ -220,6 +225,79 @@ describe('team-members queries', () => {
       await expect(
         vm.mutateAsync({ member: 3, campaign: 1, onError }),
       ).rejects.toThrow('boom')
+
+      expect(onError).toHaveBeenCalledWith('boom')
+      expect(toast.error).toHaveBeenCalledWith(
+        'general.error.failed.memberRemove',
+        { description: 'general.error.reasons.rejected' },
+      )
+    })
+  })
+
+  describe('useCampaignLeave', () => {
+    it('removes the current user from the campaign team', async () => {
+      const from = mockSupabaseFrom({
+        team: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignLeave())
+      const spies = mutationSpies()
+
+      await vm.mutateAsync({ campaign: 1, ...spies })
+
+      expect(from).toHaveBeenCalledWith('team')
+      expect(from.mock.results[0]!.value.match).toHaveBeenCalledWith({
+        campaign: 1,
+        user: authUser.id,
+      })
+      expect(spies.onSuccess).toHaveBeenCalledOnce()
+      expect(spies.onSettled).toHaveBeenCalledWith(undefined)
+    })
+
+    it('refreshes the listings and forgets the left campaign', async () => {
+      mockSupabaseFrom({ team: mockChain({ data: null, error: null }) })
+
+      const { vm } = await mountHook(() => ({
+        ...useCampaignLeave(),
+        queryClient: useQueryClient(),
+      }))
+
+      const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
+
+      vm.queryClient.setQueryData(['useCampaignDetail', 1], { id: 1 })
+      vm.queryClient.setQueryData(['useCampaignMember', 1], { id: 1 })
+      vm.queryClient.setQueryData(['useCampaignMember', 2], { id: 2 })
+
+      await vm.mutateAsync({ campaign: 1 })
+
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ['useCampaignListing'],
+      })
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ['useCampaignMinimal'],
+      })
+      expect(
+        vm.queryClient.getQueryData(['useCampaignDetail', 1]),
+      ).toBeUndefined()
+      expect(
+        vm.queryClient.getQueryData(['useCampaignMember', 1]),
+      ).toBeUndefined()
+      expect(vm.queryClient.getQueryData(['useCampaignMember', 2])).toEqual({
+        id: 2,
+      })
+    })
+
+    it('toasts that leaving failed and why', async () => {
+      mockSupabaseFrom({
+        team: mockChain({ data: null, error: { message: 'boom' } }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignLeave())
+      const onError = vi.fn()
+
+      await expect(vm.mutateAsync({ campaign: 1, onError })).rejects.toThrow(
+        'boom',
+      )
 
       expect(onError).toHaveBeenCalledWith('boom')
       expect(toast.error).toHaveBeenCalledWith(

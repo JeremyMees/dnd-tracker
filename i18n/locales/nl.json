@@ -88,6 +88,7 @@
     "closeCombatLog": "Gevechtslog sluiten"
   },
   "general": {
+    "pro": "Pro",
     "waiting": "Wachten",
     "spectator": "Toeschouwer | Toeschouwers",
     "you": "Jij",
@@ -442,6 +443,7 @@
       "content": {},
       "settings": {
         "add": "Mensen toevoegen",
+        "needsPro": "Mensen uitnodigen voor een campagne vereist Pro.",
         "access": "Toegang beheren",
         "campaign": "Campagne instellingen",
         "remove": "Verwijder {user} van campagne",
@@ -1327,6 +1329,7 @@
         "alreadySelected": "Deze persoon is al geselecteerd",
         "notFound": "Gebruiker niet gevonden",
         "maxMembers": "Max aantal leden bereikt",
+        "membersRequirePro": "Mensen uitnodigen voor een campagne vereist dat de eigenaar Pro heeft",
         "noUser": "{email} is geen gebruiker van de DnD Tracker. Stuur ze een uitnodiging om lid te worden van de DnD Tracker"
       },
       "toast": {
@@ -1340,7 +1343,7 @@
       "title": "Overdracht van eigendom {campaign}",
       "text": "Ben je er zeker van dat je de eigendom van de {campaign} campagne wilt overdragen? Let op dat deze actie onomkeerbaar is, tenzij de nieuwe eigenaar besluit dit terug te draaien. Als je absoluut zeker bent, voer {campaign} in het invoerveld in en ga vervolgens verder met overdragen.",
       "removed": "Geen team lid meer (verdwijderd)",
-      "free": "De geselecteerde nieuwe eigenaar heeft geen pro abonnement. Iedereen zal toegang verliezen tot de campagne, inclusief jij. De enige persoon met toegang is de nieuwe eigenaar.",
+      "free": "De gekozen nieuwe eigenaar heeft geen Pro. Je wordt uit de campagne verwijderd en alle leden blijven buitengesloten tot de nieuwe eigenaar Pro neemt.",
       "toast": {
         "success": {
           "title": "De eigendom is succesvol overgedragen aan {username}"

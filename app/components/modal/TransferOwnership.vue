@@ -40,6 +40,16 @@ const currentTeamMemberSubscription = computed<SubscriptionType | undefined>(
   },
 )
 
+const newOwnerIsFree = computed(
+  () =>
+    !!currentTeamMemberSubscription.value &&
+    !canHaveCampaignMembers(currentTeamMemberSubscription.value),
+)
+
+watch(newOwnerIsFree, isFree => {
+  if (isFree) form.setFieldValue('role', 'Remove')
+})
+
 const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
 
@@ -105,6 +115,7 @@ const onSubmit = form.handleSubmit(async values => {
                 ]"
                 :key="option.value"
                 :value="option.value"
+                :disabled="newOwnerIsFree && option.value !== 'Remove'"
               >
                 {{ option.label }}
               </UiSelectItem>
@@ -145,9 +156,7 @@ const onSubmit = form.handleSubmit(async values => {
     </UiFormField>
 
     <div
-      v-if="
-        currentTeamMemberSubscription && currentTeamMemberSubscription !== 'pro'
-      "
+      v-if="newOwnerIsFree"
       test-id="free-warning"
       class="text-sm text-destructive-foreground bg-destructive/50 border-2 border-destructive rounded-md p-2"
     >

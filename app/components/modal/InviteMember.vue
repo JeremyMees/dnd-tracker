@@ -102,6 +102,7 @@ function translateError(message: string): string {
     'alreadyInvited',
     'alreadySelected',
     'maxMembers',
+    'membersRequirePro',
   ].includes(message)
     ? t(`components.inviteMember.errors.${message}`)
     : message

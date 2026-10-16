@@ -16,7 +16,7 @@ const {
   invalidateQueries,
   open,
   removeCampaign,
-  removeTeamMember,
+  leaveCampaign,
   useSeo,
 } = vi.hoisted(() => ({
   allows: vi.fn(),
@@ -25,7 +25,7 @@ const {
   invalidateQueries: vi.fn(),
   open: vi.fn(),
   removeCampaign: vi.fn(),
-  removeTeamMember: vi.fn(),
+  leaveCampaign: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -54,7 +54,7 @@ vi.mock('~/queries/campaigns', () => ({
 }))
 
 vi.mock('~/queries/team-members', () => ({
-  useTeamMemberRemove: () => ({ mutate: removeTeamMember }),
+  useCampaignLeave: () => ({ mutate: leaveCampaign }),
 }))
 
 interface ColumnOptions {
@@ -136,7 +136,7 @@ describe('Campaigns page', () => {
     listingStubs.state.value = tableState()
 
     removeCampaign.mockResolvedValue(undefined)
-    removeTeamMember.mockResolvedValue(undefined)
+    leaveCampaign.mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -400,18 +400,7 @@ describe('Campaigns page', () => {
 
     await confirmCallback()(true)
 
-    expect(removeTeamMember).toHaveBeenCalledWith({
-      member: 5,
-      campaign: campaign.id,
-    })
-  })
-
-  it('Should not leave a campaign the user is no member of', async () => {
-    await mountPage()
-
-    await columnOptions?.onLeave(mockCampaignItem)
-
-    expect(ask).not.toHaveBeenCalled()
+    expect(leaveCampaign).toHaveBeenCalledWith({ campaign: campaign.id })
   })
 
   it('Should leave the failure toast to the removal mutation', async () => {
@@ -431,10 +420,7 @@ describe('Campaigns page', () => {
     await columnOptions?.onLeave(campaign)
     await confirmCallback()(true)
 
-    expect(removeTeamMember).toHaveBeenCalledWith({
-      member: 5,
-      campaign: campaign.id,
-    })
+    expect(leaveCampaign).toHaveBeenCalledWith({ campaign: campaign.id })
     expectNoToast()
   })
 

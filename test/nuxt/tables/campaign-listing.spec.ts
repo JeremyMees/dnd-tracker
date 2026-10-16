@@ -1,5 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { generateColumns } from '~/tables/campaign-listing'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { mockCampaignItem } from '~~/test/fixtures/campaign'
@@ -38,6 +38,23 @@ function titleCell(campaign: CampaignItem): VNode {
   return (column?.cell as (context: unknown) => VNode)({
     row: { original: campaign, getValue: () => campaign.title },
   })
+}
+
+function actionsCell(
+  campaign: CampaignItem,
+  onLeave: (item: CampaignItem) => Promise<void> = async () => {},
+): VNode {
+  const columns = generateColumns({ onUpdate: () => {}, onLeave })
+  const column = columns.find(({ id }) => id === 'actions')
+
+  return (column?.cell as (context: unknown) => VNode)({
+    row: { original: campaign },
+  })
+}
+
+const lockedCampaign: CampaignItem = {
+  ...mockCampaignItem,
+  createdBy: { ...mockCampaignItem.createdBy, subscriptionType: 'free' },
 }
 
 let wrapper: VueWrapper | undefined
@@ -119,6 +136,19 @@ describe('Campaign listing columns', () => {
 
       expect(component.find('[test-id="locked"]').exists()).toBe(false)
       expect(component.find('a').exists()).toBe(true)
+    })
+
+    it('Should let a member leave a locked campaign', async () => {
+      const onLeave = vi.fn(async () => {})
+      const component = await mountCell(actionsCell(lockedCampaign, onLeave))
+
+      const buttons = component.findAll('button')
+
+      expect(buttons).toHaveLength(1)
+
+      await buttons[0]!.trigger('click')
+
+      expect(onLeave).toHaveBeenCalledWith(lockedCampaign)
     })
   })
 })

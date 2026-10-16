@@ -90,3 +90,36 @@ export function useTeamMemberRemove() {
     },
   })
 }
+
+export function useCampaignLeave() {
+  const supabase = useSupabaseClient<DB>()
+  const queryClient = useQueryClient()
+  const user = useAuthenticatedUser()
+  const { t } = useI18n()
+
+  return useCallbackMutation({
+    mutationFn: async ({ campaign }: { campaign: number } & QueryDefaults) => {
+      const { error } = await supabase
+        .from('team')
+        .delete()
+        .match({ campaign, user: user.value.id })
+
+      if (error) throw createError(error)
+    },
+    onSuccess: (_data, { campaign }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+      queryClient.removeQueries({
+        queryKey: queryKeys.campaignDetail(campaign),
+      })
+      queryClient.removeQueries({
+        queryKey: queryKeys.campaignMember(campaign),
+      })
+    },
+    onError: error => {
+      toast.error(t('general.error.failed.memberRemove'), {
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+      })
+    },
+  })
+}
