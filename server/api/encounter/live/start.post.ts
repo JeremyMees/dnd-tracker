@@ -13,13 +13,7 @@ export default defineEventHandler(async event => {
   const body = await readValidatedBody(event, bodySchema.parse)
   const supabase = serverSupabaseServiceRole<DB>(event)
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('subscriptionType')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.subscriptionType !== 'pro') {
+  if (!(await isProUser(supabase, user.id))) {
     throw createError({
       statusCode: 403,
       statusMessage: 'pro-required',

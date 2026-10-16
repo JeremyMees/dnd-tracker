@@ -30,6 +30,12 @@ export default defineEventHandler(async event => {
   )
     throw createError('Join campaign token not found')
 
+  if (!(await campaignOwnerIsPro(supabase, invite.campaign))) {
+    await supabase.from('join_campaign').delete().eq('id', joinCampaign.id)
+
+    throw createError({ statusCode: 403, statusMessage: 'membersRequirePro' })
+  }
+
   const { data: member, error: teamError } = await supabase
     .from('team')
     .insert({

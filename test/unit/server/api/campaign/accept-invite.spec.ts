@@ -34,10 +34,12 @@ function mockTables({
     error: null,
   },
   deleteResult = { error: null },
+  ownerSubscription = 'pro',
 }: {
   joinResult?: Record<string, unknown>
   insertResult?: Record<string, unknown>
   deleteResult?: Record<string, unknown>
+  ownerSubscription?: SubscriptionType
 } = {}) {
   const select = mockChain(joinResult)
   const del = mockChain(deleteResult)
@@ -46,6 +48,11 @@ function mockTables({
   const from = mockFrom({
     join_campaign: [select, del],
     team: insert,
+    campaigns: mockChain({ data: { createdBy: 'owner-1' }, error: null }),
+    profiles: mockChain({
+      data: { subscriptionType: ownerSubscription },
+      error: null,
+    }),
   })
 
   return { from, select, del, insert }
@@ -74,6 +81,44 @@ describe('POST /api/campaign/accept-invite', () => {
     expect(del.eq).toHaveBeenCalledWith('id', 1)
     expect(from).toHaveBeenCalledWith('join_campaign')
     expect(from).toHaveBeenCalledWith('team')
+  })
+
+  describe('Pro owners', () => {
+    it('refuses to join and removes the invite when the owner is not on pro', async () => {
+      const { insert, del } = mockTables({ ownerSubscription: 'free' })
+      const token = await validInvite()
+
+      await expect(
+        handler(mockEvent({ method: 'POST', body: { token } })),
+      ).rejects.toMatchObject({
+        statusCode: 403,
+        statusMessage: 'membersRequirePro',
+      })
+      expect(insert.insert).not.toHaveBeenCalled()
+      expect(del.eq).toHaveBeenCalledWith('id', 1)
+    })
+
+    it('keeps an admin invite as admin when the owner is on pro', async () => {
+      const { insert } = mockTables({
+        joinResult: {
+          data: { ...joinCampaign, role: 'Admin' },
+          error: null,
+        },
+      })
+      const token = await signInvite({
+        campaign: 42,
+        user: 'user-1',
+        role: 'Admin',
+      })
+
+      await handler(mockEvent({ method: 'POST', body: { token } }))
+
+      expect(insert.insert).toHaveBeenCalledWith({
+        campaign: 42,
+        role: 'Admin',
+        user: 'user-1',
+      })
+    })
   })
 
   it('removes the invite when the user is already on the team', async () => {

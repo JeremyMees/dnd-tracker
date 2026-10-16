@@ -32,7 +32,10 @@ describe('POST /api/emails/campaign-invite-no-user', () => {
         data: { id: 42, title: 'Curse of Strahd', createdBy: 'user-1' },
         error: null,
       }),
-      profiles: mockChain({ data: { username: 'DM' }, error: null }),
+      profiles: [
+        mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+        mockChain({ data: { username: 'DM' }, error: null }),
+      ],
     })
     mockFetch.mockResolvedValue({ success: true })
 
@@ -62,13 +65,34 @@ describe('POST /api/emails/campaign-invite-no-user', () => {
         data: { id: 42, title: 'Curse of Strahd', createdBy: 'user-1' },
         error: null,
       }),
-      profiles: mockChain({ data: { username: 'DM' }, error: null }),
+      profiles: [
+        mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+        mockChain({ data: { username: 'DM' }, error: null }),
+      ],
     })
     mockFetch.mockRejectedValue(new Error('network error'))
 
     await expect(
       handler(mockEvent({ method: 'POST', body: body() })),
     ).rejects.toMatchObject({ message: 'Failed to send email.' })
+  })
+
+  it('refuses to invite when the owner is not on pro', async () => {
+    mockFrom({
+      campaigns: mockChain({
+        data: { id: 42, title: 'Curse of Strahd', createdBy: 'user-1' },
+        error: null,
+      }),
+      profiles: mockChain({ data: { subscriptionType: 'free' }, error: null }),
+    })
+
+    await expect(
+      handler(mockEvent({ method: 'POST', body: body() })),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'membersRequirePro',
+    })
+    expect(mockFetch).not.toHaveBeenCalled()
   })
 
   it('throws a 403 when the caller cannot manage the campaign', async () => {
