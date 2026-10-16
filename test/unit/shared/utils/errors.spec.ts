@@ -198,6 +198,10 @@ describe('getFailureReason', () => {
     expect(getFailureReason(raisedError('limitReached'))).toBe('limitReached')
   })
 
+  it('reports a full campaign homebrew list raised by the database', () => {
+    expect(getFailureReason(raisedError('homebrewLimit'))).toBe('homebrewLimit')
+  })
+
   it('keeps other raised exceptions as rejected', () => {
     expect(getFailureReason(raisedError('somethingElse'))).toBe('rejected')
   })

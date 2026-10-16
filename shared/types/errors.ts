@@ -5,6 +5,7 @@ export type FailureReason =
   | 'notFound'
   | 'rateLimited'
   | 'limitReached'
+  | 'homebrewLimit'
   | 'rejected'
 
 export type AuthFailure =
