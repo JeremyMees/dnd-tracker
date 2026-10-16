@@ -16,6 +16,17 @@ describe('queryKeys', () => {
     expect(queryKeys.campaignCount()).toEqual(['useCampaignCount'])
   })
 
+  it('scopes the plan counts to the user', () => {
+    expect(queryKeys.campaignCount('user-1')).toEqual([
+      'useCampaignCount',
+      'user-1',
+    ])
+    expect(queryKeys.encounterCount('user-1')).toEqual([
+      'useEncounterCount',
+      'user-1',
+    ])
+  })
+
   it('keeps an undefined param when a later param is given', () => {
     expect(queryKeys.homebrewListing(undefined, 10)).toEqual([
       'useHomebrewListing',

@@ -60,6 +60,9 @@ export function getFailureReason(error: unknown): FailureReason {
   if (statusCode === 403 || code === '42501') return 'forbidden'
   if (statusCode === 404 || code === 'PGRST116') return 'notFound'
   if (statusCode === 429) return 'rateLimited'
+  if (code === 'P0001' && getErrorMessage(error) === 'limitReached') {
+    return 'limitReached'
+  }
 
   if (readProp(error, 'name') === 'FetchError' && statusCode === undefined) {
     return 'offline'

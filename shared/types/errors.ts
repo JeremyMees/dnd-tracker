@@ -4,6 +4,7 @@ export type FailureReason =
   | 'forbidden'
   | 'notFound'
   | 'rateLimited'
+  | 'limitReached'
   | 'rejected'
 
 export type AuthFailure =

@@ -182,6 +182,26 @@ describe('getFailureReason', () => {
     )
   })
 
+  function raisedError(message: string) {
+    return createError({
+      message,
+      cause: new PostgrestError({
+        message,
+        details: '',
+        hint: '',
+        code: 'P0001',
+      }),
+    })
+  }
+
+  it('reports a plan limit raised by the database', () => {
+    expect(getFailureReason(raisedError('limitReached'))).toBe('limitReached')
+  })
+
+  it('keeps other raised exceptions as rejected', () => {
+    expect(getFailureReason(raisedError('somethingElse'))).toBe('rejected')
+  })
+
   it('falls back to rejected for values that are not errors', () => {
     expect(getFailureReason('boom')).toBe('rejected')
     expect(getFailureReason(null)).toBe('rejected')

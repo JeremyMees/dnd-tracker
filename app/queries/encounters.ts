@@ -41,13 +41,15 @@ export function useEncounterListing(
 
 export function useEncounterCount(enabled: ComputedRef<boolean>) {
   const supabase = useSupabaseClient<DB>()
+  const user = useAuthenticatedUser()
 
   return useQuery({
-    queryKey: queryKeys.encounterCount(),
+    queryKey: queryKeys.encounterCount(user.value.id),
     queryFn: async () =>
       await supabase
         .from('initiative_sheets')
-        .select('*', { count: 'exact', head: true }),
+        .select('*', { count: 'exact', head: true })
+        .eq('createdBy', user.value.id),
     select: ({ count }) => count || 0,
     enabled,
   })

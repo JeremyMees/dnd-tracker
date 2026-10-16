@@ -101,13 +101,15 @@ export function useCampaignMinimalListing(id: string) {
 
 export function useCampaignCount() {
   const supabase = useSupabaseClient<DB>()
+  const user = useAuthenticatedUser()
 
   return useQuery({
-    queryKey: queryKeys.campaignCount(),
+    queryKey: queryKeys.campaignCount(user.value.id),
     queryFn: async () =>
       await supabase
         .from('campaigns')
-        .select('*', { count: 'exact', head: true }),
+        .select('*', { count: 'exact', head: true })
+        .eq('createdBy', user.value.id),
     select: ({ count }) => count || 0,
   })
 }
