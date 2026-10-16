@@ -1,6 +1,7 @@
 import type { VueWrapper } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
+import { useRegisteredCommands } from '~/composables/useCommands'
 import { DialogContent } from '~/components/ui/dialog'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -84,6 +85,10 @@ let component: VueWrapper<InstanceType<typeof EncounterSidebar>>
 describe('EncounterSidebar', () => {
   beforeEach(() => {
     mockSheet.value = sheet
+  })
+
+  afterEach(() => {
+    component?.unmount()
   })
 
   it('Should match snapshot', async () => {
@@ -434,5 +439,71 @@ describe('EncounterSidebar', () => {
     component.unmount()
 
     expect(vm.openModal).toBeUndefined()
+  })
+
+  describe('Command palette', () => {
+    const commands = useRegisteredCommands()
+
+    function commandIds(): string[] {
+      return commands.value.map(({ id }) => id)
+    }
+
+    it.each([
+      { id: 'bestiary', modal: 'bestiary' },
+      { id: 'campaign-homebrew', modal: 'addHomebrew' },
+      { id: 'new-homebrew', modal: 'newHomebrew' },
+      { id: 'content', modal: 'content' },
+      { id: 'settings', modal: 'settings' },
+    ])(
+      'Should open the $modal dialog from the $id command',
+      async ({ id, modal }) => {
+        mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
+
+        component = await mountWithTooltips(EncounterSidebar, {
+          props,
+          provide,
+          global: { stubs: formStubs },
+        })
+        const vm = component.vm as unknown as EncounterSidebarVM
+
+        commands.value.find(command => command.id === id)?.run()
+
+        expect(vm.openModal).toBe(modal)
+      },
+    )
+
+    it('Should not offer campaign homebrew without a campaign', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      expect(commandIds()).toEqual([
+        'bestiary',
+        'new-homebrew',
+        'content',
+        'settings',
+      ])
+    })
+
+    it('Should not offer adding creatures when the encounter is full', async () => {
+      mockSheet.value = {
+        ...sheet,
+        campaign: mockSheetCampaign,
+        rows: Array.from({ length: 50 }, (_, index) => ({
+          ...sheet.rows[0]!,
+          id: `row-${index}`,
+        })),
+      }
+
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      expect(commandIds()).toEqual(['content', 'settings'])
+    })
   })
 })

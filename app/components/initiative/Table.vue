@@ -53,6 +53,66 @@ function handleReset(hard: boolean): void {
   if (props.encounterId) clearCombatEvents({ encounterId: props.encounterId })
 }
 
+const { t } = useI18n()
+
+useCommands(() => {
+  const hasRows = !!sheet.value?.rows.length
+
+  return [
+    {
+      id: 'next-turn',
+      label: t('actions.next'),
+      icon: 'tabler:chevron-right',
+      shortcut: ['SHIFT', '→'],
+      disabled: !hasRows,
+      run: next,
+    },
+    {
+      id: 'previous-turn',
+      label: t('actions.prev'),
+      icon: 'tabler:chevron-left',
+      shortcut: ['SHIFT', '←'],
+      disabled:
+        !hasRows || (sheet.value?.round === 1 && sheet.value.activeIndex === 0),
+      run: previous,
+    },
+    {
+      id: 'combat-log',
+      label: historyOpen.value
+        ? t('actions.closeCombatLog')
+        : t('actions.openCombatLog'),
+      icon: 'tabler:history',
+      iconClass: 'text-info',
+      disabled: !props.encounterId,
+      run: () => (historyOpen.value = !historyOpen.value),
+    },
+    {
+      id: 'end-encounter',
+      label: t('actions.encounterStats'),
+      icon: 'tabler:trophy',
+      iconClass: 'text-warning',
+      disabled: !props.encounterId || !hasRows,
+      run: () => (summaryOpen.value = true),
+    },
+    {
+      id: 'reset-soft',
+      label: t('components.encounterTable.reset.soft.title'),
+      icon: 'tabler:refresh',
+      iconClass: 'text-destructive',
+      disabled: !hasRows,
+      run: () => handleReset(false),
+    },
+    {
+      id: 'reset-hard',
+      label: t('components.encounterTable.reset.hard.title'),
+      icon: 'tabler:refresh-alert',
+      iconClass: 'text-destructive',
+      disabled: !hasRows,
+      run: () => handleReset(true),
+    },
+  ]
+})
+
 watch(
   () => sheet.value?.rows,
   newRows => {
@@ -89,12 +149,8 @@ const table = useTable({
     <InitiativeHeader
       :data="sheet"
       :encounter-id="encounterId"
-      :history-open="historyOpen"
-      @reset="handleReset($event)"
       @previous="previous"
       @next="next"
-      @toggle-history="historyOpen = !historyOpen"
-      @end-encounter="summaryOpen = true"
     />
 
     <LazyInitiativeSummary

@@ -58,10 +58,21 @@ function filterItems() {
   filterState.filtered.count = itemCount
 }
 
+const listbox = ref<{
+  highlightedElement: HTMLElement | null
+  highlightFirstItem: () => void
+}>()
+
+watch([() => filterState.search, () => allItems.value.size], () => {
+  filterItems()
+})
+
 watch(
-  () => filterState.search,
+  () => allItems.value.size,
   () => {
-    filterItems()
+    if (!listbox.value?.highlightedElement?.isConnected) {
+      listbox.value?.highlightFirstItem()
+    }
   },
 )
 
@@ -74,6 +85,7 @@ provideCommandContext({
 
 <template>
   <ListboxRoot
+    ref="listbox"
     v-bind="forwarded"
     :class="
       cn(

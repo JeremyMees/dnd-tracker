@@ -11,7 +11,7 @@ const { toggleSidebar } = useSidebar()
 </script>
 
 <template>
-  <Tooltip :text="$t('actions.toggleSidebar')">
+  <Tooltip :text="$t('actions.toggleSidebar')" :shortcut="['MOD', 'B']">
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"

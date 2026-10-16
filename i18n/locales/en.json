@@ -1396,6 +1396,18 @@
         "empty": "The file has nothing to import.",
         "tooMany": "You don't have room for this many items. You can import no more items.|You don't have room for this many items. You can import {count} more item.|You don't have room for this many items. You can import {count} more items."
       }
+    },
+    "commandPalette": {
+      "title": "Command palette",
+      "description": "Search for actions, monsters and encounters",
+      "placeholder": "Type a command or search on monster or encounter",
+      "empty": "No results found.",
+      "loading": "Searching…",
+      "groups": {
+        "actions": "Actions",
+        "monsters": "Add a monster",
+        "encounters": "Encounters"
+      }
     }
   },
   "tour": {
@@ -1445,7 +1457,7 @@
     },
     "11": {
       "title": "Time for a fresh start? 🔄",
-      "description": "Finished your encounter? Open this menu to reset the rounds, share a live session, end the encounter or peek at the combat log."
+      "description": "Finished your encounter? Open the actions here or press ⌘/Ctrl + K anywhere to reset the rounds, share a live session, end the encounter, peek at the combat log, add monsters or jump to another encounter."
     },
     "12": {
       "title": "Congrats, you're ready to go! 🎉"

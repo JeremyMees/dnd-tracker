@@ -5,6 +5,7 @@ defineEmits<{ toggleSidebar: [] }>()
 defineProps<{ isExpanded: boolean }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { t } = useI18n()
 
 type Modals =
   | 'settings'
@@ -29,6 +30,46 @@ function remixMonster(monster: DndMonster): void {
 onBeforeUnmount(() => (openModal.value = undefined))
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
+
+useCommands(() => [
+  {
+    id: 'bestiary',
+    label: t('general.bestiary'),
+    icon: 'tabler:bat',
+    iconClass: 'text-destructive',
+    disabled: maxCharacters.value,
+    run: () => (openModal.value = 'bestiary'),
+  },
+  {
+    id: 'campaign-homebrew',
+    label: t('general.campaignHomebrew'),
+    icon: 'tabler:meeple',
+    iconClass: 'text-primary',
+    disabled: maxCharacters.value || !sheet.value?.campaign?.id,
+    run: () => (openModal.value = 'addHomebrew'),
+  },
+  {
+    id: 'new-homebrew',
+    label: t('general.newHomebrew'),
+    icon: 'tabler:beer',
+    iconClass: 'text-warning',
+    disabled: maxCharacters.value,
+    run: () => (openModal.value = 'newHomebrew'),
+  },
+  {
+    id: 'content',
+    label: t('components.navbar.dnd-content'),
+    icon: 'tabler:book',
+    iconClass: 'text-help',
+    run: () => (openModal.value = 'content'),
+  },
+  {
+    id: 'settings',
+    label: t('general.setting', 2),
+    icon: 'tabler:settings',
+    run: () => (openModal.value = 'settings'),
+  },
+])
 </script>
 
 <template>
@@ -315,7 +356,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                 <span class="text-muted-foreground">/</span>
                 <UiKbd>⌘</UiKbd>
                 <span class="text-muted-foreground">/</span>
-                <UiKbd>⇧</UiKbd>
+                <UiKbd>Shift</UiKbd>
               </UiKbdGroup>
             </div>
             <div class="space-y-2">

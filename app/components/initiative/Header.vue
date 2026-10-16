@@ -1,19 +1,30 @@
 <script setup lang="ts">
 defineEmits<{
-  reset: [boolean]
   previous: []
   next: []
-  toggleHistory: []
-  endEncounter: []
 }>()
 
-defineProps<{
+const props = defineProps<{
   data: InitiativeSheet | undefined
   encounterId?: number
-  historyOpen?: boolean
 }>()
 
+const { t } = useI18n()
+
 const liveOpen = ref<boolean>(false)
+const { open: paletteOpen } = useCommandPalette()
+const { keyLabel } = useShortcutKeys()
+
+useCommands(() => [
+  {
+    id: 'live-session',
+    label: t('components.liveSession.title'),
+    icon: 'tabler:broadcast',
+    iconClass: 'text-success',
+    disabled: !props.encounterId,
+    run: () => (liveOpen.value = true),
+  },
+])
 </script>
 
 <template>
@@ -33,105 +44,20 @@ const liveOpen = ref<boolean>(false)
           {{ data?.round || 1 }}
         </span>
       </span>
-      <UiDropdownMenu>
-        <UiDropdownMenuTrigger as-child>
-          <UiButton
-            id="tour-11"
-            test-id="options-trigger"
-            :aria-label="$t('general.action', 2)"
-            variant="secondary"
-            size="sm"
-            class="group"
-          >
-            {{ $t('general.action', 2) }}
-            <Icon
-              name="tabler:chevron-down"
-              aria-hidden="true"
-              class="group-data-[state=open]:rotate-180 transition-transform"
-            />
-          </UiButton>
-        </UiDropdownMenuTrigger>
-        <UiDropdownMenuContent align="end" class="min-w-52">
-          <UiDropdownMenuItem
-            v-if="encounterId"
-            test-id="live-session-trigger"
-            @select="liveOpen = true"
-          >
-            <Icon
-              name="tabler:broadcast"
-              class="text-success"
-              aria-hidden="true"
-            />
-            {{ $t('components.liveSession.title') }}
-          </UiDropdownMenuItem>
-          <UiDropdownMenuItem
-            v-if="encounterId"
-            test-id="history-trigger"
-            @select="$emit('toggleHistory')"
-          >
-            <Icon name="tabler:history" class="text-info" aria-hidden="true" />
-            {{
-              historyOpen
-                ? $t('actions.closeCombatLog')
-                : $t('actions.openCombatLog')
-            }}
-          </UiDropdownMenuItem>
-          <UiDropdownMenuItem
-            v-if="encounterId"
-            test-id="end-encounter"
-            :disabled="!data?.rows.length"
-            @select="$emit('endEncounter')"
-          >
-            <Icon
-              name="tabler:trophy"
-              class="text-warning"
-              aria-hidden="true"
-            />
-            {{ $t('actions.encounterStats') }}
-          </UiDropdownMenuItem>
-          <UiDropdownMenuSub>
-            <UiDropdownMenuSubTrigger
-              test-id="reset"
-              :disabled="!data?.rows.length"
-              class="gap-2 data-disabled:pointer-events-none data-disabled:opacity-50"
-            >
-              <Icon
-                name="tabler:refresh"
-                class="text-destructive size-4 min-w-4"
-                aria-hidden="true"
-              />
-              {{ $t('actions.reset') }}
-            </UiDropdownMenuSubTrigger>
-            <UiDropdownMenuSubContent class="max-w-64">
-              <UiDropdownMenuItem
-                test-id="reset-soft"
-                class="flex-col items-start gap-1"
-                @select="$emit('reset', false)"
-              >
-                <span class="font-bold">
-                  {{ $t('components.encounterTable.reset.soft.title') }}
-                </span>
-                <span class="text-muted-foreground text-xs text-wrap">
-                  {{ $t('components.encounterTable.reset.soft.description') }}
-                </span>
-              </UiDropdownMenuItem>
-              <UiDropdownMenuSeparator />
-              <UiDropdownMenuItem
-                test-id="reset-hard"
-                class="flex-col items-start gap-1"
-                @select="$emit('reset', true)"
-              >
-                <span class="font-bold">
-                  {{ $t('components.encounterTable.reset.hard.title') }}
-                </span>
-                <span class="text-muted-foreground text-xs text-wrap">
-                  {{ $t('components.encounterTable.reset.hard.description') }}
-                </span>
-              </UiDropdownMenuItem>
-            </UiDropdownMenuSubContent>
-          </UiDropdownMenuSub>
-        </UiDropdownMenuContent>
-      </UiDropdownMenu>
+      <UiButton
+        id="tour-11"
+        test-id="command-palette-trigger"
+        variant="secondary"
+        size="sm"
+        aria-keyshortcuts="Meta+K Control+K"
+        @click="paletteOpen = true"
+      >
+        {{ $t('general.action', 2) }}
+        <UiKbdGroup class="hidden sm:inline-flex">
+          <UiKbd>{{ keyLabel('MOD') }}</UiKbd>
+          <UiKbd>K</UiKbd>
+        </UiKbdGroup>
+      </UiButton>
       <UiDialog v-if="encounterId" v-model:open="liveOpen">
         <UiDialogScrollContent test-id="live-session-dialog" class="max-w-md">
           <UiDialogHeader class="sr-only">
@@ -150,7 +76,7 @@ const liveOpen = ref<boolean>(false)
       id="tour-1"
       class="w-full min-[400px]:w-auto flex gap-2 items-center justify-between bg-primary/50 rounded-lg border-4 border-primary"
     >
-      <Tooltip :text="$t('actions.prev')">
+      <Tooltip :text="$t('actions.prev')" :shortcut="['SHIFT', '←']">
         <button
           test-id="previous"
           :disabled="
@@ -170,7 +96,7 @@ const liveOpen = ref<boolean>(false)
       <p class="text-sm font-medium">
         {{ $t('components.inputs.initiativeLabel') }}
       </p>
-      <Tooltip :text="$t('actions.next')">
+      <Tooltip :text="$t('actions.next')" :shortcut="['SHIFT', '→']">
         <button
           test-id="next"
           :disabled="!data?.rows.length"

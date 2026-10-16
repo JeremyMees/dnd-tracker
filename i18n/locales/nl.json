@@ -1396,6 +1396,18 @@
         "empty": "Het bestand bevat niets om te importeren.",
         "tooMany": "Je hebt geen plaats voor zoveel items. Je kunt geen items meer importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} item importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} items importeren."
       }
+    },
+    "commandPalette": {
+      "title": "Opdrachtenpalet",
+      "description": "Zoek naar acties, monsters en encounters",
+      "placeholder": "Typ een opdracht of zoek naar een monster of encounter",
+      "empty": "Geen resultaten gevonden.",
+      "loading": "Zoeken…",
+      "groups": {
+        "actions": "Acties",
+        "monsters": "Monster toevoegen",
+        "encounters": "Encounters"
+      }
     }
   },
   "tour": {
@@ -1445,7 +1457,7 @@
     },
     "11": {
       "title": "Klaar voor een nieuwe ronde? 🔄",
-      "description": "Gevecht gedaan? Open dit menu om de rondes te resetten, een live sessie te delen, het gevecht te beëindigen of het gevechtslog te bekijken."
+      "description": "Gevecht gedaan? Open hier de acties of druk ergens op ⌘/Ctrl + K om de rondes te resetten, een live sessie te delen, het gevecht te beëindigen, het gevechtslog te bekijken, monsters toe te voegen of naar een ander gevecht te springen."
     },
     "12": {
       "title": "Proficiat, je bent er helemaal klaar voor! 🎉"

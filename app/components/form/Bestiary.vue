@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
-import { toast } from 'vue-sonner'
 import { crOptions, defaultSrdDocuments, gameSystems } from '~~/constants/dnd'
 import { useSrdDocuments, useSrdMonsterListing } from '~/queries/srd'
 
@@ -21,8 +19,8 @@ const props = withDefaults(
   },
 )
 
-const injected = inject(INITIATIVE_SHEET, undefined)
-const canAdd = computed(() => props.addable && !!injected)
+const { isAvailable, addMonster } = useAddMonster()
+const canAdd = computed(() => props.addable && isAvailable.value)
 
 const { t } = useI18n()
 
@@ -139,23 +137,6 @@ function resetFilters(): void {
   state.system = props.system
   state.documents = props.preSelectedDocuments
   appliedSearch.value = ''
-}
-
-async function addMonster(monster: DndMonster): Promise<void> {
-  const sheet = injected?.sheet.value
-
-  if (!injected || !sheet) return
-
-  await injected.update({
-    rows: appendRows(sheet.rows, [monsterToRow(monster)]),
-  })
-
-  toast.success(
-    t('components.initiativeTable.bestiary.added', {
-      name: monster.name,
-    }),
-    { description: t('components.initiativeTable.bestiary.addedDescription') },
-  )
 }
 </script>
 

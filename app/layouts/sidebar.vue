@@ -203,5 +203,6 @@ async function logoutUser(): Promise<void> {
         <slot />
       </div>
     </UiSidebarInset>
+    <CommandPalette />
   </UiSidebarProvider>
 </template>
