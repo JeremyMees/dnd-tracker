@@ -67,6 +67,24 @@ export function useInitiativeSheet(
     else if (e.key === 'ArrowRight') next()
   })
 
+  const { trigger: triggerRowShortcut } = useRowShortcut()
+  const rowShortcutKeys: Record<string, RowShortcutAction> = {
+    d: 'damage',
+    h: 'heal',
+    c: 'condition',
+  }
+
+  onKeyStroke(Object.keys(rowShortcutKeys), e => {
+    if (e.shiftKey || !isPlainKeyPress(e) || !active.value) return
+
+    const action = rowShortcutKeys[e.key]
+
+    if (!action) return
+
+    e.preventDefault()
+    triggerRowShortcut(active.value.id, action)
+  })
+
   watch(
     () => sheet.value?.activeIndex,
     () => {

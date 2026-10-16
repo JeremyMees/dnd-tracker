@@ -3,6 +3,7 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { sheet } from '../../fixtures/initiative-sheet'
 import { useInitiativeSheet } from '~/composables/useInitiativeSheet'
+import { useRowShortcut } from '~/composables/useRowShortcut'
 
 const { onKeyStrokeMock } = vi.hoisted(() => ({
   onKeyStrokeMock: vi.fn(),
@@ -286,30 +287,33 @@ describe('useInitiativeSheet', async () => {
   })
 
   describe('keyboard shortcuts', () => {
-    type KeyStrokeHandler = (e: {
-      key: string
-      shiftKey: boolean
-      metaKey: boolean
-      target?: EventTarget | null
-      preventDefault: () => void
-    }) => void
+    type KeyStrokeHandler = (e: Partial<KeyboardEvent>) => void
 
-    function latestHandler(): KeyStrokeHandler {
-      return onKeyStrokeMock.mock.calls.at(-1)![1] as KeyStrokeHandler
+    function latestHandler(key: string): KeyStrokeHandler {
+      const call = onKeyStrokeMock.mock.calls.findLast(([keys]) =>
+        (keys as string[]).includes(key),
+      )
+
+      return call![1] as KeyStrokeHandler
     }
 
     function pressKey(
       key: string,
-      modifiers: {
-        shiftKey?: boolean
-        metaKey?: boolean
-        target?: EventTarget | null
-      } = {},
+      modifiers: Partial<
+        Pick<
+          KeyboardEvent,
+          'shiftKey' | 'metaKey' | 'ctrlKey' | 'altKey' | 'repeat' | 'target'
+        >
+      > = {},
     ): void {
-      latestHandler()({
+      latestHandler(key)({
         key,
         shiftKey: false,
         metaKey: false,
+        ctrlKey: false,
+        altKey: false,
+        repeat: false,
+        target: null,
         ...modifiers,
         preventDefault: vi.fn(),
       })
@@ -385,6 +389,74 @@ describe('useInitiativeSheet', async () => {
 
       expect(() => pressKey('ArrowRight', { shiftKey: true })).not.toThrow()
       expect(updateFn).not.toHaveBeenCalled()
+    })
+
+    describe('row shortcuts', () => {
+      function request() {
+        return useRowShortcut().request
+      }
+
+      beforeEach(() => {
+        request().value = undefined
+      })
+
+      it.each([
+        ['d', 'damage'],
+        ['h', 'heal'],
+        ['c', 'condition'],
+      ])('Should request %s for the active row', (key, action) => {
+        useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey(key)
+
+        expect(request().value).toEqual({ rowId: sheet.rows[0]!.id, action })
+      })
+
+      it.each([
+        { shiftKey: true },
+        { metaKey: true },
+        { ctrlKey: true },
+        { altKey: true },
+        { repeat: true },
+      ])('Should ignore the key with %o', modifiers => {
+        useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('d', modifiers)
+
+        expect(request().value).toBeUndefined()
+      })
+
+      it('Should ignore the key while typing', () => {
+        useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('d', { target: document.createElement('input') })
+
+        expect(request().value).toBeUndefined()
+      })
+
+      it('Should ignore the key inside a dialog', () => {
+        const dialog = document.createElement('div')
+        const button = document.createElement('button')
+
+        dialog.setAttribute('role', 'dialog')
+        dialog.appendChild(button)
+
+        useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('h', { target: button })
+
+        expect(request().value).toBeUndefined()
+      })
+
+      it('Should do nothing without an active row', () => {
+        mockSheet.value = { ...sheet, rows: [] }
+
+        useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('c')
+
+        expect(request().value).toBeUndefined()
+      })
     })
   })
 })

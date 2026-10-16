@@ -1,7 +1,9 @@
+import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
 import { useRegisteredCommands } from '~/composables/useCommands'
+import { encounterShortcuts } from '~~/constants/shortcuts'
 import { DialogContent } from '~/components/ui/dialog'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -483,6 +485,7 @@ describe('EncounterSidebar', () => {
         'bestiary',
         'new-homebrew',
         'content',
+        'shortcuts',
         'settings',
       ])
     })
@@ -503,7 +506,87 @@ describe('EncounterSidebar', () => {
         global: { stubs: formStubs },
       })
 
-      expect(commandIds()).toEqual(['content', 'settings'])
+      expect(commandIds()).toEqual(['content', 'shortcuts', 'settings'])
+    })
+  })
+
+  describe('Shortcuts overview', () => {
+    function shortcutsOpen(): boolean {
+      return !!document.body.querySelector('[test-id="shortcuts"]')
+    }
+
+    async function pressQuestionMark(target: EventTarget = document.body) {
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: '?',
+          shiftKey: true,
+          bubbles: true,
+        }),
+      )
+      await flushPromises()
+    }
+
+    it('Should list every shortcut with its keys', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      await component.get('[test-id="shortcuts-trigger"]').trigger('click')
+      await flushPromises()
+
+      const rows = document.body.querySelectorAll('[test-id="shortcut"]')
+
+      expect(rows).toHaveLength(encounterShortcuts.length)
+      expect(rows[4]?.textContent).toContain('components.shortcuts.damage')
+      expect(rows[4]?.querySelector('kbd kbd')?.textContent?.trim()).toBe('D')
+    })
+
+    it('Should toggle with the question mark key', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      await pressQuestionMark()
+      expect(shortcutsOpen()).toBe(true)
+
+      await pressQuestionMark()
+      expect(shortcutsOpen()).toBe(false)
+    })
+
+    it('Should ignore the question mark while typing', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      const input = document.createElement('input')
+
+      document.body.appendChild(input)
+      await pressQuestionMark(input)
+
+      expect(shortcutsOpen()).toBe(false)
+
+      input.remove()
+    })
+
+    it('Should open from the command palette', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      useRegisteredCommands()
+        .value.find(command => command.id === 'shortcuts')
+        ?.run()
+      await flushPromises()
+
+      expect(shortcutsOpen()).toBe(true)
     })
   })
 })

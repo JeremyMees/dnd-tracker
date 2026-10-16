@@ -8,3 +8,15 @@ export interface PaletteCommand {
   disabled?: boolean
   run: () => void
 }
+
+export type RowShortcutAction = 'damage' | 'heal' | 'condition'
+
+export interface RowShortcutRequest {
+  rowId: string
+  action: RowShortcutAction
+}
+
+export interface ShortcutDescription {
+  label: string
+  keys: string[]
+}

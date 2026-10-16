@@ -79,7 +79,6 @@
     "sendMail": "Send mail",
     "moveUp": "Move up",
     "moveDown": "Move down",
-    "changeInitiative": "Change initiative",
     "applyDamage": "Apply damage",
     "generateName": "Generate name",
     "kick": "Remove",
@@ -150,8 +149,7 @@
     "initiative": "Initiative | Initiatives",
     "level": "Level | Levels",
     "summoner": "Summoner",
-    "hotkey": "Hotkey | Hotkeys",
-    "modifierKeys": "Modifier keys",
+    "shortcut": "Shortcut | Shortcuts",
     "bestiary": "Bestiary",
     "campaignHomebrew": "Campaign homebrew",
     "newHomebrew": "New homebrew",
@@ -1408,6 +1406,17 @@
         "monsters": "Add a monster",
         "encounters": "Encounters"
       }
+    },
+    "shortcuts": {
+      "palette": "Open the command palette",
+      "next": "Next turn",
+      "previous": "Previous turn",
+      "expand": "Expand or collapse the current creature",
+      "damage": "Damage the current creature",
+      "heal": "Heal the current creature",
+      "condition": "Add a condition to the current creature",
+      "sidebar": "Show or hide the sidebar",
+      "overview": "Show all shortcuts"
     }
   },
   "tour": {
@@ -1444,7 +1453,7 @@
       "description": "Simplify your view by hiding features you don’t use. Stay focused on what matters to you."
     },
     "8": {
-      "title": "Speed things up with hotkeys 🔥",
+      "title": "Speed things up with shortcuts 🔥",
       "description": "Use keyboard shortcuts to manage your encounter more smoothly. Less clicking, more playing!"
     },
     "9": {

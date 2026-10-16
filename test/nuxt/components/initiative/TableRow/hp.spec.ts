@@ -1,6 +1,7 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Hp from '~/components/initiative/TableRow/Hp.vue'
+import { useRowShortcut } from '~/composables/useRowShortcut'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import {
@@ -258,6 +259,50 @@ describe('Initiative table row hp', async () => {
       const vm = component.vm as unknown as HpTestMethods
       expect(vm.hasHp).toBe(false)
       expect(document.body.textContent).not.toContain('general.current')
+    })
+  })
+
+  describe('Shortcuts', () => {
+    const item = { ...props.item, hitPoints: 10, maxHitPoints: 20 }
+
+    it.each(['damage', 'heal'] as const)(
+      'Should open with the %s intent when its shortcut is used',
+      async action => {
+        const component = await mountWithTooltips(Hp, {
+          props: { item },
+          provide,
+        })
+
+        useRowShortcut().trigger(item.id, action)
+        await vi.waitFor(() => {
+          expect(
+            component.findComponent({ name: 'FormHpUpdate' }).exists(),
+          ).toBe(true)
+        })
+
+        expect(
+          component.findComponent({ name: 'FormHpUpdate' }).props('intent'),
+        ).toBe(action)
+
+        component.unmount()
+      },
+    )
+
+    it('Should ignore shortcuts for another row', async () => {
+      const component = await mountWithTooltips(Hp, {
+        props: { item },
+        provide,
+      })
+
+      useRowShortcut().trigger('another-row', 'damage')
+      await nextTick()
+
+      expect(component.findComponent({ name: 'FormHpUpdate' }).exists()).toBe(
+        false,
+      )
+
+      useRowShortcut().request.value = undefined
+      component.unmount()
     })
   })
 })

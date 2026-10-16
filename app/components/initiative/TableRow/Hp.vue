@@ -7,6 +7,24 @@ const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 
 const popoverOpen = shallowRef<boolean>(false)
+const intent = shallowRef<DndHpType>()
+
+const { onRequest, isTarget } = useRowShortcut()
+
+const isShortcutTarget = computed(() => isTarget(sheet.value, props.item.id))
+
+onRequest(
+  () => props.item.id,
+  ['damage', 'heal'],
+  action => {
+    intent.value = action === 'damage' ? 'damage' : 'heal'
+    popoverOpen.value = true
+  },
+)
+
+watch(popoverOpen, open => {
+  if (!open) intent.value = undefined
+})
 
 const hasHp = computed(
   () => isDefined(props.item.hitPoints) && isDefined(props.item.maxHitPoints),
@@ -38,40 +56,56 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           }"
           class="flex flex-col gap-y-1 rounded-lg"
         >
-          <div class="flex items-center gap-x-1">
-            <Icon
-              v-if="!isDefined(item.hitPoints) && item.type !== 'lair'"
-              test-id="empty"
-              name="tabler:plus"
-              class="size-5 min-w-5 text-foreground/10"
-              aria-hidden="true"
-            />
-            <span
-              v-else
-              test-id="hp"
-              :class="{
-                'text-destructive':
-                  isDefined(item.hitPoints) && item.hitPoints <= 0,
-              }"
-            >
-              {{ item.hitPoints }}
-            </span>
-            <Tooltip
-              v-if="isDefined(item.hitPoints) && item.tempHitPoints"
-              :text="$t('general.temp')"
-            >
-              <span test-id="temp" class="text-warning text-xs">
-                +{{ item.tempHitPoints }}
+          <Tooltip :disabled="!isShortcutTarget || !hasHp">
+            <span class="flex flex-col gap-y-1">
+              <div class="flex items-center gap-x-1">
+                <Icon
+                  v-if="!isDefined(item.hitPoints) && item.type !== 'lair'"
+                  test-id="empty"
+                  name="tabler:plus"
+                  class="size-5 min-w-5 text-foreground/10"
+                  aria-hidden="true"
+                />
+                <span
+                  v-else
+                  test-id="hp"
+                  :class="{
+                    'text-destructive':
+                      isDefined(item.hitPoints) && item.hitPoints <= 0,
+                  }"
+                >
+                  {{ item.hitPoints }}
+                </span>
+                <Tooltip
+                  v-if="isDefined(item.hitPoints) && item.tempHitPoints"
+                  :text="$t('general.temp')"
+                >
+                  <span test-id="temp" class="text-warning text-xs">
+                    +{{ item.tempHitPoints }}
+                  </span>
+                </Tooltip>
+              </div>
+              <span
+                v-if="item.maxHitPoints !== item.hitPoints"
+                test-id="max"
+                class="text-2xs text-muted-foreground whitespace-nowrap"
+              >
+                {{ $t('general.max') }}: {{ item.maxHitPoints }}
               </span>
-            </Tooltip>
-          </div>
-          <span
-            v-if="item.maxHitPoints !== item.hitPoints"
-            test-id="max"
-            class="text-2xs text-muted-foreground whitespace-nowrap"
-          >
-            {{ $t('general.max') }}: {{ item.maxHitPoints }}
-          </span>
+            </span>
+            <template #content>
+              <span test-id="hp-shortcuts" class="flex items-center gap-3">
+                <span class="flex items-center gap-2">
+                  {{ $t('actions.damage') }}
+                  <UiKbd>D</UiKbd>
+                </span>
+                <span class="flex items-center gap-2">
+                  {{ $t('actions.heal') }}
+                  <UiKbd>H</UiKbd>
+                </span>
+              </span>
+            </template>
+          </Tooltip>
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent class="max-h-[600px]">
@@ -132,6 +166,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           v-if="hasHp"
           :sheet="sheet"
           :item="item"
+          :intent="intent"
           :handle-toasts="handleToasts"
           :update-row="updateRow"
         />

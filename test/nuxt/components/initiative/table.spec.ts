@@ -4,6 +4,7 @@ import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
 import { useRegisteredCommands } from '~/composables/useCommands'
+import { useRowShortcut } from '~/composables/useRowShortcut'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import conditions from '~~/test/fixtures/conditions.json'
 import { authUser } from '~~/test/fixtures/auth-user'
@@ -522,14 +523,21 @@ describe('Initiative table', () => {
   })
 
   describe('Command palette', () => {
-    it('Should offer the turn and reset commands', async () => {
+    it('Should offer the turn, row and reset commands', async () => {
       const component = await mountWithTooltips(Table, {
         props,
         provide,
         global,
       })
 
-      expect(commandIds()).toEqual(['next-turn', 'reset-soft', 'reset-hard'])
+      expect(commandIds()).toEqual([
+        'next-turn',
+        'damage',
+        'heal',
+        'condition',
+        'reset-soft',
+        'reset-hard',
+      ])
 
       component.unmount()
 
@@ -564,6 +572,48 @@ describe('Initiative table', () => {
       })
 
       expect(commandIds()).toEqual(['live-session', 'combat-log'])
+
+      component.unmount()
+    })
+
+    it.each(['damage', 'heal', 'condition'] as const)(
+      'Should ask the current row for %s from the palette',
+      async action => {
+        const component = await mountWithTooltips(Table, {
+          props,
+          provide,
+          global,
+        })
+        const { request } = useRowShortcut()
+
+        runCommand(action)
+
+        expect(request.value).toEqual({ rowId: sheet.rows[0]!.id, action })
+
+        request.value = undefined
+        component.unmount()
+      },
+    )
+
+    it('Should hide the row commands when their columns are hidden', async () => {
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: [],
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      expect(commandIds()).not.toContain('damage')
+      expect(commandIds()).not.toContain('heal')
+      expect(commandIds()).not.toContain('condition')
 
       component.unmount()
     })

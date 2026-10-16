@@ -15,6 +15,18 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   )
 }
 
+export function isPlainKeyPress(event: KeyboardEvent): boolean {
+  if (event.metaKey || event.ctrlKey || event.altKey || event.repeat) {
+    return false
+  }
+
+  if (isTypingTarget(event.target)) return false
+
+  return !(
+    event.target instanceof Element && event.target.closest('[role="dialog"]')
+  )
+}
+
 export function randomString(): string {
   return (Math.random() + 1).toString(36).substring(7)
 }

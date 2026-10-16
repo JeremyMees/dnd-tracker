@@ -54,9 +54,15 @@ function handleReset(hard: boolean): void {
 }
 
 const { t } = useI18n()
+const { trigger: triggerRowShortcut } = useRowShortcut()
+
+function rowShortcut(action: RowShortcutAction): void {
+  if (active.value) triggerRowShortcut(active.value.id, action)
+}
 
 useCommands(() => {
   const hasRows = !!sheet.value?.rows.length
+  const isLair = active.value?.type === 'lair'
 
   return [
     {
@@ -75,6 +81,33 @@ useCommands(() => {
       disabled:
         !hasRows || (sheet.value?.round === 1 && sheet.value.activeIndex === 0),
       run: previous,
+    },
+    {
+      id: 'damage',
+      label: t('components.shortcuts.damage'),
+      icon: 'tabler:sword',
+      iconClass: 'text-destructive',
+      shortcut: ['D'],
+      disabled: !active.value || !columnVisibility.value.hitPoints,
+      run: () => rowShortcut('damage'),
+    },
+    {
+      id: 'heal',
+      label: t('components.shortcuts.heal'),
+      icon: 'tabler:heart',
+      iconClass: 'text-success',
+      shortcut: ['H'],
+      disabled: !active.value || !columnVisibility.value.hitPoints,
+      run: () => rowShortcut('heal'),
+    },
+    {
+      id: 'condition',
+      label: t('components.shortcuts.condition'),
+      icon: 'tabler:sparkles',
+      iconClass: 'text-help',
+      shortcut: ['C'],
+      disabled: !active.value || isLair || !columnVisibility.value.conditions,
+      run: () => rowShortcut('condition'),
     },
     {
       id: 'combat-log',

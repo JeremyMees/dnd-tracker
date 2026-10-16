@@ -8,6 +8,7 @@ const props = defineProps<{
   item: InitiativeSheetRow
   handleToasts: (toasts: ToastItem[]) => void
   updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  intent?: DndHpType
 }>()
 
 const selectedType = ref<DndHpType>('heal')
@@ -50,10 +51,18 @@ const onSubmit = form.handleSubmit(async values => {
       getErrorMessage(err) || 'An error occurred while updating HP'
   }
 })
+
+function submitIntent(event: KeyboardEvent): void {
+  if (!props.intent) return
+
+  event.preventDefault()
+  selectedType.value = props.intent
+  onSubmit()
+}
 </script>
 
 <template>
-  <UiFormWrapper @submit="onSubmit">
+  <UiFormWrapper @submit="onSubmit" @keydown.enter="submitIntent">
     <FormDiceRollInput />
     <div class="flex items-center gap-x-2">
       <UiButton
@@ -61,6 +70,8 @@ const onSubmit = form.handleSubmit(async values => {
         size="sm"
         variant="success"
         class="border-2"
+        :class="{ 'ring-2 ring-ring ring-offset-2': intent === 'heal' }"
+        test-id="hp-heal"
         @click="selectedType = 'heal'"
       >
         <Icon name="tabler:heart" aria-hidden="true" />
@@ -71,6 +82,8 @@ const onSubmit = form.handleSubmit(async values => {
         size="sm"
         variant="warning"
         class="border-2"
+        :class="{ 'ring-2 ring-ring ring-offset-2': intent === 'temp' }"
+        test-id="hp-temp"
         @click="selectedType = 'temp'"
       >
         <Icon name="tabler:plus" aria-hidden="true" />
@@ -81,6 +94,8 @@ const onSubmit = form.handleSubmit(async values => {
         size="sm"
         variant="destructive"
         class="border-2"
+        :class="{ 'ring-2 ring-ring ring-offset-2': intent === 'damage' }"
+        test-id="hp-damage"
         @click="selectedType = 'damage'"
       >
         <Icon name="tabler:sword" aria-hidden="true" />

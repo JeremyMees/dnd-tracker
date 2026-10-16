@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Conditions from '~/components/initiative/TableRow/Conditions.vue'
+import { useRowShortcut } from '~/composables/useRowShortcut'
 import Badge from '~/components/ui/badge/Badge.vue'
 import Button from '~/components/ui/button/Button.vue'
 import NumberField from '~/components/ui/number-field/NumberField.vue'
@@ -347,6 +348,24 @@ describe('Initiative table row conditions', async () => {
   })
 
   describe('Add condition trigger', () => {
+    it('Should open the popover when the condition shortcut is used', async () => {
+      const component = await mountSuspended(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      useRowShortcut().trigger(props.item.id, 'damage')
+      await nextTick()
+
+      expect(vm.popoverOpen).toBeFalsy()
+
+      useRowShortcut().trigger(props.item.id, 'condition')
+      await nextTick()
+
+      expect(vm.popoverOpen).toBeTruthy()
+
+      useRowShortcut().request.value = undefined
+      component.unmount()
+    })
+
     it('Should open the popover when the trigger button is clicked', async () => {
       const component = await mountSuspended(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM

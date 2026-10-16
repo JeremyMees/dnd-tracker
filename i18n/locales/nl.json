@@ -79,7 +79,6 @@
     "sendMail": "Email versturen",
     "moveUp": "Omhoog",
     "moveDown": "Omlaag",
-    "changeInitiative": "Initiatief wijzigen",
     "applyDamage": "Schade toepassen",
     "generateName": "Naam genereren",
     "kick": "Verwijder",
@@ -150,8 +149,7 @@
     "initiative": "Initiatief | Initiatieven",
     "level": "Niveau | Niveaus",
     "summoner": "Oproeper",
-    "hotkey": "Hotkey | Hotkeys",
-    "modifierKeys": "Modificatie toetsen",
+    "shortcut": "Sneltoets | Sneltoetsen",
     "bestiary": "Bestiary",
     "campaignHomebrew": "Campagne homebrew",
     "newHomebrew": "Nieuwe homebrew",
@@ -1408,6 +1406,17 @@
         "monsters": "Monster toevoegen",
         "encounters": "Encounters"
       }
+    },
+    "shortcuts": {
+      "palette": "Open het opdrachtenpalet",
+      "next": "Volgende beurt",
+      "previous": "Vorige beurt",
+      "expand": "Huidig wezen open- of dichtklappen",
+      "damage": "Huidig wezen schade geven",
+      "heal": "Huidig wezen genezen",
+      "condition": "Conditie toevoegen aan huidig wezen",
+      "sidebar": "Zijbalk tonen of verbergen",
+      "overview": "Alle sneltoetsen tonen"
     }
   },
   "tour": {

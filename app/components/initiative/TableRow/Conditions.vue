@@ -7,6 +7,14 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = ref<boolean>(false)
+
+const { onRequest } = useRowShortcut()
+
+onRequest(
+  () => props.item.id,
+  ['condition'],
+  () => (popoverOpen.value = true),
+)
 const editingDuration = shallowRef<string>()
 
 const { data: conditions, isPending } = useConditionsListing()
