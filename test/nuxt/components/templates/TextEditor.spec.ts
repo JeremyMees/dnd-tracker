@@ -10,7 +10,6 @@ interface TextEditorVM {
   isOpen: boolean
   isFocused: boolean
   invalidHTML: boolean
-  buttonStates: Record<string, boolean>
   characterStats: { characters: number; words: number }
 }
 
