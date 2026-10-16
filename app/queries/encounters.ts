@@ -16,7 +16,7 @@ export function useEncounterListing(
         campaign( 
           id,
           title,
-          createdBy(id, username, avatar), 
+          createdBy(id, username, avatar, subscriptionType), 
           team(
             id,
             user(id, username, avatar),

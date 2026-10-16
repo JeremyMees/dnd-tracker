@@ -420,6 +420,10 @@
       "text": "We are currently working on the website. We will restore it as soon as possible."
     },
     "campaigns": {
+      "suspended": {
+        "badge": "Locked",
+        "reason": "The owner's Pro plan has ended, so this campaign is locked until they renew"
+      },
       "campaigns": "Campaigns",
       "add": "Create campaign",
       "update": "Update campaign",
@@ -431,6 +435,10 @@
       }
     },
     "campaign": {
+      "proEnded": {
+        "text": "Your Pro plan has ended. Your members can't open this campaign until you renew.",
+        "cta": "Renew Pro"
+      },
       "content": {},
       "settings": {
         "add": "Add people",

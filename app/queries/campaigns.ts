@@ -11,7 +11,7 @@ export function useCampaignDetail(id: number) {
         .select(
           `
         *, 
-        createdBy(id, username, avatar, name, email), 
+        createdBy(id, username, avatar, name, email, subscriptionType), 
         team(
           id,
           role,
@@ -41,7 +41,7 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
         table: 'campaigns',
         select: `
         *,
-        createdBy(id, username, avatar),
+        createdBy(id, username, avatar, subscriptionType),
         initiative_sheets(count),
         homebrew_items(count),
         team(

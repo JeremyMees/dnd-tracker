@@ -420,6 +420,10 @@
       "text": "We zijn momenteel bezig met het verbeteren van de website. We zullen deze zo snel mogelijk terugzetten."
     },
     "campaigns": {
+      "suspended": {
+        "badge": "Vergrendeld",
+        "reason": "Het Pro-abonnement van de eigenaar is afgelopen, dus deze campagne is vergrendeld tot die verlengt"
+      },
       "campaigns": "Campagnes",
       "add": "Campagne creëren",
       "update": "Campagne bijwerken",
@@ -431,6 +435,10 @@
       }
     },
     "campaign": {
+      "proEnded": {
+        "text": "Je Pro-abonnement is afgelopen. Je leden kunnen deze campagne niet openen tot je verlengt.",
+        "cta": "Pro verlengen"
+      },
       "content": {},
       "settings": {
         "add": "Mensen toevoegen",

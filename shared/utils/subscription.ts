@@ -9,3 +9,10 @@ export function canHaveCampaignMembers(
 ): boolean {
   return isProSubscription(ownerSubscription)
 }
+
+export function isCampaignSuspendedFor(
+  owner: CampaignOwner,
+  userId: string,
+): boolean {
+  return owner.id !== userId && !canHaveCampaignMembers(owner.subscriptionType)
+}

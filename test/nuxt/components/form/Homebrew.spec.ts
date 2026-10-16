@@ -72,6 +72,7 @@ const ownedCampaign: NonNullable<InitiativeSheet['campaign']> = {
     id: authUser.id,
     username: authUser.username,
     avatar: authUser.avatar,
+    subscriptionType: 'pro',
   },
   team: [],
 }

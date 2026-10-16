@@ -118,6 +118,27 @@ export function linkButton(options: {
   )
 }
 
+export function lockedText(options: {
+  content: string
+  badge: string
+  reason: string
+}): VNode {
+  return h('span', { class: 'flex flex-wrap items-center gap-2' }, [
+    h('span', { class: 'text-muted-foreground' }, options.content),
+    h(Tooltip, { text: options.reason }, () =>
+      h(UiBadge, { variant: 'outline', 'test-id': 'locked' }, () => [
+        h(Icon, {
+          name: 'tabler:lock',
+          class: 'size-3',
+          'aria-hidden': 'true',
+        }),
+        options.badge,
+        h('span', { class: 'sr-only' }, options.reason),
+      ]),
+    ),
+  ])
+}
+
 export function selectButton(options: {
   checked: boolean
   cb: (event: unknown) => void

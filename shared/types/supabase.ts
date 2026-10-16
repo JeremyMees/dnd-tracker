@@ -252,10 +252,12 @@ export interface TeamMemberFull extends Omit<
   user: Profile & { subscriptionType: SubscriptionType }
 }
 
+export type CampaignOwner = Pick<ProfileRow, 'id' | 'subscriptionType'>
+
 export interface CampaignItem extends Omit<CampaignRow, 'team' | 'createdBy'> {
   initiative_sheets: number
   homebrew_items: number
-  createdBy: MinimalProfile
+  createdBy: MinimalProfile & CampaignOwner
   team: TeamMember[]
   join_campaign: Pick<JoinCampaignRow, 'user'>[]
 }
@@ -270,7 +272,7 @@ export interface CampaignMinimal {
 export interface CampaignFull {
   id: number
   title: string
-  createdBy: Profile
+  createdBy: Profile & CampaignOwner
   team: TeamMemberFull[]
   join_campaign: TeamMemberFull[]
 }
@@ -291,14 +293,14 @@ export interface EncounterItem extends Omit<
   'createdBy' | 'campaign'
 > {
   createdBy: MinimalProfile
-  campaign: CampaignMinimal
+  campaign: CampaignMinimal & { createdBy: MinimalProfile & CampaignOwner }
 }
 
 export interface InitiativeSheet extends Omit<InitiativeRow, 'campaign'> {
   campaign?: {
     id: CampaignRow['id']
     title: CampaignRow['title']
-    createdBy: MinimalProfile
+    createdBy: MinimalProfile & CampaignOwner
     team: {
       id: TeamRow['id']
       role: TeamRow['role']

@@ -2,6 +2,7 @@ import { createColumnHelper, type TableState } from '@tanstack/vue-table'
 import {
   iconButton,
   linkButton,
+  lockedText,
   selectButton,
   permission,
 } from './generate-functions'
@@ -29,6 +30,13 @@ export function generateColumns({
   const { t } = useI18n()
   const user = useAuthenticatedUser()
 
+  function isLocked(encounter: EncounterItem): boolean {
+    return (
+      !!encounter.campaign &&
+      isCampaignSuspendedFor(encounter.campaign.createdBy, user.value.id)
+    )
+  }
+
   return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
@@ -45,29 +53,37 @@ export function generateColumns({
           children: selectButton({
             checked: row.getIsSelected(),
             cb: row.getToggleSelectedHandler(),
-            disabled: !row.getCanSelect(),
+            disabled: !row.getCanSelect() || isLocked(row.original),
           }),
         }),
     }),
     columnHelper.accessor('title', {
       header: t('general.name'),
       cell: ({ row }) =>
-        linkButton({
-          to: encounterUrl(row.original),
-          content: row.getValue('title'),
-        }),
+        isLocked(row.original)
+          ? lockedText({
+              content: row.getValue<string>('title'),
+              badge: t('pages.campaigns.suspended.badge'),
+              reason: t('pages.campaigns.suspended.reason'),
+            })
+          : linkButton({
+              to: encounterUrl(row.original),
+              content: row.getValue('title'),
+            }),
     }),
     columnHelper.accessor('campaign', {
       enableGlobalFilter: false,
       enableSorting: false,
       header: t('general.campaign'),
-      cell: ({ row }) =>
-        row.getValue('campaign')
-          ? linkButton({
-              to: campaignUrl(row.original.campaign, 'encounters'),
-              content: row.original.campaign.title,
-            })
-          : '',
+      cell: ({ row }) => {
+        if (!row.getValue('campaign')) return ''
+        if (isLocked(row.original)) return row.original.campaign.title
+
+        return linkButton({
+          to: campaignUrl(row.original.campaign, 'encounters'),
+          content: row.original.campaign.title,
+        })
+      },
     }),
     columnHelper.accessor('createdAt', {
       enableGlobalFilter: false,
@@ -116,6 +132,7 @@ export function generateColumns({
             content: t('actions.share'),
             variant: 'success-ghost',
             cb: () => onShare(row.original),
+            disabled: isLocked(row.original),
           }),
           permission({
             ability: canUpdateEncounter,
@@ -126,12 +143,14 @@ export function generateColumns({
                 content: t('actions.copy'),
                 variant: 'default-ghost',
                 cb: () => onCopy({ data: row.original }),
+                disabled: isLocked(row.original),
               }),
               iconButton({
                 icon: 'tabler:edit',
                 content: t('actions.update'),
                 variant: 'info-ghost',
                 cb: () => onUpdate(row.original),
+                disabled: isLocked(row.original),
               }),
             ],
           }),

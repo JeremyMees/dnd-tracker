@@ -84,7 +84,7 @@ describe('Encounter access middleware', () => {
   it('should allow access when user is the campaign owner', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
-      campaign: { createdBy: { id: '1' } },
+      campaign: { createdBy: { id: '1', subscriptionType: 'pro' } },
       team: [],
     }
     mockQueryClient.getQueryData.mockReturnValue(mockData)
@@ -117,7 +117,7 @@ describe('Encounter access middleware', () => {
     mockUser = { ...authUser, id: '2' }
     const mockData = {
       campaign: {
-        createdBy: { id: '1' },
+        createdBy: { id: '1', subscriptionType: 'pro' },
         team: [{ user: { id: '2' } }],
       },
     }
@@ -129,6 +129,24 @@ describe('Encounter access middleware', () => {
     )
 
     expect(navigateTo).not.toHaveBeenCalled()
+  })
+
+  it('should send a member back to the encounters while the campaign owner is not on pro', async () => {
+    mockUser = { ...authUser, id: '2' }
+    mockQueryClient.getQueryData.mockReturnValue({
+      createdBy: '2',
+      campaign: {
+        createdBy: { id: '1', subscriptionType: 'free' },
+        team: [],
+      },
+    })
+
+    await middleware(
+      { ...mockTo, params: { title: 'test', id: '1' } },
+      mockFrom,
+    )
+
+    expect(navigateTo).toHaveBeenCalledWith('/encounters')
   })
 
   it('should navigate to /no-access when no campaign is associated', async () => {
@@ -151,7 +169,7 @@ describe('Encounter access middleware', () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
       campaign: {
-        createdBy: { id: '1' },
+        createdBy: { id: '1', subscriptionType: 'pro' },
         team: [{ user: { id: '2' } }],
       },
     }
@@ -168,7 +186,7 @@ describe('Encounter access middleware', () => {
   it('should fetch from supabase when not cached and allow access for owner', async () => {
     mockUser = { ...authUser, id: '1' }
     const mockData = {
-      campaign: { createdBy: { id: '1' } },
+      campaign: { createdBy: { id: '1', subscriptionType: 'pro' } },
       team: [],
     }
     mockSupabaseResponse.data = mockData
@@ -190,7 +208,7 @@ describe('Encounter access middleware', () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
       campaign: {
-        createdBy: { id: '1' },
+        createdBy: { id: '1', subscriptionType: 'pro' },
         team: [{ user: { id: '2' } }],
       },
     }

@@ -104,6 +104,63 @@ describe('Campaign detail page', () => {
     )
   })
 
+  describe('Ended pro plan', () => {
+    const member: TeamMemberFull = {
+      id: 5,
+      role: 'Viewer',
+      user: { ...mockCampaignFull.createdBy, id: '2' },
+    }
+
+    function freeCampaign(team: TeamMemberFull[] = [member]): CampaignFull {
+      return {
+        ...mockCampaignFull,
+        createdBy: { ...mockCampaignFull.createdBy, subscriptionType: 'free' },
+        team,
+      }
+    }
+
+    it('Should tell the owner that members are locked out until they renew', async () => {
+      data.value = freeCampaign()
+      grant({ owner: true })
+
+      const { component } = await mountPage()
+
+      expect(component.get('[test-id="pro-ended"]').text()).toContain(
+        'pages.campaign.proEnded.text',
+      )
+      expect(component.get('[test-id="pro-ended"] a').attributes('href')).toBe(
+        '/pricing',
+      )
+    })
+
+    it('Should not show the banner while the owner is on pro', async () => {
+      data.value = { ...mockCampaignFull, team: [member] }
+      grant({ owner: true })
+
+      const { component } = await mountPage()
+
+      expect(component.find('[test-id="pro-ended"]').exists()).toBe(false)
+    })
+
+    it('Should not show the banner without members or invites', async () => {
+      data.value = freeCampaign([])
+      grant({ owner: true })
+
+      const { component } = await mountPage()
+
+      expect(component.find('[test-id="pro-ended"]').exists()).toBe(false)
+    })
+
+    it('Should not show the banner to anyone but the owner', async () => {
+      data.value = freeCampaign()
+      grant({ admin: true })
+
+      const { component } = await mountPage()
+
+      expect(component.find('[test-id="pro-ended"]').exists()).toBe(false)
+    })
+  })
+
   it('Should render the title of the campaign', async () => {
     const { component } = await mountPage()
 

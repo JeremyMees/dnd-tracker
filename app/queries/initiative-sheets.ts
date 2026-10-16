@@ -16,7 +16,7 @@ export function useInitiativeSheetDetail(id: number) {
         campaign(
           id,
           title,
-          createdBy(id, username, avatar), 
+          createdBy(id, username, avatar, subscriptionType), 
           team(
             id,
             role, 

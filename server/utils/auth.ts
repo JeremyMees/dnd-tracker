@@ -84,7 +84,31 @@ export async function requireEncounterAccess(
     }
 
     await requireCampaignAccess(event, encounter.campaign, userId, allowedRoles)
+  } else if (encounter.campaign) {
+    await requireCampaignNotSuspended(event, encounter.campaign, userId)
   }
 
   return encounter
+}
+
+async function requireCampaignNotSuspended(
+  event: H3Event,
+  campaignId: number,
+  userId: string,
+): Promise<void> {
+  const supabase = serverSupabaseServiceRole<DB>(event)
+
+  const { data: campaign } = await supabase
+    .from('campaigns')
+    .select('createdBy')
+    .eq('id', campaignId)
+    .single()
+
+  if (
+    campaign &&
+    campaign.createdBy !== userId &&
+    !(await isProUser(supabase, campaign.createdBy))
+  ) {
+    throw createError({ statusCode: 403, statusMessage: 'campaignSuspended' })
+  }
 }

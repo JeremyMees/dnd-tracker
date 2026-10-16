@@ -20,6 +20,13 @@ const isAdmin = computedAsync(
   async () => (data.value ? await allows(isCampaignAdmin, data.value) : false),
   false,
 )
+const ownerProEnded = computed(
+  () =>
+    !!data.value &&
+    !canHaveCampaignMembers(data.value.createdBy.subscriptionType) &&
+    data.value.team.length + data.value.join_campaign.length > 0,
+)
+
 const isOwner = computedAsync(
   async () => (data.value ? await allows(isCampaignOwner, data.value) : false),
   false,
@@ -120,6 +127,19 @@ const tabs = computed<Tab[]>(() => {
         </template>
       </ClientOnly>
     </div>
+    <Card
+      v-if="isOwner && ownerProEnded"
+      test-id="pro-ended"
+      color="warning"
+      class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+    >
+      <p class="text-sm">{{ $t('pages.campaign.proEnded.text') }}</p>
+      <UiButton as-child>
+        <NuxtLinkLocale to="pricing" class="whitespace-nowrap">
+          {{ $t('pages.campaign.proEnded.cta') }}
+        </NuxtLinkLocale>
+      </UiButton>
+    </Card>
     <div class="min-h-[40vh]">
       <NuxtPage
         v-if="!isError"

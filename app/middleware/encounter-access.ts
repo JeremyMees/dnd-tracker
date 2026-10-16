@@ -22,6 +22,13 @@ export default defineNuxtRouteMiddleware(async to => {
     )
       return
 
+    if (
+      data.campaign &&
+      isCampaignSuspendedFor(data.campaign.createdBy, user.value?.id ?? '')
+    ) {
+      return navigateTo(localePath('encounters'))
+    }
+
     // If no campaign is associated or user is not a team member, deny access
     if (
       !data.campaign ||
@@ -52,7 +59,7 @@ async function getEncounter(id: number): Promise<{ data: InitiativeSheet }> {
       campaign(
         id,
         title,
-        createdBy(id, username, avatar), 
+        createdBy(id, username, avatar, subscriptionType), 
         team(
           id,
           role, 

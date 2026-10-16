@@ -2,6 +2,7 @@ import { createColumnHelper, type TableState } from '@tanstack/vue-table'
 import {
   iconButton,
   linkButton,
+  lockedText,
   selectButton,
   permission,
 } from './generate-functions'
@@ -40,10 +41,16 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
     columnHelper.accessor('title', {
       header: t('general.name'),
       cell: ({ row }) =>
-        linkButton({
-          to: campaignUrl(row.original, 'encounters'),
-          content: row.getValue('title'),
-        }),
+        isCampaignSuspendedFor(row.original.createdBy, user.value.id)
+          ? lockedText({
+              content: row.getValue<string>('title'),
+              badge: t('pages.campaigns.suspended.badge'),
+              reason: t('pages.campaigns.suspended.reason'),
+            })
+          : linkButton({
+              to: campaignUrl(row.original, 'encounters'),
+              content: row.getValue('title'),
+            }),
     }),
     columnHelper.accessor('initiative_sheets', {
       enableGlobalFilter: false,
