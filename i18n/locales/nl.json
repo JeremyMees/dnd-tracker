@@ -28,6 +28,7 @@
     "reset": "Reset",
     "remove": "Verwijderen",
     "bulkRemove": "Verwijder {number} rij|Verwijder {number} rijen",
+    "bulkExport": "Exporteer {number} rij|Exporteer {number} rijen",
     "temp": "Tijdelijk",
     "show": "Toon",
     "hide": "Verberg",
@@ -60,6 +61,7 @@
     "transfer": "Overdragen",
     "flip": "Flip {axis}",
     "export": "Export",
+    "import": "Importeer",
     "zoomIn": "Inzoomen",
     "zoomOut": "Uitzoomen",
     "readMore": "Lees meer",
@@ -965,6 +967,10 @@
       "copy": {
         "error": "De {type} kon niet gekopieerd worden",
         "success": "Succesvol gekopieerd de {type}"
+      },
+      "import": {
+        "success": "{count} {type} geïmporteerd",
+        "error": "De {type} konden niet geïmporteerd worden"
       }
     },
     "pagination": {
@@ -1372,6 +1378,16 @@
     },
     "inlineConfirmation": {
       "text": "Weet je zeker dat je dit wilt updaten? Je oude waarde wordt niet opgeslagen."
+    },
+    "transfer": {
+      "error": "Het bestand kon niet geïmporteerd worden",
+      "reasons": {
+        "invalidFile": "Dit is geen geldig exportbestand. Kies een bestand dat je uit deze app hebt geëxporteerd.",
+        "wrongKind": "Dit bestand bevat een ander soort items. Importeer het op de juiste pagina.",
+        "tooLarge": "Het bestand is te groot. Bestanden mogen maximaal 2 MB zijn.",
+        "empty": "Het bestand bevat niets om te importeren.",
+        "tooMany": "Je hebt geen plaats voor zoveel items. Je kunt geen items meer importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} item importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} items importeren."
+      }
     }
   },
   "tour": {

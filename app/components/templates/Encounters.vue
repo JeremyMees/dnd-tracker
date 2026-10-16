@@ -8,6 +8,7 @@ import {
   useEncounterListing,
   useEncounterRemove,
   useEncounterCopy,
+  useEncounterImport,
 } from '~/queries/encounters'
 
 const props = defineProps<{
@@ -30,6 +31,9 @@ const enableDateFetching = computed(() => props.fetchReady)
 const { data: count } = useEncounterCount(enableDateFetching)
 const { mutateAsync: removeEncounter } = useEncounterRemove()
 const { mutateAsync: copyEncounter } = useEncounterCopy()
+const { mutateAsync: importEncounters, isPending: importing } =
+  useEncounterImport()
+const transfer = useTransferFile()
 
 const { data, status } = useEncounterListing(
   computed(() => {
@@ -108,6 +112,28 @@ async function removeItems(ids: number[]): Promise<void> {
   )
 }
 
+function exportItems(items: EncounterItem[]): void {
+  transfer.download('encounters', items.map(toEncounterTransfer))
+}
+
+async function importItems(file: File): Promise<void> {
+  const items = await transfer.read(
+    file,
+    'encounters',
+    max.value - (count.value ?? 0),
+  )
+
+  if (!items) return
+
+  await importEncounters({
+    data: items.map(item => ({
+      ...item,
+      createdBy: user.value.id,
+      campaign: props.campaignId ?? null,
+    })),
+  })
+}
+
 function invalidateQueries(): void {
   queryClient.invalidateQueries({ queryKey: queryKeys.encounterListing() })
   queryClient.invalidateQueries({ queryKey: queryKeys.encounterCount() })
@@ -140,15 +166,22 @@ function invalidateQueries(): void {
           item: $t('general.encounter', 2).toLowerCase(),
         })
       "
+      exportable
       @remove="removeItems"
+      @export="exportItems"
       @invalidate="invalidateQueries"
     >
       <template #top>
-        <div class="flex justify-end items-center gap-4">
+        <div class="flex flex-wrap justify-end items-center gap-2 sm:gap-4">
           <ContentCount
             :loading="data?.encounters === null"
             :count="count"
             :max="max"
+          />
+          <ImportButton
+            :disabled="status === 'pending' || importing"
+            :loading="data?.encounters === null"
+            @import="importItems"
           />
           <CreateButton
             :allow-create="isDefined(count) ? count < max : false"

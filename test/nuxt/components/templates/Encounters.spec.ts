@@ -18,6 +18,9 @@ const {
   open,
   removeEncounter,
   copyEncounter,
+  importEncounters,
+  download,
+  read,
 } = vi.hoisted(() => ({
   allows: vi.fn(),
   ask: vi.fn(),
@@ -28,6 +31,9 @@ const {
   open: vi.fn(),
   removeEncounter: vi.fn(),
   copyEncounter: vi.fn(),
+  importEncounters: vi.fn(),
+  download: vi.fn(),
+  read: vi.fn(),
 }))
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
@@ -63,6 +69,10 @@ vi.mock('~/queries/encounters', () => ({
   },
   useEncounterRemove: () => ({ mutateAsync: removeEncounter }),
   useEncounterCopy: () => ({ mutateAsync: copyEncounter }),
+  useEncounterImport: () => ({
+    mutateAsync: importEncounters,
+    isPending: ref(false),
+  }),
 }))
 
 interface ColumnOptions {
@@ -91,6 +101,7 @@ mockNuxtImport('useModal', () => () => ({ open }))
 mockNuxtImport('useConfirm', () => () => ({ ask }))
 mockNuxtImport('useClipboard', () => () => ({ copy: clipboardCopy }))
 mockNuxtImport('$fetch', () => fetchMock)
+mockNuxtImport('useTransferFile', () => () => ({ download, read }))
 
 const show = vi.fn()
 
@@ -148,6 +159,9 @@ describe('Encounters', () => {
     listingStubs.state.value = tableState()
 
     removeEncounter.mockResolvedValue(undefined)
+    importEncounters.mockReset()
+    download.mockReset()
+    read.mockReset()
     fetchMock.mockResolvedValue('share-token')
   })
 
@@ -499,5 +513,93 @@ describe('Encounters', () => {
     const { component } = await mountEncounters()
 
     expect(component.find('[test-id="refresh"]').exists()).toBe(false)
+  })
+
+  describe('Import and export', () => {
+    const importedItem = { title: 'Ambush', rows: [] }
+    const file = new File(['{}'], 'export.json')
+
+    function importButton(component: VueWrapper) {
+      return component.findComponent(listingStubs.ImportButton)
+    }
+
+    it('Should make the table exportable', async () => {
+      const { table } = await mountEncounters()
+
+      expect(table.props('exportable')).toBe(true)
+    })
+
+    it('Should download the selected encounters', async () => {
+      const { table } = await mountEncounters()
+
+      table.vm.$emit('export', [mockEncounterItem])
+      await flushPromises()
+
+      expect(download).toHaveBeenCalledWith('encounters', [
+        toEncounterTransfer(mockEncounterItem),
+      ])
+    })
+
+    it('Should show the import placeholder while the listing loads', async () => {
+      listing.value = { encounters: null, amount: 0, pages: -1 }
+
+      const { component } = await mountEncounters()
+
+      expect(importButton(component).props('loading')).toBe(true)
+    })
+
+    it('Should disable importing while the listing is pending', async () => {
+      status.value = 'pending'
+
+      const { component } = await mountEncounters()
+
+      expect(importButton(component).props('disabled')).toBe(true)
+    })
+
+    it('Should read the file with the room left in the plan', async () => {
+      const { component } = await mountEncounters()
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(read).toHaveBeenCalledWith(file, 'encounters', 9)
+    })
+
+    it('Should import the encounters as the user outside of a campaign', async () => {
+      read.mockResolvedValue([importedItem])
+
+      const { component } = await mountEncounters()
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(importEncounters).toHaveBeenCalledWith({
+        data: [{ ...importedItem, createdBy: authUser.id, campaign: null }],
+      })
+    })
+
+    it('Should import the encounters into the campaign', async () => {
+      read.mockResolvedValue([importedItem])
+
+      const { component } = await mountEncounters({ campaignId: 4 })
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(importEncounters).toHaveBeenCalledWith({
+        data: [{ ...importedItem, createdBy: authUser.id, campaign: 4 }],
+      })
+    })
+
+    it('Should not import when the file is rejected', async () => {
+      read.mockResolvedValue(undefined)
+
+      const { component } = await mountEncounters()
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(importEncounters).not.toHaveBeenCalled()
+    })
   })
 })

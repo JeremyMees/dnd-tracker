@@ -1,4 +1,5 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
+import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   clearQueryCache,
@@ -10,6 +11,7 @@ import {
 import {
   useHomebrewCount,
   useHomebrewCreate,
+  useHomebrewImport,
   useHomebrewListing,
   useHomebrewRemove,
   useHomebrewUpdate,
@@ -257,6 +259,63 @@ describe('homebrews queries', () => {
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
       expect(toast.error).toHaveBeenCalledWith(
         'components.toast.delete.error',
+        { description: 'general.error.reasons.rejected' },
+      )
+    })
+  })
+
+  describe('useHomebrewImport', () => {
+    it('inserts every homebrew item in one call and invalidates', async () => {
+      const from = mockSupabaseFrom({
+        homebrew_items: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useHomebrewImport(),
+        queryClient: useQueryClient(),
+      }))
+
+      const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
+      const data = [
+        { name: 'Goblin', campaign: 1 },
+        { name: 'Orc', campaign: 1 },
+      ] as HomebrewItemInsert[]
+
+      await vm.mutateAsync({ data })
+
+      expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith(data)
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ['useHomebrewListing'],
+      })
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ['useHomebrewCount'],
+      })
+      expect(toast.success).toHaveBeenCalledWith(
+        'components.toast.import.success',
+      )
+    })
+
+    it('reports an error and toasts on failure', async () => {
+      mockSupabaseFrom({
+        homebrew_items: mockChain({
+          data: null,
+          error: { message: 'boom' },
+        }),
+      })
+
+      const { vm } = await mountHook(() => useHomebrewImport())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          data: [{ name: 'Goblin', campaign: 1 }] as HomebrewItemInsert[],
+          ...spies,
+        }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.import.error',
         { description: 'general.error.reasons.rejected' },
       )
     })

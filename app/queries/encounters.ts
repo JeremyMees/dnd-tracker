@@ -1,4 +1,5 @@
-import { keepPreviousData, useQuery } from '@tanstack/vue-query'
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
 
 export function useEncounterListing(
   data: ComputedRef<SbFilter>,
@@ -144,5 +145,40 @@ export function useEncounterCopy() {
       queryKeys.encounterListing(),
       queryKeys.encounterCount(),
     ],
+  })
+}
+
+export function useEncounterImport() {
+  const supabase = useSupabaseClient<DB>()
+  const queryClient = useQueryClient()
+  const { t } = useI18n()
+
+  return useCallbackMutation({
+    mutationFn: async ({
+      data,
+    }: { data: InitiativeInsert[] } & QueryDefaults) => {
+      const { error } = await supabase.from('initiative_sheets').insert(data)
+
+      if (error) throw createError(error)
+    },
+    onSuccess: (_data, { data }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.encounterListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.encounterCount() })
+
+      toast.success(
+        t('components.toast.import.success', {
+          count: data.length,
+          type: t('general.encounter', data.length).toLowerCase(),
+        }),
+      )
+    },
+    onError: error => {
+      toast.error(
+        t('components.toast.import.error', {
+          type: t('general.encounter', 2).toLowerCase(),
+        }),
+        { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+      )
+    },
   })
 }

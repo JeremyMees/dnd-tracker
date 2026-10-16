@@ -11,6 +11,7 @@ import { listingFeatures } from '~/tables/features'
 
 const emit = defineEmits<{
   remove: [number[]]
+  export: [TData[]]
   invalidate: []
 }>()
 
@@ -31,6 +32,7 @@ const props = withDefaults(
     permission?: boolean | PermissionFunc
     expandedMarkup?: (row: Row<ListingFeatures, TData>) => VNode
     pageSize?: number
+    exportable?: boolean
   }>(),
   {
     pageSize: 10,
@@ -50,6 +52,8 @@ const pagination = ref<PaginationState>({
 const rowSelectionPermissions = ref<Record<string, boolean>>({})
 const permissionFetchVersion = ref(0)
 const nuxtApp = useNuxtApp()
+const isLarge = useMediaQuery('(min-width: 1024px)')
+const [DefineBulkActions, ReuseBulkActions] = createReusableTemplate()
 
 // Convert 0-based to 1-based for Radix
 const internalPage = computed({
@@ -139,42 +143,80 @@ async function fetchPermissions() {
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-col sm:flex-row gap-2 justify-between items-center">
-      <UiInputGroup class="max-w-xs">
+    <DefineBulkActions>
+      <UiButton
+        v-if="exportable"
+        test-id="export"
+        variant="secondary"
+        size="sm"
+        @click="
+          $emit(
+            'export',
+            table.getSelectedRowModel().rows.map(row => row.original),
+          )
+        "
+      >
+        <Icon name="tabler:file-export" aria-hidden="true" />
+        {{
+          $t(
+            'actions.bulkExport',
+            { number: selectedRowLength },
+            selectedRowLength,
+          )
+        }}
+      </UiButton>
+      <UiButton
+        test-id="remove"
+        variant="destructive"
+        size="sm"
+        :aria-label="
+          $t(
+            'actions.bulkRemove',
+            { number: selectedRowLength },
+            selectedRowLength,
+          )
+        "
+        @click="
+          $emit(
+            'remove',
+            table.getSelectedRowModel().rows.map(row => row.original.id),
+          )
+        "
+      >
+        {{
+          $t(
+            'actions.bulkRemove',
+            { number: selectedRowLength },
+            selectedRowLength,
+          )
+        }}
+      </UiButton>
+    </DefineBulkActions>
+
+    <div
+      class="flex flex-col lg:flex-row gap-2 lg:justify-between lg:items-start"
+    >
+      <UiInputGroup class="w-full lg:max-w-xs">
         <UiInputGroupInput v-model="search" type="search" />
         <UiInputGroupAddon align="inline-end">
           <Icon name="tabler:search" class="size-3" :aria-hidden="true" />
         </UiInputGroupAddon>
       </UiInputGroup>
-      <div v-auto-animate class="flex gap-x-4 justify-end items-center">
-        <slot name="top" />
-        <UiButton
-          v-if="selectedRowLength"
-          test-id="remove"
-          variant="destructive"
-          size="sm"
-          :aria-label="
-            $t(
-              'actions.bulkRemove',
-              { number: selectedRowLength },
-              selectedRowLength,
-            )
-          "
-          @click="
-            $emit(
-              'remove',
-              table.getSelectedRowModel().rows.map(row => row.original.id),
-            )
-          "
+      <div class="flex flex-col lg:items-end">
+        <div
+          v-auto-animate
+          class="flex flex-wrap gap-2 sm:gap-x-4 justify-end items-center lg:min-h-10"
         >
-          {{
-            $t(
-              'actions.bulkRemove',
-              { number: selectedRowLength },
-              selectedRowLength,
-            )
-          }}
-        </UiButton>
+          <slot name="top" />
+          <ReuseBulkActions v-if="!isLarge && selectedRowLength" />
+        </div>
+        <AnimationExpandHeight>
+          <div v-if="isLarge && selectedRowLength" test-id="bulk-actions">
+            <div class="flex gap-x-4 justify-end items-center pt-2">
+              <ReuseBulkActions />
+            </div>
+          </div>
+        </AnimationExpandHeight>
       </div>
     </div>
 

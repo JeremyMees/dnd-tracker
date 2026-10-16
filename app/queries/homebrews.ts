@@ -1,4 +1,5 @@
-import { keepPreviousData, useQuery } from '@tanstack/vue-query'
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { toast } from 'vue-sonner'
 
 export function useHomebrewListing(
   data: ComputedRef<SbFilter>,
@@ -106,5 +107,40 @@ export function useHomebrewRemove() {
       if (error) throw createError(error)
     },
     invalidate: () => [queryKeys.homebrewListing(), queryKeys.homebrewCount()],
+  })
+}
+
+export function useHomebrewImport() {
+  const supabase = useSupabaseClient<DB>()
+  const queryClient = useQueryClient()
+  const { t } = useI18n()
+
+  return useCallbackMutation({
+    mutationFn: async ({
+      data,
+    }: { data: HomebrewItemInsert[] } & QueryDefaults) => {
+      const { error } = await supabase.from('homebrew_items').insert(data)
+
+      if (error) throw createError(error)
+    },
+    onSuccess: (_data, { data }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.homebrewListing() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.homebrewCount() })
+
+      toast.success(
+        t('components.toast.import.success', {
+          count: data.length,
+          type: t('general.homebrew', data.length).toLowerCase(),
+        }),
+      )
+    },
+    onError: error => {
+      toast.error(
+        t('components.toast.import.error', {
+          type: t('general.homebrew', 2).toLowerCase(),
+        }),
+        { description: t(`general.error.reasons.${getFailureReason(error)}`) },
+      )
+    },
   })
 }

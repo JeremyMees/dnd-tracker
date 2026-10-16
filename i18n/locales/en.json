@@ -28,6 +28,7 @@
     "reset": "Reset",
     "remove": "Remove",
     "bulkRemove": "Remove {number} row|Remove {number} rows",
+    "bulkExport": "Export {number} row|Export {number} rows",
     "temp": "Temporary",
     "show": "Show",
     "hide": "Hide",
@@ -60,6 +61,7 @@
     "transfer": "Transfer",
     "flip": "Flip {axis}",
     "export": "Export",
+    "import": "Import",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "readMore": "Read more",
@@ -965,6 +967,10 @@
       "copy": {
         "error": "The {type} couldn't be copied",
         "success": "Successfully copied the {type}"
+      },
+      "import": {
+        "success": "Imported {count} {type}",
+        "error": "The {type} couldn't be imported"
       }
     },
     "pagination": {
@@ -1372,6 +1378,16 @@
     },
     "inlineConfirmation": {
       "text": "Are you sure you want to update this? Your old value won't be saved."
+    },
+    "transfer": {
+      "error": "The file couldn't be imported",
+      "reasons": {
+        "invalidFile": "This isn't a valid export file. Pick a file you exported from this app.",
+        "wrongKind": "This file contains a different kind of item. Import it on the matching page.",
+        "tooLarge": "The file is too large. Files can be at most 2 MB.",
+        "empty": "The file has nothing to import.",
+        "tooMany": "You don't have room for this many items. You can import no more items.|You don't have room for this many items. You can import {count} more item.|You don't have room for this many items. You can import {count} more items."
+      }
     }
   },
   "tour": {

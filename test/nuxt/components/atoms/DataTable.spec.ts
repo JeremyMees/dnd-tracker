@@ -1,7 +1,8 @@
 import { flushPromises } from '@vue/test-utils'
 import type { ColumnDef, Row, TableOptions } from '@tanstack/vue-table'
 import { createColumnHelper } from '@tanstack/vue-table'
-import { describe, expect, it, vi } from 'vitest'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import DataTable from '~/components/atoms/DataTable.vue'
 import { expandButton, selectButton } from '~/tables/generate-functions'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
@@ -19,6 +20,10 @@ const mockData: TestData[] = [
 ]
 
 const TypedDataTable = DataTable<TestData>
+
+const isLarge = ref(true)
+
+mockNuxtImport('useMediaQuery', () => () => isLarge)
 
 const columnHelper = createColumnHelper<ListingFeatures, TestData>()
 
@@ -82,6 +87,10 @@ const props: Props = {
 }
 
 describe('DataTable', () => {
+  beforeEach(() => {
+    isLarge.value = true
+  })
+
   it('Should match snapshot', async () => {
     const component = await mountWithTooltips(TypedDataTable, { props })
     expect(component.html()).toMatchSnapshot()
@@ -145,6 +154,62 @@ describe('DataTable', () => {
     const emitted = component.emitted()
     expect(emitted.remove).toBeTruthy()
     expect(emitted.remove![0]).toEqual([[1]])
+  })
+
+  it('Should emit the selected rows when bulk export is clicked', async () => {
+    const component = await mountWithTooltips(TypedDataTable, {
+      props: { ...props, exportable: true },
+    })
+
+    expect(component.find('[test-id="export"]').exists()).toBeFalsy()
+
+    await component.find('button[role="checkbox"]').trigger('click')
+    await nextTick()
+
+    await component.find('[test-id="export"]').trigger('click')
+
+    expect(component.emitted('export')![0]).toEqual([[mockData[0]]])
+  })
+
+  it('Should not offer bulk export when the table is not exportable', async () => {
+    const component = await mountWithTooltips(TypedDataTable, { props })
+
+    await component.find('button[role="checkbox"]').trigger('click')
+    await nextTick()
+
+    expect(component.find('[test-id="remove"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="export"]').exists()).toBeFalsy()
+  })
+
+  it('Should put the bulk actions in their own row on large screens', async () => {
+    const component = await mountWithTooltips(TypedDataTable, {
+      props: { ...props, exportable: true },
+    })
+
+    expect(component.find('[test-id="bulk-actions"]').exists()).toBeFalsy()
+
+    await component.find('button[role="checkbox"]').trigger('click')
+    await nextTick()
+
+    const row = component.find('[test-id="bulk-actions"]')
+
+    expect(row.find('[test-id="export"]').exists()).toBeTruthy()
+    expect(row.find('[test-id="remove"]').exists()).toBeTruthy()
+  })
+
+  it('Should keep the bulk actions next to the other buttons on small screens', async () => {
+    isLarge.value = false
+
+    const component = await mountWithTooltips(TypedDataTable, {
+      props: { ...props, exportable: true },
+    })
+
+    await component.find('button[role="checkbox"]').trigger('click')
+    await nextTick()
+
+    expect(component.find('[test-id="bulk-actions"]').exists()).toBeFalsy()
+    expect(component.find('[test-id="export"]').exists()).toBeTruthy()
+    expect(component.find('[test-id="remove"]').exists()).toBeTruthy()
   })
 
   it('Should handle row expansion correctly', async () => {
