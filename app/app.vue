@@ -16,6 +16,13 @@ const pageName = computed<string>(() =>
   <AnimationMotionProvider>
     <TooltipProvider>
       <div>
+        <a
+          href="#main-content"
+          test-id="skip-to-content"
+          class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:ring-2 focus:ring-ring"
+        >
+          {{ $t('actions.skipToContent') }}
+        </a>
         <ConsentRoot :language="locale" />
         <NuxtRouteAnnouncer />
         <NuxtLoadingIndicator

@@ -52,6 +52,20 @@ describe('RepeaterInput', () => {
     expect(component.find('[test-id="label"]').exists()).toBeFalsy()
   })
 
+  it('Should label the move and remove buttons', async () => {
+    const { component } = await mountRepeaterInput({}, traits)
+
+    expect(
+      component.get('[test-id="move-up-0"]').attributes('aria-label'),
+    ).toBe('actions.moveUp')
+    expect(
+      component.get('[test-id="move-down-0"]').attributes('aria-label'),
+    ).toBe('actions.moveDown')
+    expect(component.get('[test-id="remove-0"]').attributes('aria-label')).toBe(
+      'actions.remove',
+    )
+  })
+
   it('Should render the item slot with an indexed field name', async () => {
     const { component } = await mountRepeaterInput({}, traits)
 

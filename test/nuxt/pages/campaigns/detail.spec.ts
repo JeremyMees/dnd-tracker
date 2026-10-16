@@ -102,6 +102,9 @@ describe('Campaign detail page', () => {
     expect(component.get('[test-id="back"]').attributes('href')).toBe(
       '/campaigns',
     )
+    expect(component.get('[test-id="back"]').attributes('aria-label')).toBe(
+      'actions.back',
+    )
   })
 
   describe('Ended pro plan', () => {

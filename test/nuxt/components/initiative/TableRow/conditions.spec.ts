@@ -74,6 +74,14 @@ describe('Initiative table row conditions', async () => {
     expect(component.find('[test-id="trigger"]').exists()).toBeTruthy()
   })
 
+  it('Should label the add condition button', async () => {
+    const component = await mountSuspended(Conditions, { props, provide })
+
+    expect(component.get('[test-id="trigger"]').attributes('aria-label')).toBe(
+      'pages.encounter.update.conditions',
+    )
+  })
+
   it('Should show selected conditions', async () => {
     const component = await mountSuspended(Conditions, {
       props: {

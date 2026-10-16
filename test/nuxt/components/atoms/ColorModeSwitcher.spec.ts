@@ -27,6 +27,16 @@ describe('ColorModeSwitcher', async () => {
     component.unmount()
   })
 
+  it('Should label the color mode select', async () => {
+    const component = await mountSuspended(ColorModeSwitcher)
+
+    expect(
+      component.get('[test-id="color-mode"]').attributes('aria-label'),
+    ).toBe('components.colorModeSwitcher.label')
+
+    component.unmount()
+  })
+
   it('Should render the select bound to the current color mode preference', async () => {
     colorMode.preference = 'dark'
 

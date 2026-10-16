@@ -24,13 +24,17 @@
         >
           <Icon name="tabler:x" class="size-4 min-w-4" aria-hidden="true" />
         </NuxtLinkLocale>
-        <section class="px-4 mx-h-full max-h-[90dvh] flex flex-col gap-y-6">
+        <main
+          id="main-content"
+          tabindex="-1"
+          class="outline-none px-4 mx-h-full max-h-[90dvh] flex flex-col gap-y-6"
+        >
           <slot name="header" />
           <div class="overflow-y-auto px-1">
             <slot />
           </div>
           <slot name="footer" />
-        </section>
+        </main>
       </div>
     </div>
   </UiAuroraBackground>

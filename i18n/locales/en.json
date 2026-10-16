@@ -85,7 +85,8 @@
     "resetFilter": "Reset filter | Reset filters",
     "encounterStats": "Encounter statistics",
     "openCombatLog": "Open combat log",
-    "closeCombatLog": "Close combat log"
+    "closeCombatLog": "Close combat log",
+    "skipToContent": "Skip to content"
   },
   "general": {
     "pro": "Pro",
@@ -798,6 +799,7 @@
       "noItems": "No items added yet. Click \"Add\" to get started."
     },
     "colorModeSwitcher": {
+      "label": "Theme",
       "light": "Light",
       "dark": "Dark",
       "system": "System"

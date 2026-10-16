@@ -85,7 +85,8 @@
     "resetFilter": "Reset filter | Reset filters",
     "encounterStats": "Encounter statistieken",
     "openCombatLog": "Gevechtslog openen",
-    "closeCombatLog": "Gevechtslog sluiten"
+    "closeCombatLog": "Gevechtslog sluiten",
+    "skipToContent": "Ga naar inhoud"
   },
   "general": {
     "pro": "Pro",
@@ -798,6 +799,7 @@
       "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."
     },
     "colorModeSwitcher": {
+      "label": "Thema",
       "light": "Licht",
       "dark": "Donker",
       "system": "Systeem"

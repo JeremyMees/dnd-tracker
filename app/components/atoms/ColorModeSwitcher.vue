@@ -11,12 +11,15 @@ function update(preference: string): void {
 
 <template>
   <div ref="anchor" class="flex items-center justify-between gap-2">
-    <Icon name="tabler:palette" class="size-3 min-w-3" />
+    <Icon name="tabler:palette" class="size-3 min-w-3" aria-hidden="true" />
     <UiSelect
       :model-value="colorMode.preference"
       @update:model-value="update($event as string)"
     >
-      <UiSelectTrigger>
+      <UiSelectTrigger
+        test-id="color-mode"
+        :aria-label="$t('components.colorModeSwitcher.label')"
+      >
         <UiSelectValue />
       </UiSelectTrigger>
       <UiSelectContent>

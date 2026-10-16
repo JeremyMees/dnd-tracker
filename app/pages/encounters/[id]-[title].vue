@@ -88,7 +88,11 @@ provide(INITIATIVE_SHEET, {
             size="icon-sm"
             class="shrink-0"
           >
-            <NuxtLinkLocale test-id="back" to="encounters">
+            <NuxtLinkLocale
+              test-id="back"
+              :aria-label="$t('actions.back')"
+              to="encounters"
+            >
               <Icon name="tabler:arrow-left" :aria-hidden="true" />
             </NuxtLinkLocale>
           </UiButton>

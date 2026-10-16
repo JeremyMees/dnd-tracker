@@ -1,5 +1,9 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen">
+  <main
+    id="main-content"
+    tabindex="-1"
+    class="flex flex-col items-center justify-center min-h-screen outline-none"
+  >
     <div
       class="flex flex-col gap-y-6 items-center max-w-prose px-8 text-center"
     >
@@ -10,5 +14,5 @@
         {{ $t('pages.maintenance.text') }}
       </p>
     </div>
-  </div>
+  </main>
 </template>

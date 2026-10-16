@@ -179,7 +179,11 @@ async function logoutUser(): Promise<void> {
       </UiSidebarFooter>
       <UiSidebarRail />
     </UiSidebar>
-    <UiSidebarInset class="max-w-full max-h-dvh overflow-hidden">
+    <UiSidebarInset
+      id="main-content"
+      tabindex="-1"
+      class="outline-none max-w-full max-h-dvh overflow-hidden"
+    >
       <header
         class="flex h-10 shrink-0 items-center gap-2 overflow-hidden transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
       >

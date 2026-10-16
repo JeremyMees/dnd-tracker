@@ -57,6 +57,7 @@ function toggleDurationEditor(id: string): void {
       <UiPopoverTrigger as-child>
         <button
           test-id="trigger"
+          :aria-label="$t('pages.encounter.update.conditions')"
           :disabled="isPending"
           :class="{ 'cursor-progress': isPending }"
           class="h-[27px] flex flex-col justify-center"

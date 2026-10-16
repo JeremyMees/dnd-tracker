@@ -54,6 +54,15 @@ describe('app', async () => {
     expect(component.html()).toMatchSnapshot()
   })
 
+  it('Should render a skip link to the main content', async () => {
+    const component = await mountSuspended(App, { global: { stubs } })
+
+    const skip = component.get('[test-id="skip-to-content"]')
+
+    expect(skip.attributes('href')).toBe('#main-content')
+    expect(skip.text()).toBe('actions.skipToContent')
+  })
+
   it('Should run the health check', async () => {
     await mountSuspended(App, { global: { stubs } })
 

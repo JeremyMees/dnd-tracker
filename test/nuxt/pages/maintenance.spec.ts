@@ -17,4 +17,10 @@ describe('Maintenance page', () => {
       'pages.maintenance.text',
     )
   })
+
+  it('Should render the main content target for the skip link', async () => {
+    const component = await mountPage()
+
+    expect(component.find('main#main-content').exists()).toBe(true)
+  })
 })
