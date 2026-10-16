@@ -202,6 +202,10 @@ describe('getFailureReason', () => {
     expect(getFailureReason(raisedError('homebrewLimit'))).toBe('homebrewLimit')
   })
 
+  it('reports a full campaign note list raised by the database', () => {
+    expect(getFailureReason(raisedError('noteLimit'))).toBe('noteLimit')
+  })
+
   it('keeps other raised exceptions as rejected', () => {
     expect(getFailureReason(raisedError('somethingElse'))).toBe('rejected')
   })

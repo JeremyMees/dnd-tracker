@@ -63,7 +63,11 @@ export function getFailureReason(error: unknown): FailureReason {
   if (code === 'P0001') {
     const message = getErrorMessage(error)
 
-    if (message === 'limitReached' || message === 'homebrewLimit') {
+    if (
+      message === 'limitReached' ||
+      message === 'homebrewLimit' ||
+      message === 'noteLimit'
+    ) {
       return message
     }
   }

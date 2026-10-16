@@ -260,6 +260,7 @@
         "rateLimited": "Too many requests in a short time. Wait a moment and try again.",
         "limitReached": "You've reached the limit of your plan. Remove one first, or upgrade to Pro for more.",
         "homebrewLimit": "This campaign already has the maximum number of homebrew items. Remove one first.",
+        "noteLimit": "This campaign already has the maximum number of notes. Remove one first.",
         "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
       },
       "loadFailed": {

@@ -8,6 +8,7 @@ import {
   initialState,
 } from '~/tables/note-listing'
 import { useNoteCount, useNoteListing, useNoteRemove } from '~/queries/notes'
+import { maxCampaignNotes } from '~~/constants/validation'
 
 useSeo('Campaign notes')
 
@@ -27,7 +28,6 @@ const queryClient = useQueryClient()
 
 const table = ref<DataTableExposed>()
 const pageSize = 20
-const max = 100
 
 const hasRights = computed(() => props.isOwner || props.isAdmin)
 const enableDateFetching = computed(() => props.fetchReady)
@@ -158,11 +158,11 @@ async function sendNoteAsMail(
           <ContentCount
             :loading="data?.notes === null"
             :count="count"
-            :max="max"
+            :max="maxCampaignNotes"
           />
           <CreateButton
             v-if="hasRights"
-            :allow-create="isDefined(count) ? count < max : false"
+            :allow-create="isDefined(count) ? count < maxCampaignNotes : false"
             :disabled="status === 'pending'"
             :loading="data?.notes === null"
             @create="openModal()"
