@@ -39,18 +39,20 @@ function mockTables({
   membership = { data: null, error: null },
   invite = { data: { id: 7 }, error: null },
   inviter = { data: { username: 'DM' }, error: null },
+  owner = { data: { subscriptionType: 'pro' }, error: null },
 }: {
   campaign?: Record<string, unknown>
   invitee?: Record<string, unknown>
   membership?: Record<string, unknown>
   invite?: Record<string, unknown>
   inviter?: Record<string, unknown>
+  owner?: Record<string, unknown>
 } = {}): SupabaseChain {
   const joinCampaign = mockChain(invite)
 
   mockFrom({
     campaigns: mockChain(campaign),
-    profiles: [mockChain(invitee), mockChain(inviter)],
+    profiles: [mockChain(owner), mockChain(invitee), mockChain(inviter)],
     team: mockChain(membership),
     join_campaign: joinCampaign,
   })
@@ -94,6 +96,39 @@ describe('POST /api/emails/campaign-invite', () => {
         }),
       }),
     )
+  })
+
+  describe('Pro owners', () => {
+    it.each(['Viewer', 'Admin'])(
+      'refuses a %s invite when the owner is not on pro',
+      async role => {
+        const joinCampaign = mockTables({
+          owner: { data: { subscriptionType: 'free' }, error: null },
+        })
+
+        await expect(
+          handler(mockEvent({ method: 'POST', body: body({ role }) })),
+        ).rejects.toMatchObject({
+          statusCode: 403,
+          statusMessage: 'membersRequirePro',
+        })
+        expect(joinCampaign.insert).not.toHaveBeenCalled()
+        expect(mockFetch).not.toHaveBeenCalled()
+      },
+    )
+
+    it('sends an admin invite when the owner is on pro', async () => {
+      const joinCampaign = mockTables()
+      mockFetch.mockResolvedValue({ success: true })
+
+      await handler(
+        mockEvent({ method: 'POST', body: body({ role: 'Admin' }) }),
+      )
+
+      expect(joinCampaign.insert.mock.calls[0]![0]).toMatchObject({
+        role: 'Admin',
+      })
+    })
   })
 
   it('stores a signed invite token for the invited user', async () => {
@@ -172,10 +207,14 @@ describe('POST /api/emails/campaign-invite', () => {
         error: null,
       }),
       team: [mockChain({ data: { role: 'Admin' } }), mockChain({ data: null })],
-      profiles: mockChain({
-        data: { email: 'owner@example.com', username: 'Owner' },
-        error: null,
-      }),
+      profiles: [
+        mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+        mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+        mockChain({
+          data: { email: 'owner@example.com', username: 'Owner' },
+          error: null,
+        }),
+      ],
       join_campaign: joinCampaign,
     })
 

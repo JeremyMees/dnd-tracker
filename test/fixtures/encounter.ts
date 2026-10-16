@@ -12,7 +12,12 @@ export const mockEncounterItem: EncounterItem = {
   campaign: {
     id: 2,
     title: 'The Lost Mine',
-    createdBy: { id: '1', username: 'Test User', avatar: 'avatar-url' },
+    createdBy: {
+      id: '1',
+      username: 'Test User',
+      avatar: 'avatar-url',
+      subscriptionType: 'pro',
+    },
     team: [],
   },
   settings: {

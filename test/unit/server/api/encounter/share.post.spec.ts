@@ -45,6 +45,7 @@ describe('POST /api/encounter/share', () => {
         error: null,
       }),
       team: mockChain({ data: { role: 'Player' } }),
+      profiles: mockChain({ data: { subscriptionType: 'pro' }, error: null }),
     })
 
     const token = await handler(

@@ -23,17 +23,27 @@ const campaign = { id: 42, title: 'Curse of Strahd', createdBy: 'user-1' }
 function mockServiceRole({
   campaignResult = { data: campaign, error: null } as Record<string, unknown>,
   memberResult = { data: null } as Record<string, unknown>,
+  ownerResult = { data: { subscriptionType: 'pro' } } as Record<
+    string,
+    unknown
+  >,
 } = {}) {
   const single = vi.fn().mockResolvedValue(campaignResult)
   const eq = vi.fn(() => ({ single }))
   const maybeSingle = vi.fn().mockResolvedValue(memberResult)
   const match = vi.fn(() => ({ maybeSingle }))
-  const select = vi.fn(columns => (columns === 'role' ? { match } : { eq }))
+  const ownerSingle = vi.fn().mockResolvedValue(ownerResult)
+  const ownerEq = vi.fn(() => ({ single: ownerSingle }))
+  const select = vi.fn(columns => {
+    if (columns === 'role') return { match }
+    if (columns === 'subscriptionType') return { eq: ownerEq }
+    return { eq }
+  })
   const from = vi.fn(() => ({ select }))
 
   serverSupabaseServiceRole.mockReturnValue({ from })
 
-  return { from, select, eq, single, match, maybeSingle }
+  return { from, select, eq, single, match, maybeSingle, ownerEq }
 }
 
 describe('auth', () => {
@@ -119,6 +129,32 @@ describe('auth', () => {
       expect(match).toHaveBeenCalledWith({ campaign: 42, user: 'user-2' })
     })
 
+    it('suspends members while the owner is not on pro', async () => {
+      const { ownerEq } = mockServiceRole({
+        memberResult: { data: { role: 'Admin' } },
+        ownerResult: { data: { subscriptionType: 'free' } },
+      })
+
+      await expect(
+        requireCampaignAccess(event, 42, 'user-2'),
+      ).rejects.toMatchObject({
+        statusCode: 403,
+        statusMessage: 'campaignSuspended',
+      })
+      expect(ownerEq).toHaveBeenCalledWith('id', 'user-1')
+    })
+
+    it('keeps the owner in even without pro', async () => {
+      const { ownerEq } = mockServiceRole({
+        ownerResult: { data: { subscriptionType: 'free' } },
+      })
+
+      await expect(
+        requireCampaignAccess(event, 42, 'user-1'),
+      ).resolves.toMatchObject({ role: 'Owner' })
+      expect(ownerEq).not.toHaveBeenCalled()
+    })
+
     it('queries the campaign by id', async () => {
       const { eq } = mockServiceRole()
 
@@ -191,8 +227,14 @@ describe('auth', () => {
         error: null,
       } as Record<string, unknown>,
       memberResult = { data: null } as Record<string, unknown>,
+      ownerResult = { data: { subscriptionType: 'pro' } } as Record<
+        string,
+        unknown
+      >,
     } = {}) {
       const encounterSingle = vi.fn().mockResolvedValue(encounterResult)
+      const ownerSingle = vi.fn().mockResolvedValue(ownerResult)
+      const ownerEq = vi.fn(() => ({ single: ownerSingle }))
       const encounterEq = vi.fn(() => ({ single: encounterSingle }))
 
       const campaignSingle = vi.fn().mockResolvedValue({
@@ -214,14 +256,63 @@ describe('auth', () => {
         if (table === 'team') {
           return { select: () => ({ match: teamMatch }) }
         }
+        if (table === 'profiles') {
+          return { select: () => ({ eq: ownerEq }) }
+        }
 
         throw new Error(`unexpected table "${table}"`)
       })
 
       serverSupabaseServiceRole.mockReturnValue({ from })
 
-      return { from }
+      return { from, ownerEq }
     }
+
+    it('locks a campaign encounter for its creator while the campaign owner is not on pro', async () => {
+      const { ownerEq } = mockEncounterServiceRole({
+        encounterResult: {
+          data: { id: 7, campaign: 42, createdBy: 'user-2' },
+          error: null,
+        },
+        ownerResult: { data: { subscriptionType: 'free' } },
+      })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-2'),
+      ).rejects.toMatchObject({
+        statusCode: 403,
+        statusMessage: 'campaignSuspended',
+      })
+      expect(ownerEq).toHaveBeenCalledWith('id', 'user-1')
+    })
+
+    it('lets the creator into a campaign encounter while the campaign owner is on pro', async () => {
+      mockEncounterServiceRole({
+        encounterResult: {
+          data: { id: 7, campaign: 42, createdBy: 'user-2' },
+          error: null,
+        },
+      })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-2'),
+      ).resolves.toMatchObject({ id: 7 })
+    })
+
+    it('lets the campaign owner into their own encounter without pro', async () => {
+      const { ownerEq } = mockEncounterServiceRole({
+        encounterResult: {
+          data: { id: 7, campaign: 42, createdBy: 'user-1' },
+          error: null,
+        },
+        ownerResult: { data: { subscriptionType: 'free' } },
+      })
+
+      await expect(
+        requireEncounterAccess(event, 7, 'user-1'),
+      ).resolves.toMatchObject({ id: 7 })
+      expect(ownerEq).not.toHaveBeenCalled()
+    })
 
     it('resolves the encounter for its owner', async () => {
       mockEncounterServiceRole()

@@ -1,5 +1,5 @@
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import RoleUpdate from '~/components/form/RoleUpdate.vue'
 import { mockCampaignFull, mockTeamMember } from '~~/test/fixtures/campaign'
 import { submitForm } from '~~/test/nuxt/stubs/form'
@@ -13,13 +13,25 @@ vi.mock('~/queries/team-members', () => ({
 
 const member: TeamMemberFull = { ...mockTeamMember, role: 'Viewer' }
 
-function mountRoleUpdate(overrides: Partial<TeamMemberFull> = {}) {
-  return mountWithTooltips(RoleUpdate, {
+let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+async function mountRoleUpdate(
+  overrides: Partial<TeamMemberFull> = {},
+  ownerIsPro = true,
+) {
+  wrapper = await mountWithTooltips(RoleUpdate, {
     props: {
       member: { ...member, ...overrides },
       campaignId: mockCampaignFull.id,
+      ownerIsPro,
     },
   })
+
+  return wrapper
+}
+
+function adminOption(component: Awaited<ReturnType<typeof mountRoleUpdate>>) {
+  return component.get('option[value="Admin"]')
 }
 
 async function selectRole(
@@ -40,6 +52,12 @@ function updateOptions() {
 describe('RoleUpdate', () => {
   beforeEach(() => {
     updateTeamMember.mockResolvedValue(undefined)
+  })
+
+  afterEach(() => {
+    wrapper?.unmount()
+    wrapper = undefined
+    updateTeamMember.mockReset()
   })
 
   it('Should match snapshot', async () => {
@@ -104,5 +122,25 @@ describe('RoleUpdate', () => {
     await nextTick()
 
     expect(component.text()).toContain('Update failed')
+  })
+
+  it('Should offer the admin role when the owner is on pro', async () => {
+    const component = await mountRoleUpdate()
+
+    expect(adminOption(component).attributes('disabled')).toBeUndefined()
+    expect(adminOption(component).text()).not.toContain('general.pro')
+  })
+
+  it('Should lock the admin role behind pro for a free owner', async () => {
+    const component = await mountRoleUpdate({}, false)
+
+    expect(adminOption(component).attributes('disabled')).toBeDefined()
+    expect(adminOption(component).text()).toContain('general.pro')
+  })
+
+  it('Should keep an existing admin selectable for a free owner', async () => {
+    const component = await mountRoleUpdate({ role: 'Admin' }, false)
+
+    expect(adminOption(component).attributes('disabled')).toBeUndefined()
   })
 })

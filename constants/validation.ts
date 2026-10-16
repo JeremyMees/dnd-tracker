@@ -1,5 +1,6 @@
 export const maxHealthAndArmour = 1000
 export const maxCampaignHomebrews = 100
+export const maxCampaignNotes = 100
 export const maxCampaignMembers = 15
 
 export const maxBugReportScreenshotSize = 5 * 1024 * 1024

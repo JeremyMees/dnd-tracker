@@ -1,6 +1,6 @@
 import { expectNoToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import TransferOwnershipModal from '~/components/modal/TransferOwnership.vue'
 import {
   mockCampaignFull,
@@ -28,8 +28,25 @@ const current = {
   team: [mockTeamMember, mockProTeamMember],
 }
 
-function mountTransferOwnershipModal() {
-  return mountSuspended(TransferOwnershipModal, { props: { current } })
+let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined
+
+async function mountTransferOwnershipModal() {
+  const component = await mountSuspended(TransferOwnershipModal, {
+    props: { current },
+  })
+  wrapper = component
+
+  return component
+}
+
+function roleIsDisabled(
+  component: Awaited<ReturnType<typeof mountTransferOwnershipModal>>,
+  role: string,
+) {
+  return component
+    .findAllComponents({ name: 'SelectItem' })
+    .find(item => item.props('value') === role)!
+    .props('disabled')
 }
 
 async function fillForm(
@@ -49,6 +66,12 @@ function requestBody() {
 describe('TransferOwnership modal', () => {
   beforeEach(() => {
     fetchMock.mockResolvedValue(undefined)
+  })
+
+  afterEach(() => {
+    wrapper?.unmount()
+    wrapper = undefined
+    fetchMock.mockReset()
   })
 
   it('Should match snapshot', async () => {
@@ -175,5 +198,37 @@ describe('TransferOwnership modal', () => {
     expect(component.get('[test-id="error"]').text()).toBe('Transfer failed')
     expectNoToast()
     expect(component.emitted('finished')).toBeFalsy()
+  })
+
+  it('Should offer every role when the picked member has a pro subscription', async () => {
+    const component = await mountTransferOwnershipModal()
+
+    await selectOption(component, mockProTeamMember.user.id, { index: 1 })
+
+    expect(roleIsDisabled(component, 'Admin')).toBeFalsy()
+    expect(roleIsDisabled(component, 'Viewer')).toBeFalsy()
+  })
+
+  it('Should only allow removal when the picked member has a free subscription', async () => {
+    const component = await mountTransferOwnershipModal()
+
+    await selectOption(component, mockTeamMember.user.id, { index: 1 })
+
+    expect(roleIsDisabled(component, 'Admin')).toBe(true)
+    expect(roleIsDisabled(component, 'Viewer')).toBe(true)
+    expect(roleIsDisabled(component, 'Remove')).toBeFalsy()
+  })
+
+  it('Should switch a picked role to removal for a free new owner', async () => {
+    const component = await mountTransferOwnershipModal()
+
+    await fillForm(component, 'Admin', mockTeamMember.user.id)
+    await submitForm(component)
+
+    expect(requestBody()).toEqual({
+      campaign: current.id,
+      user: mockTeamMember.user.id,
+      role: 'Remove',
+    })
   })
 })

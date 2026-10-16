@@ -7,7 +7,7 @@ import {
   useCampaignListing,
   useCampaignRemove,
 } from '~/queries/campaigns'
-import { useTeamMemberRemove } from '~/queries/team-members'
+import { useCampaignLeave } from '~/queries/team-members'
 
 definePageMeta({ auth: true })
 useSeo('Campaigns')
@@ -23,7 +23,7 @@ const limitCta = ref<InstanceType<typeof LimitCta>>()
 
 const { data: count } = useCampaignCount()
 const { mutateAsync: removeCampaign } = useCampaignRemove()
-const { mutate: removeTeamMember } = useTeamMemberRemove()
+const { mutate: leaveCampaign } = useCampaignLeave()
 
 const { data, status } = useCampaignListing(
   computed(() => {
@@ -47,10 +47,6 @@ const max = computed<number>(() =>
 const columns = generateColumns({
   onUpdate: (item: CampaignItem) => openModal(item),
   onLeave: async (item: CampaignItem) => {
-    const member = item.team?.find(member => member.user.id === user.value.id)
-
-    if (!member) return
-
     ask(
       {
         title: t('pages.campaigns.dialog.leave.title'),
@@ -59,7 +55,7 @@ const columns = generateColumns({
       (confirmed: boolean) => {
         if (!confirmed) return
 
-        removeTeamMember({ member: member.id, campaign: item.id })
+        leaveCampaign({ campaign: item.id })
       },
     )
   },

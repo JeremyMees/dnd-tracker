@@ -28,6 +28,10 @@ export default defineEventHandler(async event => {
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
+  if (!(await isProUser(supabase, campaign.createdBy))) {
+    throw createError({ statusCode: 403, statusMessage: 'membersRequirePro' })
+  }
+
   const { data: invitee } = await supabase
     .from('profiles')
     .select('email, username')

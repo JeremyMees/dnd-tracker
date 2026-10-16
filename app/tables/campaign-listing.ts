@@ -1,7 +1,9 @@
+import type { VNode } from 'vue'
 import { createColumnHelper, type TableState } from '@tanstack/vue-table'
 import {
   iconButton,
   linkButton,
+  lockedText,
   selectButton,
   permission,
 } from './generate-functions'
@@ -17,6 +19,16 @@ interface ColumnOptions {
 export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
   const { t } = useI18n()
   const user = useAuthenticatedUser()
+
+  function leaveButton(campaign: CampaignItem): VNode {
+    return iconButton({
+      icon: 'tabler:door-exit',
+      content: t('actions.leave'),
+      variant: 'warning-ghost',
+      cb: () => onLeave(campaign),
+      disabled: isOwner(campaign, user.value.id),
+    })
+  }
   return columnHelper.columns([
     columnHelper.display({
       enableGlobalFilter: false,
@@ -40,10 +52,16 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
     columnHelper.accessor('title', {
       header: t('general.name'),
       cell: ({ row }) =>
-        linkButton({
-          to: campaignUrl(row.original, 'encounters'),
-          content: row.getValue('title'),
-        }),
+        isCampaignSuspendedFor(row.original.createdBy, user.value.id)
+          ? lockedText({
+              content: row.getValue<string>('title'),
+              badge: t('pages.campaigns.suspended.badge'),
+              reason: t('pages.campaigns.suspended.reason'),
+            })
+          : linkButton({
+              to: campaignUrl(row.original, 'encounters'),
+              content: row.getValue('title'),
+            }),
     }),
     columnHelper.accessor('initiative_sheets', {
       enableGlobalFilter: false,
@@ -101,19 +119,13 @@ export function generateColumns({ onUpdate, onLeave }: ColumnOptions) {
       id: 'actions',
       cell: ({ row }) =>
         h('div', { class: 'flex justify-end' }, [
-          permission({
-            ability: isCampaignMember,
-            args: [row.original],
-            children: [
-              iconButton({
-                icon: 'tabler:door-exit',
-                content: t('actions.leave'),
-                variant: 'warning-ghost',
-                cb: () => onLeave(row.original),
-                disabled: isOwner(row.original, user.value.id),
+          isCampaignSuspendedFor(row.original.createdBy, user.value.id)
+            ? leaveButton(row.original)
+            : permission({
+                ability: isCampaignMember,
+                args: [row.original],
+                children: [leaveButton(row.original)],
               }),
-            ],
-          }),
           permission({
             ability: isCampaignAdmin,
             args: [row.original],

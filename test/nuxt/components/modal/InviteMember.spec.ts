@@ -316,6 +316,20 @@ describe('InviteMember modal', () => {
     )
   })
 
+  it('Should explain that members need a pro owner', async () => {
+    lookup.mockResolvedValue(foundProfile)
+    sendInvite.mockRejectedValue(new Error('membersRequirePro'))
+    const component = await mountInviteMemberModal()
+
+    await search(component, foundEmail)
+    await submitForm(component)
+    await flushPromises()
+
+    expect(component.get('[test-id="error"]').text()).toBe(
+      'components.inviteMember.errors.membersRequirePro',
+    )
+  })
+
   it('Should refresh the campaign even when an invite fails', async () => {
     lookup.mockResolvedValue(foundProfile)
     sendInvite.mockRejectedValue(new Error('Invite failed'))

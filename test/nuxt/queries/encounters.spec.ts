@@ -1,4 +1,5 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -9,6 +10,7 @@ import {
   mountHook,
   mutationSpies,
 } from '~~/test/nuxt/stubs/query'
+import { authUser } from '~~/test/fixtures/auth-user'
 import {
   useEncounterCopy,
   useEncounterCount,
@@ -17,6 +19,8 @@ import {
   useEncounterRemove,
   useEncounterUpdate,
 } from '~/queries/encounters'
+
+mockNuxtImport('useAuthenticatedUser', () => () => ref(authUser))
 
 const encounterItem: EncounterItem = {
   id: 3,
@@ -32,7 +36,12 @@ const encounterItem: EncounterItem = {
   campaign: {
     id: 2,
     title: 'The Lost Mine',
-    createdBy: { id: '1', username: 'Test User', avatar: 'avatar-url' },
+    createdBy: {
+      id: '1',
+      username: 'Test User',
+      avatar: 'avatar-url',
+      subscriptionType: 'pro',
+    },
     team: [],
   },
   settings: {
@@ -105,6 +114,22 @@ describe('encounters queries', () => {
       )
 
       await vi.waitFor(() => expect(vm.data).toBe(5))
+    })
+
+    it('only counts the encounters the user created', async () => {
+      const from = mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null, count: 5 }),
+      })
+
+      const { vm } = await mountHook(() =>
+        useEncounterCount(computed(() => true)),
+      )
+
+      await vi.waitFor(() => expect(vm.data).toBe(5))
+      expect(from.mock.results[0]!.value.eq).toHaveBeenCalledWith(
+        'createdBy',
+        authUser.id,
+      )
     })
 
     it('falls back to 0 when there is no count', async () => {

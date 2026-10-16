@@ -1,4 +1,5 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useQueryClient } from '@tanstack/vue-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -8,6 +9,7 @@ import {
   mountHook,
   mutationSpies,
 } from '~~/test/nuxt/stubs/query'
+import { authUser } from '~~/test/fixtures/auth-user'
 import {
   useCampaignCount,
   useCampaignCreate,
@@ -17,6 +19,8 @@ import {
   useCampaignRemove,
   useCampaignUpdate,
 } from '~/queries/campaigns'
+
+mockNuxtImport('useAuthenticatedUser', () => () => ref(authUser))
 
 describe('campaigns queries', () => {
   beforeEach(async () => {
@@ -142,6 +146,20 @@ describe('campaigns queries', () => {
       const { vm } = await mountHook(() => useCampaignCount())
 
       await vi.waitFor(() => expect(vm.data).toBe(4))
+    })
+
+    it('only counts the campaigns the user owns', async () => {
+      const from = mockSupabaseFrom({
+        campaigns: mockChain({ data: null, error: null, count: 4 }),
+      })
+
+      const { vm } = await mountHook(() => useCampaignCount())
+
+      await vi.waitFor(() => expect(vm.data).toBe(4))
+      expect(from.mock.results[0]!.value.eq).toHaveBeenCalledWith(
+        'createdBy',
+        authUser.id,
+      )
     })
 
     it('reports no campaigns when the count comes back empty', async () => {

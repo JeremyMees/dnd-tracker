@@ -20,10 +20,7 @@ const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
 
   return [
     {
-      user: {
-        ...props.current.createdBy,
-        subscriptionType: 'pro' as SubscriptionType,
-      },
+      user: props.current.createdBy,
       role: 'Owner' as UserRole,
       id: 0,
     },
@@ -31,6 +28,10 @@ const members = computed<(TeamMemberFull & { invite?: boolean })[]>(() => {
     ...props.current.join_campaign.map(join => ({ ...join, invite: true })),
   ]
 })
+
+const ownerIsPro = computed(() =>
+  canHaveCampaignMembers(props.current?.createdBy.subscriptionType),
+)
 
 const { mutate: removeTeamMember } = useTeamMemberRemove()
 const { mutate: removeJoinCampaignToken } = useJoinTokenRemove()
@@ -152,6 +153,7 @@ async function remove(
                   v-else
                   :member="member"
                   :campaign-id="props.campaignId"
+                  :owner-is-pro="ownerIsPro"
                 />
                 <div class="flex sm:justify-end items-center">
                   <Tooltip :text="$t('actions.delete')">
@@ -178,12 +180,26 @@ async function remove(
             </template>
           </ClientOnly>
         </Card>
-        <div class="flex justify-end mt-4">
+        <div class="flex flex-wrap items-center justify-end gap-4 mt-4">
           <ClientOnly>
+            <p
+              v-if="!ownerIsPro"
+              test-id="invite-needs-pro"
+              class="text-sm text-muted-foreground"
+            >
+              {{ $t('pages.campaign.settings.needsPro') }}
+              <NuxtLinkLocale
+                to="pricing"
+                class="underline underline-offset-2 decoration-primary"
+              >
+                {{ $t('pages.campaign.proEnded.cta') }}
+              </NuxtLinkLocale>
+            </p>
             <UiButton
               test-id="invite"
               :aria-label="$t('pages.campaign.settings.add')"
               :disabled="
+                !ownerIsPro ||
                 isCampaignTeamFull(
                   (current?.team.length ?? 0) +
                     (current?.join_campaign.length ?? 0),

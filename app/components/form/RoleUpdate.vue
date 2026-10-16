@@ -7,6 +7,7 @@ import { roleType } from '~~/constants/validation'
 const props = defineProps<{
   member: TeamMemberFull
   campaignId: number
+  ownerIsPro: boolean
 }>()
 
 const { mutateAsync: updateTeamMember } = useTeamMemberUpdate()
@@ -63,15 +64,18 @@ const onSubmit = form.handleSubmit(async values => {
           </UiFormControl>
           <UiSelectContent>
             <UiSelectGroup>
+              <UiSelectItem value="Viewer">
+                {{ $t('general.roles.Viewer.title') }}
+              </UiSelectItem>
               <UiSelectItem
-                v-for="option in [
-                  { value: 'Viewer', label: $t('general.roles.Viewer.title') },
-                  { value: 'Admin', label: $t('general.roles.Admin.title') },
-                ]"
-                :key="option.value"
-                :value="option.value"
+                value="Admin"
+                test-id="admin-option"
+                :disabled="!ownerIsPro && member.role !== 'Admin'"
               >
-                {{ option.label }}
+                {{ $t('general.roles.Admin.title') }}
+                <span v-if="!ownerIsPro" class="text-muted-foreground">
+                  ({{ $t('general.pro') }})
+                </span>
               </UiSelectItem>
             </UiSelectGroup>
           </UiSelectContent>

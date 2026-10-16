@@ -11,7 +11,7 @@ export function useCampaignDetail(id: number) {
         .select(
           `
         *, 
-        createdBy(id, username, avatar, name, email), 
+        createdBy(id, username, avatar, name, email, subscriptionType), 
         team(
           id,
           role,
@@ -41,7 +41,7 @@ export function useCampaignListing(data: ComputedRef<SbFilter>) {
         table: 'campaigns',
         select: `
         *,
-        createdBy(id, username, avatar),
+        createdBy(id, username, avatar, subscriptionType),
         initiative_sheets(count),
         homebrew_items(count),
         team(
@@ -101,13 +101,15 @@ export function useCampaignMinimalListing(id: string) {
 
 export function useCampaignCount() {
   const supabase = useSupabaseClient<DB>()
+  const user = useAuthenticatedUser()
 
   return useQuery({
-    queryKey: queryKeys.campaignCount(),
+    queryKey: queryKeys.campaignCount(user.value.id),
     queryFn: async () =>
       await supabase
         .from('campaigns')
-        .select('*', { count: 'exact', head: true }),
+        .select('*', { count: 'exact', head: true })
+        .eq('createdBy', user.value.id),
     select: ({ count }) => count || 0,
   })
 }

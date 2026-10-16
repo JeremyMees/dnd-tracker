@@ -5,6 +5,7 @@ export const mockSheetCampaign: NonNullable<InitiativeSheet['campaign']> = {
     id: '1',
     username: 'Test User',
     avatar: 'avatar-url',
+    subscriptionType: 'pro',
   },
   team: [],
 }
@@ -17,6 +18,7 @@ export const mockCampaignItem: CampaignItem = {
     id: '1',
     username: 'Test User',
     avatar: 'avatar-url',
+    subscriptionType: 'pro',
   },
   team: [],
   join_campaign: [],
@@ -72,6 +74,7 @@ export const mockCampaignFull: CampaignFull = {
     avatar: 'avatar-url',
     name: 'Test User',
     email: 'test.user@example.com',
+    subscriptionType: 'pro',
   },
   team: [],
   join_campaign: [],

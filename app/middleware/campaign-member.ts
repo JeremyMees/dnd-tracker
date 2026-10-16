@@ -23,6 +23,10 @@ export default defineNuxtRouteMiddleware(async to => {
     // Owner can always access the page
     if (data.createdBy === user.value?.id) return
 
+    if (!canHaveCampaignMembers(data.owner?.subscriptionType)) {
+      return navigateTo(localePath('campaigns'))
+    }
+
     const member = data.team.find(member => member.user === user.value?.id)
 
     if (!member) {
@@ -55,6 +59,7 @@ export default defineNuxtRouteMiddleware(async to => {
 type CampaignMember = {
   id: number
   createdBy: string
+  owner: { subscriptionType: SubscriptionType } | null
   team: {
     role: UserRole
     user: string
@@ -115,6 +120,7 @@ async function getCampaign(id: number): Promise<{ data: CampaignMember }> {
       `
       id,
       createdBy,
+      owner:createdBy(subscriptionType),
       team(
         role,
         user

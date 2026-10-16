@@ -88,6 +88,7 @@
     "closeCombatLog": "Close combat log"
   },
   "general": {
+    "pro": "Pro",
     "waiting": "Waiting",
     "spectator": "Spectator | Spectators",
     "you": "You",
@@ -257,6 +258,9 @@
         "forbidden": "You don't have permission to do this.",
         "notFound": "It may have been removed by someone else. Refresh the page and try again.",
         "rateLimited": "Too many requests in a short time. Wait a moment and try again.",
+        "limitReached": "You've reached the limit of your plan. Remove one first, or upgrade to Pro for more.",
+        "homebrewLimit": "This campaign already has the maximum number of homebrew items. Remove one first.",
+        "noteLimit": "This campaign already has the maximum number of notes. Remove one first.",
         "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
       },
       "loadFailed": {
@@ -420,6 +424,10 @@
       "text": "We are currently working on the website. We will restore it as soon as possible."
     },
     "campaigns": {
+      "suspended": {
+        "badge": "Locked",
+        "reason": "The owner's Pro plan has ended, so this campaign is locked until they renew"
+      },
       "campaigns": "Campaigns",
       "add": "Create campaign",
       "update": "Update campaign",
@@ -431,9 +439,14 @@
       }
     },
     "campaign": {
+      "proEnded": {
+        "text": "Your Pro plan has ended. Your members can't open this campaign until you renew.",
+        "cta": "Renew Pro"
+      },
       "content": {},
       "settings": {
         "add": "Add people",
+        "needsPro": "Inviting people to a campaign needs Pro.",
         "access": "Manage access",
         "campaign": "Campaign settings",
         "remove": "Remove {user} from campaign",
@@ -1319,6 +1332,7 @@
         "alreadySelected": "This person is already selected",
         "notFound": "User not found",
         "maxMembers": "Max members reached",
+        "membersRequirePro": "Inviting people to a campaign needs the owner to be on Pro",
         "noUser": "{email} is not a user of the DnD Tracker. Send them an invitation to join the DnD Tracker"
       },
       "toast": {
@@ -1332,7 +1346,7 @@
       "title": "Transfer ownership from {campaign}",
       "text": "Are you certain about transferring ownership from the {campaign} campaign? Please note that this action is irreversible unless the new owner decides to revert it. If you are absolutely sure, Enter {campaign} in the input field and then proceed to transfer.",
       "removed": "No more team member (removed)",
-      "free": "The currently selected new owner doesn't have a pro subscription. Everyone will lose access to the campaign including you. The only person with access is the new owner.",
+      "free": "The selected new owner doesn't have Pro. You'll be removed from the campaign, and every member stays locked out until the new owner gets Pro.",
       "toast": {
         "success": {
           "title": "Ownership has been successfully transferred to {username}"

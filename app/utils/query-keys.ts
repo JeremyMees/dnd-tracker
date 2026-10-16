@@ -14,7 +14,7 @@ export const queryKeys = {
   campaignListing: (filters?: MaybeRef<SbFilter>) =>
     scopedKey('useCampaignListing', filters),
   campaignMinimal: (user?: string) => scopedKey('useCampaignMinimal', user),
-  campaignCount: () => scopedKey('useCampaignCount'),
+  campaignCount: (user?: string) => scopedKey('useCampaignCount', user),
   campaignMember: (campaign: number) =>
     scopedKey('useCampaignMember', campaign),
   campaignMemberLookup: (email: string | undefined) =>
@@ -22,7 +22,7 @@ export const queryKeys = {
   joinCampaign: (token: RouteToken) => scopedKey('useJoinCampaign', token),
   encounterListing: (filters?: MaybeRef<SbFilter>, perPage?: number) =>
     scopedKey('useEncounterListing', filters, perPage),
-  encounterCount: () => scopedKey('useEncounterCount'),
+  encounterCount: (user?: string) => scopedKey('useEncounterCount', user),
   initiativeSheetDetail: (id: number) =>
     scopedKey('useInitiativeSheetDetail', id),
   initiativeSheetPlayground: (token: RouteToken) =>

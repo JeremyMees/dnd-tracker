@@ -95,21 +95,116 @@ const sanitizeBeforeUpdate = useDebounceFn(
   { maxWait: 2500 },
 )
 
-const buttonStates = computed(() => ({
-  isBold: editor.value?.isActive('bold') ?? false,
-  isItalic: editor.value?.isActive('italic') ?? false,
-  isStrike: editor.value?.isActive('strike') ?? false,
-  isHighlight: editor.value?.isActive('highlight') ?? false,
-  isLink: editor.value?.isActive('link') ?? false,
-  isBulletList: editor.value?.isActive('bulletList') ?? false,
-  isOrderedList: editor.value?.isActive('orderedList') ?? false,
-  isBlockquote: editor.value?.isActive('blockquote') ?? false,
-  canUndo: editor.value?.can().chain().focus().undo().run() ?? false,
-  canRedo: editor.value?.can().chain().focus().redo().run() ?? false,
-  canBold: editor.value?.can().chain().focus().toggleBold().run() ?? false,
-  canItalic: editor.value?.can().chain().focus().toggleItalic().run() ?? false,
-  canStrike: editor.value?.can().chain().focus().toggleStrike().run() ?? false,
-}))
+function chain() {
+  return editor.value!.chain().focus()
+}
+
+const toolbarGroups = computed<EditorToolbarButton[][]>(() => {
+  const current = editor.value
+
+  if (!current) return []
+
+  return [
+    [
+      {
+        id: 'link',
+        icon: 'tabler:link',
+        label: t('general.link'),
+        active: current.isActive('link'),
+        run: setLink,
+      },
+      {
+        id: 'unlink',
+        icon: 'tabler:unlink',
+        label: t('actions.unlink'),
+        disabled: !current.isActive('link'),
+        run: () => chain().unsetLink().run(),
+      },
+      {
+        id: 'bullet-list',
+        icon: 'tabler:list',
+        label: t('general.unOrderedList'),
+        active: current.isActive('bulletList'),
+        run: () => chain().toggleBulletList().run(),
+      },
+      {
+        id: 'ordered-list',
+        icon: 'tabler:list-numbers',
+        label: t('general.orderedList'),
+        active: current.isActive('orderedList'),
+        run: () => chain().toggleOrderedList().run(),
+      },
+      {
+        id: 'blockquote',
+        icon: 'tabler:blockquote',
+        label: t('general.quote'),
+        active: current.isActive('blockquote'),
+        run: () => chain().toggleBlockquote().run(),
+      },
+      {
+        id: 'horizontal-rule',
+        icon: 'tabler:separator',
+        label: t('general.horizontalRule'),
+        run: () => chain().setHorizontalRule().run(),
+      },
+    ],
+    [
+      {
+        id: 'bold',
+        icon: 'tabler:bold',
+        label: t('general.bold'),
+        active: current.isActive('bold'),
+        disabled: !current.can().chain().focus().toggleBold().run(),
+        run: () => chain().toggleBold().run(),
+      },
+      {
+        id: 'italic',
+        icon: 'tabler:italic',
+        label: t('general.italic'),
+        active: current.isActive('italic'),
+        disabled: !current.can().chain().focus().toggleItalic().run(),
+        run: () => chain().toggleItalic().run(),
+      },
+      {
+        id: 'strike',
+        icon: 'tabler:strikethrough',
+        label: t('general.strikeThrough'),
+        active: current.isActive('strike'),
+        disabled: !current.can().chain().focus().toggleStrike().run(),
+        run: () => chain().toggleStrike().run(),
+      },
+      {
+        id: 'highlight',
+        icon: 'tabler:highlight',
+        label: t('actions.highlight'),
+        active: current.isActive('highlight'),
+        run: () => chain().toggleHighlight().run(),
+      },
+      {
+        id: 'clear-formatting',
+        icon: 'tabler:clear-formatting',
+        label: t('actions.clearFormatting'),
+        run: () => chain().unsetAllMarks().run(),
+      },
+    ],
+    [
+      {
+        id: 'undo',
+        icon: 'tabler:arrow-back',
+        label: t('actions.undo'),
+        disabled: !current.can().chain().focus().undo().run(),
+        run: () => chain().undo().run(),
+      },
+      {
+        id: 'redo',
+        icon: 'tabler:arrow-forward',
+        label: t('actions.redo'),
+        disabled: !current.can().chain().focus().redo().run(),
+        run: () => chain().redo().run(),
+      },
+    ],
+  ]
+})
 
 const characterStats = computed(() => {
   if (!editor.value) return { characters: 0, words: 0 }
@@ -258,190 +353,32 @@ function setLink() {
           </AnimationExpand>
         </div>
         <div
-          class="flex items-center border-r pr-2"
-          :class="{
-            'border-input': variant === 'input',
-            'border-secondary': variant === 'widget',
-          }"
+          v-for="(group, index) in toolbarGroups"
+          :key="index"
+          class="flex items-center"
+          :class="
+            index < toolbarGroups.length - 1 && [
+              'border-r pr-2',
+              variant === 'input' ? 'border-input' : 'border-secondary',
+            ]
+          "
         >
-          <Tooltip :text="$t('general.link')">
+          <Tooltip
+            v-for="button in group"
+            :key="button.id"
+            :text="button.label"
+          >
             <UiButton
               type="button"
               size="icon-sm"
               variant="default-ghost"
-              :class="{ 'bg-primary': buttonStates.isLink }"
-              :aria-label="$t('general.link')"
-              test-id="link"
-              @click="setLink"
+              :class="{ 'bg-primary!': button.active }"
+              :disabled="button.disabled"
+              :aria-label="button.label"
+              :test-id="button.id"
+              @click="button.run"
             >
-              <Icon name="tabler:link" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('actions.unlink')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :disabled="!buttonStates.isLink"
-              :aria-label="$t('actions.unlink')"
-              test-id="unlink"
-              @click="editor.chain().focus().unsetLink().run()"
-            >
-              <Icon name="tabler:unlink" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('general.unOrderedList')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isBulletList }"
-              :aria-label="$t('general.unOrderedList')"
-              test-id="bullet-list"
-              @click="editor.chain().focus().toggleBulletList().run()"
-            >
-              <Icon name="tabler:list" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('general.orderedList')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isOrderedList }"
-              :aria-label="$t('general.orderedList')"
-              test-id="ordered-list"
-              @click="editor.chain().focus().toggleOrderedList().run()"
-            >
-              <Icon name="tabler:list-numbers" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('general.quote')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isBlockquote }"
-              :aria-label="$t('general.quote')"
-              test-id="blockquote"
-              @click="editor.chain().focus().toggleBlockquote().run()"
-            >
-              <Icon name="tabler:blockquote" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('general.horizontalRule')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :aria-label="$t('general.horizontalRule')"
-              test-id="horizontal-rule"
-              @click="editor.chain().focus().setHorizontalRule().run()"
-            >
-              <Icon name="tabler:separator" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-        </div>
-        <div
-          class="flex items-center border-r pr-2"
-          :class="{
-            'border-input': variant === 'input',
-            'border-secondary': variant === 'widget',
-          }"
-        >
-          <Tooltip :text="$t('general.bold')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isBold }"
-              :disabled="!buttonStates.canBold"
-              :aria-label="$t('general.bold')"
-              test-id="bold"
-              @click="editor.chain().focus().toggleBold().run()"
-            >
-              <Icon name="tabler:bold" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('general.italic')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isItalic }"
-              :disabled="!buttonStates.canItalic"
-              :aria-label="$t('general.italic')"
-              test-id="italic"
-              @click="editor.chain().focus().toggleItalic().run()"
-            >
-              <Icon name="tabler:italic" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('general.strikeThrough')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isStrike }"
-              :disabled="!buttonStates.canStrike"
-              :aria-label="$t('general.strikeThrough')"
-              test-id="strike"
-              @click="editor.chain().focus().toggleStrike().run()"
-            >
-              <Icon name="tabler:strikethrough" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('actions.highlight')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :class="{ 'bg-primary!': buttonStates.isHighlight }"
-              :aria-label="$t('actions.highlight')"
-              test-id="highlight"
-              @click="editor.chain().focus().toggleHighlight().run()"
-            >
-              <Icon name="tabler:highlight" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('actions.clearFormatting')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :aria-label="$t('actions.clearFormatting')"
-              test-id="clear-formatting"
-              @click="editor.chain().focus().unsetAllMarks().run()"
-            >
-              <Icon name="tabler:clear-formatting" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-        </div>
-        <div class="flex items-center">
-          <Tooltip :text="$t('actions.undo')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :disabled="!buttonStates.canUndo"
-              :aria-label="$t('actions.undo')"
-              test-id="undo"
-              @click="editor.chain().focus().undo().run()"
-            >
-              <Icon name="tabler:arrow-back" aria-hidden="true" />
-            </UiButton>
-          </Tooltip>
-          <Tooltip :text="$t('actions.redo')">
-            <UiButton
-              type="button"
-              size="icon-sm"
-              variant="default-ghost"
-              :disabled="!buttonStates.canRedo"
-              :aria-label="$t('actions.redo')"
-              test-id="redo"
-              @click="editor.chain().focus().redo().run()"
-            >
-              <Icon name="tabler:arrow-forward" aria-hidden="true" />
+              <Icon :name="button.icon" aria-hidden="true" />
             </UiButton>
           </Tooltip>
         </div>
