@@ -11,32 +11,45 @@ efficient gameplay sessions.
 
 ## Features
 
-- **Campaign Management**: Organize and track your D&D campaigns with ease
-- **Encounter Management**: Streamline your combat encounters and keep track of
-  initiative, HP, and status effects
-- **Homebrew Management**: Create and manage custom content for your campaigns
+- **Initiative tracker**: Track initiative, HP, AC, conditions, concentration
+  and death saves, with a combat log and an end-of-combat summary
+- **Timed conditions**: Give conditions a duration or a save that ends them,
+  fill it in from a spell and get reminders at the start of each turn
+- **Player portal (Pro)**: Players join with a code, follow the fight live and
+  update their own character
+- **Campaigns**: Invite your group, share notes and manage roles
+- **Homebrew**: Create creatures from scratch or remix a bestiary monster
+- **D&D content**: Browse SRD spells, monsters, conditions, magic items, weapons
+  and armor
+- **Tools**: Dice roller, fantasy name generator and pinned info cards
+- **Languages**: English and Dutch
 
 ## Tech Stack
 
-- [Nuxt 4](https://nuxt.com/) - The Vue Framework
+- [Nuxt 4](https://nuxt.com/) - The Vue framework
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [Supabase](https://supabase.com/) - Backend as a Service
-- [Tanstack Query](https://tanstack.com/query/latest) - Data fetching and
+- [shadcn-vue](https://www.shadcn-vue.com/) - UI components on reka-ui
+- [Supabase](https://supabase.com/) - Database, auth and realtime
+- [TanStack Query](https://tanstack.com/query/latest) - Data fetching and
   caching
+- [Open5e](https://open5e.com/) - Source of the SRD content
+- [Stripe](https://stripe.com/) - Pro subscriptions
+- [Sentry](https://sentry.io/) - Error tracking
+- [Vitest](https://vitest.dev/) - Unit and component tests
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js >= 22.0.0
-- npm >= 10.0.0
+- Node.js >= 24.0.0
+- npm >= 10.0.0 (pnpm and yarn are not supported)
 
 ### Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/dnd-tracker.git
+git clone https://github.com/jeremyMees/dnd-tracker.git
 cd dnd-tracker
 ```
 
@@ -56,19 +69,29 @@ The application will be available at `http://localhost:3000`
 
 ### Development Commands
 
-- `npm run dev` - Start development server
+- `npm run dev` - Start the development server
 - `npm run build` - Build for production
-- `npm run generate` - Generate static site
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors
+- `npm run generate` - Generate a static site
+- `npm run preview` - Preview the production build
+- `npm run lint` / `npm run lint:fix` - Run ESLint, or fix what it can
+- `npm run format` / `npm run format:fix` - Check or fix formatting with
+  Prettier
 - `npm run typecheck` - Run TypeScript type checking
+- `npm run sb:types` - Generate the Supabase database types
+- `npm run sb:schema` - Dump the database schema to `supabase/schema.sql` (needs
+  Docker)
+- `npm run open5e:sync` - Sync the SRD content from Open5e into the database
+  (add `--dry-run` or `--only=spells` to narrow it down)
+- `npm run stripe` - Forward Stripe webhooks to the local server
+- `npm run deps` - Update dependencies with taze
 
 ### Testing
 
 ```bash
 npm run test
 ```
+
+Run `npm run test:coverage` for a coverage report.
 
 ## Contributing
 
