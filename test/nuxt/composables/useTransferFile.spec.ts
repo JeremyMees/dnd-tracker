@@ -63,13 +63,25 @@ describe('useTransferFile', () => {
   it('Should toast the reason of an invalid file', async () => {
     const items = await useTransferFile().read(
       new File(['nope'], 'export.json'),
-      'homebrews',
+      'encounters',
       10,
     )
 
     expect(items).toBeUndefined()
     expect(toast.error).toHaveBeenCalledWith('components.transfer.error', {
       description: 'components.transfer.reasons.invalidFile',
+    })
+  })
+
+  it('Should toast an unsupported file on the homebrew page', async () => {
+    await useTransferFile().read(
+      new File(['nope'], 'export.json'),
+      'homebrews',
+      10,
+    )
+
+    expect(toast.error).toHaveBeenCalledWith('components.transfer.error', {
+      description: 'components.transfer.reasons.unsupportedFile',
     })
   })
 

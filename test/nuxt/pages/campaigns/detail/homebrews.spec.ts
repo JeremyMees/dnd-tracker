@@ -447,6 +447,14 @@ describe('Campaign homebrews page', () => {
       expect(importButton(component).props('loading')).toBe(true)
     })
 
+    it('Should accept creature files from other tools', async () => {
+      const { component } = await mountPage({ isOwner: true })
+
+      expect(importButton(component).props('accept')).toBe(
+        'application/json,.json,text/csv,.csv,text/markdown,.md,.markdown,text/plain,.txt',
+      )
+    })
+
     it('Should read the file with the room left in the campaign', async () => {
       const { component } = await mountPage({ isOwner: true })
 

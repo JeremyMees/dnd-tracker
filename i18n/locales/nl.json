@@ -1383,6 +1383,7 @@
       "error": "Het bestand kon niet geïmporteerd worden",
       "reasons": {
         "invalidFile": "Dit is geen geldig exportbestand. Kies een bestand dat je uit deze app hebt geëxporteerd.",
+        "unsupportedFile": "Dit bestand wordt niet ondersteund. Gebruik een JSON-, CSV- of Markdown-export uit deze app, Improved Initiative, Kobold Fight Club of 5e.tools.",
         "wrongKind": "Dit bestand bevat een ander soort items. Importeer het op de juiste pagina.",
         "tooLarge": "Het bestand is te groot. Bestanden mogen maximaal 2 MB zijn.",
         "empty": "Het bestand bevat niets om te importeren.",

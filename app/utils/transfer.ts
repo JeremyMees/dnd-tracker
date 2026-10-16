@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { homebrewType, maxCampaignHomebrews } from '~~/constants/validation'
+import { homebrewType } from '~~/constants/validation'
 
 export const maxTransferFileSize = 2 * 1024 * 1024
 
@@ -76,8 +76,8 @@ const homebrewTransferSchema = z.object({
 const transferSchemas: {
   [K in TransferKind]: z.ZodType<TransferItems[K][]>
 } = {
-  encounters: z.array(encounterTransferSchema).max(250),
-  homebrews: z.array(homebrewTransferSchema).max(maxCampaignHomebrews),
+  encounters: z.array(encounterTransferSchema),
+  homebrews: z.array(homebrewTransferSchema),
 }
 
 const transferFileSchema = z.object({
@@ -122,6 +122,25 @@ export function transferFileName(kind: TransferKind): string {
   return `dnd-tracker-${kind}-${new Date().toISOString().slice(0, 10)}.json`
 }
 
+function validateItems<K extends TransferKind>(
+  items: unknown[],
+  kind: K,
+): TransferItems[K][] {
+  if (!items.length) throw new TransferError('empty')
+
+  const parsed = transferSchemas[kind].safeParse(items)
+
+  if (!parsed.success) throw new TransferError('invalidFile')
+
+  return parsed.data
+}
+
+function validateCreatures(creatures: HomebrewTransfer[]): HomebrewTransfer[] {
+  if (!creatures.length) throw new TransferError('unsupportedFile')
+
+  return validateItems(creatures, 'homebrews')
+}
+
 export function parseTransferFile<K extends TransferKind>(
   text: string,
   kind: K,
@@ -131,20 +150,32 @@ export function parseTransferFile<K extends TransferKind>(
   try {
     json = JSON.parse(text)
   } catch {
+    if (kind === 'homebrews') {
+      return validateCreatures(
+        creaturesFromMarkdown(text),
+      ) as TransferItems[K][]
+    }
+
     throw new TransferError('invalidFile')
   }
 
   const file = transferFileSchema.safeParse(json)
 
-  if (!file.success) throw new TransferError('invalidFile')
+  if (!file.success) {
+    const format = (json as { format?: unknown } | null)?.format
+
+    if (kind === 'homebrews' && format !== 'dnd-tracker') {
+      return validateCreatures(
+        findImportedCreatures(json),
+      ) as TransferItems[K][]
+    }
+
+    throw new TransferError('invalidFile')
+  }
+
   if (file.data.kind !== kind) throw new TransferError('wrongKind')
-  if (!file.data.items.length) throw new TransferError('empty')
 
-  const items = transferSchemas[kind].safeParse(file.data.items)
-
-  if (!items.success) throw new TransferError('invalidFile')
-
-  return items.data
+  return validateItems(file.data.items, kind)
 }
 
 export async function readTransferFile<K extends TransferKind>(
@@ -153,7 +184,13 @@ export async function readTransferFile<K extends TransferKind>(
 ): Promise<TransferItems[K][]> {
   if (file.size > maxTransferFileSize) throw new TransferError('tooLarge')
 
-  return parseTransferFile(await file.text(), kind)
+  const text = await file.text()
+
+  if (kind === 'homebrews' && /\.csv$/i.test(file.name)) {
+    return validateCreatures(creaturesFromCsv(text)) as TransferItems[K][]
+  }
+
+  return parseTransferFile(text, kind)
 }
 
 export function assertTransferRoom(amount: number, room: number): void {

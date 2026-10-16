@@ -1383,6 +1383,7 @@
       "error": "The file couldn't be imported",
       "reasons": {
         "invalidFile": "This isn't a valid export file. Pick a file you exported from this app.",
+        "unsupportedFile": "This file isn't supported. Use a JSON, CSV or Markdown export from this app, Improved Initiative, Kobold Fight Club or 5e.tools.",
         "wrongKind": "This file contains a different kind of item. Import it on the matching page.",
         "tooLarge": "The file is too large. Files can be at most 2 MB.",
         "empty": "The file has nothing to import.",

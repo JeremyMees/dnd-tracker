@@ -114,3 +114,11 @@ export function parseDndDiceToString(hitDice: DndHitDice): string {
 
   return `${hitDiceCount}${hitDiceType}${bonusStr}`
 }
+
+export function parseHitDiceText(text: unknown): string | undefined {
+  if (typeof text !== 'string') return undefined
+
+  const match = text.replace(/\s/g, '').match(/\d+d\d+([+-]\d+)?/i)
+
+  return match && hitDiceExpression.test(match[0]) ? match[0] : undefined
+}

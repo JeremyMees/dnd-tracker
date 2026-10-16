@@ -155,6 +155,7 @@ function invalidateQueries(): void {
           />
           <ImportButton
             v-if="hasRights"
+            accept="application/json,.json,text/csv,.csv,text/markdown,.md,.markdown,text/plain,.txt"
             :disabled="status === 'pending' || importing"
             :loading="data?.homebrews === null"
             @import="importItems"

@@ -246,4 +246,70 @@ describe('parse', () => {
       expect(formatChallengeRating(30)).toBe('30')
     })
   })
+
+  describe('toNumberOrUndefined', () => {
+    it('reads numbers, numeric text and fractions', () => {
+      expect(toNumberOrUndefined(4)).toBe(4)
+      expect(toNumberOrUndefined('+6')).toBe(6)
+      expect(toNumberOrUndefined('1/4')).toBe(0.25)
+    })
+
+    it('returns undefined for anything else', () => {
+      expect(toNumberOrUndefined('fast')).toBeUndefined()
+      expect(toNumberOrUndefined(Number.NaN)).toBeUndefined()
+      expect(toNumberOrUndefined({ value: 4 })).toBeUndefined()
+      expect(toNumberOrUndefined(null)).toBeUndefined()
+    })
+  })
+
+  describe('toTextOrUndefined', () => {
+    it('trims text and turns numbers into text', () => {
+      expect(toTextOrUndefined('  Goblin ')).toBe('Goblin')
+      expect(toTextOrUndefined(3)).toBe('3')
+    })
+
+    it('returns undefined for blank text and other values', () => {
+      expect(toTextOrUndefined('   ')).toBeUndefined()
+      expect(toTextOrUndefined(['a'])).toBeUndefined()
+      expect(toTextOrUndefined(undefined)).toBeUndefined()
+    })
+  })
+
+  describe('toRecordOrUndefined', () => {
+    it('returns plain objects as they are', () => {
+      const value = { a: 1 }
+
+      expect(toRecordOrUndefined(value)).toBe(value)
+    })
+
+    it('returns undefined for arrays, null and primitives', () => {
+      expect(toRecordOrUndefined([])).toBeUndefined()
+      expect(toRecordOrUndefined(null)).toBeUndefined()
+      expect(toRecordOrUndefined('a')).toBeUndefined()
+    })
+  })
+
+  describe('toListOrEmpty', () => {
+    it('returns arrays as they are and an empty list otherwise', () => {
+      const value = [1, 2]
+
+      expect(toListOrEmpty(value)).toBe(value)
+      expect(toListOrEmpty('a')).toEqual([])
+      expect(toListOrEmpty(undefined)).toEqual([])
+    })
+  })
+
+  describe('integerInRange', () => {
+    it('rounds values inside the range', () => {
+      expect(integerInRange(4.6, 1, 10)).toBe(5)
+      expect(integerInRange(1, 1, 10)).toBe(1)
+      expect(integerInRange(10, 1, 10)).toBe(10)
+    })
+
+    it('returns undefined outside the range or without a value', () => {
+      expect(integerInRange(0, 1, 10)).toBeUndefined()
+      expect(integerInRange(11, 1, 10)).toBeUndefined()
+      expect(integerInRange(undefined, 1, 10)).toBeUndefined()
+    })
+  })
 })

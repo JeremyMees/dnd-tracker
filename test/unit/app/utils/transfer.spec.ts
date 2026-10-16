@@ -1,4 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import {
+  fiveEToolsCreature,
+  improvedInitiativeExport,
+  koboldFightClubCsv,
+  markdownStatblocks,
+} from '~~/test/fixtures/creature-import'
 
 const row = {
   id: 'row-1',
@@ -271,7 +277,84 @@ describe('transfer', () => {
     })
   })
 
+  describe('creature files', () => {
+    it('Should read creatures from another tool on the homebrew page', () => {
+      expect(
+        parseTransferFile(
+          JSON.stringify(improvedInitiativeExport),
+          'homebrews',
+        ).map(item => item.name),
+      ).toEqual(['Marsh Lurker', 'Reed Witch', 'Kees'])
+    })
+
+    it('Should allow more creatures than a campaign holds and leave the room check to the caller', () => {
+      const creatures = Array.from({ length: 120 }, (_item, index) => ({
+        ...fiveEToolsCreature,
+        name: `Imp ${index}`,
+      }))
+
+      expect(
+        parseTransferFile(JSON.stringify({ monster: creatures }), 'homebrews'),
+      ).toHaveLength(120)
+    })
+
+    it('Should read markdown statblocks on the homebrew page', () => {
+      expect(
+        parseTransferFile(markdownStatblocks, 'homebrews').map(
+          item => item.name,
+        ),
+      ).toEqual(['Cinder Drake', 'Moss Sprite'])
+    })
+
+    it('Should call a file without creatures unsupported on the homebrew page', () => {
+      expect(
+        reasonOf(() =>
+          parseTransferFile(JSON.stringify({ hello: 'world' }), 'homebrews'),
+        ),
+      ).toBe('unsupportedFile')
+      expect(reasonOf(() => parseTransferFile('not json', 'homebrews'))).toBe(
+        'unsupportedFile',
+      )
+    })
+
+    it('Should still call a broken export of this app invalid', () => {
+      expect(
+        reasonOf(() =>
+          parseTransferFile(
+            fileText('homebrews', [{ name: 'Orc' }], { version: 2 }),
+            'homebrews',
+          ),
+        ),
+      ).toBe('invalidFile')
+    })
+
+    it('Should not read creatures on the encounters page', () => {
+      expect(
+        reasonOf(() =>
+          parseTransferFile(JSON.stringify(fiveEToolsCreature), 'encounters'),
+        ),
+      ).toBe('invalidFile')
+    })
+  })
+
   describe('readTransferFile', () => {
+    it('Should read a Kobold Fight Club csv on the homebrew page', async () => {
+      const file = new File([koboldFightClubCsv], 'monsters.CSV')
+
+      await expect(readTransferFile(file, 'homebrews')).resolves.toEqual([
+        expect.objectContaining({ name: 'Bog Zombie' }),
+        expect.objectContaining({ name: 'Zombie, Large' }),
+      ])
+    })
+
+    it('Should call a csv without creatures unsupported', async () => {
+      const file = new File(['title,date\nA,B'], 'notes.csv')
+
+      await expect(readTransferFile(file, 'homebrews')).rejects.toMatchObject({
+        reason: 'unsupportedFile',
+      })
+    })
+
     it('Should parse the text of the file', async () => {
       const file = new File(
         [fileText('homebrews', [{ name: 'Orc' }])],

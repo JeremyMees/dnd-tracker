@@ -1,7 +1,12 @@
 export type TransferKind = 'encounters' | 'homebrews'
 
 export type TransferErrorReason =
-  'invalidFile' | 'wrongKind' | 'tooLarge' | 'empty' | 'tooMany'
+  | 'invalidFile'
+  | 'unsupportedFile'
+  | 'wrongKind'
+  | 'tooLarge'
+  | 'empty'
+  | 'tooMany'
 
 export type EncounterTransfer = Pick<
   InitiativeInsert,

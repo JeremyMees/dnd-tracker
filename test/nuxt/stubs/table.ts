@@ -77,7 +77,7 @@ export function createListingStubs({
 
   const ImportButton = defineComponent({
     name: 'ImportButtonStub',
-    props: ['disabled', 'loading'],
+    props: ['disabled', 'loading', 'accept'],
     emits: ['import'],
     template: '<div test-id="import" />',
   })
