@@ -16,10 +16,11 @@ describe('dnd/abilities', () => {
       expect(modifierFromScore(-20)).toBe(-5)
     })
 
-    it('should never return higher than 5 DnD modifiers', () => {
+    it('should keep counting above a score of 20', () => {
       expect(modifierFromScore(21)).toBe(5)
-      expect(modifierFromScore(30)).toBe(5)
-      expect(modifierFromScore(100)).toBe(5)
+      expect(modifierFromScore(22)).toBe(6)
+      expect(modifierFromScore(27)).toBe(8)
+      expect(modifierFromScore(30)).toBe(10)
     })
   })
 })
