@@ -72,6 +72,7 @@ describe('DELETE /api/encounter/[id]', () => {
         error: null,
       }),
       team: mockChain({ data: { role: 'Admin' }, error: null }),
+      profiles: mockChain({ data: { subscriptionType: 'pro' }, error: null }),
     })
 
     await expect(handler(deleteEvent())).resolves.toEqual({ deleted: true })

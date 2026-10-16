@@ -48,6 +48,10 @@ export async function requireCampaignAccess(
     throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
   }
 
+  if (role !== 'Owner' && !(await isProUser(supabase, campaign.createdBy))) {
+    throw createError({ statusCode: 403, statusMessage: 'campaignSuspended' })
+  }
+
   return {
     id: campaign.id,
     title: campaign.title,

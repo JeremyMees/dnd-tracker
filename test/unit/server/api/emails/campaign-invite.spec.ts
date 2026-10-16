@@ -209,6 +209,7 @@ describe('POST /api/emails/campaign-invite', () => {
       team: [mockChain({ data: { role: 'Admin' } }), mockChain({ data: null })],
       profiles: [
         mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+        mockChain({ data: { subscriptionType: 'pro' }, error: null }),
         mockChain({
           data: { email: 'owner@example.com', username: 'Owner' },
           error: null,

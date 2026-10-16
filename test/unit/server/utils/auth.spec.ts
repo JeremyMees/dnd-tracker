@@ -23,17 +23,27 @@ const campaign = { id: 42, title: 'Curse of Strahd', createdBy: 'user-1' }
 function mockServiceRole({
   campaignResult = { data: campaign, error: null } as Record<string, unknown>,
   memberResult = { data: null } as Record<string, unknown>,
+  ownerResult = { data: { subscriptionType: 'pro' } } as Record<
+    string,
+    unknown
+  >,
 } = {}) {
   const single = vi.fn().mockResolvedValue(campaignResult)
   const eq = vi.fn(() => ({ single }))
   const maybeSingle = vi.fn().mockResolvedValue(memberResult)
   const match = vi.fn(() => ({ maybeSingle }))
-  const select = vi.fn(columns => (columns === 'role' ? { match } : { eq }))
+  const ownerSingle = vi.fn().mockResolvedValue(ownerResult)
+  const ownerEq = vi.fn(() => ({ single: ownerSingle }))
+  const select = vi.fn(columns => {
+    if (columns === 'role') return { match }
+    if (columns === 'subscriptionType') return { eq: ownerEq }
+    return { eq }
+  })
   const from = vi.fn(() => ({ select }))
 
   serverSupabaseServiceRole.mockReturnValue({ from })
 
-  return { from, select, eq, single, match, maybeSingle }
+  return { from, select, eq, single, match, maybeSingle, ownerEq }
 }
 
 describe('auth', () => {
@@ -117,6 +127,32 @@ describe('auth', () => {
 
       expect(from).toHaveBeenCalledWith('team')
       expect(match).toHaveBeenCalledWith({ campaign: 42, user: 'user-2' })
+    })
+
+    it('suspends members while the owner is not on pro', async () => {
+      const { ownerEq } = mockServiceRole({
+        memberResult: { data: { role: 'Admin' } },
+        ownerResult: { data: { subscriptionType: 'free' } },
+      })
+
+      await expect(
+        requireCampaignAccess(event, 42, 'user-2'),
+      ).rejects.toMatchObject({
+        statusCode: 403,
+        statusMessage: 'campaignSuspended',
+      })
+      expect(ownerEq).toHaveBeenCalledWith('id', 'user-1')
+    })
+
+    it('keeps the owner in even without pro', async () => {
+      const { ownerEq } = mockServiceRole({
+        ownerResult: { data: { subscriptionType: 'free' } },
+      })
+
+      await expect(
+        requireCampaignAccess(event, 42, 'user-1'),
+      ).resolves.toMatchObject({ role: 'Owner' })
+      expect(ownerEq).not.toHaveBeenCalled()
     })
 
     it('queries the campaign by id', async () => {

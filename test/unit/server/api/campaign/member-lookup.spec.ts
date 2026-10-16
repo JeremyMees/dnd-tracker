@@ -31,9 +31,17 @@ function mockTables({
   profiles?: Record<string, unknown>
 } = {}) {
   const profilesChain = mockChain(profiles)
-  const tables: Record<string, ReturnType<typeof mockChain>> = {
+  const tables: Record<
+    string,
+    ReturnType<typeof mockChain> | ReturnType<typeof mockChain>[]
+  > = {
     campaigns: mockChain(campaign),
-    profiles: profilesChain,
+    profiles: member
+      ? [
+          mockChain({ data: { subscriptionType: 'pro' }, error: null }),
+          profilesChain,
+        ]
+      : profilesChain,
   }
 
   if (member) tables.team = mockChain(member)

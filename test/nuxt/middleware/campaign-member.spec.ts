@@ -97,6 +97,7 @@ describe('Campaign member middleware', () => {
     mockUser = { ...authUser, id: '1' }
     mockQueryClient.getQueryData.mockReturnValue({
       createdBy: '1',
+      owner: { subscriptionType: 'pro' },
       team: [],
       join_campaign: [],
     })
@@ -118,6 +119,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [{ role: 'Viewer', user: '2' }],
         join_campaign: [],
       }
@@ -139,6 +141,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [{ role: 'Admin', user: '2' }],
         join_campaign: [],
       }
@@ -160,6 +163,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '1' }
       mockQueryClient.getQueryData.mockReturnValue({
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [],
         join_campaign: [],
       })
@@ -182,6 +186,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [{ role: 'Viewer', user: '2' }],
         join_campaign: [],
       }
@@ -203,6 +208,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [{ role: 'Admin', user: '2' }],
         join_campaign: [],
       }
@@ -224,6 +230,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '1' } as AuthUser
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [],
         join_campaign: [],
       }
@@ -247,6 +254,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [{ role: 'Viewer', user: '2' }],
         join_campaign: [],
       }
@@ -268,6 +276,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '2' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [{ role: 'Admin', user: '2' }],
         join_campaign: [],
       }
@@ -289,6 +298,7 @@ describe('Campaign member middleware', () => {
       mockUser = { ...authUser, id: '1' }
       const mockData = {
         createdBy: '1',
+        owner: { subscriptionType: 'pro' },
         team: [],
         join_campaign: [],
       }
@@ -307,10 +317,53 @@ describe('Campaign member middleware', () => {
     })
   })
 
+  it('should send a member back to the campaigns while the owner is not on pro', async () => {
+    mockUser = { ...authUser, id: '2' }
+    mockQueryClient.getQueryData.mockReturnValue({
+      createdBy: '1',
+      owner: { subscriptionType: 'free' },
+      team: [],
+      join_campaign: [],
+    })
+
+    await middleware(
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
+      mockFrom,
+    )
+
+    expect(navigateTo).toHaveBeenCalledWith('/campaigns')
+  })
+
+  it('should keep the owner in while not on pro', async () => {
+    mockUser = { ...authUser, id: '1' }
+    mockQueryClient.getQueryData.mockReturnValue({
+      createdBy: '1',
+      owner: { subscriptionType: 'free' },
+      team: [],
+      join_campaign: [],
+    })
+
+    await middleware(
+      {
+        ...mockTo,
+        params: { title: 'test', id: '1' },
+        fullPath: '/campaigns/test/1/encounters',
+      },
+      mockFrom,
+    )
+
+    expect(navigateTo).not.toHaveBeenCalled()
+  })
+
   it('should navigate to /no-access when user is not a team member', async () => {
     mockUser = { ...authUser, id: '3' }
     const mockData = {
       createdBy: '1',
+      owner: { subscriptionType: 'pro' },
       team: [{ role: 'Viewer', user: '2' }],
       join_campaign: [],
     }
@@ -332,6 +385,7 @@ describe('Campaign member middleware', () => {
     mockUser = { ...authUser, id: '3' }
     mockQueryClient.getQueryData.mockReturnValue({
       createdBy: '1',
+      owner: { subscriptionType: 'pro' },
       team: [{ role: 'Viewer', user: '2' }],
       join_campaign: [
         { role: 'Admin', user: '4', token: 'other-token' },
@@ -357,6 +411,7 @@ describe('Campaign member middleware', () => {
     mockUser = { ...authUser, id: '3' }
     mockQueryClient.getQueryData.mockReturnValue({
       createdBy: '1',
+      owner: { subscriptionType: 'pro' },
       team: [],
       join_campaign: [{ role: 'Admin', user: '4', token: 'other-token' }],
     })
@@ -378,6 +433,7 @@ describe('Campaign member middleware', () => {
     const mockData = {
       id: 1,
       createdBy: '1',
+      owner: { subscriptionType: 'pro' },
       team: [],
       join_campaign: [],
     }
@@ -405,6 +461,7 @@ describe('Campaign member middleware', () => {
     const mockData = {
       id: 1,
       createdBy: '1',
+      owner: { subscriptionType: 'pro' },
       team: [{ role: 'Viewer', user: '2' }],
       join_campaign: [],
     }
