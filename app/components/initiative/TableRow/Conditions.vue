@@ -8,7 +8,9 @@ const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = ref<boolean>(false)
 
-const { onRequest } = useRowShortcut()
+const { onRequest, isTarget } = useRowShortcut()
+
+const isShortcutTarget = computed(() => isTarget(sheet.value, props.item.id))
 
 onRequest(
   () => props.item.id,
@@ -70,11 +72,19 @@ function toggleDurationEditor(id: string): void {
           :class="{ 'cursor-progress': isPending }"
           class="h-[27px] flex flex-col justify-center"
         >
-          <Icon
-            name="tabler:plus"
-            class="size-5 min-w-5 text-foreground/10"
-            aria-hidden="true"
-          />
+          <Tooltip
+            :text="$t('components.shortcuts.condition')"
+            :shortcut="['C']"
+            :disabled="!isShortcutTarget"
+          >
+            <span class="flex">
+              <Icon
+                name="tabler:plus"
+                class="size-5 min-w-5 text-foreground/10"
+                aria-hidden="true"
+              />
+            </span>
+          </Tooltip>
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent>

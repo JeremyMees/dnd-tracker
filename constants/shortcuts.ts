@@ -3,6 +3,8 @@ export const encounterShortcuts: ShortcutDescription[] = [
   { label: 'components.shortcuts.next', keys: ['SHIFT', '→'] },
   { label: 'components.shortcuts.previous', keys: ['SHIFT', '←'] },
   { label: 'components.shortcuts.expand', keys: ['SHIFT', 'ENTER'] },
+  { label: 'components.shortcuts.target', keys: ['ALT', '↑', '↓'] },
+  { label: 'components.shortcuts.clearTarget', keys: ['ESC'] },
   { label: 'components.shortcuts.damage', keys: ['D'] },
   { label: 'components.shortcuts.heal', keys: ['H'] },
   { label: 'components.shortcuts.condition', keys: ['C'] },

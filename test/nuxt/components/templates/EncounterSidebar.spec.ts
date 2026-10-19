@@ -539,8 +539,14 @@ describe('EncounterSidebar', () => {
       const rows = document.body.querySelectorAll('[test-id="shortcut"]')
 
       expect(rows).toHaveLength(encounterShortcuts.length)
-      expect(rows[4]?.textContent).toContain('components.shortcuts.damage')
-      expect(rows[4]?.querySelector('kbd kbd')?.textContent?.trim()).toBe('D')
+      const damage = encounterShortcuts.findIndex(
+        shortcut => shortcut.label === 'components.shortcuts.damage',
+      )
+
+      expect(rows[damage]?.textContent).toContain('components.shortcuts.damage')
+      expect(rows[damage]?.querySelector('kbd kbd')?.textContent?.trim()).toBe(
+        'D',
+      )
     })
 
     it('Should toggle with the question mark key', async () => {

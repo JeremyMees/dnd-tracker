@@ -15,16 +15,18 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   )
 }
 
+export function isShortcutContext(target: EventTarget | null): boolean {
+  if (isTypingTarget(target)) return false
+
+  return !(target instanceof Element && target.closest('[role="dialog"]'))
+}
+
 export function isPlainKeyPress(event: KeyboardEvent): boolean {
   if (event.metaKey || event.ctrlKey || event.altKey || event.repeat) {
     return false
   }
 
-  if (isTypingTarget(event.target)) return false
-
-  return !(
-    event.target instanceof Element && event.target.closest('[role="dialog"]')
-  )
+  return isShortcutContext(event.target)
 }
 
 export function randomString(): string {

@@ -2,6 +2,8 @@ const keyLabels: Record<string, { mac: string; other: string }> = {
   MOD: { mac: '⌘', other: 'Ctrl' },
   SHIFT: { mac: 'Shift', other: 'Shift' },
   ENTER: { mac: '⏎', other: 'Enter' },
+  ALT: { mac: 'Option', other: 'Alt' },
+  ESC: { mac: 'Esc', other: 'Esc' },
 }
 
 export function useShortcutKeys() {

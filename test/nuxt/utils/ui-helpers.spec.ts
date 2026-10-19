@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { isPlainKeyPress, isTypingTarget } from '~/utils/ui-helpers'
+import {
+  isPlainKeyPress,
+  isShortcutContext,
+  isTypingTarget,
+} from '~/utils/ui-helpers'
 
 describe('ui-helpers in the browser', () => {
   describe('isTypingTarget', () => {
@@ -70,6 +74,24 @@ describe('ui-helpers in the browser', () => {
       dialog.appendChild(button)
 
       expect(isPlainKeyPress(keydown({}, button))).toBe(false)
+    })
+  })
+
+  describe('isShortcutContext', () => {
+    it('is true outside inputs and dialogs', () => {
+      expect(isShortcutContext(document.body)).toBe(true)
+      expect(isShortcutContext(null)).toBe(true)
+    })
+
+    it('is false while typing or inside a dialog', () => {
+      const dialog = document.createElement('div')
+      const button = document.createElement('button')
+
+      dialog.setAttribute('role', 'dialog')
+      dialog.appendChild(button)
+
+      expect(isShortcutContext(document.createElement('textarea'))).toBe(false)
+      expect(isShortcutContext(button)).toBe(false)
     })
   })
 })

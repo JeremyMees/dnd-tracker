@@ -291,7 +291,7 @@ describe('useInitiativeSheet', async () => {
 
     function latestHandler(key: string): KeyStrokeHandler {
       const call = onKeyStrokeMock.mock.calls.findLast(([keys]) =>
-        (keys as string[]).includes(key),
+        [keys].flat().includes(key),
       )
 
       return call![1] as KeyStrokeHandler
@@ -398,6 +398,65 @@ describe('useInitiativeSheet', async () => {
 
       beforeEach(() => {
         request().value = undefined
+        useRowShortcut().targetId.value = undefined
+      })
+
+      it('Should move the target with alt and the arrow keys', () => {
+        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('ArrowDown', { altKey: true })
+        expect(target.value?.id).toBe(sheet.rows[1]!.id)
+
+        pressKey('ArrowUp', { altKey: true })
+        pressKey('ArrowUp', { altKey: true })
+        expect(target.value?.id).toBe(sheet.rows.at(-1)!.id)
+      })
+
+      it('Should act on the target instead of the current creature', () => {
+        useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('ArrowDown', { altKey: true })
+        pressKey('d')
+
+        expect(request().value).toEqual({
+          rowId: sheet.rows[1]!.id,
+          action: 'damage',
+        })
+      })
+
+      it.each([
+        {},
+        { altKey: true, shiftKey: true },
+        { altKey: true, metaKey: true },
+        { altKey: true, ctrlKey: true },
+        { altKey: true, target: document.createElement('input') },
+      ])('Should not move the target with %o', modifiers => {
+        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('ArrowDown', modifiers)
+
+        expect(target.value?.id).toBe(sheet.rows[0]!.id)
+      })
+
+      it('Should go back to the current creature on escape', () => {
+        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('ArrowDown', { altKey: true })
+        pressKey('Escape')
+
+        expect(target.value?.id).toBe(sheet.rows[0]!.id)
+      })
+
+      it('Should reset the target when the turn changes', async () => {
+        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+        pressKey('ArrowDown', { altKey: true })
+        pressKey('ArrowDown', { altKey: true })
+        mockSheet.value = { ...mockSheet.value, activeIndex: 1 }
+        await nextTick()
+
+        expect(useRowShortcut().targetId.value).toBeUndefined()
+        expect(target.value?.id).toBe(sheet.rows[1]!.id)
       })
 
       it.each([

@@ -2,10 +2,14 @@
 
 exports[`Initiative table row hp > Should match snapshot 1`] = `
 "<div><button data-slot="popover-trigger" id="ylqr4a611g-hp" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col gap-y-1 rounded-lg">
-    <div class="flex items-center gap-x-1"><span test-id="hp" class="">10</span><span data-state="closed" data-grace-area-trigger="" test-id="temp" class="text-warning text-xs"> +5</span>
-      <!--teleport start-->
-      <!--teleport end-->
-    </div><span test-id="max" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 100</span>
+    <div data-state="closed" data-grace-area-trigger="" class="flex flex-col gap-y-1">
+      <div class="flex items-center gap-x-1"><span test-id="hp" class="">10</span><span data-state="closed" data-grace-area-trigger="" test-id="temp" class="text-warning text-xs"> +5</span>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div><span test-id="max" class="text-2xs text-muted-foreground whitespace-nowrap">general.max: 100</span>
+    </div>
+    <!--teleport start-->
+    <!--teleport end-->
   </button>
   <!--teleport start-->
   <!--teleport end-->

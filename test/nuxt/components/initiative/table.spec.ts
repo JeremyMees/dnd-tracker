@@ -595,6 +595,34 @@ describe('Initiative table', () => {
       },
     )
 
+    it('Should outline the target and use it for the palette commands', async () => {
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+      const { request, targetId } = useRowShortcut()
+
+      targetId.value = sheet.rows[2]!.id
+      await nextTick()
+
+      const rows = component.findAll('[test-id="row"]')
+
+      expect(rows[2]!.attributes('data-target')).toBe('true')
+      expect(rows[0]!.attributes('data-target')).toBeUndefined()
+
+      runCommand('damage')
+
+      expect(request.value).toEqual({
+        rowId: sheet.rows[2]!.id,
+        action: 'damage',
+      })
+
+      request.value = undefined
+      targetId.value = undefined
+      component.unmount()
+    })
+
     it('Should hide the row commands when their columns are hidden', async () => {
       mockSheet.value = {
         ...sheet,

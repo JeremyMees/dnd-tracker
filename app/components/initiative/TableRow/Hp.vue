@@ -57,7 +57,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
           class="flex flex-col gap-y-1 rounded-lg"
         >
           <Tooltip :disabled="!isShortcutTarget || !hasHp">
-            <span class="flex flex-col gap-y-1">
+            <div class="flex flex-col gap-y-1">
               <div class="flex items-center gap-x-1">
                 <Icon
                   v-if="!isDefined(item.hitPoints) && item.type !== 'lair'"
@@ -92,7 +92,7 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
               >
                 {{ $t('general.max') }}: {{ item.maxHitPoints }}
               </span>
-            </span>
+            </div>
             <template #content>
               <span test-id="hp-shortcuts" class="flex items-center gap-3">
                 <span class="flex items-center gap-2">

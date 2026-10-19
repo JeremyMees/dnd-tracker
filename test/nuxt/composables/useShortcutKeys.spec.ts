@@ -24,6 +24,7 @@ describe('useShortcutKeys', () => {
     expect(vm.keyLabel('MOD')).toBe('⌘')
     expect(vm.keyLabel('SHIFT')).toBe('Shift')
     expect(vm.keyLabel('ENTER')).toBe('⏎')
+    expect(vm.keyLabel('ALT')).toBe('Option')
 
     component.unmount()
   })
@@ -36,6 +37,8 @@ describe('useShortcutKeys', () => {
     expect(vm.keyLabel('MOD')).toBe('Ctrl')
     expect(vm.keyLabel('SHIFT')).toBe('Shift')
     expect(vm.keyLabel('ENTER')).toBe('Enter')
+    expect(vm.keyLabel('ALT')).toBe('Alt')
+    expect(vm.keyLabel('ESC')).toBe('Esc')
 
     component.unmount()
   })

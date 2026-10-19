@@ -67,7 +67,31 @@ export function useInitiativeSheet(
     else if (e.key === 'ArrowRight') next()
   })
 
-  const { trigger: triggerRowShortcut } = useRowShortcut()
+  const {
+    trigger: triggerRowShortcut,
+    targetId,
+    targetRowId,
+    moveTarget,
+  } = useRowShortcut()
+
+  const target = computed(() =>
+    sheet.value?.rows.find(row => row.id === targetRowId(sheet.value)),
+  )
+
+  onKeyStroke(['ArrowUp', 'ArrowDown'], e => {
+    if (!e.altKey || e.metaKey || e.ctrlKey || e.shiftKey) return
+    if (!isShortcutContext(e.target) || !sheet.value?.rows.length) return
+
+    e.preventDefault()
+    moveTarget(sheet.value, e.key === 'ArrowDown' ? 1 : -1)
+  })
+
+  onKeyStroke('Escape', e => {
+    if (!targetId.value || !isShortcutContext(e.target)) return
+
+    targetId.value = undefined
+  })
+
   const rowShortcutKeys: Record<string, RowShortcutAction> = {
     d: 'damage',
     h: 'heal',
@@ -75,19 +99,21 @@ export function useInitiativeSheet(
   }
 
   onKeyStroke(Object.keys(rowShortcutKeys), e => {
-    if (e.shiftKey || !isPlainKeyPress(e) || !active.value) return
+    if (e.shiftKey || !isPlainKeyPress(e) || !target.value) return
 
     const action = rowShortcutKeys[e.key]
 
     if (!action) return
 
     e.preventDefault()
-    triggerRowShortcut(active.value.id, action)
+    triggerRowShortcut(target.value.id, action)
   })
 
   watch(
     () => sheet.value?.activeIndex,
     () => {
+      targetId.value = undefined
+
       if (sheet.value?.rows.length) {
         const active = sheet.value.activeIndex
         const row = sheet.value.rows[active] ? active : 0
@@ -212,6 +238,7 @@ export function useInitiativeSheet(
 
   return {
     active,
+    target,
     expanded,
     selected,
     columnVisibility,

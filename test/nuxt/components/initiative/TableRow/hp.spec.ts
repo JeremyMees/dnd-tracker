@@ -288,6 +288,26 @@ describe('Initiative table row hp', async () => {
       },
     )
 
+    it('Should show the damage and heal shortcuts only on the target', async () => {
+      const { targetId } = useRowShortcut()
+      const component = await mountWithTooltips(Hp, {
+        props: { item },
+        provide,
+      })
+      const tooltip = () =>
+        component.get('[test-id="trigger"]').findComponent({ name: 'Tooltip' })
+
+      expect(tooltip().props('disabled')).toBe(false)
+
+      targetId.value = sheet.rows[1]!.id
+      await nextTick()
+
+      expect(tooltip().props('disabled')).toBe(true)
+
+      targetId.value = undefined
+      component.unmount()
+    })
+
     it('Should ignore shortcuts for another row', async () => {
       const component = await mountWithTooltips(Hp, {
         props: { item },

@@ -354,6 +354,7 @@ useCommands(() => [
               >
                 <Tooltip
                   :text="`${$t('general.shortcut', 2)}`"
+                  :shortcut="['?']"
                   side="right"
                   :disabled="isExpanded"
                 >

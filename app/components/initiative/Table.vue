@@ -21,12 +21,20 @@ async function nextTurnWithReminders(): Promise<void> {
   if (reminders) showTurnReminders(reminders)
 }
 
-const { previous, next, reset, active, expanded, selected, columnVisibility } =
-  useInitiativeSheet(
-    computed(() => sheet.value),
-    update,
-    nextTurnWithReminders,
-  )
+const {
+  previous,
+  next,
+  reset,
+  active,
+  target,
+  expanded,
+  selected,
+  columnVisibility,
+} = useInitiativeSheet(
+  computed(() => sheet.value),
+  update,
+  nextTurnWithReminders,
+)
 
 syncRef(activeRow, active, { direction: 'rtl' })
 
@@ -54,15 +62,15 @@ function handleReset(hard: boolean): void {
 }
 
 const { t } = useI18n()
-const { trigger: triggerRowShortcut } = useRowShortcut()
+const { trigger: triggerRowShortcut, targetId } = useRowShortcut()
 
 function rowShortcut(action: RowShortcutAction): void {
-  if (active.value) triggerRowShortcut(active.value.id, action)
+  if (target.value) triggerRowShortcut(target.value.id, action)
 }
 
 useCommands(() => {
   const hasRows = !!sheet.value?.rows.length
-  const isLair = active.value?.type === 'lair'
+  const isLair = target.value?.type === 'lair'
 
   return [
     {
@@ -88,7 +96,7 @@ useCommands(() => {
       icon: 'tabler:sword',
       iconClass: 'text-destructive',
       shortcut: ['D'],
-      disabled: !active.value || !columnVisibility.value.hitPoints,
+      disabled: !target.value || !columnVisibility.value.hitPoints,
       run: () => rowShortcut('damage'),
     },
     {
@@ -97,7 +105,7 @@ useCommands(() => {
       icon: 'tabler:heart',
       iconClass: 'text-success',
       shortcut: ['H'],
-      disabled: !active.value || !columnVisibility.value.hitPoints,
+      disabled: !target.value || !columnVisibility.value.hitPoints,
       run: () => rowShortcut('heal'),
     },
     {
@@ -106,7 +114,7 @@ useCommands(() => {
       icon: 'tabler:sparkles',
       iconClass: 'text-help',
       shortcut: ['C'],
-      disabled: !active.value || isLair || !columnVisibility.value.conditions,
+      disabled: !target.value || isLair || !columnVisibility.value.conditions,
       run: () => rowShortcut('condition'),
     },
     {
@@ -228,7 +236,8 @@ const table = useTable({
                     :id="index === 0 ? 'tour-9' : ''"
                     test-id="row"
                     :data-state="selected[row.id] && 'selected'"
-                    class="data-[state=selected]:bg-muted-foreground/10 transition-colors duration-300"
+                    :data-target="targetId === row.id || undefined"
+                    class="data-[state=selected]:bg-muted-foreground/10 data-target:inset-ring-2 data-target:inset-ring-primary rounded-lg transition-colors duration-300"
                   >
                     <UiTableCell
                       v-for="cell in row.getVisibleCells()"

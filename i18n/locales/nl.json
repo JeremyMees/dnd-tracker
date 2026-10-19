@@ -1412,11 +1412,13 @@
       "next": "Volgende beurt",
       "previous": "Vorige beurt",
       "expand": "Huidig wezen open- of dichtklappen",
-      "damage": "Huidig wezen schade geven",
-      "heal": "Huidig wezen genezen",
-      "condition": "Conditie toevoegen aan huidig wezen",
+      "damage": "Doelwit schade geven",
+      "heal": "Doelwit genezen",
+      "condition": "Conditie toevoegen aan doelwit",
       "sidebar": "Zijbalk tonen of verbergen",
-      "overview": "Alle sneltoetsen tonen"
+      "overview": "Alle sneltoetsen tonen",
+      "target": "Doelwit kiezen, vanaf het huidige wezen",
+      "clearTarget": "Huidig wezen weer als doelwit"
     }
   },
   "tour": {

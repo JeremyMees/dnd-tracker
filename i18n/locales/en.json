@@ -1412,11 +1412,13 @@
       "next": "Next turn",
       "previous": "Previous turn",
       "expand": "Expand or collapse the current creature",
-      "damage": "Damage the current creature",
-      "heal": "Heal the current creature",
-      "condition": "Add a condition to the current creature",
+      "damage": "Damage the target",
+      "heal": "Heal the target",
+      "condition": "Add a condition to the target",
       "sidebar": "Show or hide the sidebar",
-      "overview": "Show all shortcuts"
+      "overview": "Show all shortcuts",
+      "target": "Choose a target, starting at the current creature",
+      "clearTarget": "Target the current creature again"
     }
   },
   "tour": {
