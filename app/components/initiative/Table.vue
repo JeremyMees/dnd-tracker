@@ -53,6 +53,11 @@ const columns = generateColumns()
 const tableData = shallowRef<InitiativeSheetRow[]>([])
 const historyOpen = shallowRef<boolean>(false)
 const summaryOpen = shallowRef<boolean>(false)
+const {
+  open: areaDamageOpen,
+  prefill: areaDamagePrefill,
+  show: showAreaDamage,
+} = useAreaDamage()
 
 function handleReset(hard: boolean): void {
   reset(hard)
@@ -116,6 +121,14 @@ useCommands(() => {
       shortcut: ['C'],
       disabled: !target.value || isLair || !columnVisibility.value.conditions,
       run: () => rowShortcut('condition'),
+    },
+    {
+      id: 'area-damage',
+      label: t('components.areaDamage.title'),
+      icon: 'tabler:flame',
+      iconClass: 'text-destructive',
+      disabled: !hasRows || !columnVisibility.value.hitPoints,
+      run: () => showAreaDamage(),
     },
     {
       id: 'combat-log',
@@ -204,6 +217,11 @@ const table = useTable({
       @update:open="summaryOpen = $event"
       @reset="handleReset($event)"
       @keep-playing="summaryOpen = false"
+    />
+
+    <LazyInitiativeAreaDamage
+      v-model:open="areaDamageOpen"
+      :prefill="areaDamagePrefill"
     />
 
     <div class="flex flex-col lg:flex-row gap-4">

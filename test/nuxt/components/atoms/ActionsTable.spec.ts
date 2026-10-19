@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import ActionsTable from '~/components/atoms/ActionsTable.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -328,5 +328,112 @@ describe('ActionsTable', async () => {
     expect(html).toContain('general.reaction')
     expect(html).toContain('Strike')
     expect(html).toContain('Parry')
+  })
+
+  describe('Area damage', () => {
+    const breath: DndAction = {
+      name: 'Fire Breath',
+      desc: 'Dexterity Saving Throw: DC 21, each creature in a 60-foot Cone. Failure: 59 (17d6) Fire damage. Success: Half damage.',
+      actionType: 'action',
+      attacks: [],
+    }
+
+    let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+    async function mount(props: {
+      actions: DndAction[]
+      allowRoll?: boolean
+      id?: string
+    }) {
+      wrapper = await mountWithTooltips(ActionsTable, { props, provide })
+
+      return wrapper
+    }
+
+    beforeEach(() => {
+      const { open, prefill } = useAreaDamage()
+
+      open.value = false
+      prefill.value = undefined
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+    })
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+      vi.restoreAllMocks()
+    })
+
+    it('Should open area damage prefilled from a save action', async () => {
+      const component = await mount({
+        actions: [breath],
+        allowRoll: true,
+        id: 'dragon',
+      })
+
+      await component.get('[test-id="area-damage"]').trigger('click')
+
+      const { open, prefill } = useAreaDamage()
+
+      expect(open.value).toBe(true)
+      expect(prefill.value).toEqual({
+        values: {
+          amount: 17,
+          damageType: 'fire',
+          dc: 21,
+          ability: 'dexterity',
+          halfOnSave: true,
+        },
+        source: { rowId: 'dragon', action: 'Fire Breath' },
+      })
+    })
+
+    it('Should open area damage from a homebrew attack with a save', async () => {
+      const component = await mount({
+        actions: [
+          {
+            ...baseAction,
+            desc: '',
+            attacks: [
+              {
+                ...baseAttack,
+                toHitMod: undefined,
+                damageType: 'cold',
+                spellSave: 14,
+                spellSaveType: 'constitution',
+              },
+            ],
+          },
+        ],
+        allowRoll: true,
+        id: 'mage',
+      })
+
+      await component.get('[test-id="area-damage"]').trigger('click')
+
+      expect(useAreaDamage().prefill.value?.values).toEqual({
+        amount: 11,
+        damageType: 'cold',
+        dc: 14,
+        ability: 'constitution',
+        halfOnSave: true,
+      })
+    })
+
+    it('Should not show the area damage button without a save', async () => {
+      const component = await mount({
+        actions: [baseAction],
+        allowRoll: true,
+        id: 'dragon',
+      })
+
+      expect(component.find('[test-id="area-damage"]').exists()).toBe(false)
+    })
+
+    it('Should not show the area damage button outside the encounter', async () => {
+      const component = await mount({ actions: [breath] })
+
+      expect(component.find('[test-id="area-damage"]').exists()).toBe(false)
+    })
   })
 })

@@ -35,6 +35,30 @@ export function actionUseLimit(action: Pick<DndAction, 'usageLimits'>): number {
   return 0
 }
 
+export function actionUsesLeft(
+  resources: DndResourceUses | undefined,
+  action: Pick<DndAction, 'name' | 'usageLimits'>,
+): number {
+  const used = resources?.actions?.[action.name] ?? 0
+
+  return Math.max(0, actionUseLimit(action) - used)
+}
+
+export function markActionUsed(
+  resources: DndResourceUses | undefined,
+  action: Pick<DndAction, 'name' | 'usageLimits'>,
+): DndResourceUses {
+  const used = resources?.actions?.[action.name] ?? 0
+
+  return {
+    ...resources,
+    actions: {
+      ...resources?.actions,
+      [action.name]: Math.min(actionUseLimit(action), used + 1),
+    },
+  }
+}
+
 export function limitedActions(row: ResourceRow): DndAction[] {
   return (row.actions ?? []).filter(action => actionUseLimit(action) > 0)
 }

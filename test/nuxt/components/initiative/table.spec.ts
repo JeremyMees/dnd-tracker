@@ -274,6 +274,48 @@ describe('Initiative table', () => {
     })
   })
 
+  describe('Area damage', () => {
+    it('Should open the area damage dialog from the palette', async () => {
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      runCommand('area-damage')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeAreaDamage' }).exists(),
+      )
+
+      expect(
+        component.findComponent({ name: 'InitiativeAreaDamage' }).props('open'),
+      ).toBe(true)
+
+      component.unmount()
+    })
+
+    it('Should hide the area damage command when hit points are hidden', async () => {
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: ['armorClass'],
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      expect(commandIds()).not.toContain('area-damage')
+
+      component.unmount()
+    })
+  })
+
   describe('Encounter summary', () => {
     it('Should not render the summary dialog without an encounterId', async () => {
       const component = await mountWithTooltips(Table, {
@@ -565,6 +607,7 @@ describe('Initiative table', () => {
         'damage',
         'heal',
         'condition',
+        'area-damage',
         'reset-soft',
         'reset-hard',
       ])

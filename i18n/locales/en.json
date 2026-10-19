@@ -802,7 +802,8 @@
     "actionsTable": {
       "cost": "Cost { cost } action | Costs { cost } actions",
       "form": " While in { form } form.",
-      "oneTarget": "One target"
+      "oneTarget": "One target",
+      "areaDamage": "Roll area damage"
     },
     "repeaterInput": {
       "noItems": "No items added yet. Click \"Add\" to get started."
@@ -850,6 +851,24 @@
       },
       "stabilized": "{rowName} stabilized",
       "died": "{rowName} died"
+    },
+    "areaDamage": {
+      "title": "Area damage",
+      "description": "Damage several creatures at once, with an optional saving throw.",
+      "dc": "Save DC",
+      "halfOnSave": "Half damage on a save",
+      "askPlayers": "Ask {names} to roll a {ability} save (DC {dc}).",
+      "reroll": "Roll the save again",
+      "saved": "Saved",
+      "defense": {
+        "immune": "Immune",
+        "resistant": "Resistant",
+        "vulnerable": "Vulnerable"
+      },
+      "apply": "Apply damage | Apply to {count} creature | Apply to {count} creatures",
+      "error": "The damage could not be applied",
+      "markUsed": "Mark {action} as used",
+      "usedUp": "{action} has no uses left"
     },
     "turnReminders": {
       "expired": "{condition} on {name} ran out",

@@ -83,6 +83,50 @@ describe('dnd/resources', () => {
     )
   })
 
+  describe('actionUsesLeft', () => {
+    it('counts the uses left of a limited action', () => {
+      expect(
+        actionUsesLeft({ actions: { [frighten.name]: 1 } }, frighten),
+      ).toBe(2)
+    })
+
+    it('has every use left without resources', () => {
+      expect(actionUsesLeft(undefined, frighten)).toBe(3)
+    })
+
+    it('has no uses left once a recharge is used', () => {
+      expect(actionUsesLeft({ actions: { [breath.name]: 1 } }, breath)).toBe(0)
+    })
+
+    it('has no uses for an unlimited action', () => {
+      expect(actionUsesLeft(undefined, tail)).toBe(0)
+    })
+  })
+
+  describe('markActionUsed', () => {
+    it('uses up a recharge', () => {
+      expect(markActionUsed({ reaction: true }, breath)).toEqual({
+        reaction: true,
+        actions: { [breath.name]: 1 },
+      })
+    })
+
+    it('adds a use to a per day action', () => {
+      expect(
+        markActionUsed(
+          { actions: { [frighten.name]: 1, [breath.name]: 1 } },
+          frighten,
+        ),
+      ).toEqual({ actions: { [frighten.name]: 2, [breath.name]: 1 } })
+    })
+
+    it('never goes above the limit', () => {
+      expect(
+        markActionUsed({ actions: { [frighten.name]: 3 } }, frighten),
+      ).toEqual({ actions: { [frighten.name]: 3 } })
+    })
+  })
+
   describe('limitedActions', () => {
     it('keeps only the actions with a use limit', () => {
       expect(limitedActions({ actions: [breath, tail, frighten] })).toEqual([

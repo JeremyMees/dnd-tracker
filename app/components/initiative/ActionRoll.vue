@@ -37,7 +37,7 @@ const result = ref<{
 
 const targets = computed(() => {
   return sheet.value?.rows
-    .filter(row => row.id !== props.id)
+    .filter(row => row.id !== props.id && isDefined(row.hitPoints))
     .map(row => ({ label: row.name, value: row.id }))
 })
 
@@ -122,17 +122,13 @@ const onSubmit = form.handleSubmit(async values => {
     <UiPopoverTrigger as-child>
       <UiButton
         test-id="trigger"
-        variant="tertiary-ghost"
+        variant="tertiary"
         size="icon-sm"
         :aria-label="$t('actions.roll')"
         class="group"
       >
         <Tooltip :text="$t('actions.roll')">
-          <Icon
-            name="tabler:hexagon"
-            :aria-hidden="true"
-            class="text-tertiary group-hover:text-foreground transition-colors"
-          />
+          <Icon name="tabler:hexagon" :aria-hidden="true" />
         </Tooltip>
       </UiButton>
     </UiPopoverTrigger>

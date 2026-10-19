@@ -61,6 +61,8 @@ export type DndDamageType =
   | 'slashing'
   | 'thunder'
 
+export type DndDamageDefense = 'immune' | 'resistant' | 'vulnerable'
+
 export type DndArmorType = 'light' | 'medium' | 'heavy'
 
 export type DndMagicItemType =
@@ -249,6 +251,15 @@ export interface DndAction {
   legendaryActionCost?: number
   limitedToForm?: string
   usageLimits?: DndUsageLimits
+}
+
+export interface DndSaveEffect {
+  dc: number
+  ability: DndAbility
+  dice: string
+  bonus: number
+  damageType?: DndDamageType
+  halfOnSuccess: boolean
 }
 
 export interface DndAttack {

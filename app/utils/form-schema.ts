@@ -16,6 +16,7 @@ import {
   initiativeDefaultRows,
   initiativePets,
   initiativeWidgets,
+  maxHealthAndArmour,
 } from '~~/constants/validation'
 
 export const skillBonusesSchema = z.object({
@@ -136,6 +137,14 @@ export const resistancesAndImmunitiesSchema = z.object({
   damageResistances: z.array(z.enum(damageTypeEnum)).default([]),
   damageVulnerabilities: z.array(z.enum(damageTypeEnum)).default([]),
   conditionImmunities: z.array(z.enum(conditionTypeEnum)).default([]),
+})
+
+export const areaDamageSchema = z.object({
+  amount: z.int().min(0).max(maxHealthAndArmour),
+  damageType: z.enum(damageTypeEnum).optional(),
+  dc: z.int().min(1).max(30).optional(),
+  ability: z.enum(abilityTypeEnum),
+  halfOnSave: z.boolean(),
 })
 
 export const initiativeSettingsSchema = z.object({

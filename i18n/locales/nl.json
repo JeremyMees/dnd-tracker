@@ -802,7 +802,8 @@
     "actionsTable": {
       "cost": "Kost { cost } actie | Kost { cost } acties",
       "form": " Terwijl in { form } vorm.",
-      "oneTarget": "Één doelwit"
+      "oneTarget": "Één doelwit",
+      "areaDamage": "Gebiedsschade gooien"
     },
     "repeaterInput": {
       "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."
@@ -850,6 +851,24 @@
       },
       "stabilized": "{rowName} stabiliseerde",
       "died": "{rowName} stierf"
+    },
+    "areaDamage": {
+      "title": "Gebiedsschade",
+      "description": "Breng schade toe aan meerdere wezens tegelijk, met een optionele saving throw.",
+      "dc": "Save DC",
+      "halfOnSave": "Halve schade bij een geslaagde save",
+      "askPlayers": "Vraag {names} om een {ability} save te gooien (DC {dc}).",
+      "reroll": "Gooi de save opnieuw",
+      "saved": "Geslaagd",
+      "defense": {
+        "immune": "Immuun",
+        "resistant": "Resistent",
+        "vulnerable": "Kwetsbaar"
+      },
+      "apply": "Schade toepassen | Toepassen op {count} wezen | Toepassen op {count} wezens",
+      "error": "De schade kon niet worden toegepast",
+      "markUsed": "Markeer {action} als gebruikt",
+      "usedUp": "{action} kan niet meer gebruikt worden"
     },
     "turnReminders": {
       "expired": "{condition} op {name} is afgelopen",

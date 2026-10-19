@@ -210,6 +210,18 @@ describe('ActionRoll component', () => {
       })
     })
 
+    it('Should leave out rows without hit points', async () => {
+      const statue = { ...sheet.rows[1]!, id: 'statue', hitPoints: undefined }
+
+      mockSheet.value = { ...sheet, rows: [...sheet.rows, statue] }
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+
+      const vm = component.vm as unknown as ActionRollVM
+
+      expect(vm.targets.find(t => t.value === 'statue')).toBeUndefined()
+      expect(vm.targets.length).toBe(sheet.rows.length - 1)
+    })
+
     it('Should have no targets when sheet has only current row or empty rows', async () => {
       mockSheet.value = { ...sheet, rows: [sheet.rows[0]!] }
       const component1 = await mountWithTooltips(ActionRoll, { props, provide })
