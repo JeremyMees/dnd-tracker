@@ -530,6 +530,28 @@ describe('Initiative table', () => {
     expect(component.find('[test-id="expanded"]').exists()).toBeTruthy()
   })
 
+  it('Should keep a row expanded when the rows change', async () => {
+    const component = await mountWithTooltips(Table, { props, provide, global })
+
+    await component
+      .find('[test-id="row"]')
+      .find('button[arialabel="actions.show"]')
+      .trigger('click')
+    await nextTick()
+
+    mockSheet.value = {
+      ...sheet,
+      rows: sheet.rows.map((row, index) =>
+        index === 0 ? { ...row, hitPoints: 1 } : row,
+      ),
+    }
+    await flushPromises()
+
+    expect(component.find('[test-id="expanded"]').exists()).toBe(true)
+
+    component.unmount()
+  })
+
   describe('Command palette', () => {
     it('Should offer the turn, row and reset commands', async () => {
       const component = await mountWithTooltips(Table, {

@@ -168,6 +168,7 @@ const table = useTable({
   columns,
   getRowId: (row: InitiativeSheetRow) => row.id.toString(),
   getRowCanExpand: () => true,
+  autoResetExpanded: false,
   onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
   onRowSelectionChange: updaterOrValue =>
     valueUpdater(updaterOrValue, selected),

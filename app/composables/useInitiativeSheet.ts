@@ -129,8 +129,6 @@ export function useInitiativeSheet(
   watch(
     () => sheet.value?.rows,
     () => {
-      expanded.value = {} // this is a hack otherwise the table doesn't update when the data changes
-
       if (!sheet.value?.rows?.length) return
 
       const active = sheet.value.activeIndex
