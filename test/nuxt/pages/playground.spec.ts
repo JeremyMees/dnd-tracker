@@ -254,6 +254,7 @@ describe('Playground page', () => {
         },
       ],
       saves: [],
+      recharges: [],
     })
   })
 

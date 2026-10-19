@@ -7,6 +7,17 @@ export const deathSavesSchema = z.object({
   fail: z.tuple([z.boolean(), z.boolean(), z.boolean()]),
 })
 
+export const resourceUsesSchema = z
+  .object({
+    legendaryActions: z.int().min(0).max(10).optional(),
+    legendaryResistances: z.int().min(0).max(10).optional(),
+    reaction: z.boolean().optional(),
+    actions: z
+      .record(z.string().min(1).max(100), z.int().min(0).max(10))
+      .optional(),
+  })
+  .strict()
+
 export const conditionDurationSchema = z
   .object({
     rowId: z.string().min(1),

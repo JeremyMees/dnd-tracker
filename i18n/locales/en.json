@@ -846,7 +846,9 @@
       "expired": "{condition} on {name} ran out",
       "save": "{name}: {ability} save DC {dc} to end {condition}",
       "saved": "Saved",
-      "failed": "Failed"
+      "failed": "Failed",
+      "recharged": "{name}: {action} recharged (rolled {roll})",
+      "notRecharged": "{name}: {action} did not recharge (rolled {roll})"
     },
     "conditionDuration": {
       "title": "Duration",

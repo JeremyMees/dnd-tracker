@@ -66,7 +66,12 @@ describe('POST /api/encounter/[id]/turn', () => {
 
     const result = await handler(turnEvent())
 
-    expect(result).toEqual({ sheet: updated, expired: [], saves: [] })
+    expect(result).toEqual({
+      sheet: updated,
+      expired: [],
+      saves: [],
+      recharges: [],
+    })
     expect(updateChain.update).toHaveBeenCalledWith({
       activeIndex: 1,
       round: 3,

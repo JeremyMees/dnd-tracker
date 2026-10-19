@@ -247,6 +247,59 @@ describe('POST /api/encounter/[id]/patch-row', () => {
     })
   })
 
+  it('passes resource uses through to the row', async () => {
+    const resources = {
+      legendaryActions: 2,
+      reaction: true,
+      actions: { 'Fire Breath': 1 },
+    }
+
+    mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({ data: { rows: [row], round: 2 }, error: null }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, resources }, error: null }),
+          mockChain({ data: 5, error: null }),
+        ],
+      },
+    )
+
+    await handler(patchEvent({ rowId: 'row-1', patch: { resources } }))
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { resources },
+    })
+  })
+
+  it('rejects an unknown resource field', async () => {
+    mockFrom({
+      initiative_sheets: mockChain({
+        data: { id: 7, campaign: null, createdBy: 'user-1' },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        patchEvent({ rowId: 'row-1', patch: { resources: { spellSlots: 3 } } }),
+      ),
+    ).rejects.toMatchObject({ statusCode: 400 })
+  })
+
   it('rejects an unrecognized patch field', async () => {
     mockFrom({
       initiative_sheets: mockChain({

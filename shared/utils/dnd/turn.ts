@@ -8,6 +8,7 @@ function durationOwner(
 
 export function advanceTurn(
   sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'>,
+  roll: (sides: number) => number = randomRoll,
 ): TurnAdvance {
   const isAtEnd = sheet.activeIndex + 1 >= sheet.rows.length
   const activeIndex = isAtEnd ? 0 : sheet.activeIndex + 1
@@ -23,6 +24,7 @@ export function advanceTurn(
   const rowIds = new Set(sheet.rows.map(row => row.id))
   const expired: TurnReminder[] = []
   const saves: TurnReminder[] = []
+  const recharges: RechargeReminder[] = []
 
   const rows = sheet.rows.map(row => {
     let changed = false
@@ -65,10 +67,18 @@ export function advanceTurn(
       return [condition]
     })
 
-    return changed ? { ...row, conditions } : row
+    const updated = changed ? { ...row, conditions } : row
+
+    if (row.id !== starting) return updated
+
+    const refreshed = refreshResources(updated, roll)
+
+    recharges.push(...refreshed.recharges)
+
+    return refreshed.row
   })
 
-  return { activeIndex, round, rows, expired, saves }
+  return { activeIndex, round, rows, expired, saves, recharges }
 }
 
 export function conditionDurationPreset(

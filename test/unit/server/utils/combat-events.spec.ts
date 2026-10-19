@@ -163,7 +163,7 @@ describe('combat-events', () => {
     it('adds the turn reminders to the broadcast when given', async () => {
       mockFrom({}, { rpc: mockChain({ data: 9, error: null }) })
 
-      const reminders = { expired: [], saves: [] }
+      const reminders = { expired: [], saves: [], recharges: [] }
 
       await broadcastSheetSync(
         serverSupabaseServiceRole({} as never),

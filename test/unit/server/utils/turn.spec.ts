@@ -133,6 +133,7 @@ describe('turn', () => {
         sheet: updated,
         expired: [{ rowId: 'row-1', rowName: 'Goblin', condition: prone }],
         saves: [],
+        recharges: [],
       })
     })
 
@@ -175,6 +176,7 @@ describe('turn', () => {
           reminders: {
             expired: [{ rowId: 'row-1', rowName: 'Goblin', condition: prone }],
             saves: [],
+            recharges: [],
           },
         },
       )

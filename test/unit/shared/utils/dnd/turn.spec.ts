@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 function row(id: string, conditions: DndCondition[] = []): InitiativeSheetRow {
   return { id, name: id, index: 0, initiative: 10, type: 'monster', conditions }
@@ -6,6 +6,14 @@ function row(id: string, conditions: DndCondition[] = []): InitiativeSheetRow {
 
 function condition(duration?: DndConditionDuration): DndCondition {
   return { id: 'prone', name: 'Prone', desc: 'On the ground.', duration }
+}
+
+const breath: DndAction = {
+  name: 'Fire Breath',
+  desc: 'Exhales fire.',
+  attacks: [],
+  actionType: 'action',
+  usageLimits: { type: 'recharge', param: 5 },
 }
 
 describe('dnd/turn', () => {
@@ -168,6 +176,50 @@ describe('dnd/turn', () => {
       expect(result.round).toBe(2)
     })
 
+    it('refreshes the resources of the row whose turn starts', () => {
+      const dragon: InitiativeSheetRow = {
+        ...row('b'),
+        actions: [breath],
+        resources: { legendaryActions: 2, actions: { 'Fire Breath': 1 } },
+      }
+      const roll = vi.fn(() => 5)
+
+      const result = advanceTurn(
+        { rows: [row('a'), dragon], activeIndex: 0, round: 1 },
+        roll,
+      )
+
+      expect(roll).toHaveBeenCalledWith(6)
+      expect(result.rows[1]?.resources).toEqual({})
+      expect(result.recharges).toEqual([
+        {
+          rowId: 'b',
+          rowName: 'b',
+          action: 'Fire Breath',
+          roll: 5,
+          recharged: true,
+        },
+      ])
+    })
+
+    it('leaves the resources of the row whose turn ends alone', () => {
+      const dragon: InitiativeSheetRow = {
+        ...row('a'),
+        actions: [breath],
+        resources: { legendaryActions: 2, actions: { 'Fire Breath': 1 } },
+      }
+      const roll = vi.fn(() => 6)
+
+      const result = advanceTurn(
+        { rows: [dragon, row('b')], activeIndex: 0, round: 1 },
+        roll,
+      )
+
+      expect(roll).not.toHaveBeenCalled()
+      expect(result.rows[0]).toBe(dragon)
+      expect(result.recharges).toEqual([])
+    })
+
     it('handles an empty encounter', () => {
       expect(advanceTurn({ rows: [], activeIndex: 0, round: 1 })).toEqual({
         activeIndex: 0,
@@ -175,6 +227,7 @@ describe('dnd/turn', () => {
         rows: [],
         expired: [],
         saves: [],
+        recharges: [],
       })
     })
   })

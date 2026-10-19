@@ -176,7 +176,11 @@ describe('Initiative table', () => {
       rowName: sheet.rows[0]!.name,
       condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
     }
-    mockNextTurn.mockResolvedValueOnce({ expired: [expired], saves: [] })
+    mockNextTurn.mockResolvedValueOnce({
+      expired: [expired],
+      saves: [],
+      recharges: [],
+    })
 
     const component = await mountWithTooltips(Table, {
       props,
@@ -210,7 +214,11 @@ describe('Initiative table', () => {
       global,
     })
 
-    await turnReminders.trigger({ expired: [expired], saves: [] })
+    await turnReminders.trigger({
+      expired: [expired],
+      saves: [],
+      recharges: [],
+    })
 
     expect(mockNextTurn).not.toHaveBeenCalled()
     expect(toast.info).toHaveBeenCalledWith('components.turnReminders.expired')

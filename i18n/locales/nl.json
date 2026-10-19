@@ -846,7 +846,9 @@
       "expired": "{condition} op {name} is afgelopen",
       "save": "{name}: {ability} save DC {dc} om {condition} te beëindigen",
       "saved": "Geslaagd",
-      "failed": "Gefaald"
+      "failed": "Gefaald",
+      "recharged": "{name}: {action} is weer klaar ({roll} gegooid)",
+      "notRecharged": "{name}: {action} is nog niet klaar ({roll} gegooid)"
     },
     "conditionDuration": {
       "title": "Duur",

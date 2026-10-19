@@ -62,9 +62,9 @@ async function handlePatchRow(
 async function handleNextTurn(): Promise<TurnReminders | undefined> {
   if (!data.value) return
 
-  const { expired, saves } = await turn({ id })
+  const { expired, saves, recharges } = await turn({ id })
 
-  return { expired, saves }
+  return { expired, saves, recharges }
 }
 
 provide(INITIATIVE_SHEET, {

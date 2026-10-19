@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
+import {
+  conditionSchema,
+  deathSavesSchema,
+  resourceUsesSchema,
+} from '~~/shared/utils/dnd/schema'
 
 describe('dnd/schema', () => {
   describe('deathSavesSchema', () => {
@@ -34,6 +38,38 @@ describe('dnd/schema', () => {
       expect(() =>
         deathSavesSchema.parse({ save: [true, false, false] }),
       ).toThrow()
+    })
+  })
+
+  describe('resourceUsesSchema', () => {
+    it('accepts used legendary actions, resistances, reaction and actions', () => {
+      const uses = {
+        legendaryActions: 1,
+        legendaryResistances: 2,
+        reaction: true,
+        actions: { 'Fire Breath': 1 },
+      }
+
+      expect(resourceUsesSchema.parse(uses)).toEqual(uses)
+    })
+
+    it('accepts an empty object', () => {
+      expect(resourceUsesSchema.parse({})).toEqual({})
+    })
+
+    it('rejects unknown fields', () => {
+      expect(resourceUsesSchema.safeParse({ spellSlots: 1 }).success).toBe(
+        false,
+      )
+    })
+
+    it('rejects negative and fractional uses', () => {
+      expect(
+        resourceUsesSchema.safeParse({ legendaryActions: -1 }).success,
+      ).toBe(false)
+      expect(
+        resourceUsesSchema.safeParse({ actions: { Bite: 1.5 } }).success,
+      ).toBe(false)
     })
   })
 

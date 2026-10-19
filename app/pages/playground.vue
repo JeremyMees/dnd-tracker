@@ -71,11 +71,13 @@ async function handleNextTurn(): Promise<TurnReminders | undefined> {
 
   if (!target.value) return
 
-  const { activeIndex, round, rows, expired, saves } = advanceTurn(target.value)
+  const { activeIndex, round, rows, expired, saves, recharges } = advanceTurn(
+    target.value,
+  )
 
   target.value = { ...target.value, activeIndex, round, rows }
 
-  return { expired, saves }
+  return { expired, saves, recharges }
 }
 
 provide(INITIATIVE_SHEET, {

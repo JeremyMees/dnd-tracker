@@ -414,3 +414,5 @@ export const experienceBudgets: Record<number, ExperienceBudget> = {
 }
 
 export const extremeDifficultyFactor = 1.5
+
+export const legendaryActionsPerRound = 3

@@ -490,6 +490,7 @@ describe('POST /api/encounter/live/action', () => {
         reminders: {
           expired: [{ rowId: 'row-1', rowName: row.name, condition: prone }],
           saves: [],
+          recharges: [],
         },
       }),
     )

@@ -299,6 +299,7 @@ describe('useRealTimeInitiativeSheet', () => {
           },
         ],
         saves: [],
+        recharges: [],
       }
 
       emitBroadcast('sync', { version: 3, sheet, reminders })
@@ -328,7 +329,7 @@ describe('useRealTimeInitiativeSheet', () => {
       emitBroadcast('sync', {
         version: 5,
         sheet,
-        reminders: { expired: [], saves: [] },
+        reminders: { expired: [], saves: [], recharges: [] },
       })
 
       expect(listener).not.toHaveBeenCalled()

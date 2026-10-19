@@ -475,6 +475,7 @@ describe('initiative-sheets queries', () => {
         },
         expired,
         saves: [],
+        recharges: [],
       }
     }
 

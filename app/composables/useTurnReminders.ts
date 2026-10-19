@@ -32,7 +32,25 @@ export function useTurnReminders(
     })
   }
 
-  return function showTurnReminders({ expired, saves }: TurnReminders): void {
+  function rechargeToast({
+    rowName,
+    action,
+    roll,
+    recharged,
+  }: RechargeReminder) {
+    const message = t(
+      `components.turnReminders.${recharged ? 'recharged' : 'notRecharged'}`,
+      { name: rowName, action, roll },
+    )
+
+    return recharged ? toast.success(message) : toast.info(message)
+  }
+
+  return function showTurnReminders({
+    expired,
+    saves,
+    recharges = [],
+  }: TurnReminders): void {
     shown.forEach(id => toast.dismiss(id))
 
     shown = [
@@ -57,6 +75,7 @@ export function useTurnReminders(
           }),
         ),
       ),
+      ...recharges.map(rechargeToast),
     ]
   }
 }

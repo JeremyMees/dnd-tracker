@@ -1,6 +1,10 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
-import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
+import {
+  conditionSchema,
+  deathSavesSchema,
+  resourceUsesSchema,
+} from '~~/shared/utils/dnd/schema'
 import { getValidatedRouterParams } from 'h3'
 import { z } from 'zod'
 
@@ -21,6 +25,7 @@ const bodySchema = z.object({
       conditions: z.array(conditionSchema).optional(),
       deathSaves: deathSavesSchema.optional(),
       concentration: z.boolean().optional(),
+      resources: resourceUsesSchema.optional(),
     })
     .strict(),
 })

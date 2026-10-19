@@ -277,6 +277,13 @@ export interface DndUsageLimits {
   param: number
 }
 
+export interface DndResourceUses {
+  legendaryActions?: number
+  legendaryResistances?: number
+  reaction?: boolean
+  actions?: Record<string, number>
+}
+
 export interface DndTrait {
   name: string
   desc: string

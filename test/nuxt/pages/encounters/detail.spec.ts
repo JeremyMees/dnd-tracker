@@ -477,11 +477,15 @@ describe('Encounter detail page', () => {
         condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
       },
     ]
-    turn.mockResolvedValue({ sheet: {}, expired, saves: [] })
+    turn.mockResolvedValue({ sheet: {}, expired, saves: [], recharges: [] })
 
     const { probe } = await mountPage()
 
-    await expect(probe.nextTurn()).resolves.toEqual({ expired, saves: [] })
+    await expect(probe.nextTurn()).resolves.toEqual({
+      expired,
+      saves: [],
+      recharges: [],
+    })
     expect(turn).toHaveBeenCalledWith({ id: 2 })
   })
 
@@ -495,6 +499,7 @@ describe('Encounter detail page', () => {
         },
       ],
       saves: [],
+      recharges: [],
     }
     const listener = vi.fn()
 
