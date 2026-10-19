@@ -17,6 +17,7 @@ function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
     hitPoints: row.hitPoints,
     maxHitPoints: row.maxHitPoints,
     tempHitPoints: row.tempHitPoints,
+    reaction: row.resources?.reaction,
   }
 }
 

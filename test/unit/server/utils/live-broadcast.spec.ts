@@ -193,6 +193,14 @@ describe('live-broadcast', () => {
       ).toEqual({})
     })
 
+    it('sends only the reaction for a reaction change', () => {
+      expect(
+        sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'reaction', {
+          resources: { reaction: true, legendaryResistances: 1 },
+        }),
+      ).toEqual({ reaction: true })
+    })
+
     it('passes a non-player patch through untouched', () => {
       const patch = { hitPoints: 40, conditions }
 
@@ -283,6 +291,18 @@ describe('live-broadcast', () => {
 
     it('rejects an unknown action type', () => {
       expect(() => liveActionSchema.parse({ type: 'teleport' })).toThrow()
+    })
+
+    it('accepts a valid reaction action', () => {
+      expect(() =>
+        liveActionSchema.parse({ type: 'reaction', value: true }),
+      ).not.toThrow()
+    })
+
+    it('rejects a reaction action without a boolean value', () => {
+      expect(() =>
+        liveActionSchema.parse({ type: 'reaction', value: 1 }),
+      ).toThrow()
     })
 
     it('accepts a valid endTurn action', () => {

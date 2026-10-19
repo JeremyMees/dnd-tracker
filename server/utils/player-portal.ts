@@ -26,6 +26,8 @@ function toPlayerRow(
 
   if (!hidePlayerHealth) playerRow.deathSaves = row.deathSaves
 
+  if (!isMonster && row.resources?.reaction) playerRow.reaction = true
+
   if (!isMonster || !hideMonsterAc) {
     playerRow.armorClass = row.armorClass
     playerRow.tempArmorClass = row.tempArmorClass
@@ -81,6 +83,7 @@ export function toPlayerSheet(
       deathSaves: allow?.deathSaves ?? true,
       concentration: allow?.concentration ?? true,
       conditions: allow?.conditions ?? true,
+      reaction: allow?.reaction ?? true,
       endTurn: allow?.endTurn ?? true,
     },
   }

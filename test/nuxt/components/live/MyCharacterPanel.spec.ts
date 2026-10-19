@@ -17,6 +17,7 @@ const allow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  reaction: true,
   endTurn: true,
 }
 

@@ -86,6 +86,7 @@ describe('GET /api/encounter/live/state', () => {
           deathSaves: true,
           concentration: true,
           conditions: true,
+          reaction: true,
           endTurn: true,
         },
       },

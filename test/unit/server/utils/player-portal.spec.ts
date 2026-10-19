@@ -230,6 +230,27 @@ describe('toPlayerSheet', () => {
     expect(result.rows[0]!.armorClass).toBe(18)
   })
 
+  it('shows a used reaction on a player row', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [
+          playerRow({ resources: { reaction: true, legendaryResistances: 1 } }),
+        ],
+      }),
+    )
+
+    expect(result.rows[0]!.reaction).toBe(true)
+    expect(result.rows[0]!).not.toHaveProperty('resources')
+  })
+
+  it('hides the reaction of a monster row', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ resources: { reaction: true } })] }),
+    )
+
+    expect(result.rows[0]!).not.toHaveProperty('reaction')
+  })
+
   it('keeps monster names by default', () => {
     const result = toPlayerSheet(
       sheet({ rows: [monsterRow({ name: 'Goblin' })] }),
@@ -272,6 +293,7 @@ describe('toPlayerSheet', () => {
       deathSaves: true,
       concentration: true,
       conditions: true,
+      reaction: true,
       endTurn: true,
     })
   })
@@ -293,6 +315,7 @@ describe('toPlayerSheet', () => {
       deathSaves: true,
       concentration: true,
       conditions: false,
+      reaction: true,
       endTurn: true,
     })
   })

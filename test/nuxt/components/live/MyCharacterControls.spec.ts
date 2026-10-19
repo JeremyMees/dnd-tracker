@@ -46,6 +46,7 @@ const defaultAllow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  reaction: true,
   endTurn: true,
 }
 
@@ -334,6 +335,47 @@ describe('LiveMyCharacterControls', () => {
     await picker.vm.$emit('add', conditions[0])
 
     expect(apply).not.toHaveBeenCalled()
+  })
+
+  it("marks the reaction as used outside the row's turn", async () => {
+    const component = await mountControls({}, false)
+
+    await component.get('[test-id="reaction"] [test-id="pip"]').trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'reaction', value: true },
+      { reaction: true },
+    )
+  })
+
+  it('clears a used reaction', async () => {
+    const component = await mountControls({ reaction: true })
+    const pip = component.get('[test-id="reaction"] [test-id="pip"]')
+
+    expect(pip.attributes('aria-pressed')).toBe('true')
+
+    await pip.trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'reaction', value: false },
+      { reaction: undefined },
+    )
+  })
+
+  it('disables the reaction when the DM has disallowed it', async () => {
+    const component = await mountControls({}, true, { reaction: false })
+
+    expect(
+      component
+        .get('[test-id="reaction"] [test-id="pip"]')
+        .attributes('disabled'),
+    ).toBeDefined()
+  })
+
+  it('hides the reaction for a lair row', async () => {
+    const component = await mountControls({ type: 'lair' })
+
+    expect(component.find('[test-id="reaction"]').exists()).toBe(false)
   })
 
   it('ends the turn when the end turn button is clicked', async () => {

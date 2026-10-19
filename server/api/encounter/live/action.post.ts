@@ -64,9 +64,15 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
   }
 
-  const activeRow = sheet.rows[sheet.activeIndex]
+  const ownRow = sheet.rows.find(row => row.id === seat.row)
 
-  if (activeRow?.id !== seat.row) {
+  if (!ownRow) {
+    throw createError({ statusCode: 404, statusMessage: 'Row not found' })
+  }
+
+  const isOwnTurn = sheet.rows[sheet.activeIndex]?.id === seat.row
+
+  if (!isOwnTurn && body.action.type !== 'reaction') {
     throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
   }
 
@@ -100,6 +106,13 @@ export default defineEventHandler(async event => {
       seat.row,
       body.action,
     )
+  } else if (body.action.type === 'reaction') {
+    patch = {
+      resources: {
+        ...ownRow.resources,
+        reaction: body.action.value || undefined,
+      },
+    }
   } else {
     patch = { [body.action.type]: body.action.value }
   }
@@ -117,7 +130,7 @@ export default defineEventHandler(async event => {
     rowId: seat.row,
     round: sheet.round,
     actorName: seat.name,
-    events: diffRow(activeRow, row),
+    events: diffRow(ownRow, row),
   })
 
   await broadcastLiveAction(supabase, payload.session, {

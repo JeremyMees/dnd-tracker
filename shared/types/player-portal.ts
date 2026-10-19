@@ -14,6 +14,7 @@ export interface PlayerRow {
   maxHitPoints?: number
   tempHitPoints?: number
   healthBand?: DndHealthBand
+  reaction?: boolean
 }
 
 export interface PlayerSheet {

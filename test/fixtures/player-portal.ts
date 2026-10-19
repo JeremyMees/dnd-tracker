@@ -29,6 +29,7 @@ export const playerSheet: PlayerSheet = {
     deathSaves: true,
     concentration: true,
     conditions: true,
+    reaction: true,
     endTurn: true,
   },
 }

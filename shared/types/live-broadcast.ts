@@ -52,6 +52,7 @@ export type LiveRowAction =
   | { type: 'deathSaves'; value: DndDeathSaves }
   | { type: 'concentration'; value: boolean }
   | { type: 'conditions'; value: DndCondition[] }
+  | { type: 'reaction'; value: boolean }
 
 export type LiveAction = LiveRowAction | { type: 'endTurn' }
 

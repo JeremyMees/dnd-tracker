@@ -716,6 +716,122 @@ describe('POST /api/encounter/live/action', () => {
     })
   })
 
+  it("marks the reaction as used outside the seat's turn", async () => {
+    const token = await seatToken()
+    const ownRow = { ...row, resources: { legendaryResistances: 1 } }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 1, rows: [ownRow, { ...row, id: 'row-2' }] },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({
+            data: {
+              ...ownRow,
+              resources: { legendaryResistances: 1, reaction: true },
+            },
+            error: null,
+          }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'reaction', value: true },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { resources: { legendaryResistances: 1, reaction: true } },
+    })
+
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 4,
+      row: 'row-1',
+      patch: { reaction: true },
+    })
+  })
+
+  it('drops the reaction from the resources when it is cleared', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: {
+            activeIndex: 0,
+            rows: [{ ...row, resources: { reaction: true } }],
+          },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, resources: {} }, error: null }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'reaction', value: false },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { resources: {} },
+    })
+  })
+
+  it("throws a 404 when the seat's row was removed from the encounter", async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: { activeIndex: 0, rows: [{ ...row, id: 'row-2' }] },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        actionEvent({
+          seatToken: token,
+          action: { type: 'reaction', value: true },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      statusCode: 404,
+      statusMessage: 'Row not found',
+    })
+  })
+
   it('throws a 403 when the DM has disabled this action type', async () => {
     const token = await seatToken()
 

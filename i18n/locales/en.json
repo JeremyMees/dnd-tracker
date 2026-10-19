@@ -738,6 +738,7 @@
         "deathSaves": "Your death saves weren't updated",
         "concentration": "Your concentration wasn't updated",
         "conditions": "Your conditions weren't updated",
+        "reaction": "Your reaction wasn't updated",
         "endTurn": "Your turn couldn't be ended"
       },
       "actionErrors": {

@@ -59,6 +59,8 @@ export function sanitizeBroadcastPatch(
   actionType: string,
   patch: Partial<InitiativeSheetRow>,
 ): Partial<PlayerRow> {
+  if (actionType === 'reaction') return { reaction: patch.resources?.reaction }
+
   if (row.type !== 'player') return patch
 
   const conditions = patch.conditions && withoutBloodied(patch.conditions)
@@ -121,6 +123,7 @@ export const liveActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('deathSaves'), value: deathSavesSchema }),
   z.object({ type: z.literal('concentration'), value: z.boolean() }),
   z.object({ type: z.literal('conditions'), value: z.array(conditionSchema) }),
+  z.object({ type: z.literal('reaction'), value: z.boolean() }),
   z.object({ type: z.literal('endTurn') }),
 ])
 

@@ -323,6 +323,17 @@ async function toggleLiveAllow(
               @update:model-value="toggleLiveAllow('conditions', $event)"
             />
           </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('general.reaction') }}
+            </span>
+            <UiSwitch
+              test-id="allow-reaction"
+              :model-value="isAllowed('reaction')"
+              @update:model-value="toggleLiveAllow('reaction', $event)"
+            />
+          </div>
         </div>
       </UiTabsContent>
 

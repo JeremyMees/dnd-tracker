@@ -5,9 +5,9 @@ import UsePips from '~/components/atoms/UsePips.vue'
 
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined
 
-async function mount(used: number, max = 3) {
+async function mount(used: number, max = 3, disabled = false) {
   wrapper = await mountSuspended(UsePips, {
-    props: { label: 'Legendary actions', max, used },
+    props: { label: 'Legendary actions', max, used, disabled },
   })
 
   return wrapper
@@ -64,5 +64,18 @@ describe('UsePips', () => {
     await component.find('[test-id="pip"]').trigger('click')
 
     expect(component.emitted('update:used')).toEqual([[0]])
+  })
+
+  it('Should disable every pip when disabled', async () => {
+    const component = await mount(1, 2, true)
+
+    expect(
+      component
+        .findAll('[test-id="pip"]')
+        .every(
+          (pip: DOMWrapper<Element>) =>
+            pip.attributes('disabled') !== undefined,
+        ),
+    ).toBe(true)
   })
 })

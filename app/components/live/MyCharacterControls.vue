@@ -36,6 +36,12 @@ async function toggleConcentration(): Promise<void> {
   await apply({ type: 'concentration', value }, { concentration: value })
 }
 
+async function setReaction(used: number): Promise<void> {
+  const value = used > 0
+
+  await apply({ type: 'reaction', value }, { reaction: value || undefined })
+}
+
 async function applyConditions(value: DndCondition[]): Promise<void> {
   if (locked.value || !props.allow.conditions) return
 
@@ -99,6 +105,23 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
     >
       <LiveStatConcentration :active="row.concentration" label />
     </button>
+
+    <div
+      v-if="row.type !== 'lair'"
+      test-id="reaction"
+      class="flex flex-col gap-2"
+    >
+      <span class="text-xs font-bold text-muted-foreground">
+        {{ $t('general.reaction') }}
+      </span>
+      <UsePips
+        :label="$t('general.reaction')"
+        :max="1"
+        :used="row.reaction ? 1 : 0"
+        :disabled="pending || !allow.reaction"
+        @update:used="setReaction"
+      />
+    </div>
 
     <div class="flex flex-col gap-2">
       <span class="text-xs font-bold text-muted-foreground">

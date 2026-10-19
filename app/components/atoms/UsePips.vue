@@ -3,6 +3,7 @@ const props = defineProps<{
   label: string
   max: number
   used: number
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{ 'update:used': [used: number] }>()
@@ -21,7 +22,8 @@ function toggle(index: number): void {
       test-id="pip"
       :aria-label="`${label} ${i}`"
       :aria-pressed="i <= used"
-      class="size-4 rounded-full border-2 border-primary transition-colors"
+      :disabled="disabled"
+      class="size-4 rounded-full border-2 border-primary transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       :class="i <= used ? 'bg-primary' : 'bg-primary/20'"
       @click="toggle(i - 1)"
     />

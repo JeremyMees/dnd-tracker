@@ -738,6 +738,7 @@
         "deathSaves": "Je death saves zijn niet bijgewerkt",
         "concentration": "Je concentratie is niet bijgewerkt",
         "conditions": "Je condities zijn niet bijgewerkt",
+        "reaction": "Je reactie is niet bijgewerkt",
         "endTurn": "Je beurt kon niet beëindigd worden"
       },
       "actionErrors": {
