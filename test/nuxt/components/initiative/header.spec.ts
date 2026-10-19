@@ -1,4 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
 import { useCommandPalette } from '~/composables/useCommandPalette'
 import { useRegisteredCommands } from '~/composables/useCommands'
@@ -198,6 +200,102 @@ describe('Initiative header', () => {
       await closeDialog(component)
 
       expect(dialogIsOpen(component)).toBe(false)
+    })
+  })
+
+  describe('Difficulty', () => {
+    let wrapper: VueWrapper | undefined
+
+    function withRows(rows: Partial<InitiativeSheetRow>[]): InitiativeSheet {
+      return {
+        ...sheet,
+        rows: rows.map((row, index) => ({
+          ...sheet.rows[0]!,
+          id: `row-${index}`,
+          ...row,
+        })),
+      }
+    }
+
+    async function mountDifficulty(rows: Partial<InitiativeSheetRow>[]) {
+      wrapper = await mountWithTooltips(Header, {
+        props: { data: withRows(rows) },
+        global,
+      })
+
+      return wrapper
+    }
+
+    function details(testId: string): Element[] {
+      return [...document.body.querySelectorAll(`[test-id="${testId}"]`)]
+    }
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+    })
+
+    it('Should rate the monsters against the levelled players', async () => {
+      const component = await mountDifficulty([
+        { type: 'player', level: 3 },
+        { type: 'player', level: 3 },
+        { type: 'monster', challengeRating: 2 },
+      ])
+
+      expect(component.get('[test-id="difficulty"]').text()).toBe(
+        'components.difficulty.ratings.moderate',
+      )
+    })
+
+    it('Should hide the difficulty without levelled players', async () => {
+      const component = await mountDifficulty([
+        { type: 'player' },
+        { type: 'monster', challengeRating: 2 },
+      ])
+
+      expect(component.find('[test-id="difficulty"]').exists()).toBe(false)
+    })
+
+    it('Should hide the difficulty without monster XP', async () => {
+      const component = await mountDifficulty([
+        { type: 'player', level: 3 },
+        { type: 'monster' },
+      ])
+
+      expect(component.find('[test-id="difficulty"]').exists()).toBe(false)
+    })
+
+    it('Should list the XP budgets in the details', async () => {
+      const component = await mountDifficulty([
+        { type: 'player', level: 3 },
+        { type: 'player', level: 3 },
+        { type: 'monster', challengeRating: 2 },
+      ])
+
+      await component.get('[test-id="difficulty"]').trigger('click')
+      await flushPromises()
+
+      expect(
+        details('difficulty-budget').map(item => item.textContent?.trim()),
+      ).toEqual([
+        expect.stringContaining('300 XP'),
+        expect.stringContaining('450 XP'),
+        expect.stringContaining('800 XP'),
+      ])
+      expect(details('difficulty-missing-levels')).toHaveLength(0)
+    })
+
+    it('Should mention the players without a level', async () => {
+      const component = await mountDifficulty([
+        { type: 'player', level: 3 },
+        { type: 'player' },
+        { type: 'monster', challengeRating: 2 },
+      ])
+
+      await component.get('[test-id="difficulty"]').trigger('click')
+      await flushPromises()
+
+      expect(details('difficulty-missing-levels')).toHaveLength(1)
     })
   })
 })

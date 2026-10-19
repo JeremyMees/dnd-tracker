@@ -883,6 +883,19 @@
         }
       }
     },
+    "difficulty": {
+      "title": "Encounter difficulty",
+      "label": "Encounter difficulty: {rating}",
+      "experience": "{value} XP in monsters",
+      "missingLevels": "{count} player has no level and is not counted | {count} players have no level and are not counted",
+      "ratings": {
+        "trivial": "Trivial",
+        "low": "Low",
+        "moderate": "Moderate",
+        "high": "High",
+        "extreme": "Extreme"
+      }
+    },
     "combatSummary": {
       "title": "Encounter summary",
       "description": "How the fight went for everyone involved",

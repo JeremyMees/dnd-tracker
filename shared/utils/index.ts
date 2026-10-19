@@ -12,6 +12,7 @@ export * from './transformers/weapon'
 
 export * from './dnd/abilities'
 export * from './dnd/challenge'
+export * from './dnd/difficulty'
 export * from './dnd/checks'
 export * from './dnd/death-saves'
 export * from './dnd/dice'

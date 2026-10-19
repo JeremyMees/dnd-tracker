@@ -883,6 +883,19 @@
         }
       }
     },
+    "difficulty": {
+      "title": "Moeilijkheid van het gevecht",
+      "label": "Moeilijkheid van het gevecht: {rating}",
+      "experience": "{value} XP aan monsters",
+      "missingLevels": "{count} speler heeft geen level en telt niet mee | {count} spelers hebben geen level en tellen niet mee",
+      "ratings": {
+        "trivial": "Triviaal",
+        "low": "Laag",
+        "moderate": "Gemiddeld",
+        "high": "Hoog",
+        "extreme": "Extreem"
+      }
+    },
     "combatSummary": {
       "title": "Gevecht samenvatting",
       "description": "Hoe het gevecht verliep voor iedereen",

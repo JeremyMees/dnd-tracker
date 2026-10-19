@@ -491,3 +491,20 @@ export interface DndCondition {
 
 export type DndItem =
   DndSpell | DndMagicItem | DndWeapon | DndArmor | DndCondition | DndMonster
+
+export interface ExperienceBudget {
+  low: number
+  moderate: number
+  high: number
+}
+
+export type DifficultyRating =
+  'trivial' | 'low' | 'moderate' | 'high' | 'extreme'
+
+export interface EncounterDifficulty {
+  rating: DifficultyRating
+  experience: number
+  budget: ExperienceBudget
+  players: number
+  playersWithoutLevel: number
+}
