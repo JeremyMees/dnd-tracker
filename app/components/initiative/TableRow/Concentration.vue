@@ -5,27 +5,20 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 
 const { patchRow } = validateInject(INITIATIVE_SHEET)
 
-function updateConcentration(): void {
-  patchRow(props.item.id, { concentration: !props.item.concentration })
+function updateConcentration(used: number): void {
+  patchRow(props.item.id, { concentration: used > 0 })
 }
 </script>
 
 <template>
   <Tooltip v-if="item.type !== 'lair'" :text="$t('general.concentration')">
-    <UiButton
-      :test-id="item.concentration"
-      :aria-label="$t('general.concentration')"
-      variant="default-ghost"
-      size="icon-sm"
-      class="mx-auto"
-      @click="updateConcentration"
-    >
-      <Icon
-        :name="
-          item.concentration ? 'tabler:circle-filled' : 'tabler:circle-dotted'
-        "
-        :aria-hidden="true"
-      />
-    </UiButton>
+    <UsePips
+      test-id="concentration"
+      class="justify-center"
+      :label="$t('general.concentration')"
+      :max="1"
+      :used="item.concentration ? 1 : 0"
+      @update:used="updateConcentration"
+    />
   </Tooltip>
 </template>

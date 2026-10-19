@@ -57,21 +57,34 @@ describe('dnd/deathsaves', () => {
     })
   })
 
+  describe('setDeathSaveCount', () => {
+    const base: DndDeathSaves = {
+      save: [false, true, false],
+      fail: [true, false, false],
+    }
+
+    it('should fill the first slots up to the count', () => {
+      expect(setDeathSaveCount(base, 'save', 2)).toEqual({
+        save: [true, true, false],
+        fail: [true, false, false],
+      })
+    })
+
+    it('should clear every slot for a count of zero', () => {
+      expect(setDeathSaveCount(base, 'fail', 0).fail).toEqual([
+        false,
+        false,
+        false,
+      ])
+    })
+  })
+
   describe('resetDeathSaves', () => {
     it('should reset death saves to all false', () => {
       expect(resetDeathSaves()).toEqual({
         fail: [false, false, false],
         save: [false, false, false],
       })
-    })
-  })
-
-  describe('deathSavesFunctions', () => {
-    it('should expose the same helper functions on deathSavesFunctions', () => {
-      expect(deathSavesFunctions.hasDeathSaves).toBe(hasDeathSaves)
-      expect(deathSavesFunctions.applyDeathSave).toBe(applyDeathSave)
-      expect(deathSavesFunctions.checkDeathSaves).toBe(checkDeathSaves)
-      expect(deathSavesFunctions.resetDeathSaves).toBe(resetDeathSaves)
     })
   })
 })

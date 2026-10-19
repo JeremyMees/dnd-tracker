@@ -171,7 +171,7 @@ const columns = computed(() => {
                   v-if="row.deathSaves && ownRowId === row.id"
                   :text="$t('general.deathSaves')"
                 >
-                  <LiveDeathSaves
+                  <DeathSavePips
                     test-id="death-saves"
                     :saves="row.deathSaves"
                     disabled

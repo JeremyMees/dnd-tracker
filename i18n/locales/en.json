@@ -791,6 +791,10 @@
         "reassign": "The player couldn't be moved to that character"
       }
     },
+    "deathSaves": {
+      "save": "Successes",
+      "fail": "Failures"
+    },
     "resources": {
       "legendaryResistances": "Legendary resistances",
       "reset": "Reset uses"

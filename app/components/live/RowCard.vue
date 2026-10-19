@@ -71,7 +71,7 @@ const deathSaves = computed(() =>
       </div>
 
       <Tooltip v-if="deathSaves" :text="$t('general.deathSaves')">
-        <LiveDeathSaves test-id="death-saves" :saves="deathSaves" disabled />
+        <DeathSavePips test-id="death-saves" :saves="deathSaves" disabled />
       </Tooltip>
     </UiCardContent>
   </UiCard>

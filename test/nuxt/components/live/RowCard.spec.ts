@@ -260,8 +260,8 @@ describe('LiveRowCard', () => {
 
     const grid = component.get('[test-id="death-saves"]')
 
-    expect(grid.findAll('[test-id="save"]')).toHaveLength(3)
-    expect(grid.findAll('[test-id="fail"]')).toHaveLength(3)
+    expect(grid.findAll('[test-id="save"] [test-id="pip"]')).toHaveLength(3)
+    expect(grid.findAll('[test-id="fail"] [test-id="pip"]')).toHaveLength(3)
   })
 
   it.each(['monster', 'summon', 'lair'] as const)(

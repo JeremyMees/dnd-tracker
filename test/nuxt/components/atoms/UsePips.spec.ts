@@ -5,9 +5,13 @@ import UsePips from '~/components/atoms/UsePips.vue'
 
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined
 
-async function mount(used: number, max = 3, disabled = false) {
+async function mount(
+  used: number,
+  max = 3,
+  props: { disabled?: boolean; variant?: 'success' } = {},
+) {
   wrapper = await mountSuspended(UsePips, {
-    props: { label: 'Legendary actions', max, used, disabled },
+    props: { label: 'Legendary actions', max, used, ...props },
   })
 
   return wrapper
@@ -67,7 +71,7 @@ describe('UsePips', () => {
   })
 
   it('Should disable every pip when disabled', async () => {
-    const component = await mount(1, 2, true)
+    const component = await mount(1, 2, { disabled: true })
 
     expect(
       component
@@ -77,5 +81,25 @@ describe('UsePips', () => {
             pip.attributes('disabled') !== undefined,
         ),
     ).toBe(true)
+  })
+
+  it('Should colour the pips with the primary variant by default', async () => {
+    const component = await mount(1, 2)
+    const [used, free] = component.findAll('[test-id="pip"]')
+
+    expect(used!.classes()).toEqual(
+      expect.arrayContaining(['border-primary', 'bg-primary']),
+    )
+    expect(free!.classes()).toContain('bg-primary/20')
+  })
+
+  it('Should colour the pips with the given variant', async () => {
+    const component = await mount(1, 2, { variant: 'success' })
+    const [used, free] = component.findAll('[test-id="pip"]')
+
+    expect(used!.classes()).toEqual(
+      expect.arrayContaining(['border-success', 'bg-success']),
+    )
+    expect(free!.classes()).toContain('bg-success/20')
   })
 })

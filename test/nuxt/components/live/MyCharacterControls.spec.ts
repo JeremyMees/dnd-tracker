@@ -136,7 +136,7 @@ describe('LiveMyCharacterControls', () => {
       },
     })
 
-    await component.get('[test-id="save"]').trigger('click')
+    await component.get('[test-id="save"] [test-id="pip"]').trigger('click')
 
     expect(apply).toHaveBeenCalledWith(
       {
@@ -155,6 +155,29 @@ describe('LiveMyCharacterControls', () => {
     )
   })
 
+  it('fills every death save up to the clicked one', async () => {
+    const component = await mountControls({
+      deathSaves: {
+        save: [false, false, false],
+        fail: [false, false, false],
+      },
+    })
+
+    await component
+      .findAll('[test-id="save"] [test-id="pip"]')[1]!
+      .trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      {
+        type: 'deathSaves',
+        value: { save: [true, true, false], fail: [false, false, false] },
+      },
+      {
+        deathSaves: { save: [true, true, false], fail: [false, false, false] },
+      },
+    )
+  })
+
   it('toggles a death save failure and applies the new value', async () => {
     const component = await mountControls({
       deathSaves: {
@@ -163,7 +186,7 @@ describe('LiveMyCharacterControls', () => {
       },
     })
 
-    await component.get('[test-id="fail"]').trigger('click')
+    await component.get('[test-id="fail"] [test-id="pip"]').trigger('click')
 
     expect(apply).toHaveBeenCalledWith(
       {
@@ -186,14 +209,18 @@ describe('LiveMyCharacterControls', () => {
     const component = await mountControls({ concentration: true })
 
     expect(
-      component.get('[test-id="concentration"] .iconify').classes(),
-    ).toContain('i-tabler:circle-filled')
+      component
+        .get('[test-id="concentration"] [test-id="pip"]')
+        .attributes('aria-pressed'),
+    ).toBe('true')
   })
 
   it('toggles concentration', async () => {
     const component = await mountControls({ concentration: false })
 
-    await component.get('[test-id="concentration"]').trigger('click')
+    await component
+      .get('[test-id="concentration"] [test-id="pip"]')
+      .trigger('click')
 
     expect(apply).toHaveBeenCalledWith(
       { type: 'concentration', value: true },
@@ -267,10 +294,12 @@ describe('LiveMyCharacterControls', () => {
     )
 
     expect(
-      component.get('[test-id="save"]').attributes('disabled'),
+      component.get('[test-id="save"] [test-id="pip"]').attributes('disabled'),
     ).toBeDefined()
     expect(
-      component.get('[test-id="concentration"]').attributes('disabled'),
+      component
+        .get('[test-id="concentration"] [test-id="pip"]')
+        .attributes('disabled'),
     ).toBeDefined()
 
     expect(
@@ -314,7 +343,7 @@ describe('LiveMyCharacterControls', () => {
     )
 
     expect(
-      component.get('[test-id="save"]').attributes('disabled'),
+      component.get('[test-id="save"] [test-id="pip"]').attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -322,7 +351,9 @@ describe('LiveMyCharacterControls', () => {
     const component = await mountControls({}, true, { concentration: false })
 
     expect(
-      component.get('[test-id="concentration"]').attributes('disabled'),
+      component
+        .get('[test-id="concentration"] [test-id="pip"]')
+        .attributes('disabled'),
     ).toBeDefined()
   })
 

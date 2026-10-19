@@ -8,22 +8,16 @@ const { patchRow } = validateInject(INITIATIVE_SHEET)
 
 const { t } = useI18n()
 
-const { checkDeathSaves, hasDeathSaves } = deathSavesFunctions
-
-function updateDeathSave(saveIndex: number, save: boolean): void {
-  if (!props.item.deathSaves) return
-
-  const deathSaves = {
-    save: [...props.item.deathSaves.save] as [boolean, boolean, boolean],
-    fail: [...props.item.deathSaves.fail] as [boolean, boolean, boolean],
-  }
-
-  if (save) deathSaves.save[saveIndex] = !deathSaves.save[saveIndex]
-  else deathSaves.fail[saveIndex] = !deathSaves.fail[saveIndex]
-
+function updateDeathSaves(
+  deathSaves: DndDeathSaves,
+  type: 'save' | 'fail',
+): void {
   const { failed, saved } = checkDeathSaves(deathSaves)
 
-  if ((saved && !failed && save) || (!saved && failed && !save)) {
+  if (
+    (saved && !failed && type === 'save') ||
+    (!saved && failed && type === 'fail')
+  ) {
     const toastType = saved ? 'stable' : 'died'
 
     const show = toastType === 'stable' ? toast.success : toast.error
@@ -48,37 +42,11 @@ function updateDeathSave(saveIndex: number, save: boolean): void {
 </script>
 
 <template>
-  <div
+  <DeathSavePips
     v-if="hasDeathSaves(item.type)"
     test-id="container"
-    class="grid gap-1 w-fit mx-auto"
-    :class="{
-      'bg-success/20 p-2 rounded-lg':
-        item.deathSaves?.save.every(Boolean) &&
-        !item.deathSaves?.fail.every(Boolean),
-      'bg-destructive/20 p-2 rounded-lg':
-        item.deathSaves?.fail.every(Boolean) &&
-        !item.deathSaves?.save.every(Boolean),
-    }"
-  >
-    <div
-      v-for="(save, i) in [item.deathSaves?.save, item.deathSaves?.fail]"
-      :key="`save-${i}`"
-      class="grid grid-cols-3 gap-1 min-w-14"
-    >
-      <button
-        v-for="(value, j) in save"
-        :key="`${value}-${j}`"
-        :test-id="i === 0 ? 'save' : 'fail'"
-        class="size-4 rounded border-2"
-        :class="{
-          'border-success bg-success/20': i === 0,
-          'border-destructive bg-destructive/20': i === 1,
-          '!bg-success': value && i === 0,
-          '!bg-destructive': value && i === 1,
-        }"
-        @click="updateDeathSave(j, i === 0)"
-      />
-    </div>
-  </div>
+    class="mx-auto"
+    :saves="item.deathSaves ?? resetDeathSaves()"
+    @update:saves="updateDeathSaves"
+  />
 </template>

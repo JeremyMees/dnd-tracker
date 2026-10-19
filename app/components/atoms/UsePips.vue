@@ -1,12 +1,36 @@
 <script setup lang="ts">
-const props = defineProps<{
-  label: string
-  max: number
-  used: number
-  disabled?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    label: string
+    max: number
+    used: number
+    disabled?: boolean
+    variant?: 'primary' | 'success' | 'destructive'
+  }>(),
+  { disabled: false, variant: 'primary' },
+)
 
 const emit = defineEmits<{ 'update:used': [used: number] }>()
+
+const variants = {
+  primary: {
+    border: 'border-primary',
+    used: 'bg-primary',
+    free: 'bg-primary/20',
+  },
+  success: {
+    border: 'border-success',
+    used: 'bg-success',
+    free: 'bg-success/20',
+  },
+  destructive: {
+    border: 'border-destructive',
+    used: 'bg-destructive',
+    free: 'bg-destructive/20',
+  },
+}
+
+const colors = computed(() => variants[props.variant])
 
 function toggle(index: number): void {
   emit('update:used', index < props.used ? index : index + 1)
@@ -23,8 +47,8 @@ function toggle(index: number): void {
       :aria-label="`${label} ${i}`"
       :aria-pressed="i <= used"
       :disabled="disabled"
-      class="size-4 rounded-full border-2 border-primary transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-      :class="i <= used ? 'bg-primary' : 'bg-primary/20'"
+      class="size-4 rounded-full border-2 transition-colors disabled:cursor-not-allowed"
+      :class="[colors.border, i <= used ? colors.used : colors.free]"
       @click="toggle(i - 1)"
     />
   </div>

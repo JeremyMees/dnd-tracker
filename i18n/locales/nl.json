@@ -791,6 +791,10 @@
         "reassign": "De speler kon niet aan dat personage gekoppeld worden"
       }
     },
+    "deathSaves": {
+      "save": "Geslaagd",
+      "fail": "Mislukt"
+    },
     "resources": {
       "legendaryResistances": "Legendarische weerstanden",
       "reset": "Gebruik resetten"
