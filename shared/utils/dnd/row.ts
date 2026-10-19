@@ -201,7 +201,6 @@ export const monsterToRow = (
     proficiencyBonus,
     type: _type,
     size: _size,
-    challengeRating: _challengeRating,
     alignment: _alignment,
     experiencePoints: _experiencePoints,
     ...rest

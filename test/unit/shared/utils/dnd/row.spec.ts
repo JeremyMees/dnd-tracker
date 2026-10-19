@@ -451,12 +451,17 @@ describe('dnd/row', () => {
       })
     })
 
+    it('should keep the challenge rating', () => {
+      const row = monsterToRow(dndMonsterFixture)
+
+      expect(row.challengeRating).toBe(dndMonsterFixture.challengeRating)
+    })
+
     it('should drop the monster fields a row has no place for', () => {
       const row = monsterToRow(dndMonsterFixture)
 
       for (const field of [
         'size',
-        'challengeRating',
         'alignment',
         'experiencePoints',
         'initiativeBonus',

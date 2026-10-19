@@ -150,6 +150,7 @@ export interface InitiativeSheetRow {
   armorDetail?: string
   proficiencyBonus?: number
   passivePerception?: number
+  challengeRating?: number
   speed?: DndSpeed
   sight?: DndSight
   languages?: string[]
