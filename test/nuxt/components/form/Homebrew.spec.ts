@@ -882,6 +882,63 @@ describe('Homebrew', () => {
       })
     })
 
+    it('Should prefill the form with a creature from a file', async () => {
+      const component = await mountHomebrew({ campaignId: mockCampaignFull.id })
+
+      await click(component, 'choice-monster')
+      await click(component, 'choice-file')
+      component.findComponent(HomebrewStart).vm.$emit('creature', {
+        name: 'Marsh Lurker',
+        type: 'npc',
+        armorClass: 13,
+        hitPoints: 33,
+        initiativeModifier: '3',
+        speed: null,
+        actions: [],
+      })
+      await flushPromises()
+
+      expect(isFormShown(component)).toBe(true)
+      expect(
+        component.get<HTMLInputElement>('input[name="name"]').element.value,
+      ).toBe('Marsh Lurker')
+      expect(component.find('[test-id="based-on"]').exists()).toBe(true)
+
+      await submitForm(component)
+
+      expect(createOptions().data).toMatchObject({
+        name: 'Marsh Lurker',
+        type: 'npc',
+        armorClass: 13,
+        hitPoints: 33,
+        initiativeModifier: '3',
+        campaign: mockCampaignFull.id,
+      })
+    })
+
+    it('Should add one creature from a file to the sheet by default', async () => {
+      const component = await mountHomebrew({
+        withSheet: true,
+        isEncounter: true,
+      })
+
+      await click(component, 'choice-monster')
+      await click(component, 'choice-file')
+      component.findComponent(HomebrewStart).vm.$emit('creature', {
+        name: 'Marsh Lurker',
+        type: 'monster',
+        hitPoints: 33,
+        actions: [],
+      })
+      await flushPromises()
+      await submitForm(component)
+
+      const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+
+      expect(rows).toHaveLength(sheet.rows.length + 1)
+      expect(rows.at(-1)).toMatchObject({ name: 'Marsh Lurker', hitPoints: 33 })
+    })
+
     it('Should add one remixed monster to the sheet by default', async () => {
       const component = await mountHomebrew({
         withSheet: true,

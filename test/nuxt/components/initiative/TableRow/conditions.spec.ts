@@ -1,6 +1,7 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import Conditions from '~/components/initiative/TableRow/Conditions.vue'
+import { useRowShortcut } from '~/composables/useRowShortcut'
 import Badge from '~/components/ui/badge/Badge.vue'
 import Button from '~/components/ui/button/Button.vue'
 import NumberField from '~/components/ui/number-field/NumberField.vue'
@@ -53,12 +54,12 @@ describe('Initiative table row conditions', async () => {
   })
 
   it('Should match snapshot', async () => {
-    const component = await mountSuspended(Conditions, { props, provide })
+    const component = await mountWithTooltips(Conditions, { props, provide })
     expect(component.html()).toMatchSnapshot()
   })
 
   it('Should not render for lair type items', async () => {
-    const component = await mountSuspended(Conditions, {
+    const component = await mountWithTooltips(Conditions, {
       props: {
         item: { ...props.item, type: 'lair' },
       },
@@ -69,13 +70,21 @@ describe('Initiative table row conditions', async () => {
   })
 
   it('Should always show add condition button', async () => {
-    const component = await mountSuspended(Conditions, { props, provide })
+    const component = await mountWithTooltips(Conditions, { props, provide })
 
     expect(component.find('[test-id="trigger"]').exists()).toBeTruthy()
   })
 
+  it('Should label the add condition button', async () => {
+    const component = await mountWithTooltips(Conditions, { props, provide })
+
+    expect(component.get('[test-id="trigger"]').attributes('aria-label')).toBe(
+      'pages.encounter.update.conditions',
+    )
+  })
+
   it('Should show selected conditions', async () => {
-    const component = await mountSuspended(Conditions, {
+    const component = await mountWithTooltips(Conditions, {
       props: {
         item: {
           ...props.item,
@@ -95,7 +104,7 @@ describe('Initiative table row conditions', async () => {
   })
 
   it('Should not show conditions when no conditions are selected', async () => {
-    const component = await mountSuspended(Conditions, {
+    const component = await mountWithTooltips(Conditions, {
       props: {
         item: {
           ...props.item,
@@ -109,7 +118,7 @@ describe('Initiative table row conditions', async () => {
   })
 
   it('Should display the level of the condition if available', async () => {
-    const component = await mountSuspended(Conditions, {
+    const component = await mountWithTooltips(Conditions, {
       props: {
         item: {
           ...props.item,
@@ -144,7 +153,7 @@ describe('Initiative table row conditions', async () => {
     }
 
     function mountWith(conditionList: Condition[]) {
-      return mountSuspended(Conditions, {
+      return mountWithTooltips(Conditions, {
         props: { item: { ...props.item, conditions: conditionList } },
         provide,
       })
@@ -284,7 +293,7 @@ describe('Initiative table row conditions', async () => {
 
   describe('removeCondition', () => {
     it('Should patch the row with the matching condition removed', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
 
       vm.removeCondition('Paralyzed')
@@ -296,7 +305,7 @@ describe('Initiative table row conditions', async () => {
     })
 
     it('Should leave conditions unchanged when the name does not match', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
 
       vm.removeCondition('Unknown condition')
@@ -307,7 +316,7 @@ describe('Initiative table row conditions', async () => {
     })
 
     it('Should remove a condition through the remove button in the popover', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
 
       await component.findComponent(Badge).trigger('click')
 
@@ -326,7 +335,7 @@ describe('Initiative table row conditions', async () => {
 
   describe('updateCondition', () => {
     it('Should patch the row with the new conditions', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
 
       vm.updateCondition([conditions[2] as Condition])
@@ -339,8 +348,46 @@ describe('Initiative table row conditions', async () => {
   })
 
   describe('Add condition trigger', () => {
+    it('Should show the condition shortcut only on the target', async () => {
+      const { targetId } = useRowShortcut()
+      const component = await mountWithTooltips(Conditions, { props, provide })
+      const tooltip = () =>
+        component.get('[test-id="trigger"]').findComponent({ name: 'Tooltip' })
+
+      expect(tooltip().props()).toMatchObject({
+        shortcut: ['C'],
+        disabled: false,
+      })
+
+      targetId.value = sheet.rows[1]!.id
+      await nextTick()
+
+      expect(tooltip().props('disabled')).toBe(true)
+
+      targetId.value = undefined
+      component.unmount()
+    })
+
+    it('Should open the popover when the condition shortcut is used', async () => {
+      const component = await mountWithTooltips(Conditions, { props, provide })
+      const vm = component.vm as unknown as ConditionsVM
+
+      useRowShortcut().trigger(props.item.id, 'damage')
+      await nextTick()
+
+      expect(vm.popoverOpen).toBeFalsy()
+
+      useRowShortcut().trigger(props.item.id, 'condition')
+      await nextTick()
+
+      expect(vm.popoverOpen).toBeTruthy()
+
+      useRowShortcut().request.value = undefined
+      component.unmount()
+    })
+
     it('Should open the popover when the trigger button is clicked', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
       const vm = component.vm as unknown as ConditionsVM
 
       await component.get('[test-id="trigger"]').trigger('click')
@@ -351,7 +398,7 @@ describe('Initiative table row conditions', async () => {
 
   describe('Add condition popover', () => {
     async function openPicker(item: InitiativeSheetRow = props.item) {
-      const component = await mountSuspended(Conditions, {
+      const component = await mountWithTooltips(Conditions, {
         props: { item },
         provide,
       })
@@ -402,7 +449,7 @@ describe('Initiative table row conditions', async () => {
 
   describe('Existing condition popover', () => {
     it('Should show the condition title, description and remove button when opened', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
 
       await component.findComponent(Badge).trigger('click')
 
@@ -417,7 +464,7 @@ describe('Initiative table row conditions', async () => {
     })
 
     it('Should remove the condition when the remove button is clicked', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
 
       await component.findComponent(Badge).trigger('click')
 
@@ -444,7 +491,7 @@ describe('Initiative table row conditions', async () => {
     }
 
     it('Should show the number field when the condition has levels', async () => {
-      const component = await mountSuspended(Conditions, {
+      const component = await mountWithTooltips(Conditions, {
         props: { item: { ...props.item, conditions: [levelCondition] } },
         provide,
       })
@@ -455,7 +502,7 @@ describe('Initiative table row conditions', async () => {
     })
 
     it('Should not show the number field when the condition has no levels', async () => {
-      const component = await mountSuspended(Conditions, { props, provide })
+      const component = await mountWithTooltips(Conditions, { props, provide })
 
       await component.findComponent(Badge).trigger('click')
 
@@ -463,7 +510,7 @@ describe('Initiative table row conditions', async () => {
     })
 
     it('Should default the level to 1 when not provided', async () => {
-      const component = await mountSuspended(Conditions, {
+      const component = await mountWithTooltips(Conditions, {
         props: {
           item: {
             ...props.item,
@@ -480,7 +527,7 @@ describe('Initiative table row conditions', async () => {
 
     it('Should update the condition level when the number field value changes', async () => {
       const otherCondition = conditions[0] as Condition
-      const component = await mountSuspended(Conditions, {
+      const component = await mountWithTooltips(Conditions, {
         props: {
           item: { ...props.item, conditions: [levelCondition, otherCondition] },
         },

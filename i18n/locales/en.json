@@ -28,6 +28,7 @@
     "reset": "Reset",
     "remove": "Remove",
     "bulkRemove": "Remove {number} row|Remove {number} rows",
+    "bulkExport": "Export {number} row|Export {number} rows",
     "temp": "Temporary",
     "show": "Show",
     "hide": "Hide",
@@ -60,6 +61,7 @@
     "transfer": "Transfer",
     "flip": "Flip {axis}",
     "export": "Export",
+    "import": "Import",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "readMore": "Read more",
@@ -77,7 +79,6 @@
     "sendMail": "Send mail",
     "moveUp": "Move up",
     "moveDown": "Move down",
-    "changeInitiative": "Change initiative",
     "applyDamage": "Apply damage",
     "generateName": "Generate name",
     "kick": "Remove",
@@ -85,7 +86,8 @@
     "resetFilter": "Reset filter | Reset filters",
     "encounterStats": "Encounter statistics",
     "openCombatLog": "Open combat log",
-    "closeCombatLog": "Close combat log"
+    "closeCombatLog": "Close combat log",
+    "skipToContent": "Skip to content"
   },
   "general": {
     "pro": "Pro",
@@ -147,8 +149,7 @@
     "initiative": "Initiative | Initiatives",
     "level": "Level | Levels",
     "summoner": "Summoner",
-    "hotkey": "Hotkey | Hotkeys",
-    "modifierKeys": "Modifier keys",
+    "shortcut": "Shortcut | Shortcuts",
     "bestiary": "Bestiary",
     "campaignHomebrew": "Campaign homebrew",
     "newHomebrew": "New homebrew",
@@ -798,6 +799,7 @@
       "noItems": "No items added yet. Click \"Add\" to get started."
     },
     "colorModeSwitcher": {
+      "label": "Theme",
       "light": "Light",
       "dark": "Dark",
       "system": "System"
@@ -963,6 +965,10 @@
       "copy": {
         "error": "The {type} couldn't be copied",
         "success": "Successfully copied the {type}"
+      },
+      "import": {
+        "success": "Imported {count} {type}",
+        "error": "The {type} couldn't be imported"
       }
     },
     "pagination": {
@@ -1150,9 +1156,12 @@
       "changeType": "Change type",
       "changeStart": "Change starting point",
       "pickSource": "How do you want to start?",
-      "pickSourceInfo": "Build your creature from the ground up, or copy a monster from the bestiary and make it your own",
+      "pickSourceInfo": "Build your creature from the ground up, copy a monster from the bestiary, or import one from a file",
       "pickMonster": "Pick a monster to start from",
       "pickMonsterInfo": "Click the wand on a monster to copy its stats into your homebrew",
+      "pickFile": "Import a creature",
+      "pickFileInfo": "Pick a JSON, CSV or Markdown file. When it holds more than one creature, choose the one to start from.",
+      "pickFileCreature": "Creatures in the file",
       "basedOn": "Based on {name}",
       "sources": {
         "scratch": {
@@ -1162,6 +1171,10 @@
         "bestiary": {
           "label": "Start from the bestiary",
           "description": "Copy an existing monster and tweak it however you like"
+        },
+        "file": {
+          "label": "Import from a file",
+          "description": "Use a creature exported from this app, Improved Initiative, Kobold Fight Club or 5e.tools"
         }
       },
       "types": {
@@ -1370,6 +1383,42 @@
     },
     "inlineConfirmation": {
       "text": "Are you sure you want to update this? Your old value won't be saved."
+    },
+    "transfer": {
+      "error": "The file couldn't be imported",
+      "reasons": {
+        "invalidFile": "This isn't a valid export file. Pick a file you exported from this app.",
+        "unsupportedFile": "This file isn't supported. Use a JSON, CSV or Markdown export from this app, Improved Initiative, Kobold Fight Club or 5e.tools.",
+        "wrongKind": "This file contains a different kind of item. Import it on the matching page.",
+        "tooLarge": "The file is too large. Files can be at most 2 MB.",
+        "empty": "The file has nothing to import.",
+        "tooMany": "You don't have room for this many items. You can import no more items.|You don't have room for this many items. You can import {count} more item.|You don't have room for this many items. You can import {count} more items."
+      }
+    },
+    "commandPalette": {
+      "title": "Command palette",
+      "description": "Search for actions, monsters and encounters",
+      "placeholder": "Type a command or search on monster or encounter",
+      "empty": "No results found.",
+      "loading": "Searching…",
+      "groups": {
+        "actions": "Actions",
+        "monsters": "Add a monster",
+        "encounters": "Encounters"
+      }
+    },
+    "shortcuts": {
+      "palette": "Open the command palette",
+      "next": "Next turn",
+      "previous": "Previous turn",
+      "expand": "Expand or collapse the current creature",
+      "damage": "Damage the target",
+      "heal": "Heal the target",
+      "condition": "Add a condition to the target",
+      "sidebar": "Show or hide the sidebar",
+      "overview": "Show all shortcuts",
+      "target": "Choose a target, starting at the current creature",
+      "clearTarget": "Target the current creature again"
     }
   },
   "tour": {
@@ -1406,7 +1455,7 @@
       "description": "Simplify your view by hiding features you don’t use. Stay focused on what matters to you."
     },
     "8": {
-      "title": "Speed things up with hotkeys 🔥",
+      "title": "Speed things up with shortcuts 🔥",
       "description": "Use keyboard shortcuts to manage your encounter more smoothly. Less clicking, more playing!"
     },
     "9": {
@@ -1419,7 +1468,7 @@
     },
     "11": {
       "title": "Time for a fresh start? 🔄",
-      "description": "Finished your encounter? Open this menu to reset the rounds, share a live session, end the encounter or peek at the combat log."
+      "description": "Finished your encounter? Open the actions here or press ⌘/Ctrl + K anywhere to reset the rounds, share a live session, end the encounter, peek at the combat log, add monsters or jump to another encounter."
     },
     "12": {
       "title": "Congrats, you're ready to go! 🎉"

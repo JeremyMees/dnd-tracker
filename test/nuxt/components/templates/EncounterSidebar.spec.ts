@@ -1,6 +1,9 @@
+import { flushPromises } from '@vue/test-utils'
 import type { VueWrapper } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterSidebar from '~/components/templates/EncounterSidebar.vue'
+import { useRegisteredCommands } from '~/composables/useCommands'
+import { encounterShortcuts } from '~~/constants/shortcuts'
 import { DialogContent } from '~/components/ui/dialog'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -84,6 +87,10 @@ let component: VueWrapper<InstanceType<typeof EncounterSidebar>>
 describe('EncounterSidebar', () => {
   beforeEach(() => {
     mockSheet.value = sheet
+  })
+
+  afterEach(() => {
+    component?.unmount()
   })
 
   it('Should match snapshot', async () => {
@@ -434,5 +441,158 @@ describe('EncounterSidebar', () => {
     component.unmount()
 
     expect(vm.openModal).toBeUndefined()
+  })
+
+  describe('Command palette', () => {
+    const commands = useRegisteredCommands()
+
+    function commandIds(): string[] {
+      return commands.value.map(({ id }) => id)
+    }
+
+    it.each([
+      { id: 'bestiary', modal: 'bestiary' },
+      { id: 'campaign-homebrew', modal: 'addHomebrew' },
+      { id: 'new-homebrew', modal: 'newHomebrew' },
+      { id: 'content', modal: 'content' },
+      { id: 'settings', modal: 'settings' },
+    ])(
+      'Should open the $modal dialog from the $id command',
+      async ({ id, modal }) => {
+        mockSheet.value = { ...sheet, campaign: mockSheetCampaign }
+
+        component = await mountWithTooltips(EncounterSidebar, {
+          props,
+          provide,
+          global: { stubs: formStubs },
+        })
+        const vm = component.vm as unknown as EncounterSidebarVM
+
+        commands.value.find(command => command.id === id)?.run()
+
+        expect(vm.openModal).toBe(modal)
+      },
+    )
+
+    it('Should not offer campaign homebrew without a campaign', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      expect(commandIds()).toEqual([
+        'bestiary',
+        'new-homebrew',
+        'content',
+        'shortcuts',
+        'settings',
+      ])
+    })
+
+    it('Should not offer adding creatures when the encounter is full', async () => {
+      mockSheet.value = {
+        ...sheet,
+        campaign: mockSheetCampaign,
+        rows: Array.from({ length: 50 }, (_, index) => ({
+          ...sheet.rows[0]!,
+          id: `row-${index}`,
+        })),
+      }
+
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      expect(commandIds()).toEqual(['content', 'shortcuts', 'settings'])
+    })
+  })
+
+  describe('Shortcuts overview', () => {
+    function shortcutsOpen(): boolean {
+      return !!document.body.querySelector('[test-id="shortcuts"]')
+    }
+
+    async function pressQuestionMark(target: EventTarget = document.body) {
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: '?',
+          shiftKey: true,
+          bubbles: true,
+        }),
+      )
+      await flushPromises()
+    }
+
+    it('Should list every shortcut with its keys', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      await component.get('[test-id="shortcuts-trigger"]').trigger('click')
+      await flushPromises()
+
+      const rows = document.body.querySelectorAll('[test-id="shortcut"]')
+
+      expect(rows).toHaveLength(encounterShortcuts.length)
+      const damage = encounterShortcuts.findIndex(
+        shortcut => shortcut.label === 'components.shortcuts.damage',
+      )
+
+      expect(rows[damage]?.textContent).toContain('components.shortcuts.damage')
+      expect(rows[damage]?.querySelector('kbd kbd')?.textContent?.trim()).toBe(
+        'D',
+      )
+    })
+
+    it('Should toggle with the question mark key', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      await pressQuestionMark()
+      expect(shortcutsOpen()).toBe(true)
+
+      await pressQuestionMark()
+      expect(shortcutsOpen()).toBe(false)
+    })
+
+    it('Should ignore the question mark while typing', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      const input = document.createElement('input')
+
+      document.body.appendChild(input)
+      await pressQuestionMark(input)
+
+      expect(shortcutsOpen()).toBe(false)
+
+      input.remove()
+    })
+
+    it('Should open from the command palette', async () => {
+      component = await mountWithTooltips(EncounterSidebar, {
+        props,
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      useRegisteredCommands()
+        .value.find(command => command.id === 'shortcuts')
+        ?.run()
+      await flushPromises()
+
+      expect(shortcutsOpen()).toBe(true)
+    })
   })
 })

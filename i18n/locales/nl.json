@@ -28,6 +28,7 @@
     "reset": "Reset",
     "remove": "Verwijderen",
     "bulkRemove": "Verwijder {number} rij|Verwijder {number} rijen",
+    "bulkExport": "Exporteer {number} rij|Exporteer {number} rijen",
     "temp": "Tijdelijk",
     "show": "Toon",
     "hide": "Verberg",
@@ -60,6 +61,7 @@
     "transfer": "Overdragen",
     "flip": "Flip {axis}",
     "export": "Export",
+    "import": "Importeer",
     "zoomIn": "Inzoomen",
     "zoomOut": "Uitzoomen",
     "readMore": "Lees meer",
@@ -77,7 +79,6 @@
     "sendMail": "Email versturen",
     "moveUp": "Omhoog",
     "moveDown": "Omlaag",
-    "changeInitiative": "Initiatief wijzigen",
     "applyDamage": "Schade toepassen",
     "generateName": "Naam genereren",
     "kick": "Verwijder",
@@ -85,7 +86,8 @@
     "resetFilter": "Reset filter | Reset filters",
     "encounterStats": "Encounter statistieken",
     "openCombatLog": "Gevechtslog openen",
-    "closeCombatLog": "Gevechtslog sluiten"
+    "closeCombatLog": "Gevechtslog sluiten",
+    "skipToContent": "Ga naar inhoud"
   },
   "general": {
     "pro": "Pro",
@@ -147,8 +149,7 @@
     "initiative": "Initiatief | Initiatieven",
     "level": "Niveau | Niveaus",
     "summoner": "Oproeper",
-    "hotkey": "Hotkey | Hotkeys",
-    "modifierKeys": "Modificatie toetsen",
+    "shortcut": "Sneltoets | Sneltoetsen",
     "bestiary": "Bestiary",
     "campaignHomebrew": "Campagne homebrew",
     "newHomebrew": "Nieuwe homebrew",
@@ -798,6 +799,7 @@
       "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."
     },
     "colorModeSwitcher": {
+      "label": "Thema",
       "light": "Licht",
       "dark": "Donker",
       "system": "Systeem"
@@ -963,6 +965,10 @@
       "copy": {
         "error": "De {type} kon niet gekopieerd worden",
         "success": "Succesvol gekopieerd de {type}"
+      },
+      "import": {
+        "success": "{count} {type} geïmporteerd",
+        "error": "De {type} konden niet geïmporteerd worden"
       }
     },
     "pagination": {
@@ -1150,9 +1156,12 @@
       "changeType": "Type wijzigen",
       "changeStart": "Startpunt wijzigen",
       "pickSource": "Hoe wil je beginnen?",
-      "pickSourceInfo": "Bouw je wezen van nul op, of kopieer een monster uit het bestiarium en maak het helemaal van jou",
+      "pickSourceInfo": "Bouw je wezen van nul op, kopieer een monster uit het bestiarium of importeer er een uit een bestand",
       "pickMonster": "Kies een monster om van te starten",
       "pickMonsterInfo": "Klik op de toverstaf bij een monster om zijn stats naar je homebrew te kopiëren",
+      "pickFile": "Importeer een wezen",
+      "pickFileInfo": "Kies een JSON-, CSV- of Markdown-bestand. Bevat het meer dan één wezen, kies dan waarmee je begint.",
+      "pickFileCreature": "Wezens in het bestand",
       "basedOn": "Gebaseerd op {name}",
       "sources": {
         "scratch": {
@@ -1162,6 +1171,10 @@
         "bestiary": {
           "label": "Vanuit het bestiarium",
           "description": "Kopieer een bestaand monster en pas het aan zoals je wil"
+        },
+        "file": {
+          "label": "Importeer uit een bestand",
+          "description": "Gebruik een wezen dat je exporteerde uit deze app, Improved Initiative, Kobold Fight Club of 5e.tools"
         }
       },
       "types": {
@@ -1370,6 +1383,42 @@
     },
     "inlineConfirmation": {
       "text": "Weet je zeker dat je dit wilt updaten? Je oude waarde wordt niet opgeslagen."
+    },
+    "transfer": {
+      "error": "Het bestand kon niet geïmporteerd worden",
+      "reasons": {
+        "invalidFile": "Dit is geen geldig exportbestand. Kies een bestand dat je uit deze app hebt geëxporteerd.",
+        "unsupportedFile": "Dit bestand wordt niet ondersteund. Gebruik een JSON-, CSV- of Markdown-export uit deze app, Improved Initiative, Kobold Fight Club of 5e.tools.",
+        "wrongKind": "Dit bestand bevat een ander soort items. Importeer het op de juiste pagina.",
+        "tooLarge": "Het bestand is te groot. Bestanden mogen maximaal 2 MB zijn.",
+        "empty": "Het bestand bevat niets om te importeren.",
+        "tooMany": "Je hebt geen plaats voor zoveel items. Je kunt geen items meer importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} item importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} items importeren."
+      }
+    },
+    "commandPalette": {
+      "title": "Opdrachtenpalet",
+      "description": "Zoek naar acties, monsters en encounters",
+      "placeholder": "Typ een opdracht of zoek naar een monster of encounter",
+      "empty": "Geen resultaten gevonden.",
+      "loading": "Zoeken…",
+      "groups": {
+        "actions": "Acties",
+        "monsters": "Monster toevoegen",
+        "encounters": "Encounters"
+      }
+    },
+    "shortcuts": {
+      "palette": "Open het opdrachtenpalet",
+      "next": "Volgende beurt",
+      "previous": "Vorige beurt",
+      "expand": "Huidig wezen open- of dichtklappen",
+      "damage": "Doelwit schade geven",
+      "heal": "Doelwit genezen",
+      "condition": "Conditie toevoegen aan doelwit",
+      "sidebar": "Zijbalk tonen of verbergen",
+      "overview": "Alle sneltoetsen tonen",
+      "target": "Doelwit kiezen, vanaf het huidige wezen",
+      "clearTarget": "Huidig wezen weer als doelwit"
     }
   },
   "tour": {
@@ -1419,7 +1468,7 @@
     },
     "11": {
       "title": "Klaar voor een nieuwe ronde? 🔄",
-      "description": "Gevecht gedaan? Open dit menu om de rondes te resetten, een live sessie te delen, het gevecht te beëindigen of het gevechtslog te bekijken."
+      "description": "Gevecht gedaan? Open hier de acties of druk ergens op ⌘/Ctrl + K om de rondes te resetten, een live sessie te delen, het gevecht te beëindigen, het gevechtslog te bekijken, monsters toe te voegen of naar een ander gevecht te springen."
     },
     "12": {
       "title": "Proficiat, je bent er helemaal klaar voor! 🎉"

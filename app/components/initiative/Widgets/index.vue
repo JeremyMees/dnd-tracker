@@ -93,9 +93,14 @@ function removeWidget(id: InitiativeWidget) {
 
       <UiPopover v-model:open="popoverOpen">
         <UiPopoverTrigger as-child>
-          <UiButton variant="foreground-ghost" size="icon-sm">
+          <UiButton
+            test-id="widgets-settings"
+            variant="foreground-ghost"
+            size="icon-sm"
+            :aria-label="$t('pages.encounter.update.widgets')"
+          >
             <Tooltip :text="$t('pages.encounter.update.widgets')">
-              <Icon name="tabler:settings" />
+              <Icon name="tabler:settings" aria-hidden="true" />
             </Tooltip>
           </UiButton>
         </UiPopoverTrigger>

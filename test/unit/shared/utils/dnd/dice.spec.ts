@@ -238,4 +238,22 @@ describe('dnd/dice', () => {
       expect(parseDndDiceToString(hitDiceWithNegativeBonus)).toBe('5d12-10')
     })
   })
+
+  describe('parseHitDiceText', () => {
+    it.each([
+      ['2d6', '2d6'],
+      ['8d10 + 16', '8d10+16'],
+      ['(3d8 - 3)', '3d8-3'],
+      ['21 (6d8 - 3)', '6d8-3'],
+    ])('Should read %s as %s', (text, dice) => {
+      expect(parseHitDiceText(text)).toBe(dice)
+    })
+
+    it.each([['a lot'], ['2d7'], ['0d6'], [12], [undefined]])(
+      'Should ignore %s',
+      text => {
+        expect(parseHitDiceText(text)).toBeUndefined()
+      },
+    )
+  })
 })

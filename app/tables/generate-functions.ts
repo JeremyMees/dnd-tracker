@@ -12,8 +12,6 @@ import {
   CreatureStats,
   UiBadge,
   UiCheckbox,
-  UiKbd,
-  UiKbdGroup,
   UiButton,
   Tooltip,
 } from '#components'
@@ -158,7 +156,7 @@ export function expandButton(options: {
 }): VNode {
   return h(
     Tooltip,
-    {},
+    { text: options.content, shortcut: ['SHIFT', 'ENTER'] },
     {
       default: () =>
         h(
@@ -179,15 +177,6 @@ export function expandButton(options: {
               ariaHidden: true,
             }),
         ),
-      content: () =>
-        h('div', { class: 'flex gap-2' }, [
-          options.content,
-          h(UiKbdGroup, () => [
-            h(UiKbd, () => 'MOD'),
-            h('span', { class: 'text-muted-foreground' }, '+'),
-            h(UiKbd, () => '⏎'),
-          ]),
-        ]),
     },
   )
 }

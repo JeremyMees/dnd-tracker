@@ -17,7 +17,9 @@ withDefaults(
   <div>
     <Navbar class="fixed z-10 left-0 right-0 backdrop-blur" />
     <main
-      class="grow"
+      id="main-content"
+      tabindex="-1"
+      class="grow outline-none"
       :class="{
         'pt-[180px]': !noPadding,
       }"

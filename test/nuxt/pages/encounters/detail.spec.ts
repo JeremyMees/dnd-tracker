@@ -225,6 +225,9 @@ describe('Encounter detail page', () => {
     expect(component.get('[test-id="back"]').attributes('href')).toBe(
       '/encounters',
     )
+    expect(component.get('[test-id="back"]').attributes('aria-label')).toBe(
+      'actions.back',
+    )
     expect(component.find('[test-id="back-campaign"]').exists()).toBe(false)
   })
 

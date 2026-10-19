@@ -3,6 +3,8 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
+import { useRegisteredCommands } from '~/composables/useCommands'
+import { useRowShortcut } from '~/composables/useRowShortcut'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import conditions from '~~/test/fixtures/conditions.json'
 import { authUser } from '~~/test/fixtures/auth-user'
@@ -110,6 +112,16 @@ vi.mock('~~/composables/initiative-sheet', () => ({
   },
 }))
 
+const commands = useRegisteredCommands()
+
+function runCommand(id: string): void {
+  commands.value.find(command => command.id === id)?.run()
+}
+
+function commandIds(): string[] {
+  return commands.value.map(({ id }) => id)
+}
+
 describe('Initiative table', () => {
   beforeEach(() => {
     mockSheet.value = sheet
@@ -152,8 +164,10 @@ describe('Initiative table', () => {
     })
 
     expect(
-      component.find('[test-id="live-session-trigger"]').exists(),
-    ).toBeTruthy()
+      component
+        .findComponent({ name: 'InitiativeHeader' })
+        .props('encounterId'),
+    ).toBe(42)
   })
 
   it('Should toast the reminders the next turn returns', async () => {
@@ -225,14 +239,14 @@ describe('Initiative table', () => {
       expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
     })
 
-    it('Should show the history panel after toggling it from the header', async () => {
+    it('Should show the history panel after toggling it from the palette', async () => {
       const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
       })
 
-      await component.find('[test-id="history-trigger"]').trigger('click')
+      runCommand('combat-log')
       await vi.waitUntil(() =>
         component.find('[test-id="history-panel"]').exists(),
       )
@@ -247,7 +261,7 @@ describe('Initiative table', () => {
         global,
       })
 
-      expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
+      expect(commandIds()).not.toContain('combat-log')
       expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
     })
   })
@@ -260,7 +274,7 @@ describe('Initiative table', () => {
         global,
       })
 
-      expect(component.find('[test-id="end-encounter"]').exists()).toBeFalsy()
+      expect(commandIds()).not.toContain('end-encounter')
       expect(
         component.findComponent({ name: 'InitiativeSummary' }).exists(),
       ).toBeFalsy()
@@ -282,14 +296,14 @@ describe('Initiative table', () => {
       ).toBe(false)
     })
 
-    it('Should open the summary from the header button', async () => {
+    it('Should open the summary from the palette', async () => {
       const component = await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
       })
 
-      await component.find('[test-id="end-encounter"]').trigger('click')
+      runCommand('end-encounter')
       await vi.waitUntil(() =>
         component.findComponent({ name: 'InitiativeSummary' }).exists(),
       )
@@ -306,7 +320,7 @@ describe('Initiative table', () => {
         global,
       })
 
-      await component.find('[test-id="end-encounter"]').trigger('click')
+      runCommand('end-encounter')
       await vi.waitUntil(() =>
         component.findComponent({ name: 'InitiativeSummary' }).exists(),
       )
@@ -326,7 +340,7 @@ describe('Initiative table', () => {
         global,
       })
 
-      await component.find('[test-id="end-encounter"]').trigger('click')
+      runCommand('end-encounter')
       await vi.waitUntil(() =>
         component.findComponent({ name: 'InitiativeSummary' }).exists(),
       )
@@ -346,7 +360,7 @@ describe('Initiative table', () => {
         global,
       })
 
-      await component.find('[test-id="end-encounter"]').trigger('click')
+      runCommand('end-encounter')
       await vi.waitUntil(() =>
         component.findComponent({ name: 'InitiativeSummary' }).exists(),
       )
@@ -361,30 +375,26 @@ describe('Initiative table', () => {
     })
 
     it('Should clear the logged events when the encounter is reset', async () => {
-      const component = await mountWithTooltips(Table, {
+      await mountWithTooltips(Table, {
         props: { ...props, encounterId: 42 },
         provide,
         global,
       })
 
-      component
-        .findComponent({ name: 'InitiativeHeader' })
-        .vm.$emit('reset', true)
+      runCommand('reset-hard')
       await vi.waitUntil(() => clearCombatEvents.mock.calls.length > 0)
 
       expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
     })
 
     it('Should not try to clear events when there is no encounterId', async () => {
-      const component = await mountWithTooltips(Table, {
+      await mountWithTooltips(Table, {
         props,
         provide,
         global,
       })
 
-      component
-        .findComponent({ name: 'InitiativeHeader' })
-        .vm.$emit('reset', true)
+      runCommand('reset-hard')
       await nextTick()
 
       expect(clearCombatEvents).not.toHaveBeenCalled()
@@ -510,5 +520,184 @@ describe('Initiative table', () => {
     await nextTick()
 
     expect(component.find('[test-id="expanded"]').exists()).toBeTruthy()
+  })
+
+  describe('Command palette', () => {
+    it('Should offer the turn, row and reset commands', async () => {
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      expect(commandIds()).toEqual([
+        'next-turn',
+        'damage',
+        'heal',
+        'condition',
+        'reset-soft',
+        'reset-hard',
+      ])
+
+      component.unmount()
+
+      expect(commandIds()).toEqual([])
+    })
+
+    it('Should offer the previous turn once the encounter has moved on', async () => {
+      mockSheet.value = { ...sheet, activeIndex: 1 }
+
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      expect(commandIds()).toContain('previous-turn')
+
+      runCommand('previous-turn')
+
+      expect(mockUpdate).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+
+      component.unmount()
+    })
+
+    it('Should not offer commands that need rows when the encounter is empty', async () => {
+      mockSheet.value = { ...sheet, rows: [] }
+
+      const component = await mountWithTooltips(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      expect(commandIds()).toEqual(['live-session', 'combat-log'])
+
+      component.unmount()
+    })
+
+    it.each(['damage', 'heal', 'condition'] as const)(
+      'Should ask the current row for %s from the palette',
+      async action => {
+        const component = await mountWithTooltips(Table, {
+          props,
+          provide,
+          global,
+        })
+        const { request } = useRowShortcut()
+
+        runCommand(action)
+
+        expect(request.value).toEqual({ rowId: sheet.rows[0]!.id, action })
+
+        request.value = undefined
+        component.unmount()
+      },
+    )
+
+    it('Should outline the target and use it for the palette commands', async () => {
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+      const { request, targetId } = useRowShortcut()
+
+      targetId.value = sheet.rows[2]!.id
+      await nextTick()
+
+      const rows = component.findAll('[test-id="row"]')
+
+      expect(rows[2]!.attributes('data-target')).toBe('true')
+      expect(rows[0]!.attributes('data-target')).toBeUndefined()
+
+      runCommand('damage')
+
+      expect(request.value).toEqual({
+        rowId: sheet.rows[2]!.id,
+        action: 'damage',
+      })
+
+      request.value = undefined
+      targetId.value = undefined
+      component.unmount()
+    })
+
+    it('Should hide the row commands when their columns are hidden', async () => {
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: [],
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      expect(commandIds()).not.toContain('damage')
+      expect(commandIds()).not.toContain('heal')
+      expect(commandIds()).not.toContain('condition')
+
+      component.unmount()
+    })
+
+    it('Should end the turn from the palette', async () => {
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      runCommand('next-turn')
+      await flushPromises()
+
+      expect(mockNextTurn).toHaveBeenCalled()
+
+      component.unmount()
+    })
+
+    it('Should open the combat log and the summary from the palette', async () => {
+      const component = await mountWithTooltips(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      runCommand('combat-log')
+      await vi.waitUntil(() =>
+        component.find('[test-id="history-panel"]').exists(),
+      )
+
+      runCommand('end-encounter')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeSummary' }).exists(),
+      )
+
+      expect(
+        component.findComponent({ name: 'InitiativeSummary' }).props('open'),
+      ).toBe(true)
+
+      component.unmount()
+    })
+
+    it('Should reset the encounter from the palette', async () => {
+      const component = await mountWithTooltips(Table, {
+        props: { ...props, encounterId: 42 },
+        provide,
+        global,
+      })
+
+      runCommand('reset-soft')
+
+      expect(mockUpdate).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
+
+      component.unmount()
+    })
   })
 })

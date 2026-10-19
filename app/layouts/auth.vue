@@ -9,9 +9,13 @@
         </NuxtLinkLocale>
       </div>
       <div class="flex flex-1 items-center justify-center">
-        <div class="w-full max-w-sm">
+        <main
+          id="main-content"
+          tabindex="-1"
+          class="w-full max-w-sm outline-none"
+        >
           <slot />
-        </div>
+        </main>
       </div>
     </div>
     <div

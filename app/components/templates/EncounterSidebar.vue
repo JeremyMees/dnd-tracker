@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { encounterShortcuts } from '~~/constants/shortcuts'
 
 defineEmits<{ toggleSidebar: [] }>()
 defineProps<{ isExpanded: boolean }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { t } = useI18n()
+const { keyLabel } = useShortcutKeys()
+
+const shortcutsOpen = ref<boolean>(false)
+
+onKeyStroke('?', event => {
+  if (!isPlainKeyPress(event)) return
+
+  event.preventDefault()
+  shortcutsOpen.value = !shortcutsOpen.value
+})
 
 type Modals =
   | 'settings'
@@ -29,6 +41,53 @@ function remixMonster(monster: DndMonster): void {
 onBeforeUnmount(() => (openModal.value = undefined))
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
+
+useCommands(() => [
+  {
+    id: 'bestiary',
+    label: t('general.bestiary'),
+    icon: 'tabler:bat',
+    iconClass: 'text-destructive',
+    disabled: maxCharacters.value,
+    run: () => (openModal.value = 'bestiary'),
+  },
+  {
+    id: 'campaign-homebrew',
+    label: t('general.campaignHomebrew'),
+    icon: 'tabler:meeple',
+    iconClass: 'text-primary',
+    disabled: maxCharacters.value || !sheet.value?.campaign?.id,
+    run: () => (openModal.value = 'addHomebrew'),
+  },
+  {
+    id: 'new-homebrew',
+    label: t('general.newHomebrew'),
+    icon: 'tabler:beer',
+    iconClass: 'text-warning',
+    disabled: maxCharacters.value,
+    run: () => (openModal.value = 'newHomebrew'),
+  },
+  {
+    id: 'content',
+    label: t('components.navbar.dnd-content'),
+    icon: 'tabler:book',
+    iconClass: 'text-help',
+    run: () => (openModal.value = 'content'),
+  },
+  {
+    id: 'shortcuts',
+    label: t('components.shortcuts.overview'),
+    icon: 'tabler:keyboard',
+    shortcut: ['?'],
+    run: () => (shortcutsOpen.value = true),
+  },
+  {
+    id: 'settings',
+    label: t('general.setting', 2),
+    icon: 'tabler:settings',
+    run: () => (openModal.value = 'settings'),
+  },
+])
 </script>
 
 <template>
@@ -284,64 +343,53 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
         </UiDialog>
       </UiSidebarMenuItem>
       <UiSidebarMenuItem>
-        <UiPopover>
+        <UiPopover v-model:open="shortcutsOpen">
           <UiPopoverTrigger as-child>
             <UiSidebarMenuButton as-child>
               <button
                 id="tour-8"
-                :aria-label="$t('general.hotkey', 2)"
+                test-id="shortcuts-trigger"
+                :aria-label="$t('general.shortcut', 2)"
                 class="flex items-center gap-x-2"
               >
                 <Tooltip
-                  :text="`${$t('general.hotkey', 2)}`"
+                  :text="`${$t('general.shortcut', 2)}`"
+                  :shortcut="['?']"
                   side="right"
                   :disabled="isExpanded"
                 >
                   <Icon name="tabler:keyboard" class="size-4 min-w-4" />
                   <span class="group-data-[collapsible=icon]:hidden truncate">
-                    {{ $t('general.hotkey', 2) }}
+                    {{ $t('general.shortcut', 2) }}
                   </span>
                 </Tooltip>
               </button>
             </UiSidebarMenuButton>
           </UiPopoverTrigger>
-          <UiPopoverContent side="right" align="start" class="space-y-4">
-            <div class="space-y-2">
-              <p class="font-medium">
-                {{ $t('general.modifierKeys') }}
-              </p>
-              <UiKbdGroup>
-                <UiKbd>⌃</UiKbd>
-                <span class="text-muted-foreground">/</span>
-                <UiKbd>⌘</UiKbd>
-                <span class="text-muted-foreground">/</span>
-                <UiKbd>⇧</UiKbd>
-              </UiKbdGroup>
-            </div>
-            <div class="space-y-2">
-              <p class="font-medium">
-                {{ $t('actions.changeInitiative') }}
-              </p>
-              <UiKbdGroup>
-                <UiKbd> MOD </UiKbd>
-                <span class="text-muted-foreground">+</span>
-                <UiKbdGroup>
-                  <UiKbd>←</UiKbd>
-                  <span class="text-muted-foreground">/</span>
-                  <UiKbd>→</UiKbd>
+          <UiPopoverContent
+            test-id="shortcuts"
+            side="right"
+            align="start"
+            class="w-80"
+          >
+            <UiPopoverHeader>
+              <UiPopoverTitle>{{ $t('general.shortcut', 2) }}</UiPopoverTitle>
+            </UiPopoverHeader>
+            <ul class="mt-3 space-y-2">
+              <li
+                v-for="shortcut in encounterShortcuts"
+                :key="shortcut.label"
+                test-id="shortcut"
+                class="flex items-center justify-between gap-4 text-sm"
+              >
+                <span>{{ $t(shortcut.label) }}</span>
+                <UiKbdGroup class="shrink-0">
+                  <UiKbd v-for="key in shortcut.keys" :key="key">
+                    {{ keyLabel(key) }}
+                  </UiKbd>
                 </UiKbdGroup>
-              </UiKbdGroup>
-            </div>
-            <div class="space-y-2">
-              <p class="font-medium">
-                {{ $t('actions.collapse') }}/{{ $t('actions.expand') }}
-              </p>
-              <UiKbdGroup>
-                <UiKbd> MOD </UiKbd>
-                <span class="text-muted-foreground">+</span>
-                <UiKbd>⏎</UiKbd>
-              </UiKbdGroup>
-            </div>
+              </li>
+            </ul>
           </UiPopoverContent>
         </UiPopover>
       </UiSidebarMenuItem>

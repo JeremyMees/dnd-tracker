@@ -9,8 +9,16 @@ vi.mock('@sentry/nuxt', () => ({ setUser }))
 vi.unmock('~/plugins/sentry-user.client')
 
 const user = ref<AuthUser | null>(null)
+const consent = ref<string[]>([])
 
 mockNuxtImport('useAuthentication', () => () => ({ user }))
+mockNuxtImport('useHasConsent', () => () => consent)
+
+const sentryUser = {
+  id: authUser.id,
+  email: authUser.email,
+  username: authUser.username,
+}
 
 function runPlugin(): void {
   const nuxtApp = useNuxtApp()
@@ -21,6 +29,7 @@ function runPlugin(): void {
 describe('sentry-user plugin', () => {
   beforeEach(() => {
     user.value = null
+    consent.value = ['necessary', 'measurement']
     setUser.mockReset()
   })
 
@@ -35,11 +44,7 @@ describe('sentry-user plugin', () => {
 
     runPlugin()
 
-    expect(setUser).toHaveBeenCalledWith({
-      id: authUser.id,
-      email: authUser.email,
-      username: authUser.username,
-    })
+    expect(setUser).toHaveBeenCalledWith(sentryUser)
   })
 
   it('sets the Sentry user when the user logs in', async () => {
@@ -48,11 +53,7 @@ describe('sentry-user plugin', () => {
     user.value = authUser
     await nextTick()
 
-    expect(setUser).toHaveBeenLastCalledWith({
-      id: authUser.id,
-      email: authUser.email,
-      username: authUser.username,
-    })
+    expect(setUser).toHaveBeenLastCalledWith(sentryUser)
   })
 
   it('clears the Sentry user when the user logs out', async () => {
@@ -60,6 +61,37 @@ describe('sentry-user plugin', () => {
     runPlugin()
 
     user.value = null
+    await nextTick()
+
+    expect(setUser).toHaveBeenLastCalledWith(null)
+  })
+
+  it('does not send the user without measurement consent', () => {
+    consent.value = ['necessary']
+    user.value = authUser
+
+    runPlugin()
+
+    expect(setUser).toHaveBeenCalledOnce()
+    expect(setUser).toHaveBeenCalledWith(null)
+  })
+
+  it('sets the Sentry user once measurement consent is given', async () => {
+    consent.value = ['necessary']
+    user.value = authUser
+    runPlugin()
+
+    consent.value = ['necessary', 'measurement']
+    await nextTick()
+
+    expect(setUser).toHaveBeenLastCalledWith(sentryUser)
+  })
+
+  it('clears the Sentry user when measurement consent is withdrawn', async () => {
+    user.value = authUser
+    runPlugin()
+
+    consent.value = ['necessary']
     await nextTick()
 
     expect(setUser).toHaveBeenLastCalledWith(null)

@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import HpUpdate from '~/components/form/HpUpdate.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
-import { submitForm } from '~~/test/nuxt/stubs/form'
+import { settle, submitForm } from '~~/test/nuxt/stubs/form'
 
 const handleToasts = vi.fn()
 const updateRow = vi.fn()
@@ -16,15 +16,32 @@ const buttons: Record<HpAction, number> = { heal: 0, temp: 1, damage: 2 }
 function mountHpUpdate({
   withSheet = true,
   row = item,
-}: { withSheet?: boolean; row?: InitiativeSheetRow } = {}) {
+  intent,
+}: {
+  withSheet?: boolean
+  row?: InitiativeSheetRow
+  intent?: DndHpType
+} = {}) {
   return mountSuspended(HpUpdate, {
     props: {
       sheet: withSheet ? sheet : undefined,
       item: row,
       handleToasts,
       updateRow,
+      intent,
     },
   })
+}
+
+async function pressEnter(
+  component: Awaited<ReturnType<typeof mountHpUpdate>>,
+  amount = 5,
+) {
+  const input = component.get('input[name="amount"]')
+
+  await input.setValue(amount)
+  await input.trigger('keydown', { key: 'Enter' })
+  await settle()
 }
 
 async function submitAs(
@@ -161,5 +178,58 @@ describe('HpUpdate', () => {
     await submitAs(component, 'heal')
 
     expect(component.text()).toContain('An error occurred while updating HP')
+  })
+
+  describe('Shortcut intent', () => {
+    const row = {
+      ...item,
+      hitPoints: 20,
+      maxHitPoints: 30,
+      tempHitPoints: undefined,
+    }
+
+    it.each([
+      ['damage', 15],
+      ['heal', 25],
+    ] as const)(
+      'Should %s on enter when it was opened with that intent',
+      async (intent, hitPoints) => {
+        updateRow.mockClear()
+
+        const component = await mountHpUpdate({ row, intent })
+
+        await pressEnter(component)
+
+        expect(updateRow).toHaveBeenCalledOnce()
+        expect(updatedRow().hitPoints).toBe(hitPoints)
+
+        component.unmount()
+      },
+    )
+
+    it('Should highlight the button of the intent', async () => {
+      const component = await mountHpUpdate({ row, intent: 'damage' })
+
+      expect(component.get('[test-id="hp-damage"]').classes()).toContain(
+        'ring-2',
+      )
+      expect(component.get('[test-id="hp-heal"]').classes()).not.toContain(
+        'ring-2',
+      )
+
+      component.unmount()
+    })
+
+    it('Should leave enter alone without an intent', async () => {
+      updateRow.mockClear()
+
+      const component = await mountHpUpdate({ row })
+
+      await pressEnter(component)
+
+      expect(updateRow).not.toHaveBeenCalled()
+
+      component.unmount()
+    })
   })
 })

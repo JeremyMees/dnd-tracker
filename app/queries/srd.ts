@@ -101,6 +101,7 @@ export function useConditionsListing() {
 
 export function useSrdMonsterListing(
   data: ComputedRef<{ filters: DndContentFilters }>,
+  enabled: MaybeRefOrGetter<boolean> = true,
 ) {
   const { t } = useI18n()
 
@@ -127,5 +128,6 @@ export function useSrdMonsterListing(
     staleTime: TEN_MINUTES,
     gcTime: TEN_MINUTES,
     retry: false,
+    enabled,
   })
 }

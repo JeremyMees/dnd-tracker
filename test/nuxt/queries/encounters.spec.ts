@@ -17,6 +17,7 @@ import {
   useEncounterCreate,
   useEncounterListing,
   useEncounterRemove,
+  useEncounterImport,
   useEncounterUpdate,
 } from '~/queries/encounters'
 
@@ -377,6 +378,60 @@ describe('encounters queries', () => {
       expect(toast.error).toHaveBeenCalledWith('components.toast.copy.error', {
         description: 'general.error.reasons.rejected',
       })
+    })
+  })
+
+  describe('useEncounterImport', () => {
+    it('inserts every encounter in one call and invalidates', async () => {
+      const from = mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      const { vm } = await mountHook(() => ({
+        ...useEncounterImport(),
+        queryClient: useQueryClient(),
+      }))
+
+      const invalidateSpy = vi.spyOn(vm.queryClient, 'invalidateQueries')
+      const data = [{ title: 'One' }, { title: 'Two' }] as InitiativeInsert[]
+
+      await vm.mutateAsync({ data })
+
+      expect(from.mock.results[0]!.value.insert).toHaveBeenCalledWith(data)
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ['useEncounterListing'],
+      })
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ['useEncounterCount'],
+      })
+      expect(toast.success).toHaveBeenCalledWith(
+        'components.toast.import.success',
+      )
+    })
+
+    it('reports an error and toasts on failure', async () => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({
+          data: null,
+          error: { message: 'boom' },
+        }),
+      })
+
+      const { vm } = await mountHook(() => useEncounterImport())
+      const spies = mutationSpies()
+
+      await expect(
+        vm.mutateAsync({
+          data: [{ title: 'One' }] as InitiativeInsert[],
+          ...spies,
+        }),
+      ).rejects.toThrow('boom')
+
+      expect(spies.onError).toHaveBeenCalledWith('boom')
+      expect(toast.error).toHaveBeenCalledWith(
+        'components.toast.import.error',
+        { description: 'general.error.reasons.rejected' },
+      )
     })
   })
 })

@@ -3,7 +3,9 @@ import type { homebrewFormSchema } from '~/utils/form-schema'
 
 export type HomebrewTab = 'info' | 'stats' | 'traits' | 'actions'
 
-export type HomebrewStartStep = 'type' | 'source' | 'bestiary'
+export type HomebrewStartStep = 'type' | 'source' | 'bestiary' | 'file'
+
+export type HomebrewStartSource = 'scratch' | 'bestiary' | 'file'
 
 export type HomebrewFormValues = z.output<ReturnType<typeof homebrewFormSchema>>
 

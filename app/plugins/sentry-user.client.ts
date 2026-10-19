@@ -2,12 +2,14 @@ import { setUser } from '@sentry/nuxt'
 
 export default defineNuxtPlugin(() => {
   const { user } = useAuthentication()
+  const consent = useHasConsent()
+  const allowed = computed(() => consent.value.includes('measurement'))
 
   watch(
-    user,
-    current => {
+    [user, allowed],
+    ([current, isAllowed]) => {
       setUser(
-        current
+        current && isAllowed
           ? { id: current.id, email: current.email, username: current.username }
           : null,
       )

@@ -65,6 +65,14 @@ describe('Initiative widgets wrapper', async () => {
     expect(component.html()).toMatchSnapshot()
   })
 
+  it('Should label the widget settings button', async () => {
+    component = await mountWithTooltips(Widgets, { provide })
+
+    expect(
+      component.get('[test-id="widgets-settings"]').attributes('aria-label'),
+    ).toBe('pages.encounter.update.widgets')
+  })
+
   it('Should render note widget when enabled', async () => {
     mockSheet.value = {
       ...sheet,

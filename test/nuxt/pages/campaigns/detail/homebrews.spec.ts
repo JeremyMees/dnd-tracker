@@ -13,6 +13,9 @@ const {
   invalidateQueries,
   open,
   removeHomebrew,
+  importHomebrews,
+  download,
+  read,
   useSeo,
 } = vi.hoisted(() => ({
   ask: vi.fn(),
@@ -21,6 +24,9 @@ const {
   invalidateQueries: vi.fn(),
   open: vi.fn(),
   removeHomebrew: vi.fn(),
+  importHomebrews: vi.fn(),
+  download: vi.fn(),
+  read: vi.fn(),
   useSeo: vi.fn(),
 }))
 
@@ -68,6 +74,10 @@ vi.mock('~/queries/homebrews', () => ({
     return { data, status }
   },
   useHomebrewRemove: () => ({ mutateAsync: removeHomebrew }),
+  useHomebrewImport: () => ({
+    mutateAsync: importHomebrews,
+    isPending: ref(false),
+  }),
 }))
 
 interface ColumnOptions {
@@ -90,6 +100,7 @@ vi.mock('~/tables/homebrew-listing', () => ({
 mockNuxtImport('useSeo', () => useSeo)
 mockNuxtImport('useModal', () => () => ({ open }))
 mockNuxtImport('useConfirm', () => () => ({ ask }))
+mockNuxtImport('useTransferFile', () => () => ({ download, read }))
 
 const show = vi.fn()
 const listingStubs = createListingStubs({ show })
@@ -142,6 +153,9 @@ describe('Campaign homebrews page', () => {
     listingStubs.state.value = tableState(20)
 
     removeHomebrew.mockResolvedValue(undefined)
+    importHomebrews.mockReset()
+    download.mockReset()
+    read.mockReset()
   })
 
   afterEach(() => {
@@ -392,5 +406,86 @@ describe('Campaign homebrews page', () => {
     const { component } = await mountPage()
 
     expect(component.find('[test-id="refresh"]').exists()).toBe(false)
+  })
+
+  describe('Import and export', () => {
+    const importedItem = { name: 'Orc', actions: [] }
+    const file = new File(['{}'], 'export.json')
+
+    function importButton(component: VueWrapper) {
+      return component.findComponent(listingStubs.ImportButton)
+    }
+
+    it('Should make the table exportable', async () => {
+      const { table } = await mountPage()
+
+      expect(table.props('exportable')).toBe(true)
+    })
+
+    it('Should download the selected homebrews', async () => {
+      const { table } = await mountPage()
+
+      table.vm.$emit('export', [mockHomebrewItem])
+      await flushPromises()
+
+      expect(download).toHaveBeenCalledWith('homebrews', [
+        toHomebrewTransfer(mockHomebrewItem),
+      ])
+    })
+
+    it('Should hide importing without rights', async () => {
+      const { component } = await mountPage()
+
+      expect(importButton(component).exists()).toBe(false)
+    })
+
+    it('Should show the import placeholder while the listing loads', async () => {
+      data.value = { homebrews: null, pages: -1, amount: 0 }
+
+      const { component } = await mountPage({ isOwner: true })
+
+      expect(importButton(component).props('loading')).toBe(true)
+    })
+
+    it('Should accept creature files from other tools', async () => {
+      const { component } = await mountPage({ isOwner: true })
+
+      expect(importButton(component).props('accept')).toBe(
+        'application/json,.json,text/csv,.csv,text/markdown,.md,.markdown,text/plain,.txt',
+      )
+    })
+
+    it('Should read the file with the room left in the campaign', async () => {
+      const { component } = await mountPage({ isOwner: true })
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(read).toHaveBeenCalledWith(file, 'homebrews', 99)
+    })
+
+    it('Should import the homebrews into the campaign', async () => {
+      read.mockResolvedValue([importedItem])
+
+      const { component } = await mountPage({ isAdmin: true })
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(importHomebrews).toHaveBeenCalledWith({
+        data: [{ ...importedItem, campaign: campaignPageProps.campaignId }],
+      })
+    })
+
+    it('Should not import when the file is rejected', async () => {
+      read.mockResolvedValue(undefined)
+
+      const { component } = await mountPage({ isOwner: true })
+
+      importButton(component).vm.$emit('import', file)
+      await flushPromises()
+
+      expect(importHomebrews).not.toHaveBeenCalled()
+    })
   })
 })

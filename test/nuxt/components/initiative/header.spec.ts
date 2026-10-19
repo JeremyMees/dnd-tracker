@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import Header from '~/components/initiative/Header.vue'
+import { useCommandPalette } from '~/composables/useCommandPalette'
+import { useRegisteredCommands } from '~/composables/useCommands'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
-import { dropdownStubs } from '~~/test/nuxt/stubs/dropdown-menu'
 import { closeDialog, dialogIsOpen } from '~~/test/nuxt/stubs/dialog'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
@@ -14,7 +15,7 @@ const props: Props = {
   data: sheet,
 }
 
-const global = { stubs: dropdownStubs }
+const global = {}
 
 vi.mock('~/components/live/SessionPanel.vue', () => ({
   default: {
@@ -116,9 +117,6 @@ describe('Initiative header', () => {
     expect(
       component.find('[test-id="previous"]').attributes('disabled'),
     ).toBeDefined()
-    expect(
-      component.find('[test-id="reset"]').attributes('disabled'),
-    ).toBeDefined()
   })
 
   it('Should emit next event when next button is clicked', async () => {
@@ -145,160 +143,61 @@ describe('Initiative header', () => {
     expect(component.emitted('previous')).toBeDefined()
   })
 
-  it('Should not display the live session trigger without an encounterId', async () => {
+  it('Should open the command palette from the actions button', async () => {
+    const { open } = useCommandPalette()
     const component = await mountWithTooltips(Header, { props, global })
 
-    expect(
-      component.find('[test-id="live-session-trigger"]').exists(),
-    ).toBeFalsy()
+    open.value = false
+
+    await component.find('[test-id="command-palette-trigger"]').trigger('click')
+
+    expect(open.value).toBe(true)
+
+    open.value = false
   })
 
-  it('Should display the live session trigger when an encounterId is given', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
+  describe('Live session command', () => {
+    const commands = useRegisteredCommands()
+
+    function liveSessionCommand() {
+      return commands.value.find(command => command.id === 'live-session')
+    }
+
+    it('Should not offer the live session without an encounterId', async () => {
+      await mountWithTooltips(Header, { props, global })
+
+      expect(liveSessionCommand()).toBeUndefined()
     })
 
-    expect(
-      component.find('[test-id="live-session-trigger"]').exists(),
-    ).toBeTruthy()
-  })
+    it('Should open the live session panel with the encounterId', async () => {
+      const component = await mountWithTooltips(Header, {
+        props: { ...props, encounterId: 42 },
+        global,
+      })
 
-  it('Should render the live session panel with the encounterId when opened', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
+      liveSessionCommand()?.run()
+      await nextTick()
+
+      const panel = component.findComponent({ name: 'SessionPanelStub' })
+
+      expect(panel.exists()).toBeTruthy()
+      expect(panel.props('encounterId')).toBe(42)
     })
 
-    await component.find('[test-id="live-session-trigger"]').trigger('click')
-    await nextTick()
+    it('Should close the live session dialog when it is dismissed', async () => {
+      const component = await mountWithTooltips(Header, {
+        props: { ...props, encounterId: 42 },
+        global,
+      })
 
-    const panel = component.findComponent({ name: 'SessionPanelStub' })
+      liveSessionCommand()?.run()
+      await nextTick()
 
-    expect(panel.exists()).toBeTruthy()
-    expect(panel.props('encounterId')).toBe(42)
-  })
+      expect(dialogIsOpen(component)).toBe(true)
 
-  it('Should close the live session dialog when it is dismissed', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
-    })
+      await closeDialog(component)
 
-    await component.find('[test-id="live-session-trigger"]').trigger('click')
-    await nextTick()
-
-    expect(dialogIsOpen(component)).toBe(true)
-
-    await closeDialog(component)
-
-    expect(dialogIsOpen(component)).toBe(false)
-  })
-
-  it('Should not display the history trigger without an encounterId', async () => {
-    const component = await mountWithTooltips(Header, { props, global })
-
-    expect(component.find('[test-id="history-trigger"]').exists()).toBeFalsy()
-  })
-
-  it('Should display the history trigger when an encounterId is given', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
-    })
-
-    expect(component.find('[test-id="history-trigger"]').exists()).toBeTruthy()
-  })
-
-  it('Should emit toggleHistory when the history trigger is clicked', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
-    })
-
-    await component.find('[test-id="history-trigger"]').trigger('click')
-
-    expect(component.emitted('toggleHistory')).toBeTruthy()
-  })
-
-  it('Should label the history trigger with the open action when the log is closed', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
-    })
-
-    expect(component.find('[test-id="history-trigger"]').text()).toBe(
-      'actions.openCombatLog',
-    )
-  })
-
-  it('Should label the history trigger with the close action when the log is open', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42, historyOpen: true },
-      global,
-    })
-
-    expect(component.find('[test-id="history-trigger"]').text()).toBe(
-      'actions.closeCombatLog',
-    )
-  })
-
-  it('Should not display the end encounter button without an encounterId', async () => {
-    const component = await mountWithTooltips(Header, { props, global })
-
-    expect(component.find('[test-id="end-encounter"]').exists()).toBeFalsy()
-  })
-
-  it('Should display the end encounter button when an encounterId is given', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
-    })
-
-    expect(component.find('[test-id="end-encounter"]').exists()).toBeTruthy()
-  })
-
-  it('Should emit endEncounter when the end encounter button is clicked', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: { ...props, encounterId: 42 },
-      global,
-    })
-
-    await component.find('[test-id="end-encounter"]').trigger('click')
-
-    expect(component.emitted('endEncounter')).toHaveLength(1)
-  })
-
-  it('Should disable the end encounter button when the sheet has no rows', async () => {
-    const component = await mountWithTooltips(Header, {
-      props: {
-        ...props,
-        encounterId: 42,
-        data: { ...props.data, rows: [] } as InitiativeSheet,
-      },
-      global,
-    })
-
-    expect(
-      component.find('[test-id="end-encounter"]').attributes('disabled'),
-    ).toBeDefined()
-  })
-
-  describe('Reset submenu', () => {
-    it('Should emit a soft reset when the soft option is clicked', async () => {
-      const component = await mountWithTooltips(Header, { props, global })
-
-      await component.find('[test-id="reset-soft"]').trigger('click')
-
-      expect(component.emitted('reset')?.[0]).toEqual([false])
-    })
-
-    it('Should emit a hard reset when the hard option is clicked', async () => {
-      const component = await mountWithTooltips(Header, { props, global })
-
-      await component.find('[test-id="reset-hard"]').trigger('click')
-
-      expect(component.emitted('reset')?.[0]).toEqual([true])
+      expect(dialogIsOpen(component)).toBe(false)
     })
   })
 })

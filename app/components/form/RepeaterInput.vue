@@ -84,37 +84,40 @@ function moveDown(index: number) {
           <Tooltip :text="$t('actions.moveUp')">
             <UiButton
               :test-id="`move-up-${index}`"
+              :aria-label="$t('actions.moveUp')"
               type="button"
               variant="default-ghost"
               size="icon-sm"
               :disabled="index === 0"
               @click="moveUp(index)"
             >
-              <Icon name="tabler:arrow-up" />
+              <Icon name="tabler:arrow-up" aria-hidden="true" />
             </UiButton>
           </Tooltip>
           <Tooltip :text="$t('actions.moveDown')">
             <UiButton
               :test-id="`move-down-${index}`"
+              :aria-label="$t('actions.moveDown')"
               type="button"
               variant="default-ghost"
               size="icon-sm"
               :disabled="index === fields.length - 1"
               @click="moveDown(index)"
             >
-              <Icon name="tabler:arrow-down" />
+              <Icon name="tabler:arrow-down" aria-hidden="true" />
             </UiButton>
           </Tooltip>
           <Tooltip :text="$t('actions.remove')">
             <UiButton
               :test-id="`remove-${index}`"
+              :aria-label="$t('actions.remove')"
               type="button"
               variant="destructive-ghost"
               size="icon-sm"
               :disabled="fields.length <= min"
               @click="removeItem(index)"
             >
-              <Icon name="tabler:trash" />
+              <Icon name="tabler:trash" aria-hidden="true" />
             </UiButton>
           </Tooltip>
         </div>

@@ -91,3 +91,42 @@ export function parseBoolean(
 
   return ['1', 'true', 'yes', 'required'].includes(normalizeKey(value))
 }
+
+export function toNumberOrUndefined(value: unknown): number | undefined {
+  if (typeof value !== 'number' && typeof value !== 'string') return undefined
+
+  const parsed = parseNumber(value, NaN)
+
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+export function toTextOrUndefined(value: unknown): string | undefined {
+  if (typeof value === 'number') return String(value)
+  if (typeof value !== 'string') return undefined
+
+  return value.trim() || undefined
+}
+
+export function toRecordOrUndefined(
+  value: unknown,
+): Record<string, unknown> | undefined {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined
+}
+
+export function toListOrEmpty(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : []
+}
+
+export function integerInRange(
+  value: number | undefined,
+  min: number,
+  max: number,
+): number | undefined {
+  if (value === undefined) return undefined
+
+  const rounded = Math.round(value)
+
+  return rounded >= min && rounded <= max ? rounded : undefined
+}

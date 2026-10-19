@@ -10,6 +10,7 @@ import {
   useHomebrewCount,
   useHomebrewListing,
   useHomebrewRemove,
+  useHomebrewImport,
 } from '~/queries/homebrews'
 import { maxCampaignHomebrews } from '~~/constants/validation'
 
@@ -36,6 +37,9 @@ const hasRights = computed(() => props.isOwner || props.isAdmin)
 const enableDateFetching = computed(() => props.fetchReady)
 
 const { mutateAsync: removeHomebrew } = useHomebrewRemove()
+const { mutateAsync: importHomebrews, isPending: importing } =
+  useHomebrewImport()
+const transfer = useTransferFile()
 const { data: count } = useHomebrewCount(props.campaignId, enableDateFetching)
 
 const { data, status } = useHomebrewListing(
@@ -87,6 +91,24 @@ async function removeItems(ids: number[]): Promise<void> {
   )
 }
 
+function exportItems(items: HomebrewItemRow[]): void {
+  transfer.download('homebrews', items.map(toHomebrewTransfer))
+}
+
+async function importItems(file: File): Promise<void> {
+  const items = await transfer.read(
+    file,
+    'homebrews',
+    maxCampaignHomebrews - (count.value ?? 0),
+  )
+
+  if (!items) return
+
+  await importHomebrews({
+    data: items.map(item => ({ ...item, campaign: props.campaignId })),
+  })
+}
+
 function invalidateQueries(): void {
   queryClient.invalidateQueries({ queryKey: queryKeys.homebrewListing() })
   queryClient.invalidateQueries({ queryKey: queryKeys.homebrewCount() })
@@ -119,15 +141,24 @@ function invalidateQueries(): void {
           item: $t('general.homebrew', 2).toLowerCase(),
         })
       "
+      exportable
       @remove="removeItems"
+      @export="exportItems"
       @invalidate="invalidateQueries"
     >
       <template #top>
-        <div class="flex justify-end items-center gap-4">
+        <div class="flex flex-wrap justify-end items-center gap-2 sm:gap-4">
           <ContentCount
             :loading="data?.homebrews === null"
             :count="count || 0"
             :max="maxCampaignHomebrews"
+          />
+          <ImportButton
+            v-if="hasRights"
+            :accept="creatureFileTypes"
+            :disabled="status === 'pending' || importing"
+            :loading="data?.homebrews === null"
+            @import="importItems"
           />
           <CreateButton
             v-if="hasRights"

@@ -7,6 +7,16 @@ const props = defineProps<{ item: InitiativeSheetRow }>()
 const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = ref<boolean>(false)
+
+const { onRequest, isTarget } = useRowShortcut()
+
+const isShortcutTarget = computed(() => isTarget(sheet.value, props.item.id))
+
+onRequest(
+  () => props.item.id,
+  ['condition'],
+  () => (popoverOpen.value = true),
+)
 const editingDuration = shallowRef<string>()
 
 const { data: conditions, isPending } = useConditionsListing()
@@ -57,15 +67,24 @@ function toggleDurationEditor(id: string): void {
       <UiPopoverTrigger as-child>
         <button
           test-id="trigger"
+          :aria-label="$t('pages.encounter.update.conditions')"
           :disabled="isPending"
           :class="{ 'cursor-progress': isPending }"
           class="h-[27px] flex flex-col justify-center"
         >
-          <Icon
-            name="tabler:plus"
-            class="size-5 min-w-5 text-foreground/10"
-            aria-hidden="true"
-          />
+          <Tooltip
+            :text="$t('components.shortcuts.condition')"
+            :shortcut="['C']"
+            :disabled="!isShortcutTarget"
+          >
+            <span class="flex">
+              <Icon
+                name="tabler:plus"
+                class="size-5 min-w-5 text-foreground/10"
+                aria-hidden="true"
+              />
+            </span>
+          </Tooltip>
         </button>
       </UiPopoverTrigger>
       <UiPopoverContent>

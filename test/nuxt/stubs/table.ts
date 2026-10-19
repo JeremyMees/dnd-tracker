@@ -21,18 +21,19 @@ export function createListingStubs({
 } = {}) {
   const DataTable = defineComponent({
     name: 'DataTableStub',
-    props: [
-      'columns',
-      'data',
-      'loading',
-      'options',
-      'permission',
-      'emptyMessage',
-      'expandedMarkup',
-      'pageSize',
-      'total',
-    ],
-    emits: ['remove', 'invalidate'],
+    props: {
+      columns: null,
+      data: null,
+      loading: null,
+      options: null,
+      permission: null,
+      emptyMessage: null,
+      expandedMarkup: null,
+      pageSize: null,
+      total: null,
+      exportable: Boolean,
+    },
+    emits: ['remove', 'export', 'invalidate'],
     setup(props, { expose, slots }) {
       expose({
         vueTable: {
@@ -74,6 +75,13 @@ export function createListingStubs({
     template: '<div test-id="create" />',
   })
 
+  const ImportButton = defineComponent({
+    name: 'ImportButtonStub',
+    props: ['disabled', 'loading', 'accept'],
+    emits: ['import'],
+    template: '<div test-id="import" />',
+  })
+
   const RefreshCard = defineComponent({
     name: 'RefreshCardStub',
     emits: ['refresh'],
@@ -87,6 +95,7 @@ export function createListingStubs({
     LimitCta,
     ContentCount,
     CreateButton,
+    ImportButton,
     RefreshCard,
     state,
     stubs: {
@@ -94,6 +103,7 @@ export function createListingStubs({
       ContentCount,
       CreateButton,
       DataTable,
+      ImportButton,
       LimitCta,
       RefreshCard,
       SkeletonCampaignTableRow: skeletonRow,
