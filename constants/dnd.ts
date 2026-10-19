@@ -186,6 +186,7 @@ export const usageTypeMap: Record<string, DndUsageType> = {
   per_day: 'perDay',
   perday: 'perDay',
   recharge: 'recharge',
+  recharge_on_roll: 'recharge',
   at_will: 'atWill',
   atwill: 'atWill',
   per_rest: 'perRest',

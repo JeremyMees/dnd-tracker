@@ -404,6 +404,13 @@ describe('transformers/utils', () => {
       })
     })
 
+    it('maps a recharge on roll to a recharge', () => {
+      expect(mapUsageLimits({ type: 'RECHARGE_ON_ROLL', param: 5 })).toEqual({
+        type: 'recharge',
+        param: 5,
+      })
+    })
+
     it('returns undefined for no usage limits', () => {
       expect(mapUsageLimits(null)).toBeUndefined()
     })
