@@ -898,6 +898,10 @@
         "concentration": "Concentration broken"
       },
       "deathSavesValue": "{made} made / {failed} failed",
+      "experience": {
+        "perPlayer": "{value} XP per player",
+        "total": "{total} XP from defeated monsters, for {players} player | {total} XP from defeated monsters, split over {players} players"
+      },
       "awards": {
         "title": "Standouts",
         "exclusive": {

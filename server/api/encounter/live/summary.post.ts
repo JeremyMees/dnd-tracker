@@ -42,10 +42,17 @@ export default defineEventHandler(async event => {
 
   const masked = toPlayerSheet(sheet).rows
   const known = new Set(masked.map(row => row.id))
+  const original = new Map(sheet.rows.map(row => [row.id, row]))
 
   const stats = aggregateCombatStats(
     events.filter(combatEvent => known.has(combatEvent.rowId)),
-    masked.map(row => ({ id: row.id, name: row.name, type: row.type })),
+    masked.map(row => ({
+      id: row.id,
+      name: row.name,
+      type: row.type,
+      challengeRating: original.get(row.id)?.challengeRating,
+      hitPoints: original.get(row.id)?.hitPoints,
+    })),
     sheet.round,
   )
 

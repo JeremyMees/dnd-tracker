@@ -119,6 +119,27 @@ function assignAwards(combatants: CombatantStats[]): void {
   }
 }
 
+function isDefeated(row: CombatStatsRow, stats?: CombatantStats): boolean {
+  return !!stats?.died || (row.hitPoints !== undefined && row.hitPoints <= 0)
+}
+
+export function combatExperience(
+  rows: CombatStatsRow[],
+  combatants: CombatantStats[],
+): CombatExperience {
+  const byRow = new Map(combatants.map(stats => [stats.rowId, stats]))
+  const players = rows.filter(row => row.type === 'player').length
+  const total = rows
+    .filter(row => row.type === 'monster' && isDefeated(row, byRow.get(row.id)))
+    .reduce((acc, row) => acc + experienceFromChallenge(row.challengeRating), 0)
+
+  return {
+    total,
+    perPlayer: players ? Math.floor(total / players) : 0,
+    players,
+  }
+}
+
 export function aggregateCombatStats(
   events: CombatStatsEvent[],
   rows: CombatStatsRow[],
@@ -170,6 +191,7 @@ export function aggregateCombatStats(
       (acc, s) => acc + s.concentrationBroken,
       0,
     ),
+    experience: combatExperience(rows, combatants),
     combatants,
   }
 }

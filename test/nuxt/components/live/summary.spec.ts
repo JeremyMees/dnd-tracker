@@ -28,6 +28,7 @@ function makeStats(): CombatStats {
     deathSavesFailed: 0,
     conditionsApplied: 0,
     concentrationBroken: 0,
+    experience: { total: 0, perPlayer: 0, players: 0 },
     combatants: [
       {
         rowId: 'a',

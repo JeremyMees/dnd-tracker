@@ -21,4 +21,21 @@ describe('dnd/challenge', () => {
       expect(proficiencyFromChallenge(Number.NaN)).toBeUndefined()
     })
   })
+
+  describe('experienceFromChallenge', () => {
+    it.each([
+      [0, 10],
+      [0.125, 25],
+      [0.5, 100],
+      [5, 1800],
+      [30, 155000],
+    ])('Should give challenge %s %s XP', (cr, xp) => {
+      expect(experienceFromChallenge(cr)).toBe(xp)
+    })
+
+    it('Should give no XP without a known challenge rating', () => {
+      expect(experienceFromChallenge(undefined)).toBe(0)
+      expect(experienceFromChallenge(0.3)).toBe(0)
+    })
+  })
 })

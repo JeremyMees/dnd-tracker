@@ -118,6 +118,32 @@ describe('POST /api/encounter/live/summary', () => {
     expect(payload.stats.combatants).toHaveLength(2)
   })
 
+  it('shares the XP of defeated monsters per player', async () => {
+    mockAll({
+      sheet: {
+        ...sheet,
+        rows: sheet.rows.map(row =>
+          row.type === 'monster' ? { ...row, challengeRating: 2 } : row,
+        ),
+      },
+    })
+
+    await handler(request())
+
+    const supabase = serverSupabaseServiceRole({} as never)
+    const channel = supabase.channel('live:session-uuid')
+    const [, payload] = channel.httpSend.mock.calls[0] as [
+      string,
+      { stats: CombatStats },
+    ]
+
+    expect(payload.stats.experience).toEqual({
+      total: 450,
+      perPlayer: 450,
+      players: 1,
+    })
+  })
+
   it('broadcasts without a version so it cannot desync clients', async () => {
     mockAll()
 

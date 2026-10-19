@@ -898,6 +898,10 @@
         "concentration": "Concentratie verbroken"
       },
       "deathSavesValue": "{made} geslaagd / {failed} gefaald",
+      "experience": {
+        "perPlayer": "{value} XP per speler",
+        "total": "{total} XP van verslagen monsters, voor {players} speler | {total} XP van verslagen monsters, verdeeld over {players} spelers"
+      },
       "awards": {
         "title": "Uitschieters",
         "exclusive": {

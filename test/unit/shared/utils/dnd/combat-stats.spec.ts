@@ -218,4 +218,86 @@ describe('aggregateCombatStats', () => {
 
     expect(result.damageTaken).toBe(0)
   })
+
+  describe('experience', () => {
+    const party: CombatStatsRow[] = [
+      { id: 'a', name: 'Elara', type: 'player' },
+      { id: 'b', name: 'Bruenor', type: 'player' },
+      {
+        id: 'c',
+        name: 'Goblin',
+        type: 'monster',
+        challengeRating: 0.25,
+        hitPoints: 0,
+      },
+      {
+        id: 'd',
+        name: 'Ogre',
+        type: 'monster',
+        challengeRating: 2,
+        hitPoints: 0,
+      },
+      {
+        id: 'e',
+        name: 'Wolf',
+        type: 'monster',
+        challengeRating: 0.25,
+        hitPoints: 5,
+      },
+    ]
+
+    it('splits the XP of defeated monsters over the players', () => {
+      expect(aggregateCombatStats([], party, 1).experience).toEqual({
+        total: 500,
+        perPlayer: 250,
+        players: 2,
+      })
+    })
+
+    it('counts a monster that died from failed death saves', () => {
+      const { experience } = aggregateCombatStats(
+        [event('e', 'died', { rowName: 'Wolf' })],
+        party,
+        1,
+      )
+
+      expect(experience.total).toBe(550)
+    })
+
+    it('ignores monsters without a challenge rating and defeated players', () => {
+      const { experience } = aggregateCombatStats(
+        [],
+        [
+          { id: 'a', name: 'Elara', type: 'player', hitPoints: 0 },
+          { id: 'c', name: 'Homebrew', type: 'monster', hitPoints: 0 },
+          {
+            id: 'f',
+            name: 'Wolf',
+            type: 'summon',
+            challengeRating: 0.25,
+            hitPoints: 0,
+          },
+        ],
+        1,
+      )
+
+      expect(experience).toEqual({ total: 0, perPlayer: 0, players: 1 })
+    })
+
+    it('rounds the share down', () => {
+      const { experience } = aggregateCombatStats(
+        [],
+        [...party, { id: 'g', name: 'Mira', type: 'player' }],
+        1,
+      )
+
+      expect(experience.perPlayer).toBe(166)
+    })
+
+    it('gives no share without players', () => {
+      const { experience } = aggregateCombatStats([], party.slice(2), 1)
+
+      expect(experience).toEqual({ total: 500, perPlayer: 0, players: 0 })
+    })
+  })
 })
