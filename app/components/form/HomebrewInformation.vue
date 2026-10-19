@@ -138,7 +138,13 @@ function generateName(setValue: (value: string) => void): void {
       <UiFormMessage />
     </UiFormItem>
   </UiFormField>
-  <div :class="{ 'grid sm:grid-cols-2 gap-x-3': type === 'player' && !sheet }">
+  <div
+    :class="{
+      'grid gap-x-3': type === 'player',
+      'sm:grid-cols-[1fr_1fr_6rem]': type === 'player' && !sheet,
+      'sm:grid-cols-[1fr_6rem]': type === 'player' && sheet,
+    }"
+  >
     <UiFormField v-slot="{ componentField, setValue }" name="name">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
@@ -175,6 +181,27 @@ function generateName(setValue: (value: string) => void): void {
         </UiFormLabel>
         <UiFormControl>
           <UiInput type="text" v-bind="componentField" />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <UiFormField
+      v-if="type === 'player'"
+      v-slot="{ componentField }"
+      name="level"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel>
+          {{ $t('components.inputs.levelLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            test-id="level"
+            type="number"
+            min="1"
+            max="20"
+            v-bind="componentField"
+          />
         </UiFormControl>
         <UiFormMessage />
       </UiFormItem>

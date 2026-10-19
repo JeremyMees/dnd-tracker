@@ -33,11 +33,13 @@ export function toHomebrewSubmission(
   values: HomebrewFormValues,
 ): HomebrewSubmission {
   const { amount, initiative, initiativeModifier, summoner, ...data } = values
+  const level = data.type === 'player' ? data.level : undefined
 
   return {
-    row: data as InitiativeSheetRowInsert,
+    row: { ...data, level } as InitiativeSheetRowInsert,
     homebrew: {
       ...data,
+      level: level ?? null,
       ...(isDefined(initiativeModifier)
         ? { initiativeModifier: initiativeModifier.toString() }
         : {}),

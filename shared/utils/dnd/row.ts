@@ -63,6 +63,7 @@ const INTEGER_ROW_FIELDS = [
   'tempHitPoints',
   'proficiencyBonus',
   'passivePerception',
+  'level',
 ] as const satisfies readonly (keyof InitiativeSheetRow)[]
 
 export function sanitizeRowNumbers(

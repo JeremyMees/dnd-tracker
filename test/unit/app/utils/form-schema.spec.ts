@@ -943,6 +943,14 @@ describe('form-schema', () => {
       expect(issueAt(result, 'summoner')?.message).toBe('zod.required')
     })
 
+    it.each([0, 21])('Should reject level %s', level => {
+      expect(schema().safeParse(values({ level })).success).toBeFalsy()
+    })
+
+    it('Should accept a level between 1 and 20', () => {
+      expect(schema().safeParse(values({ level: 20 })).success).toBeTruthy()
+    })
+
     it('Should not require a summoner outside an encounter', () => {
       expect(
         schema().safeParse(values({ type: 'summon' })).success,
@@ -989,6 +997,13 @@ describe('form-schema', () => {
         traits: [],
       })
       expect(values.abilityScores).toBeUndefined()
+    })
+
+    it('Should keep the level of a player', () => {
+      expect(
+        homebrewInitialValues({ name: 'Elara', type: 'player', level: 4 })
+          .level,
+      ).toBe(4)
     })
 
     it('Should pass the amount and summoner through', () => {

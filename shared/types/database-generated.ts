@@ -145,6 +145,7 @@ export type Database = {
           id: number
           initiativeModifier: string | null
           languages: Json | null
+          level: number | null
           link: string | null
           modifiers: Json | null
           name: string
@@ -171,6 +172,7 @@ export type Database = {
           id?: number
           initiativeModifier?: string | null
           languages?: Json | null
+          level?: number | null
           link?: string | null
           modifiers?: Json | null
           name: string
@@ -197,6 +199,7 @@ export type Database = {
           id?: number
           initiativeModifier?: string | null
           languages?: Json | null
+          level?: number | null
           link?: string | null
           modifiers?: Json | null
           name?: string

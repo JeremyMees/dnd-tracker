@@ -179,11 +179,12 @@ export function homebrewFormSchema({
       summoner: z.string().max(50).optional().or(z.literal('')),
       name: z.string().min(3).max(50),
       player: z.string().min(3).max(30).optional().or(z.literal('')),
+      level: z.int().gte(1).lte(20).optional(),
       initiative: z.int().gte(1).lte(50).optional(),
       initiativeModifier: z.int().gte(-20).lte(20).optional(),
       armorClass: z.int().gte(1).lte(100).optional(),
       hitPoints: z.int().gte(1).lte(1000).optional(),
-      link: z.string().url().optional().or(z.literal('')),
+      link: z.url().optional().or(z.literal('')),
       hitDice: z
         .string()
         .min(3)
@@ -227,6 +228,7 @@ export function homebrewInitialValues(
     summoner,
     name: source?.name || '',
     player: source?.player || '',
+    level: source?.level || undefined,
     amount,
     initiative: undefined,
     initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),

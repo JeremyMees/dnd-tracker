@@ -61,6 +61,24 @@ describe('homebrew-form', () => {
       expect(submission.row).toMatchObject({ name: 'Grommash', type: 'summon' })
     })
 
+    it('Should keep the level of a player', () => {
+      const submission = toHomebrewSubmission({
+        ...values,
+        type: 'player',
+        level: 5,
+      })
+
+      expect(submission.row.level).toBe(5)
+      expect(submission.homebrew.level).toBe(5)
+    })
+
+    it('Should clear the level for other types', () => {
+      const submission = toHomebrewSubmission({ ...values, level: 5 })
+
+      expect(submission.row.level).toBeUndefined()
+      expect(submission.homebrew.level).toBeNull()
+    })
+
     it('Should store the initiative modifier as text on the homebrew', () => {
       expect(toHomebrewSubmission(values).homebrew).toMatchObject({
         name: 'Grommash',

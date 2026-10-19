@@ -101,6 +101,26 @@ describe('HomebrewInformation', () => {
     })
   })
 
+  describe('Level field', () => {
+    it('Should show the level for a player without a sheet', async () => {
+      const component = await mountHomebrewInformation('player')
+
+      expect(component.find('[test-id="level"]').exists()).toBe(true)
+    })
+
+    it('Should show the level for a player in an encounter', async () => {
+      const component = await mountHomebrewInformation('player', sheet)
+
+      expect(component.find('[test-id="level"]').exists()).toBe(true)
+    })
+
+    it('Should not show the level for non-player types', async () => {
+      const component = await mountHomebrewInformation('monster', sheet)
+
+      expect(component.find('[test-id="level"]').exists()).toBe(false)
+    })
+  })
+
   describe('Player field', () => {
     it('Should show player field for player type without a sheet', async () => {
       const component = await mountHomebrewInformation('player')
