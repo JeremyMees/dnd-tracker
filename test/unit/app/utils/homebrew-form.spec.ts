@@ -79,6 +79,24 @@ describe('homebrew-form', () => {
       expect(submission.homebrew.level).toBeNull()
     })
 
+    it('Should keep the challenge rating of a monster', () => {
+      const submission = toHomebrewSubmission({
+        ...values,
+        type: 'monster',
+        challengeRating: 0.25,
+      })
+
+      expect(submission.row.challengeRating).toBe(0.25)
+      expect(submission.homebrew.challengeRating).toBe(0.25)
+    })
+
+    it('Should clear the challenge rating for other types', () => {
+      const submission = toHomebrewSubmission({ ...values, challengeRating: 2 })
+
+      expect(submission.row.challengeRating).toBeUndefined()
+      expect(submission.homebrew.challengeRating).toBeNull()
+    })
+
     it('Should store the initiative modifier as text on the homebrew', () => {
       expect(toHomebrewSubmission(values).homebrew).toMatchObject({
         name: 'Grommash',

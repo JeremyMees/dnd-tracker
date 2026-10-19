@@ -54,6 +54,7 @@ const homebrewTransferSchema = z.object({
   type: z.enum(homebrewType).default('player'),
   player: z.string().nullish(),
   level: z.int().gte(1).lte(20).nullish(),
+  challengeRating: z.number().refine(isChallengeRating).nullish(),
   armorClass: z.int().nullish(),
   hitPoints: z.int().nullish(),
   link: z.string().nullish(),

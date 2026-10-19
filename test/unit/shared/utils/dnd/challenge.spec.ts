@@ -38,4 +38,21 @@ describe('dnd/challenge', () => {
       expect(experienceFromChallenge(0.3)).toBe(0)
     })
   })
+
+  describe('toChallengeRating', () => {
+    it.each([
+      ['1/4', 0.25],
+      [5, 5],
+      ['0', 0],
+    ])('Should read %s as challenge rating %s', (value, cr) => {
+      expect(toChallengeRating(value)).toBe(cr)
+    })
+
+    it.each([0.3, 31, 'abc', undefined])(
+      'Should reject %s as a challenge rating',
+      value => {
+        expect(toChallengeRating(value)).toBeUndefined()
+      },
+    )
+  })
 })

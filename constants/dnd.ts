@@ -385,3 +385,7 @@ export const challengeExperience: Record<number, number> = {
   29: 135000,
   30: 155000,
 }
+
+export const challengeRatings: number[] = Object.keys(challengeExperience)
+  .map(Number)
+  .sort((a, b) => a - b)

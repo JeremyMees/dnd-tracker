@@ -121,6 +121,22 @@ describe('HomebrewInformation', () => {
     })
   })
 
+  describe('Challenge rating field', () => {
+    it('Should show the challenge rating for a monster', async () => {
+      const component = await mountHomebrewInformation('monster')
+
+      expect(component.find('[test-id="challenge-rating"]').exists()).toBe(true)
+    })
+
+    it('Should not show the challenge rating for other types', async () => {
+      const component = await mountHomebrewInformation('npc')
+
+      expect(component.find('[test-id="challenge-rating"]').exists()).toBe(
+        false,
+      )
+    })
+  })
+
   describe('Player field', () => {
     it('Should show player field for player type without a sheet', async () => {
       const component = await mountHomebrewInformation('player')

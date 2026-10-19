@@ -200,6 +200,8 @@ function baseCreature(
     name: name.slice(0, 50),
     type,
     player: null,
+    level: null,
+    challengeRating: null,
     link: null,
     armorClass: null,
     armorDetail: null,
@@ -344,6 +346,7 @@ export function fromFiveETools(creature: ImportedRecord): HomebrewTransfer {
   result.hitDice = parseHitDiceText(hp?.formula) ?? null
   result.abilityScores = scores.abilityScores
   result.modifiers = scores.modifiers
+  result.challengeRating = toChallengeRating(challenge) ?? null
   result.proficiencyBonus = proficiency ?? null
   result.initiativeModifier = String(
     integerInRange(
@@ -471,6 +474,7 @@ export function fromImprovedInitiative(
   result.initiativeModifier = isDefined(integerInRange(initiative, -20, 20))
     ? String(integerInRange(initiative, -20, 20))
     : null
+  result.challengeRating = toChallengeRating(statBlock.Challenge) ?? null
   result.proficiencyBonus =
     proficiencyFromChallenge(toNumberOrUndefined(statBlock.Challenge)) ?? null
   result.passivePerception =
@@ -519,6 +523,7 @@ export function fromKoboldFightClub(
   result.hitPoints =
     integerInRange(toNumberOrUndefined(creature.hp), 1, 1000) ?? null
   result.initiativeModifier = isDefined(initiative) ? String(initiative) : null
+  result.challengeRating = toChallengeRating(creature.cr) ?? null
   result.proficiencyBonus =
     proficiencyFromChallenge(toNumberOrUndefined(creature.cr)) ?? null
 
@@ -584,6 +589,7 @@ export function fromStatblockMarkdown(
   result.initiativeModifier = String(
     initiative ?? (hasScores ? scores.modifiers.dexterity : 0),
   )
+  result.challengeRating = toChallengeRating(challenge) ?? null
   result.proficiencyBonus = proficiency ?? null
   result.savingThrows = hasScores
     ? buildSavingThrows(

@@ -6,6 +6,7 @@ export const mockHomebrewItem: HomebrewItemRow = {
   type: 'monster',
   player: null,
   level: null,
+  challengeRating: null,
   link: null,
   actions: [],
   abilityScores: null,

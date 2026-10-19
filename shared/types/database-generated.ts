@@ -139,6 +139,7 @@ export type Database = {
           armorClass: number | null
           armorDetail: string | null
           campaign: number
+          challengeRating: number | null
           createdAt: string
           hitDice: string | null
           hitPoints: number | null
@@ -166,6 +167,7 @@ export type Database = {
           armorClass?: number | null
           armorDetail?: string | null
           campaign: number
+          challengeRating?: number | null
           createdAt?: string
           hitDice?: string | null
           hitPoints?: number | null
@@ -193,6 +195,7 @@ export type Database = {
           armorClass?: number | null
           armorDetail?: string | null
           campaign?: number
+          challengeRating?: number | null
           createdAt?: string
           hitDice?: string | null
           hitPoints?: number | null

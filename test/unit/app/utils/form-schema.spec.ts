@@ -947,6 +947,18 @@ describe('form-schema', () => {
       expect(schema().safeParse(values({ level })).success).toBeFalsy()
     })
 
+    it.each([0, 0.125, 30])('Should accept challenge rating %s', cr => {
+      expect(
+        schema().safeParse(values({ challengeRating: cr })).success,
+      ).toBeTruthy()
+    })
+
+    it.each([0.3, 31])('Should reject challenge rating %s', cr => {
+      expect(
+        schema().safeParse(values({ challengeRating: cr })).success,
+      ).toBeFalsy()
+    })
+
     it('Should accept a level between 1 and 20', () => {
       expect(schema().safeParse(values({ level: 20 })).success).toBeTruthy()
     })
@@ -997,6 +1009,22 @@ describe('form-schema', () => {
         traits: [],
       })
       expect(values.abilityScores).toBeUndefined()
+    })
+
+    it('Should keep a challenge rating of 0', () => {
+      expect(
+        homebrewInitialValues({
+          name: 'Rat',
+          type: 'monster',
+          challengeRating: 0,
+        }).challengeRating,
+      ).toBe(0)
+    })
+
+    it('Should keep the challenge rating from the bestiary', () => {
+      expect(
+        homebrewInitialValues(monsterToRow(dndMonsterFixture)).challengeRating,
+      ).toBe(dndMonsterFixture.challengeRating)
     })
 
     it('Should keep the level of a player', () => {
