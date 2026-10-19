@@ -790,6 +790,10 @@
         "reassign": "De speler kon niet aan dat personage gekoppeld worden"
       }
     },
+    "resources": {
+      "legendaryResistances": "Legendarische weerstanden",
+      "reset": "Gebruik resetten"
+    },
     "actionsTable": {
       "cost": "Kost { cost } actie | Kost { cost } acties",
       "form": " Terwijl in { form } vorm.",

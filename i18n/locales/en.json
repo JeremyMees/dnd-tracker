@@ -790,6 +790,10 @@
         "reassign": "The player couldn't be moved to that character"
       }
     },
+    "resources": {
+      "legendaryResistances": "Legendary resistances",
+      "reset": "Reset uses"
+    },
     "actionsTable": {
       "cost": "Cost { cost } action | Costs { cost } actions",
       "form": " While in { form } form.",
