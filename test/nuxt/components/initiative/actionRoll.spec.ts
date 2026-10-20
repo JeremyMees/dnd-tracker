@@ -244,7 +244,13 @@ describe('ActionRoll component', () => {
   })
 
   describe('Damage dice', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
     it('Should roll every die when several dice share the same sides', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
       component = await mountWithTooltips(ActionRoll, {
         props: { ...props, damage: [{ dice: '2d6 + 1d6', bonus: 3 }] },
         provide,
