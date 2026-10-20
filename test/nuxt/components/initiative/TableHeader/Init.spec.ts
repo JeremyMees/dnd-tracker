@@ -190,6 +190,26 @@ describe('Initiative TableHeader Init', () => {
       expect(vm.form.values.selectedTypes).toEqual(vm.usedTypes)
     })
 
+    it('Should not select lair rows to roll when opened', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [
+          { ...sheet.rows[0]!, id: 'row1', type: 'monster' },
+          { ...sheet.rows[1]!, id: 'lair', type: 'lair', initiative: 20 },
+        ],
+      }
+
+      const component = await mountSuspended(Init, { props, provide })
+      const vm = component.vm as unknown as InitVM
+
+      vm.popoverOpen = true
+      await nextTick()
+
+      expect(vm.form.values.selectedTypes).toEqual(['monster'])
+
+      component.unmount()
+    })
+
     it('Should not populate form values when closed', async () => {
       const component = await mountSuspended(Init, { props, provide })
       const vm = component.vm as unknown as InitVM

@@ -188,6 +188,19 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
   })
 
+  it('Should keep lair rows at initiative 20 on a hard reset', async () => {
+    mockSheet.value.rows = [
+      { ...mockSheet.value.rows[0]!, type: 'lair', initiative: 20 },
+      { ...mockSheet.value.rows[1]!, type: 'monster', initiative: 12 },
+    ]
+
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+    reset(true)
+
+    expect(mockSheet.value.rows.map(row => row.initiative)).toEqual([20, -1])
+  })
+
   it('Should show all columns by default', async () => {
     const { columnVisibility } = useInitiativeSheet(
       sheetComputed,

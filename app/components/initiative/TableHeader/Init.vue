@@ -38,7 +38,7 @@ watch(popoverOpen, open => {
   if (!open) return
 
   form.setValues({
-    selectedTypes: usedTypes.value,
+    selectedTypes: usedTypes.value.filter(type => type !== 'lair'),
     ignore: false,
     selectedCreatures:
       sheet.value?.rows.map(row => ({

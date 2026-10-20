@@ -120,6 +120,45 @@ describe('dnd/row', () => {
       ).toEqual(['goblin', 'player'])
     })
 
+    it('should place a lair row after rows tied on initiative 20', () => {
+      const tied = [
+        {
+          id: 'monster',
+          initiative: 20,
+          initiativeModifier: -2,
+          type: 'monster',
+        },
+        { id: 'low', initiative: 4, type: 'monster' },
+      ] as InitiativeSheetRow[]
+      const lair = {
+        id: 'lair',
+        initiative: 20,
+        type: 'lair',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([lair, ...tied], ['lair']).map(row => row.id),
+      ).toEqual(['monster', 'lair', 'low'])
+    })
+
+    it('should place a row before a lair row tied on initiative 20', () => {
+      const lair = {
+        id: 'lair',
+        initiative: 20,
+        type: 'lair',
+      } as InitiativeSheetRow
+      const monster = {
+        id: 'monster',
+        initiative: 20,
+        initiativeModifier: -2,
+        type: 'monster',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([lair, monster], ['monster']).map(row => row.id),
+      ).toEqual(['monster', 'lair'])
+    })
+
     it('should leave the order of rows that are not placed untouched', () => {
       expect(placeByInitiative(rows, []).map(row => row.id)).toEqual([
         'high',
@@ -349,6 +388,32 @@ describe('dnd/row', () => {
       })
     })
 
+    it('should give a lair row initiative 20 without an initiative', () => {
+      expect(createInitiativeRow({ name: 'Lair' }, 'lair', 0).initiative).toBe(
+        20,
+      )
+    })
+
+    it('should keep the given initiative of a lair row', () => {
+      expect(
+        createInitiativeRow({ name: 'Lair', initiative: 15 }, 'lair', 0)
+          .initiative,
+      ).toBe(15)
+    })
+
+    it('should leave other rows without an initiative unrolled', () => {
+      expect(
+        createInitiativeRow({ name: 'Goblin' }, 'monster', 0).initiative,
+      ).toBe(-1)
+    })
+
+    it('should keep an initiative of 0', () => {
+      expect(
+        createInitiativeRow({ name: 'Goblin', initiative: 0 }, 'monster', 0)
+          .initiative,
+      ).toBe(0)
+    })
+
     it('should preserve extended homebrew fields from formData', () => {
       const abilityScores = {
         strength: 10,
@@ -417,6 +482,13 @@ describe('dnd/row', () => {
       ])
 
       expect(result.map(r => r.name)).toEqual(['Goblin', 'Aragorn', 'Boromir'])
+    })
+
+    it('Should add a lair row at initiative 20', () => {
+      const result = appendRows(existing, [{ name: 'Lair', type: 'lair' }])
+
+      expect(result.map(r => r.name)).toEqual(['Lair', 'Aragorn', 'Boromir'])
+      expect(result[0]!.initiative).toBe(20)
     })
 
     it('Should give copies of the same row their own id', () => {

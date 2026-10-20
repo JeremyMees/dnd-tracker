@@ -198,7 +198,7 @@ export function useInitiativeSheet(
         ...updatePayload,
         rows: sheet.value.rows.map(row => ({
           ...row,
-          initiative: -1,
+          initiative: defaultInitiative(row.type),
           conditions: [],
           ...(row.concentration !== undefined && { concentration: false }),
           ...(row.deathSaves !== undefined && {

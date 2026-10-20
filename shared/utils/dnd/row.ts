@@ -22,6 +22,10 @@ function goesBefore(
 
   if ((row.initiative ?? -1) < 0) return false
 
+  if (row.type === 'lair' || other.type === 'lair') {
+    return other.type === 'lair' && row.type !== 'lair'
+  }
+
   const modifier = row.initiativeModifier ?? 0
   const otherModifier = other.initiativeModifier ?? 0
 
@@ -141,13 +145,19 @@ export function buildCombatPatch(
   return patch
 }
 
+export function defaultInitiative(type: HomebrewType): number {
+  return type === 'lair' ? 20 : -1
+}
+
 export const createInitiativeRow = (
   formData: Partial<InitiativeSheetRow> & { name: string },
   type: HomebrewType,
   encounterRows: number,
 ): InitiativeSheetRow => {
   const initiative =
-    'initiative' in formData ? Number(formData.initiative ?? -1) : -1
+    isDefined(formData.initiative) && formData.initiative >= 0
+      ? Number(formData.initiative)
+      : defaultInitiative(type)
   const initiativeModifier =
     'initiativeModifier' in formData
       ? Number(formData.initiativeModifier)
