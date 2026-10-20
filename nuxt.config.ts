@@ -193,6 +193,8 @@ export default defineNuxtConfig({
   },
 
   ogImage: { enabled: false },
+  aiReady: false,
+  skewProtection: false,
 
   sentry: {
     org: 'kees',
