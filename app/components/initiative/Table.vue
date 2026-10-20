@@ -5,11 +5,22 @@ import { generateColumns, expandedMarkup } from '~/tables/initiative-sheet'
 import { prefetchConditionsListing } from '~/queries/srd'
 import { useCombatEventsClear } from '~/queries/combat-events'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { toast } from 'vue-sonner'
 
 const props = defineProps<{ loading: boolean; encounterId?: number }>()
 
-const { activeRow, sheet, update, patchRow, nextTurn, onTurnReminders } =
-  validateInject(INITIATIVE_SHEET)
+const {
+  activeRow,
+  sheet,
+  update,
+  patchRow,
+  nextTurn,
+  onTurnReminders,
+  undo,
+  canUndo,
+  redo,
+  canRedo,
+} = validateInject(INITIATIVE_SHEET)
 
 const showTurnReminders = useTurnReminders(sheet, patchRow)
 
@@ -69,6 +80,31 @@ function handleReset(hard: boolean): void {
 const { t } = useI18n()
 const { trigger: triggerRowShortcut, targetId } = useRowShortcut()
 
+async function undoLast(): Promise<void> {
+  if (!undo || !canUndo?.value) return
+
+  if (await undo()) toast.success(t('components.undo.done'))
+}
+
+async function redoLast(): Promise<void> {
+  if (!redo || !canRedo?.value) return
+
+  if (await redo()) toast.success(t('components.undo.redone'))
+}
+
+onKeyStroke(['z', 'Z', 'y', 'Y'], e => {
+  if (!(e.metaKey || e.ctrlKey) || e.altKey || isTypingTarget(e.target)) return
+
+  const isCtrlY = e.key.toLowerCase() === 'y'
+
+  if (isCtrlY && (!e.ctrlKey || e.shiftKey)) return
+
+  e.preventDefault()
+
+  if (isCtrlY || e.shiftKey) redoLast()
+  else undoLast()
+})
+
 function rowShortcut(action: RowShortcutAction): void {
   if (target.value) triggerRowShortcut(target.value.id, action)
 }
@@ -78,6 +114,22 @@ useCommands(() => {
   const isLair = target.value?.type === 'lair'
 
   return [
+    {
+      id: 'undo',
+      label: t('actions.undo'),
+      icon: 'tabler:arrow-back-up',
+      shortcut: ['MOD', 'Z'],
+      disabled: !canUndo?.value,
+      run: undoLast,
+    },
+    {
+      id: 'redo',
+      label: t('actions.redo'),
+      icon: 'tabler:arrow-forward-up',
+      shortcut: ['MOD', 'SHIFT', 'Z'],
+      disabled: !canRedo?.value,
+      run: redoLast,
+    },
     {
       id: 'next-turn',
       label: t('actions.next'),

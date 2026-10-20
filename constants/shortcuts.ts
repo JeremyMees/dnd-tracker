@@ -2,6 +2,8 @@ export const encounterShortcuts: ShortcutDescription[] = [
   { label: 'components.shortcuts.palette', keys: ['MOD', 'K'] },
   { label: 'components.shortcuts.next', keys: ['SHIFT', '→'] },
   { label: 'components.shortcuts.previous', keys: ['SHIFT', '←'] },
+  { label: 'components.shortcuts.undo', keys: ['MOD', 'Z'] },
+  { label: 'components.shortcuts.redo', keys: ['MOD', 'SHIFT', 'Z'] },
   { label: 'components.shortcuts.expand', keys: ['SHIFT', 'ENTER'] },
   { label: 'components.shortcuts.target', keys: ['ALT', '↑', '↓'] },
   { label: 'components.shortcuts.clearTarget', keys: ['ESC'] },

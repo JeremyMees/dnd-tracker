@@ -80,11 +80,23 @@ async function handleNextTurn(): Promise<TurnReminders | undefined> {
   return { expired, saves, recharges }
 }
 
-provide(INITIATIVE_SHEET, {
-  sheet: computed(() => (isTourActive.value ? tourData.value : data.value)),
+const sheet = computed(() => (isTourActive.value ? tourData.value : data.value))
+
+const history = useUndoHistory(sheet, {
   update: handleUpdate,
   patchRow: handlePatchRow,
   nextTurn: handleNextTurn,
+})
+
+provide(INITIATIVE_SHEET, {
+  sheet,
+  update: history.update,
+  patchRow: history.patchRow,
+  nextTurn: history.nextTurn,
+  undo: history.undo,
+  canUndo: history.canUndo,
+  redo: history.redo,
+  canRedo: history.canRedo,
   activeRow,
 })
 </script>

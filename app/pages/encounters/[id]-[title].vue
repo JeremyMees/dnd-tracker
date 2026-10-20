@@ -67,11 +67,21 @@ async function handleNextTurn(): Promise<TurnReminders | undefined> {
   return { expired, saves, recharges }
 }
 
-provide(INITIATIVE_SHEET, {
-  sheet: data,
+const history = useUndoHistory(data, {
   update: handleUpdate,
   patchRow: handlePatchRow,
   nextTurn: handleNextTurn,
+})
+
+provide(INITIATIVE_SHEET, {
+  sheet: data,
+  update: history.update,
+  patchRow: history.patchRow,
+  nextTurn: history.nextTurn,
+  undo: history.undo,
+  canUndo: history.canUndo,
+  redo: history.redo,
+  canRedo: history.canRedo,
   onTurnReminders,
   activeRow,
 })

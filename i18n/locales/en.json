@@ -1469,7 +1469,13 @@
       "sidebar": "Show or hide the sidebar",
       "overview": "Show all shortcuts",
       "target": "Choose a target, starting at the current creature",
-      "clearTarget": "Target the current creature again"
+      "clearTarget": "Target the current creature again",
+      "undo": "Undo the last change",
+      "redo": "Redo the change you undid"
+    },
+    "undo": {
+      "done": "Last change undone",
+      "redone": "Change redone"
     }
   },
   "tour": {

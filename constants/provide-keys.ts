@@ -8,5 +8,9 @@ export const INITIATIVE_SHEET: InjectionKey<{
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
   onTurnReminders?: EventHookOn<TurnReminders>
+  undo?: () => Promise<boolean>
+  canUndo?: Readonly<Ref<boolean>>
+  redo?: () => Promise<boolean>
+  canRedo?: Readonly<Ref<boolean>>
   activeRow: Ref<InitiativeSheetRow | undefined>
 }> = Symbol('initiativeSheet')

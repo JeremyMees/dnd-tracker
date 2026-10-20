@@ -1469,7 +1469,13 @@
       "sidebar": "Zijbalk tonen of verbergen",
       "overview": "Alle sneltoetsen tonen",
       "target": "Doelwit kiezen, vanaf het huidige wezen",
-      "clearTarget": "Huidig wezen weer als doelwit"
+      "clearTarget": "Huidig wezen weer als doelwit",
+      "undo": "De laatste wijziging ongedaan maken",
+      "redo": "De ongedaan gemaakte wijziging opnieuw doen"
+    },
+    "undo": {
+      "done": "Laatste wijziging ongedaan gemaakt",
+      "redone": "Wijziging opnieuw gedaan"
     }
   },
   "tour": {
