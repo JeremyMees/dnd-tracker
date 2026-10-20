@@ -11,6 +11,24 @@ describe('dnd/deathsaves', () => {
     })
   })
 
+  describe('isDeadMonster', () => {
+    it.each([
+      [{ type: 'monster', hitPoints: 0 }, true],
+      [{ type: 'monster', hitPoints: -4 }, true],
+      [{ type: 'summon', hitPoints: 0 }, true],
+      [{ type: 'monster', hitPoints: 1 }, false],
+      [{ type: 'monster', hitPoints: undefined }, false],
+      [{ type: 'lair', hitPoints: undefined }, false],
+      [{ type: 'player', hitPoints: 0 }, false],
+      [{ type: 'npc', hitPoints: 0 }, false],
+    ] as [Pick<InitiativeSheetRow, 'type' | 'hitPoints'>, boolean][])(
+      'reads %o as dead: %s',
+      (row, result) => {
+        expect(isDeadMonster(row)).toBe(result)
+      },
+    )
+  })
+
   describe('checkDeathSaves', () => {
     it('should detect failed and saved outcomes', () => {
       expect(

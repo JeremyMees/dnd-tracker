@@ -6,13 +6,41 @@ function durationOwner(
   return rowIds.has(duration.rowId) ? duration.rowId : row.id
 }
 
+export function nextTurnPosition(
+  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'> &
+    Partial<Pick<InitiativeSheet, 'settings'>>,
+): Pick<InitiativeSheet, 'activeIndex' | 'round'> {
+  const skipDead = isSkipDeadMonstersEnabled(sheet.settings)
+  let activeIndex = sheet.activeIndex
+  let round = sheet.round
+
+  for (const _ of sheet.rows) {
+    activeIndex += 1
+
+    if (activeIndex >= sheet.rows.length) {
+      activeIndex = 0
+      round += 1
+    }
+
+    const row = sheet.rows[activeIndex]
+
+    if (!skipDead || !row || !isDeadMonster(row)) return { activeIndex, round }
+  }
+
+  const isAtEnd = sheet.activeIndex + 1 >= sheet.rows.length
+
+  return {
+    activeIndex: isAtEnd ? 0 : sheet.activeIndex + 1,
+    round: isAtEnd ? sheet.round + 1 : sheet.round,
+  }
+}
+
 export function advanceTurn(
-  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'>,
+  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'> &
+    Partial<Pick<InitiativeSheet, 'settings'>>,
   roll: (sides: number) => number = randomRoll,
 ): TurnAdvance {
-  const isAtEnd = sheet.activeIndex + 1 >= sheet.rows.length
-  const activeIndex = isAtEnd ? 0 : sheet.activeIndex + 1
-  const round = isAtEnd ? sheet.round + 1 : sheet.round
+  const { activeIndex, round } = nextTurnPosition(sheet)
 
   const boundaries: { rowId: string; timing: DndConditionTiming }[] = []
   const ending = sheet.rows[sheet.activeIndex]?.id

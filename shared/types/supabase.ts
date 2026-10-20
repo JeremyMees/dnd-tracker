@@ -218,6 +218,7 @@ export interface InitiativeSettings {
   negative?: boolean
   bloodied?: boolean
   autoRollInitiative?: boolean
+  skipDeadMonsters?: boolean
   live?: {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean

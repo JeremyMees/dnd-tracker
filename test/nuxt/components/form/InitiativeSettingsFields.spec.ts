@@ -118,6 +118,19 @@ describe('InitiativeSettingsFields', () => {
     expect(form.values.negative).toBe(true)
   })
 
+  it('Should toggle the skip dead monsters switch', async () => {
+    const { component, form } = await mountFields()
+
+    expect(form.values.skipDeadMonsters).toBe(true)
+
+    await component.get('[test-id="skip-dead-monsters"]').trigger('click')
+    await flushPromises()
+
+    expect(form.values.skipDeadMonsters).toBe(false)
+
+    component.unmount()
+  })
+
   it('Should toggle the auto roll initiative switch', async () => {
     const { component, form } = await mountFields()
 

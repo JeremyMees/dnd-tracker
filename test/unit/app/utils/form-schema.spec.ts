@@ -685,6 +685,7 @@ describe('form-schema', () => {
       negative: false,
       bloodied: true,
       autoRollInitiative: true,
+      skipDeadMonsters: true,
     }
 
     it('Should accept a valid settings object', () => {
@@ -706,7 +707,7 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should require spacing, rows, widgets, negative, bloodied and autoRollInitiative', () => {
+    it('Should require spacing, rows, widgets, negative, bloodied, autoRollInitiative and skipDeadMonsters', () => {
       const { spacing: _, ...noSpacing } = valid
       expect(initiativeSettingsSchema.safeParse(noSpacing).success).toBeFalsy()
 
@@ -724,6 +725,9 @@ describe('form-schema', () => {
 
       const { autoRollInitiative: ______, ...noRoll } = valid
       expect(initiativeSettingsSchema.safeParse(noRoll).success).toBeFalsy()
+
+      const { skipDeadMonsters: _______, ...noSkip } = valid
+      expect(initiativeSettingsSchema.safeParse(noSkip).success).toBeFalsy()
     })
 
     it('Should accept empty rows and widgets arrays', () => {
@@ -813,6 +817,7 @@ describe('form-schema', () => {
       expect(values.negative).toBe(false)
       expect(values.bloodied).toBe(true)
       expect(values.autoRollInitiative).toBe(true)
+      expect(values.skipDeadMonsters).toBe(true)
     })
 
     it('Should check all rows and widgets when settings are not modified', () => {
@@ -837,6 +842,7 @@ describe('form-schema', () => {
         negative: true,
         bloodied: false,
         autoRollInitiative: false,
+        skipDeadMonsters: false,
       })
 
       expect(values.rows).toEqual(['armorClass', 'hitPoints'])
@@ -846,6 +852,7 @@ describe('form-schema', () => {
       expect(values.negative).toBe(true)
       expect(values.bloodied).toBe(false)
       expect(values.autoRollInitiative).toBe(false)
+      expect(values.skipDeadMonsters).toBe(false)
     })
 
     it('Should respect an empty selection when modified (nothing checked)', () => {

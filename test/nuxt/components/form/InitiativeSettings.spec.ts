@@ -58,6 +58,7 @@ describe('InitiativeSettings', () => {
         negative: false,
         bloodied: true,
         autoRollInitiative: true,
+        skipDeadMonsters: true,
         modified: true,
       },
     })

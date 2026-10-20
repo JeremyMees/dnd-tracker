@@ -792,6 +792,21 @@ describe('dnd/hp-ac', () => {
     )
   })
 
+  describe('isSkipDeadMonstersEnabled', () => {
+    it.each([
+      [undefined, true],
+      [null, true],
+      [{ spacing: 'normal', modified: false }, true],
+      [{ spacing: 'normal', modified: false, skipDeadMonsters: true }, true],
+      [{ spacing: 'normal', modified: false, skipDeadMonsters: false }, false],
+    ] as [InitiativeSettings | null | undefined, boolean][])(
+      'reads %o as enabled: %s',
+      (settings, result) => {
+        expect(isSkipDeadMonstersEnabled(settings)).toBe(result)
+      },
+    )
+  })
+
   describe('isAutoRollInitiativeEnabled', () => {
     it.each([
       [undefined, true],

@@ -329,6 +329,12 @@ export function isAutoRollInitiativeEnabled(
   return settings?.autoRollInitiative !== false
 }
 
+export function isSkipDeadMonstersEnabled(
+  settings?: InitiativeSettings | null,
+): boolean {
+  return settings?.skipDeadMonsters !== false
+}
+
 export function isBloodiedEnabled(settings?: InitiativeSettings): boolean {
   return settings?.bloodied !== false
 }

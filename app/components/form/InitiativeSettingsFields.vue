@@ -162,4 +162,19 @@ import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
       </UiFormLabel>
     </UiFormItem>
   </UiFormField>
+  <UiFormField v-slot="{ value, handleChange }" name="skipDeadMonsters">
+    <UiFormItem class="flex items-center gap-2">
+      <UiFormControl>
+        <UiSwitch
+          test-id="skip-dead-monsters"
+          class="mb-0"
+          :model-value="value"
+          @update:model-value="handleChange"
+        />
+      </UiFormControl>
+      <UiFormLabel>
+        {{ $t('components.initiativeSettings.skipDeadMonsters') }}
+      </UiFormLabel>
+    </UiFormItem>
+  </UiFormField>
 </template>

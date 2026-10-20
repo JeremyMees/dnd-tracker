@@ -2,6 +2,14 @@ export function hasDeathSaves(type: HomebrewType): boolean {
   return ['player', 'npc'].includes(type)
 }
 
+export function isDeadMonster(
+  row: Pick<InitiativeSheetRow, 'type' | 'hitPoints'>,
+): boolean {
+  return (
+    !hasDeathSaves(row.type) && isDefined(row.hitPoints) && row.hitPoints <= 0
+  )
+}
+
 export function checkDeathSaves(deathSaves: DndDeathSaves): {
   failed: boolean
   saved: boolean

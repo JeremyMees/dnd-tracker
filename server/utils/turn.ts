@@ -31,7 +31,8 @@ function expiredEvents(
 export async function advanceEncounterTurn(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  sheet: Pick<InitiativeSheet, 'activeIndex' | 'round' | 'rows'>,
+  sheet: Pick<InitiativeSheet, 'activeIndex' | 'round' | 'rows'> &
+    Partial<Pick<InitiativeSheet, 'settings'>>,
   {
     actorId,
     actorName,

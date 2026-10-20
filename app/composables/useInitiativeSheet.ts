@@ -173,8 +173,7 @@ export function useInitiativeSheet(
   function next(): void {
     if (!sheet.value) return
 
-    const isAtEnd = sheet.value.activeIndex + 1 >= sheet.value.rows.length
-    const activeIndex = isAtEnd ? 0 : sheet.value.activeIndex + 1
+    const { activeIndex } = nextTurnPosition(sheet.value)
 
     nextTurn().catch(() => undefined)
 

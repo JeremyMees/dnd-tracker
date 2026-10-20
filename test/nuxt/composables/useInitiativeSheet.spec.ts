@@ -188,6 +188,25 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
   })
 
+  it('Should skip dead monsters and select the next living row', async () => {
+    mockSheet.value.rows = [
+      { ...mockSheet.value.rows[0]!, type: 'player' },
+      { ...mockSheet.value.rows[1]!, type: 'monster', hitPoints: 0 },
+      { ...mockSheet.value.rows[2]!, type: 'monster' },
+    ]
+
+    const { next, selected } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
+
+    next()
+
+    expect(mockSheet.value.activeIndex).toBe(2)
+    expect(selected.value).toEqual({ [mockSheet.value.rows[2]!.id]: true })
+  })
+
   it('Should keep lair rows at initiative 20 on a hard reset', async () => {
     mockSheet.value.rows = [
       { ...mockSheet.value.rows[0]!, type: 'lair', initiative: 20 },

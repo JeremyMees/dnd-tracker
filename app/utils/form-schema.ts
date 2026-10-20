@@ -158,6 +158,7 @@ export const initiativeSettingsSchema = z.object({
   negative: z.boolean(),
   bloodied: z.boolean(),
   autoRollInitiative: z.boolean(),
+  skipDeadMonsters: z.boolean(),
 })
 
 export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
@@ -171,6 +172,7 @@ export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
     negative: settings?.negative || false,
     bloodied: isBloodiedEnabled(settings),
     autoRollInitiative: isAutoRollInitiativeEnabled(settings),
+    skipDeadMonsters: isSkipDeadMonstersEnabled(settings),
   }
 }
 
