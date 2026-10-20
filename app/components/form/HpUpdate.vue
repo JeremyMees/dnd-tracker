@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import * as z from 'zod'
+import { damageTypes } from '~~/constants/dnd'
 import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
@@ -15,6 +16,7 @@ const selectedType = ref<DndHpType>('heal')
 
 const formSchema = z.object({
   amount: z.int().min(0).max(maxHealthAndArmour),
+  damageType: z.enum(damageTypeEnum).optional(),
 })
 
 const form = useForm({
@@ -22,6 +24,10 @@ const form = useForm({
 })
 
 const formError = ref<string>('')
+
+const defense = computed(() =>
+  damageDefense(props.item, form.values.damageType),
+)
 
 const onSubmit = form.handleSubmit(async values => {
   formError.value = ''
@@ -31,7 +37,13 @@ const onSubmit = form.handleSubmit(async values => {
 
     if (!props.sheet || !selected) return
 
-    const amount = parseInteger(values.amount)
+    const rolled = parseInteger(values.amount)
+    const amount =
+      selected === 'damage'
+        ? damageAfterDefenses(props.item, [
+            { amount: rolled, type: values.damageType },
+          ])
+        : rolled
 
     const { row, toasts } = handleHpChanges(
       amount,
@@ -64,6 +76,44 @@ function submitIntent(event: KeyboardEvent): void {
 <template>
   <UiFormWrapper @submit="onSubmit" @keydown.enter="submitIntent">
     <FormDiceRollInput />
+    <UiFormField v-slot="{ value, handleChange }" name="damageType">
+      <UiFormItem>
+        <UiFormLabel>
+          {{ $t('components.inputs.damageTypeLabel') }}
+        </UiFormLabel>
+        <UiSelect
+          :model-value="value ?? 'none'"
+          @update:model-value="v => handleChange(v === 'none' ? undefined : v)"
+        >
+          <UiFormControl>
+            <UiSelectTrigger test-id="damage-type">
+              <UiSelectValue />
+            </UiSelectTrigger>
+          </UiFormControl>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem value="none">
+                {{ $t('components.inputs.nothing') }}
+              </UiSelectItem>
+              <UiSelectItem
+                v-for="type in damageTypes"
+                :key="type"
+                :value="type"
+              >
+                {{ type.charAt(0).toUpperCase() + type.slice(1) }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
+        <p
+          v-if="defense"
+          test-id="defense"
+          class="text-xs text-muted-foreground"
+        >
+          {{ $t(`components.areaDamage.defense.${defense}`) }}
+        </p>
+      </UiFormItem>
+    </UiFormField>
     <div class="flex items-center gap-x-2">
       <UiButton
         type="submit"

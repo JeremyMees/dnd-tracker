@@ -5,8 +5,7 @@ import * as z from 'zod'
 
 const props = defineProps<{
   attackBonus: number | undefined
-  damageDice: string | undefined
-  damageBonus: number
+  damage: DndAttackDamage[]
   id: string
 }>()
 
@@ -30,6 +29,7 @@ const result = ref<{
   attackTotal: number
   rolledToHit: number[]
   damageRolled: Record<number, number[]>
+  rolls: DndDamageRoll[]
   totalDamage: number
   rollType: RollType
   miss: boolean
@@ -51,17 +51,23 @@ function onRoll(type: RollType) {
   else if (type === 'disadvantage') attackRoll = Math.min(...rolledToHit)
   else attackRoll = rolledToHit[0] ?? 0
 
-  const dices = parseDamageDice(props.damageDice)
   const damageRolled: Record<number, number[]> = {}
 
-  const rolls = attackRoll === 20 ? [...dices, ...dices] : dices
+  const rolls = props.damage.map(part => {
+    const dices = parseDamageDice(part.dice)
+    let amount = part.bonus
 
-  for (const { count, sides } of rolls) {
-    damageRolled[sides] = [
-      ...(damageRolled[sides] ?? []),
-      ...rollDice(sides, count).flat(),
-    ]
-  }
+    for (const { count, sides } of attackRoll === 20
+      ? [...dices, ...dices]
+      : dices) {
+      const rolled = rollDice(sides, count)
+
+      damageRolled[sides] = [...(damageRolled[sides] ?? []), ...rolled]
+      amount += rolled.reduce((acc, curr) => acc + curr, 0)
+    }
+
+    return { amount, type: part.type }
+  })
 
   result.value = {
     rollType: type,
@@ -70,14 +76,26 @@ function onRoll(type: RollType) {
     attackTotal: attackRoll + (props.attackBonus ?? 0),
     rolledToHit,
     damageRolled,
-    totalDamage:
-      Object.values(damageRolled)
-        .flat()
-        .reduce((acc, curr) => acc + curr, 0) + props.damageBonus,
+    rolls,
+    totalDamage: rolls.reduce((acc, roll) => acc + roll.amount, 0),
   }
 }
 
 const handleToasts = useToastItems()
+
+const damageBonus = computed(() =>
+  props.damage.reduce((acc, part) => acc + part.bonus, 0),
+)
+
+const selectedTarget = computed(() =>
+  sheet.value?.rows.find(row => row.id === form.values.target),
+)
+
+const targetDefenses = computed(() =>
+  selectedTarget.value
+    ? damageDefenses(selectedTarget.value, result.value?.rolls ?? [])
+    : [],
+)
 
 const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value || result.value?.miss) return
@@ -87,7 +105,7 @@ const onSubmit = form.handleSubmit(async values => {
   if (!target || !isDefined(target.hitPoints)) return
 
   const { row, toasts } = handleHpChanges(
-    result.value?.totalDamage ?? 0,
+    damageAfterDefenses(target, result.value?.rolls ?? []),
     'damage',
     target,
     sheet.value?.settings?.negative ?? false,
@@ -229,11 +247,8 @@ const onSubmit = form.handleSubmit(async values => {
                     : ''
                 }}
               </span>
-              <span
-                v-if="props.damageBonus"
-                class="text-muted-foreground text-xs"
-              >
-                +{{ props.damageBonus }}
+              <span v-if="damageBonus" class="text-muted-foreground text-xs">
+                +{{ damageBonus }}
               </span>
             </div>
           </div>
@@ -275,6 +290,31 @@ const onSubmit = form.handleSubmit(async values => {
                 <UiFormMessage />
               </UiFormItem>
             </UiFormField>
+            <div
+              v-if="selectedTarget && targetDefenses.length"
+              test-id="target-damage"
+              class="flex flex-col gap-2"
+            >
+              <span class="flex flex-wrap gap-1">
+                <UiBadge
+                  v-for="{ type, defense } in targetDefenses"
+                  :key="type"
+                  test-id="defense"
+                  variant="secondary"
+                >
+                  {{ type.charAt(0).toUpperCase() + type.slice(1) }}:
+                  {{ $t(`components.areaDamage.defense.${defense}`) }}
+                </UiBadge>
+              </span>
+              <span class="text-muted-foreground text-xs">
+                {{
+                  $t('components.actionsTable.targetDamage', {
+                    name: selectedTarget.name,
+                    amount: damageAfterDefenses(selectedTarget, result.rolls),
+                  })
+                }}
+              </span>
+            </div>
             <UiButton test-id="submit" type="submit" class="w-full">
               {{ $t('actions.applyDamage') }}
             </UiButton>

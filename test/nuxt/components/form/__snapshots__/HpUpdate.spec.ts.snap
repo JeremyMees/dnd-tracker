@@ -11,6 +11,15 @@ exports[`HpUpdate > Should match snapshot 1`] = `
     <!--v-if-->
     <!---->
   </div>
+  <div class="space-y-2"><label for="reka-v-0-0-1-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.inputs.damageTypeLabel
+      <!--v-if-->
+      <!--v-if-->
+    </label><button class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start" id="reka-v-0-0-1-form-item" aria-describedby="reka-v-0-0-1-form-item-description" aria-invalid="false" test-id="damage-type" role="combobox" type="button" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">components.inputs.nothing</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+    <!--teleport start-->
+    <!--teleport end-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
   <div class="flex items-center gap-x-2"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-success/50 hover:bg-success/60 border-success text-foreground shadow-sm h-8 rounded-md px-3 text-xs border-2" type="submit" test-id="hp-heal"><span class="iconify i-tabler:heart" aria-hidden="true"></span> actions.heal</button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-warning/50 hover:bg-warning/60 border-warning text-foreground shadow-sm h-8 rounded-md px-3 text-xs border-2" type="submit" test-id="hp-temp"><span class="iconify i-tabler:plus" aria-hidden="true"></span> actions.temp</button><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-destructive/50 hover:bg-destructive/60 border-destructive text-foreground shadow-sm h-8 rounded-md px-3 text-xs border-2" type="submit" test-id="hp-damage"><span class="iconify i-tabler:sword" aria-hidden="true"></span> actions.damage</button></div>
   <!--v-if-->
 </form>"

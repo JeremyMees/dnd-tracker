@@ -63,6 +63,17 @@ export type DndDamageType =
 
 export type DndDamageDefense = 'immune' | 'resistant' | 'vulnerable'
 
+export interface DndDamageRoll {
+  amount: number
+  type?: DndDamageType
+}
+
+export interface DndAttackDamage {
+  dice?: string
+  bonus: number
+  type?: DndDamageType
+}
+
 export type DndArmorType = 'light' | 'medium' | 'heavy'
 
 export type DndMagicItemType =

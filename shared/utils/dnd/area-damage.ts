@@ -50,11 +50,39 @@ export function areaDamageAmount(
   }: { saved: boolean; halfOnSave: boolean; defense?: DndDamageDefense },
 ): number {
   const halfAmount = halfOnSave ? Math.floor(amount / 2) : 0
-  const afterSave = saved ? halfAmount : amount
 
+  return applyDefense(saved ? halfAmount : amount, defense)
+}
+
+export function applyDefense(
+  amount: number,
+  defense?: DndDamageDefense,
+): number {
   if (defense === 'immune') return 0
-  if (defense === 'resistant') return Math.floor(afterSave / 2)
-  if (defense === 'vulnerable') return afterSave * 2
+  if (defense === 'resistant') return Math.floor(amount / 2)
+  if (defense === 'vulnerable') return amount * 2
 
-  return afterSave
+  return amount
+}
+
+export function damageAfterDefenses(
+  row: DefenseRow,
+  rolls: DndDamageRoll[],
+): number {
+  return rolls.reduce(
+    (total, roll) =>
+      total + applyDefense(roll.amount, damageDefense(row, roll.type)),
+    0,
+  )
+}
+
+export function damageDefenses(
+  row: DefenseRow,
+  rolls: DndDamageRoll[],
+): { type: DndDamageType; defense: DndDamageDefense }[] {
+  return rolls.flatMap(({ type }) => {
+    const defense = damageDefense(row, type)
+
+    return type && defense ? [{ type, defense }] : []
+  })
 }

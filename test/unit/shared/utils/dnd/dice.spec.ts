@@ -257,3 +257,57 @@ describe('dnd/dice', () => {
     )
   })
 })
+
+describe('attackDamageParts', () => {
+  it('splits the main and extra damage with their own types', () => {
+    expect(
+      attackDamageParts({
+        damageDieCount: 1,
+        damageDieType: 'd10',
+        damageBonus: 8,
+        damageType: 'slashing',
+        extraDamageDieCount: 2,
+        extraDamageDieType: 'd4',
+        extraDamageType: 'fire',
+      }),
+    ).toEqual([
+      { dice: '1d10', bonus: 8, type: 'slashing' },
+      { dice: '2d4', bonus: 0, type: 'fire' },
+    ])
+  })
+
+  it('keeps only the main damage without extra damage', () => {
+    expect(
+      attackDamageParts({ damageDieCount: 1, damageDieType: 'd6' }),
+    ).toEqual([{ dice: '1d6', bonus: 0, type: undefined }])
+  })
+
+  it('uses the extra damage type for the main damage when there is no extra damage', () => {
+    expect(
+      attackDamageParts({
+        damageDieCount: 2,
+        damageDieType: 'd6',
+        damageBonus: 3,
+        extraDamageType: 'fire',
+      }),
+    ).toEqual([{ dice: '2d6', bonus: 3, type: 'fire' }])
+  })
+
+  it('keeps the main damage type over the extra damage type', () => {
+    expect(
+      attackDamageParts({
+        damageDieCount: 2,
+        damageDieType: 'd6',
+        damageType: 'slashing',
+        extraDamageType: 'fire',
+      }),
+    ).toEqual([{ dice: '2d6', bonus: 0, type: 'slashing' }])
+  })
+
+  it('keeps an extra damage bonus without extra dice', () => {
+    expect(attackDamageParts({ damageBonus: 2, extraDamageBonus: 3 })).toEqual([
+      { dice: undefined, bonus: 2, type: undefined },
+      { dice: undefined, bonus: 3, type: undefined },
+    ])
+  })
+})

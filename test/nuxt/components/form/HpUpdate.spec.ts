@@ -1,5 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import HpUpdate from '~/components/form/HpUpdate.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { settle, submitForm } from '~~/test/nuxt/stubs/form'
@@ -54,6 +55,29 @@ async function submitAs(
   await component.get('input[name="amount"]').setValue(amount)
   await submits[buttons[type]!]!.trigger('click')
   await submitForm(component)
+}
+
+async function setDamageType(
+  component: Awaited<ReturnType<typeof mountHpUpdate>>,
+  type: DndDamageType,
+) {
+  component
+    .findComponent({ name: 'SelectRoot' })
+    .vm.$emit('update:modelValue', type)
+  await flushPromises()
+}
+
+const defended: InitiativeSheetRow = {
+  ...item,
+  hitPoints: 50,
+  tempHitPoints: 0,
+  concentration: false,
+  resistancesAndImmunities: {
+    damageImmunities: ['poison'],
+    damageResistances: ['fire'],
+    damageVulnerabilities: ['cold'],
+    conditionImmunities: [],
+  },
 }
 
 function updatedRow(): InitiativeSheetRow {
@@ -230,6 +254,63 @@ describe('HpUpdate', () => {
       expect(updateRow).not.toHaveBeenCalled()
 
       component.unmount()
+    })
+  })
+
+  describe('Damage type', () => {
+    let mounted: Awaited<ReturnType<typeof mountHpUpdate>> | undefined
+
+    async function mountDefended() {
+      mounted = await mountHpUpdate({ row: defended })
+
+      return mounted
+    }
+
+    beforeEach(() => {
+      updateRow.mockClear()
+    })
+
+    afterEach(() => {
+      mounted?.unmount()
+      mounted = undefined
+    })
+
+    it.each([
+      ['fire', 45],
+      ['cold', 30],
+      ['poison', 50],
+      ['acid', 40],
+    ] as const)(
+      'Should apply %s damage against the defenses',
+      async (type, hp) => {
+        const component = await mountDefended()
+
+        await setDamageType(component, type)
+        await submitAs(component, 'damage', 10)
+
+        expect(updatedRow().hitPoints).toBe(hp)
+      },
+    )
+
+    it('Should show the defense of the picked damage type', async () => {
+      const component = await mountDefended()
+
+      expect(component.find('[test-id="defense"]').exists()).toBe(false)
+
+      await setDamageType(component, 'fire')
+
+      expect(component.get('[test-id="defense"]').text()).toBe(
+        'components.areaDamage.defense.resistant',
+      )
+    })
+
+    it('Should ignore the damage type when healing', async () => {
+      const component = await mountDefended()
+
+      await setDamageType(component, 'fire')
+      await submitAs(component, 'heal', 10)
+
+      expect(updatedRow().hitPoints).toBe(60)
     })
   })
 })

@@ -803,7 +803,8 @@
       "cost": "Cost { cost } action | Costs { cost } actions",
       "form": " While in { form } form.",
       "oneTarget": "One target",
-      "areaDamage": "Roll area damage"
+      "areaDamage": "Roll area damage",
+      "targetDamage": "{name} takes {amount} damage"
     },
     "repeaterInput": {
       "noItems": "No items added yet. Click \"Add\" to get started."

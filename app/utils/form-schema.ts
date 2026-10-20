@@ -81,7 +81,7 @@ export const sightSchema = z.object({
   trueSightRange: z.int().gte(0).lte(50000).optional(),
 })
 
-const damageTypeEnum = damageTypes as [DndDamageType, ...DndDamageType[]]
+export const damageTypeEnum = damageTypes as [DndDamageType, ...DndDamageType[]]
 const conditionTypeEnum = conditionTypes as [
   DndConditionType,
   ...DndConditionType[],

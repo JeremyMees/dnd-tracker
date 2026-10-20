@@ -129,10 +129,7 @@ function rollAreaDamage(action: DndAction, effect: DndSaveEffect): void {
                   v-if="allowRoll && id && hasRoll(attack)"
                   :id="id"
                   :attack-bonus="attack.toHitMod"
-                  :damage-dice="formatAttackDamage(attack)"
-                  :damage-bonus="
-                    (attack.damageBonus ?? 0) + (attack.extraDamageBonus ?? 0)
-                  "
+                  :damage="attackDamageParts(attack)"
                 />
 
                 <span
@@ -182,8 +179,8 @@ function rollAreaDamage(action: DndAction, effect: DndSaveEffect): void {
                     <template v-if="attack.damageBonus">
                       + {{ attack.damageBonus }}</template
                     >
-                    <template v-if="attack.damageType">
-                      ({{ attack.damageType }})</template
+                    <template v-if="attackDamageParts(attack)[0]?.type">
+                      ({{ attackDamageParts(attack)[0]?.type }})</template
                     >
                   </span>
                 </div>

@@ -803,7 +803,8 @@
       "cost": "Kost { cost } actie | Kost { cost } acties",
       "form": " Terwijl in { form } vorm.",
       "oneTarget": "Één doelwit",
-      "areaDamage": "Gebiedsschade gooien"
+      "areaDamage": "Gebiedsschade gooien",
+      "targetDamage": "{name} krijgt {amount} schade"
     },
     "repeaterInput": {
       "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."

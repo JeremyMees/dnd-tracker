@@ -137,3 +137,43 @@ describe('areaDamageAmount', () => {
     ).toBe(24)
   })
 })
+
+describe('applyDefense', () => {
+  it.each([
+    [undefined, 9],
+    ['immune', 0],
+    ['resistant', 4],
+    ['vulnerable', 18],
+  ] as const)('applies %s to the damage', (defense, amount) => {
+    expect(applyDefense(9, defense)).toBe(amount)
+  })
+})
+
+describe('damageAfterDefenses', () => {
+  it('applies the defense of each damage type separately', () => {
+    expect(
+      damageAfterDefenses({ resistancesAndImmunities: defenses }, [
+        { amount: 9, type: 'fire' },
+        { amount: 5, type: 'cold' },
+        { amount: 7, type: 'poison' },
+        { amount: 3 },
+      ]),
+    ).toBe(17)
+  })
+
+  it('deals the full damage without resistances', () => {
+    expect(damageAfterDefenses({}, [{ amount: 9, type: 'fire' }])).toBe(9)
+  })
+})
+
+describe('damageDefenses', () => {
+  it('lists only the damage types the target defends against', () => {
+    expect(
+      damageDefenses({ resistancesAndImmunities: defenses }, [
+        { amount: 9, type: 'fire' },
+        { amount: 5, type: 'acid' },
+        { amount: 3 },
+      ]),
+    ).toEqual([{ type: 'fire', defense: 'resistant' }])
+  })
+})

@@ -166,6 +166,29 @@ describe('ActionsTable', async () => {
     expect(component.text()).toContain('components.actionsTable.oneTarget)')
   })
 
+  it('Should show and roll the extra damage type when the attack has no extra damage', async () => {
+    const component = await mountWithTooltips(ActionsTable, {
+      props: {
+        actions: [
+          {
+            ...baseAction,
+            attacks: [{ ...baseAttack, extraDamageType: 'fire' }],
+          },
+        ],
+        allowRoll: true,
+        id: 'test-id',
+      },
+      provide,
+    })
+
+    expect(component.text()).toContain('(fire)')
+    expect(
+      component.findComponent({ name: 'InitiativeActionRoll' }).props('damage'),
+    ).toEqual([{ dice: '1d10', bonus: 10, type: 'fire' }])
+
+    component.unmount()
+  })
+
   it('Should show extra damage', async () => {
     const component = await mountWithTooltips(ActionsTable, {
       props: {
@@ -255,7 +278,7 @@ describe('ActionsTable', async () => {
     ).toBeTruthy()
   })
 
-  it('Should pass the extra damage dice and bonus to the roll button', async () => {
+  it('Should pass the main and extra damage with their types to the roll button', async () => {
     const component = await mountWithTooltips(ActionsTable, {
       props: {
         actions: [
@@ -267,6 +290,8 @@ describe('ActionsTable', async () => {
                 extraDamageDieCount: 2,
                 extraDamageDieType: 'd6',
                 extraDamageBonus: 3,
+                damageType: 'slashing',
+                extraDamageType: 'fire',
               },
             ],
           },
@@ -279,8 +304,10 @@ describe('ActionsTable', async () => {
 
     const roll = component.findComponent({ name: 'InitiativeActionRoll' })
 
-    expect(roll.props('damageDice')).toBe('1d10 + 2d6')
-    expect(roll.props('damageBonus')).toBe(13)
+    expect(roll.props('damage')).toEqual([
+      { dice: '1d10', bonus: 10, type: 'slashing' },
+      { dice: '2d6', bonus: 3, type: 'fire' },
+    ])
   })
 
   it('Should not render the roll button when the attack has neither a hit mod nor damage dice', async () => {
