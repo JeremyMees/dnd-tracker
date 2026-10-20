@@ -288,7 +288,7 @@ useCommands(() => [
                 </UiDialogTitle>
                 <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
-              <div class="overflow-y-auto">
+              <UiDialogBody>
                 <FormHomebrew
                   :campaign-id="sheet?.campaign?.id"
                   :template="remix"
@@ -297,7 +297,7 @@ useCommands(() => [
                   is-encounter
                   @close="openModal = undefined"
                 />
-              </div>
+              </UiDialogBody>
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>

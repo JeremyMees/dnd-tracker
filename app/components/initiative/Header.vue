@@ -135,7 +135,7 @@ useCommands(() => [
         </UiKbdGroup>
       </UiButton>
       <UiDialog v-if="encounterId" v-model:open="liveOpen">
-        <UiDialogScrollContent test-id="live-session-dialog" class="max-w-md">
+        <UiDialogContent test-id="live-session-dialog" class="max-w-md">
           <UiDialogHeader class="sr-only">
             <UiDialogTitle>
               {{ $t('components.liveSession.title') }}
@@ -144,8 +144,10 @@ useCommands(() => [
               {{ $t('components.liveSession.description') }}
             </UiDialogDescription>
           </UiDialogHeader>
-          <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
-        </UiDialogScrollContent>
+          <UiDialogBody>
+            <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
+          </UiDialogBody>
+        </UiDialogContent>
       </UiDialog>
     </div>
     <div

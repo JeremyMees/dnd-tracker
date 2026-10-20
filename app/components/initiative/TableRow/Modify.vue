@@ -94,7 +94,7 @@ function deleteRow(): void {
           </UiDialogTitle>
           <UiDialogDescription class="sr-only" />
         </UiDialogHeader>
-        <div class="overflow-y-auto">
+        <UiDialogBody>
           <FormHomebrew
             :campaign-id="sheet?.campaign?.id"
             :row="item"
@@ -103,7 +103,7 @@ function deleteRow(): void {
             is-encounter
             @close="isEditing = false"
           />
-        </div>
+        </UiDialogBody>
       </UiDialogContent>
     </UiDialog>
   </div>

@@ -40,9 +40,9 @@ withDefaults(
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <div class="overflow-y-auto mt-4 px-1">
+      <UiDialogBody class="mt-4">
         <slot />
-      </div>
+      </UiDialogBody>
     </UiDialogContent>
   </UiDialog>
 </template>

@@ -167,7 +167,7 @@ const onSubmit = form.handleSubmit(async () => {
 
 <template>
   <UiDialog v-model:open="open">
-    <UiDialogScrollContent test-id="area-damage" class="max-w-xl">
+    <UiDialogContent test-id="area-damage" class="max-w-xl">
       <UiDialogHeader>
         <UiDialogTitle>
           {{ $t('components.areaDamage.title') }}
@@ -177,240 +177,248 @@ const onSubmit = form.handleSubmit(async () => {
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <UiFormWrapper @submit="onSubmit">
-        <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2 items-start">
-          <FormDiceRollInput />
+      <UiFormWrapper
+        class="flex min-h-0 flex-col gap-4 space-y-0"
+        @submit="onSubmit"
+      >
+        <UiDialogBody class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-x-3 gap-y-2 items-start">
+            <FormDiceRollInput />
 
-          <UiFormField v-slot="{ value, handleChange }" name="damageType">
-            <UiFormItem>
-              <UiFormLabel>
-                {{ $t('components.inputs.damageTypeLabel') }}
-              </UiFormLabel>
-              <UiSelect
-                :model-value="value ?? 'none'"
-                @update:model-value="
-                  v => handleChange(v === 'none' ? undefined : v)
-                "
-              >
+            <UiFormField v-slot="{ value, handleChange }" name="damageType">
+              <UiFormItem>
+                <UiFormLabel>
+                  {{ $t('components.inputs.damageTypeLabel') }}
+                </UiFormLabel>
+                <UiSelect
+                  :model-value="value ?? 'none'"
+                  @update:model-value="
+                    v => handleChange(v === 'none' ? undefined : v)
+                  "
+                >
+                  <UiFormControl>
+                    <UiSelectTrigger test-id="damage-type">
+                      <UiSelectValue />
+                    </UiSelectTrigger>
+                  </UiFormControl>
+                  <UiSelectContent>
+                    <UiSelectGroup>
+                      <UiSelectItem value="none">
+                        {{ $t('components.inputs.nothing') }}
+                      </UiSelectItem>
+                      <UiSelectItem
+                        v-for="type in damageTypes"
+                        :key="type"
+                        :value="type"
+                      >
+                        {{ type.charAt(0).toUpperCase() + type.slice(1) }}
+                      </UiSelectItem>
+                    </UiSelectGroup>
+                  </UiSelectContent>
+                </UiSelect>
+              </UiFormItem>
+            </UiFormField>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-x-3 gap-y-2 items-end">
+            <UiFormField v-slot="{ componentField }" name="dc">
+              <UiFormItem>
+                <UiFormLabel>
+                  {{ $t('components.areaDamage.dc') }}
+                </UiFormLabel>
                 <UiFormControl>
-                  <UiSelectTrigger test-id="damage-type">
-                    <UiSelectValue />
-                  </UiSelectTrigger>
+                  <UiInput test-id="dc" type="number" v-bind="componentField" />
                 </UiFormControl>
-                <UiSelectContent>
-                  <UiSelectGroup>
-                    <UiSelectItem value="none">
-                      {{ $t('components.inputs.nothing') }}
-                    </UiSelectItem>
-                    <UiSelectItem
-                      v-for="type in damageTypes"
-                      :key="type"
-                      :value="type"
-                    >
-                      {{ type.charAt(0).toUpperCase() + type.slice(1) }}
-                    </UiSelectItem>
-                  </UiSelectGroup>
-                </UiSelectContent>
-              </UiSelect>
-            </UiFormItem>
-          </UiFormField>
-        </div>
+                <UiFormMessage />
+              </UiFormItem>
+            </UiFormField>
 
-        <div class="grid sm:grid-cols-3 gap-x-3 gap-y-2 items-end">
-          <UiFormField v-slot="{ componentField }" name="dc">
-            <UiFormItem>
-              <UiFormLabel>
-                {{ $t('components.areaDamage.dc') }}
-              </UiFormLabel>
-              <UiFormControl>
-                <UiInput test-id="dc" type="number" v-bind="componentField" />
-              </UiFormControl>
-              <UiFormMessage />
-            </UiFormItem>
-          </UiFormField>
-
-          <UiFormField v-slot="{ value, handleChange }" name="ability">
-            <UiFormItem>
-              <UiFormLabel>
-                {{ $t('components.inputs.saveTypeLabel') }}
-              </UiFormLabel>
-              <UiSelect
-                :model-value="value"
-                :disabled="!hasSave"
-                @update:model-value="handleChange"
-              >
-                <UiFormControl>
-                  <UiSelectTrigger test-id="ability">
-                    <UiSelectValue />
-                  </UiSelectTrigger>
-                </UiFormControl>
-                <UiSelectContent>
-                  <UiSelectGroup>
-                    <UiSelectItem
-                      v-for="(ability, short) in abilityTypeMap"
-                      :key="ability"
-                      :value="ability"
-                    >
-                      {{ short }}
-                    </UiSelectItem>
-                  </UiSelectGroup>
-                </UiSelectContent>
-              </UiSelect>
-            </UiFormItem>
-          </UiFormField>
-
-          <UiFormField v-slot="{ value, handleChange }" name="halfOnSave">
-            <UiFormItem class="flex items-center gap-2 py-2">
-              <UiFormControl>
-                <UiCheckbox
-                  test-id="half-on-save"
+            <UiFormField v-slot="{ value, handleChange }" name="ability">
+              <UiFormItem>
+                <UiFormLabel>
+                  {{ $t('components.inputs.saveTypeLabel') }}
+                </UiFormLabel>
+                <UiSelect
                   :model-value="value"
                   :disabled="!hasSave"
-                  class="mb-0"
                   @update:model-value="handleChange"
-                />
-              </UiFormControl>
-              <UiFormLabel>
-                {{ $t('components.areaDamage.halfOnSave') }}
-              </UiFormLabel>
-            </UiFormItem>
-          </UiFormField>
-        </div>
-
-        <p
-          v-if="askPlayers.length && form.values.ability"
-          test-id="ask-players"
-          class="flex items-start gap-2 rounded-lg bg-info/10 border border-info p-3 text-sm"
-        >
-          <Icon
-            name="tabler:message-circle"
-            class="size-5 min-w-5 text-info"
-            aria-hidden="true"
-          />
-          {{
-            $t('components.areaDamage.askPlayers', {
-              names: askPlayers.map(row => row.name).join(', '),
-              ability: formatAbilityShort(form.values.ability),
-              dc: form.values.dc,
-            })
-          }}
-        </p>
-
-        <ul test-id="targets" class="flex flex-col divide-y divide-secondary">
-          <li
-            v-for="row in targets"
-            :key="row.id"
-            test-id="target"
-            class="flex items-center gap-3 py-2"
-          >
-            <UiCheckbox
-              :id="`area-damage-${row.id}`"
-              test-id="select"
-              :model-value="selected.includes(row.id)"
-              @update:model-value="toggle(row.id, $event)"
-            />
-            <label
-              :for="`area-damage-${row.id}`"
-              class="flex-1 min-w-0 truncate"
-            >
-              {{ row.name }}
-            </label>
-
-            <template v-if="hasSave && selected.includes(row.id)">
-              <span
-                v-if="isDefined(rolls[row.id])"
-                test-id="roll"
-                class="text-sm tabular-nums text-muted-foreground"
-              >
-                {{ rolls[row.id] }}
-              </span>
-              <Tooltip
-                v-if="!rollsOwnSave(row)"
-                :text="$t('components.areaDamage.reroll')"
-              >
-                <UiButton
-                  test-id="reroll"
-                  type="button"
-                  variant="foreground-ghost"
-                  size="icon-sm"
-                  :aria-label="$t('components.areaDamage.reroll')"
-                  @click="reroll(row)"
                 >
-                  <Icon name="tabler:refresh" aria-hidden="true" />
-                </UiButton>
-              </Tooltip>
-              <label class="flex items-center gap-1 text-xs">
-                <UiCheckbox
-                  test-id="saved"
-                  :model-value="isSaved(row)"
-                  @update:model-value="overrides[row.id] = $event === true"
-                />
-                {{ $t('components.areaDamage.saved') }}
-              </label>
-            </template>
+                  <UiFormControl>
+                    <UiSelectTrigger test-id="ability">
+                      <UiSelectValue />
+                    </UiSelectTrigger>
+                  </UiFormControl>
+                  <UiSelectContent>
+                    <UiSelectGroup>
+                      <UiSelectItem
+                        v-for="(ability, short) in abilityTypeMap"
+                        :key="ability"
+                        :value="ability"
+                      >
+                        {{ short }}
+                      </UiSelectItem>
+                    </UiSelectGroup>
+                  </UiSelectContent>
+                </UiSelect>
+              </UiFormItem>
+            </UiFormField>
 
-            <span
-              v-if="damageDefense(row, form.values.damageType)"
-              test-id="defense"
-              class="text-xs text-muted-foreground"
-            >
-              {{
-                $t(
-                  `components.areaDamage.defense.${damageDefense(row, form.values.damageType)}`,
-                )
-              }}
-            </span>
+            <UiFormField v-slot="{ value, handleChange }" name="halfOnSave">
+              <UiFormItem class="flex items-center gap-2 py-2">
+                <UiFormControl>
+                  <UiCheckbox
+                    test-id="half-on-save"
+                    :model-value="value"
+                    :disabled="!hasSave"
+                    class="mb-0"
+                    @update:model-value="handleChange"
+                  />
+                </UiFormControl>
+                <UiFormLabel>
+                  {{ $t('components.areaDamage.halfOnSave') }}
+                </UiFormLabel>
+              </UiFormItem>
+            </UiFormField>
+          </div>
 
-            <span
-              test-id="damage"
-              class="w-10 text-right font-bold tabular-nums"
-              :class="{ 'text-destructive': selected.includes(row.id) }"
-            >
-              {{ selected.includes(row.id) ? damageFor(row) : '–' }}
-            </span>
-          </li>
-        </ul>
-
-        <template v-if="source">
-          <label
-            v-if="source.usesLeft"
-            test-id="mark-used"
-            class="flex items-center gap-2 text-sm"
+          <p
+            v-if="askPlayers.length && form.values.ability"
+            test-id="ask-players"
+            class="flex items-start gap-2 rounded-lg bg-info/10 border border-info p-3 text-sm"
           >
-            <UiCheckbox
-              test-id="mark-used-checkbox"
-              :model-value="markUsed"
-              @update:model-value="markUsed = $event === true"
+            <Icon
+              name="tabler:message-circle"
+              class="size-5 min-w-5 text-info"
+              aria-hidden="true"
             />
             {{
-              $t('components.areaDamage.markUsed', {
-                action: source.action.name,
-              })
-            }}
-          </label>
-          <p v-else test-id="used-up" class="text-sm text-warning">
-            {{
-              $t('components.areaDamage.usedUp', {
-                action: source.action.name,
+              $t('components.areaDamage.askPlayers', {
+                names: askPlayers.map(row => row.name).join(', '),
+                ability: formatAbilityShort(form.values.ability),
+                dc: form.values.dc,
               })
             }}
           </p>
-        </template>
 
-        <div v-if="formError" class="text-sm text-destructive">
+          <ul test-id="targets" class="flex flex-col divide-y divide-secondary">
+            <li
+              v-for="row in targets"
+              :key="row.id"
+              test-id="target"
+              class="flex items-center gap-3 py-2"
+            >
+              <UiCheckbox
+                :id="`area-damage-${row.id}`"
+                test-id="select"
+                :model-value="selected.includes(row.id)"
+                @update:model-value="toggle(row.id, $event)"
+              />
+              <label
+                :for="`area-damage-${row.id}`"
+                class="flex-1 min-w-0 truncate"
+              >
+                {{ row.name }}
+              </label>
+
+              <template v-if="hasSave && selected.includes(row.id)">
+                <span
+                  v-if="isDefined(rolls[row.id])"
+                  test-id="roll"
+                  class="text-sm tabular-nums text-muted-foreground"
+                >
+                  {{ rolls[row.id] }}
+                </span>
+                <Tooltip
+                  v-if="!rollsOwnSave(row)"
+                  :text="$t('components.areaDamage.reroll')"
+                >
+                  <UiButton
+                    test-id="reroll"
+                    type="button"
+                    variant="foreground-ghost"
+                    size="icon-sm"
+                    :aria-label="$t('components.areaDamage.reroll')"
+                    @click="reroll(row)"
+                  >
+                    <Icon name="tabler:refresh" aria-hidden="true" />
+                  </UiButton>
+                </Tooltip>
+                <label class="flex items-center gap-1 text-xs">
+                  <UiCheckbox
+                    test-id="saved"
+                    :model-value="isSaved(row)"
+                    @update:model-value="overrides[row.id] = $event === true"
+                  />
+                  {{ $t('components.areaDamage.saved') }}
+                </label>
+              </template>
+
+              <span
+                v-if="damageDefense(row, form.values.damageType)"
+                test-id="defense"
+                class="text-xs text-muted-foreground"
+              >
+                {{
+                  $t(
+                    `components.areaDamage.defense.${damageDefense(row, form.values.damageType)}`,
+                  )
+                }}
+              </span>
+
+              <span
+                test-id="damage"
+                class="w-10 text-right font-bold tabular-nums"
+                :class="{ 'text-destructive': selected.includes(row.id) }"
+              >
+                {{ selected.includes(row.id) ? damageFor(row) : '–' }}
+              </span>
+            </li>
+          </ul>
+
+          <template v-if="source">
+            <label
+              v-if="source.usesLeft"
+              test-id="mark-used"
+              class="flex items-center gap-2 text-sm"
+            >
+              <UiCheckbox
+                test-id="mark-used-checkbox"
+                :model-value="markUsed"
+                @update:model-value="markUsed = $event === true"
+              />
+              {{
+                $t('components.areaDamage.markUsed', {
+                  action: source.action.name,
+                })
+              }}
+            </label>
+            <p v-else test-id="used-up" class="text-sm text-warning">
+              {{
+                $t('components.areaDamage.usedUp', {
+                  action: source.action.name,
+                })
+              }}
+            </p>
+          </template>
+        </UiDialogBody>
+
+        <div v-if="formError" class="shrink-0 text-sm text-destructive">
           {{ formError }}
         </div>
 
-        <UiButton
-          type="submit"
-          variant="destructive"
-          test-id="apply"
-          :disabled="!chosen.length"
-        >
-          <Icon name="tabler:sword" aria-hidden="true" />
-          {{ $t('components.areaDamage.apply', { count: chosen.length }) }}
-        </UiButton>
+        <UiDialogFooter>
+          <UiButton
+            type="submit"
+            variant="destructive"
+            test-id="apply"
+            class="w-full"
+            :disabled="!chosen.length"
+          >
+            <Icon name="tabler:sword" aria-hidden="true" />
+            {{ $t('components.areaDamage.apply', { count: chosen.length }) }}
+          </UiButton>
+        </UiDialogFooter>
       </UiFormWrapper>
-    </UiDialogScrollContent>
+    </UiDialogContent>
   </UiDialog>
 </template>

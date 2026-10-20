@@ -7,7 +7,7 @@ const { stats, open, dismiss } = useLiveSummary()
     :open="open && !!stats"
     @update:open="(value: boolean) => !value && dismiss()"
   >
-    <UiDialogScrollContent test-id="live-summary" class="max-w-2xl">
+    <UiDialogContent test-id="live-summary" class="max-w-2xl">
       <UiDialogHeader>
         <UiDialogTitle>
           {{ $t('components.combatSummary.title') }}
@@ -17,7 +17,9 @@ const { stats, open, dismiss } = useLiveSummary()
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <CombatSummaryStats v-if="stats" :stats="stats" />
+      <UiDialogBody>
+        <CombatSummaryStats v-if="stats" :stats="stats" />
+      </UiDialogBody>
 
       <UiDialogFooter>
         <UiButton test-id="dismiss" @click="dismiss">
@@ -25,6 +27,6 @@ const { stats, open, dismiss } = useLiveSummary()
           {{ $t('actions.close') }}
         </UiButton>
       </UiDialogFooter>
-    </UiDialogScrollContent>
+    </UiDialogContent>
   </UiDialog>
 </template>
