@@ -792,6 +792,23 @@ describe('dnd/hp-ac', () => {
     )
   })
 
+  describe('isAutoRollInitiativeEnabled', () => {
+    it.each([
+      [undefined, true],
+      [{ spacing: 'normal', modified: false }, true],
+      [{ spacing: 'normal', modified: false, autoRollInitiative: true }, true],
+      [
+        { spacing: 'normal', modified: false, autoRollInitiative: false },
+        false,
+      ],
+    ] as [InitiativeSettings | undefined, boolean][])(
+      'reads %o as enabled: %s',
+      (settings, result) => {
+        expect(isAutoRollInitiativeEnabled(settings)).toBe(result)
+      },
+    )
+  })
+
   describe('withoutBloodied', () => {
     it('drops only the bloodied condition', () => {
       const prone: DndCondition = { id: 'prone', name: 'Prone', desc: '' }

@@ -107,6 +107,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
           ? { summoner: summoner.value }
           : {}),
       })),
+      sheet.value.settings,
     ),
   })
 

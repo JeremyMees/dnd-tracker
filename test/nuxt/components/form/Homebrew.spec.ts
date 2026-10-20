@@ -936,7 +936,9 @@ describe('Homebrew', () => {
       const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
 
       expect(rows).toHaveLength(sheet.rows.length + 1)
-      expect(rows.at(-1)).toMatchObject({ name: 'Marsh Lurker', hitPoints: 33 })
+      expect(
+        rows.find(row => !sheet.rows.some(({ id }) => id === row.id)),
+      ).toMatchObject({ name: 'Marsh Lurker', hitPoints: 33 })
     })
 
     it('Should add one remixed monster to the sheet by default', async () => {
@@ -951,7 +953,9 @@ describe('Homebrew', () => {
       const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
 
       expect(rows).toHaveLength(sheet.rows.length + 1)
-      expect(rows.at(-1)).toMatchObject({
+      expect(
+        rows.find(row => !sheet.rows.some(({ id }) => id === row.id)),
+      ).toMatchObject({
         name: dndMonsterFixture.name,
         type: 'monster',
       })

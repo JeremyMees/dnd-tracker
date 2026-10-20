@@ -57,6 +57,7 @@ describe('InitiativeSettings', () => {
         pet: 'cat',
         negative: false,
         bloodied: true,
+        autoRollInitiative: true,
         modified: true,
       },
     })

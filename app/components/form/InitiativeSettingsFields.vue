@@ -147,4 +147,19 @@ import { initiativeWidgets, widgetLabels } from '~~/constants/validation'
       </UiFormLabel>
     </UiFormItem>
   </UiFormField>
+  <UiFormField v-slot="{ value, handleChange }" name="autoRollInitiative">
+    <UiFormItem class="flex items-center gap-2">
+      <UiFormControl>
+        <UiSwitch
+          test-id="auto-roll-initiative"
+          class="mb-0"
+          :model-value="value"
+          @update:model-value="handleChange"
+        />
+      </UiFormControl>
+      <UiFormLabel>
+        {{ $t('components.initiativeSettings.autoRollInitiative') }}
+      </UiFormLabel>
+    </UiFormItem>
+  </UiFormField>
 </template>

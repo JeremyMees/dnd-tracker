@@ -1344,6 +1344,7 @@
       },
       "negative": "Allow HP and AC to be negative",
       "bloodied": "Add Bloodied automatically at half HP or lower",
+      "autoRollInitiative": "Auto-roll initiative for monsters when they are added",
       "noActiveWidgets": "No active widgets. Use the settings icon to enable widgets."
     },
     "infoCard": {

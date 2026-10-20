@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { dndMonsterFixture } from '~~/test/fixtures/open5e'
@@ -489,6 +489,88 @@ describe('dnd/row', () => {
 
       expect(result.map(r => r.name)).toEqual(['Lair', 'Aragorn', 'Boromir'])
       expect(result[0]!.initiative).toBe(20)
+    })
+
+    describe('Rolling initiative', () => {
+      const off: InitiativeSettings = {
+        spacing: 'normal',
+        modified: true,
+        autoRollInitiative: false,
+      }
+
+      afterEach(() => {
+        vi.restoreAllMocks()
+      })
+
+      it('Should roll initiative with the modifier for added monsters', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
+        const result = appendRows(existing, [
+          { name: 'Goblin', type: 'monster', initiativeModifier: 2 },
+        ])
+
+        expect(result.find(r => r.name === 'Goblin')!.initiative).toBe(13)
+        expect(result.map(r => r.name)).toEqual([
+          'Goblin',
+          'Aragorn',
+          'Boromir',
+        ])
+      })
+
+      it('Should roll every copy of a monster on its own', () => {
+        vi.spyOn(Math, 'random')
+          .mockReturnValueOnce(0)
+          .mockReturnValueOnce(0.95)
+
+        const goblin = { name: 'Goblin', type: 'monster' as const }
+
+        expect(appendRows([], [goblin, goblin]).map(r => r.initiative)).toEqual(
+          [20, 1],
+        )
+      })
+
+      it('Should not roll below 0', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+
+        const result = appendRows(
+          [],
+          [{ name: 'Slug', type: 'monster', initiativeModifier: -5 }],
+        )
+
+        expect(result[0]!.initiative).toBe(0)
+      })
+
+      it('Should keep a given initiative', () => {
+        const result = appendRows(
+          [],
+          [{ name: 'Goblin', type: 'monster', initiative: 7 }],
+        )
+
+        expect(result[0]!.initiative).toBe(7)
+      })
+
+      it('Should not roll for other row types', () => {
+        const result = appendRows(
+          [],
+          [
+            { name: 'Gimli', type: 'player' },
+            { name: 'Guard', type: 'npc' },
+            { name: 'Wolf', type: 'summon' },
+          ],
+        )
+
+        expect(result.map(r => r.initiative)).toEqual([-1, -1, -1])
+      })
+
+      it('Should not roll when the setting is off', () => {
+        const result = appendRows(
+          [],
+          [{ name: 'Goblin', type: 'monster' }],
+          off,
+        )
+
+        expect(result[0]!.initiative).toBe(-1)
+      })
     })
 
     it('Should give copies of the same row their own id', () => {

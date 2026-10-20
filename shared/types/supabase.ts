@@ -217,6 +217,7 @@ export interface InitiativeSettings {
   pet?: InitiativePet
   negative?: boolean
   bloodied?: boolean
+  autoRollInitiative?: boolean
   live?: {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean

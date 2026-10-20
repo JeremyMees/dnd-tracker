@@ -323,6 +323,12 @@ export function isBloodied(hitPoints?: number, maxHitPoints?: number): boolean {
   return hitPoints > 0 && hitPoints <= maxHitPoints / 2
 }
 
+export function isAutoRollInitiativeEnabled(
+  settings?: InitiativeSettings,
+): boolean {
+  return settings?.autoRollInitiative !== false
+}
+
 export function isBloodiedEnabled(settings?: InitiativeSettings): boolean {
   return settings?.bloodied !== false
 }

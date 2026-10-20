@@ -1344,6 +1344,7 @@
       },
       "negative": "Sta HP en AC toe negatief te zijn",
       "bloodied": "Voeg Bloodied automatisch toe bij de helft van de HP of minder",
+      "autoRollInitiative": "Gooi automatisch initiatief voor monsters wanneer ze worden toegevoegd",
       "noActiveWidgets": "Geen actieve widgets. Gebruik het settings icoon om widgets in te schakelen."
     },
     "infoCard": {

@@ -165,6 +165,12 @@ exports[`Encounter modal > Should match snapshot 1`] = `
           <!--v-if-->
         </label>
       </div>
+      <div class="space-y-2 flex items-center gap-2"><button id="reka-v-0-0-27-form-item" role="switch" type="button" aria-checked="true" aria-required="false" data-state="checked" class="peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input mb-0" aria-describedby="reka-v-0-0-27-form-item-description" aria-invalid="false" test-id="auto-roll-initiative" value="on"><span data-state="checked" class="pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5"></span></button>
+        <!--v-if--><label for="reka-v-0-0-27-form-item" required="false" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">components.initiativeSettings.autoRollInitiative
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+      </div>
     </div>
   </div>
   <!--v-if--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border-4 bg-primary/50 hover:bg-primary/60 border-primary text-foreground shadow-sm h-10 px-4 py-2 w-full" test-id="submit" type="submit">pages.encounters.add</button>

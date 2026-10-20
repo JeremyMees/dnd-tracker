@@ -47,6 +47,12 @@ function rowsOf(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
   return update.mock.calls[0]![0].rows
 }
 
+function addedRows(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
+  return rowsOf(update).filter(
+    row => !sheet.rows.some(existing => existing.id === row.id),
+  )
+}
+
 describe('CampaignHomebrew', () => {
   beforeEach(() => {
     homebrews.value = mockHomebrewListing
@@ -124,8 +130,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const rows = rowsOf(injected.update)
-    const added = rows.slice(sheet.rows.length)
+    const added = addedRows(injected.update)
 
     expect(added).toHaveLength(2)
     expect(added.map(row => row.name)).toEqual([
@@ -141,7 +146,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = rowsOf(injected.update).slice(sheet.rows.length)
+    const added = addedRows(injected.update)
 
     expect(added.map(row => row.homebrew)).toEqual([
       mockHomebrewItem.id,
@@ -177,7 +182,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = rowsOf(injected.update).slice(sheet.rows.length)
+    const added = addedRows(injected.update)
 
     expect(added[0]!.initiativeModifier).toBe(
       Number(mockHomebrewItem.initiativeModifier),
@@ -276,7 +281,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addSelected"]').trigger('click')
     await flushPromises()
 
-    const added = rowsOf(injected.update).slice(sheet.rows.length)
+    const added = addedRows(injected.update)
 
     expect(added).toHaveLength(1)
     expect(added[0]!.name).toBe(mockHomebrewItem.name)
@@ -296,7 +301,7 @@ describe('CampaignHomebrew', () => {
       .trigger('click')
     await flushPromises()
 
-    const added = rowsOf(injected.update).slice(sheet.rows.length)
+    const added = addedRows(injected.update)
 
     expect(added[0]!.summoner).toEqual({
       name: sheet.rows[0]!.name,

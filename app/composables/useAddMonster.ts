@@ -14,7 +14,7 @@ export function useAddMonster() {
     if (!injected || !sheet) return
 
     await injected.update({
-      rows: appendRows(sheet.rows, [monsterToRow(monster)]),
+      rows: appendRows(sheet.rows, [monsterToRow(monster)], sheet.settings),
     })
 
     toast.success(

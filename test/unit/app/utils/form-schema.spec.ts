@@ -684,6 +684,7 @@ describe('form-schema', () => {
       pet: initiativePets[0],
       negative: false,
       bloodied: true,
+      autoRollInitiative: true,
     }
 
     it('Should accept a valid settings object', () => {
@@ -705,7 +706,7 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should require spacing, rows, widgets, negative and bloodied', () => {
+    it('Should require spacing, rows, widgets, negative, bloodied and autoRollInitiative', () => {
       const { spacing: _, ...noSpacing } = valid
       expect(initiativeSettingsSchema.safeParse(noSpacing).success).toBeFalsy()
 
@@ -720,6 +721,9 @@ describe('form-schema', () => {
 
       const { bloodied: _____, ...noBloodied } = valid
       expect(initiativeSettingsSchema.safeParse(noBloodied).success).toBeFalsy()
+
+      const { autoRollInitiative: ______, ...noRoll } = valid
+      expect(initiativeSettingsSchema.safeParse(noRoll).success).toBeFalsy()
     })
 
     it('Should accept empty rows and widgets arrays', () => {
@@ -808,6 +812,7 @@ describe('form-schema', () => {
       expect(values.pet).toBeUndefined()
       expect(values.negative).toBe(false)
       expect(values.bloodied).toBe(true)
+      expect(values.autoRollInitiative).toBe(true)
     })
 
     it('Should check all rows and widgets when settings are not modified', () => {
@@ -831,6 +836,7 @@ describe('form-schema', () => {
         pet: initiativePets[0],
         negative: true,
         bloodied: false,
+        autoRollInitiative: false,
       })
 
       expect(values.rows).toEqual(['armorClass', 'hitPoints'])
@@ -839,6 +845,7 @@ describe('form-schema', () => {
       expect(values.pet).toBe(initiativePets[0])
       expect(values.negative).toBe(true)
       expect(values.bloodied).toBe(false)
+      expect(values.autoRollInitiative).toBe(false)
     })
 
     it('Should respect an empty selection when modified (nothing checked)', () => {

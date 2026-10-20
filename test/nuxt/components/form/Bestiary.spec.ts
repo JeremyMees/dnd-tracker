@@ -172,8 +172,12 @@ describe('Bestiary', () => {
     const rows = injected.update.mock.calls[0]![0].rows
 
     expect(rows).toHaveLength(sheet.rows.length + 1)
-    expect(rows.at(-1)!.name).toBe(dndMonsterFixture.name)
-    expect(rows.at(-1)!.type).toBe('monster')
+    expect(
+      rows.find(
+        (row: InitiativeSheetRow) =>
+          !sheet.rows.some(({ id }) => id === row.id),
+      ),
+    ).toMatchObject({ name: dndMonsterFixture.name, type: 'monster' })
   })
 
   it('Should pass a remixed monster on without adding it', async () => {

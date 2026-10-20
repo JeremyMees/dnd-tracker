@@ -157,6 +157,7 @@ export const initiativeSettingsSchema = z.object({
     .transform(val => (val === 'none' ? undefined : val)),
   negative: z.boolean(),
   bloodied: z.boolean(),
+  autoRollInitiative: z.boolean(),
 })
 
 export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
@@ -169,6 +170,7 @@ export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
     pet: settings?.pet || undefined,
     negative: settings?.negative || false,
     bloodied: isBloodiedEnabled(settings),
+    autoRollInitiative: isAutoRollInitiativeEnabled(settings),
   }
 }
 

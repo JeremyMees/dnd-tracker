@@ -186,13 +186,27 @@ export const createInitiativeRow = (
   }
 }
 
+export function rollRowInitiative(
+  row: Pick<InitiativeSheetRow, 'initiativeModifier'>,
+): number {
+  return Math.max(randomRoll(20) + (row.initiativeModifier ?? 0), 0)
+}
+
 export function appendRows(
   rows: InitiativeSheetRow[],
   added: (Partial<InitiativeSheetRow> & { name: string; type: HomebrewType })[],
+  settings?: InitiativeSettings,
 ): InitiativeSheetRow[] {
-  const created = added.map((row, i) =>
-    createInitiativeRow(row, row.type, rows.length + i),
-  )
+  const autoRollInitiative = isAutoRollInitiativeEnabled(settings)
+  const created = added.map((row, i) => {
+    const created = createInitiativeRow(row, row.type, rows.length + i)
+
+    return autoRollInitiative &&
+      row.type === 'monster' &&
+      created.initiative < 0
+      ? { ...created, initiative: rollRowInitiative(created) }
+      : created
+  })
 
   return indexCorrect(
     placeByInitiative(
