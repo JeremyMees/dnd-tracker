@@ -3,6 +3,13 @@ import seo from '~~/constants/seo'
 export function useSeo(title?: MaybeRefOrGetter<string | undefined>): void {
   const { locale, availableLocales } = useI18n({ useScope: 'global' })
   const pageTitle = computed(() => toValue(title))
+  const localeHead = useLocaleHead({ seo: true })
+  const toSiteUrl = createSitePathResolver({ absolute: true, withBase: true })
+  const alternates = computed(() =>
+    (localeHead.value.link ?? [])
+      .filter(link => link.rel === 'alternate' && link.href)
+      .map(link => ({ ...link, href: toSiteUrl(link.href!).value })),
+  )
 
   useHead({
     ...(title ? { title: pageTitle } : {}),
@@ -14,13 +21,14 @@ export function useSeo(title?: MaybeRefOrGetter<string | undefined>): void {
     htmlAttrs: {
       lang: locale.value,
     },
-    link: [
+    link: computed(() => [
       {
         rel: 'icon',
         type: 'image/ico',
         href: '/favicon.ico',
       },
-    ],
+      ...alternates.value,
+    ]),
     meta: [
       {
         name: 'keywords',
