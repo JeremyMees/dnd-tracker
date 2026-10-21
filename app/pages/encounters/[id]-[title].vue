@@ -28,7 +28,11 @@ const {
   updateQueryData,
   onTurnReminders,
 } = useRealTimeInitiativeSheet(id, data)
-const { sync: syncLiveSession } = useLiveSession(id)
+const { session: liveSession, sync: syncLiveSession } = useLiveSession(id)
+const { seats } = useLiveSeats(id, liveSession)
+const claimedRows = computed(
+  () => new Set(seats.value.flatMap(seat => (seat.row ? [seat.row] : []))),
+)
 
 useSeo(() => data.value?.title)
 
@@ -94,6 +98,8 @@ provide(INITIATIVE_SHEET, {
   onTurnReminders,
   log,
   activeRow,
+  portal: realtimeData,
+  claimedRows,
 })
 </script>
 

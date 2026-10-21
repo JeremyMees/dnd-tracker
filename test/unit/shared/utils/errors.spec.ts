@@ -176,6 +176,17 @@ describe('getFailureReason', () => {
     ).toBe('rateLimited')
   })
 
+  it('names a row a player already claimed', () => {
+    expect(
+      getFailureReason(
+        createError({
+          statusCode: 409,
+          data: { statusMessage: 'row-claimed' },
+        }),
+      ),
+    ).toBe('rowClaimed')
+  })
+
   it('reads the postgres code a server route forwards in data', () => {
     expect(getFailureReason(createError({ data: { code: '42501' } }))).toBe(
       'forbidden',

@@ -300,6 +300,72 @@ describe('toPlayerSheet', () => {
     ])
   })
 
+  it('replaces a hidden row with an unknown placeholder', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [
+          playerRow({ id: 'row-1' }),
+          monsterRow({
+            id: 'row-2',
+            index: 1,
+            type: 'npc',
+            hidden: true,
+            concentration: true,
+            conditions: [prone],
+          }),
+        ],
+      }),
+    )
+
+    expect(result.rows[1]).toEqual({
+      id: 'row-2',
+      index: 1,
+      initiative: -1,
+      name: '???',
+      type: 'monster',
+      conditions: [],
+      hidden: true,
+    })
+  })
+
+  it('keeps visible rows free of the hidden flag', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ hidden: false })] }),
+    )
+
+    expect(result.rows[0]).not.toHaveProperty('hidden')
+  })
+
+  it('keeps the active index on a hidden row taking its turn', () => {
+    const result = toPlayerSheet(
+      sheet({
+        activeIndex: 1,
+        rows: [playerRow(), monsterRow({ hidden: true })],
+      }),
+    )
+
+    expect(result.activeIndex).toBe(1)
+    expect(result.rows[1]!.name).toBe('???')
+  })
+
+  it('skips hidden monsters when numbering hidden monster names', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [
+          monsterRow({ id: 'row-1', hidden: true }),
+          monsterRow({ id: 'row-2' }),
+        ],
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          live: { hideMonsterNames: true },
+        } as unknown as InitiativeSettings,
+      }),
+    )
+
+    expect(result.rows.map(row => row.name)).toEqual(['???', 'Monster 1'])
+  })
+
   it('defaults every action to allowed when settings.live.allow is unset', () => {
     const result = toPlayerSheet(sheet())
 

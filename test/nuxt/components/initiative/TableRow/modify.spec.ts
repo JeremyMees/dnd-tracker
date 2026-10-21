@@ -10,12 +10,16 @@ interface Props {
 }
 
 const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
     update: mockUpdate,
+    patchRow: mockPatchRow,
+    portal: ref(true),
+    claimedRows: ref(new Set<string>()),
   },
 }
 
@@ -179,5 +183,111 @@ describe('Initiative table row modify', async () => {
     await component.find('[test-id="delete"]').trigger('click')
 
     expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  describe('Visibility', () => {
+    beforeEach(() => {
+      mockPatchRow.mockReset().mockResolvedValue(undefined)
+    })
+
+    it('Should not offer to hide a row without the player portal', async () => {
+      component = await mountWithTooltips(Modify, {
+        props: { item: { ...sheet.rows[0]!, type: 'monster' } },
+        provide: {
+          [INITIATIVE_SHEET]: {
+            ...provide[INITIATIVE_SHEET],
+            portal: ref(false),
+          },
+        },
+        global: { stubs: formStubs },
+      })
+
+      expect(component.find('[test-id="visibility"]').exists()).toBe(false)
+    })
+
+    it('Should not offer to hide a player row', async () => {
+      component = await mountWithTooltips(Modify, {
+        props: { item: { ...sheet.rows[0]!, type: 'player' } },
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      expect(component.find('[test-id="visibility"]').exists()).toBe(false)
+    })
+
+    it('Should not let a claimed row be hidden', async () => {
+      const item = { ...sheet.rows[0]!, type: 'npc' as const }
+
+      component = await mountWithTooltips(Modify, {
+        props: { item },
+        provide: {
+          [INITIATIVE_SHEET]: {
+            ...provide[INITIATIVE_SHEET],
+            claimedRows: ref(new Set([item.id])),
+          },
+        },
+        global: { stubs: formStubs },
+      })
+
+      const button = component.get('[test-id="visibility"]')
+
+      expect(button.attributes('disabled')).toBeDefined()
+      expect(button.attributes('aria-label')).toBe('general.claimed')
+    })
+
+    it('Should still reveal a hidden row once it is claimed', async () => {
+      const item = { ...sheet.rows[0]!, type: 'npc' as const, hidden: true }
+
+      component = await mountWithTooltips(Modify, {
+        props: { item },
+        provide: {
+          [INITIATIVE_SHEET]: {
+            ...provide[INITIATIVE_SHEET],
+            claimedRows: ref(new Set([item.id])),
+          },
+        },
+        global: { stubs: formStubs },
+      })
+
+      await component.get('[test-id="visibility"]').trigger('click')
+
+      expect(mockPatchRow).toHaveBeenCalledWith(item.id, { hidden: false })
+    })
+
+    it('Should hide a visible row from players', async () => {
+      const item = { ...sheet.rows[0]!, type: 'monster' as const }
+
+      component = await mountWithTooltips(Modify, {
+        props: { item },
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      const button = component.get('[test-id="visibility"]')
+
+      expect(button.attributes('aria-label')).toBe('actions.hideFromPlayers')
+
+      await button.trigger('click')
+
+      expect(mockPatchRow).toHaveBeenCalledWith(item.id, { hidden: true })
+    })
+
+    it('Should reveal a hidden row to players', async () => {
+      const item = { ...sheet.rows[0]!, type: 'monster' as const, hidden: true }
+
+      component = await mountWithTooltips(Modify, {
+        props: { item },
+        provide,
+        global: { stubs: formStubs },
+      })
+
+      const button = component.get('[test-id="visibility"]')
+
+      expect(button.attributes('aria-label')).toBe('actions.revealToPlayers')
+
+      await button.trigger('click')
+
+      expect(mockPatchRow).toHaveBeenCalledWith(item.id, { hidden: false })
+    })
   })
 })

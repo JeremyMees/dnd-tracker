@@ -79,6 +79,10 @@ function describeEvent(event: CombatEventRow): string {
       return t('components.combatLog.readyUsed', { rowName })
     case 'ready_expired':
       return t('components.combatLog.readyExpired', { rowName })
+    case 'hidden':
+      return t('components.combatLog.hidden', { rowName })
+    case 'revealed':
+      return t('components.combatLog.revealed', { rowName })
     default:
       return rowName
   }
@@ -119,6 +123,10 @@ function eventIcon(type: CombatEventType): string {
       return 'tabler:hand-stop'
     case 'ready_expired':
       return 'tabler:hourglass-off'
+    case 'hidden':
+      return 'tabler:eye-off'
+    case 'revealed':
+      return 'tabler:eye'
     default:
       return 'tabler:point'
   }

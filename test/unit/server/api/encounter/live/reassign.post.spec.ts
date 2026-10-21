@@ -80,6 +80,23 @@ describe('POST /api/encounter/live/reassign', () => {
     })
   })
 
+  it('throws a 409 when the row is hidden from players', async () => {
+    mockFrom({
+      initiative_sheets: [
+        mockChain({ data: encounter, error: null }),
+        mockChain({
+          data: { rows: [{ id: 'row-2', hidden: true }] },
+          error: null,
+        }),
+      ],
+      live_sessions: mockChain({ data: { uuid: 'session-uuid' }, error: null }),
+    })
+
+    await expect(
+      handler(reassignEvent({ encounter: 7, seat: 'seat-1', row: 'row-2' })),
+    ).rejects.toMatchObject({ statusCode: 409, statusMessage: 'row-hidden' })
+  })
+
   it('throws a 404 when the row does not belong to the encounter', async () => {
     mockFrom({
       initiative_sheets: [

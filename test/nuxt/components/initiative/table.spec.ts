@@ -997,4 +997,39 @@ describe('Initiative table', () => {
       expect(commandIds()).not.toContain('ready-action')
     })
   })
+  describe('Reveal hidden creatures', () => {
+    const [first, second] = sheet.rows
+
+    let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+    beforeEach(() => {
+      mockUpdate.mockReset().mockResolvedValue(undefined)
+    })
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+    })
+
+    it('Should reveal every hidden row in one update', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [{ ...first!, hidden: true }, second!],
+      }
+      wrapper = await mountWithTooltips(Table, { props, provide, global })
+
+      runCommand('reveal-hidden')
+      await flushPromises()
+
+      expect(mockUpdate).toHaveBeenCalledWith({
+        rows: [{ ...first!, hidden: false }, second!],
+      })
+    })
+
+    it('Should hide the command when nothing is hidden', async () => {
+      wrapper = await mountWithTooltips(Table, { props, provide, global })
+
+      expect(commandIds()).not.toContain('reveal-hidden')
+    })
+  })
 })

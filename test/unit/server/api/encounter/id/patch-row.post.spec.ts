@@ -156,6 +156,117 @@ describe('POST /api/encounter/[id]/patch-row', () => {
     )
   })
 
+  it('masks a row in the live sheet once it is hidden and logs it', async () => {
+    const goblin = { ...row, id: 'row-2', name: 'Goblin', type: 'monster' }
+    const sheet = {
+      id: 7,
+      title: 'Ambush',
+      round: 2,
+      activeIndex: 0,
+      rows: [row, goblin],
+      settings: { spacing: 'normal', modified: false },
+    }
+
+    mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({ data: sheet, error: null }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({
+          data: { uuid: 'session-uuid', seats: [] },
+          error: null,
+        }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...goblin, hidden: true }, error: null }),
+          mockChain({ data: 5, error: null }),
+          mockChain({ data: 9, error: null }),
+        ],
+      },
+    )
+
+    await handler(patchEvent({ rowId: 'row-2', patch: { hidden: true } }))
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      expect.objectContaining({
+        type: 'hidden',
+        payload: { rowName: 'Goblin' },
+      }),
+    ])
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'sync',
+      {
+        version: 9,
+        sheet: expect.objectContaining({
+          rows: [
+            expect.objectContaining({ id: 'row-1', name: 'Elara' }),
+            expect.objectContaining({ id: 'row-2', name: '???', hidden: true }),
+          ],
+        }),
+      },
+    )
+  })
+
+  it('refuses to hide a row a player has claimed', async () => {
+    mockFrom({
+      initiative_sheets: [
+        mockChain({
+          data: { id: 7, campaign: null, createdBy: 'user-1' },
+          error: null,
+        }),
+        mockChain({ data: { rows: [row], round: 2 }, error: null }),
+      ],
+      live_sessions: mockChain({
+        data: {
+          uuid: 'session-uuid',
+          seats: [{ seat: 'seat-1', row: 'row-1' }],
+        },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(patchEvent({ rowId: 'row-1', patch: { hidden: true } })),
+    ).rejects.toMatchObject({ statusCode: 409, statusMessage: 'row-claimed' })
+  })
+
+  it('still reveals a claimed row', async () => {
+    mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({
+            data: { rows: [{ ...row, hidden: true }], round: 2 },
+            error: null,
+          }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, hidden: false }, error: null }),
+          mockChain({ data: 5, error: null }),
+        ],
+      },
+    )
+
+    await expect(
+      handler(patchEvent({ rowId: 'row-1', patch: { hidden: false } })),
+    ).resolves.toEqual({ row: { ...row, hidden: false } })
+  })
+
   it('throws a 401 when the request is not authenticated', async () => {
     serverSupabaseUser.mockResolvedValue(null)
 

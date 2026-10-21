@@ -40,7 +40,7 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
-  const masked = toPlayerSheet(sheet).rows
+  const masked = toPlayerSheet(sheet).rows.filter(row => !row.hidden)
   const known = new Set(masked.map(row => row.id))
   const original = new Map(sheet.rows.map(row => [row.id, row]))
 

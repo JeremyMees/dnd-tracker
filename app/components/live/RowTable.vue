@@ -100,14 +100,37 @@ const columns = computed(() => {
               <UiTableCell class="p-2">
                 <div class="flex items-center gap-2 min-w-0">
                   <Icon
-                    :name="homebrewIcon(row.type)"
-                    :class="homebrewColor(row.type)"
+                    :name="
+                      row.hidden
+                        ? 'tabler:question-mark'
+                        : homebrewIcon(row.type)
+                    "
+                    :class="
+                      row.hidden
+                        ? 'text-muted-foreground'
+                        : homebrewColor(row.type)
+                    "
                     class="size-5 min-w-5"
                     aria-hidden="true"
                   />
-                  <span test-id="name" class="font-bold truncate">
+                  <span
+                    test-id="name"
+                    class="font-bold truncate"
+                    :class="{ 'italic text-muted-foreground': row.hidden }"
+                  >
                     {{ row.name }}
                   </span>
+                  <Tooltip
+                    v-if="row.hidden"
+                    :text="$t('pages.live.hiddenCreature')"
+                  >
+                    <Icon
+                      test-id="hidden"
+                      name="tabler:eye-off"
+                      class="size-4 min-w-4 text-muted-foreground"
+                      :aria-label="$t('pages.live.hiddenCreature')"
+                    />
+                  </Tooltip>
                   <UiBadge
                     v-if="ownRowId === row.id"
                     test-id="own"
@@ -189,7 +212,7 @@ const columns = computed(() => {
 
               <UiTableCell v-if="columns.concentration" class="p-2">
                 <LiveStatConcentration
-                  v-if="row.type !== 'lair'"
+                  v-if="row.type !== 'lair' && !row.hidden"
                   test-id="concentration"
                   :data-active="row.concentration"
                   :active="row.concentration"

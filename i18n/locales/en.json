@@ -89,7 +89,10 @@
     "closeCombatLog": "Close combat log",
     "skipToContent": "Skip to content",
     "readyAction": "Ready an action",
-    "useReadied": "Use readied action"
+    "useReadied": "Use readied action",
+    "hideFromPlayers": "Hide from players",
+    "revealToPlayers": "Reveal to players",
+    "revealHidden": "Reveal hidden creatures"
   },
   "general": {
     "pro": "Pro",
@@ -264,7 +267,8 @@
         "limitReached": "You've reached the limit of your plan. Remove one first, or upgrade to Pro for more.",
         "homebrewLimit": "This campaign already has the maximum number of homebrew items. Remove one first.",
         "noteLimit": "This campaign already has the maximum number of notes. Remove one first.",
-        "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
+        "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening.",
+        "rowClaimed": "A player has claimed this row, so it can't be hidden."
       },
       "loadFailed": {
         "content": "DnD content couldn't be loaded",
@@ -331,7 +335,9 @@
         "title": "Mail is sent successfully"
       }
     },
-    "readied": "Readied"
+    "readied": "Readied",
+    "hidden": "Hidden",
+    "claimed": "Claimed by a player"
   },
   "pages": {
     "home": {
@@ -537,7 +543,8 @@
           "concentration": "Concentration for {name} wasn't saved",
           "row": "Your change to {name} wasn't saved",
           "generic": "Your change wasn't saved",
-          "readied": "Readied action for {name} wasn't saved"
+          "readied": "Readied action for {name} wasn't saved",
+          "hidden": "Visibility for {name} wasn't saved"
         },
         "updateFailed": {
           "rows": "Changes to the initiative list weren't saved",
@@ -559,7 +566,8 @@
           "noActiveSession": "No active live session",
           "seatNotFound": "That player already left",
           "rowNotFound": "That row no longer exists",
-          "rowClaimed": "That row is already claimed by another player"
+          "rowClaimed": "That row is already claimed by another player",
+          "rowHidden": "That row is hidden from players. Reveal it first."
         }
       }
     },
@@ -752,7 +760,8 @@
         "noRowClaimed": "You haven't claimed a character yet.",
         "spectator": "Spectators can't change characters.",
         "seatExpired": "Your seat has expired. Rejoin the live session."
-      }
+      },
+      "hiddenCreature": "Something lurks in the shadows…"
     }
   },
   "components": {
@@ -867,7 +876,9 @@
       },
       "readied": "{rowName} readied an action",
       "readyUsed": "{rowName} used their readied action",
-      "readyExpired": "{rowName}'s readied action ran out"
+      "readyExpired": "{rowName}'s readied action ran out",
+      "hidden": "{rowName} was hidden from players",
+      "revealed": "{rowName} was revealed to players"
     },
     "areaDamage": {
       "title": "Area damage",

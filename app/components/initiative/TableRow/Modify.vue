@@ -3,10 +3,22 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, update, patchRow, portal, claimedRows } =
+  validateInject(INITIATIVE_SHEET)
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
 const isEditing = ref(false)
+const canHide = computed(() => !!portal?.value && props.item.type !== 'player')
+const claimed = computed(
+  () => !props.item.hidden && !!claimedRows?.value.has(props.item.id),
+)
+const visibilityLabel = computed(() => {
+  if (claimed.value) return 'general.claimed'
+
+  return props.item.hidden
+    ? 'actions.revealToPlayers'
+    : 'actions.hideFromPlayers'
+})
 
 function copyRow(): void {
   if (!sheet.value) return
@@ -19,6 +31,10 @@ function copyRow(): void {
   update({
     rows: [...rows, { ...props.item, id: crypto.randomUUID() }],
   })
+}
+
+function toggleHidden(): void {
+  patchRow(props.item.id, { hidden: !props.item.hidden }).catch(() => undefined)
 }
 
 function deleteRow(): void {
@@ -47,6 +63,21 @@ function deleteRow(): void {
         >
           <Icon name="tabler:link" :aria-hidden="true" />
         </NuxtLink>
+      </UiButton>
+    </Tooltip>
+    <Tooltip v-if="canHide" :text="$t(visibilityLabel)">
+      <UiButton
+        test-id="visibility"
+        variant="info-ghost"
+        size="icon-sm"
+        :disabled="claimed"
+        :aria-label="$t(visibilityLabel)"
+        @click="toggleHidden"
+      >
+        <Icon
+          :name="item.hidden ? 'tabler:eye' : 'tabler:eye-off'"
+          :aria-hidden="true"
+        />
       </UiButton>
     </Tooltip>
     <Tooltip :text="$t('actions.edit')">

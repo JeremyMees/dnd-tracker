@@ -113,6 +113,16 @@ function readyAction(): void {
   patchRow(turnRow.value.id, { readied: true }).catch(() => undefined)
 }
 
+function revealHidden(): void {
+  if (!sheet.value) return
+
+  update({
+    rows: sheet.value.rows.map(row =>
+      row.hidden ? { ...row, hidden: false } : row,
+    ),
+  }).catch(() => undefined)
+}
+
 function rowShortcut(action: RowShortcutAction): void {
   if (target.value) triggerRowShortcut(target.value.id, action)
 }
@@ -162,6 +172,13 @@ useCommands(() => {
       icon: 'tabler:hand-stop',
       disabled: !canReady || !!turnRow.value?.readied,
       run: readyAction,
+    },
+    {
+      id: 'reveal-hidden',
+      label: t('actions.revealHidden'),
+      icon: 'tabler:eye',
+      disabled: !sheet.value?.rows.some(row => row.hidden),
+      run: revealHidden,
     },
     {
       id: 'damage',

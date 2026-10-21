@@ -57,7 +57,7 @@ export default defineEventHandler(async event => {
       row?.type as HomebrewType,
     )
 
-    if (!row || !claimable) {
+    if (!row || !claimable || row.hidden) {
       throw createError({ statusCode: 404, statusMessage: 'Row not found' })
     }
   }

@@ -84,7 +84,13 @@ mockNuxtImport('useSupabaseClient', () => () => ({
   channel: () => channel,
   removeChannel,
 }))
-mockNuxtImport('useLiveSession', () => () => ({ sync: syncLiveSession }))
+const liveSeats = ref<LiveSeat[]>([])
+
+mockNuxtImport('useLiveSession', () => () => ({
+  session: ref(undefined),
+  sync: syncLiveSession,
+}))
+mockNuxtImport('useLiveSeats', () => () => ({ seats: liveSeats }))
 
 const SheetProbe = defineComponent({
   props: { loading: Boolean },
@@ -117,6 +123,7 @@ interface Probe {
   onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
   log: (events: CombatEventDraft[]) => void
   activeRow: InitiativeSheetRow | undefined
+  claimedRows?: Set<string>
 }
 
 let mounted: VueWrapper | undefined
@@ -214,6 +221,19 @@ describe('Encounter detail page', () => {
 
     expect(probe.sheet?.title).toBe(sheet.title)
     expect(probe.activeRow).toBeUndefined()
+  })
+
+  it('Should provide the rows players have claimed in the live session', async () => {
+    liveSeats.value = [
+      { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+      { seat: 'seat-2', row: null, name: 'Watcher', spectator: true },
+    ]
+
+    const { probe } = await mountPage()
+
+    expect([...probe.claimedRows!]).toEqual(['row-1'])
+
+    liveSeats.value = []
   })
 
   it('Should pass the pending state to the initiative table', async () => {

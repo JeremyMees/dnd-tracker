@@ -14,4 +14,6 @@ export const INITIATIVE_SHEET: InjectionKey<{
   redo?: () => Promise<boolean>
   canRedo?: Readonly<Ref<boolean>>
   activeRow: Ref<InitiativeSheetRow | undefined>
+  portal?: Readonly<Ref<boolean>>
+  claimedRows?: Readonly<Ref<Set<string>>>
 }> = Symbol('initiativeSheet')

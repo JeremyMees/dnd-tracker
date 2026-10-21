@@ -48,6 +48,18 @@ function toPlayerRow(
   return playerRow
 }
 
+function toHiddenPlayerRow(row: InitiativeSheetRow): PlayerRow {
+  return {
+    id: row.id,
+    index: row.index,
+    initiative: -1,
+    name: '???',
+    type: 'monster',
+    conditions: [],
+    hidden: true,
+  }
+}
+
 export function toPlayerSheet(
   sheet: Pick<
     InitiativeSheet,
@@ -68,6 +80,8 @@ export function toPlayerSheet(
     round: sheet.round,
     activeIndex: sheet.activeIndex,
     rows: sheet.rows.map(row => {
+      if (row.hidden) return toHiddenPlayerRow(row)
+
       if (row.type === 'monster') monsterOrdinal += 1
 
       return toPlayerRow(

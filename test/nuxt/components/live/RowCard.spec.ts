@@ -34,6 +34,29 @@ describe('LiveRowCard', () => {
     expect(component.get('[test-id="initiative"]').text()).toContain('15')
   })
 
+  it('shows a hidden row as a creature lurking in the shadows', async () => {
+    const component = await mountWithTooltips(LiveRowCard, {
+      props: {
+        row: {
+          ...baseRow,
+          name: '???',
+          type: 'monster',
+          initiative: -1,
+          hidden: true,
+        },
+        active: true,
+      },
+    })
+
+    expect(component.get('[test-id="name"]').text()).toBe('???')
+    expect(component.get('[test-id="hidden"]').text()).toBe(
+      'pages.live.hiddenCreature',
+    )
+    expect(component.find('[test-id="concentration"]').exists()).toBe(false)
+
+    component.unmount()
+  })
+
   it('shows a placeholder dash when initiative has not been rolled', async () => {
     const component = await mountWithTooltips(LiveRowCard, {
       props: { row: { ...baseRow, initiative: -1 }, active: false },

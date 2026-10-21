@@ -26,6 +26,7 @@ const bodySchema = z.object({
       deathSaves: deathSavesSchema.optional(),
       concentration: z.boolean().optional(),
       readied: z.boolean().optional(),
+      hidden: z.boolean().optional(),
       resources: resourceUsesSchema.optional(),
     })
     .strict(),
@@ -52,6 +53,10 @@ export default defineEventHandler(async event => {
 
   if (!before) {
     throw createError({ statusCode: 404, statusMessage: 'Row not found' })
+  }
+
+  if (body.patch.hidden && (await isLiveRowClaimed(supabase, id, body.rowId))) {
+    throw createError({ statusCode: 409, statusMessage: 'row-claimed' })
   }
 
   const { data: after, error } = await supabase.rpc('apply_live_action', {

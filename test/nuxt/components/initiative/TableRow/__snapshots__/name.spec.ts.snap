@@ -11,5 +11,6 @@ exports[`Initiative table row name > Should match snapshot 1`] = `
   <!--teleport start-->
   <!--teleport end-->
   <!--v-if-->
+  <!--v-if-->
 </div>"
 `;

@@ -89,7 +89,10 @@
     "closeCombatLog": "Gevechtslog sluiten",
     "skipToContent": "Ga naar inhoud",
     "readyAction": "Actie klaarhouden",
-    "useReadied": "Klaargehouden actie gebruiken"
+    "useReadied": "Klaargehouden actie gebruiken",
+    "hideFromPlayers": "Verbergen voor spelers",
+    "revealToPlayers": "Tonen aan spelers",
+    "revealHidden": "Verborgen wezens tonen"
   },
   "general": {
     "pro": "Pro",
@@ -264,7 +267,8 @@
         "limitReached": "Je hebt de limiet van je abonnement bereikt. Verwijder er eerst een, of upgrade naar Pro voor meer.",
         "homebrewLimit": "Deze campagne heeft al het maximum aantal homebrew items. Verwijder er eerst een.",
         "noteLimit": "Deze campagne heeft al het maximum aantal notities. Verwijder er eerst een.",
-        "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren."
+        "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren.",
+        "rowClaimed": "Een speler heeft deze rij geclaimd, dus ze kan niet verborgen worden."
       },
       "loadFailed": {
         "content": "DnD inhoud kon niet geladen worden",
@@ -331,7 +335,9 @@
         "title": "Mail is succesvol verzonden"
       }
     },
-    "readied": "Klaar"
+    "readied": "Klaar",
+    "hidden": "Verborgen",
+    "claimed": "Geclaimd door een speler"
   },
   "pages": {
     "home": {
@@ -537,7 +543,8 @@
           "concentration": "Concentratie voor {name} is niet opgeslagen",
           "row": "Je wijziging aan {name} is niet opgeslagen",
           "generic": "Je wijziging is niet opgeslagen",
-          "readied": "Klaargehouden actie voor {name} is niet opgeslagen"
+          "readied": "Klaargehouden actie voor {name} is niet opgeslagen",
+          "hidden": "Zichtbaarheid voor {name} is niet opgeslagen"
         },
         "updateFailed": {
           "rows": "Wijzigingen aan de initiatieflijst zijn niet opgeslagen",
@@ -559,7 +566,8 @@
           "noActiveSession": "Geen actieve live sessie",
           "seatNotFound": "Die speler heeft de sessie al verlaten",
           "rowNotFound": "Die rij bestaat niet meer",
-          "rowClaimed": "Die rij is al bezet door een andere speler"
+          "rowClaimed": "Die rij is al bezet door een andere speler",
+          "rowHidden": "Die rij is verborgen voor spelers. Toon ze eerst."
         }
       }
     },
@@ -752,7 +760,8 @@
         "noRowClaimed": "Je hebt nog geen personage gekozen.",
         "spectator": "Kijkers kunnen geen personages aanpassen.",
         "seatExpired": "Je plaats is verlopen. Neem opnieuw deel aan de live sessie."
-      }
+      },
+      "hiddenCreature": "Er loert iets in de schaduw…"
     }
   },
   "components": {
@@ -867,7 +876,9 @@
       },
       "readied": "{rowName} hield een actie klaar",
       "readyUsed": "{rowName} gebruikte de klaargehouden actie",
-      "readyExpired": "De klaargehouden actie van {rowName} is verlopen"
+      "readyExpired": "De klaargehouden actie van {rowName} is verlopen",
+      "hidden": "{rowName} is verborgen voor spelers",
+      "revealed": "{rowName} is getoond aan spelers"
     },
     "areaDamage": {
       "title": "Gebiedsschade",

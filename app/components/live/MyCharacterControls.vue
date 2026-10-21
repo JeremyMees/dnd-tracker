@@ -155,7 +155,7 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
         :conditions="conditionsList ?? []"
         :applied="row.conditions"
         :item="row"
-        :rows="rows"
+        :rows="rows.filter(other => !other.hidden)"
         :active-row-id="row.id"
         :disabled="locked || conditionsPending || !allow.conditions"
         @add="applyConditions([...row.conditions, $event])"

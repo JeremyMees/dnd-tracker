@@ -72,6 +72,10 @@ export function getFailureReason(error: unknown): FailureReason {
     }
   }
 
+  if (statusCode === 409 && getErrorMessage(error) === 'row-claimed') {
+    return 'rowClaimed'
+  }
+
   if (readProp(error, 'name') === 'FetchError' && statusCode === undefined) {
     return 'offline'
   }

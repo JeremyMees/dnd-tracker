@@ -14,6 +14,10 @@ function useReadied(): void {
   }).catch(() => undefined)
 }
 
+function reveal(): void {
+  patchRow(props.item.id, { hidden: false }).catch(() => undefined)
+}
+
 const popoverOpen = shallowRef<boolean>(false)
 
 const formSchema = z.object({
@@ -102,6 +106,19 @@ const onSubmit = form.handleSubmit(async values => {
         </UiFormWrapper>
       </UiPopoverContent>
     </UiPopover>
+    <Tooltip v-if="item.hidden" :text="$t('actions.revealToPlayers')">
+      <button
+        test-id="hidden"
+        type="button"
+        :aria-label="$t('actions.revealToPlayers')"
+        @click="reveal"
+      >
+        <UiBadge class="cursor-pointer">
+          <Icon name="tabler:eye-off" aria-hidden="true" />
+          {{ $t('general.hidden') }}
+        </UiBadge>
+      </button>
+    </Tooltip>
     <Tooltip v-if="item.readied" :text="$t('actions.useReadied')">
       <button
         test-id="readied"

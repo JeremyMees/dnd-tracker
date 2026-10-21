@@ -12,6 +12,7 @@ const liveSeatErrors = new Set([
   'seat-not-found',
   'row-not-found',
   'row-claimed',
+  'row-hidden',
 ])
 
 function _useLiveSeats(

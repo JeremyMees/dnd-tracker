@@ -114,6 +114,8 @@ export type CombatEventType =
   | 'readied'
   | 'ready_used'
   | 'ready_expired'
+  | 'hidden'
+  | 'revealed'
 export type InitiativeRowField =
   | 'armorClass'
   | 'hitPoints'
@@ -133,6 +135,7 @@ export interface InitiativeSheetRow {
   deathSaves?: DndDeathSaves
   concentration?: boolean
   readied?: boolean
+  hidden?: boolean
   armorClass?: number
   maxArmorClass?: number
   maxArmorClassOld?: number

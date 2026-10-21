@@ -4,7 +4,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{
   encounterId: number
-  rows?: { id: string; name: string }[]
+  rows?: { id: string; name: string; hidden?: boolean }[]
 }>()
 
 const { t, locale } = useI18n()

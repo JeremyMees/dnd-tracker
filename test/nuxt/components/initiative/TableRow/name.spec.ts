@@ -198,4 +198,39 @@ describe('Initiative table row name', async () => {
       })
     })
   })
+  describe('Hidden', () => {
+    let component: VueWrapper
+
+    beforeEach(() => {
+      mockPatchRow.mockResolvedValue(undefined)
+    })
+
+    afterEach(() => {
+      component?.unmount()
+      mockPatchRow.mockReset()
+    })
+
+    it('Should not show the hidden badge for a visible row', async () => {
+      component = await mountWithTooltips(Name, { props, provide })
+
+      expect(component.find('[test-id="hidden"]').exists()).toBe(false)
+    })
+
+    it('Should reveal a hidden row from the badge', async () => {
+      const hidden = { ...sheet.rows[1]!, hidden: true }
+
+      component = await mountWithTooltips(Name, {
+        props: { item: hidden },
+        provide,
+      })
+
+      expect(component.find('[test-id="hidden"]').text()).toContain(
+        'general.hidden',
+      )
+
+      await component.find('[test-id="hidden"]').trigger('click')
+
+      expect(mockPatchRow).toHaveBeenCalledWith(hidden.id, { hidden: false })
+    })
+  })
 })

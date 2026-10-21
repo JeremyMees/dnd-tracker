@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  diffReadied,
+  diffFlags,
   diffRow,
   diffSheet,
   isStatEvent,
@@ -285,7 +285,7 @@ describe('diffRow', () => {
 })
 
 describe('isStatEvent', () => {
-  it.each(['turn', 'row_added', 'row_removed', 'roll'])(
+  it.each(['turn', 'row_added', 'row_removed', 'roll', 'hidden', 'revealed'])(
     'leaves %s events out of the stats',
     type => {
       expect(isStatEvent({ type })).toBe(false)
@@ -377,23 +377,35 @@ describe('diffSheet', () => {
   })
 })
 
-describe('diffReadied', () => {
+describe('diffFlags', () => {
   it.each([
     [{}, { readied: true }, 'readied'],
     [{ readied: true }, { readied: false }, 'ready_used'],
+    [{}, { hidden: true }, 'hidden'],
+    [{ hidden: true }, { hidden: false }, 'revealed'],
   ])('logs %o → %o as %s', (before, after, type) => {
     expect(
-      diffReadied({ ...baseRow, ...before }, { ...baseRow, ...after }),
+      diffFlags({ ...baseRow, ...before }, { ...baseRow, ...after }),
     ).toEqual([{ type, payload: { rowName: 'Elara' } }])
   })
 
   it('logs nothing when a reset drops the flag', () => {
-    expect(diffReadied({ ...baseRow, readied: true }, baseRow)).toEqual([])
+    expect(diffFlags({ ...baseRow, readied: true }, baseRow)).toEqual([])
+    expect(diffFlags({ ...baseRow, hidden: true }, baseRow)).toEqual([])
   })
 
   it('is part of the row diff', () => {
     expect(diffRow(baseRow, { ...baseRow, readied: true })).toEqual([
       { type: 'readied', payload: { rowName: 'Elara' } },
+    ])
+  })
+
+  it('logs a ready and a hide on the same change', () => {
+    expect(
+      diffFlags(baseRow, { ...baseRow, readied: true, hidden: true }),
+    ).toEqual([
+      { type: 'readied', payload: { rowName: 'Elara' } },
+      { type: 'hidden', payload: { rowName: 'Elara' } },
     ])
   })
 
@@ -409,5 +421,17 @@ describe('diffReadied', () => {
     ).toEqual([
       { type: 'ready_used', rowId: 'row-1', payload: { rowName: 'Elara' } },
     ])
+  })
+
+  it('logs a reveal in the sheet diff with the row id', () => {
+    const sheet = {
+      rows: [{ ...baseRow, hidden: true }],
+      activeIndex: 0,
+      round: 1,
+    }
+
+    expect(diffSheet(sheet, { rows: [{ ...baseRow, hidden: false }] })).toEqual(
+      [{ type: 'revealed', rowId: 'row-1', payload: { rowName: 'Elara' } }],
+    )
   })
 })

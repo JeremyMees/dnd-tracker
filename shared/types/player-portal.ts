@@ -16,6 +16,7 @@ export interface PlayerRow {
   healthBand?: DndHealthBand
   reaction?: boolean
   readied?: boolean
+  hidden?: boolean
 }
 
 export interface PlayerSheet {

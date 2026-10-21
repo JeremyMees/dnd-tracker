@@ -296,6 +296,8 @@ describe('Initiative history panel', () => {
       'components.combatLog.readyExpired',
       'tabler:hourglass-off',
     ],
+    ['hidden', {}, 'components.combatLog.hidden', 'tabler:eye-off'],
+    ['revealed', {}, 'components.combatLog.revealed', 'tabler:eye'],
   ])(
     'Should describe a %s event with payload %o',
     async (type, payload, key, icon) => {

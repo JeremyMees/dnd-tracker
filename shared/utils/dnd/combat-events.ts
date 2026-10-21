@@ -4,19 +4,26 @@ function countNewlyTrue(before: boolean[], after: boolean[]): number {
   return after.filter((value, index) => value && !before[index]).length
 }
 
-export function diffReadied(
+export function diffFlags(
   before: InitiativeSheetRow,
   after: InitiativeSheetRow,
 ): CombatEventDraft[] {
   const payload = { rowName: after.name }
+  const events: CombatEventDraft[] = []
 
-  if (!before.readied && after.readied) return [{ type: 'readied', payload }]
-
-  if (before.readied && after.readied === false) {
-    return [{ type: 'ready_used', payload }]
+  if (!before.readied && after.readied) {
+    events.push({ type: 'readied', payload })
+  } else if (before.readied && after.readied === false) {
+    events.push({ type: 'ready_used', payload })
   }
 
-  return []
+  if (!before.hidden && after.hidden) {
+    events.push({ type: 'hidden', payload })
+  } else if (before.hidden && after.hidden === false) {
+    events.push({ type: 'revealed', payload })
+  }
+
+  return events
 }
 
 export function diffRow(
@@ -149,7 +156,7 @@ export function diffRow(
     }
   }
 
-  return [...events, ...diffReadied(before, after)]
+  return [...events, ...diffFlags(before, after)]
 }
 
 const LOG_ONLY_EVENTS = new Set<string>([
@@ -160,6 +167,8 @@ const LOG_ONLY_EVENTS = new Set<string>([
   'readied',
   'ready_used',
   'ready_expired',
+  'hidden',
+  'revealed',
 ])
 
 export function isStatEvent(event: { type: string }): boolean {
@@ -208,11 +217,11 @@ export function diffSheet(
     }))
 
   const beforeById = new Map(before.rows.map(row => [row.id, row]))
-  const readied = rows.flatMap(row => {
+  const flags = rows.flatMap(row => {
     const previous = beforeById.get(row.id)
 
     return previous
-      ? diffReadied(previous, row).map(event => ({ ...event, rowId: row.id }))
+      ? diffFlags(previous, row).map(event => ({ ...event, rowId: row.id }))
       : []
   })
 
@@ -222,5 +231,5 @@ export function diffSheet(
     (after.round ?? before.round) !== before.round
   const turn = turnChanged ? turnEvent(rows, activeIndex) : undefined
 
-  return [...removed, ...added, ...readied, ...(turn ? [turn] : [])]
+  return [...removed, ...added, ...flags, ...(turn ? [turn] : [])]
 }

@@ -245,6 +245,23 @@ describe('LiveMyCharacterControls', () => {
     })
   })
 
+  it('leaves hidden rows out of the picker', async () => {
+    const component = await mountSuspended(MyCharacterControls, {
+      props: {
+        row,
+        rows: [row, goblin, { ...goblin, id: 'row-3', hidden: true }],
+        active: true,
+        allow: defaultAllow,
+      },
+    })
+
+    expect(
+      component.findComponent({ name: 'ConditionPicker' }).props('rows'),
+    ).toEqual([row, goblin])
+
+    component.unmount()
+  })
+
   it('adds a picked condition with its duration', async () => {
     const blinded = {
       ...conditions[0]!,

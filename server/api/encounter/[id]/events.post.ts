@@ -25,7 +25,7 @@ const eventSchema = z.discriminatedUnion('type', [
     rowId,
     payload: z.object({ rowName }).strict(),
   }),
-  ...(['readied', 'ready_used'] as const).map(type =>
+  ...(['readied', 'ready_used', 'hidden', 'revealed'] as const).map(type =>
     z.object({
       type: z.literal(type),
       rowId,

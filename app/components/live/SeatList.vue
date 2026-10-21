@@ -3,7 +3,7 @@ const props = withDefaults(
   defineProps<{
     encounterId: number
     session: LiveSessionResponse | undefined
-    rows: { id: string; name: string }[]
+    rows: { id: string; name: string; hidden?: boolean }[]
     showTitle?: boolean
   }>(),
   {
@@ -24,7 +24,9 @@ function rowName(id: string | null): string {
 
 function availableRows(seat: LiveSeat): { id: string; name: string }[] {
   return props.rows.filter(
-    row => row.id === seat.row || !seats.value.some(s => s.row === row.id),
+    row =>
+      row.id === seat.row ||
+      (!row.hidden && !seats.value.some(s => s.row === row.id)),
   )
 }
 

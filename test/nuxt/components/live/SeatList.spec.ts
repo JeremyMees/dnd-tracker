@@ -1,7 +1,7 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LiveSeatList from '~/components/live/SeatList.vue'
-import { selectOption } from '~~/test/nuxt/stubs/popover'
+import { openPopover, selectOption } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 const { ask, kick, reassign } = vi.hoisted(() => ({
@@ -181,5 +181,28 @@ describe('LiveSeatList', () => {
     await selectOption(component, 'row-2')
 
     expect(reassign).toHaveBeenCalledWith('seat-1', 'row-2')
+  })
+
+  it('Should not offer hidden rows to reassign a seat to', async () => {
+    seats.value = [
+      { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+    ]
+
+    const component = await mountWithTooltips(LiveSeatList, {
+      props: {
+        ...props,
+        rows: [...rows, { id: 'row-3', name: 'Shadow', hidden: true }],
+      },
+    })
+
+    await openPopover(component, 'SelectRoot')
+
+    const offered = component
+      .findAllComponents({ name: 'SelectItem' })
+      .map(item => item.props('value'))
+
+    expect([...new Set(offered)]).toEqual(['row-1', 'row-2'])
+
+    component.unmount()
   })
 })
