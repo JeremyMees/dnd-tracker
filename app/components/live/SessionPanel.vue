@@ -334,6 +334,17 @@ async function toggleLiveAllow(
               @update:model-value="toggleLiveAllow('reaction', $event)"
             />
           </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('actions.readyAction') }}
+            </span>
+            <UiSwitch
+              test-id="allow-ready"
+              :model-value="isAllowed('ready')"
+              @update:model-value="toggleLiveAllow('ready', $event)"
+            />
+          </div>
         </div>
       </UiTabsContent>
 

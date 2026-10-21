@@ -170,6 +170,7 @@ describe('LivePlayerView', () => {
       concentration: true,
       conditions: true,
       reaction: true,
+      ready: true,
       endTurn: true,
     })
   })

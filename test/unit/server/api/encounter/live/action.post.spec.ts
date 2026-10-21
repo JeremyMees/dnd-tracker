@@ -815,6 +815,127 @@ describe('POST /api/encounter/live/action', () => {
     })
   })
 
+  it('readies an action on the turn of the seat and logs it', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [row] },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, readied: true }, error: null }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({ seatToken: token, action: { type: 'ready', value: true } }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { readied: true },
+    })
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      expect.objectContaining({ type: 'readied', actorName: 'Elara' }),
+    ])
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'action',
+      {
+        version: 4,
+        row: 'row-1',
+        patch: { readied: true },
+      },
+    )
+  })
+
+  it('refuses to ready an action outside the turn of the seat', async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: { activeIndex: 1, rows: [row, { ...row, id: 'row-2' }] },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        actionEvent({
+          seatToken: token,
+          action: { type: 'ready', value: true },
+        }),
+      ),
+    ).rejects.toMatchObject({ statusCode: 403, statusMessage: 'Not your turn' })
+  })
+
+  it("uses a readied action outside the seat's turn and spends the reaction", async () => {
+    const token = await seatToken()
+    const ownRow = {
+      ...row,
+      readied: true,
+      resources: { legendaryResistances: 1 },
+    }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 1, rows: [ownRow, { ...row, id: 'row-2' }] },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({
+            data: {
+              ...ownRow,
+              readied: false,
+              resources: { legendaryResistances: 1, reaction: true },
+            },
+            error: null,
+          }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'ready', value: false },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: {
+        readied: false,
+        resources: { legendaryResistances: 1, reaction: true },
+      },
+    })
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      expect.objectContaining({ type: 'ready_used' }),
+    ])
+  })
+
   it("throws a 404 when the seat's row was removed from the encounter", async () => {
     const token = await seatToken()
 

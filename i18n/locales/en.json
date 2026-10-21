@@ -722,8 +722,6 @@
       "confirmed": "Room code confirmed",
       "currentTurn": "Current turn",
       "yourTurn": "Your turn",
-      "yourStatus": "Your status",
-      "waitingText": "The controls open automatically once {name} is up.",
       "errors": {
         "notFound": "We couldn't find a live session with that code.",
         "expired": "This live session has ended.",
@@ -743,6 +741,7 @@
         "concentration": "Your concentration wasn't updated",
         "conditions": "Your conditions weren't updated",
         "reaction": "Your reaction wasn't updated",
+        "ready": "Your readied action wasn't updated",
         "endTurn": "Your turn couldn't be ended"
       },
       "actionErrors": {

@@ -115,6 +115,14 @@ const columns = computed(() => {
                   >
                     {{ $t('general.you') }}
                   </UiBadge>
+                  <UiBadge
+                    v-if="row.readied"
+                    test-id="readied"
+                    class="shrink-0"
+                  >
+                    <Icon name="tabler:hand-stop" aria-hidden="true" />
+                    {{ $t('general.readied') }}
+                  </UiBadge>
                 </div>
               </UiTableCell>
 

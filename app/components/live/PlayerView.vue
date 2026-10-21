@@ -16,6 +16,7 @@ const defaultAllow: LiveAllowActions = {
   concentration: true,
   conditions: true,
   reaction: true,
+  ready: true,
   endTurn: true,
 }
 

@@ -357,6 +357,19 @@ describe('LiveRowCard', () => {
     expect(component.find('[test-id="own"]').exists()).toBe(false)
   })
 
+  it.each([
+    [true, true],
+    [undefined, false],
+  ])('shows the readied badge when readied is %s', async (readied, shown) => {
+    const component = await mountWithTooltips(LiveRowCard, {
+      props: { row: { ...baseRow, readied }, active: false },
+    })
+
+    expect(component.find('[test-id="readied"]').exists()).toBe(shown)
+
+    component.unmount()
+  })
+
   it('shows the own badge for the claimed row', async () => {
     setSeat({ row: baseRow.id })
 

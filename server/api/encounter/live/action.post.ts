@@ -72,7 +72,11 @@ export default defineEventHandler(async event => {
 
   const isOwnTurn = sheet.rows[sheet.activeIndex]?.id === seat.row
 
-  if (!isOwnTurn && body.action.type !== 'reaction') {
+  const anyTurn =
+    body.action.type === 'reaction' ||
+    (body.action.type === 'ready' && !body.action.value)
+
+  if (!isOwnTurn && !anyTurn) {
     throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
   }
 
@@ -113,6 +117,13 @@ export default defineEventHandler(async event => {
         reaction: body.action.value || undefined,
       },
     }
+  } else if (body.action.type === 'ready') {
+    patch = body.action.value
+      ? { readied: true }
+      : {
+          readied: false,
+          resources: { ...ownRow.resources, reaction: true },
+        }
   } else {
     patch = { [body.action.type]: body.action.value }
   }

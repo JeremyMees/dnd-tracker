@@ -243,6 +243,22 @@ describe('toPlayerSheet', () => {
     expect(result.rows[0]!).not.toHaveProperty('resources')
   })
 
+  it('shows a readied action on a player row', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [playerRow({ readied: true })] }),
+    )
+
+    expect(result.rows[0]!.readied).toBe(true)
+  })
+
+  it('hides the readied action of a monster row', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ readied: true })] }),
+    )
+
+    expect(result.rows[0]!).not.toHaveProperty('readied')
+  })
+
   it('hides the reaction of a monster row', () => {
     const result = toPlayerSheet(
       sheet({ rows: [monsterRow({ resources: { reaction: true } })] }),
@@ -294,6 +310,7 @@ describe('toPlayerSheet', () => {
       concentration: true,
       conditions: true,
       reaction: true,
+      ready: true,
       endTurn: true,
     })
   })
@@ -316,6 +333,7 @@ describe('toPlayerSheet', () => {
       concentration: true,
       conditions: false,
       reaction: true,
+      ready: true,
       endTurn: true,
     })
   })

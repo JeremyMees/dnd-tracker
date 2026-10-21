@@ -53,6 +53,7 @@ export type LiveRowAction =
   | { type: 'concentration'; value: boolean }
   | { type: 'conditions'; value: DndCondition[] }
   | { type: 'reaction'; value: boolean }
+  | { type: 'ready'; value: boolean }
 
 export type LiveAction = LiveRowAction | { type: 'endTurn' }
 

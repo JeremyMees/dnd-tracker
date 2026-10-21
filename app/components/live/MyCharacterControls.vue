@@ -32,6 +32,13 @@ async function setReaction(used: number): Promise<void> {
   await apply({ type: 'reaction', value }, { reaction: value || undefined })
 }
 
+async function setReadied(value: boolean): Promise<void> {
+  await apply(
+    { type: 'ready', value },
+    value ? { readied: true } : { readied: false, reaction: true },
+  )
+}
+
 async function applyConditions(value: DndCondition[]): Promise<void> {
   if (locked.value || !props.allow.conditions) return
 
@@ -49,6 +56,29 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
     >
       {{ $t('general.endTurn') }}
       <Icon name="tabler:chevron-right" aria-hidden="true" />
+    </UiButton>
+
+    <UiButton
+      v-if="row.readied"
+      test-id="use-readied"
+      variant="foreground"
+      :disabled="pending || !allow.ready"
+      class="w-full"
+      @click="setReadied(false)"
+    >
+      <Icon name="tabler:hand-stop" aria-hidden="true" />
+      {{ $t('actions.useReadied') }}
+    </UiButton>
+    <UiButton
+      v-else-if="row.type !== 'lair'"
+      test-id="ready"
+      variant="foreground"
+      :disabled="locked || !allow.ready"
+      class="w-full"
+      @click="setReadied(true)"
+    >
+      <Icon name="tabler:hand-stop" aria-hidden="true" />
+      {{ $t('actions.readyAction') }}
     </UiButton>
 
     <UiSeparator class="bg-muted" />

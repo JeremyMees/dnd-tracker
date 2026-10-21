@@ -1,5 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import MyCharacterAc from '~/components/live/MyCharacterAc.vue'
 import MyCharacterControls from '~/components/live/MyCharacterControls.vue'
 import conditions from '~~/test/fixtures/conditions.json'
@@ -47,6 +48,7 @@ const defaultAllow: LiveAllowActions = {
   concentration: true,
   conditions: true,
   reaction: true,
+  ready: true,
   endTurn: true,
 }
 
@@ -431,5 +433,66 @@ describe('LiveMyCharacterControls', () => {
     expect(
       component.get('[test-id="end-turn"]').attributes('disabled'),
     ).toBeDefined()
+  })
+
+  describe('Ready an action', () => {
+    let component: VueWrapper
+
+    beforeEach(() => {
+      apply.mockClear()
+    })
+
+    afterEach(() => {
+      component?.unmount()
+    })
+
+    it('readies an action on the turn of the row', async () => {
+      component = await mountControls()
+
+      await component.get('[test-id="ready"]').trigger('click')
+
+      expect(apply).toHaveBeenCalledWith(
+        { type: 'ready', value: true },
+        { readied: true },
+      )
+    })
+
+    it.each([
+      ['it is not the turn of the row', false, {}],
+      ['the DM has disallowed it', true, { ready: false }],
+    ])('disables ready when %s', async (_label, active, allow) => {
+      component = await mountControls({}, active, allow)
+
+      expect(
+        component.get('[test-id="ready"]').attributes('disabled'),
+      ).toBeDefined()
+    })
+
+    it('hides ready for a lair row', async () => {
+      component = await mountControls({ type: 'lair' })
+
+      expect(component.find('[test-id="ready"]').exists()).toBe(false)
+    })
+
+    it('uses a readied action outside the turn and spends the reaction', async () => {
+      component = await mountControls({ readied: true }, false)
+
+      expect(component.find('[test-id="ready"]').exists()).toBe(false)
+
+      await component.get('[test-id="use-readied"]').trigger('click')
+
+      expect(apply).toHaveBeenCalledWith(
+        { type: 'ready', value: false },
+        { readied: false, reaction: true },
+      )
+    })
+
+    it('disables using a readied action when the DM has disallowed it', async () => {
+      component = await mountControls({ readied: true }, true, { ready: false })
+
+      expect(
+        component.get('[test-id="use-readied"]').attributes('disabled'),
+      ).toBeDefined()
+    })
   })
 })

@@ -33,6 +33,10 @@ const deathSaves = computed(() =>
           <UiBadge v-if="own" test-id="own" class="shrink-0">
             {{ $t('general.you') }}
           </UiBadge>
+          <UiBadge v-if="row.readied" test-id="readied" class="shrink-0">
+            <Icon name="tabler:hand-stop" aria-hidden="true" />
+            {{ $t('general.readied') }}
+          </UiBadge>
         </div>
         <UiBadge test-id="initiative" variant="outline" class="shrink-0">
           {{ $t('general.initiative') }}:

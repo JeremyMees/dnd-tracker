@@ -18,6 +18,7 @@ const allow: LiveAllowActions = {
   concentration: true,
   conditions: true,
   reaction: true,
+  ready: true,
   endTurn: true,
 }
 
@@ -49,18 +50,22 @@ describe('LiveMyCharacterPanel', () => {
     expect(isHidden(component.get('[test-id="controls"]'))).toBe(false)
   })
 
-  it('shows who is taking its turn while waiting, collapsed and inert', async () => {
+  it('shows your own character and who is up while waiting, collapsed', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
       props: { row: baseRow, rows, activeRow: otherRow, allow },
       global: { stubs },
     })
 
-    expect(component.get('[test-id="title"]').text()).toContain('Goblin 1')
-    expect(component.get('[test-id="title"]').text()).toContain(
-      'general.waiting',
-    )
+    const title = component.get('[test-id="title"]').text()
+
+    expect(title).toContain('Elara')
+    expect(title).toContain('general.waiting: Goblin 1')
     expect(isHidden(component.get('[test-id="controls"]'))).toBe(true)
-    expect(component.get('[test-id="toggle"]').attributes('disabled')).toBe('')
+    expect(
+      component.get('[test-id="toggle"]').attributes('disabled'),
+    ).toBeUndefined()
+
+    component.unmount()
   })
 
   it('collapses the controls when the toggle is clicked', async () => {
@@ -100,7 +105,7 @@ describe('LiveMyCharacterPanel', () => {
     )
   })
 
-  it('does not toggle while waiting for the turn', async () => {
+  it('opens the controls while waiting so a readied action can be used', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
       props: { row: baseRow, rows, activeRow: otherRow, allow },
       global: { stubs },
@@ -108,6 +113,11 @@ describe('LiveMyCharacterPanel', () => {
 
     await component.get('[test-id="toggle"]').trigger('click')
 
-    expect(isHidden(component.get('[test-id="controls"]'))).toBe(true)
+    expect(isHidden(component.get('[test-id="controls"]'))).toBe(false)
+    expect(
+      component.get('[test-id="controls-probe"]').attributes('data-active'),
+    ).toBe('false')
+
+    component.unmount()
   })
 })

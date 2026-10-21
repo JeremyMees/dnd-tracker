@@ -15,6 +15,7 @@ export interface PlayerRow {
   tempHitPoints?: number
   healthBand?: DndHealthBand
   reaction?: boolean
+  readied?: boolean
 }
 
 export interface PlayerSheet {

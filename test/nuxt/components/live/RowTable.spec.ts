@@ -116,6 +116,24 @@ describe('LiveRowTable', () => {
     expect(rows[1]!.find('[test-id="own"]').exists()).toBe(false)
   })
 
+  it('shows the readied badge only for rows that readied an action', async () => {
+    const component = await mountWithTooltips(LiveRowTable, {
+      props: {
+        sheet: sheetWith([{ ...ownRow, readied: true }, monsterRow]),
+        loading: false,
+      },
+    })
+
+    const rows = component.findAll('[test-id="row"]')
+
+    expect(rows[0]!.get('[test-id="readied"]').text()).toContain(
+      'general.readied',
+    )
+    expect(rows[1]!.find('[test-id="readied"]').exists()).toBe(false)
+
+    component.unmount()
+  })
+
   it('shows death saves only for the claimed row', async () => {
     setSeat({ row: ownRow.id })
 

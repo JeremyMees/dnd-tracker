@@ -14,8 +14,6 @@ watch(active, value => {
 })
 
 function toggle(): void {
-  if (!active.value) return
-
   collapsed.value = !collapsed.value
 }
 </script>
@@ -33,7 +31,6 @@ function toggle(): void {
     <button
       test-id="toggle"
       type="button"
-      :disabled="!active"
       :aria-label="$t(collapsed ? 'actions.expand' : 'actions.collapse')"
       class="w-full flex items-center justify-between gap-2 p-3"
       @click="toggle"
@@ -50,12 +47,14 @@ function toggle(): void {
             {{ $t('pages.live.yourTurn') }} &middot; {{ row.name }}
           </template>
           <template v-else>
-            {{ $t('general.waiting') }} &middot; {{ activeRow?.name }}
+            {{ row.name }} &middot;
+            <span class="font-normal text-muted-foreground">
+              {{ $t('general.waiting') }}: {{ activeRow?.name }}
+            </span>
           </template>
         </span>
       </span>
       <Icon
-        v-if="active"
         name="tabler:chevron-up"
         :class="{ 'rotate-180': collapsed }"
         class="size-5 min-w-5 shrink-0 transition-transform duration-200"

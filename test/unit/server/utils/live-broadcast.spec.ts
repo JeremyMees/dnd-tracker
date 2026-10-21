@@ -201,6 +201,23 @@ describe('live-broadcast', () => {
       ).toEqual({ reaction: true })
     })
 
+    it('sends the readied flag when an action is readied', () => {
+      expect(
+        sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'ready', {
+          readied: true,
+        }),
+      ).toEqual({ readied: true })
+    })
+
+    it('sends the spent reaction when a readied action is used', () => {
+      expect(
+        sanitizeBroadcastPatch(row, 'ready', {
+          readied: false,
+          resources: { reaction: true, legendaryResistances: 1 },
+        }),
+      ).toEqual({ readied: false, reaction: true })
+    })
+
     it('passes a non-player patch through untouched', () => {
       const patch = { hitPoints: 40, conditions }
 

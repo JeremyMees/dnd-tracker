@@ -28,6 +28,8 @@ function toPlayerRow(
 
   if (!isMonster && row.resources?.reaction) playerRow.reaction = true
 
+  if (!isMonster && row.readied) playerRow.readied = true
+
   if (!isMonster || !hideMonsterAc) {
     playerRow.armorClass = row.armorClass
     playerRow.tempArmorClass = row.tempArmorClass
@@ -84,6 +86,7 @@ export function toPlayerSheet(
       concentration: allow?.concentration ?? true,
       conditions: allow?.conditions ?? true,
       reaction: allow?.reaction ?? true,
+      ready: allow?.ready ?? true,
       endTurn: allow?.endTurn ?? true,
     },
   }

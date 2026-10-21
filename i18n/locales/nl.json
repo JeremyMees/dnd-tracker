@@ -722,8 +722,6 @@
       "confirmed": "Kamercode bevestigd",
       "currentTurn": "Huidige beurt",
       "yourTurn": "Jouw beurt",
-      "yourStatus": "Jouw status",
-      "waitingText": "De besturing opent automatisch zodra {name} aan de beurt is.",
       "errors": {
         "notFound": "We konden geen live sessie met die code vinden.",
         "expired": "Deze live sessie is beëindigd.",
@@ -743,6 +741,7 @@
         "concentration": "Je concentratie is niet bijgewerkt",
         "conditions": "Je condities zijn niet bijgewerkt",
         "reaction": "Je reactie is niet bijgewerkt",
+        "ready": "Je klaargehouden actie is niet bijgewerkt",
         "endTurn": "Je beurt kon niet beëindigd worden"
       },
       "actionErrors": {
