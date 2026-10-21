@@ -87,7 +87,9 @@
     "encounterStats": "Encounter statistics",
     "openCombatLog": "Open combat log",
     "closeCombatLog": "Close combat log",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "readyAction": "Ready an action",
+    "useReadied": "Use readied action"
   },
   "general": {
     "pro": "Pro",
@@ -328,7 +330,8 @@
       "success": {
         "title": "Mail is sent successfully"
       }
-    }
+    },
+    "readied": "Readied"
   },
   "pages": {
     "home": {
@@ -533,7 +536,8 @@
           "deathSaves": "Death saves for {name} weren't saved",
           "concentration": "Concentration for {name} wasn't saved",
           "row": "Your change to {name} wasn't saved",
-          "generic": "Your change wasn't saved"
+          "generic": "Your change wasn't saved",
+          "readied": "Readied action for {name} wasn't saved"
         },
         "updateFailed": {
           "rows": "Changes to the initiative list weren't saved",
@@ -861,7 +865,10 @@
         "critical": "{rowName} rolled a critical hit ({total}) for {damage} damage",
         "miss": "{rowName} rolled a natural 1 and missed",
         "dice": "Rolled {dice} for a total of {total}"
-      }
+      },
+      "readied": "{rowName} readied an action",
+      "readyUsed": "{rowName} used their readied action",
+      "readyExpired": "{rowName}'s readied action ran out"
     },
     "areaDamage": {
       "title": "Area damage",

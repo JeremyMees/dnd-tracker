@@ -87,7 +87,9 @@
     "encounterStats": "Encounter statistieken",
     "openCombatLog": "Gevechtslog openen",
     "closeCombatLog": "Gevechtslog sluiten",
-    "skipToContent": "Ga naar inhoud"
+    "skipToContent": "Ga naar inhoud",
+    "readyAction": "Actie klaarhouden",
+    "useReadied": "Klaargehouden actie gebruiken"
   },
   "general": {
     "pro": "Pro",
@@ -328,7 +330,8 @@
       "success": {
         "title": "Mail is succesvol verzonden"
       }
-    }
+    },
+    "readied": "Klaar"
   },
   "pages": {
     "home": {
@@ -533,7 +536,8 @@
           "deathSaves": "Death saves voor {name} zijn niet opgeslagen",
           "concentration": "Concentratie voor {name} is niet opgeslagen",
           "row": "Je wijziging aan {name} is niet opgeslagen",
-          "generic": "Je wijziging is niet opgeslagen"
+          "generic": "Je wijziging is niet opgeslagen",
+          "readied": "Klaargehouden actie voor {name} is niet opgeslagen"
         },
         "updateFailed": {
           "rows": "Wijzigingen aan de initiatieflijst zijn niet opgeslagen",
@@ -861,7 +865,10 @@
         "critical": "{rowName} gooide een critical hit ({total}) voor {damage} schade",
         "miss": "{rowName} gooide een natuurlijke 1 en miste",
         "dice": "{dice} gegooid, in totaal {total}"
-      }
+      },
+      "readied": "{rowName} hield een actie klaar",
+      "readyUsed": "{rowName} gebruikte de klaargehouden actie",
+      "readyExpired": "De klaargehouden actie van {rowName} is verlopen"
     },
     "areaDamage": {
       "title": "Gebiedsschade",

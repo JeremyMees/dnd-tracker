@@ -73,6 +73,12 @@ function describeEvent(event: CombatEventRow): string {
           dice: payload.dice,
         },
       )
+    case 'readied':
+      return t('components.combatLog.readied', { rowName })
+    case 'ready_used':
+      return t('components.combatLog.readyUsed', { rowName })
+    case 'ready_expired':
+      return t('components.combatLog.readyExpired', { rowName })
     default:
       return rowName
   }
@@ -108,6 +114,11 @@ function eventIcon(type: CombatEventType): string {
       return 'tabler:user-minus'
     case 'roll':
       return 'tabler:hexagon'
+    case 'readied':
+    case 'ready_used':
+      return 'tabler:hand-stop'
+    case 'ready_expired':
+      return 'tabler:hourglass-off'
     default:
       return 'tabler:point'
   }

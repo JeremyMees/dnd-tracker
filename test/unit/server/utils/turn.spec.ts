@@ -172,6 +172,28 @@ describe('turn', () => {
       })
     })
 
+    it('logs a readied action that ran out when its row starts its turn', async () => {
+      const readied = { ...rowTwo, readied: true }
+      const supabase = mockDatabase({
+        updated: updatedSheet([rowOne, { ...rowTwo, readied: false }]),
+      })
+
+      await advanceEncounterTurn(supabase, 7, {
+        activeIndex: 0,
+        round: 1,
+        rows: [{ ...rowOne, conditions: [] }, readied],
+      })
+
+      expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        expect.objectContaining({ type: 'turn', rowId: 'row-2' }),
+        expect.objectContaining({
+          type: 'ready_expired',
+          rowId: 'row-2',
+          payload: { rowName: 'Elara' },
+        }),
+      ])
+    })
+
     it('broadcasts the new turn to the sheet channel', async () => {
       const updated = updatedSheet([rowTwo, rowTwo])
       const supabase = mockDatabase({ updated })

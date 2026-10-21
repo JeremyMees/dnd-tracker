@@ -25,6 +25,13 @@ const eventSchema = z.discriminatedUnion('type', [
     rowId,
     payload: z.object({ rowName }).strict(),
   }),
+  ...(['readied', 'ready_used'] as const).map(type =>
+    z.object({
+      type: z.literal(type),
+      rowId,
+      payload: z.object({ rowName }).strict(),
+    }),
+  ),
   z.object({
     type: z.literal('roll'),
     rowId: rowId.nullable(),

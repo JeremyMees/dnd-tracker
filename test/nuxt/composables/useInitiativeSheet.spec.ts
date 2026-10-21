@@ -207,6 +207,34 @@ describe('useInitiativeSheet', async () => {
     expect(selected.value).toEqual({ [mockSheet.value.rows[2]!.id]: true })
   })
 
+  it.each([false, true])(
+    'Should clear readied actions on a reset (hard: %s)',
+    async hard => {
+      mockSheet.value.rows = [
+        mockSheet.value.rows[0]!,
+        { ...mockSheet.value.rows[1]!, readied: true },
+      ]
+
+      const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+      reset(hard)
+
+      expect(mockSheet.value.rows.map(row => row.readied)).toEqual([
+        undefined,
+        undefined,
+      ])
+    },
+  )
+
+  it('Should leave the rows alone on a soft reset without readied actions', async () => {
+    updateFn.mockClear()
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+    reset(false)
+
+    expect(updateFn).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+  })
+
   it('Should keep lair rows at initiative 20 on a hard reset', async () => {
     mockSheet.value.rows = [
       { ...mockSheet.value.rows[0]!, type: 'lair', initiative: 20 },

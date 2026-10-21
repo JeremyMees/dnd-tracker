@@ -767,6 +767,7 @@ describe('Initiative table', () => {
 
       expect(commandIds()).toEqual([
         'next-turn',
+        'ready-action',
         'damage',
         'heal',
         'condition',
@@ -934,6 +935,66 @@ describe('Initiative table', () => {
       expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
 
       component.unmount()
+    })
+  })
+
+  describe('Ready an action', () => {
+    const patchRow = vi.fn()
+    const readyProvide = {
+      [INITIATIVE_SHEET]: { ...provide[INITIATIVE_SHEET], patchRow },
+    }
+    const [first] = sheet.rows
+
+    let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+    async function mount() {
+      wrapper = await mountWithTooltips(Table, {
+        props,
+        provide: readyProvide,
+        global,
+      })
+
+      return wrapper
+    }
+
+    beforeEach(() => {
+      patchRow.mockReset().mockResolvedValue(undefined)
+      mockNextTurn.mockClear()
+    })
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+    })
+
+    it('Should ready an action for the active row without ending the turn', async () => {
+      await mount()
+
+      runCommand('ready-action')
+      await flushPromises()
+
+      expect(patchRow).toHaveBeenCalledWith(first!.id, { readied: true })
+      expect(mockNextTurn).not.toHaveBeenCalled()
+    })
+
+    it('Should hide ready when the active row already readied', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [{ ...first!, readied: true }, ...sheet.rows.slice(1)],
+      }
+      await mount()
+
+      expect(commandIds()).not.toContain('ready-action')
+    })
+
+    it('Should hide ready on a lair turn', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [{ ...first!, type: 'lair' }, ...sheet.rows.slice(1)],
+      }
+      await mount()
+
+      expect(commandIds()).not.toContain('ready-action')
     })
   })
 })

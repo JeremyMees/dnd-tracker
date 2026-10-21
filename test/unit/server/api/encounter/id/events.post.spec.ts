@@ -105,6 +105,24 @@ describe('POST /api/encounter/[id]/events', () => {
     ).rejects.toMatchObject({ statusCode: 400 })
   })
 
+  it.each(['readied', 'ready_used'])('accepts a %s event', async type => {
+    mockFrom({
+      initiative_sheets: [
+        access,
+        mockChain({ data: { round: 1 }, error: null }),
+      ],
+      combat_events: mockChain({ data: null, error: null }),
+    })
+
+    await expect(
+      handler(
+        postEvent({
+          events: [{ type, rowId: 'row-1', payload: { rowName: 'Elara' } }],
+        }),
+      ),
+    ).resolves.toEqual({ logged: 1 })
+  })
+
   it('rejects an empty list of events', async () => {
     await expect(handler(postEvent({ events: [] }))).rejects.toMatchObject({
       statusCode: 400,

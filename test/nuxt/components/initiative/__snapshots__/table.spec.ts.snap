@@ -54,15 +54,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-5" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-5" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Sister Iarnă</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Sister Iarnă</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-8" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">20</span></button>
@@ -154,15 +157,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-28" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-28" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">emong</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">emong</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-31" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">18</span></button>
@@ -254,15 +260,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-49" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-49" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Alixia</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Alixia</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-52" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">18</span></button>
@@ -360,15 +369,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-72" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-72" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Zylkan Zarkos</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Zylkan Zarkos</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-75" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">15</span></button>
@@ -454,15 +466,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-92" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-92" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:sword text-primary size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">nightlight</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">nightlight</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-95" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">15</span></button>
@@ -548,15 +563,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-112" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-112" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">trenfire</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">trenfire</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-115" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">12</span></button>
@@ -640,15 +658,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-130" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-130" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">rikkie</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">rikkie</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-133" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">10</span></button>
@@ -732,15 +753,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-148" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-148" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Pantons</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Pantons</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-151" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">9</span></button>
@@ -832,15 +856,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-169" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-169" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">yensi</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">yensi</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-172" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">9</span></button>
@@ -925,15 +952,18 @@ exports[`Initiative table > Should match snapshot 1`] = `
                     <!--teleport end-->
                   </div>
                 </td>
-                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-188" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
+                  <div class="flex flex-wrap items-center gap-2"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-188" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" class="flex items-center gap-x-2"><span class="iconify i-tabler:user text-success size-5 min-w-5" aria-hidden="true" data-state="closed" data-grace-area-trigger=""></span>
+                      <!--teleport start-->
+                      <!--teleport end-->
+                      <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Lopeas</span>
+                        <!--v-if-->
+                      </div>
+                    </button>
                     <!--teleport start-->
                     <!--teleport end-->
-                    <div class="flex flex-col gap-y-1 text-left"><span test-id="name">Lopeas</span>
-                      <!--v-if-->
-                    </div>
-                  </button>
-                  <!--teleport start-->
-                  <!--teleport end-->
+                    <!--v-if-->
+                  </div>
                 </td>
                 <td class="align-middle [&amp;:has([role=checkbox])]:pr-0 p-2">
                   <div class="flex gap-2 items-center text-left"><button data-slot="popover-trigger" id="reka-popover-trigger-v-0-0-191" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed" test-id="trigger" class="flex flex-col justify-center"><span test-id="initiative">4</span></button>

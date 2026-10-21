@@ -105,6 +105,14 @@ onKeyStroke(['z', 'Z', 'y', 'Y'], e => {
   else undoLast()
 })
 
+const turnRow = computed(() => sheet.value?.rows[sheet.value.activeIndex])
+
+function readyAction(): void {
+  if (!turnRow.value) return
+
+  patchRow(turnRow.value.id, { readied: true }).catch(() => undefined)
+}
+
 function rowShortcut(action: RowShortcutAction): void {
   if (target.value) triggerRowShortcut(target.value.id, action)
 }
@@ -112,6 +120,7 @@ function rowShortcut(action: RowShortcutAction): void {
 useCommands(() => {
   const hasRows = !!sheet.value?.rows.length
   const isLair = target.value?.type === 'lair'
+  const canReady = !!turnRow.value && turnRow.value.type !== 'lair'
 
   return [
     {
@@ -146,6 +155,13 @@ useCommands(() => {
       disabled:
         !hasRows || (sheet.value?.round === 1 && sheet.value.activeIndex === 0),
       run: previous,
+    },
+    {
+      id: 'ready-action',
+      label: t('actions.readyAction'),
+      icon: 'tabler:hand-stop',
+      disabled: !canReady || !!turnRow.value?.readied,
+      run: readyAction,
     },
     {
       id: 'damage',

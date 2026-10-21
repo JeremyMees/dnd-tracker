@@ -309,6 +309,29 @@ describe('dnd/turn', () => {
       })
     })
 
+    describe('readied rows', () => {
+      it('clears a readied action when its row starts its turn', () => {
+        const result = advanceTurn({
+          rows: [row('a'), { ...row('b'), readied: true }],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.rows[1]?.readied).toBe(false)
+      })
+
+      it('keeps a readied action while other rows take their turn', () => {
+        const readied = { ...row('c'), readied: true }
+        const result = advanceTurn({
+          rows: [row('a'), row('b'), readied],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.rows[2]).toBe(readied)
+      })
+    })
+
     it('handles an empty encounter', () => {
       expect(advanceTurn({ rows: [], activeIndex: 0, round: 1 })).toEqual({
         activeIndex: 0,

@@ -187,9 +187,14 @@ export function useInitiativeSheet(
   function reset(hard: boolean): void {
     if (!sheet.value) return
 
+    const isReadied = sheet.value.rows.some(row => row.readied)
+
     let updatePayload: Omit<Partial<InitiativeSheet>, NotUpdatable> = {
       activeIndex: 0,
       round: 1,
+      ...(isReadied && {
+        rows: sheet.value.rows.map(row => ({ ...row, readied: undefined })),
+      }),
     }
 
     if (hard) {
@@ -218,6 +223,7 @@ export function useInitiativeSheet(
           ...(row.maxHitPointsOld !== undefined && {
             maxHitPoints: row.maxHitPointsOld,
           }),
+          readied: undefined,
           maxArmorClassOld: undefined,
           maxHitPointsOld: undefined,
           tempHitPoints: undefined,

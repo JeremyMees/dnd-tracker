@@ -285,6 +285,44 @@ describe('POST /api/encounter/[id]/patch-row', () => {
     })
   })
 
+  it('readies an action for a row and logs it', async () => {
+    mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({ data: { rows: [row], round: 2 }, error: null }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, readied: true }, error: null }),
+          mockChain({ data: 5, error: null }),
+        ],
+      },
+    )
+
+    await handler(patchEvent({ rowId: 'row-1', patch: { readied: true } }))
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { readied: true },
+    })
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      expect.objectContaining({
+        type: 'readied',
+        payload: { rowName: 'Elara' },
+      }),
+    ])
+  })
+
   it('rejects an unknown resource field', async () => {
     mockFrom({
       initiative_sheets: mockChain({

@@ -23,7 +23,6 @@ export function nextTurnPosition(
     }
 
     const row = sheet.rows[activeIndex]
-
     if (!skipDead || !row || !isDeadMonster(row)) return { activeIndex, round }
   }
 
@@ -103,7 +102,9 @@ export function advanceTurn(
 
     recharges.push(...refreshed.recharges)
 
-    return refreshed.row
+    return refreshed.row.readied
+      ? { ...refreshed.row, readied: false }
+      : refreshed.row
   })
 
   return { activeIndex, round, rows, expired, saves, recharges }

@@ -288,6 +288,14 @@ describe('Initiative history panel', () => {
       'components.combatLog.roll.dice',
       'tabler:hexagon',
     ],
+    ['readied', {}, 'components.combatLog.readied', 'tabler:hand-stop'],
+    ['ready_used', {}, 'components.combatLog.readyUsed', 'tabler:hand-stop'],
+    [
+      'ready_expired',
+      {},
+      'components.combatLog.readyExpired',
+      'tabler:hourglass-off',
+    ],
   ])(
     'Should describe a %s event with payload %o',
     async (type, payload, key, icon) => {

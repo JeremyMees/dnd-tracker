@@ -18,6 +18,23 @@ function expiredEvents(reminders: TurnReminder[]): CombatEventDraft[] {
   }))
 }
 
+function readyExpiredEvents(
+  before: InitiativeSheetRow[],
+  after: InitiativeSheetRow[],
+): CombatEventDraft[] {
+  return after.flatMap((row, index) =>
+    before[index]?.readied && !row.readied
+      ? [
+          {
+            type: 'ready_expired',
+            rowId: row.id,
+            payload: { rowName: row.name },
+          },
+        ]
+      : [],
+  )
+}
+
 export async function advanceEncounterTurn(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
@@ -64,7 +81,11 @@ export async function advanceEncounterTurn(
     round: advance.round,
     actorId,
     actorName,
-    events: [...(turn ? [turn] : []), ...expiredEvents(advance.expired)],
+    events: [
+      ...(turn ? [turn] : []),
+      ...readyExpiredEvents(sheet.rows, advance.rows),
+      ...expiredEvents(advance.expired),
+    ],
   })
 
   const liveSession =

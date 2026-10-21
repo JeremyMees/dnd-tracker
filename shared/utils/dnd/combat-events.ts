@@ -4,6 +4,21 @@ function countNewlyTrue(before: boolean[], after: boolean[]): number {
   return after.filter((value, index) => value && !before[index]).length
 }
 
+export function diffReadied(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): CombatEventDraft[] {
+  const payload = { rowName: after.name }
+
+  if (!before.readied && after.readied) return [{ type: 'readied', payload }]
+
+  if (before.readied && after.readied === false) {
+    return [{ type: 'ready_used', payload }]
+  }
+
+  return []
+}
+
 export function diffRow(
   before: InitiativeSheetRow,
   after: InitiativeSheetRow,
@@ -134,7 +149,7 @@ export function diffRow(
     }
   }
 
-  return events
+  return [...events, ...diffReadied(before, after)]
 }
 
 const LOG_ONLY_EVENTS = new Set<string>([
@@ -142,6 +157,9 @@ const LOG_ONLY_EVENTS = new Set<string>([
   'row_added',
   'row_removed',
   'roll',
+  'readied',
+  'ready_used',
+  'ready_expired',
 ])
 
 export function isStatEvent(event: { type: string }): boolean {
@@ -189,11 +207,20 @@ export function diffSheet(
       payload: { rowName: row.name },
     }))
 
+  const beforeById = new Map(before.rows.map(row => [row.id, row]))
+  const readied = rows.flatMap(row => {
+    const previous = beforeById.get(row.id)
+
+    return previous
+      ? diffReadied(previous, row).map(event => ({ ...event, rowId: row.id }))
+      : []
+  })
+
   const activeIndex = after.activeIndex ?? before.activeIndex
   const turnChanged =
     activeIndex !== before.activeIndex ||
     (after.round ?? before.round) !== before.round
   const turn = turnChanged ? turnEvent(rows, activeIndex) : undefined
 
-  return [...removed, ...added, ...(turn ? [turn] : [])]
+  return [...removed, ...added, ...readied, ...(turn ? [turn] : [])]
 }

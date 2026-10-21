@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  diffReadied,
   diffRow,
   diffSheet,
   isStatEvent,
@@ -373,5 +374,40 @@ describe('diffSheet', () => {
     expect(
       diffSheet(sheet, { rows: [goblin, baseRow], activeIndex: 1 }),
     ).toEqual([{ type: 'turn', rowId: 'row-1', payload: { rowName: 'Elara' } }])
+  })
+})
+
+describe('diffReadied', () => {
+  it.each([
+    [{}, { readied: true }, 'readied'],
+    [{ readied: true }, { readied: false }, 'ready_used'],
+  ])('logs %o → %o as %s', (before, after, type) => {
+    expect(
+      diffReadied({ ...baseRow, ...before }, { ...baseRow, ...after }),
+    ).toEqual([{ type, payload: { rowName: 'Elara' } }])
+  })
+
+  it('logs nothing when a reset drops the flag', () => {
+    expect(diffReadied({ ...baseRow, readied: true }, baseRow)).toEqual([])
+  })
+
+  it('is part of the row diff', () => {
+    expect(diffRow(baseRow, { ...baseRow, readied: true })).toEqual([
+      { type: 'readied', payload: { rowName: 'Elara' } },
+    ])
+  })
+
+  it('is part of the sheet diff with the row id', () => {
+    const sheet = {
+      rows: [{ ...baseRow, readied: true }],
+      activeIndex: 0,
+      round: 1,
+    }
+
+    expect(
+      diffSheet(sheet, { rows: [{ ...baseRow, readied: false }] }),
+    ).toEqual([
+      { type: 'ready_used', rowId: 'row-1', payload: { rowName: 'Elara' } },
+    ])
   })
 })

@@ -185,6 +185,7 @@ const PATCH_FAILED_FIELDS = [
   ],
   ['deathSaves', ['deathSaves']],
   ['concentration', ['concentration']],
+  ['readied', ['readied']],
 ] as const satisfies readonly (readonly [
   string,
   readonly (keyof InitiativeSheetRow)[],

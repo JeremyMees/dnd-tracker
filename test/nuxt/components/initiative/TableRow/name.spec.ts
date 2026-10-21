@@ -1,4 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import Name from '~/components/initiative/TableRow/Name.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -15,12 +16,14 @@ type MockFunctions = {
 }
 
 const mockUpdate = vi.fn()
+const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
     update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -153,5 +156,46 @@ describe('Initiative table row name', async () => {
     expect(
       document.body.querySelector('button[aria-label="actions.save"]'),
     ).toBeTruthy()
+  })
+
+  describe('Readied', () => {
+    let component: VueWrapper
+
+    beforeEach(() => {
+      mockUpdate.mockResolvedValue(undefined)
+      mockPatchRow.mockResolvedValue(undefined)
+    })
+
+    afterEach(() => {
+      component?.unmount()
+      mockUpdate.mockReset()
+      mockPatchRow.mockReset()
+    })
+
+    it('Should not show the readied badge for a row that did not ready', async () => {
+      component = await mountWithTooltips(Name, { props, provide })
+
+      expect(component.find('[test-id="readied"]').exists()).toBe(false)
+    })
+
+    it('Should use a readied action and spend the reaction', async () => {
+      const readied = { ...sheet.rows[1]!, readied: true }
+
+      component = await mountWithTooltips(Name, {
+        props: { item: readied },
+        provide,
+      })
+
+      expect(component.find('[test-id="readied"]').text()).toContain(
+        'general.readied',
+      )
+
+      await component.find('[test-id="readied"]').trigger('click')
+
+      expect(mockPatchRow).toHaveBeenCalledWith(readied.id, {
+        readied: false,
+        resources: { ...readied.resources, reaction: true },
+      })
+    })
   })
 })

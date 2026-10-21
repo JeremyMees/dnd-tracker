@@ -25,6 +25,7 @@ const bodySchema = z.object({
       conditions: z.array(conditionSchema).optional(),
       deathSaves: deathSavesSchema.optional(),
       concentration: z.boolean().optional(),
+      readied: z.boolean().optional(),
       resources: resourceUsesSchema.optional(),
     })
     .strict(),
