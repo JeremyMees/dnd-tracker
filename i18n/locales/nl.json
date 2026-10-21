@@ -851,7 +851,17 @@
         "fail": "{rowName} faalde een death save|{rowName} faalde {amount} death saves"
       },
       "stabilized": "{rowName} stabiliseerde",
-      "died": "{rowName} stierf"
+      "died": "{rowName} stierf",
+      "turn": "De beurt van {rowName} begon",
+      "rowAdded": "{rowName} kwam erbij",
+      "rowAddedInitiative": "{rowName} kwam erbij met initiative {initiative}",
+      "rowRemoved": "{rowName} werd uit het gevecht verwijderd",
+      "roll": {
+        "hit": "{rowName} gooide {total} om te raken voor {damage} schade",
+        "critical": "{rowName} gooide een critical hit ({total}) voor {damage} schade",
+        "miss": "{rowName} gooide een natuurlijke 1 en miste",
+        "dice": "{dice} gegooid, in totaal {total}"
+      }
     },
     "areaDamage": {
       "title": "Gebiedsschade",

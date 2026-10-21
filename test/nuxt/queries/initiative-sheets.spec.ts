@@ -523,10 +523,8 @@ describe('initiative-sheets queries', () => {
       })
     })
 
-    it('refreshes the combat log when a condition expired', async () => {
-      fetchMock.mockResolvedValue(
-        turnResult([{ rowId: 'row-1', rowName: 'Elara', condition: prone }]),
-      )
+    it('refreshes the combat log after the turn', async () => {
+      fetchMock.mockResolvedValue(turnResult())
 
       const { vm } = await mountHook(() => ({
         ...useInitiativeSheetTurn(),
@@ -539,20 +537,6 @@ describe('initiative-sheets queries', () => {
       expect(invalidate).toHaveBeenCalledWith({
         queryKey: ['useCombatEvents', 7],
       })
-    })
-
-    it('leaves the combat log alone when nothing expired', async () => {
-      fetchMock.mockResolvedValue(turnResult())
-
-      const { vm } = await mountHook(() => ({
-        ...useInitiativeSheetTurn(),
-        queryClient: useQueryClient(),
-      }))
-      const invalidate = vi.spyOn(vm.queryClient, 'invalidateQueries')
-
-      await vm.mutateAsync({ id: 7 })
-
-      expect(invalidate).not.toHaveBeenCalled()
     })
 
     it('rolls back and explains a failed turn', async () => {

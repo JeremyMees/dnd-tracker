@@ -211,6 +211,18 @@ describe('aggregateCombatStats', () => {
     expect(result.damageTaken).toBe(9)
   })
 
+  it('leaves log-only events out of the counts and the combatants', () => {
+    const { result } = statsFor([
+      event('a', 'turn', { rowName: 'Elara' }),
+      event('gone', 'row_removed', { rowName: 'Wolf' }),
+      { rowId: null, round: 1, type: 'roll', payload: { kind: 'dice' } },
+      damage('c', 4, 7, 3),
+    ])
+
+    expect(result.events).toBe(1)
+    expect(result.combatants.map(c => c.rowId)).toEqual(['a', 'b', 'c'])
+  })
+
   it('tolerates a null payload', () => {
     const { result } = statsFor([
       { rowId: 'a', round: 1, type: 'hp', payload: null },

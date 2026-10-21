@@ -136,3 +136,64 @@ export function diffRow(
 
   return events
 }
+
+const LOG_ONLY_EVENTS = new Set<string>([
+  'turn',
+  'row_added',
+  'row_removed',
+  'roll',
+])
+
+export function isStatEvent(event: { type: string }): boolean {
+  return !LOG_ONLY_EVENTS.has(event.type)
+}
+
+export function turnEvent(
+  rows: InitiativeSheetRow[],
+  activeIndex: number,
+): CombatEventDraft | undefined {
+  const row = rows[activeIndex]
+
+  if (!row) return undefined
+
+  return { type: 'turn', rowId: row.id, payload: { rowName: row.name } }
+}
+
+export function diffSheet(
+  before: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'>,
+  after: Partial<Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'>>,
+): CombatEventDraft[] {
+  const rows = after.rows ?? before.rows
+  const beforeIds = new Set(before.rows.map(row => row.id))
+  const afterIds = new Set(rows.map(row => row.id))
+
+  const added = rows
+    .filter(row => !beforeIds.has(row.id))
+    .map((row): CombatEventDraft => ({
+      type: 'row_added',
+      rowId: row.id,
+      payload: {
+        rowName: row.name,
+        initiative:
+          row.initiative !== undefined && row.initiative >= 0
+            ? row.initiative
+            : undefined,
+      },
+    }))
+
+  const removed = before.rows
+    .filter(row => !afterIds.has(row.id))
+    .map((row): CombatEventDraft => ({
+      type: 'row_removed',
+      rowId: row.id,
+      payload: { rowName: row.name },
+    }))
+
+  const activeIndex = after.activeIndex ?? before.activeIndex
+  const turnChanged =
+    activeIndex !== before.activeIndex ||
+    (after.round ?? before.round) !== before.round
+  const turn = turnChanged ? turnEvent(rows, activeIndex) : undefined
+
+  return [...removed, ...added, ...(turn ? [turn] : [])]
+}

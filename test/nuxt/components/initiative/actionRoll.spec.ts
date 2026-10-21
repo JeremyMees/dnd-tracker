@@ -64,6 +64,10 @@ describe('ActionRoll component', () => {
     mockConditions.value = []
   })
 
+  afterEach(() => {
+    component?.unmount()
+  })
+
   it('Should match snapshot', async () => {
     component = await mountWithTooltips(ActionRoll, { props, provide })
 
@@ -711,6 +715,70 @@ describe('ActionRoll component', () => {
 
       expect(vm.popoverOpen).toBe(true)
       expect(document.body.querySelector('[test-id="error"]')).toBeNull()
+    })
+  })
+
+  describe('Combat log', () => {
+    const mockLog = vi.fn()
+    const logProvide = {
+      [INITIATIVE_SHEET]: { ...provide[INITIATIVE_SHEET], log: mockLog },
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      mockLog.mockReset()
+    })
+
+    it.each([
+      [0.5, 'hit', 16, 11],
+      [0.99, 'critical', 25, 27],
+    ])(
+      'Should log the attack roll as a %s roll',
+      async (random, result, total, damage) => {
+        vi.spyOn(Math, 'random').mockReturnValue(random)
+        component = await mountWithTooltips(ActionRoll, {
+          props,
+          provide: logProvide,
+        })
+
+        const vm = component.vm as unknown as ActionRollVM
+        vm.onRoll('straight')
+
+        expect(mockLog).toHaveBeenCalledWith([
+          {
+            type: 'roll',
+            rowId: props.id,
+            payload: {
+              rowName: sheet.rows[0]!.name,
+              kind: 'attack',
+              result,
+              total,
+              damage,
+            },
+          },
+        ])
+      },
+    )
+
+    it('Should log a natural 1 as a miss without damage', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+      component = await mountWithTooltips(ActionRoll, {
+        props,
+        provide: logProvide,
+      })
+
+      const vm = component.vm as unknown as ActionRollVM
+      vm.onRoll('straight')
+
+      expect(mockLog).toHaveBeenCalledWith([
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            result: 'miss',
+            total: 6,
+            damage: undefined,
+          }),
+        }),
+      ])
     })
   })
 })

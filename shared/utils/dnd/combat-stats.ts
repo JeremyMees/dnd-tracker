@@ -149,7 +149,11 @@ export function aggregateCombatStats(
     rows.map(row => [row.id, emptyStats(row)]),
   )
 
-  for (const event of events) {
+  const statEvents = events.filter(isStatEvent)
+
+  for (const event of statEvents) {
+    if (!event.rowId) continue
+
     let stats = byRow.get(event.rowId)
 
     if (!stats) {
@@ -173,7 +177,7 @@ export function aggregateCombatStats(
 
   return {
     rounds,
-    events: events.length,
+    events: statEvents.length,
     damageTaken: combatants.reduce((acc, s) => acc + s.damageTaken, 0),
     healingReceived: combatants.reduce((acc, s) => acc + s.healingReceived, 0),
     timesDowned: combatants.reduce((acc, s) => acc + s.timesDowned, 0),

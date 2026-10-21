@@ -101,7 +101,33 @@ describe('turn', () => {
         activeIndex: 1,
         round: 1,
       })
-      expect(supabase.from('combat_events').insert).not.toHaveBeenCalled()
+    })
+
+    it('logs whose turn it is now', async () => {
+      const supabase = mockDatabase({ updated: updatedSheet([rowTwo, rowTwo]) })
+
+      await advanceEncounterTurn(
+        supabase,
+        7,
+        {
+          activeIndex: 0,
+          round: 1,
+          rows: [rowTwo, { ...rowTwo, id: 'row-3' }],
+        },
+        { actorId: 'user-1', actorName: 'Elara' },
+      )
+
+      expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        {
+          encounterId: 7,
+          rowId: 'row-3',
+          round: 1,
+          type: 'turn',
+          payload: { rowName: 'Elara' },
+          createdBy: 'user-1',
+          actorName: 'Elara',
+        },
+      ])
     })
 
     it('logs an expired condition and returns the reminders', async () => {
@@ -116,6 +142,15 @@ describe('turn', () => {
       )
 
       expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        {
+          encounterId: 7,
+          rowId: 'row-2',
+          round: 1,
+          type: 'turn',
+          payload: { rowName: 'Elara' },
+          createdBy: 'user-1',
+          actorName: null,
+        },
         {
           encounterId: 7,
           rowId: 'row-1',

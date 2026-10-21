@@ -7,6 +7,7 @@ import {
 import {
   broadcastSheetAction,
   broadcastSheetDeleted,
+  broadcastSheetEvents,
   broadcastSheetSync,
   logCombatEvents,
 } from '~~/server/utils/combat-events'
@@ -49,6 +50,26 @@ describe('combat-events', () => {
           createdBy: 'user-1',
           actorName: 'Jeremy',
         },
+      ])
+    })
+
+    it('uses the row of each event over the shared row, or null without either', async () => {
+      mockFrom({ combat_events: mockChain({ data: null, error: null }) })
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      await logCombatEvents(supabase, {
+        encounterId: 7,
+        round: 1,
+        events: [
+          { type: 'turn', rowId: 'row-2', payload: { rowName: 'Goblin' } },
+          { type: 'roll', payload: { kind: 'dice', total: 4 } },
+        ],
+      })
+
+      expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        expect.objectContaining({ type: 'turn', rowId: 'row-2' }),
+        expect.objectContaining({ type: 'roll', rowId: null }),
       ])
     })
 
@@ -195,6 +216,18 @@ describe('combat-events', () => {
       const channel = supabase.channel('sheet:7')
 
       expect(channel.httpSend).toHaveBeenCalledWith('deleted', {})
+    })
+  })
+
+  describe('broadcastSheetEvents', () => {
+    it('tells the sheet channel that new events were logged', async () => {
+      mockFrom({})
+
+      await broadcastSheetEvents(serverSupabaseServiceRole({} as never), 7)
+
+      const channel = serverSupabaseServiceRole({} as never).channel('sheet:7')
+
+      expect(channel.httpSend).toHaveBeenCalledWith('events', {})
     })
   })
 })

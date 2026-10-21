@@ -52,7 +52,7 @@ export type Database = {
           id: number
           payload: Json
           round: number
-          rowId: string
+          rowId: string | null
           type: string
         }
         Insert: {
@@ -63,7 +63,7 @@ export type Database = {
           id?: never
           payload?: Json
           round?: number
-          rowId: string
+          rowId?: string | null
           type: string
         }
         Update: {
@@ -74,7 +74,7 @@ export type Database = {
           id?: never
           payload?: Json
           round?: number
-          rowId?: string
+          rowId?: string | null
           type?: string
         }
         Relationships: [

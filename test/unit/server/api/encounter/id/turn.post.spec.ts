@@ -59,6 +59,7 @@ describe('POST /api/encounter/[id]/turn', () => {
           }),
           updateChain,
         ],
+        combat_events: mockChain({ data: null, error: null }),
         live_sessions: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: 2, error: null }) },

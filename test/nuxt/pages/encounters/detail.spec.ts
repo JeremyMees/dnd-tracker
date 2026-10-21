@@ -1,7 +1,8 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterPage from '~/pages/encounters/[id]-[title].vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { authUser } from '~~/test/fixtures/auth-user'
@@ -13,6 +14,7 @@ import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 const {
   getQueryData,
   invalidateQueries,
+  logEvents,
   navigateTo,
   on,
   removeChannel,
@@ -27,6 +29,7 @@ const {
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
   invalidateQueries: vi.fn(),
+  logEvents: vi.fn(),
   navigateTo: vi.fn(),
   on: vi.fn(),
   removeChannel: vi.fn(),
@@ -59,6 +62,10 @@ vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
   useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
   useInitiativeSheetTurn: () => ({ mutateAsync: turn }),
+}))
+
+vi.mock('~/queries/combat-events', () => ({
+  useCombatEventsLog: () => ({ mutate: logEvents }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -108,13 +115,18 @@ interface Probe {
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
   onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
+  log: (events: CombatEventDraft[]) => void
   activeRow: InitiativeSheetRow | undefined
 }
+
+let mounted: VueWrapper | undefined
 
 async function mountPage() {
   const component = await mountWithTooltips(EncounterPage, {
     global: { stubs },
   })
+
+  mounted = component
 
   await flushPromises()
 
@@ -148,6 +160,12 @@ describe('Encounter detail page', () => {
     data.value = { ...sheet, campaign: mockSheetCampaign }
     isPending.value = false
     isError.value = false
+    logEvents.mockReset()
+  })
+
+  afterEach(() => {
+    mounted?.unmount()
+    mounted = undefined
   })
 
   it('Should set the page seo with the title of the encounter', async () => {
@@ -397,6 +415,82 @@ describe('Encounter detail page', () => {
     await probe.update({ round: 2, activeIndex: 1 })
 
     expect(syncLiveSession).toHaveBeenCalledWith({ round: 2, activeIndex: 1 })
+  })
+
+  it('Should log the removed rows after a successful update', async () => {
+    const { probe } = await mountPage()
+    const [first, ...rest] = sheet.rows
+
+    await probe.update({ rows: rest, activeIndex: 0 })
+
+    expect(logEvents).toHaveBeenCalledWith({
+      encounterId: 2,
+      events: [
+        {
+          type: 'row_removed',
+          rowId: first!.id,
+          payload: { rowName: first!.name },
+        },
+      ],
+    })
+  })
+
+  it('Should log a turn change made through an update', async () => {
+    const { probe } = await mountPage()
+
+    await probe.update({ activeIndex: 1 })
+
+    expect(logEvents).toHaveBeenCalledWith({
+      encounterId: 2,
+      events: [
+        {
+          type: 'turn',
+          rowId: sheet.rows[1]!.id,
+          payload: { rowName: sheet.rows[1]!.name },
+        },
+      ],
+    })
+  })
+
+  it('Should not log an update without rows or turn changes', async () => {
+    const { probe } = await mountPage()
+
+    await probe.update({ title: 'Renamed' })
+
+    expect(logEvents).not.toHaveBeenCalled()
+  })
+
+  it('Should not log when the update fails', async () => {
+    update.mockRejectedValueOnce(new Error('Boom'))
+
+    const { probe } = await mountPage()
+
+    await expect(probe.update({ activeIndex: 1 })).rejects.toThrow('Boom')
+
+    expect(logEvents).not.toHaveBeenCalled()
+  })
+
+  it('Should provide a log that posts the events of the encounter', async () => {
+    const { probe } = await mountPage()
+    const events: CombatEventDraft[] = [
+      { type: 'roll', rowId: null, payload: { kind: 'dice', total: 4 } },
+    ]
+
+    probe.log(events)
+    probe.log([])
+
+    expect(logEvents).toHaveBeenCalledOnce()
+    expect(logEvents).toHaveBeenCalledWith({ encounterId: 2, events })
+  })
+
+  it('Should refetch the combat log when another client logged events', async () => {
+    await mountPage()
+
+    emitBroadcast('events', {})
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useCombatEvents', 2],
+    })
   })
 
   it('Should not sync the live session when the update fails', async () => {

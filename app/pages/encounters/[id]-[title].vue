@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
+import { useCombatEventsLog } from '~/queries/combat-events'
 import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
@@ -21,6 +22,7 @@ const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const { mutateAsync: patch } = useInitiativeSheetPatch()
 const { mutateAsync: turn } = useInitiativeSheetTurn()
+const { mutate: logEvents } = useCombatEventsLog()
 const {
   enabled: realtimeData,
   updateQueryData,
@@ -36,8 +38,14 @@ onMounted(() => {
   startTour(!!data.value?.campaign)
 })
 
+function log(events: CombatEventDraft[]): void {
+  if (events.length) logEvents({ encounterId: id, events })
+}
+
 async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   if (!data.value) return
+
+  const events = diffSheet(data.value, payload)
 
   await update({
     data: payload,
@@ -47,6 +55,7 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
     },
   })
 
+  log(events)
   syncLiveSession(payload)
 }
 
@@ -83,6 +92,7 @@ provide(INITIATIVE_SHEET, {
   redo: history.redo,
   canRedo: history.canRedo,
   onTurnReminders,
+  log,
   activeRow,
 })
 </script>

@@ -52,6 +52,27 @@ function describeEvent(event: CombatEventRow): string {
       return t('components.combatLog.stabilized', { rowName })
     case 'died':
       return t('components.combatLog.died', { rowName })
+    case 'turn':
+      return t('components.combatLog.turn', { rowName })
+    case 'row_added':
+      return payload.initiative === undefined
+        ? t('components.combatLog.rowAdded', { rowName })
+        : t('components.combatLog.rowAddedInitiative', {
+            rowName,
+            initiative: payload.initiative,
+          })
+    case 'row_removed':
+      return t('components.combatLog.rowRemoved', { rowName })
+    case 'roll':
+      return t(
+        `components.combatLog.roll.${payload.kind === 'dice' ? 'dice' : payload.result}`,
+        {
+          rowName,
+          total: payload.total,
+          damage: payload.damage,
+          dice: payload.dice,
+        },
+      )
     default:
       return rowName
   }
@@ -79,6 +100,14 @@ function eventIcon(type: CombatEventType): string {
       return 'tabler:heart-bolt'
     case 'died':
       return 'tabler:grave'
+    case 'turn':
+      return 'tabler:arrow-right'
+    case 'row_added':
+      return 'tabler:user-plus'
+    case 'row_removed':
+      return 'tabler:user-minus'
+    case 'roll':
+      return 'tabler:hexagon'
     default:
       return 'tabler:point'
   }

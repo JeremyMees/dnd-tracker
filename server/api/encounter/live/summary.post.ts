@@ -45,7 +45,9 @@ export default defineEventHandler(async event => {
   const original = new Map(sheet.rows.map(row => [row.id, row]))
 
   const stats = aggregateCombatStats(
-    events.filter(combatEvent => known.has(combatEvent.rowId)),
+    events.filter(
+      combatEvent => combatEvent.rowId !== null && known.has(combatEvent.rowId),
+    ),
     masked.map(row => ({
       id: row.id,
       name: row.name,

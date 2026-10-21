@@ -9,7 +9,7 @@ const props = defineProps<{
   id: string
 }>()
 
-const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
+const { sheet, patchRow, log } = validateInject(INITIATIVE_SHEET)
 const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 
 type RollType = 'advantage' | 'straight' | 'disadvantage'
@@ -79,6 +79,22 @@ function onRoll(type: RollType) {
     rolls,
     totalDamage: rolls.reduce((acc, roll) => acc + roll.amount, 0),
   }
+
+  const { miss, attackTotal, totalDamage } = result.value
+
+  log?.([
+    {
+      type: 'roll',
+      rowId: props.id,
+      payload: {
+        rowName: sheet.value?.rows.find(row => row.id === props.id)?.name,
+        kind: 'attack',
+        result: miss ? 'miss' : attackRoll === 20 ? 'critical' : 'hit',
+        total: attackTotal,
+        damage: miss ? undefined : totalDamage,
+      },
+    },
+  ])
 }
 
 const handleToasts = useToastItems()

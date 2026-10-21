@@ -95,6 +95,9 @@ export function useRealTimeInitiativeSheet(
       .on('broadcast', { event: 'sync' }, ({ payload }) =>
         applySync(payload as SheetSyncEvent),
       )
+      .on('broadcast', { event: 'events' }, () =>
+        queryClient.invalidateQueries({ queryKey: queryKeys.combatEvents(id) }),
+      )
       .on('broadcast', { event: 'deleted' }, applyDeleted)
       .subscribe()
   }

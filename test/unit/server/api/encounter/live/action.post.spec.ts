@@ -403,6 +403,7 @@ describe('POST /api/encounter/live/action', () => {
             error: null,
           }),
         ],
+        combat_events: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: 9, error: null }) },
     )
@@ -477,6 +478,11 @@ describe('POST /api/encounter/live/action', () => {
 
     expect(combatEvents.insert).toHaveBeenCalledWith([
       expect.objectContaining({
+        rowId: 'row-2',
+        type: 'turn',
+        actorName: 'Elara',
+      }),
+      expect.objectContaining({
         rowId: 'row-1',
         type: 'condition_expired',
         actorName: 'Elara',
@@ -525,6 +531,7 @@ describe('POST /api/encounter/live/action', () => {
             error: null,
           }),
         ],
+        combat_events: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: 1, error: null }) },
     )

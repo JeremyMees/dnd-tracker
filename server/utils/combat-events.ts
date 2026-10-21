@@ -2,7 +2,7 @@ import type { serverSupabaseServiceRole } from '#supabase/server'
 
 interface LogCombatEventsParams {
   encounterId: number
-  rowId: string
+  rowId?: string
   round: number
   actorId?: string | null
   actorName?: string | null
@@ -18,7 +18,7 @@ export async function logCombatEvents(
   const { error } = await supabase.from('combat_events').insert(
     params.events.map(event => ({
       encounterId: params.encounterId,
-      rowId: params.rowId,
+      rowId: event.rowId ?? params.rowId ?? null,
       round: params.round,
       type: event.type,
       payload: event.payload,
@@ -69,6 +69,15 @@ export async function broadcastSheetSync(
     sheet,
     ...(reminders && { reminders }),
   })
+}
+
+export async function broadcastSheetEvents(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounterId: number,
+): Promise<void> {
+  const channel = supabase.channel(`sheet:${encounterId}`)
+
+  await channel.httpSend('events', {})
 }
 
 export async function broadcastSheetDeleted(

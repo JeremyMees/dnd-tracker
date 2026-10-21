@@ -151,7 +151,7 @@ describe('DiceRoller', () => {
       vm.calculateDndDiceRoll()
       await nextTick()
 
-      expect(component.emitted('rolled')![0]).toEqual([1])
+      expect(component.emitted('rolled')![0]).toEqual([1, { d6: [1] }])
       expect(vm.toRoll).toEqual({
         d4: 0,
         d6: 0,
@@ -185,7 +185,10 @@ describe('DiceRoller', () => {
       vm.calculateDndDiceRoll()
       await nextTick()
 
-      expect(component.emitted('rolled')![0]).toEqual([32])
+      expect(component.emitted('rolled')![0]).toEqual([
+        32,
+        { d20: [20, 1, 11] },
+      ])
 
       const [title, options] = toast.mock.calls[0]!
       expect(title).toBe('components.diceRoll.rolled')
@@ -210,7 +213,7 @@ describe('DiceRoller', () => {
       vm.calculateDndDiceRoll()
       await nextTick()
 
-      expect(component.emitted('rolled')![0]).toEqual([7])
+      expect(component.emitted('rolled')![0]).toEqual([7, { d4: [1], d6: [6] }])
 
       const [title, options] = toast.mock.calls[0]!
       expect(title).toBe('components.diceRoll.rolled')
@@ -229,7 +232,7 @@ describe('DiceRoller', () => {
       vm.calculateDndDiceRoll()
       await nextTick()
 
-      expect(component.emitted('rolled')![0]).toEqual([0])
+      expect(component.emitted('rolled')![0]).toEqual([0, {}])
 
       const [title, options] = toast.mock.calls[0]!
       expect(title).toBe('components.diceRoll.rolled')

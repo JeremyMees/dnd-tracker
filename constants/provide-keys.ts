@@ -8,6 +8,7 @@ export const INITIATIVE_SHEET: InjectionKey<{
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
   onTurnReminders?: EventHookOn<TurnReminders>
+  log?: (events: CombatEventDraft[]) => void
   undo?: () => Promise<boolean>
   canUndo?: Readonly<Ref<boolean>>
   redo?: () => Promise<boolean>

@@ -107,6 +107,10 @@ export type CombatEventType =
   | 'concentration_started'
   | 'stabilized'
   | 'died'
+  | 'turn'
+  | 'row_added'
+  | 'row_removed'
+  | 'roll'
 export type InitiativeRowField =
   | 'armorClass'
   | 'hitPoints'
@@ -358,10 +362,22 @@ export type SbFilter = RequireAtLeastOne<{
 
 export interface CombatEventPayload {
   rowName?: string
-  kind?: 'heal' | 'damage' | 'temp' | 'override' | 'add' | 'remove'
+  kind?:
+    | 'heal'
+    | 'damage'
+    | 'temp'
+    | 'override'
+    | 'add'
+    | 'remove'
+    | 'attack'
+    | 'dice'
   amount?: number
   before?: number
   after?: number
   condition?: { id: string; name: string }
-  result?: 'save' | 'fail'
+  result?: 'save' | 'fail' | 'hit' | 'critical' | 'miss'
+  initiative?: number
+  total?: number
+  damage?: number
+  dice?: string
 }

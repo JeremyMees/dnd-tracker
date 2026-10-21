@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
+import { optimisticCombatEvents } from '~/queries/combat-events'
 import { toast } from 'vue-sonner'
 
 export function useInitiativeSheetDetail(id: number) {
@@ -141,7 +142,7 @@ export function useInitiativeSheetTurn() {
 
       return { previous }
     },
-    onSuccess: ({ sheet, expired }, { id }) => {
+    onSuccess: ({ sheet }, { id }) => {
       queryClient.setQueryData(
         queryKeys.initiativeSheetDetail(id),
         (old: InitiativeSheet | undefined) =>
@@ -153,11 +154,9 @@ export function useInitiativeSheetTurn() {
           },
       )
 
-      if (expired.length) {
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.combatEvents(id),
-        })
-      }
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.combatEvents(id),
+      })
     },
     onError: (error, { id }, context) => {
       if (context?.previous) {
@@ -269,20 +268,12 @@ export function useInitiativeSheetPatch() {
             queryKeys.combatEvents(id),
           )
 
-          const optimisticEvents = drafts
-            .slice()
-            .reverse()
-            .map((draft, index): CombatEventRow => ({
-              id: -(Date.now() + index),
-              encounterId: id,
-              rowId,
-              round: previous?.round ?? 1,
-              type: draft.type,
-              payload: draft.payload as Json,
-              createdBy: null,
-              actorName: null,
-              createdAt: new Date().toISOString(),
-            }))
+          const optimisticEvents = optimisticCombatEvents(
+            id,
+            previous?.round ?? 1,
+            drafts,
+            rowId,
+          )
 
           queryClient.setQueryData<CombatEventRow[]>(
             queryKeys.combatEvents(id),

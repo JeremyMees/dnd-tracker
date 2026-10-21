@@ -851,7 +851,17 @@
         "fail": "{rowName} failed a death save|{rowName} failed {amount} death saves"
       },
       "stabilized": "{rowName} stabilized",
-      "died": "{rowName} died"
+      "died": "{rowName} died",
+      "turn": "{rowName}'s turn started",
+      "rowAdded": "{rowName} joined the encounter",
+      "rowAddedInitiative": "{rowName} joined with initiative {initiative}",
+      "rowRemoved": "{rowName} was removed from the encounter",
+      "roll": {
+        "hit": "{rowName} rolled {total} to hit for {damage} damage",
+        "critical": "{rowName} rolled a critical hit ({total}) for {damage} damage",
+        "miss": "{rowName} rolled a natural 1 and missed",
+        "dice": "Rolled {dice} for a total of {total}"
+      }
     },
     "areaDamage": {
       "title": "Area damage",

@@ -7,25 +7,15 @@ interface AdvanceEncounterTurnOptions {
   broadcastReminders?: boolean
 }
 
-function expiredEvents(
-  reminders: TurnReminder[],
-): Map<string, CombatEventDraft[]> {
-  const events = new Map<string, CombatEventDraft[]>()
-
-  for (const { rowId, rowName, condition } of reminders) {
-    events.set(rowId, [
-      ...(events.get(rowId) ?? []),
-      {
-        type: 'condition_expired',
-        payload: {
-          rowName,
-          condition: { id: condition.id, name: condition.name },
-        },
-      },
-    ])
-  }
-
-  return events
+function expiredEvents(reminders: TurnReminder[]): CombatEventDraft[] {
+  return reminders.map(({ rowId, rowName, condition }) => ({
+    type: 'condition_expired',
+    rowId,
+    payload: {
+      rowName,
+      condition: { id: condition.id, name: condition.name },
+    },
+  }))
 }
 
 export async function advanceEncounterTurn(
@@ -67,16 +57,15 @@ export async function advanceEncounterTurn(
     })
   }
 
-  for (const [rowId, events] of expiredEvents(advance.expired)) {
-    await logCombatEvents(supabase, {
-      encounterId,
-      rowId,
-      round: advance.round,
-      actorId,
-      actorName,
-      events,
-    })
-  }
+  const turn = turnEvent(advance.rows, advance.activeIndex)
+
+  await logCombatEvents(supabase, {
+    encounterId,
+    round: advance.round,
+    actorId,
+    actorName,
+    events: [...(turn ? [turn] : []), ...expiredEvents(advance.expired)],
+  })
 
   const liveSession =
     session ?? (await activeLiveSession(supabase, encounterId))

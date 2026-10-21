@@ -24,6 +24,67 @@ export function useCombatEvents(
   })
 }
 
+export function optimisticCombatEvents(
+  encounterId: number,
+  round: number,
+  drafts: CombatEventDraft[],
+  rowId: string | null = null,
+): CombatEventRow[] {
+  return drafts
+    .slice()
+    .reverse()
+    .map((draft, index) => ({
+      id: -(Date.now() + index),
+      encounterId,
+      rowId: draft.rowId ?? rowId,
+      round,
+      type: draft.type,
+      payload: draft.payload as Json,
+      createdBy: null,
+      actorName: null,
+      createdAt: new Date().toISOString(),
+    }))
+}
+
+export function useCombatEventsLog() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      encounterId,
+      events,
+    }: {
+      encounterId: number
+      events: CombatEventDraft[]
+    }) => {
+      await $fetch(`/api/encounter/${encounterId}/events`, {
+        method: 'POST',
+        body: { events },
+      })
+    },
+    onMutate: ({ encounterId, events }) => {
+      const round =
+        queryClient.getQueryData<InitiativeSheet>(
+          queryKeys.initiativeSheetDetail(encounterId),
+        )?.round ?? 1
+
+      queryClient.setQueryData<CombatEventRow[]>(
+        queryKeys.combatEvents(encounterId),
+        old =>
+          old && [
+            ...optimisticCombatEvents(encounterId, round, events),
+            ...old,
+          ],
+      )
+    },
+    onSettled: (_result, _error, { encounterId }) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.combatEvents(encounterId),
+      })
+    },
+  })
+}
+
 export function useCombatEventsClear() {
   const queryClient = useQueryClient()
   const { t } = useI18n()
