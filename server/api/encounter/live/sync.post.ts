@@ -16,17 +16,7 @@ export default defineEventHandler(async event => {
 
   if (!session) return { synced: false }
 
-  const { data: sheet } = await supabase
-    .from('initiative_sheets')
-    .select('id, title, round, activeIndex, rows, settings')
-    .eq('id', encounter.id)
-    .single()
-
-  if (!sheet) {
-    throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
-  }
-
-  await broadcastLiveState(supabase, session, toPlayerSheet(sheet))
+  await broadcastLiveState(supabase, session, encounter.id)
 
   return { synced: true }
 })

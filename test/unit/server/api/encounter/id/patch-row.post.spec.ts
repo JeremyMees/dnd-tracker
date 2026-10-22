@@ -120,6 +120,10 @@ describe('POST /api/encounter/[id]/patch-row', () => {
             error: null,
           }),
           mockChain({ data: sheet, error: null }),
+          mockChain({
+            data: { ...sheet, rows: [{ ...row, hitPoints: 6 }] },
+            error: null,
+          }),
         ],
         combat_events: mockChain({ data: null, error: null }),
         live_sessions: mockChain({
@@ -175,6 +179,10 @@ describe('POST /api/encounter/[id]/patch-row', () => {
             error: null,
           }),
           mockChain({ data: sheet, error: null }),
+          mockChain({
+            data: { ...sheet, rows: [row, { ...goblin, hidden: true }] },
+            error: null,
+          }),
         ],
         combat_events: mockChain({ data: null, error: null }),
         live_sessions: mockChain({

@@ -91,9 +91,7 @@ export async function advanceEncounterTurn(
   const liveSession =
     session ?? (await activeLiveSession(supabase, encounterId))
 
-  if (liveSession) {
-    await broadcastLiveState(supabase, liveSession, toPlayerSheet(updated))
-  }
+  if (liveSession) await broadcastLiveState(supabase, liveSession, encounterId)
 
   const reminders = {
     expired: advance.expired,
@@ -104,7 +102,6 @@ export async function advanceEncounterTurn(
   await broadcastSheetSync(
     supabase,
     encounterId,
-    updated,
     broadcastReminders ? reminders : undefined,
   )
 

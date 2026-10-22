@@ -62,12 +62,21 @@ export async function broadcastLiveAction(
 export async function broadcastLiveState(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  sheet: LiveSyncEvent['sheet'],
+  encounterId: number,
 ): Promise<void> {
   const version = await incrementLiveVersion(supabase, session)
+
+  const { data: sheet, error } = await supabase
+    .from('initiative_sheets')
+    .select('id, title, round, activeIndex, rows, settings')
+    .eq('id', encounterId)
+    .single()
+
+  if (error) throw createError(postgresErrorToH3Error(error))
+
   const channel = supabase.channel(`live:${session}`)
 
-  await channel.httpSend('sync', { version, sheet })
+  await channel.httpSend('sync', { version, sheet: toPlayerSheet(sheet) })
 }
 
 export function sanitizeBroadcastPatch(

@@ -43,7 +43,7 @@ export default defineEventHandler(async event => {
 
   const { data: sheet, error: sheetError } = await supabase
     .from('initiative_sheets')
-    .select('id, title, round, activeIndex, rows, settings')
+    .select('round, rows')
     .eq('id', id)
     .single()
 
@@ -82,16 +82,7 @@ export default defineEventHandler(async event => {
 
   const session = await activeLiveSession(supabase, id)
 
-  if (session) {
-    await broadcastLiveState(
-      supabase,
-      session,
-      toPlayerSheet({
-        ...sheet,
-        rows: sheet.rows.map(row => (row.id === body.rowId ? after : row)),
-      }),
-    )
-  }
+  if (session) await broadcastLiveState(supabase, session, id)
 
   return { row: after }
 })

@@ -58,10 +58,18 @@ export async function broadcastSheetAction(
 export async function broadcastSheetSync(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  sheet: SheetSyncEvent['sheet'],
   reminders?: TurnReminders,
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
+
+  const { data: sheet, error } = await supabase
+    .from('initiative_sheets')
+    .select('title, round, activeIndex, rows, settings, info, infoCards')
+    .eq('id', encounterId)
+    .single()
+
+  if (error) throw createError(postgresErrorToH3Error(error))
+
   const channel = supabase.channel(`sheet:${encounterId}`)
 
   await channel.httpSend('sync', {

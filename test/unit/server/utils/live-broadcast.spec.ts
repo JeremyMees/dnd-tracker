@@ -9,12 +9,14 @@ import {
   broadcastLiveAction,
   broadcastLiveEnded,
   broadcastLiveSeats,
+  broadcastLiveState,
   buildAcPatch,
   buildHpPatch,
   buildLiveActionPatch,
   liveActionSchema,
   sanitizeBroadcastPatch,
 } from '~~/server/utils/live-broadcast'
+import { toPlayerSheet } from '~~/server/utils/player-portal'
 import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 function supabaseWithSheet(data: Record<string, unknown>) {
@@ -101,6 +103,92 @@ describe('live-broadcast', () => {
           },
         ),
       ).rejects.toMatchObject({ statusCode: 409 })
+    })
+  })
+
+  describe('broadcastLiveState', () => {
+    const sheet = {
+      id: 7,
+      title: 'Ambush',
+      round: 2,
+      activeIndex: 0,
+      rows: [
+        {
+          id: 'row-1',
+          index: 0,
+          initiative: 12,
+          name: 'Goblin',
+          type: 'monster',
+          conditions: [],
+          hitPoints: 4,
+          maxHitPoints: 7,
+        },
+      ],
+      settings: {},
+    } as unknown as InitiativeSheet
+
+    it('increments the live version and broadcasts the sanitized current sheet', async () => {
+      mockFrom(
+        { initiative_sheets: mockChain({ data: sheet, error: null }) },
+        { rpc: mockChain({ data: 6, error: null }) },
+      )
+
+      await broadcastLiveState(
+        serverSupabaseServiceRole({} as never),
+        'session-uuid',
+        7,
+      )
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
+        p_session: 'session-uuid',
+      })
+      expect(
+        supabase.channel('live:session-uuid').httpSend,
+      ).toHaveBeenCalledWith('sync', {
+        version: 6,
+        sheet: toPlayerSheet(sheet),
+      })
+    })
+
+    it('reads the sheet only after incrementing the version', async () => {
+      mockFrom(
+        { initiative_sheets: mockChain({ data: sheet, error: null }) },
+        { rpc: mockChain({ data: 6, error: null }) },
+      )
+
+      await broadcastLiveState(
+        serverSupabaseServiceRole({} as never),
+        'session-uuid',
+        7,
+      )
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      expect(supabase.rpc.mock.invocationCallOrder[0]).toBeLessThan(
+        supabase.from.mock.invocationCallOrder[0]!,
+      )
+    })
+
+    it('propagates a postgres error from the sheet read', async () => {
+      mockFrom(
+        {
+          initiative_sheets: mockChain({
+            data: null,
+            error: { code: 'PGRST116', message: 'not found' },
+          }),
+        },
+        { rpc: mockChain({ data: 6, error: null }) },
+      )
+
+      await expect(
+        broadcastLiveState(
+          serverSupabaseServiceRole({} as never),
+          'session-uuid',
+          7,
+        ),
+      ).rejects.toMatchObject({ statusCode: 404 })
     })
   })
 

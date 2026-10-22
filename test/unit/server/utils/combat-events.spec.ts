@@ -160,12 +160,15 @@ describe('combat-events', () => {
   })
 
   describe('broadcastSheetSync', () => {
-    it('increments the sheet version and broadcasts the sheet over the sheet channel', async () => {
-      mockFrom({}, { rpc: mockChain({ data: 9, error: null }) })
+    const sheet = { title: 'Ambush', round: 2, activeIndex: 0, rows: [] }
 
-      await broadcastSheetSync(serverSupabaseServiceRole({} as never), 7, {
-        round: 2,
-      })
+    it('increments the sheet version and broadcasts the current sheet over the sheet channel', async () => {
+      mockFrom(
+        { initiative_sheets: mockChain({ data: sheet, error: null }) },
+        { rpc: mockChain({ data: 9, error: null }) },
+      )
+
+      await broadcastSheetSync(serverSupabaseServiceRole({} as never), 7)
 
       const supabase = serverSupabaseServiceRole({} as never)
 
@@ -177,19 +180,36 @@ describe('combat-events', () => {
 
       expect(channel.httpSend).toHaveBeenCalledWith('sync', {
         version: 9,
-        sheet: { round: 2 },
+        sheet,
       })
     })
 
+    it('reads the sheet only after incrementing the version', async () => {
+      mockFrom(
+        { initiative_sheets: mockChain({ data: sheet, error: null }) },
+        { rpc: mockChain({ data: 9, error: null }) },
+      )
+
+      await broadcastSheetSync(serverSupabaseServiceRole({} as never), 7)
+
+      const supabase = serverSupabaseServiceRole({} as never)
+
+      expect(supabase.rpc.mock.invocationCallOrder[0]).toBeLessThan(
+        supabase.from.mock.invocationCallOrder[0]!,
+      )
+    })
+
     it('adds the turn reminders to the broadcast when given', async () => {
-      mockFrom({}, { rpc: mockChain({ data: 9, error: null }) })
+      mockFrom(
+        { initiative_sheets: mockChain({ data: sheet, error: null }) },
+        { rpc: mockChain({ data: 9, error: null }) },
+      )
 
       const reminders = { expired: [], saves: [], recharges: [] }
 
       await broadcastSheetSync(
         serverSupabaseServiceRole({} as never),
         7,
-        { round: 2 },
         reminders,
       )
 
@@ -197,9 +217,29 @@ describe('combat-events', () => {
         serverSupabaseServiceRole({} as never).channel('sheet:7').httpSend,
       ).toHaveBeenCalledWith('sync', {
         version: 9,
-        sheet: { round: 2 },
+        sheet,
         reminders,
       })
+    })
+
+    it('propagates a postgres error from the sheet read', async () => {
+      mockFrom(
+        {
+          initiative_sheets: mockChain({
+            data: null,
+            error: { code: 'PGRST116', message: 'not found' },
+          }),
+        },
+        { rpc: mockChain({ data: 9, error: null }) },
+      )
+
+      await expect(
+        broadcastSheetSync(serverSupabaseServiceRole({} as never), 7),
+      ).rejects.toMatchObject({ statusCode: 404 })
+
+      expect(
+        serverSupabaseServiceRole({} as never).channel('sheet:7').httpSend,
+      ).not.toHaveBeenCalled()
     })
   })
 

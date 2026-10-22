@@ -12,15 +12,7 @@ export default defineEventHandler(async event => {
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
-  const { data: sheet, error } = await supabase
-    .from('initiative_sheets')
-    .select('title, round, activeIndex, rows, settings, info, infoCards')
-    .eq('id', id)
-    .single()
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  await broadcastSheetSync(supabase, id, sheet)
+  await broadcastSheetSync(supabase, id)
 
   return { synced: true }
 })
