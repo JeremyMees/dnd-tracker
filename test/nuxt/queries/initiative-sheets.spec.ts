@@ -73,10 +73,11 @@ describe('initiative-sheets queries', () => {
 
       const { vm } = await mountHook(() => useInitiativeSheetSync())
 
-      await vm.mutateAsync({ id: 7 })
+      await vm.mutateAsync({ id: 7, live: true })
 
       expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
         method: 'POST',
+        body: { live: true },
       })
     })
   })
@@ -726,6 +727,7 @@ describe('initiative-sheets queries', () => {
       await vi.waitFor(() =>
         expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
           method: 'POST',
+          body: { live: false },
         }),
       )
     })
@@ -753,6 +755,31 @@ describe('initiative-sheets queries', () => {
       await vi.waitFor(() =>
         expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
           method: 'POST',
+          body: { live: false },
+        }),
+      )
+    })
+
+    it.each([
+      [{ rows: [] }],
+      [{ round: 2 }],
+      [{ activeIndex: 1 }],
+      [{ settings: { spacing: 'normal' as const, modified: false } }],
+    ])('asks the sync to include the live session for %o', async data => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      fetchMock.mockResolvedValue(undefined)
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+      await vm.mutateAsync({ id: 7, data })
+
+      await vi.waitFor(() =>
+        expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
+          method: 'POST',
+          body: { live: true },
         }),
       )
     })

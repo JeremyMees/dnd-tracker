@@ -28,7 +28,7 @@ const {
   updateQueryData,
   onTurnReminders,
 } = useRealTimeInitiativeSheet(id, data)
-const { session: liveSession, sync: syncLiveSession } = useLiveSession(id)
+const { session: liveSession } = useLiveSession(id)
 const { seats } = useLiveSeats(id, liveSession)
 const claimedRows = computed(
   () => new Set(seats.value.flatMap(seat => (seat.row ? [seat.row] : []))),
@@ -60,7 +60,6 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   })
 
   log(events)
-  syncLiveSession(payload)
 }
 
 async function handlePatchRow(

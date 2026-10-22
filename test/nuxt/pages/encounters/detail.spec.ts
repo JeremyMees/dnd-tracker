@@ -20,7 +20,6 @@ const {
   removeChannel,
   setQueryData,
   subscribe,
-  syncLiveSession,
   update,
   patch,
   turn,
@@ -34,7 +33,6 @@ const {
   removeChannel: vi.fn(),
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
-  syncLiveSession: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
   turn: vi.fn(),
@@ -86,7 +84,6 @@ const liveSeats = ref<LiveSeat[]>([])
 
 mockNuxtImport('useLiveSession', () => () => ({
   session: ref(undefined),
-  sync: syncLiveSession,
 }))
 mockNuxtImport('useLiveSeats', () => () => ({ seats: liveSeats }))
 
@@ -426,14 +423,6 @@ describe('Encounter detail page', () => {
     expect(update).not.toHaveBeenCalled()
   })
 
-  it('Should sync the live session after a successful update', async () => {
-    const { probe } = await mountPage()
-
-    await probe.update({ round: 2, activeIndex: 1 })
-
-    expect(syncLiveSession).toHaveBeenCalledWith({ round: 2, activeIndex: 1 })
-  })
-
   it('Should log the removed rows after a successful update', async () => {
     const { probe } = await mountPage()
     const [first, ...rest] = sheet.rows
@@ -508,16 +497,6 @@ describe('Encounter detail page', () => {
     expect(invalidateQueries).toHaveBeenCalledWith({
       queryKey: ['useCombatEvents', 2],
     })
-  })
-
-  it('Should not sync the live session when the update fails', async () => {
-    update.mockRejectedValueOnce(new Error('Boom'))
-
-    const { probe } = await mountPage()
-
-    await expect(probe.update({ title: 'Renamed' })).rejects.toThrow('Boom')
-
-    expect(syncLiveSession).not.toHaveBeenCalled()
   })
 
   it('Should leave the cache to realtime when the update settles', async () => {

@@ -83,8 +83,8 @@ export function useInitiativeSheetDetailUpdate() {
 
       return { previous }
     },
-    onSuccess: (_data, { id }) => {
-      sync({ id }).catch(() => {})
+    onSuccess: (_data, { id, data }) => {
+      sync({ id, live: touchesLiveView(data) }).catch(() => {})
     },
     onError: (error, { id, data }, context) => {
       if (context?.previous) {
@@ -105,10 +105,19 @@ export function useInitiativeSheetDetailUpdate() {
   })
 }
 
+const liveViewFields = new Set(['round', 'activeIndex', 'rows', 'settings'])
+
+function touchesLiveView(data: object): boolean {
+  return Object.keys(data).some(key => liveViewFields.has(key))
+}
+
 export function useInitiativeSheetSync() {
   return useMutation({
-    mutationFn: async ({ id }: { id: number }) => {
-      await $fetch(`/api/encounter/${id}/sync`, { method: 'POST' })
+    mutationFn: async ({ id, live }: { id: number; live: boolean }) => {
+      await $fetch(`/api/encounter/${id}/sync`, {
+        method: 'POST',
+        body: { live },
+      })
     },
   })
 }
