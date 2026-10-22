@@ -1,16 +1,20 @@
 import type { VueWrapper } from '@vue/test-utils'
+import type { VNodeChild } from 'vue'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ScrollArea } from '~/components/ui/scroll-area'
 
-function mountScrollArea(props: Record<string, unknown> = {}) {
+function mountScrollArea(
+  props: Record<string, unknown> = {},
+  content: () => VNodeChild = () => 'Content',
+) {
   return mountSuspended({
-    render: () => h(ScrollArea, props, { default: () => 'Content' }),
+    render: () => h(ScrollArea, props, { default: content }),
   })
 }
 
-function viewport(wrapper: VueWrapper): Element {
-  return wrapper.find('[data-slot="scroll-area-viewport"]').element
+function viewport(wrapper: VueWrapper): HTMLElement {
+  return wrapper.get<HTMLElement>('[data-slot="scroll-area-viewport"]').element
 }
 
 describe('ScrollArea', () => {
@@ -70,5 +74,29 @@ describe('ScrollArea', () => {
     expect(wrapper.findComponent({ name: 'ScrollArea' }).vm.viewport).toBe(
       viewport(wrapper),
     )
+  })
+
+  it('Should keep the viewport keyboard-focusable when nothing inside it is', async () => {
+    wrapper = await mountScrollArea()
+
+    expect(viewport(wrapper).tabIndex).toBe(0)
+  })
+
+  it('Should leave focus to the content when it holds a focusable element', async () => {
+    wrapper = await mountScrollArea({}, () => h('button', 'Save'))
+
+    expect(viewport(wrapper).tabIndex).toBe(-1)
+  })
+
+  it('Should become focusable again once the focusable content disables', async () => {
+    const disabled = ref(false)
+
+    wrapper = await mountScrollArea({}, () =>
+      h('button', { disabled: disabled.value }, 'Save'),
+    )
+
+    disabled.value = true
+
+    await vi.waitFor(() => expect(viewport(wrapper!).tabIndex).toBe(0))
   })
 })

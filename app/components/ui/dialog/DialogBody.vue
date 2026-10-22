@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { cn } from '@/utils/shadcn'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const props = defineProps<{ class?: HTMLAttributes['class'] }>()
 </script>
 
 <template>
-  <div
+  <ScrollArea
     test-id="dialog-body"
-    :class="cn('-mx-1 min-h-0 flex-1 overflow-y-auto px-1', props.class)"
+    class="-ml-1 -mr-3 min-h-0 flex-1"
+    viewport-class="pl-1 pr-3"
   >
-    <slot />
-  </div>
+    <div :class="cn(props.class)">
+      <slot />
+    </div>
+  </ScrollArea>
 </template>

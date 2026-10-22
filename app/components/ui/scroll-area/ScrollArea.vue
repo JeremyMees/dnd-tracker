@@ -23,8 +23,25 @@ const delegatedProps = reactiveOmit(
 )
 
 const root = useTemplateRef<InstanceType<typeof ScrollAreaRoot>>('root')
+const viewport = computed(() => root.value?.viewport)
 
-defineExpose({ viewport: computed(() => root.value?.viewport) })
+function syncTabIndex(): void {
+  if (!viewport.value) return
+
+  const tabIndex = containsFocusable(viewport.value) ? -1 : 0
+
+  if (viewport.value.tabIndex !== tabIndex) viewport.value.tabIndex = tabIndex
+}
+
+watch(viewport, syncTabIndex)
+useMutationObserver(viewport, syncTabIndex, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ['disabled', 'href', 'tabindex', 'contenteditable'],
+})
+
+defineExpose({ viewport })
 </script>
 
 <template>

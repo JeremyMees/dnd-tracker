@@ -4,7 +4,7 @@ exports[`LiveSeatList > Should match snapshot 1`] = `
 "<div test-id="seat-list" class="flex flex-col gap-2 w-full text-left">
   <p test-id="seat-list-title" class="text-xs text-muted-foreground">components.liveSession.seats.title</p>
   <div dir="ltr" style="position: relative; --reka-scroll-area-corner-width: 0px; --reka-scroll-area-corner-height: 0px;" data-slot="scroll-area" class="relative flex flex-col overflow-hidden max-h-48">
-    <div data-reka-scroll-area-viewport="" style="overflow-x: hidden; overflow-y: scroll;" data-slot="scroll-area-viewport" class="min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50 scroll-fade not-supports-[animation-timeline:scroll()]:scroll-fade-none pr-3" tabindex="0">
+    <div data-reka-scroll-area-viewport="" style="overflow-x: hidden; overflow-y: scroll;" data-slot="scroll-area-viewport" class="min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50 scroll-fade not-supports-[animation-timeline:scroll()]:scroll-fade-none pr-3" tabindex="-1">
       <div>
         <ul class="flex flex-col gap-2">
           <li test-id="seat-seat-1" class="flex items-center gap-2 text-sm"><span data-state="closed" data-grace-area-trigger="" test-id="seat-status-seat-1" class="size-2 rounded-full shrink-0 animate-pulse bg-success"></span>

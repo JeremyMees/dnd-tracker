@@ -15,6 +15,12 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   )
 }
 
+export function containsFocusable(element: Element): boolean {
+  return !!element.querySelector(
+    'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])',
+  )
+}
+
 export function isShortcutContext(target: EventTarget | null): boolean {
   if (isTypingTarget(target)) return false
 

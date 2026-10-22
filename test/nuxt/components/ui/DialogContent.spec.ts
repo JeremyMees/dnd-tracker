@@ -82,8 +82,10 @@ describe('DialogContent', () => {
 
     const body = element('dialog-body')
 
-    expect(body.textContent).toBe('Content')
-    expect(body.classList).toContain('overflow-y-auto')
+    expect(
+      body.querySelector('[data-slot="scroll-area-viewport"]')?.textContent,
+    ).toBe('Content')
+    expect(body.dataset.slot).toBe('scroll-area')
     expect(body.classList).toContain('min-h-0')
     expect(body.classList).toContain('flex-1')
     expect(body.previousElementSibling).toBe(element('dialog-header'))

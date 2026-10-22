@@ -199,6 +199,8 @@
 
   html {
     @apply font-geist text-base scroll-smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
 
   body {
@@ -358,15 +360,6 @@
 
   .th {
     @apply h-12 px-4 text-left align-middle font-medium;
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-    @apply hidden;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
   }
 
   abbr[title] {

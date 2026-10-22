@@ -33,7 +33,7 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
     </div>
   </div>
   <div dir="ltr" style="position: relative; --reka-scroll-area-corner-width: 0px; --reka-scroll-area-corner-height: 0px;" data-slot="scroll-area" class="relative flex flex-col overflow-hidden">
-    <div data-reka-scroll-area-viewport="" style="overflow-x: hidden; overflow-y: scroll;" data-slot="scroll-area-viewport" class="min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50 scroll-fade not-supports-[animation-timeline:scroll()]:scroll-fade-none pr-3" tabindex="0">
+    <div data-reka-scroll-area-viewport="" style="overflow-x: hidden; overflow-y: scroll;" data-slot="scroll-area-viewport" class="min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50 scroll-fade not-supports-[animation-timeline:scroll()]:scroll-fade-none pr-3" tabindex="-1">
       <div>
         <div class="grid gap-4 overflow-y-auto" style="grid-template-columns: repeat(2, minmax(0, 1fr));" test-id="content-grid">
           <div class="flex flex-col gap-4">
