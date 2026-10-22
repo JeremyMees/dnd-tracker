@@ -30,9 +30,9 @@
           class="outline-none px-4 mx-h-full max-h-[90dvh] flex flex-col gap-y-6"
         >
           <slot name="header" />
-          <div class="overflow-y-auto px-1">
+          <UiScrollArea viewport-class="pl-1 pr-3">
             <slot />
-          </div>
+          </UiScrollArea>
           <slot name="footer" />
         </main>
       </div>

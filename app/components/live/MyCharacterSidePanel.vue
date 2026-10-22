@@ -10,10 +10,12 @@ const active = computed(() => props.row.id === props.activeRow?.id)
 </script>
 
 <template>
-  <aside
+  <UiScrollArea
+    as="aside"
     test-id="my-character-side-panel"
     :data-active="active"
-    class="w-[380px] shrink-0 overflow-y-auto p-6 transition-all duration-300"
+    class="w-[380px] shrink-0 transition-all duration-300"
+    viewport-class="p-6"
     :class="
       active
         ? 'border-l-4 border-primary bg-primary/5'
@@ -49,5 +51,5 @@ const active = computed(() => props.row.id === props.activeRow?.id)
       :active="active"
       :allow="allow"
     />
-  </aside>
+  </UiScrollArea>
 </template>

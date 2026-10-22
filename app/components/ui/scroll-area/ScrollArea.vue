@@ -21,19 +21,24 @@ const delegatedProps = reactiveOmit(
   'viewportClass',
   'orientation',
 )
+
+const root = useTemplateRef<InstanceType<typeof ScrollAreaRoot>>('root')
+
+defineExpose({ viewport: computed(() => root.value?.viewport) })
 </script>
 
 <template>
   <ScrollAreaRoot
+    ref="root"
     data-slot="scroll-area"
     v-bind="delegatedProps"
-    :class="cn('relative overflow-hidden', props.class)"
+    :class="cn('relative flex flex-col overflow-hidden', props.class)"
   >
     <ScrollAreaViewport
       data-slot="scroll-area-viewport"
       :class="
         cn(
-          'size-full rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50',
+          'min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50',
           orientation === 'vertical' ? 'scroll-fade' : 'scroll-fade-x',
           props.viewportClass,
         )

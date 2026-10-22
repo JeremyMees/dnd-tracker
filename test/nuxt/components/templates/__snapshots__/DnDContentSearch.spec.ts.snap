@@ -32,169 +32,187 @@ exports[`DnDContentSearch > Should match snapshot 1`] = `
       <div axis="width"></div>
     </div>
   </div>
-  <div class="overflow-y-auto">
-    <div class="grid gap-4 overflow-y-auto" style="grid-template-columns: repeat(2, minmax(0, 1fr));" test-id="content-grid">
-      <div class="flex flex-col gap-4">
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="el" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Breastplate</h3>
+  <div dir="ltr" style="position: relative; --reka-scroll-area-corner-width: 0px; --reka-scroll-area-corner-height: 0px;" data-slot="scroll-area" class="relative flex flex-col overflow-hidden">
+    <div data-reka-scroll-area-viewport="" style="overflow-x: hidden; overflow-y: scroll;" data-slot="scroll-area-viewport" class="min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50 scroll-fade pr-3" tabindex="0">
+      <div>
+        <div class="grid gap-4 overflow-y-auto" style="grid-template-columns: repeat(2, minmax(0, 1fr));" test-id="content-grid">
+          <div class="flex flex-col gap-4">
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="el" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Breastplate</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Chain Shirt</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Hide Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Padded Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Ring Mail</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Shield</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Studded Leather Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
           </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Chain Shirt</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Hide Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Padded Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Ring Mail</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Shield</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Studded Leather Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col gap-4">
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="el" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Chain Mail</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Half Plate Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Leather Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Plate Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Scale Mail</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
-          </div>
-        </div>
-        <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
-          <div class="flex flex-col gap-y-1.5 p-4">
-            <!--v-if-->
-            <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Splint Armor</h3>
-          </div>
-          <div class="p-6 px-4 py-0"></div>
-          <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
-            <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
-                <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
-              </button></div>
+          <div class="flex flex-col gap-4">
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="el" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Chain Mail</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Half Plate Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Leather Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Plate Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Scale Mail</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
+            <div class="rounded-lg text-card-foreground shadow-sm bg-secondary/50 border-secondary relative border-4" id="" type="spells">
+              <div class="flex flex-col gap-y-1.5 p-4">
+                <!--v-if-->
+                <h3 class="text-2xl font-semibold leading-none tracking-tight overflow-hidden text-ellipsis" test-id="title">Splint Armor</h3>
+              </div>
+              <div class="p-6 px-4 py-0"></div>
+              <div class="flex items-center p-6 pl-4 pr-0 pb-0 pt-2">
+                <div class="flex justify-end w-full"><button class="items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-secondary hover:text-secondary-foreground h-10 px-4 py-2 flex gap-2 text-foreground" test-id="toggle" aria-label="actions.readMore">
+                    <p>actions.readMore</p><span class="iconify i-tabler:chevron-down duration-200 size-6 stroke-2" aria-hidden="true"></span>
+                  </button></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <style>
+      /* Hide scrollbars cross-browser and enable momentum scroll for touch devices */
+      [data-reka-scroll-area-viewport] {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      [data-reka-scroll-area-viewport]::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+    <!---->
+    <!--v-if-->
   </div>
   <!--v-if-->
   <!--v-if-->

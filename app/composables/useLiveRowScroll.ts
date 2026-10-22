@@ -1,5 +1,5 @@
 export function useLiveRowScroll(activeId: ComputedRef<string | undefined>) {
-  const listRef = ref<HTMLElement>()
+  const listRef = ref<{ viewport?: HTMLElement }>()
   const rowRefs = new Map<string, HTMLElement>()
 
   function setRowRef(id: string, el: unknown): void {
@@ -10,7 +10,7 @@ export function useLiveRowScroll(activeId: ComputedRef<string | undefined>) {
   }
 
   function scrollActiveIntoView(): void {
-    const container = listRef.value
+    const container = listRef.value?.viewport
     const id = activeId.value
 
     if (!container || !id) return

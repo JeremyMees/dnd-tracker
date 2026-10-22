@@ -5,7 +5,7 @@ import {
 } from '@tanstack/vue-table'
 
 import { expandButton, iconButton, selectButton } from './generate-functions'
-import { NuxtTime } from '#components'
+import { NuxtTime, UiScrollArea } from '#components'
 
 const columnHelper = createColumnHelper<ListingFeatures, NoteRow>()
 
@@ -105,10 +105,9 @@ export function generateColumns({
 }
 
 export function expandedMarkup(row: Row<ListingFeatures, NoteRow>) {
-  return h('div', {
-    class: 'html-richtext max-h-[350px] sm:max-h-[600px] overflow-y-auto',
-    innerHTML: row.original.text,
-  })
+  return h(UiScrollArea, { class: 'max-h-[350px] sm:max-h-[600px]' }, () =>
+    h('div', { class: 'html-richtext', innerHTML: row.original.text }),
+  )
 }
 
 export const initialState: Partial<TableState<ListingFeatures>> = {

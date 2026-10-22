@@ -250,7 +250,7 @@ function resetFilters(): void {
       </div>
     </div>
 
-    <div class="overflow-y-auto">
+    <UiScrollArea viewport-class="pr-3">
       <MasonryGrid
         v-if="isLoading"
         v-slot="{ column }"
@@ -286,7 +286,7 @@ function resetFilters(): void {
           @unpin="handlePinToggle(hit, true)"
         />
       </MasonryGrid>
-    </div>
+    </UiScrollArea>
 
     <Pagination
       v-if="

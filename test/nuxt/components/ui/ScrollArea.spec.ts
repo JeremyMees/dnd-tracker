@@ -55,4 +55,12 @@ describe('ScrollArea', () => {
       'flex-1',
     )
   })
+
+  it('Should expose the scrolling viewport element', async () => {
+    wrapper = await mountScrollArea()
+
+    expect(wrapper.findComponent({ name: 'ScrollArea' }).vm.viewport).toBe(
+      viewport(wrapper),
+    )
+  })
 })

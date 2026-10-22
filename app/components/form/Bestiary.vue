@@ -235,7 +235,7 @@ function resetFilters(): void {
       </div>
     </div>
 
-    <div class="overflow-y-auto">
+    <UiScrollArea viewport-class="pr-3">
       <MasonryGrid
         v-if="isLoading"
         v-slot="{ column }"
@@ -259,7 +259,7 @@ function resetFilters(): void {
           @remix="$emit('remix', $event)"
         />
       </MasonryGrid>
-    </div>
+    </UiScrollArea>
 
     <Pagination
       v-if="data?.pages && data.pages > 1 && !isLoading && data?.items?.length"

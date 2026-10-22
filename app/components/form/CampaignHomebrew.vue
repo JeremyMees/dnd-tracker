@@ -124,7 +124,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       </UiInputGroupAddon>
     </UiInputGroup>
 
-    <div class="min-h-0 flex-1 overflow-y-auto">
+    <UiScrollArea class="min-h-0 flex-1" viewport-class="pr-3">
       <UiTable>
         <UiTableHeader>
           <UiTableRow
@@ -201,7 +201,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
           </UiTableRow>
         </UiTableBody>
       </UiTable>
-    </div>
+    </UiScrollArea>
 
     <div v-if="!!summons.length" class="space-y-2">
       <UiLabel for="summoner" required>

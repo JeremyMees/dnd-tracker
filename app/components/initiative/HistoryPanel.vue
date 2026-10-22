@@ -134,9 +134,11 @@ function eventIcon(type: CombatEventType): string {
 </script>
 
 <template>
-  <aside
+  <UiScrollArea
+    as="aside"
     test-id="history-panel"
-    class="w-full lg:w-[320px] shrink-0 overflow-y-auto p-6 border-t lg:border-t-0 lg:border-l border-border bg-background lg:sticky lg:top-4 lg:h-[calc(100vh-5rem)]"
+    viewport-class="p-6"
+    class="w-full lg:w-[320px] shrink-0 border-t lg:border-t-0 lg:border-l border-border bg-background lg:sticky lg:top-4 lg:h-[calc(100vh-5rem)]"
   >
     <p
       class="text-xs font-bold uppercase tracking-wide text-muted-foreground mb-6"
@@ -181,5 +183,5 @@ function eventIcon(type: CombatEventType): string {
         </div>
       </li>
     </ul>
-  </aside>
+  </UiScrollArea>
 </template>

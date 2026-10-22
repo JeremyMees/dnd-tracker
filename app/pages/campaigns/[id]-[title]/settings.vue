@@ -94,91 +94,90 @@ async function remove(
         </h2>
       </div>
       <div class="grow max-w-4xl">
-        <Card
-          color="secondary"
-          class="overflow-x-auto overflow-y-hidden w-full"
-        >
-          <ClientOnly>
-            <template v-if="members.length > 0">
-              <div
-                v-for="member in members"
-                :key="member.user.id"
-                test-id="member"
-                class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
-              >
-                <div class="flex items-center gap-2">
-                  <Tooltip
-                    :text="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
-                  >
-                    <UiAvatar class="border-2 border-background">
-                      <UiAvatarImage
-                        :src="member.user.avatar"
-                        :alt="member.user.username"
-                      />
-                      <UiAvatarFallback>
-                        <Icon
-                          name="tabler:user"
-                          class="size-6 min-w-6 text-muted-foreground"
+        <Card color="secondary" class="w-full">
+          <UiScrollArea orientation="horizontal" viewport-class="pb-3">
+            <ClientOnly>
+              <template v-if="members.length > 0">
+                <div
+                  v-for="member in members"
+                  :key="member.user.id"
+                  test-id="member"
+                  class="grid sm:grid-cols-3 gap-x-4 gap-y-2 sm:items-center sm:justify-between text-sm border-b border-secondary mb-2 pb-1 last:border-none last:mb-0 last:pb-0"
+                >
+                  <div class="flex items-center gap-2">
+                    <Tooltip
+                      :text="`${member.user.username} ${member.role ? `(${member.role})` : ''}`"
+                    >
+                      <UiAvatar class="border-2 border-background">
+                        <UiAvatarImage
+                          :src="member.user.avatar"
+                          :alt="member.user.username"
                         />
-                      </UiAvatarFallback>
-                    </UiAvatar>
-                  </Tooltip>
-                  <div class="flex flex-col">
-                    <span class="font-bold">
-                      {{ member.user.username }}
-                    </span>
-                    <span class="text-muted-foreground">
-                      {{ member.user.name }}
+                        <UiAvatarFallback>
+                          <Icon
+                            name="tabler:user"
+                            class="size-6 min-w-6 text-muted-foreground"
+                          />
+                        </UiAvatarFallback>
+                      </UiAvatar>
+                    </Tooltip>
+                    <div class="flex flex-col">
+                      <span class="font-bold">
+                        {{ member.user.username }}
+                      </span>
+                      <span class="text-muted-foreground">
+                        {{ member.user.name }}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    v-if="member?.invite"
+                    test-id="invited"
+                    class="flex items-center gap-2"
+                  >
+                    <Icon
+                      name="tabler:send"
+                      :aria-hidden="true"
+                      class="size-4 text-muted-foreground"
+                    />
+                    <span>
+                      {{ $t('general.invited') }}
                     </span>
                   </div>
-                </div>
-                <div
-                  v-if="member?.invite"
-                  test-id="invited"
-                  class="flex items-center gap-2"
-                >
-                  <Icon
-                    name="tabler:send"
-                    :aria-hidden="true"
-                    class="size-4 text-muted-foreground"
+                  <div v-else-if="member.role === 'Owner'" test-id="owner">
+                    {{ $t(`general.roles.Owner.title`) }}
+                  </div>
+                  <FormRoleUpdate
+                    v-else
+                    :member="member"
+                    :campaign-id="props.campaignId"
+                    :owner-is-pro="ownerIsPro"
                   />
-                  <span>
-                    {{ $t('general.invited') }}
-                  </span>
+                  <div class="flex sm:justify-end items-center">
+                    <Tooltip :text="$t('actions.delete')">
+                      <UiButton
+                        test-id="remove"
+                        variant="destructive-ghost"
+                        size="icon-sm"
+                        :disabled="member.role === 'Owner'"
+                        :aria-label="$t('actions.delete')"
+                        @click="remove(member)"
+                      >
+                        <Icon name="tabler:trash" aria-hidden="true" />
+                      </UiButton>
+                    </Tooltip>
+                  </div>
                 </div>
-                <div v-else-if="member.role === 'Owner'" test-id="owner">
-                  {{ $t(`general.roles.Owner.title`) }}
-                </div>
-                <FormRoleUpdate
-                  v-else
-                  :member="member"
-                  :campaign-id="props.campaignId"
-                  :owner-is-pro="ownerIsPro"
-                />
-                <div class="flex sm:justify-end items-center">
-                  <Tooltip :text="$t('actions.delete')">
-                    <UiButton
-                      test-id="remove"
-                      variant="destructive-ghost"
-                      size="icon-sm"
-                      :disabled="member.role === 'Owner'"
-                      :aria-label="$t('actions.delete')"
-                      @click="remove(member)"
-                    >
-                      <Icon name="tabler:trash" aria-hidden="true" />
-                    </UiButton>
-                  </Tooltip>
-                </div>
-              </div>
-            </template>
-            <template v-else>
-              <SkeletonMemberRow v-for="i in 3" :key="i" />
-            </template>
+              </template>
+              <template v-else>
+                <SkeletonMemberRow v-for="i in 3" :key="i" />
+              </template>
 
-            <template #fallback>
-              <SkeletonMemberRow v-for="i in 3" :key="i" />
-            </template>
-          </ClientOnly>
+              <template #fallback>
+                <SkeletonMemberRow v-for="i in 3" :key="i" />
+              </template>
+            </ClientOnly>
+          </UiScrollArea>
         </Card>
         <div class="flex flex-wrap items-center justify-end gap-4 mt-4">
           <ClientOnly>

@@ -55,7 +55,9 @@ describe('LiveRowList', () => {
       global: { stubs },
     })
 
-    const container = component.get('[test-id="list"]').element as HTMLElement
+    const container = component.get(
+      '[test-id="list"] [data-slot="scroll-area-viewport"]',
+    ).element as HTMLElement
     const scrollIntoView = stubRowElement(
       component.findAll('[test-id="row-probe"]')[0]!,
       { top: -50, bottom: -10 },
@@ -78,7 +80,9 @@ describe('LiveRowList', () => {
       global: { stubs },
     })
 
-    const container = component.get('[test-id="list"]').element as HTMLElement
+    const container = component.get(
+      '[test-id="list"] [data-slot="scroll-area-viewport"]',
+    ).element as HTMLElement
     const scrollIntoView = stubRowElement(
       component.findAll('[test-id="row-probe"]')[0]!,
       { top: 10, bottom: 60 },
