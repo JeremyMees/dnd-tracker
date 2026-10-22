@@ -65,7 +65,7 @@ const statue: InitiativeSheetRow = {
   conditions: [],
 }
 
-const patchRow = vi.fn()
+const patchRows = vi.fn()
 const sheet = ref<InitiativeSheet | undefined>()
 
 let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
@@ -112,7 +112,7 @@ async function mount(open = true) {
   wrapper = await mountWithTooltips(AreaDamage, {
     props: { open, 'onUpdate:open': vi.fn() },
     global: {
-      provide: { [INITIATIVE_SHEET]: { sheet, patchRow } },
+      provide: { [INITIATIVE_SHEET]: { sheet, patchRows } },
     },
   })
 
@@ -157,7 +157,7 @@ function damageText(id: string): string {
 describe('Initiative area damage', () => {
   beforeEach(() => {
     resetToast()
-    patchRow.mockReset().mockResolvedValue(undefined)
+    patchRows.mockReset().mockResolvedValue(undefined)
     sheet.value = {
       ...sheetFixture,
       rows: [goblin, imp, elara, lair, statue, dragon],
@@ -204,9 +204,11 @@ describe('Initiative area damage', () => {
     await fill(12)
     await submitForm(body())
 
-    expect(patchRow).toHaveBeenCalledTimes(2)
-    expect(patchRow).toHaveBeenCalledWith('goblin', { hitPoints: 8 })
-    expect(patchRow).toHaveBeenCalledWith('elara', { hitPoints: 18 })
+    expect(patchRows).toHaveBeenCalledOnce()
+    expect(patchRows).toHaveBeenCalledWith([
+      { rowId: 'goblin', patch: { hitPoints: 8 } },
+      { rowId: 'elara', patch: { hitPoints: 18 } },
+    ])
     expect(component.emitted('update:open')).toEqual([[false]])
   })
 
@@ -223,8 +225,10 @@ describe('Initiative area damage', () => {
 
     await submitForm(body())
 
-    expect(patchRow).toHaveBeenCalledWith('goblin', { hitPoints: 14 })
-    expect(patchRow).toHaveBeenCalledWith('imp', { hitPoints: 0 })
+    expect(patchRows).toHaveBeenCalledWith([
+      { rowId: 'goblin', patch: { hitPoints: 14 } },
+      { rowId: 'imp', patch: { hitPoints: 0 } },
+    ])
   })
 
   it('deals no damage on a success when half damage is off', async () => {
@@ -250,7 +254,7 @@ describe('Initiative area damage', () => {
 
     expect(target('goblin').get('[test-id="roll"]').text()).toBe('3')
     expect(damageText('goblin')).toBe('12')
-    expect(patchRow).not.toHaveBeenCalled()
+    expect(patchRows).not.toHaveBeenCalled()
   })
 
   it('asks players to roll their own save', async () => {
@@ -291,7 +295,9 @@ describe('Initiative area damage', () => {
 
     await submitForm(body())
 
-    expect(patchRow).toHaveBeenCalledWith('elara', { hitPoints: 24 })
+    expect(patchRows).toHaveBeenCalledWith([
+      { rowId: 'elara', patch: { hitPoints: 24 } },
+    ])
   })
 
   it('marks a monster as failed when its save is flipped', async () => {
@@ -319,8 +325,9 @@ describe('Initiative area damage', () => {
 
     await submitForm(body())
 
-    expect(patchRow).toHaveBeenCalledTimes(1)
-    expect(patchRow).toHaveBeenCalledWith('goblin', { hitPoints: 10 })
+    expect(patchRows).toHaveBeenCalledWith([
+      { rowId: 'goblin', patch: { hitPoints: 10 } },
+    ])
   })
 
   it.each([
@@ -400,8 +407,43 @@ describe('Initiative area damage', () => {
     await pick('imp')
     await submitForm(body())
 
-    expect(patchRow).toHaveBeenCalledWith('imp', { hitPoints: 0 })
-    expect(patchRow).toHaveBeenCalledWith('dragon', {
+    expect(patchRows).toHaveBeenCalledWith([
+      { rowId: 'imp', patch: { hitPoints: 0 } },
+      {
+        rowId: 'dragon',
+        patch: { resources: { actions: { 'Fire Breath': 1 } } },
+      },
+    ])
+  })
+
+  it('folds the used action into the damage of a source that is also a target', async () => {
+    sheet.value = {
+      ...sheet.value!,
+      rows: [
+        goblin,
+        imp,
+        elara,
+        { ...dragon, hitPoints: 100, maxHitPoints: 100 },
+      ],
+    }
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+
+    await mountWithPrefill()
+
+    await pick('imp')
+    await body()
+      .findAll('[test-id="target"]')[3]!
+      .get('[test-id="select"]')
+      .trigger('click')
+    await settle()
+    await submitForm(body())
+
+    const [patches] = patchRows.mock.calls[0]! as [RowPatch[]]
+    const dragonPatches = patches.filter(({ rowId }) => rowId === 'dragon')
+
+    expect(dragonPatches).toHaveLength(1)
+    expect(dragonPatches[0]!.patch).toMatchObject({
+      hitPoints: expect.any(Number),
       resources: { actions: { 'Fire Breath': 1 } },
     })
   })
@@ -413,8 +455,9 @@ describe('Initiative area damage', () => {
     await pick('imp')
     await submitForm(body())
 
-    expect(patchRow).toHaveBeenCalledTimes(1)
-    expect(patchRow).toHaveBeenCalledWith('imp', { hitPoints: 0 })
+    expect(patchRows).toHaveBeenCalledWith([
+      { rowId: 'imp', patch: { hitPoints: 0 } },
+    ])
   })
 
   it('warns when the source action has no uses left', async () => {
@@ -472,7 +515,7 @@ describe('Initiative area damage', () => {
   it('shows an error when the damage could not be applied', async () => {
     const component = await mount()
 
-    patchRow.mockRejectedValue(new Error('Boom'))
+    patchRows.mockRejectedValue(new Error('Boom'))
 
     await pick('goblin')
     await fill(10)

@@ -30,6 +30,14 @@ const actions = {
       ),
     }
   }),
+  patchRows: vi.fn(async (patches: RowPatch[]) => {
+    const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+    sheet.value = {
+      ...sheet.value!,
+      rows: sheet.value!.rows.map(r => ({ ...r, ...byRow.get(r.id) })),
+    }
+  }),
   nextTurn: vi.fn(async (): Promise<TurnReminders | undefined> => {
     sheet.value = { ...sheet.value!, activeIndex: 1 }
 
@@ -65,6 +73,34 @@ describe('useUndoHistory', () => {
     await history.undo()
 
     expect(sheet.value!.rows[0]!.hitPoints).toBe(20)
+    expect(history.canUndo.value).toBe(false)
+  })
+
+  it('undoes a batch of patched rows as one step', async () => {
+    const history = useUndoHistory(sheet, actions)
+
+    await history.patchRows([
+      { rowId: 'a', patch: { hitPoints: 5 } },
+      { rowId: 'b', patch: { hitPoints: 0 } },
+    ])
+
+    expect(sheet.value!.rows.map(r => r.hitPoints)).toEqual([5, 0])
+
+    await history.undo()
+
+    expect(sheet.value!.rows.map(r => r.hitPoints)).toEqual([20, 8])
+    expect(history.canUndo.value).toBe(false)
+  })
+
+  it('does not record a batch that failed', async () => {
+    const history = useUndoHistory(sheet, actions)
+
+    actions.patchRows.mockRejectedValueOnce(new Error('offline'))
+
+    await expect(
+      history.patchRows([{ rowId: 'a', patch: { hitPoints: 5 } }]),
+    ).rejects.toThrow()
+
     expect(history.canUndo.value).toBe(false)
   })
 

@@ -203,6 +203,13 @@ interface DatabaseOverrides {
         }
         Returns: InitiativeSheetRow
       }
+      apply_live_actions: {
+        Args: {
+          p_encounter: number
+          p_patches: Record<string, Partial<InitiativeSheetRow>>
+        }
+        Returns: InitiativeSheetRow[]
+      }
       increment_live_version: {
         Args: {
           p_session: string

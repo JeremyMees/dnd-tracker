@@ -5,6 +5,7 @@ import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
   useInitiativeSheetPatch,
+  useInitiativeSheetPatchRows,
   useInitiativeSheetTurn,
 } from '~/queries/initiative-sheets'
 
@@ -21,6 +22,7 @@ const id = validateParamId('id' in route.params ? route.params.id : undefined)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
 const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
 const { mutateAsync: patch } = useInitiativeSheetPatch()
+const { mutateAsync: patchRows } = useInitiativeSheetPatchRows()
 const { mutateAsync: turn } = useInitiativeSheetTurn()
 const { mutate: logEvents } = useCombatEventsLog()
 const {
@@ -71,6 +73,12 @@ async function handlePatchRow(
   await patch({ id, rowId, patch: rowPatch })
 }
 
+async function handlePatchRows(patches: RowPatch[]): Promise<void> {
+  if (!data.value) return
+
+  await patchRows({ id, patches })
+}
+
 async function handleNextTurn(): Promise<TurnReminders | undefined> {
   if (!data.value) return
 
@@ -82,6 +90,7 @@ async function handleNextTurn(): Promise<TurnReminders | undefined> {
 const history = useUndoHistory(data, {
   update: handleUpdate,
   patchRow: handlePatchRow,
+  patchRows: handlePatchRows,
   nextTurn: handleNextTurn,
 })
 
@@ -89,6 +98,7 @@ provide(INITIATIVE_SHEET, {
   sheet: data,
   update: history.update,
   patchRow: history.patchRow,
+  patchRows: history.patchRows,
   nextTurn: history.nextTurn,
   undo: history.undo,
   canUndo: history.canUndo,

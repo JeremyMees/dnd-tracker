@@ -8,7 +8,7 @@ const props = defineProps<{ prefill?: AreaDamagePrefill }>()
 const open = defineModel<boolean>('open', { required: true })
 
 const { t } = useI18n()
-const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
+const { sheet, patchRows } = validateInject(INITIATIVE_SHEET)
 const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 const handleToasts = useToastItems()
 
@@ -119,10 +119,10 @@ watch(open, value => {
   formError.value = ''
 })
 
-async function damageRow(row: InitiativeSheetRow): Promise<void> {
+function damagePatch(row: InitiativeSheetRow): RowPatch[] {
   const amount = damageFor(row)
 
-  if (!amount) return
+  if (!amount) return []
 
   const { row: updated, toasts } = handleHpChanges(
     amount,
@@ -133,31 +133,42 @@ async function damageRow(row: InitiativeSheetRow): Promise<void> {
 
   handleToasts(toasts)
 
-  await patchRow(
-    row.id,
-    buildCombatPatch(row, withBloodied(updated, bloodied.value)),
-  )
+  return [
+    {
+      rowId: row.id,
+      patch: buildCombatPatch(row, withBloodied(updated, bloodied.value)),
+    },
+  ]
+}
 
-  animateTableUpdate(`${row.id}-hp`, 'red')
+function withSourceUsed(patches: RowPatch[]): RowPatch[] {
+  if (!source.value?.usesLeft || !markUsed.value) return patches
+
+  const { row, action } = source.value
+  const resources = markActionUsed(row.resources, action)
+
+  if (!patches.some(({ rowId }) => rowId === row.id)) {
+    return [...patches, { rowId: row.id, patch: { resources } }]
+  }
+
+  return patches.map(entry =>
+    entry.rowId === row.id
+      ? { rowId: entry.rowId, patch: { ...entry.patch, resources } }
+      : entry,
+  )
 }
 
 const onSubmit = form.handleSubmit(async () => {
   formError.value = ''
 
+  const damaged = chosen.value.flatMap(damagePatch)
+  const patches = withSourceUsed(damaged)
+
   try {
-    await Promise.all([
-      ...chosen.value.map(damageRow),
-      ...(source.value?.usesLeft && markUsed.value
-        ? [
-            patchRow(source.value.row.id, {
-              resources: markActionUsed(
-                source.value.row.resources,
-                source.value.action,
-              ),
-            }),
-          ]
-        : []),
-    ])
+    if (patches.length) await patchRows(patches)
+
+    for (const { rowId } of damaged) animateTableUpdate(`${rowId}-hp`, 'red')
+
     open.value = false
   } catch (err) {
     formError.value = getErrorMessage(err) || t('components.areaDamage.error')

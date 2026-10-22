@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { toPlayerSheet } from '~~/server/utils/player-portal'
+import { toPlayerSheet, touchesPlayerView } from '~~/server/utils/player-portal'
 import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 const prone = { id: 'prone', name: 'Prone', desc: '' }
@@ -402,5 +402,19 @@ describe('toPlayerSheet', () => {
       ready: true,
       endTurn: true,
     })
+  })
+})
+
+describe('touchesPlayerView', () => {
+  it('is false for a DM-only note change', () => {
+    expect(touchesPlayerView({ note: 'Flanking' })).toBe(false)
+  })
+
+  it.each([
+    [{ hitPoints: 3 }],
+    [{ name: 'Renamed' }],
+    [{ note: 'Flanking', conditions: [] }],
+  ])('is true for %o', patch => {
+    expect(touchesPlayerView(patch)).toBe(true)
   })
 })

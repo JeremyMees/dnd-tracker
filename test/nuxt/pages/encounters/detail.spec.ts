@@ -22,6 +22,7 @@ const {
   subscribe,
   update,
   patch,
+  patchRows,
   turn,
   useSeo,
 } = vi.hoisted(() => ({
@@ -35,6 +36,7 @@ const {
   subscribe: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
+  patchRows: vi.fn(),
   turn: vi.fn(),
   useSeo: vi.fn(),
 }))
@@ -57,6 +59,7 @@ vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
   useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
+  useInitiativeSheetPatchRows: () => ({ mutateAsync: patchRows }),
   useInitiativeSheetTurn: () => ({ mutateAsync: turn }),
 }))
 
@@ -114,6 +117,7 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
   onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
   log: (events: CombatEventDraft[]) => void
@@ -557,6 +561,27 @@ describe('Encounter detail page', () => {
     await probe.patchRow('ylqr4a611g', { hitPoints: 3 })
 
     expect(patch).not.toHaveBeenCalled()
+  })
+
+  it('Should patch several rows in one batch through useInitiativeSheetPatchRows', async () => {
+    const { probe } = await mountPage()
+    const patches = [{ rowId: 'ylqr4a611g', patch: { hitPoints: 3 } }]
+
+    await probe.patchRows(patches)
+
+    expect(patchRows).toHaveBeenCalledWith({ id: 2, patches })
+    expect(patch).not.toHaveBeenCalled()
+  })
+
+  it('Should not patch rows when there is no encounter', async () => {
+    data.value = undefined
+
+    const { component } = await mountPage()
+    const probe = component.findComponent(SheetProbe).vm as unknown as Probe
+
+    await probe.patchRows([{ rowId: 'ylqr4a611g', patch: { hitPoints: 3 } }])
+
+    expect(patchRows).not.toHaveBeenCalled()
   })
 
   it('Should advance the turn through useInitiativeSheetTurn and return the reminders', async () => {

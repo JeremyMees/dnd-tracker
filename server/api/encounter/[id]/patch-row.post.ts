@@ -1,39 +1,14 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
-import {
-  conditionSchema,
-  deathSavesSchema,
-  resourceUsesSchema,
-} from '~~/shared/utils/dnd/schema'
+import { rowPatchSchema } from '~~/shared/utils/dnd/schema'
 import { getValidatedRouterParams } from 'h3'
 import { z } from 'zod'
 
 const paramsSchema = z.object({ id: z.coerce.number().int().positive() })
 
-const dmOnlyRowFields = new Set(['note'])
-
 const bodySchema = z.object({
   rowId: z.string().min(1),
-  patch: z
-    .object({
-      hitPoints: z.number().int().optional(),
-      maxHitPoints: z.number().int().optional(),
-      maxHitPointsOld: z.number().int().optional(),
-      tempHitPoints: z.number().int().optional(),
-      armorClass: z.number().int().optional(),
-      maxArmorClass: z.number().int().optional(),
-      maxArmorClassOld: z.number().int().optional(),
-      tempArmorClass: z.number().int().optional(),
-      conditions: z.array(conditionSchema).optional(),
-      deathSaves: deathSavesSchema.optional(),
-      concentration: z.boolean().optional(),
-      readied: z.boolean().optional(),
-      hidden: z.boolean().optional(),
-      resources: resourceUsesSchema.optional(),
-      name: z.string().trim().min(2).max(50).optional(),
-      note: z.string().max(250).optional(),
-    })
-    .strict(),
+  patch: rowPatchSchema,
 })
 
 export default defineEventHandler(async event => {
@@ -83,7 +58,7 @@ export default defineEventHandler(async event => {
       row: body.rowId,
       patch: body.patch,
     }),
-    ...(Object.keys(body.patch).some(key => !dmOnlyRowFields.has(key))
+    ...(touchesPlayerView(body.patch)
       ? [broadcastActiveLiveState(supabase, id)]
       : []),
   ])

@@ -1,6 +1,7 @@
 interface UndoableActions {
   update: (payload: UpdateInitiativeSheetData) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
 }
 
@@ -64,6 +65,24 @@ export function useUndoHistory(
     })
   }
 
+  async function patchRows(patches: RowPatch[]): Promise<void> {
+    const before = sheet.value ? snapshotSheet(sheet.value) : undefined
+
+    await actions.patchRows(patches)
+
+    if (!before) return
+
+    const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+    push({
+      before,
+      after: snapshotSheet({
+        ...before,
+        rows: before.rows.map(row => ({ ...row, ...byRow.get(row.id) })),
+      }),
+    })
+  }
+
   async function nextTurn(): Promise<TurnReminders | undefined> {
     const before = sheet.value ? snapshotSheet(sheet.value) : undefined
 
@@ -113,5 +132,14 @@ export function useUndoHistory(
     }))
   }
 
-  return { update, patchRow, nextTurn, undo, redo, canUndo, canRedo }
+  return {
+    update,
+    patchRow,
+    patchRows,
+    nextTurn,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  }
 }

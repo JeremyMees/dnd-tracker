@@ -1,3 +1,9 @@
+const dmOnlyRowFields = new Set(['note'])
+
+export function touchesPlayerView(patch: object): boolean {
+  return Object.keys(patch).some(key => !dmOnlyRowFields.has(key))
+}
+
 function toPlayerRow(
   row: InitiativeSheetRow,
   monsterOrdinal: number,
