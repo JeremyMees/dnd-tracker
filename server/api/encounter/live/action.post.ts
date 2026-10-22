@@ -50,7 +50,7 @@ export default defineEventHandler(async event => {
 
   const seat = session.seats.find(s => s.seat === payload.seat)
 
-  if (!seat || !seat.row) {
+  if (!seat?.row) {
     throw createError({ statusCode: 403, statusMessage: 'No row claimed' })
   }
 
@@ -94,39 +94,12 @@ export default defineEventHandler(async event => {
     return { synced: true }
   }
 
-  let patch
-
-  if (body.action.type === 'hp') {
-    patch = await buildHpPatch(
-      supabase,
-      payload.encounter,
-      seat.row,
-      body.action,
-    )
-  } else if (body.action.type === 'ac') {
-    patch = await buildAcPatch(
-      supabase,
-      payload.encounter,
-      seat.row,
-      body.action,
-    )
-  } else if (body.action.type === 'reaction') {
-    patch = {
-      resources: {
-        ...ownRow.resources,
-        reaction: body.action.value || undefined,
-      },
-    }
-  } else if (body.action.type === 'ready') {
-    patch = body.action.value
-      ? { readied: true }
-      : {
-          readied: false,
-          resources: { ...ownRow.resources, reaction: true },
-        }
-  } else {
-    patch = { [body.action.type]: body.action.value }
-  }
+  const patch = await buildLiveActionPatch(
+    supabase,
+    payload.encounter,
+    ownRow,
+    body.action,
+  )
 
   const { data: row, error } = await supabase.rpc('apply_live_action', {
     p_encounter: payload.encounter,

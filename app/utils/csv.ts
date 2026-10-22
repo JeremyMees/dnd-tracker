@@ -1,24 +1,45 @@
+function readQuoted(
+  text: string,
+  start: number,
+): { value: string; end: number } {
+  let value = ''
+  let index = start
+
+  while (index < text.length) {
+    const char = text[index]!
+
+    if (char !== '"') {
+      value += char
+      index++
+    } else if (text[index + 1] === '"') {
+      value += '"'
+      index += 2
+    } else {
+      return { value, end: index + 1 }
+    }
+  }
+
+  return { value, end: index }
+}
+
 export function parseCsvRows(text: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
   let field = ''
-  let quoted = false
+  let index = 0
 
-  for (let index = 0; index < text.length; index++) {
+  while (index < text.length) {
     const char = text[index]!
 
-    if (quoted) {
-      if (char === '"' && text[index + 1] === '"') {
-        field += '"'
-        index++
-      } else if (char === '"') {
-        quoted = false
-      } else {
-        field += char
-      }
-    } else if (char === '"') {
-      quoted = true
-    } else if (char === ',') {
+    if (char === '"') {
+      const quoted = readQuoted(text, index + 1)
+
+      field += quoted.value
+      index = quoted.end
+      continue
+    }
+
+    if (char === ',') {
       row.push(field)
       field = ''
     } else if (char === '\n' || char === '\r') {
@@ -30,6 +51,8 @@ export function parseCsvRows(text: string): string[][] {
     } else {
       field += char
     }
+
+    index++
   }
 
   if (field || row.length) {

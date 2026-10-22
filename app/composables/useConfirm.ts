@@ -50,21 +50,17 @@ export function useConfirm() {
   const { t } = useI18n()
 
   function ask(config: ConfirmConfig, callback: ConfirmCallback) {
-    dialogs.value.push(
-      Object.assign(
-        {
-          uuid: crypto.randomUUID(),
-          callback,
-          loading: false,
-          closing: false,
-          title: t('components.confirmationModal.title'),
-          description: t('components.confirmationModal.text'),
-          confirmText: t('actions.continue'),
-          declineText: t('actions.cancel'),
-        },
-        config,
-      ),
-    )
+    dialogs.value.push({
+      uuid: crypto.randomUUID(),
+      callback,
+      loading: false,
+      closing: false,
+      title: t('components.confirmationModal.title'),
+      description: t('components.confirmationModal.text'),
+      confirmText: t('actions.continue'),
+      declineText: t('actions.cancel'),
+      ...config,
+    })
   }
 
   return {

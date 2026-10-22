@@ -93,6 +93,20 @@ describe('useInitiativeSheet', async () => {
     await flushPromises()
   })
 
+  it('Should swallow a failed update when going back or resetting', async () => {
+    mockSheet.value.round = 2
+
+    const { previous, reset } = useInitiativeSheet(
+      sheetComputed,
+      () => Promise.reject(new Error('boom')),
+      nextTurn,
+    )
+
+    expect(() => previous()).not.toThrow()
+    expect(() => reset(true)).not.toThrow()
+    await flushPromises()
+  })
+
   it('Should go to last row when the first row is active the round is not 1 and previous is called', async () => {
     mockSheet.value.round = 2
 

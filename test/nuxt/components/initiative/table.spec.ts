@@ -19,7 +19,7 @@ interface Props {
   encounterId?: number
 }
 
-const mockUpdate = vi.fn()
+const mockUpdate = vi.fn().mockResolvedValue(undefined)
 const mockNextTurn = vi.fn().mockResolvedValue(undefined)
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()

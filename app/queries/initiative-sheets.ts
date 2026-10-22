@@ -154,7 +154,7 @@ export function useInitiativeSheetTurn() {
           },
       )
 
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.combatEvents(id),
       })
     },

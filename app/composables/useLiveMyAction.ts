@@ -125,7 +125,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
         body: { seatToken, action: { type: 'endTurn' } },
       })
 
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.liveState(token, seatToken),
       })
 

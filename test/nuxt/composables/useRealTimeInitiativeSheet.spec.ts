@@ -15,7 +15,6 @@ const {
   removeChannel,
   setQueryData,
   subscribe,
-  unsubscribe,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
   invalidateQueries: vi.fn(),
@@ -24,10 +23,9 @@ const {
   removeChannel: vi.fn(),
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
-  unsubscribe: vi.fn(),
 }))
 
-const channel = { on, subscribe, unsubscribe }
+const channel = { on, subscribe }
 
 on.mockReturnValue(channel)
 subscribe.mockReturnValue(channel)
@@ -369,7 +367,6 @@ describe('useRealTimeInitiativeSheet', () => {
 
     component.unmount()
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 

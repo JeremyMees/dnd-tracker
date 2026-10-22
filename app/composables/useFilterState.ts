@@ -123,7 +123,7 @@ export function useFilterState<T extends Record<string, unknown>>(
 
       if (isSameQuery(query, route.query)) return
 
-      router.replace({ query })
+      router.replace({ query }).catch(() => undefined)
     })
 
     watch(

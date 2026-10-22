@@ -5,25 +5,17 @@ import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLiveSeats } from '~/composables/useLiveSeats'
 
-const {
-  fetchMock,
-  on,
-  subscribe,
-  unsubscribe,
-  removeChannel,
-  presenceState,
-  channelFn,
-} = vi.hoisted(() => ({
-  fetchMock: vi.fn(),
-  on: vi.fn(),
-  subscribe: vi.fn(),
-  unsubscribe: vi.fn(),
-  removeChannel: vi.fn(),
-  presenceState: vi.fn(() => ({})),
-  channelFn: vi.fn(),
-}))
+const { fetchMock, on, subscribe, removeChannel, presenceState, channelFn } =
+  vi.hoisted(() => ({
+    fetchMock: vi.fn(),
+    on: vi.fn(),
+    subscribe: vi.fn(),
+    removeChannel: vi.fn(),
+    presenceState: vi.fn(() => ({})),
+    channelFn: vi.fn(),
+  }))
 
-const channel = { on, subscribe, unsubscribe, presenceState }
+const channel = { on, subscribe, presenceState }
 
 mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('useSupabaseClient', () => () => ({
@@ -169,7 +161,7 @@ describe('useLiveSeats', () => {
     session.value = { uuid: 'other-uuid', seats: [] }
     await flushPromises()
 
-    expect(unsubscribe).toHaveBeenCalled()
+    expect(removeChannel).toHaveBeenCalledWith(channel)
     expect(channelFn).toHaveBeenCalledWith('live:other-uuid')
   })
 
@@ -180,7 +172,6 @@ describe('useLiveSeats', () => {
 
     component.unmount()
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 

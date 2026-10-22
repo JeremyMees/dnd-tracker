@@ -10,7 +10,7 @@ const contentTables = {
   armor: 'srd_armor',
 } as const
 
-const SRD_RULE_DOCUMENTS = ['srd-2014', 'srd-2024']
+const SRD_RULE_DOCUMENTS = new Set(['srd-2014', 'srd-2024'])
 const CONDITION_FALLBACK_DOCUMENT = 'core'
 
 const monsterOrderColumns = [
@@ -38,7 +38,7 @@ export function monsterOrder(ordering: DndSortBy): {
 }
 
 function conditionDocuments(documents: string[]): string[] {
-  if (!documents.some(key => SRD_RULE_DOCUMENTS.includes(key))) return documents
+  if (!documents.some(key => SRD_RULE_DOCUMENTS.has(key))) return documents
 
   return [...new Set([...documents, CONDITION_FALLBACK_DOCUMENT])]
 }

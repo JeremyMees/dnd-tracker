@@ -3,7 +3,7 @@ import { damageTypes } from '~~/constants/dnd'
 const DC = /\bDC\s*(\d+)/i
 const ABILITY =
   /\b(strength|dexterity|constitution|intelligence|wisdom|charisma)\s+saving throw/i
-const DAMAGE = /\((\d+d\d+)(?:\s*([+-])\s*(\d+))?\)\s*([a-z]+)?\s*damage/i
+const DAMAGE = /\((\d+d\d+)(?:\s*([+-])\s*(\d+))?\)\s*(?:([a-z]+)\s+)?damage/i
 const HALF = /half (?:as much )?damage/i
 const ATTACK_ROLL = /attack roll|weapon attack|spell attack/i
 
@@ -16,22 +16,23 @@ function toDamageType(value?: string): DndDamageType | undefined {
 export function parseSaveEffect(desc: string): DndSaveEffect | undefined {
   if (ATTACK_ROLL.test(desc)) return undefined
 
-  const dc = desc.match(DC)
-  const ability = desc.match(ABILITY)
+  const dc = DC.exec(desc)
+  const ability = ABILITY.exec(desc)
 
   if (!dc || !ability) return undefined
 
-  const damage = desc.slice(ability.index).match(DAMAGE)
+  const damage = DAMAGE.exec(desc.slice(ability.index))
 
   if (!damage) return undefined
 
   const [, dice, sign, bonus, type] = damage
+  const magnitude = Number(bonus ?? 0)
 
   return {
     dc: Number(dc[1]),
     ability: ability[1]!.toLowerCase() as DndAbility,
     dice: dice!,
-    bonus: bonus ? Number(bonus) * (sign === '-' ? -1 : 1) : 0,
+    bonus: sign === '-' ? -magnitude : magnitude,
     damageType: toDamageType(type),
     halfOnSuccess: HALF.test(desc),
   }

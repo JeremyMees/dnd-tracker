@@ -1,4 +1,4 @@
-import {
+export {
   PaginationList,
   PaginationListItem,
   PaginationRoot as Pagination,
@@ -9,4 +9,3 @@ export { default as PaginationFirst } from './PaginationFirst.vue'
 export { default as PaginationLast } from './PaginationLast.vue'
 export { default as PaginationNext } from './PaginationNext.vue'
 export { default as PaginationPrev } from './PaginationPrev.vue'
-export { PaginationList, PaginationListItem, Pagination }

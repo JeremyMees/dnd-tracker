@@ -1,5 +1,6 @@
 import { Stripe } from 'stripe'
 import type { H3Event } from 'h3'
+import type { serverSupabaseServiceRole } from '#supabase/server'
 
 export const stripe = new Stripe(useRuntimeConfig().stripeApiKey, {
   apiVersion: '2026-09-30.endive',
@@ -46,11 +47,11 @@ const STATUS_MAP: Record<string, SubscriptionStatus> = {
   paused: 'canceled',
 }
 
-const ENTITLED_STATUSES: SubscriptionStatus[] = [
+const ENTITLED_STATUSES = new Set<SubscriptionStatus>([
   'active',
   'trialing',
   'past_due',
-]
+])
 
 export function resolveStatus(
   status: Stripe.Subscription.Status,
@@ -59,7 +60,7 @@ export function resolveStatus(
 }
 
 export function isEntitled(status: SubscriptionStatus): boolean {
-  return ENTITLED_STATUSES.includes(status)
+  return ENTITLED_STATUSES.has(status)
 }
 
 export function resolvePeriodEnd(
@@ -100,6 +101,110 @@ export async function resolveSubscriptionTier(
         : product,
     ),
   )
+}
+
+export async function updateBillingProfile(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  id: string,
+  values: ProfileUpdate,
+): Promise<void> {
+  const { error } = await supabase.from('profiles').update(values).eq('id', id)
+
+  if (error) {
+    throw createError({ statusCode: 500, statusMessage: 'Update failed' })
+  }
+}
+
+export function guardSubscription(
+  profile: BillingProfile,
+  subscriptionId: string,
+): string | undefined {
+  if (profile.billingInterval === 'lifetime') return 'lifetime, ignoring'
+  if (subscriptionId !== profile.stripeSubscriptionId) {
+    return 'stale subscription'
+  }
+}
+
+export async function syncSubscription(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  profile: BillingProfile,
+  subscription: Stripe.Subscription,
+): Promise<void> {
+  const status = resolveStatus(subscription.status)
+  const values: ProfileUpdate = {
+    subscriptionPeriodEnd: resolvePeriodEnd(subscription),
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
+  }
+
+  if (status) {
+    values.subscriptionStatus = status
+
+    if (!isEntitled(status)) {
+      values.subscriptionType = 'free'
+      values.billingInterval = null
+      values.subscriptionPeriodEnd = null
+      values.cancelAtPeriodEnd = false
+    } else if (profile.subscriptionType === 'free') {
+      values.subscriptionType = await resolveSubscriptionTier(subscription)
+    }
+  }
+
+  await updateBillingProfile(supabase, profile.id, values)
+}
+
+export async function completeCheckout(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  profile: BillingProfile,
+  session: Stripe.Checkout.Session,
+): Promise<string | undefined> {
+  if (session.payment_status === 'unpaid') {
+    return `Awaiting payment for session ${session.id}`
+  }
+
+  const items = await stripe.checkout.sessions.listLineItems(session.id, {
+    limit: 1,
+    expand: ['data.price.product'],
+  })
+
+  const tier = resolveTier(resolveProduct(items.data[0]?.price?.product))
+
+  if (session.mode === 'payment') {
+    await updateBillingProfile(supabase, profile.id, {
+      subscriptionType: tier,
+      billingInterval: 'lifetime',
+      subscriptionStatus: null,
+      subscriptionPeriodEnd: null,
+      cancelAtPeriodEnd: false,
+    })
+
+    if (profile.stripeSubscriptionId) {
+      await cancelSubscriptionIfActive(profile.stripeSubscriptionId)
+      await updateBillingProfile(supabase, profile.id, {
+        stripeSubscriptionId: null,
+      })
+    }
+
+    return undefined
+  }
+
+  if (session.mode === 'subscription') {
+    const subscription = await stripe.subscriptions.retrieve(
+      session.subscription as string,
+    )
+
+    await updateBillingProfile(supabase, profile.id, {
+      subscriptionType: tier,
+      billingInterval: 'month',
+      stripeSubscriptionId: subscription.id,
+      subscriptionStatus: resolveStatus(subscription.status),
+      subscriptionPeriodEnd: resolvePeriodEnd(subscription),
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    })
+
+    return undefined
+  }
+
+  return `Ignoring session with mode ${session.mode}`
 }
 
 const STRIPE_IPS_URL = 'https://stripe.com/files/ips/ips_webhooks.json'

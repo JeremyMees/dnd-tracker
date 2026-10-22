@@ -7,7 +7,7 @@ export function useInitiativeSheet(
   ) => Promise<void>,
   nextTurn: () => Promise<void>,
 ) {
-  const defaultColumns = ['index', 'name', 'initiative']
+  const defaultColumns = new Set(['index', 'name', 'initiative'])
   const hidableColumns = [
     'armorClass',
     'hitPoints',
@@ -29,17 +29,16 @@ export function useInitiativeSheet(
   })
 
   const columnVisibility = computed(() => {
-    const rows = sheet.value?.settings
-      ? sheet.value.settings.modified
+    const rows = new Set(
+      sheet.value?.settings?.modified
         ? sheet.value.settings.rows || []
-        : hidableColumns
-      : hidableColumns
+        : hidableColumns,
+    )
 
     return [...defaultColumns, ...hidableColumns].reduce(
       (acc, column) => {
-        const defaultColumn = defaultColumns.includes(column)
-        acc[column] =
-          defaultColumn || !sheet.value ? true : rows.includes(column)
+        const defaultColumn = defaultColumns.has(column)
+        acc[column] = defaultColumn || !sheet.value ? true : rows.has(column)
         return acc
       },
       {} as Record<string, boolean>,
@@ -161,7 +160,7 @@ export function useInitiativeSheet(
       : sheet.value.activeIndex - 1
     const round = isAtStart ? sheet.value.round - 1 : sheet.value.round
 
-    update({ activeIndex, round })
+    update({ activeIndex, round }).catch(() => undefined)
 
     const index = sheet.value.rows[activeIndex] ? activeIndex : 0
 
@@ -232,7 +231,7 @@ export function useInitiativeSheet(
       }
     }
 
-    update(updatePayload)
+    update(updatePayload).catch(() => undefined)
 
     if (!sheet.value.rows[0]) return
 

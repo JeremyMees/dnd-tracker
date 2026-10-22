@@ -1,5 +1,14 @@
-import { useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient, type QueryClient } from '@tanstack/vue-query'
 import { toast } from 'vue-sonner'
+
+function refreshCampaignTeam(queryClient: QueryClient, campaign: number): void {
+  void queryClient.invalidateQueries({
+    queryKey: queryKeys.campaignDetail(campaign),
+  })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
+  void queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+  queryClient.removeQueries({ queryKey: queryKeys.campaignMember(campaign) })
+}
 
 export function useJoinTokenRemove() {
   const supabase = useSupabaseClient<DB>()
@@ -18,7 +27,7 @@ export function useJoinTokenRemove() {
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign }) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.campaignDetail(campaign),
       })
     },
@@ -48,14 +57,7 @@ export function useTeamMemberUpdate() {
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign }) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.campaignDetail(campaign),
-      })
-      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
-      queryClient.removeQueries({
-        queryKey: queryKeys.campaignMember(campaign),
-      })
+      refreshCampaignTeam(queryClient, campaign)
     },
   })
 }
@@ -74,14 +76,7 @@ export function useTeamMemberRemove() {
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign }) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.campaignDetail(campaign),
-      })
-      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
-      queryClient.removeQueries({
-        queryKey: queryKeys.campaignMember(campaign),
-      })
+      refreshCampaignTeam(queryClient, campaign)
     },
     onError: error => {
       toast.error(t('general.error.failed.memberRemove'), {
@@ -107,8 +102,12 @@ export function useCampaignLeave() {
       if (error) throw createError(error)
     },
     onSuccess: (_data, { campaign }) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.campaignListing() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.campaignMinimal() })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.campaignListing(),
+      })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.campaignMinimal(),
+      })
       queryClient.removeQueries({
         queryKey: queryKeys.campaignDetail(campaign),
       })

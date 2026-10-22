@@ -3,6 +3,16 @@ import type { Stripe } from 'stripe'
 import { mockEvent } from '~~/test/unit/stubs/api-event'
 import { mockStorage, useStorage } from '~~/test/unit/stubs/storage'
 import {
+  mockChain,
+  mockFrom,
+  serverSupabaseServiceRole,
+} from '~~/test/unit/stubs/supabase'
+import {
+  mockLineItems,
+  mockProduct,
+  mockSubscription,
+} from '~~/test/fixtures/stripe'
+import {
   resolveProduct,
   resolveTier,
   resolveInterval,
@@ -11,6 +21,10 @@ import {
   resolvePeriodEnd,
   resolveInvoiceSubscription,
   resolveSubscriptionTier,
+  guardSubscription,
+  updateBillingProfile,
+  syncSubscription,
+  completeCheckout,
   assertStripeIp,
   stripe,
 } from '~~/server/utils/stripe'
@@ -221,6 +235,241 @@ describe('stripe', () => {
           parent: { subscription_details: null },
         } as Stripe.Invoice),
       ).toBeNull()
+    })
+  })
+
+  describe('guardSubscription', () => {
+    const profile: BillingProfile = {
+      id: 'user-1',
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      stripeSubscriptionId: 'sub_1',
+    }
+
+    it('lets the current subscription through', () => {
+      expect(guardSubscription(profile, 'sub_1')).toBeUndefined()
+    })
+
+    it('ignores a stale subscription', () => {
+      expect(guardSubscription(profile, 'sub_old')).toBe('stale subscription')
+    })
+
+    it('ignores subscription events for a lifetime profile', () => {
+      expect(
+        guardSubscription({ ...profile, billingInterval: 'lifetime' }, 'sub_1'),
+      ).toBe('lifetime, ignoring')
+    })
+  })
+
+  describe('billing profile updates', () => {
+    const periodEnd = new Date(1893456000 * 1000).toISOString()
+    const profile: BillingProfile = {
+      id: 'user-1',
+      subscriptionType: 'pro',
+      billingInterval: 'month',
+      stripeSubscriptionId: 'sub_1',
+    }
+
+    function profiles(error: unknown = null) {
+      const chain = mockChain({ error })
+
+      mockFrom({ profiles: chain })
+
+      return { supabase: serverSupabaseServiceRole({} as never), chain }
+    }
+
+    function subscription(
+      overrides: Partial<Stripe.Subscription> = {},
+    ): Stripe.Subscription {
+      return {
+        id: 'sub_1',
+        status: 'active',
+        cancel_at_period_end: false,
+        items: {
+          data: [
+            { current_period_end: 1893456000, price: { product: 'prod_1' } },
+          ],
+        },
+        ...overrides,
+      } as Stripe.Subscription
+    }
+
+    function session(
+      overrides: Partial<Stripe.Checkout.Session> = {},
+    ): Stripe.Checkout.Session {
+      return {
+        id: 'cs_1',
+        payment_status: 'paid',
+        mode: 'payment',
+        ...overrides,
+      } as Stripe.Checkout.Session
+    }
+
+    beforeEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    describe('updateBillingProfile', () => {
+      it('updates the profile with the given id', async () => {
+        const { supabase, chain } = profiles()
+
+        await updateBillingProfile(supabase, 'user-1', {
+          subscriptionStatus: 'past_due',
+        })
+
+        expect(chain.update).toHaveBeenCalledWith({
+          subscriptionStatus: 'past_due',
+        })
+        expect(chain.eq).toHaveBeenCalledWith('id', 'user-1')
+      })
+
+      it('throws a 500 when the update fails', async () => {
+        const { supabase } = profiles({ message: 'boom' })
+
+        await expect(
+          updateBillingProfile(supabase, 'user-1', {}),
+        ).rejects.toThrow(
+          expect.objectContaining({
+            statusCode: 500,
+            statusMessage: 'Update failed',
+          }),
+        )
+      })
+    })
+
+    describe('syncSubscription', () => {
+      it('stores the status and period of an entitled subscription', async () => {
+        const { supabase, chain } = profiles()
+
+        await syncSubscription(supabase, profile, subscription())
+
+        expect(chain.update).toHaveBeenCalledWith({
+          subscriptionStatus: 'active',
+          subscriptionPeriodEnd: periodEnd,
+          cancelAtPeriodEnd: false,
+        })
+      })
+
+      it('resolves the tier when a free profile becomes entitled', async () => {
+        const { supabase, chain } = profiles()
+        const retrieve = mockProduct()
+
+        await syncSubscription(
+          supabase,
+          { ...profile, subscriptionType: 'free' },
+          subscription(),
+        )
+
+        expect(retrieve).toHaveBeenCalledWith('prod_1')
+        expect(chain.update).toHaveBeenCalledWith(
+          expect.objectContaining({ subscriptionType: 'pro' }),
+        )
+      })
+
+      it('downgrades the profile when the subscription is no longer entitled', async () => {
+        const { supabase, chain } = profiles()
+
+        await syncSubscription(
+          supabase,
+          profile,
+          subscription({ status: 'canceled', cancel_at_period_end: true }),
+        )
+
+        expect(chain.update).toHaveBeenCalledWith({
+          subscriptionStatus: 'canceled',
+          subscriptionType: 'free',
+          billingInterval: null,
+          subscriptionPeriodEnd: null,
+          cancelAtPeriodEnd: false,
+        })
+      })
+    })
+
+    describe('completeCheckout', () => {
+      it('waits on an unpaid session without updating the profile', async () => {
+        const { supabase, chain } = profiles()
+
+        await expect(
+          completeCheckout(
+            supabase,
+            profile,
+            session({ payment_status: 'unpaid' }),
+          ),
+        ).resolves.toBe('Awaiting payment for session cs_1')
+        expect(chain.update).not.toHaveBeenCalled()
+      })
+
+      it('grants lifetime access for a one-off payment', async () => {
+        const { supabase, chain } = profiles()
+
+        mockLineItems()
+
+        await expect(
+          completeCheckout(
+            supabase,
+            { ...profile, stripeSubscriptionId: null },
+            session(),
+          ),
+        ).resolves.toBeUndefined()
+        expect(chain.update).toHaveBeenCalledTimes(1)
+        expect(chain.update).toHaveBeenCalledWith({
+          subscriptionType: 'pro',
+          billingInterval: 'lifetime',
+          subscriptionStatus: null,
+          subscriptionPeriodEnd: null,
+          cancelAtPeriodEnd: false,
+        })
+      })
+
+      it('cancels a running subscription after a lifetime purchase', async () => {
+        const { supabase, chain } = profiles()
+        const cancel = vi
+          .spyOn(stripe.subscriptions, 'cancel')
+          .mockResolvedValue({} as never)
+
+        mockLineItems()
+        mockSubscription()
+
+        await completeCheckout(supabase, profile, session())
+
+        expect(cancel).toHaveBeenCalledWith('sub_1')
+        expect(chain.update).toHaveBeenLastCalledWith({
+          stripeSubscriptionId: null,
+        })
+      })
+
+      it('stores a new monthly subscription', async () => {
+        const { supabase, chain } = profiles()
+
+        mockLineItems()
+        mockSubscription({ id: 'sub_2' })
+
+        await completeCheckout(
+          supabase,
+          profile,
+          session({ mode: 'subscription', subscription: 'sub_2' }),
+        )
+
+        expect(chain.update).toHaveBeenCalledWith({
+          subscriptionType: 'pro',
+          billingInterval: 'month',
+          stripeSubscriptionId: 'sub_2',
+          subscriptionStatus: 'active',
+          subscriptionPeriodEnd: periodEnd,
+          cancelAtPeriodEnd: false,
+        })
+      })
+
+      it('ignores any other session mode', async () => {
+        const { supabase, chain } = profiles()
+
+        mockLineItems()
+
+        await expect(
+          completeCheckout(supabase, profile, session({ mode: 'setup' })),
+        ).resolves.toBe('Ignoring session with mode setup')
+        expect(chain.update).not.toHaveBeenCalled()
+      })
     })
   })
 

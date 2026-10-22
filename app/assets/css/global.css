@@ -368,8 +368,7 @@
     scrollbar-width: none;
   }
 
-  abbr[title],
-  acronym[title] {
+  abbr[title] {
     @apply no-underline;
   }
 

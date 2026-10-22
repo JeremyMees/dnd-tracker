@@ -135,10 +135,9 @@ const SPELL_DURATION_ROUNDS: Record<string, number> = {
 }
 
 export function spellDurationRounds(duration: string): number | undefined {
-  const match = duration
-    .trim()
-    .toLowerCase()
-    .match(/^(\d+)\s+(round|turn|minute|hour)s?$/)
+  const match = /^(\d+)\s+(round|turn|minute|hour)s?$/.exec(
+    duration.trim().toLowerCase(),
+  )
 
   if (!match) return undefined
 

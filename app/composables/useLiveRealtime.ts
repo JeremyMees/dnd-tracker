@@ -21,7 +21,7 @@ export function useLiveRealtime(
   }
 
   function refetch(): void {
-    queryClient.invalidateQueries({ queryKey: queryKey() })
+    void queryClient.invalidateQueries({ queryKey: queryKey() })
   }
 
   function applyAction(payload: LiveActionEvent): void {
@@ -95,7 +95,7 @@ export function useLiveRealtime(
       .on('broadcast', { event: 'ended' }, refetch)
       .subscribe(status => {
         if (status === 'SUBSCRIBED' && seatId.value) {
-          channel!.track({ seat: seatId.value })
+          void channel!.track({ seat: seatId.value })
         }
       })
   }
@@ -103,8 +103,7 @@ export function useLiveRealtime(
   function unsubscribe(): void {
     if (!channel) return
 
-    channel.unsubscribe()
-    supabase.removeChannel(channel)
+    void supabase.removeChannel(channel)
     channel = undefined
   }
 

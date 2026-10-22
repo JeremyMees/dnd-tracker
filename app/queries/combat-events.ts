@@ -78,7 +78,7 @@ export function useCombatEventsLog() {
       )
     },
     onSettled: (_result, _error, { encounterId }) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.combatEvents(encounterId),
       })
     },

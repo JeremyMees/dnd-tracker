@@ -11,6 +11,7 @@ import {
   broadcastLiveSeats,
   buildAcPatch,
   buildHpPatch,
+  buildLiveActionPatch,
   liveActionSchema,
   sanitizeBroadcastPatch,
 } from '~~/server/utils/live-broadcast'
@@ -637,6 +638,102 @@ describe('live-broadcast', () => {
         statusCode: 404,
         statusMessage: 'Row not found',
       })
+    })
+  })
+
+  describe('buildLiveActionPatch', () => {
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'player',
+      conditions: [],
+      hitPoints: 20,
+      maxHitPoints: 30,
+      armorClass: 15,
+      maxArmorClass: 18,
+      tempArmorClass: 0,
+      resources: { reaction: true },
+    }
+
+    it('builds an hp patch from the stored row', async () => {
+      const supabase = supabaseWithSheet({
+        rows: [row],
+        settings: { negative: false },
+      })
+
+      const patch = await buildLiveActionPatch(supabase, 7, row, {
+        type: 'hp',
+        hpType: 'heal',
+        amount: 5,
+      })
+
+      expect(patch).toMatchObject({ hitPoints: 25 })
+    })
+
+    it('builds an ac patch from the stored row', async () => {
+      const supabase = supabaseWithSheet({ rows: [row] })
+
+      const patch = await buildLiveActionPatch(supabase, 7, row, {
+        type: 'ac',
+        acType: 'add',
+        amount: 1,
+      })
+
+      expect(patch).toEqual({ armorClass: 16, tempArmorClass: 0 })
+    })
+
+    it.each([
+      [true, true],
+      [false, undefined],
+    ])(
+      'sets the reaction to %s while keeping other resources',
+      async (value, reaction) => {
+        const patch = await buildLiveActionPatch(
+          serverSupabaseServiceRole({} as never),
+          7,
+          { ...row, resources: { reaction: false, legendaryActions: 2 } },
+          { type: 'reaction', value },
+        )
+
+        expect(patch).toEqual({
+          resources: { reaction, legendaryActions: 2 },
+        })
+      },
+    )
+
+    it('readies an action', async () => {
+      const patch = await buildLiveActionPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        row,
+        { type: 'ready', value: true },
+      )
+
+      expect(patch).toEqual({ readied: true })
+    })
+
+    it('restores the reaction when a readied action is dropped', async () => {
+      const patch = await buildLiveActionPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        { ...row, resources: { reaction: false } },
+        { type: 'ready', value: false },
+      )
+
+      expect(patch).toEqual({ readied: false, resources: { reaction: true } })
+    })
+
+    it('passes other actions through as a single field', async () => {
+      const patch = await buildLiveActionPatch(
+        serverSupabaseServiceRole({} as never),
+        7,
+        row,
+        { type: 'concentration', value: true },
+      )
+
+      expect(patch).toEqual({ concentration: true })
     })
   })
 })

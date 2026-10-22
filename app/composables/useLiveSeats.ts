@@ -59,8 +59,7 @@ function _useLiveSeats(
   function unsubscribe(): void {
     if (!channel) return
 
-    channel.unsubscribe()
-    supabase.removeChannel(channel)
+    void supabase.removeChannel(channel)
     channel = undefined
     connected.value = new Set()
   }

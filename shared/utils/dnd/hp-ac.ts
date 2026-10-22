@@ -301,16 +301,10 @@ export function withBaseStats<T extends InitiativeSheetRow>(row: T) {
   return { ...row, hitPoints: getBaseHP(row), armorClass: getBaseAC(row) }
 }
 
-export function getHealthBand(
-  hitPoints?: number,
-  maxHitPoints?: number,
-): DndHealthBand {
-  const current = hitPoints ?? 0
-  const max = maxHitPoints ?? 0
+export function getHealthBand(hitPoints = 0, maxHitPoints = 0): DndHealthBand {
+  if (maxHitPoints <= 0) return hitPoints > 0 ? 'healthy' : 'critical'
 
-  if (max <= 0) return current > 0 ? 'healthy' : 'critical'
-
-  const ratio = current / max
+  const ratio = hitPoints / maxHitPoints
 
   if (ratio <= 0.25) return 'critical'
   if (ratio <= 0.5) return 'bloodied'

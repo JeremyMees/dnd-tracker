@@ -21,7 +21,6 @@ const {
   setQueryData,
   subscribe,
   syncLiveSession,
-  unsubscribe,
   update,
   patch,
   turn,
@@ -36,14 +35,13 @@ const {
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
   syncLiveSession: vi.fn(),
-  unsubscribe: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
   turn: vi.fn(),
   useSeo: vi.fn(),
 }))
 
-const channel = { on, subscribe, unsubscribe }
+const channel = { on, subscribe }
 
 on.mockReturnValue(channel)
 subscribe.mockReturnValue(channel)
@@ -402,7 +400,6 @@ describe('Encounter detail page', () => {
 
     component.unmount()
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 

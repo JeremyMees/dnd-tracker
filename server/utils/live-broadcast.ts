@@ -218,3 +218,32 @@ export async function buildAcPatch(
     tempArmorClass: updated.tempArmorClass,
   }
 }
+
+export async function buildLiveActionPatch(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounter: number,
+  row: Pick<InitiativeSheetRow, 'id' | 'resources'>,
+  action: Exclude<z.infer<typeof liveActionSchema>, { type: 'endTurn' }>,
+): Promise<Partial<InitiativeSheetRow>> {
+  if (action.type === 'hp') {
+    return buildHpPatch(supabase, encounter, row.id, action)
+  }
+
+  if (action.type === 'ac') {
+    return buildAcPatch(supabase, encounter, row.id, action)
+  }
+
+  if (action.type === 'reaction') {
+    return {
+      resources: { ...row.resources, reaction: action.value || undefined },
+    }
+  }
+
+  if (action.type === 'ready') {
+    return action.value
+      ? { readied: true }
+      : { readied: false, resources: { ...row.resources, reaction: true } }
+  }
+
+  return { [action.type]: action.value }
+}

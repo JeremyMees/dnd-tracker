@@ -26,137 +26,206 @@ export function diffFlags(
   return events
 }
 
-export function diffRow(
+function changeKind<T extends string>(
+  overridden: boolean,
+  delta: number,
+  gain: T,
+  loss: T,
+): T | 'override' {
+  if (overridden) return 'override'
+
+  return delta > 0 ? gain : loss
+}
+
+function diffHitPoints(
   before: InitiativeSheetRow,
   after: InitiativeSheetRow,
 ): CombatEventDraft[] {
-  const events: CombatEventDraft[] = []
   const rowName = after.name
 
   if (after.hitPoints !== before.hitPoints) {
     const delta = (after.hitPoints ?? 0) - (before.hitPoints ?? 0)
     const overridden = after.maxHitPoints !== before.maxHitPoints
 
-    events.push({
-      type: 'hp',
-      payload: {
-        rowName,
-        kind: overridden ? 'override' : delta > 0 ? 'heal' : 'damage',
-        amount: Math.abs(delta),
-        before: before.hitPoints,
-        after: after.hitPoints,
+    return [
+      {
+        type: 'hp',
+        payload: {
+          rowName,
+          kind: changeKind(overridden, delta, 'heal', 'damage'),
+          amount: Math.abs(delta),
+          before: before.hitPoints,
+          after: after.hitPoints,
+        },
       },
-    })
-  } else if (after.tempHitPoints !== before.tempHitPoints) {
-    events.push({
-      type: 'hp',
-      payload: {
-        rowName,
-        kind: 'temp',
-        amount: after.tempHitPoints,
-        before: before.tempHitPoints,
-        after: after.tempHitPoints,
-      },
-    })
+    ]
   }
+
+  if (after.tempHitPoints !== before.tempHitPoints) {
+    return [
+      {
+        type: 'hp',
+        payload: {
+          rowName,
+          kind: 'temp',
+          amount: after.tempHitPoints,
+          before: before.tempHitPoints,
+          after: after.tempHitPoints,
+        },
+      },
+    ]
+  }
+
+  return []
+}
+
+function diffArmorClass(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): CombatEventDraft[] {
+  const rowName = after.name
 
   if (after.armorClass !== before.armorClass) {
     const delta = (after.armorClass ?? 0) - (before.armorClass ?? 0)
     const overridden = after.maxArmorClass !== before.maxArmorClass
 
-    events.push({
-      type: 'ac',
-      payload: {
-        rowName,
-        kind: overridden ? 'override' : delta > 0 ? 'add' : 'remove',
-        amount: Math.abs(delta),
-        before: before.armorClass,
-        after: after.armorClass,
+    return [
+      {
+        type: 'ac',
+        payload: {
+          rowName,
+          kind: changeKind(overridden, delta, 'add', 'remove'),
+          amount: Math.abs(delta),
+          before: before.armorClass,
+          after: after.armorClass,
+        },
       },
-    })
-  } else if (after.tempArmorClass !== before.tempArmorClass) {
-    events.push({
-      type: 'ac',
-      payload: {
-        rowName,
-        kind: 'temp',
-        amount: after.tempArmorClass,
-        before: before.tempArmorClass,
-        after: after.tempArmorClass,
-      },
-    })
+    ]
   }
 
+  if (after.tempArmorClass !== before.tempArmorClass) {
+    return [
+      {
+        type: 'ac',
+        payload: {
+          rowName,
+          kind: 'temp',
+          amount: after.tempArmorClass,
+          before: before.tempArmorClass,
+          after: after.tempArmorClass,
+        },
+      },
+    ]
+  }
+
+  return []
+}
+
+function diffConditions(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): CombatEventDraft[] {
+  const rowName = after.name
   const beforeConditionIds = new Set(before.conditions.map(c => c.id))
   const afterConditionIds = new Set(after.conditions.map(c => c.id))
 
-  for (const condition of after.conditions) {
-    if (!beforeConditionIds.has(condition.id)) {
-      events.push({
-        type: 'condition_added',
-        payload: {
-          rowName,
-          condition: { id: condition.id, name: condition.name },
-        },
-      })
-    }
-  }
+  const added = after.conditions
+    .filter(condition => !beforeConditionIds.has(condition.id))
+    .map((condition): CombatEventDraft => ({
+      type: 'condition_added',
+      payload: {
+        rowName,
+        condition: { id: condition.id, name: condition.name },
+      },
+    }))
 
-  for (const condition of before.conditions) {
-    if (!afterConditionIds.has(condition.id)) {
-      events.push({
-        type: 'condition_removed',
-        payload: {
-          rowName,
-          condition: { id: condition.id, name: condition.name },
-        },
-      })
-    }
-  }
+  const removed = before.conditions
+    .filter(condition => !afterConditionIds.has(condition.id))
+    .map((condition): CombatEventDraft => ({
+      type: 'condition_removed',
+      payload: {
+        rowName,
+        condition: { id: condition.id, name: condition.name },
+      },
+    }))
+
+  return [...added, ...removed]
+}
+
+function diffConcentration(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): CombatEventDraft[] {
+  const payload = { rowName: after.name }
 
   if (before.concentration === true && after.concentration === false) {
-    events.push({ type: 'concentration_broken', payload: { rowName } })
-  } else if (before.concentration === false && after.concentration === true) {
-    events.push({ type: 'concentration_started', payload: { rowName } })
+    return [{ type: 'concentration_broken', payload }]
   }
 
-  if (before.deathSaves && after.deathSaves) {
-    const addedFails = countNewlyTrue(
-      before.deathSaves.fail,
-      after.deathSaves.fail,
-    )
-    const addedSaves = countNewlyTrue(
-      before.deathSaves.save,
-      after.deathSaves.save,
-    )
-
-    if (addedFails > 0) {
-      events.push({
-        type: 'death_save',
-        payload: { rowName, result: 'fail', amount: addedFails },
-      })
-    }
-
-    if (addedSaves > 0) {
-      events.push({
-        type: 'death_save',
-        payload: { rowName, result: 'save', amount: addedSaves },
-      })
-    }
-
-    const beforeStatus = checkDeathSaves(before.deathSaves)
-    const afterStatus = checkDeathSaves(after.deathSaves)
-
-    if (afterStatus.saved && !afterStatus.failed && !beforeStatus.saved) {
-      events.push({ type: 'stabilized', payload: { rowName } })
-    }
-
-    if (afterStatus.failed && !afterStatus.saved && !beforeStatus.failed) {
-      events.push({ type: 'died', payload: { rowName } })
-    }
+  if (before.concentration === false && after.concentration === true) {
+    return [{ type: 'concentration_started', payload }]
   }
 
-  return [...events, ...diffFlags(before, after)]
+  return []
+}
+
+function diffDeathSaves(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): CombatEventDraft[] {
+  if (!before.deathSaves || !after.deathSaves) return []
+
+  const rowName = after.name
+  const events: CombatEventDraft[] = []
+  const addedFails = countNewlyTrue(
+    before.deathSaves.fail,
+    after.deathSaves.fail,
+  )
+  const addedSaves = countNewlyTrue(
+    before.deathSaves.save,
+    after.deathSaves.save,
+  )
+
+  if (addedFails > 0) {
+    events.push({
+      type: 'death_save',
+      payload: { rowName, result: 'fail', amount: addedFails },
+    })
+  }
+
+  if (addedSaves > 0) {
+    events.push({
+      type: 'death_save',
+      payload: { rowName, result: 'save', amount: addedSaves },
+    })
+  }
+
+  const beforeStatus = checkDeathSaves(before.deathSaves)
+  const afterStatus = checkDeathSaves(after.deathSaves)
+
+  if (afterStatus.saved && !afterStatus.failed && !beforeStatus.saved) {
+    events.push({ type: 'stabilized', payload: { rowName } })
+  }
+
+  if (afterStatus.failed && !afterStatus.saved && !beforeStatus.failed) {
+    events.push({ type: 'died', payload: { rowName } })
+  }
+
+  return events
+}
+
+export function diffRow(
+  before: InitiativeSheetRow,
+  after: InitiativeSheetRow,
+): CombatEventDraft[] {
+  return [
+    ...diffHitPoints(before, after),
+    ...diffArmorClass(before, after),
+    ...diffConditions(before, after),
+    ...diffConcentration(before, after),
+    ...diffDeathSaves(before, after),
+    ...diffFlags(before, after),
+  ]
 }
 
 const LOG_ONLY_EVENTS = new Set<string>([

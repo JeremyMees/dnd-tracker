@@ -56,7 +56,7 @@ export type InputGroupButtonVariants = VariantProps<
 >
 
 export interface InputGroupButtonProps {
-  variant?: ButtonVariants['variant']
-  size?: InputGroupButtonVariants['size']
+  variant?: NonNullable<ButtonVariants['variant']>
+  size?: NonNullable<InputGroupButtonVariants['size']>
   class?: HTMLAttributes['class']
 }

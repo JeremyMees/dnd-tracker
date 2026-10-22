@@ -253,7 +253,9 @@ async function main(): Promise<void> {
   console.info('done')
 }
 
-main().catch((error: unknown) => {
+try {
+  await main()
+} catch (error) {
   console.error(getErrorMessage(error))
   process.exitCode = 1
-})
+}

@@ -209,6 +209,19 @@ describe('statblock-text', () => {
       ).not.toHaveProperty('extraDamageDieCount')
     })
 
+    it('Should skip dice that are not followed by damage', () => {
+      expect(
+        parseAttack(
+          'Tentacle',
+          'Melee Weapon Attack: +5 to hit. Hit: the target is held for (1d4) rounds and takes 9 (2d8) fire damage.',
+        ),
+      ).toMatchObject({
+        damageDieCount: 2,
+        damageDieType: 'd8',
+        damageType: 'fire',
+      })
+    })
+
     it('Should return undefined for text without an attack', () => {
       expect(
         parseAttack(

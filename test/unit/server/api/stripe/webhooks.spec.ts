@@ -4,6 +4,11 @@ import { mockChain, mockFrom } from '~~/test/unit/stubs/supabase'
 import { mockRuntimeConfig } from '~~/test/unit/stubs/runtime-config'
 import { mockStorage } from '~~/test/unit/stubs/storage'
 import { stripe } from '~~/server/utils/stripe'
+import {
+  mockLineItems,
+  mockProduct,
+  mockSubscription,
+} from '~~/test/fixtures/stripe'
 import handler from '~~/server/api/stripe/webhooks'
 
 vi.mock('~~/server/utils/stripe', async importOriginal => ({
@@ -76,36 +81,6 @@ function invoiceEvent(
       },
     },
   }
-}
-
-function mockLineItems() {
-  vi.spyOn(stripe.checkout.sessions, 'listLineItems').mockResolvedValue({
-    data: [
-      {
-        price: {
-          product: { id: 'prod_1', name: 'Pro', metadata: { tier: 'pro' } },
-        },
-      },
-    ],
-  } as never)
-}
-
-function mockProduct() {
-  return vi.spyOn(stripe.products, 'retrieve').mockResolvedValue({
-    id: 'prod_1',
-    name: 'Pro',
-    metadata: { tier: 'pro' },
-  } as never)
-}
-
-function mockSubscription(overrides: Record<string, unknown> = {}) {
-  return vi.spyOn(stripe.subscriptions, 'retrieve').mockResolvedValue({
-    id: 'sub_1',
-    status: 'active',
-    cancel_at_period_end: false,
-    items: { data: [{ current_period_end: 1893456000 }] },
-    ...overrides,
-  } as never)
 }
 
 function mockProfile(profile: Record<string, unknown> | null) {

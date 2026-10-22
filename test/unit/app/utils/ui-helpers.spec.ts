@@ -5,8 +5,6 @@ import {
   sortByNumber,
   sortByString,
   sortCreatedAt,
-  randomString,
-  randomColor,
   homebrewIcon,
   homebrewBgColor,
   homebrewColor,
@@ -99,30 +97,6 @@ describe('ui-helpers', () => {
     })
   })
 
-  describe('randomString', () => {
-    it('should return a string', () => {
-      const result = randomString()
-
-      expect(typeof result).toBe('string')
-    })
-
-    it('should return different values on successive calls', () => {
-      const result1 = randomString()
-      const result2 = randomString()
-
-      expect(result1).not.toBe(result2)
-    })
-  })
-
-  describe('randomColor', () => {
-    it('should return a hex color string', () => {
-      const result = randomColor()
-
-      expect(typeof result).toBe('string')
-      expect(result.length).toBeLessThanOrEqual(6)
-    })
-  })
-
   describe('homebrewIcon', () => {
     it('should return correct icons for each type', () => {
       expect(homebrewIcon('summon')).toBe('tabler:wand')
@@ -181,12 +155,16 @@ describe('ui-helpers', () => {
     it('applies and clears table update animation', () => {
       vi.useFakeTimers()
 
-      const el = { style: {} as CSSStyleDeclaration, offsetHeight: 0 }
+      const el = {
+        style: {} as CSSStyleDeclaration,
+        getBoundingClientRect: vi.fn(),
+      }
       document.getElementById = vi.fn().mockReturnValue(el)
 
       animateTableUpdate('row-1', 'green')
 
       expect(document.getElementById).toHaveBeenCalledWith('row-1')
+      expect(el.getBoundingClientRect).toHaveBeenCalled()
       expect(el.style.animation).toBe('pulse-green 1s ease-in-out')
 
       vi.advanceTimersByTime(1000)

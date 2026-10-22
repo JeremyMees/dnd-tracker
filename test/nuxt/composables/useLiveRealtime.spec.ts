@@ -12,7 +12,6 @@ const {
   setQueryData,
   subscribe,
   track,
-  unsubscribe,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
   invalidateQueries: vi.fn(),
@@ -21,10 +20,9 @@ const {
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
   track: vi.fn(),
-  unsubscribe: vi.fn(),
 }))
 
-const channel = { on, subscribe, unsubscribe, track }
+const channel = { on, subscribe, track }
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -201,7 +199,7 @@ describe('useLiveRealtime', () => {
     uuid.value = 'other-uuid'
     await flushPromises()
 
-    expect(unsubscribe).toHaveBeenCalledTimes(1)
+    expect(removeChannel).toHaveBeenCalledTimes(1)
     expect(subscribe).toHaveBeenCalledTimes(2)
   })
 
@@ -598,7 +596,6 @@ describe('useLiveRealtime', () => {
     component.unmount()
     mounted = undefined
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 })

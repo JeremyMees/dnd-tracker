@@ -92,7 +92,9 @@ export function useFeatureVote() {
       if (error) throw createError(error)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.featureListing() })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.featureListing(),
+      })
     },
     onError: error => {
       toast.error(t('general.error.failed.vote'), {

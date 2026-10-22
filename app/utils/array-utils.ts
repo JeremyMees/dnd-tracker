@@ -2,39 +2,12 @@ export function randomArrayItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)] as T
 }
 
-export function randomArrayItems<T>(arr: T[], number = 1): T[] {
-  const result: T[] = []
-  const copy = [...arr]
-
-  if (number >= arr.length) {
-    return shuffleArray(arr)
-  }
-
-  for (let i = 0; i < number; i++) {
-    const index = Math.floor(Math.random() * copy.length)
-    result.push(copy.splice(index, 1)[0] as T)
-  }
-
-  return result
-}
-
 export function searchArray<T>(arr: T[], key: keyof T, search: string): T[] {
   return arr.filter(item =>
     (item[key] as string)
       .toLowerCase()
       .includes(search.toLowerCase().trim() || ''),
   )
-}
-
-export function shuffleArray<T>(arr: T[]): T[] {
-  for (let i = 0; i < arr.length; i++) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const temp = arr[i]
-    if (arr[i] && arr[j]) arr[i] = arr[j]
-    if (arr[j] && temp) arr[j] = temp
-  }
-
-  return arr
 }
 
 export function splitArray<T>(arr: T[], size: number): T[][] {

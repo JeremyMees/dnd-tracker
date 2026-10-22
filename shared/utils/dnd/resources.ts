@@ -16,7 +16,7 @@ export function legendaryResistanceLimit(row: ResourceRow): number {
   )
 
   for (const name of names) {
-    const match = name.match(LEGENDARY_RESISTANCE)
+    const match = LEGENDARY_RESISTANCE.exec(name)
 
     if (match) return Number(match[1])
   }

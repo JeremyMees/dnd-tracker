@@ -26,7 +26,7 @@ export function useRealTimeInitiativeSheet(
   }
 
   function refetch(): void {
-    queryClient.invalidateQueries({ queryKey: queryKey() })
+    void queryClient.invalidateQueries({ queryKey: queryKey() })
   }
 
   function updateQueryData(payload: UpdateInitiativeSheetData): void {
@@ -59,7 +59,9 @@ export function useRealTimeInitiativeSheet(
       ),
     })
 
-    queryClient.invalidateQueries({ queryKey: queryKeys.combatEvents(id) })
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.combatEvents(id),
+    })
   }
 
   function applySync(payload: SheetSyncEvent): void {
@@ -74,15 +76,15 @@ export function useRealTimeInitiativeSheet(
       return { ...old, ...payload.sheet, version: payload.version }
     })
 
-    if (payload.reminders) turnReminders.trigger(payload.reminders)
+    if (payload.reminders) void turnReminders.trigger(payload.reminders)
   }
 
-  function applyDeleted(): void {
+  async function applyDeleted(): Promise<void> {
     toast.warning(t('pages.encounter.toasts.removed.title'), {
       description: t('pages.encounter.toasts.removed.text'),
     })
 
-    navigateTo(localePath('encounters'))
+    await navigateTo(localePath('encounters'))
   }
 
   function subscribe(): void {
@@ -105,8 +107,7 @@ export function useRealTimeInitiativeSheet(
   function unsubscribe(): void {
     if (!channel) return
 
-    channel.unsubscribe()
-    supabase.removeChannel(channel)
+    void supabase.removeChannel(channel)
     channel = undefined
   }
 

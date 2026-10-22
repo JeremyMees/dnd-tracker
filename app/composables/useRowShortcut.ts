@@ -38,7 +38,7 @@ export function useRowShortcut() {
     handler: (action: RowShortcutAction) => void,
   ): void {
     watch(request, value => {
-      if (!value || value.rowId !== toValue(rowId)) return
+      if (value?.rowId !== toValue(rowId)) return
       if (!actions.includes(value.action)) return
 
       request.value = undefined
