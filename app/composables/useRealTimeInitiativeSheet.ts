@@ -11,6 +11,8 @@ export function useRealTimeInitiativeSheet(
   const localePath = useLocalePath()
   const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
+  const isOnline = useOnline()
+  const visibility = useDocumentVisibility()
   const turnReminders = createEventHook<TurnReminders>()
 
   let channel: RealtimeChannel | undefined
@@ -27,6 +29,15 @@ export function useRealTimeInitiativeSheet(
 
   function refetch(): void {
     void queryClient.invalidateQueries({ queryKey: queryKey() })
+  }
+
+  function catchUp(): void {
+    if (!channel) return
+
+    refetch()
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.combatEvents(id),
+    })
   }
 
   function updateQueryData(payload: UpdateInitiativeSheetData): void {
@@ -113,6 +124,14 @@ export function useRealTimeInitiativeSheet(
 
   onMounted(() => {
     if (enabled.value) subscribe()
+  })
+
+  watch(isOnline, online => {
+    if (online) catchUp()
+  })
+
+  watch(visibility, state => {
+    if (state === 'visible') catchUp()
   })
 
   onBeforeUnmount(unsubscribe)
