@@ -38,7 +38,7 @@ function toggle(index: number): void {
 </script>
 
 <template>
-  <div role="group" :aria-label="label" class="flex flex-wrap gap-1">
+  <div role="group" :aria-label="label" class="flex gap-1">
     <button
       v-for="i in max"
       :key="i"
@@ -47,7 +47,7 @@ function toggle(index: number): void {
       :aria-label="`${label} ${i}`"
       :aria-pressed="i <= used"
       :disabled="disabled"
-      class="size-4 rounded-full border-2 transition-colors disabled:cursor-not-allowed"
+      class="size-4 shrink-0 rounded-full border-2 transition-colors disabled:cursor-not-allowed"
       :class="[colors.border, i <= used ? colors.used : colors.free]"
       @click="toggle(i - 1)"
     />

@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Initiative table row concentration > Should match snapshot 1`] = `
-"<div role="group" aria-label="general.concentration" class="flex flex-wrap gap-1 justify-center" data-state="closed" data-grace-area-trigger="" test-id="concentration"><button type="button" test-id="pip" aria-label="general.concentration 1" aria-pressed="true" class="size-4 rounded-full border-2 transition-colors disabled:cursor-not-allowed border-primary bg-primary"></button></div>
+"<div role="group" aria-label="general.concentration" class="flex gap-1 justify-center" data-state="closed" data-grace-area-trigger="" test-id="concentration"><button type="button" test-id="pip" aria-label="general.concentration 1" aria-pressed="true" class="size-4 shrink-0 rounded-full border-2 transition-colors disabled:cursor-not-allowed border-primary bg-primary"></button></div>
 <!--teleport start-->
 <!--teleport end-->"
 `;
