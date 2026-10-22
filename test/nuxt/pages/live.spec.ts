@@ -349,4 +349,52 @@ describe('Live page', () => {
     )
     expect(localStorage.getItem('live-seat')).toBeNull()
   })
+
+  it('follows a seat reassigned to another row', async () => {
+    localStorage.setItem('live-seat', JSON.stringify(joinedSession))
+
+    await mountPage()
+
+    liveState.value = {
+      sheet: playerSheet,
+      session: {
+        code: 'ABC234',
+        expiresAt: 'later',
+        version: 1,
+        kicked: false,
+        row: 'row-2',
+      },
+    }
+    await nextTick()
+
+    const ownRow = useLiveRealtime.mock.calls[0]![4] as ComputedRef<string>
+
+    expect(ownRow.value).toBe('row-2')
+    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual({
+      ...joinedSession,
+      row: 'row-2',
+    })
+  })
+
+  it('keeps the stored seat when the own row is unchanged', async () => {
+    localStorage.setItem('live-seat', JSON.stringify(joinedSession))
+
+    await mountPage()
+
+    liveState.value = {
+      sheet: playerSheet,
+      session: {
+        code: 'ABC234',
+        expiresAt: 'later',
+        version: 1,
+        kicked: false,
+        row: 'row-1',
+      },
+    }
+    await nextTick()
+
+    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual(
+      joinedSession,
+    )
+  })
 })

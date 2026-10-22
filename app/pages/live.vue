@@ -77,6 +77,16 @@ watch(
   },
 )
 
+watch(
+  () => state.value?.session.row,
+  row => {
+    if (!row || !joined.value || joined.value.row === row) return
+
+    joined.value = { ...joined.value, row }
+    if (seat.value) seat.value = { ...seat.value, row }
+  },
+)
+
 function handleValidated(session: LiveCodeSession): void {
   validated.value = session
 }

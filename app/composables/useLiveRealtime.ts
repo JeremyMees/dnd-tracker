@@ -68,12 +68,13 @@ export function useLiveRealtime(
         expiresAt: old?.session.expiresAt ?? '',
         version: payload.version,
         kicked: old?.session.kicked ?? false,
+        row: old?.session.row,
       },
     }))
   }
 
   function applySeats(payload: LiveSeatsBroadcast): void {
-    if (payload.type === 'kicked' && payload.seat === seatId.value) refetch()
+    if (payload.type !== 'joined' && payload.seat === seatId.value) refetch()
   }
 
   function subscribe(sessionUuid: string): void {

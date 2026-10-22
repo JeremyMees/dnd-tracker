@@ -138,6 +138,7 @@ describe('GET /api/encounter/live/state', () => {
       hitPoints: 20,
       maxHitPoints: 30,
     })
+    expect(result.session.row).toBe('row-1')
   })
 
   it('ignores a seat token for a different session and falls back to the generic view', async () => {
