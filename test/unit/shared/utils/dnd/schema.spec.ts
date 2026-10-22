@@ -105,7 +105,7 @@ describe('dnd/schema', () => {
           level: null,
           hasLevels: null,
         }),
-      ).toStrictEqual({ id: 'blinded', name: 'Blinded', desc: 'Cannot see.' })
+      ).toStrictEqual({ id: 'blinded', name: 'Blinded', desc: '' })
     })
 
     describe('duration', () => {
@@ -119,6 +119,7 @@ describe('dnd/schema', () => {
           }),
         ).toStrictEqual({
           ...prone,
+          desc: '',
           duration: { rowId: 'row-1', timing: 'end', rounds: 1 },
         })
       })
@@ -143,7 +144,7 @@ describe('dnd/schema', () => {
       it('drops a null duration', () => {
         expect(
           conditionSchema.parse({ ...prone, duration: null }),
-        ).toStrictEqual(prone)
+        ).toStrictEqual({ ...prone, desc: '' })
       })
 
       it('rejects a duration without rounds or a save', () => {

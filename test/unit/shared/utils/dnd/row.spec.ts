@@ -248,7 +248,7 @@ describe('dnd/row', () => {
           level: null,
           hasLevels: null,
         }),
-      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: '' })
     })
 
     it('keeps a duration and drops its empty fields', () => {
@@ -267,7 +267,7 @@ describe('dnd/row', () => {
       ).toStrictEqual({
         id: 'prone',
         name: 'Prone',
-        desc: 'On the ground.',
+        desc: '',
         duration: { rowId: 'row-1', timing: 'start', rounds: 2 },
       })
     })
@@ -300,7 +300,7 @@ describe('dnd/row', () => {
           desc: 'On the ground.',
           duration: null,
         }),
-      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: '' })
     })
 
     it('keeps level and hasLevels when set', () => {
@@ -315,7 +315,7 @@ describe('dnd/row', () => {
       ).toStrictEqual({
         id: 'exhaustion',
         name: 'Exhaustion',
-        desc: 'Tired.',
+        desc: '',
         level: 3,
         hasLevels: true,
       })
@@ -343,7 +343,7 @@ describe('dnd/row', () => {
       expect(sanitizeCondition(condition)).toStrictEqual({
         id: 'blinded',
         name: 'Blinded',
-        desc: 'Cannot see.',
+        desc: '',
       })
     })
 
@@ -351,6 +351,16 @@ describe('dnd/row', () => {
       const condition = { id: 'blinded', name: 'Blinded' } as DndCondition
 
       expect(sanitizeCondition(condition).desc).toBe('')
+    })
+
+    it('never stores the description, which is looked up by id instead', () => {
+      expect(
+        sanitizeCondition({
+          id: 'blinded',
+          name: 'Blinded',
+          desc: 'A long rules text that should not ride along on every row.',
+        }).desc,
+      ).toBe('')
     })
   })
 

@@ -955,6 +955,10 @@ export type Database = {
         Args: { p_encounter: number; p_patch: Json; p_row_id: string }
         Returns: Json
       }
+      apply_live_actions: {
+        Args: { p_encounter: number; p_patches: Json }
+        Returns: Json
+      }
       claim_live_seat: {
         Args: {
           p_name: string

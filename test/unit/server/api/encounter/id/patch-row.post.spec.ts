@@ -460,7 +460,7 @@ describe('POST /api/encounter/[id]/patch-row', () => {
     expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
       p_encounter: 7,
       p_row_id: 'row-1',
-      p_patch: { conditions: [stored] },
+      p_patch: { conditions: [{ ...stored, desc: '' }] },
     })
   })
 

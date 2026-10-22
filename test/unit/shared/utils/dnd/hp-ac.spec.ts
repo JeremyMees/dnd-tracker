@@ -861,11 +861,7 @@ describe('dnd/hp-ac', () => {
     it('adds a sanitized bloodied condition at half hp or lower', () => {
       expect(withBloodied(row, bloodied).conditions).toEqual([
         prone,
-        {
-          id: 'bloodied',
-          name: 'Bloodied',
-          desc: 'At half hit points or fewer.',
-        },
+        { id: 'bloodied', name: 'Bloodied', desc: '' },
       ])
     })
 

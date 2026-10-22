@@ -105,7 +105,7 @@ export function sanitizeCondition(condition: DndCondition): DndCondition {
   return {
     id: condition.id,
     name: condition.name,
-    desc: condition.desc ?? '',
+    desc: '',
     ...(level !== undefined && { level }),
     ...(typeof condition.hasLevels === 'boolean' && {
       hasLevels: condition.hasLevels,

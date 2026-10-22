@@ -716,7 +716,7 @@ describe('initiative-sheets queries', () => {
       ])
     })
 
-    it('gives every condition a description before updating', async () => {
+    it('stores conditions with an empty description before updating', async () => {
       const from = mockSupabaseFrom({
         initiative_sheets: mockChain({ data: null, error: null }),
       })
@@ -743,7 +743,7 @@ describe('initiative-sheets queries', () => {
       const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
 
       expect(updated.rows[0].conditions).toEqual([
-        { id: 'prone', name: 'Prone', desc: 'knocked down' },
+        { id: 'prone', name: 'Prone', desc: '' },
         { id: 'blinded', name: 'Blinded', desc: '' },
       ])
     })
@@ -787,11 +787,11 @@ describe('initiative-sheets queries', () => {
       const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
 
       expect(updated.rows[0].conditions).toStrictEqual([
-        { id: 'prone', name: 'Prone', desc: 'knocked down' },
+        { id: 'prone', name: 'Prone', desc: '' },
         {
           id: 'exhaustion',
           name: 'Exhaustion',
-          desc: 'tired',
+          desc: '',
           level: 2,
           hasLevels: true,
         },

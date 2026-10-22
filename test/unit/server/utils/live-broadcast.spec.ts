@@ -548,11 +548,7 @@ describe('live-broadcast', () => {
 
       expect(chain.eq).toHaveBeenCalledWith('id', 'bloodied')
       expect(patch.conditions).toEqual([
-        {
-          id: 'bloodied',
-          name: 'Bloodied',
-          desc: 'At half hit points or fewer.',
-        },
+        { id: 'bloodied', name: 'Bloodied', desc: '' },
       ])
     })
 
