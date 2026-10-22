@@ -11,6 +11,7 @@ export function useLiveState(
         query: { token: token.value, seatToken: seatToken.value },
       }),
     enabled: computed(() => !!token.value),
-    retry: false,
+    retry: (failureCount, error) =>
+      failureCount < 3 && !isLiveSessionGone(error),
   })
 }

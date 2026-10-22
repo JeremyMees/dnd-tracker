@@ -67,13 +67,7 @@ function showSessionEnded(): void {
 }
 
 watch(isError, hasError => {
-  if (!hasError) return
-
-  const statusCode = (error.value as { statusCode?: number } | null)?.statusCode
-
-  if (statusCode !== 404 && statusCode !== 410) return
-
-  showSessionEnded()
+  if (hasError && isLiveSessionGone(error.value)) showSessionEnded()
 })
 
 watch(
@@ -105,7 +99,7 @@ function handleJoined(session: LiveJoinResponse): void {
       <LivePlayerView
         :sheet="state?.sheet"
         :loading="isPending"
-        :error="isError"
+        :error="isError && !state"
       />
     </template>
 

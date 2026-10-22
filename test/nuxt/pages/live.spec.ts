@@ -221,7 +221,21 @@ describe('Live page', () => {
 
     expect(view.props('sheet')).toEqual(playerSheet)
     expect(view.props('loading')).toBe(true)
-    expect(view.props('error')).toBe(true)
+    expect(view.props('error')).toBe(false)
+  })
+
+  it('only reports an error to the live player view when no sheet is cached', async () => {
+    isError.value = true
+
+    const component = await mountPage()
+
+    component.findComponent(CodeFormProbe).vm.$emit('validated', codeSession)
+    await nextTick()
+
+    component.findComponent(JoinFormProbe).vm.$emit('joined', joinedSession)
+    await nextTick()
+
+    expect(component.findComponent(PlayerViewProbe).props('error')).toBe(true)
   })
 
   it('resumes a previously joined seat on mount when there is no query code', async () => {

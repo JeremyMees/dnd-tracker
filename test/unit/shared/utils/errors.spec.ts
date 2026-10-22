@@ -11,6 +11,8 @@ import {
   getAuthFailure,
   getErrorMessage,
   getFailureReason,
+  getStatusCode,
+  isLiveSessionGone,
 } from '~~/shared/utils/errors'
 
 describe('getErrorMessage', () => {
@@ -290,5 +292,39 @@ describe('failureMessageKey', () => {
         new AuthApiError('Too many requests', 429, 'over_request_rate_limit'),
       ),
     ).toBe('general.error.reasons.rateLimited')
+  })
+})
+
+describe('getStatusCode', () => {
+  it('reads statusCode from a fetch error', () => {
+    expect(
+      getStatusCode(
+        Object.assign(new FetchError('request failed'), { statusCode: 410 }),
+      ),
+    ).toBe(410)
+  })
+
+  it('falls back to status', () => {
+    expect(getStatusCode({ status: 404 })).toBe(404)
+  })
+
+  it('returns undefined without a numeric status', () => {
+    expect(getStatusCode(new FetchError('fetch failed'))).toBeUndefined()
+    expect(getStatusCode({ statusCode: '500' })).toBeUndefined()
+    expect(getStatusCode(null)).toBeUndefined()
+  })
+})
+
+describe('isLiveSessionGone', () => {
+  it.each([404, 410])('is true for %i', statusCode => {
+    expect(isLiveSessionGone({ statusCode })).toBe(true)
+  })
+
+  it.each([400, 401, 429, 500])('is false for %i', statusCode => {
+    expect(isLiveSessionGone({ statusCode })).toBe(false)
+  })
+
+  it('is false for a fetch that never got a response', () => {
+    expect(isLiveSessionGone(new FetchError('fetch failed'))).toBe(false)
   })
 })
