@@ -76,34 +76,31 @@ export async function advanceEncounterTurn(
 
   const turn = turnEvent(advance.rows, advance.activeIndex)
 
-  await logCombatEvents(supabase, {
-    encounterId,
-    round: advance.round,
-    actorId,
-    actorName,
-    events: [
-      ...(turn ? [turn] : []),
-      ...readyExpiredEvents(sheet.rows, advance.rows),
-      ...expiredEvents(advance.expired),
-    ],
-  })
-
-  const liveSession =
-    session ?? (await activeLiveSession(supabase, encounterId))
-
-  if (liveSession) await broadcastLiveState(supabase, liveSession, encounterId)
-
   const reminders = {
     expired: advance.expired,
     saves: advance.saves,
     recharges: advance.recharges,
   }
 
-  await broadcastSheetSync(
-    supabase,
-    encounterId,
-    broadcastReminders ? reminders : undefined,
-  )
+  await Promise.all([
+    logCombatEvents(supabase, {
+      encounterId,
+      round: advance.round,
+      actorId,
+      actorName,
+      events: [
+        ...(turn ? [turn] : []),
+        ...readyExpiredEvents(sheet.rows, advance.rows),
+        ...expiredEvents(advance.expired),
+      ],
+    }),
+    broadcastActiveLiveState(supabase, encounterId, session),
+    broadcastSheetSync(
+      supabase,
+      encounterId,
+      broadcastReminders ? reminders : undefined,
+    ),
+  ])
 
   return { sheet: updated, ...reminders }
 }

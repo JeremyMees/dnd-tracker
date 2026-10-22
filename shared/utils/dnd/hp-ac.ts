@@ -329,7 +329,9 @@ export function isSkipDeadMonstersEnabled(
   return settings?.skipDeadMonsters !== false
 }
 
-export function isBloodiedEnabled(settings?: InitiativeSettings): boolean {
+export function isBloodiedEnabled(
+  settings?: Pick<InitiativeSettings, 'bloodied'>,
+): boolean {
   return settings?.bloodied !== false
 }
 

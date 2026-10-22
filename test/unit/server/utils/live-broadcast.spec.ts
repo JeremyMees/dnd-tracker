@@ -6,6 +6,7 @@ import {
 } from '~~/test/unit/stubs/supabase'
 import {
   activeLiveSession,
+  broadcastActiveLiveState,
   broadcastLiveAction,
   broadcastLiveEnded,
   broadcastLiveSeats,
@@ -19,11 +20,8 @@ import {
 import { toPlayerSheet } from '~~/server/utils/player-portal'
 import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
-function supabaseWithSheet(data: Record<string, unknown>) {
-  mockFrom({
-    initiative_sheets: mockChain({ data, error: null }),
-    srd_conditions: mockChain({ data: null, error: null }),
-  })
+function supabaseWithoutBloodied() {
+  mockFrom({ srd_conditions: mockChain({ data: null, error: null }) })
 
   return serverSupabaseServiceRole({} as never)
 }
@@ -189,6 +187,73 @@ describe('live-broadcast', () => {
           7,
         ),
       ).rejects.toMatchObject({ statusCode: 404 })
+    })
+  })
+
+  describe('broadcastActiveLiveState', () => {
+    const sheet = {
+      id: 7,
+      title: 'Ambush',
+      round: 1,
+      activeIndex: 0,
+      rows: [],
+      settings: {},
+    } as unknown as InitiativeSheet
+
+    it('syncs the given session without looking one up', async () => {
+      const from = mockFrom(
+        { initiative_sheets: mockChain({ data: sheet, error: null }) },
+        { rpc: mockChain({ data: 4, error: null }) },
+      )
+
+      await broadcastActiveLiveState(
+        serverSupabaseServiceRole({} as never),
+        7,
+        'session-uuid',
+      )
+
+      expect(from).not.toHaveBeenCalledWith('live_sessions')
+      expect(
+        serverSupabaseServiceRole({} as never).channel('live:session-uuid')
+          .httpSend,
+      ).toHaveBeenCalledWith('sync', {
+        version: 4,
+        sheet: toPlayerSheet(sheet),
+      })
+    })
+
+    it('looks up and syncs the active session of the encounter', async () => {
+      mockFrom(
+        {
+          live_sessions: mockChain({
+            data: { uuid: 'session-uuid' },
+            error: null,
+          }),
+          initiative_sheets: mockChain({ data: sheet, error: null }),
+        },
+        { rpc: mockChain({ data: 4, error: null }) },
+      )
+
+      await broadcastActiveLiveState(serverSupabaseServiceRole({} as never), 7)
+
+      expect(
+        serverSupabaseServiceRole({} as never).channel('live:session-uuid')
+          .httpSend,
+      ).toHaveBeenCalledWith('sync', {
+        version: 4,
+        sheet: toPlayerSheet(sheet),
+      })
+    })
+
+    it('does nothing without an active session', async () => {
+      mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
+
+      await broadcastActiveLiveState(serverSupabaseServiceRole({} as never), 7)
+
+      expect(
+        serverSupabaseServiceRole({} as never).channel('live:session-uuid')
+          .httpSend,
+      ).not.toHaveBeenCalled()
     })
   })
 
@@ -431,16 +496,12 @@ describe('live-broadcast', () => {
     }
 
     it('heals hitPoints up to the max and leaves other fields untouched', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [row],
-        settings: { negative: false },
-      })
-
-      const patch = await buildHpPatch(supabase, 7, 'row-1', {
-        type: 'hp',
-        hpType: 'heal',
-        amount: 15,
-      })
+      const patch = await buildHpPatch(
+        supabaseWithoutBloodied(),
+        row,
+        { negative: false },
+        { type: 'hp', hpType: 'heal', amount: 15 },
+      )
 
       expect(patch).toEqual({
         hitPoints: 25,
@@ -449,6 +510,19 @@ describe('live-broadcast', () => {
         concentration: false,
         conditions: [],
       })
+    })
+
+    it('does not read the sheet', async () => {
+      const supabase = supabaseWithoutBloodied()
+
+      await buildHpPatch(
+        supabase,
+        row,
+        {},
+        { type: 'hp', hpType: 'heal', amount: 1 },
+      )
+
+      expect(supabase.from).not.toHaveBeenCalledWith('initiative_sheets')
     })
 
     it('adds the stored bloodied condition when damage drops the row to half hp', async () => {
@@ -463,18 +537,12 @@ describe('live-broadcast', () => {
         error: null,
       })
 
-      mockFrom({
-        initiative_sheets: mockChain({
-          data: { rows: [{ ...row, hitPoints: 80 }], settings: {} },
-          error: null,
-        }),
-        srd_conditions: chain,
-      })
+      mockFrom({ srd_conditions: chain })
 
       const patch = await buildHpPatch(
         serverSupabaseServiceRole({} as never),
-        7,
-        'row-1',
+        { ...row, hitPoints: 80 },
+        {},
         { type: 'hp', hpType: 'damage', amount: 40 },
       )
 
@@ -491,21 +559,12 @@ describe('live-broadcast', () => {
     it('removes bloodied when a heal lifts the row above half hp', async () => {
       const bloodied = { id: 'bloodied', name: 'Bloodied', desc: '' }
 
-      mockFrom({
-        initiative_sheets: mockChain({
-          data: {
-            rows: [{ ...row, hitPoints: 40, conditions: [bloodied] }],
-            settings: {},
-          },
-          error: null,
-        }),
-        srd_conditions: mockChain({ data: bloodied, error: null }),
-      })
+      mockFrom({ srd_conditions: mockChain({ data: bloodied, error: null }) })
 
       const patch = await buildHpPatch(
         serverSupabaseServiceRole({} as never),
-        7,
-        'row-1',
+        { ...row, hitPoints: 40, conditions: [bloodied] },
+        {},
         { type: 'hp', hpType: 'heal', amount: 20 },
       )
 
@@ -513,17 +572,12 @@ describe('live-broadcast', () => {
     })
 
     it('skips the bloodied lookup when the sheet has it switched off', async () => {
-      const from = mockFrom({
-        initiative_sheets: mockChain({
-          data: { rows: [row], settings: { bloodied: false } },
-          error: null,
-        }),
-      })
+      const from = mockFrom({})
 
       const patch = await buildHpPatch(
         serverSupabaseServiceRole({} as never),
-        7,
-        'row-1',
+        row,
+        { bloodied: false },
         { type: 'hp', hpType: 'damage', amount: 5 },
       )
 
@@ -532,56 +586,42 @@ describe('live-broadcast', () => {
     })
 
     it('clamps damage to zero when negative hp is not allowed', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [{ ...row, hitPoints: 5, tempHitPoints: 0 }],
-        settings: { negative: false },
-      })
-
-      const patch = await buildHpPatch(supabase, 7, 'row-1', {
-        type: 'hp',
-        hpType: 'damage',
-        amount: 20,
-      })
+      const patch = await buildHpPatch(
+        supabaseWithoutBloodied(),
+        { ...row, hitPoints: 5, tempHitPoints: 0 },
+        { negative: false },
+        { type: 'hp', hpType: 'damage', amount: 20 },
+      )
 
       expect(patch.hitPoints).toBe(0)
     })
 
     it('allows negative hp when the sheet setting permits it', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [{ ...row, hitPoints: 5, tempHitPoints: 0 }],
-        settings: { negative: true },
-      })
-
-      const patch = await buildHpPatch(supabase, 7, 'row-1', {
-        type: 'hp',
-        hpType: 'damage',
-        amount: 20,
-      })
+      const patch = await buildHpPatch(
+        supabaseWithoutBloodied(),
+        { ...row, hitPoints: 5, tempHitPoints: 0 },
+        { negative: true },
+        { type: 'hp', hpType: 'damage', amount: 20 },
+      )
 
       expect(patch.hitPoints).toBe(-15)
     })
 
     it('adds death save failures when damage keeps a downed creature at 0hp', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [
-          {
-            ...row,
-            hitPoints: 0,
-            tempHitPoints: 0,
-            deathSaves: {
-              fail: [false, false, false],
-              save: [false, false, false],
-            },
+      const patch = await buildHpPatch(
+        supabaseWithoutBloodied(),
+        {
+          ...row,
+          hitPoints: 0,
+          tempHitPoints: 0,
+          deathSaves: {
+            fail: [false, false, false],
+            save: [false, false, false],
           },
-        ],
-        settings: { negative: false },
-      })
-
-      const patch = await buildHpPatch(supabase, 7, 'row-1', {
-        type: 'hp',
-        hpType: 'damage',
-        amount: 5,
-      })
+        },
+        { negative: false },
+        { type: 'hp', hpType: 'damage', amount: 5 },
+      )
 
       expect(patch.deathSaves).toEqual({
         fail: [true, false, false],
@@ -590,33 +630,14 @@ describe('live-broadcast', () => {
     })
 
     it('sets temp hp', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [row],
-        settings: {},
-      })
-
-      const patch = await buildHpPatch(supabase, 7, 'row-1', {
-        type: 'hp',
-        hpType: 'temp',
-        amount: 8,
-      })
+      const patch = await buildHpPatch(
+        supabaseWithoutBloodied(),
+        row,
+        {},
+        { type: 'hp', hpType: 'temp', amount: 8 },
+      )
 
       expect(patch.tempHitPoints).toBe(8)
-    })
-
-    it('throws a 404 when the row does not exist on the encounter', async () => {
-      const supabase = supabaseWithSheet({ rows: [], settings: {} })
-
-      await expect(
-        buildHpPatch(supabase, 7, 'missing-row', {
-          type: 'hp',
-          hpType: 'heal',
-          amount: 1,
-        }),
-      ).rejects.toMatchObject({
-        statusCode: 404,
-        statusMessage: 'Row not found',
-      })
     })
   })
 
@@ -633,99 +654,53 @@ describe('live-broadcast', () => {
       tempArmorClass: 0,
     }
 
-    it('adds armor class without exceeding the max', async () => {
-      const supabase = supabaseWithSheet({ rows: [row] })
-
-      const patch = await buildAcPatch(supabase, 7, 'row-1', {
-        type: 'ac',
-        acType: 'add',
-        amount: 10,
-      })
-
-      expect(patch).toEqual({ armorClass: 18, tempArmorClass: 0 })
+    it('adds armor class without exceeding the max', () => {
+      expect(
+        buildAcPatch(row, undefined, { type: 'ac', acType: 'add', amount: 10 }),
+      ).toEqual({ armorClass: 18, tempArmorClass: 0 })
     })
 
-    it('removes armor class, spending temp AC first', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [{ ...row, tempArmorClass: 3 }],
-      })
-
-      const patch = await buildAcPatch(supabase, 7, 'row-1', {
-        type: 'ac',
-        acType: 'remove',
-        amount: 5,
-      })
-
-      expect(patch).toEqual({ armorClass: 13, tempArmorClass: 0 })
-    })
-
-    it('sets temporary armor class', async () => {
-      const supabase = supabaseWithSheet({ rows: [row] })
-
-      const patch = await buildAcPatch(supabase, 7, 'row-1', {
-        type: 'ac',
-        acType: 'temp',
-        amount: 5,
-      })
-
-      expect(patch).toEqual({ armorClass: 15, tempArmorClass: 5 })
-    })
-
-    it('clamps armor class at zero when negative values are not allowed', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [row],
-        settings: { negative: false },
-      })
-
-      const patch = await buildAcPatch(supabase, 7, 'row-1', {
-        type: 'ac',
-        acType: 'remove',
-        amount: 20,
-      })
-
-      expect(patch).toEqual({ armorClass: 0, tempArmorClass: 0 })
-    })
-
-    it('clamps armor class at zero when the setting is missing', async () => {
-      const supabase = supabaseWithSheet({ rows: [row], settings: {} })
-
-      const patch = await buildAcPatch(supabase, 7, 'row-1', {
-        type: 'ac',
-        acType: 'remove',
-        amount: 20,
-      })
-
-      expect(patch.armorClass).toBe(0)
-    })
-
-    it('keeps negative armor class when the encounter allows it', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [row],
-        settings: { negative: true },
-      })
-
-      const patch = await buildAcPatch(supabase, 7, 'row-1', {
-        type: 'ac',
-        acType: 'remove',
-        amount: 20,
-      })
-
-      expect(patch.armorClass).toBe(-5)
-    })
-
-    it('throws a 404 when the row does not exist on the encounter', async () => {
-      const supabase = supabaseWithSheet({ rows: [] })
-
-      await expect(
-        buildAcPatch(supabase, 7, 'missing-row', {
+    it('removes armor class, spending temp AC first', () => {
+      expect(
+        buildAcPatch({ ...row, tempArmorClass: 3 }, undefined, {
           type: 'ac',
-          acType: 'add',
-          amount: 1,
+          acType: 'remove',
+          amount: 5,
         }),
-      ).rejects.toMatchObject({
-        statusCode: 404,
-        statusMessage: 'Row not found',
-      })
+      ).toEqual({ armorClass: 13, tempArmorClass: 0 })
+    })
+
+    it('sets temporary armor class', () => {
+      expect(
+        buildAcPatch(row, undefined, { type: 'ac', acType: 'temp', amount: 5 }),
+      ).toEqual({ armorClass: 15, tempArmorClass: 5 })
+    })
+
+    it('clamps armor class at zero when negative values are not allowed', () => {
+      expect(
+        buildAcPatch(
+          row,
+          { negative: false },
+          { type: 'ac', acType: 'remove', amount: 20 },
+        ),
+      ).toEqual({ armorClass: 0, tempArmorClass: 0 })
+    })
+
+    it('clamps armor class at zero when the setting is missing', () => {
+      expect(
+        buildAcPatch(row, {}, { type: 'ac', acType: 'remove', amount: 20 })
+          .armorClass,
+      ).toBe(0)
+    })
+
+    it('keeps negative armor class when the encounter allows it', () => {
+      expect(
+        buildAcPatch(
+          row,
+          { negative: true },
+          { type: 'ac', acType: 'remove', amount: 20 },
+        ).armorClass,
+      ).toBe(-5)
     })
   })
 
@@ -745,29 +720,24 @@ describe('live-broadcast', () => {
       resources: { reaction: true },
     }
 
-    it('builds an hp patch from the stored row', async () => {
-      const supabase = supabaseWithSheet({
-        rows: [row],
-        settings: { negative: false },
-      })
-
-      const patch = await buildLiveActionPatch(supabase, 7, row, {
-        type: 'hp',
-        hpType: 'heal',
-        amount: 5,
-      })
+    it('builds an hp patch from the given row', async () => {
+      const patch = await buildLiveActionPatch(
+        supabaseWithoutBloodied(),
+        row,
+        { negative: false },
+        { type: 'hp', hpType: 'heal', amount: 5 },
+      )
 
       expect(patch).toMatchObject({ hitPoints: 25 })
     })
 
-    it('builds an ac patch from the stored row', async () => {
-      const supabase = supabaseWithSheet({ rows: [row] })
-
-      const patch = await buildLiveActionPatch(supabase, 7, row, {
-        type: 'ac',
-        acType: 'add',
-        amount: 1,
-      })
+    it('builds an ac patch from the given row', async () => {
+      const patch = await buildLiveActionPatch(
+        supabaseWithoutBloodied(),
+        row,
+        undefined,
+        { type: 'ac', acType: 'add', amount: 1 },
+      )
 
       expect(patch).toEqual({ armorClass: 16, tempArmorClass: 0 })
     })
@@ -780,8 +750,8 @@ describe('live-broadcast', () => {
       async (value, reaction) => {
         const patch = await buildLiveActionPatch(
           serverSupabaseServiceRole({} as never),
-          7,
           { ...row, resources: { reaction: false, legendaryActions: 2 } },
+          undefined,
           { type: 'reaction', value },
         )
 
@@ -794,8 +764,8 @@ describe('live-broadcast', () => {
     it('readies an action', async () => {
       const patch = await buildLiveActionPatch(
         serverSupabaseServiceRole({} as never),
-        7,
         row,
+        undefined,
         { type: 'ready', value: true },
       )
 
@@ -805,8 +775,8 @@ describe('live-broadcast', () => {
     it('restores the reaction when a readied action is dropped', async () => {
       const patch = await buildLiveActionPatch(
         serverSupabaseServiceRole({} as never),
-        7,
         { ...row, resources: { reaction: false } },
+        undefined,
         { type: 'ready', value: false },
       )
 
@@ -816,8 +786,8 @@ describe('live-broadcast', () => {
     it('passes other actions through as a single field', async () => {
       const patch = await buildLiveActionPatch(
         serverSupabaseServiceRole({} as never),
-        7,
         row,
+        undefined,
         { type: 'concentration', value: true },
       )
 

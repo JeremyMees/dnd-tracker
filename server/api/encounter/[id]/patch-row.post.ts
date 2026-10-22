@@ -67,22 +67,20 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
-  await logCombatEvents(supabase, {
-    encounterId: id,
-    rowId: body.rowId,
-    round: sheet.round,
-    actorId: user.id,
-    events: diffRow(before, after),
-  })
-
-  await broadcastSheetAction(supabase, id, {
-    row: body.rowId,
-    patch: body.patch,
-  })
-
-  const session = await activeLiveSession(supabase, id)
-
-  if (session) await broadcastLiveState(supabase, session, id)
+  await Promise.all([
+    logCombatEvents(supabase, {
+      encounterId: id,
+      rowId: body.rowId,
+      round: sheet.round,
+      actorId: user.id,
+      events: diffRow(before, after),
+    }),
+    broadcastSheetAction(supabase, id, {
+      row: body.rowId,
+      patch: body.patch,
+    }),
+    broadcastActiveLiveState(supabase, id),
+  ])
 
   return { row: after }
 })

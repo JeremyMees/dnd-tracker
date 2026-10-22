@@ -662,7 +662,10 @@ describe('POST /api/encounter/live/action', () => {
   it('throws a 404 when the live session no longer exists', async () => {
     const token = await seatToken()
 
-    mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
+    mockFrom({
+      live_sessions: mockChain({ data: null, error: null }),
+      initiative_sheets: mockChain({ data: null, error: null }),
+    })
 
     await expect(
       handler(
@@ -681,6 +684,7 @@ describe('POST /api/encounter/live/action', () => {
     const token = await seatToken()
 
     mockFrom({
+      initiative_sheets: mockChain({ data: null, error: null }),
       live_sessions: mockChain({
         data: { ...session, endedAt: new Date().toISOString() },
         error: null,
@@ -704,6 +708,7 @@ describe('POST /api/encounter/live/action', () => {
     const token = await seatToken()
 
     mockFrom({
+      initiative_sheets: mockChain({ data: null, error: null }),
       live_sessions: mockChain({
         data: {
           ...session,
@@ -729,7 +734,10 @@ describe('POST /api/encounter/live/action', () => {
   it('throws a 403 when the seat was kicked and no longer exists', async () => {
     const token = await seatToken({ seat: 'seat-missing' })
 
-    mockFrom({ live_sessions: mockChain({ data: session, error: null }) })
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({ data: null, error: null }),
+    })
 
     await expect(
       handler(
@@ -747,7 +755,10 @@ describe('POST /api/encounter/live/action', () => {
   it('throws a 403 when the seat has no claimed row', async () => {
     const token = await seatToken({ seat: 'seat-2', spectator: false })
 
-    mockFrom({ live_sessions: mockChain({ data: session, error: null }) })
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({ data: null, error: null }),
+    })
 
     await expect(
       handler(

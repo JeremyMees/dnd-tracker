@@ -27,12 +27,19 @@ export default defineEventHandler(async event => {
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
-  const { data: session } = await supabase
-    .from('live_sessions')
-    .select('seats, expiresAt, endedAt')
-    .eq('uuid', payload.session)
-    .eq('encounter', payload.encounter)
-    .maybeSingle()
+  const [{ data: session }, { data: sheet }] = await Promise.all([
+    supabase
+      .from('live_sessions')
+      .select('seats, expiresAt, endedAt')
+      .eq('uuid', payload.session)
+      .eq('encounter', payload.encounter)
+      .maybeSingle(),
+    supabase
+      .from('initiative_sheets')
+      .select('activeIndex, round, rows, settings')
+      .eq('id', payload.encounter)
+      .single(),
+  ])
 
   if (!session) {
     throw createError({
@@ -53,12 +60,6 @@ export default defineEventHandler(async event => {
   if (!seat?.row) {
     throw createError({ statusCode: 403, statusMessage: 'No row claimed' })
   }
-
-  const { data: sheet } = await supabase
-    .from('initiative_sheets')
-    .select('activeIndex, round, rows, settings')
-    .eq('id', payload.encounter)
-    .single()
 
   if (!sheet) {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
@@ -96,8 +97,8 @@ export default defineEventHandler(async event => {
 
   const patch = await buildLiveActionPatch(
     supabase,
-    payload.encounter,
     ownRow,
+    sheet.settings,
     body.action,
   )
 
@@ -109,23 +110,23 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
-  await logCombatEvents(supabase, {
-    encounterId: payload.encounter,
-    rowId: seat.row,
-    round: sheet.round,
-    actorName: seat.name,
-    events: diffRow(ownRow, row),
-  })
-
-  await broadcastLiveAction(supabase, payload.session, {
-    row: seat.row,
-    patch: sanitizeBroadcastPatch(row, body.action.type, patch),
-  })
-
-  await broadcastSheetAction(supabase, payload.encounter, {
-    row: seat.row,
-    patch,
-  })
+  await Promise.all([
+    logCombatEvents(supabase, {
+      encounterId: payload.encounter,
+      rowId: seat.row,
+      round: sheet.round,
+      actorName: seat.name,
+      events: diffRow(ownRow, row),
+    }),
+    broadcastLiveAction(supabase, payload.session, {
+      row: seat.row,
+      patch: sanitizeBroadcastPatch(row, body.action.type, patch),
+    }),
+    broadcastSheetAction(supabase, payload.encounter, {
+      row: seat.row,
+      patch,
+    }),
+  ])
 
   return { row }
 })
