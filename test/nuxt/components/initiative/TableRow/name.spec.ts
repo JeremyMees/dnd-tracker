@@ -65,36 +65,6 @@ describe('Initiative table row name', async () => {
     expect(component.find('[test-id="summoner"]').exists()).toBeFalsy()
   })
 
-  it('Should not update if sheet is undefined', async () => {
-    mockSheet.value = undefined
-
-    const component = await mountWithTooltips(Name, {
-      props,
-      provide,
-    })
-
-    const vm = component.vm as unknown as MockFunctions
-    vm.form.setValues({ name: 'New Name' })
-    await vm.onSubmit()
-
-    expect(mockUpdate).not.toHaveBeenCalled()
-  })
-
-  it('Should not update if the row is not found in the sheet', async () => {
-    const component = await mountWithTooltips(Name, {
-      props: {
-        item: { ...props.item, id: 'not-in-sheet' },
-      },
-      provide,
-    })
-
-    const vm = component.vm as unknown as MockFunctions
-    vm.form.setValues({ name: 'New Name' })
-    await vm.onSubmit()
-
-    expect(mockUpdate).not.toHaveBeenCalled()
-  })
-
   it('Should update the row name and close the popover on successful submit', async () => {
     const component = await mountWithTooltips(Name, { props, provide })
 
@@ -103,14 +73,10 @@ describe('Initiative table row name', async () => {
     vm.form.setValues({ name: 'New Name' })
     await vm.onSubmit()
 
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
-        expect.objectContaining({
-          id: props.item.id,
-          name: 'New Name',
-        }),
-      ]),
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      name: 'New Name',
     })
+    expect(mockUpdate).not.toHaveBeenCalled()
     expect(vm.popoverOpen).toBeFalsy()
   })
 
@@ -121,16 +87,16 @@ describe('Initiative table row name', async () => {
     vm.form.setValues({ name: 'A'.repeat(51) })
     await vm.onSubmit()
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockPatchRow).not.toHaveBeenCalled()
 
     vm.form.setValues({ name: 'A'.repeat(50) })
     await vm.onSubmit()
 
-    expect(mockUpdate).toHaveBeenCalledOnce()
+    expect(mockPatchRow).toHaveBeenCalledOnce()
   })
 
-  it('Should keep the popover open when update throws', async () => {
-    mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
+  it('Should keep the popover open when the patch fails', async () => {
+    mockPatchRow.mockRejectedValueOnce(new Error('Patch failed'))
 
     const component = await mountWithTooltips(Name, { props, provide })
 

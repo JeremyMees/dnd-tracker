@@ -5,7 +5,7 @@ import * as z from 'zod'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update, patchRow } = validateInject(INITIATIVE_SHEET)
+const { patchRow } = validateInject(INITIATIVE_SHEET)
 
 function useReadied(): void {
   patchRow(props.item.id, {
@@ -29,20 +29,8 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit(async values => {
-  if (!sheet.value) return
-
-  const index = getCurrentRowIndex(sheet.value, props.item.id)
-  const rows = [...sheet.value.rows]
-
-  if (index === -1 || !rows[index]) return
-
-  rows[index] = {
-    ...rows[index],
-    name: values.name,
-  }
-
   try {
-    await update({ rows })
+    await patchRow(props.item.id, { name: values.name })
   } catch {
     return
   }

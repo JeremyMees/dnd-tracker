@@ -10,6 +10,8 @@ import { z } from 'zod'
 
 const paramsSchema = z.object({ id: z.coerce.number().int().positive() })
 
+const dmOnlyRowFields = new Set(['note'])
+
 const bodySchema = z.object({
   rowId: z.string().min(1),
   patch: z
@@ -28,6 +30,8 @@ const bodySchema = z.object({
       readied: z.boolean().optional(),
       hidden: z.boolean().optional(),
       resources: resourceUsesSchema.optional(),
+      name: z.string().trim().min(2).max(50).optional(),
+      note: z.string().max(250).optional(),
     })
     .strict(),
 })
@@ -79,7 +83,9 @@ export default defineEventHandler(async event => {
       row: body.rowId,
       patch: body.patch,
     }),
-    broadcastActiveLiveState(supabase, id),
+    ...(Object.keys(body.patch).some(key => !dmOnlyRowFields.has(key))
+      ? [broadcastActiveLiveState(supabase, id)]
+      : []),
   ])
 
   return { row: after }

@@ -275,6 +275,104 @@ describe('POST /api/encounter/[id]/patch-row', () => {
     ).resolves.toEqual({ row: { ...row, hidden: false } })
   })
 
+  it('renames a row and pushes the change to an active live session', async () => {
+    const sheet = { round: 2, rows: [row] }
+    const renamed = { ...row, name: 'Elara Moonwhisper' }
+
+    mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({ data: sheet, error: null }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 2,
+              activeIndex: 0,
+              rows: [renamed],
+              settings: {},
+            },
+            error: null,
+          }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+        live_sessions: mockChain({
+          data: { uuid: 'session-uuid' },
+          error: null,
+        }),
+      },
+      { rpc: mockChain({ data: renamed, error: null }) },
+    )
+
+    await handler(
+      patchEvent({ rowId: 'row-1', patch: { name: 'Elara Moonwhisper' } }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { name: 'Elara Moonwhisper' },
+    })
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'sync',
+      expect.objectContaining({
+        sheet: expect.objectContaining({
+          rows: [expect.objectContaining({ name: 'Elara Moonwhisper' })],
+        }),
+      }),
+    )
+  })
+
+  it('does not sync the live session for a note-only patch', async () => {
+    const from = mockFrom(
+      {
+        initiative_sheets: [
+          mockChain({
+            data: { id: 7, campaign: null, createdBy: 'user-1' },
+            error: null,
+          }),
+          mockChain({ data: { round: 2, rows: [row] }, error: null }),
+        ],
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      { rpc: mockChain({ data: { ...row, note: 'Flanking' }, error: null }) },
+    )
+
+    await handler(patchEvent({ rowId: 'row-1', patch: { note: 'Flanking' } }))
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { note: 'Flanking' },
+    })
+    expect(from).not.toHaveBeenCalledWith('live_sessions')
+    expect(supabase.channel('sheet:7').httpSend).toHaveBeenCalledWith(
+      'action',
+      expect.objectContaining({ row: 'row-1', patch: { note: 'Flanking' } }),
+    )
+  })
+
+  it.each([
+    [{ name: 'A' }],
+    [{ name: 'A'.repeat(51) }],
+    [{ note: 'A'.repeat(251) }],
+  ])('rejects an out-of-range patch %o', async patch => {
+    await expect(
+      handler(patchEvent({ rowId: 'row-1', patch })),
+    ).rejects.toMatchObject({
+      statusCode: 400,
+      statusMessage: 'Validation Error',
+    })
+  })
+
   it('throws a 401 when the request is not authenticated', async () => {
     serverSupabaseUser.mockResolvedValue(null)
 
@@ -466,7 +564,7 @@ describe('POST /api/encounter/[id]/patch-row', () => {
     })
 
     await expect(
-      handler(patchEvent({ rowId: 'row-1', patch: { name: 'Hacked' } })),
+      handler(patchEvent({ rowId: 'row-1', patch: { type: 'monster' } })),
     ).rejects.toMatchObject({ statusCode: 400 })
   })
 })
