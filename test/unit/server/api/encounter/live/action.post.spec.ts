@@ -1047,28 +1047,40 @@ describe('POST /api/encounter/live/action', () => {
     })
   })
 
-  it('throws a 429 after too many action attempts from the same IP', async () => {
+  it('throws a 429 after too many actions from the same seat', async () => {
+    const token = await seatToken({ seat: 'seat-2', spectator: true })
+    const action = { type: 'concentration', value: true }
+
     for (let i = 0; i < 60; i++) {
       await expect(
-        handler(
-          actionEvent({
-            seatToken: 'not-a-jwt',
-            action: { type: 'concentration', value: true },
-          }),
-        ),
-      ).rejects.toMatchObject({ statusCode: 401 })
+        handler(actionEvent({ seatToken: token, action })),
+      ).rejects.toMatchObject({ statusCode: 403 })
     }
 
     await expect(
-      handler(
-        actionEvent({
-          seatToken: 'not-a-jwt',
-          action: { type: 'concentration', value: true },
-        }),
-      ),
+      handler(actionEvent({ seatToken: token, action })),
     ).rejects.toMatchObject({
       statusCode: 429,
       statusMessage: 'Too many requests',
+    })
+  })
+
+  it('rate-limits each seat separately on a shared IP', async () => {
+    const spectator = await seatToken({ seat: 'seat-2', spectator: true })
+    const other = await seatToken({ seat: 'seat-3', spectator: true })
+    const action = { type: 'concentration', value: true }
+
+    for (let i = 0; i < 60; i++) {
+      await expect(
+        handler(actionEvent({ seatToken: spectator, action })),
+      ).rejects.toMatchObject({ statusCode: 403 })
+    }
+
+    await expect(
+      handler(actionEvent({ seatToken: other, action })),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'Spectators cannot act',
     })
   })
 })

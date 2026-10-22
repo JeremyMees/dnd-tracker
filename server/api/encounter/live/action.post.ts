@@ -9,14 +9,14 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async event => {
+  const body = await readValidatedBody(event, bodySchema.parse)
+  const payload = await verifyLiveSeatToken(body.seatToken)
+
   await assertRateLimit(event, {
-    key: 'live-action',
+    key: `live-action:${payload.seat}`,
     limit: 60,
     windowMs: ONE_MINUTE,
   })
-
-  const body = await readValidatedBody(event, bodySchema.parse)
-  const payload = await verifyLiveSeatToken(body.seatToken)
 
   if (payload.spectator) {
     throw createError({

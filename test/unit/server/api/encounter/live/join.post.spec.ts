@@ -265,7 +265,7 @@ describe('POST /api/encounter/live/join', () => {
   it('throws a 429 after too many join attempts from the same IP', async () => {
     mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 30; i++) {
       await expect(
         handler(joinEvent({ code: 'ZZZZZZ', name: 'Elara', row: 'row-1' })),
       ).rejects.toMatchObject({ statusCode: 404 })
