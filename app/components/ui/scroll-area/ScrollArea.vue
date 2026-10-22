@@ -40,6 +40,7 @@ defineExpose({ viewport: computed(() => root.value?.viewport) })
         cn(
           'min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50',
           orientation === 'vertical' ? 'scroll-fade' : 'scroll-fade-x',
+          'not-supports-[animation-timeline:scroll()]:scroll-fade-none',
           props.viewportClass,
         )
       "

@@ -32,6 +32,14 @@ describe('ScrollArea', () => {
     ).toBe('vertical')
   })
 
+  it('Should drop the fade where scroll-driven animations are unsupported', async () => {
+    wrapper = await mountScrollArea()
+
+    expect(viewport(wrapper).classList).toContain(
+      'not-supports-[animation-timeline:scroll()]:scroll-fade-none',
+    )
+  })
+
   it('Should fade the horizontal edges and use a horizontal scrollbar when horizontal', async () => {
     wrapper = await mountScrollArea({ orientation: 'horizontal' })
 
