@@ -40,6 +40,69 @@ describe('combat-events queries', () => {
       expect(chain.order).toHaveBeenCalledWith('id', { ascending: false })
     })
 
+    it('only fetches events since the newest stored one on a refetch', async () => {
+      const first = {
+        ...event,
+        id: 1,
+        createdAt: '2026-10-22T10:00:30.000Z',
+      }
+      const second = {
+        ...event,
+        id: 2,
+        createdAt: '2026-10-22T10:00:40.000Z',
+      }
+      const initial = mockChain({ data: [first], error: null })
+      const incremental = mockChain({ data: [second, first], error: null })
+
+      mockSupabaseFrom({ combat_events: [initial, incremental] })
+
+      const { vm } = await mountHook(() => ({
+        ...useCombatEvents(7),
+        queryClient: useQueryClient(),
+      }))
+
+      await vi.waitFor(() => expect(vm.data).toEqual([first]))
+
+      expect(initial.gte).not.toHaveBeenCalled()
+
+      await vm.queryClient.invalidateQueries({
+        queryKey: ['useCombatEvents', 7],
+      })
+
+      await vi.waitFor(() => expect(vm.data).toEqual([second, first]))
+
+      expect(incremental.gte).toHaveBeenCalledWith(
+        'createdAt',
+        '2026-10-22T10:00:20.000Z',
+      )
+    })
+
+    it('fetches the whole log again once it was cleared', async () => {
+      const stored = {
+        ...event,
+        id: 3,
+        createdAt: '2026-10-22T10:00:30.000Z',
+      }
+      const chain = mockChain({ data: [stored], error: null })
+
+      mockSupabaseFrom({ combat_events: chain })
+
+      const { vm } = await mountHook(() => ({
+        ...useCombatEvents(7),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCombatEvents', 7], [])
+
+      await vm.queryClient.invalidateQueries({
+        queryKey: ['useCombatEvents', 7],
+      })
+
+      await vi.waitFor(() => expect(vm.data).toEqual([stored]))
+
+      expect(chain.gte).not.toHaveBeenCalled()
+    })
+
     it('fetches without being told to when enabled is left out', async () => {
       const from = mockSupabaseFrom({
         combat_events: mockChain({ data: [], error: null }),

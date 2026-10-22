@@ -90,6 +90,13 @@ export function useRealTimeInitiativeSheet(
     if (payload.reminders) void turnReminders.trigger(payload.reminders)
   }
 
+  function applyEvents(payload: SheetEventsEvent): void {
+    const queryKey = queryKeys.combatEvents(id)
+
+    if (payload.cleared) queryClient.setQueryData(queryKey, [])
+    else void queryClient.invalidateQueries({ queryKey })
+  }
+
   async function applyDeleted(): Promise<void> {
     toast.warning(t('pages.encounter.toasts.removed.title'), {
       description: t('pages.encounter.toasts.removed.text'),
@@ -108,8 +115,8 @@ export function useRealTimeInitiativeSheet(
       .on('broadcast', { event: 'sync' }, ({ payload }) =>
         applySync(payload as SheetSyncEvent),
       )
-      .on('broadcast', { event: 'events' }, () =>
-        queryClient.invalidateQueries({ queryKey: queryKeys.combatEvents(id) }),
+      .on('broadcast', { event: 'events' }, ({ payload }) =>
+        applyEvents(payload as SheetEventsEvent),
       )
       .on('broadcast', { event: 'deleted' }, applyDeleted)
       .subscribe()

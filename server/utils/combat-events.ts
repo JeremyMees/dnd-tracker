@@ -88,6 +88,15 @@ export async function broadcastSheetEvents(
   await channel.httpSend('events', {})
 }
 
+export async function broadcastSheetEventsCleared(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounterId: number,
+): Promise<void> {
+  const channel = supabase.channel(`sheet:${encounterId}`)
+
+  await channel.httpSend('events', { cleared: true })
+}
+
 export async function broadcastSheetDeleted(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,

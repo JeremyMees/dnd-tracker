@@ -19,5 +19,7 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
+  await broadcastSheetEventsCleared(supabase, id)
+
   return { deleted: true }
 })

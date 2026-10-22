@@ -1,25 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { toast } from 'vue-sonner'
+import { combatLogSince, mergeCombatLog } from '~/utils/combat-log'
 
 export function useCombatEvents(
   encounterId: number,
   enabled?: MaybeRefOrGetter<boolean>,
 ) {
   const supabase = useSupabaseClient<DB>()
+  const queryClient = useQueryClient()
 
   return useQuery({
     queryKey: queryKeys.combatEvents(encounterId),
     enabled: () => (enabled === undefined ? true : toValue(enabled)),
-    queryFn: async () => {
-      const { data, error } = await supabase
+    queryFn: async ({ queryKey }) => {
+      const cached = queryClient.getQueryData<CombatEventRow[]>(queryKey)
+      const since = combatLogSince(cached)
+
+      let query = supabase
         .from('combat_events')
         .select()
         .eq('encounterId', encounterId)
-        .order('id', { ascending: false })
+
+      if (since) query = query.gte('createdAt', since)
+
+      const { data, error } = await query.order('id', { ascending: false })
 
       if (error) throw createError(error)
 
-      return data
+      return since && cached ? mergeCombatLog(cached, data) : data
     },
   })
 }

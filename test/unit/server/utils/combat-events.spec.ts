@@ -8,6 +8,7 @@ import {
   broadcastSheetAction,
   broadcastSheetDeleted,
   broadcastSheetEvents,
+  broadcastSheetEventsCleared,
   broadcastSheetSync,
   logCombatEvents,
 } from '~~/server/utils/combat-events'
@@ -268,6 +269,21 @@ describe('combat-events', () => {
       const channel = serverSupabaseServiceRole({} as never).channel('sheet:7')
 
       expect(channel.httpSend).toHaveBeenCalledWith('events', {})
+    })
+  })
+
+  describe('broadcastSheetEventsCleared', () => {
+    it('tells the sheet channel that the combat log was cleared', async () => {
+      mockFrom({})
+
+      await broadcastSheetEventsCleared(
+        serverSupabaseServiceRole({} as never),
+        7,
+      )
+
+      expect(
+        serverSupabaseServiceRole({} as never).channel('sheet:7').httpSend,
+      ).toHaveBeenCalledWith('events', { cleared: true })
     })
   })
 })

@@ -429,6 +429,27 @@ describe('useRealTimeInitiativeSheet', () => {
     })
   })
 
+  describe('events broadcast', () => {
+    it('Should refetch the combat log when new events were logged', async () => {
+      await mountProbe()
+
+      emitBroadcast('events', {})
+
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['useCombatEvents', 2],
+      })
+    })
+
+    it('Should empty the combat log when it was cleared elsewhere', async () => {
+      await mountProbe()
+
+      emitBroadcast('events', { cleared: true })
+
+      expect(setQueryData).toHaveBeenCalledWith(['useCombatEvents', 2], [])
+      expect(invalidateQueries).not.toHaveBeenCalled()
+    })
+  })
+
   it('Should leave the channel when unmounted', async () => {
     const { component } = await mountProbe()
 
