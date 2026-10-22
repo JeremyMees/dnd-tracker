@@ -17,6 +17,8 @@ function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
     hitPoints: row.hitPoints,
     maxHitPoints: row.maxHitPoints,
     tempHitPoints: row.tempHitPoints,
+    reaction: row.resources?.reaction,
+    readied: row.readied,
   }
 }
 
@@ -123,7 +125,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
         body: { seatToken, action: { type: 'endTurn' } },
       })
 
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.liveState(token, seatToken),
       })
 

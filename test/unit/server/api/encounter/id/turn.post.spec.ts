@@ -58,7 +58,9 @@ describe('POST /api/encounter/[id]/turn', () => {
             error: null,
           }),
           updateChain,
+          mockChain({ data: updated, error: null }),
         ],
+        combat_events: mockChain({ data: null, error: null }),
         live_sessions: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: 2, error: null }) },
@@ -66,7 +68,12 @@ describe('POST /api/encounter/[id]/turn', () => {
 
     const result = await handler(turnEvent())
 
-    expect(result).toEqual({ sheet: updated, expired: [], saves: [] })
+    expect(result).toEqual({
+      sheet: updated,
+      expired: [],
+      saves: [],
+      recharges: [],
+    })
     expect(updateChain.update).toHaveBeenCalledWith({
       activeIndex: 1,
       round: 3,

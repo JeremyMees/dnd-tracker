@@ -2,7 +2,9 @@
 import { toast } from 'vue-sonner'
 import { diceTypes } from '~~/constants/dnd'
 
-const emit = defineEmits<{ rolled: [amount: number] }>()
+const emit = defineEmits<{
+  rolled: [amount: number, rolled: Partial<Record<DndDice, number[]>>]
+}>()
 
 withDefaults(
   defineProps<{
@@ -89,7 +91,7 @@ function calculateDndDiceRoll() {
   )
 
   toRoll.value = { d4: 0, d6: 0, d8: 0, d10: 0, d12: 0, d20: 0, d100: 0 }
-  emit('rolled', amount)
+  emit('rolled', amount, rolled)
 }
 </script>
 

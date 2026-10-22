@@ -67,19 +67,23 @@ function showSessionEnded(): void {
 }
 
 watch(isError, hasError => {
-  if (!hasError) return
-
-  const statusCode = (error.value as { statusCode?: number } | null)?.statusCode
-
-  if (statusCode !== 404 && statusCode !== 410) return
-
-  showSessionEnded()
+  if (hasError && isLiveSessionGone(error.value)) showSessionEnded()
 })
 
 watch(
   () => state.value?.session.kicked,
   kicked => {
     if (kicked) showSessionEnded()
+  },
+)
+
+watch(
+  () => state.value?.session.row,
+  row => {
+    if (!row || !joined.value || joined.value.row === row) return
+
+    joined.value = { ...joined.value, row }
+    if (seat.value) seat.value = { ...seat.value, row }
   },
 )
 
@@ -105,7 +109,7 @@ function handleJoined(session: LiveJoinResponse): void {
       <LivePlayerView
         :sheet="state?.sheet"
         :loading="isPending"
-        :error="isError"
+        :error="isError && !state"
       />
     </template>
 

@@ -22,6 +22,10 @@ function goesBefore(
 
   if ((row.initiative ?? -1) < 0) return false
 
+  if (row.type === 'lair' || other.type === 'lair') {
+    return other.type === 'lair' && row.type !== 'lair'
+  }
+
   const modifier = row.initiativeModifier ?? 0
   const otherModifier = other.initiativeModifier ?? 0
 
@@ -63,6 +67,7 @@ const INTEGER_ROW_FIELDS = [
   'tempHitPoints',
   'proficiencyBonus',
   'passivePerception',
+  'level',
 ] as const satisfies readonly (keyof InitiativeSheetRow)[]
 
 export function sanitizeRowNumbers(
@@ -100,7 +105,7 @@ export function sanitizeCondition(condition: DndCondition): DndCondition {
   return {
     id: condition.id,
     name: condition.name,
-    desc: condition.desc ?? '',
+    desc: '',
     ...(level !== undefined && { level }),
     ...(typeof condition.hasLevels === 'boolean' && {
       hasLevels: condition.hasLevels,
@@ -140,13 +145,19 @@ export function buildCombatPatch(
   return patch
 }
 
+export function defaultInitiative(type: HomebrewType): number {
+  return type === 'lair' ? 20 : -1
+}
+
 export const createInitiativeRow = (
   formData: Partial<InitiativeSheetRow> & { name: string },
   type: HomebrewType,
   encounterRows: number,
 ): InitiativeSheetRow => {
   const initiative =
-    'initiative' in formData ? Number(formData.initiative ?? -1) : -1
+    isDefined(formData.initiative) && formData.initiative >= 0
+      ? Number(formData.initiative)
+      : defaultInitiative(type)
   const initiativeModifier =
     'initiativeModifier' in formData
       ? Number(formData.initiativeModifier)
@@ -175,13 +186,27 @@ export const createInitiativeRow = (
   }
 }
 
+export function rollRowInitiative(
+  row: Pick<InitiativeSheetRow, 'initiativeModifier'>,
+): number {
+  return Math.max(randomRoll(20) + (row.initiativeModifier ?? 0), 0)
+}
+
 export function appendRows(
   rows: InitiativeSheetRow[],
   added: (Partial<InitiativeSheetRow> & { name: string; type: HomebrewType })[],
+  settings?: InitiativeSettings,
 ): InitiativeSheetRow[] {
-  const created = added.map((row, i) =>
-    createInitiativeRow(row, row.type, rows.length + i),
-  )
+  const autoRollInitiative = isAutoRollInitiativeEnabled(settings)
+  const created = added.map((row, i) => {
+    const created = createInitiativeRow(row, row.type, rows.length + i)
+
+    return autoRollInitiative &&
+      row.type === 'monster' &&
+      created.initiative < 0
+      ? { ...created, initiative: rollRowInitiative(created) }
+      : created
+  })
 
   return indexCorrect(
     placeByInitiative(
@@ -201,7 +226,6 @@ export const monsterToRow = (
     proficiencyBonus,
     type: _type,
     size: _size,
-    challengeRating: _challengeRating,
     alignment: _alignment,
     experiencePoints: _experiencePoints,
     ...rest

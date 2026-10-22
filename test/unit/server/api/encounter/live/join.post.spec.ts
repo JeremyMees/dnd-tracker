@@ -158,6 +158,20 @@ describe('POST /api/encounter/live/join', () => {
     ).rejects.toMatchObject({ statusCode: 404, statusMessage: 'Row not found' })
   })
 
+  it('throws a 404 when the row is hidden from players', async () => {
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: { rows: [{ id: 'row-2', type: 'npc', hidden: true }] },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(joinEvent({ code: 'ABC234', name: 'Elara', row: 'row-2' })),
+    ).rejects.toMatchObject({ statusCode: 404, statusMessage: 'Row not found' })
+  })
+
   it('throws a 404 when the row is a monster (not player or npc)', async () => {
     mockFrom({
       live_sessions: mockChain({ data: session, error: null }),
@@ -251,7 +265,7 @@ describe('POST /api/encounter/live/join', () => {
   it('throws a 429 after too many join attempts from the same IP', async () => {
     mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 30; i++) {
       await expect(
         handler(joinEvent({ code: 'ZZZZZZ', name: 'Elara', row: 'row-1' })),
       ).rejects.toMatchObject({ statusCode: 404 })

@@ -93,6 +93,20 @@ describe('useInitiativeSheet', async () => {
     await flushPromises()
   })
 
+  it('Should swallow a failed update when going back or resetting', async () => {
+    mockSheet.value.round = 2
+
+    const { previous, reset } = useInitiativeSheet(
+      sheetComputed,
+      () => Promise.reject(new Error('boom')),
+      nextTurn,
+    )
+
+    expect(() => previous()).not.toThrow()
+    expect(() => reset(true)).not.toThrow()
+    await flushPromises()
+  })
+
   it('Should go to last row when the first row is active the round is not 1 and previous is called', async () => {
     mockSheet.value.round = 2
 
@@ -186,6 +200,66 @@ describe('useInitiativeSheet', async () => {
       false,
     ])
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
+  })
+
+  it('Should skip dead monsters and select the next living row', async () => {
+    mockSheet.value.rows = [
+      { ...mockSheet.value.rows[0]!, type: 'player' },
+      { ...mockSheet.value.rows[1]!, type: 'monster', hitPoints: 0 },
+      { ...mockSheet.value.rows[2]!, type: 'monster' },
+    ]
+
+    const { next, selected } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
+
+    next()
+
+    expect(mockSheet.value.activeIndex).toBe(2)
+    expect(selected.value).toEqual({ [mockSheet.value.rows[2]!.id]: true })
+  })
+
+  it.each([false, true])(
+    'Should clear readied actions on a reset (hard: %s)',
+    async hard => {
+      mockSheet.value.rows = [
+        mockSheet.value.rows[0]!,
+        { ...mockSheet.value.rows[1]!, readied: true },
+      ]
+
+      const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+      reset(hard)
+
+      expect(mockSheet.value.rows.map(row => row.readied)).toEqual([
+        undefined,
+        undefined,
+      ])
+    },
+  )
+
+  it('Should leave the rows alone on a soft reset without readied actions', async () => {
+    updateFn.mockClear()
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+    reset(false)
+
+    expect(updateFn).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+  })
+
+  it('Should keep lair rows at initiative 20 on a hard reset', async () => {
+    mockSheet.value.rows = [
+      { ...mockSheet.value.rows[0]!, type: 'lair', initiative: 20 },
+      { ...mockSheet.value.rows[1]!, type: 'monster', initiative: 12 },
+    ]
+
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+    reset(true)
+
+    expect(mockSheet.value.rows.map(row => row.initiative)).toEqual([20, -1])
   })
 
   it('Should show all columns by default', async () => {

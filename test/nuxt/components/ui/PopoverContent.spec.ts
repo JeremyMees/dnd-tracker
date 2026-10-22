@@ -57,4 +57,16 @@ describe('PopoverContent', () => {
       'max-w-[min(400px,calc(100vw-2rem))]',
     )
   })
+
+  it('Should scroll its content inside a padded scroll area', async () => {
+    wrapper = await mountOpen()
+
+    const viewport = content().querySelector<HTMLElement>(
+      '[data-slot="scroll-area-viewport"]',
+    )!
+
+    expect(content().classList).not.toContain('overflow-y-auto')
+    expect(viewport.classList).toContain('p-4')
+    expect(viewport.textContent).toBe('Content')
+  })
 })

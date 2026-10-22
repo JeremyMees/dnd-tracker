@@ -63,7 +63,7 @@ watch(
     :open="open"
     @update:open="(value: boolean) => emit('update:open', value)"
   >
-    <UiDialogScrollContent test-id="summary" class="max-w-2xl">
+    <UiDialogContent test-id="summary" class="max-w-2xl">
       <UiDialogHeader>
         <UiDialogTitle>
           {{ $t('components.combatSummary.title') }}
@@ -73,20 +73,22 @@ watch(
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <div v-if="isPending" test-id="loading" class="flex flex-col gap-4">
-        <UiSkeleton class="h-24 w-full rounded-lg" />
-        <UiSkeleton v-for="i in 3" :key="i" class="h-14 w-full rounded-lg" />
-      </div>
+      <UiDialogBody>
+        <div v-if="isPending" test-id="loading" class="flex flex-col gap-4">
+          <UiSkeleton class="h-24 w-full rounded-lg" />
+          <UiSkeleton v-for="i in 3" :key="i" class="h-14 w-full rounded-lg" />
+        </div>
 
-      <p
-        v-else-if="!events?.length"
-        test-id="empty"
-        class="text-sm text-muted-foreground"
-      >
-        {{ $t('components.combatSummary.empty') }}
-      </p>
+        <p
+          v-else-if="!events?.length"
+          test-id="empty"
+          class="text-sm text-muted-foreground"
+        >
+          {{ $t('components.combatSummary.empty') }}
+        </p>
 
-      <CombatSummaryStats v-else :stats="stats" />
+        <CombatSummaryStats v-else :stats="stats" />
+      </UiDialogBody>
 
       <UiDialogFooter class="flex-col sm:flex-row gap-2">
         <UiButton
@@ -119,6 +121,6 @@ watch(
           {{ $t('components.combatSummary.actions.keepPlaying') }}
         </UiButton>
       </UiDialogFooter>
-    </UiDialogScrollContent>
+    </UiDialogContent>
   </UiDialog>
 </template>

@@ -107,6 +107,15 @@ export type CombatEventType =
   | 'concentration_started'
   | 'stabilized'
   | 'died'
+  | 'turn'
+  | 'row_added'
+  | 'row_removed'
+  | 'roll'
+  | 'readied'
+  | 'ready_used'
+  | 'ready_expired'
+  | 'hidden'
+  | 'revealed'
 export type InitiativeRowField =
   | 'armorClass'
   | 'hitPoints'
@@ -125,6 +134,8 @@ export interface InitiativeSheetRow {
   conditions: DndCondition[]
   deathSaves?: DndDeathSaves
   concentration?: boolean
+  readied?: boolean
+  hidden?: boolean
   armorClass?: number
   maxArmorClass?: number
   maxArmorClassOld?: number
@@ -150,6 +161,9 @@ export interface InitiativeSheetRow {
   armorDetail?: string
   proficiencyBonus?: number
   passivePerception?: number
+  challengeRating?: number
+  level?: number
+  resources?: DndResourceUses
   speed?: DndSpeed
   sight?: DndSight
   languages?: string[]
@@ -166,25 +180,32 @@ export interface TurnReminder {
   condition: DndCondition
 }
 
+export interface RechargeReminder {
+  rowId: string
+  rowName: string
+  action: string
+  roll: number
+  recharged: boolean
+}
+
 export interface TurnAdvance {
   activeIndex: number
   round: number
   rows: InitiativeSheetRow[]
   expired: TurnReminder[]
   saves: TurnReminder[]
+  recharges: RechargeReminder[]
 }
 
-export type TurnReminders = Pick<TurnAdvance, 'expired' | 'saves'>
+export type TurnReminders = Pick<TurnAdvance, 'expired' | 'saves' | 'recharges'>
 
 export type TurnSheet = Pick<
   InitiativeSheet,
   'id' | 'title' | 'round' | 'activeIndex' | 'rows' | 'settings'
 >
 
-export interface TurnResult {
+export interface TurnResult extends TurnReminders {
   sheet: TurnSheet
-  expired: TurnReminder[]
-  saves: TurnReminder[]
 }
 
 export type InitiativeSheetRowInsert = Omit<
@@ -207,6 +228,8 @@ export interface InitiativeSettings {
   pet?: InitiativePet
   negative?: boolean
   bloodied?: boolean
+  autoRollInitiative?: boolean
+  skipDeadMonsters?: boolean
   live?: {
     hideMonsterNames?: boolean
     hideMonsterHealth?: boolean
@@ -346,10 +369,22 @@ export type SbFilter = RequireAtLeastOne<{
 
 export interface CombatEventPayload {
   rowName?: string
-  kind?: 'heal' | 'damage' | 'temp' | 'override' | 'add' | 'remove'
+  kind?:
+    | 'heal'
+    | 'damage'
+    | 'temp'
+    | 'override'
+    | 'add'
+    | 'remove'
+    | 'attack'
+    | 'dice'
   amount?: number
   before?: number
   after?: number
   condition?: { id: string; name: string }
-  result?: 'save' | 'fail'
+  result?: 'save' | 'fail' | 'hit' | 'critical' | 'miss'
+  initiative?: number
+  total?: number
+  damage?: number
+  dice?: string
 }

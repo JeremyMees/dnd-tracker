@@ -1,5 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import HistoryPanel from '~/components/initiative/HistoryPanel.vue'
 
 const events = shallowRef<CombatEventRow[] | undefined>(undefined)
@@ -30,12 +31,18 @@ function makeEvent(overrides: EventOverrides): CombatEventRow {
   } as CombatEventRow
 }
 
+let component: VueWrapper
+
 describe('Initiative history panel', () => {
+  afterEach(() => {
+    component?.unmount()
+  })
+
   it('Should show a loading skeleton while pending', async () => {
     isPending.value = true
     events.value = undefined
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -47,7 +54,7 @@ describe('Initiative history panel', () => {
   it('Should show the empty state when there are no events', async () => {
     events.value = []
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -60,7 +67,7 @@ describe('Initiative history panel', () => {
       makeEvent({ id: 2, type: 'stabilized', payload: { rowName: 'Bram' } }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -77,7 +84,7 @@ describe('Initiative history panel', () => {
       makeEvent({ type: 'hp', payload: { rowName: 'Elara', kind, amount: 5 } }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -94,7 +101,7 @@ describe('Initiative history panel', () => {
       makeEvent({ type: 'ac', payload: { rowName: 'Bram', kind, amount: 2 } }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -109,7 +116,7 @@ describe('Initiative history panel', () => {
       }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -126,7 +133,7 @@ describe('Initiative history panel', () => {
       }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -143,7 +150,7 @@ describe('Initiative history panel', () => {
       }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -163,7 +170,7 @@ describe('Initiative history panel', () => {
       }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -180,7 +187,7 @@ describe('Initiative history panel', () => {
       }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -200,7 +207,7 @@ describe('Initiative history panel', () => {
       }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -212,7 +219,7 @@ describe('Initiative history panel', () => {
       makeEvent({ type: 'stabilized', payload: { rowName: 'Elara' } }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -224,7 +231,7 @@ describe('Initiative history panel', () => {
   it('Should describe a died event', async () => {
     events.value = [makeEvent({ type: 'died', payload: { rowName: 'Elara' } })]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -238,7 +245,7 @@ describe('Initiative history panel', () => {
       makeEvent({ type: 'died', payload: { rowName: 'Elara' }, round: 4 }),
     ]
 
-    const component = await mountSuspended(HistoryPanel, {
+    component = await mountSuspended(HistoryPanel, {
       props: { encounterId: 2 },
     })
 
@@ -246,4 +253,64 @@ describe('Initiative history panel', () => {
       'components.combatLog.round',
     )
   })
+
+  it.each([
+    ['turn', {}, 'components.combatLog.turn', 'tabler:arrow-right'],
+    ['row_added', {}, 'components.combatLog.rowAdded', 'tabler:user-plus'],
+    [
+      'row_added',
+      { initiative: 14 },
+      'components.combatLog.rowAddedInitiative',
+      'tabler:user-plus',
+    ],
+    ['row_removed', {}, 'components.combatLog.rowRemoved', 'tabler:user-minus'],
+    [
+      'roll',
+      { kind: 'attack', result: 'hit', total: 16, damage: 8 },
+      'components.combatLog.roll.hit',
+      'tabler:hexagon',
+    ],
+    [
+      'roll',
+      { kind: 'attack', result: 'critical', total: 25, damage: 16 },
+      'components.combatLog.roll.critical',
+      'tabler:hexagon',
+    ],
+    [
+      'roll',
+      { kind: 'attack', result: 'miss', total: 6 },
+      'components.combatLog.roll.miss',
+      'tabler:hexagon',
+    ],
+    [
+      'roll',
+      { kind: 'dice', total: 9, dice: '2d6' },
+      'components.combatLog.roll.dice',
+      'tabler:hexagon',
+    ],
+    ['readied', {}, 'components.combatLog.readied', 'tabler:hand-stop'],
+    ['ready_used', {}, 'components.combatLog.readyUsed', 'tabler:hand-stop'],
+    [
+      'ready_expired',
+      {},
+      'components.combatLog.readyExpired',
+      'tabler:hourglass-off',
+    ],
+    ['hidden', {}, 'components.combatLog.hidden', 'tabler:eye-off'],
+    ['revealed', {}, 'components.combatLog.revealed', 'tabler:eye'],
+  ])(
+    'Should describe a %s event with payload %o',
+    async (type, payload, key, icon) => {
+      events.value = [
+        makeEvent({ type, payload: { rowName: 'Elara', ...payload } }),
+      ]
+
+      component = await mountSuspended(HistoryPanel, {
+        props: { encounterId: 2 },
+      })
+
+      expect(component.get('[test-id="event"]').text()).toContain(key)
+      expect(component.get('[test-id="event"]').html()).toContain(icon)
+    },
+  )
 })

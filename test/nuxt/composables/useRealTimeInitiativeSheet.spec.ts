@@ -1,7 +1,7 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useRealTimeInitiativeSheet } from '~/composables/useRealTimeInitiativeSheet'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
@@ -15,7 +15,6 @@ const {
   removeChannel,
   setQueryData,
   subscribe,
-  unsubscribe,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
   invalidateQueries: vi.fn(),
@@ -24,10 +23,9 @@ const {
   removeChannel: vi.fn(),
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
-  unsubscribe: vi.fn(),
 }))
 
-const channel = { on, subscribe, unsubscribe }
+const channel = { on, subscribe }
 
 on.mockReturnValue(channel)
 subscribe.mockReturnValue(channel)
@@ -39,6 +37,11 @@ vi.mock('@tanstack/vue-query', async importOriginal => ({
 
 const user = ref<AuthUser>({ ...authUser })
 const data = ref<InitiativeSheet | undefined>()
+const isOnline = ref(true)
+const visibility = ref<DocumentVisibilityState>('visible')
+
+mockNuxtImport('useOnline', () => () => isOnline)
+mockNuxtImport('useDocumentVisibility', () => () => visibility)
 
 mockNuxtImport('navigateTo', () => navigateTo)
 mockNuxtImport('useAuthenticatedUser', () => () => user)
@@ -60,8 +63,12 @@ const Probe = defineComponent({
   template: '<div />',
 })
 
+let mounted: Awaited<ReturnType<typeof mountSuspended>> | undefined
+
 async function mountProbe() {
   const component = await mountSuspended(Probe)
+
+  mounted = component
 
   await flushPromises()
 
@@ -84,6 +91,13 @@ describe('useRealTimeInitiativeSheet', () => {
 
     user.value = { ...authUser, subscriptionType: 'pro' }
     data.value = { ...sheet, campaign: mockSheetCampaign }
+    isOnline.value = true
+    visibility.value = 'visible'
+  })
+
+  afterEach(() => {
+    mounted?.unmount()
+    mounted = undefined
   })
 
   it('Should be enabled for a campaign encounter with a high enough subscription', async () => {
@@ -299,6 +313,7 @@ describe('useRealTimeInitiativeSheet', () => {
           },
         ],
         saves: [],
+        recharges: [],
       }
 
       emitBroadcast('sync', { version: 3, sheet, reminders })
@@ -328,7 +343,7 @@ describe('useRealTimeInitiativeSheet', () => {
       emitBroadcast('sync', {
         version: 5,
         sheet,
-        reminders: { expired: [], saves: [] },
+        reminders: { expired: [], saves: [], recharges: [] },
       })
 
       expect(listener).not.toHaveBeenCalled()
@@ -363,12 +378,83 @@ describe('useRealTimeInitiativeSheet', () => {
     })
   })
 
+  describe('catching up', () => {
+    const sheetKey = { queryKey: ['useInitiativeSheetDetail', 2] }
+    const eventsKey = { queryKey: ['useCombatEvents', 2] }
+
+    it('Should refetch the sheet and combat log when coming back online', async () => {
+      isOnline.value = false
+
+      await mountProbe()
+
+      isOnline.value = true
+      await flushPromises()
+
+      expect(invalidateQueries).toHaveBeenCalledWith(sheetKey)
+      expect(invalidateQueries).toHaveBeenCalledWith(eventsKey)
+    })
+
+    it('Should refetch the sheet and combat log when the tab regains focus', async () => {
+      visibility.value = 'hidden'
+
+      await mountProbe()
+
+      visibility.value = 'visible'
+      await flushPromises()
+
+      expect(invalidateQueries).toHaveBeenCalledWith(sheetKey)
+      expect(invalidateQueries).toHaveBeenCalledWith(eventsKey)
+    })
+
+    it('Should not refetch when going offline or hiding the tab', async () => {
+      await mountProbe()
+
+      isOnline.value = false
+      visibility.value = 'hidden'
+      await flushPromises()
+
+      expect(invalidateQueries).not.toHaveBeenCalled()
+    })
+
+    it('Should not refetch without a realtime subscription', async () => {
+      user.value = { ...authUser, subscriptionType: 'free' }
+      visibility.value = 'hidden'
+
+      await mountProbe()
+
+      visibility.value = 'visible'
+      await flushPromises()
+
+      expect(invalidateQueries).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('events broadcast', () => {
+    it('Should refetch the combat log when new events were logged', async () => {
+      await mountProbe()
+
+      emitBroadcast('events', {})
+
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['useCombatEvents', 2],
+      })
+    })
+
+    it('Should empty the combat log when it was cleared elsewhere', async () => {
+      await mountProbe()
+
+      emitBroadcast('events', { cleared: true })
+
+      expect(setQueryData).toHaveBeenCalledWith(['useCombatEvents', 2], [])
+      expect(invalidateQueries).not.toHaveBeenCalled()
+    })
+  })
+
   it('Should leave the channel when unmounted', async () => {
     const { component } = await mountProbe()
 
     component.unmount()
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 

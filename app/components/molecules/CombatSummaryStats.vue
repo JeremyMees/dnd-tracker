@@ -36,7 +36,11 @@ const awardIcon: Record<CombatAward, string> = {
 }
 
 const deathSavesIndex = computed<number>(() => totals.value.length)
-const awardsTitleIndex = computed<number>(() => deathSavesIndex.value + 1)
+const experienceIndex = computed<number>(() => deathSavesIndex.value + 1)
+const awardsTitleIndex = computed<number>(() => experienceIndex.value + 1)
+const hasExperience = computed<boolean>(
+  () => props.stats.experience.total > 0 && props.stats.experience.players > 0,
+)
 
 function awardLabel(combatant: CombatantStats): string {
   const scope = combatant.awardExclusive ? 'exclusive' : 'plain'
@@ -95,6 +99,46 @@ function awardLabel(combatant: CombatantStats): string {
         </div>
       </m.div>
     </div>
+
+    <m.div
+      v-if="hasExperience"
+      test-id="experience"
+      :initial="reduced ? undefined : { opacity: 0, y: 12 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{
+        duration: 0.35,
+        delay: experienceIndex * STAGGER_STEP,
+        ease: [0.16, 1, 0.3, 1],
+      }"
+      class="flex items-center gap-3 p-3 rounded-lg border"
+    >
+      <Icon
+        name="tabler:trophy"
+        class="size-6 min-w-6 text-primary"
+        aria-hidden="true"
+      />
+      <div class="flex flex-col">
+        <p test-id="experience-per-player" class="head-6">
+          {{
+            $t('components.combatSummary.experience.perPlayer', {
+              value: stats.experience.perPlayer,
+            })
+          }}
+        </p>
+        <p test-id="experience-total" class="text-sm text-muted-foreground">
+          {{
+            $t(
+              'components.combatSummary.experience.total',
+              {
+                total: stats.experience.total,
+                players: stats.experience.players,
+              },
+              stats.experience.players,
+            )
+          }}
+        </p>
+      </div>
+    </m.div>
 
     <div class="flex flex-col gap-2">
       <m.p

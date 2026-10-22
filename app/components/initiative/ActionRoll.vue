@@ -5,12 +5,11 @@ import * as z from 'zod'
 
 const props = defineProps<{
   attackBonus: number | undefined
-  damageDice: string | undefined
-  damageBonus: number
+  damage: DndAttackDamage[]
   id: string
 }>()
 
-const { sheet, patchRow } = validateInject(INITIATIVE_SHEET)
+const { sheet, patchRow, log } = validateInject(INITIATIVE_SHEET)
 const bloodied = useBloodiedCondition(() => sheet.value?.settings)
 
 type RollType = 'advantage' | 'straight' | 'disadvantage'
@@ -30,6 +29,7 @@ const result = ref<{
   attackTotal: number
   rolledToHit: number[]
   damageRolled: Record<number, number[]>
+  rolls: DndDamageRoll[]
   totalDamage: number
   rollType: RollType
   miss: boolean
@@ -37,7 +37,7 @@ const result = ref<{
 
 const targets = computed(() => {
   return sheet.value?.rows
-    .filter(row => row.id !== props.id)
+    .filter(row => row.id !== props.id && isDefined(row.hitPoints))
     .map(row => ({ label: row.name, value: row.id }))
 })
 
@@ -51,17 +51,23 @@ function onRoll(type: RollType) {
   else if (type === 'disadvantage') attackRoll = Math.min(...rolledToHit)
   else attackRoll = rolledToHit[0] ?? 0
 
-  const dices = parseDamageDice(props.damageDice)
   const damageRolled: Record<number, number[]> = {}
 
-  const rolls = attackRoll === 20 ? [...dices, ...dices] : dices
+  const rolls = props.damage.map(part => {
+    const dices = parseDamageDice(part.dice)
+    let amount = part.bonus
 
-  for (const { count, sides } of rolls) {
-    damageRolled[sides] = [
-      ...(damageRolled[sides] ?? []),
-      ...rollDice(sides, count).flat(),
-    ]
-  }
+    for (const { count, sides } of attackRoll === 20
+      ? [...dices, ...dices]
+      : dices) {
+      const rolled = rollDice(sides, count)
+
+      damageRolled[sides] = [...(damageRolled[sides] ?? []), ...rolled]
+      amount += rolled.reduce((acc, curr) => acc + curr, 0)
+    }
+
+    return { amount, type: part.type }
+  })
 
   result.value = {
     rollType: type,
@@ -70,14 +76,42 @@ function onRoll(type: RollType) {
     attackTotal: attackRoll + (props.attackBonus ?? 0),
     rolledToHit,
     damageRolled,
-    totalDamage:
-      Object.values(damageRolled)
-        .flat()
-        .reduce((acc, curr) => acc + curr, 0) + props.damageBonus,
+    rolls,
+    totalDamage: rolls.reduce((acc, roll) => acc + roll.amount, 0),
   }
+
+  const { miss, attackTotal, totalDamage } = result.value
+
+  log?.([
+    {
+      type: 'roll',
+      rowId: props.id,
+      payload: {
+        rowName: sheet.value?.rows.find(row => row.id === props.id)?.name,
+        kind: 'attack',
+        result: miss ? 'miss' : attackRoll === 20 ? 'critical' : 'hit',
+        total: attackTotal,
+        damage: miss ? undefined : totalDamage,
+      },
+    },
+  ])
 }
 
 const handleToasts = useToastItems()
+
+const damageBonus = computed(() =>
+  props.damage.reduce((acc, part) => acc + part.bonus, 0),
+)
+
+const selectedTarget = computed(() =>
+  sheet.value?.rows.find(row => row.id === form.values.target),
+)
+
+const targetDefenses = computed(() =>
+  selectedTarget.value
+    ? damageDefenses(selectedTarget.value, result.value?.rolls ?? [])
+    : [],
+)
 
 const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value || result.value?.miss) return
@@ -87,7 +121,7 @@ const onSubmit = form.handleSubmit(async values => {
   if (!target || !isDefined(target.hitPoints)) return
 
   const { row, toasts } = handleHpChanges(
-    result.value?.totalDamage ?? 0,
+    damageAfterDefenses(target, result.value?.rolls ?? []),
     'damage',
     target,
     sheet.value?.settings?.negative ?? false,
@@ -122,17 +156,13 @@ const onSubmit = form.handleSubmit(async values => {
     <UiPopoverTrigger as-child>
       <UiButton
         test-id="trigger"
-        variant="tertiary-ghost"
+        variant="tertiary"
         size="icon-sm"
         :aria-label="$t('actions.roll')"
         class="group"
       >
         <Tooltip :text="$t('actions.roll')">
-          <Icon
-            name="tabler:hexagon"
-            :aria-hidden="true"
-            class="text-tertiary group-hover:text-foreground transition-colors"
-          />
+          <Icon name="tabler:hexagon" :aria-hidden="true" />
         </Tooltip>
       </UiButton>
     </UiPopoverTrigger>
@@ -233,11 +263,8 @@ const onSubmit = form.handleSubmit(async values => {
                     : ''
                 }}
               </span>
-              <span
-                v-if="props.damageBonus"
-                class="text-muted-foreground text-xs"
-              >
-                +{{ props.damageBonus }}
+              <span v-if="damageBonus" class="text-muted-foreground text-xs">
+                +{{ damageBonus }}
               </span>
             </div>
           </div>
@@ -279,6 +306,31 @@ const onSubmit = form.handleSubmit(async values => {
                 <UiFormMessage />
               </UiFormItem>
             </UiFormField>
+            <div
+              v-if="selectedTarget && targetDefenses.length"
+              test-id="target-damage"
+              class="flex flex-col gap-2"
+            >
+              <span class="flex flex-wrap gap-1">
+                <UiBadge
+                  v-for="{ type, defense } in targetDefenses"
+                  :key="type"
+                  test-id="defense"
+                  variant="secondary"
+                >
+                  {{ type.charAt(0).toUpperCase() + type.slice(1) }}:
+                  {{ $t(`components.areaDamage.defense.${defense}`) }}
+                </UiBadge>
+              </span>
+              <span class="text-muted-foreground text-xs">
+                {{
+                  $t('components.actionsTable.targetDamage', {
+                    name: selectedTarget.name,
+                    amount: damageAfterDefenses(selectedTarget, result.rolls),
+                  })
+                }}
+              </span>
+            </div>
             <UiButton test-id="submit" type="submit" class="w-full">
               {{ $t('actions.applyDamage') }}
             </UiButton>

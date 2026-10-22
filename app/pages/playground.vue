@@ -66,23 +66,52 @@ async function handlePatchRow(
   }
 }
 
+async function handlePatchRows(patches: RowPatch[]): Promise<void> {
+  const target = isTourActive.value ? tourData : data
+
+  if (!target.value) return
+
+  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+  target.value = {
+    ...target.value,
+    rows: target.value.rows.map(row => ({ ...row, ...byRow.get(row.id) })),
+  }
+}
+
 async function handleNextTurn(): Promise<TurnReminders | undefined> {
   const target = isTourActive.value ? tourData : data
 
   if (!target.value) return
 
-  const { activeIndex, round, rows, expired, saves } = advanceTurn(target.value)
+  const { activeIndex, round, rows, expired, saves, recharges } = advanceTurn(
+    target.value,
+  )
 
   target.value = { ...target.value, activeIndex, round, rows }
 
-  return { expired, saves }
+  return { expired, saves, recharges }
 }
 
-provide(INITIATIVE_SHEET, {
-  sheet: computed(() => (isTourActive.value ? tourData.value : data.value)),
+const sheet = computed(() => (isTourActive.value ? tourData.value : data.value))
+
+const history = useUndoHistory(sheet, {
   update: handleUpdate,
   patchRow: handlePatchRow,
+  patchRows: handlePatchRows,
   nextTurn: handleNextTurn,
+})
+
+provide(INITIATIVE_SHEET, {
+  sheet,
+  update: history.update,
+  patchRow: history.patchRow,
+  patchRows: history.patchRows,
+  nextTurn: history.nextTurn,
+  undo: history.undo,
+  canUndo: history.canUndo,
+  redo: history.redo,
+  canRedo: history.canRedo,
   activeRow,
 })
 </script>

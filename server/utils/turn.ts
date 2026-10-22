@@ -7,31 +7,39 @@ interface AdvanceEncounterTurnOptions {
   broadcastReminders?: boolean
 }
 
-function expiredEvents(
-  reminders: TurnReminder[],
-): Map<string, CombatEventDraft[]> {
-  const events = new Map<string, CombatEventDraft[]>()
+function expiredEvents(reminders: TurnReminder[]): CombatEventDraft[] {
+  return reminders.map(({ rowId, rowName, condition }) => ({
+    type: 'condition_expired',
+    rowId,
+    payload: {
+      rowName,
+      condition: { id: condition.id, name: condition.name },
+    },
+  }))
+}
 
-  for (const { rowId, rowName, condition } of reminders) {
-    events.set(rowId, [
-      ...(events.get(rowId) ?? []),
-      {
-        type: 'condition_expired',
-        payload: {
-          rowName,
-          condition: { id: condition.id, name: condition.name },
-        },
-      },
-    ])
-  }
-
-  return events
+function readyExpiredEvents(
+  before: InitiativeSheetRow[],
+  after: InitiativeSheetRow[],
+): CombatEventDraft[] {
+  return after.flatMap((row, index) =>
+    before[index]?.readied && !row.readied
+      ? [
+          {
+            type: 'ready_expired',
+            rowId: row.id,
+            payload: { rowName: row.name },
+          },
+        ]
+      : [],
+  )
 }
 
 export async function advanceEncounterTurn(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  sheet: Pick<InitiativeSheet, 'activeIndex' | 'round' | 'rows'>,
+  sheet: Pick<InitiativeSheet, 'activeIndex' | 'round' | 'rows'> &
+    Partial<Pick<InitiativeSheet, 'settings'>>,
   {
     actorId,
     actorName,
@@ -66,32 +74,33 @@ export async function advanceEncounterTurn(
     })
   }
 
-  for (const [rowId, events] of expiredEvents(advance.expired)) {
-    await logCombatEvents(supabase, {
+  const turn = turnEvent(advance.rows, advance.activeIndex)
+
+  const reminders = {
+    expired: advance.expired,
+    saves: advance.saves,
+    recharges: advance.recharges,
+  }
+
+  await Promise.all([
+    logCombatEvents(supabase, {
       encounterId,
-      rowId,
       round: advance.round,
       actorId,
       actorName,
-      events,
-    })
-  }
-
-  const liveSession =
-    session ?? (await activeLiveSession(supabase, encounterId))
-
-  if (liveSession) {
-    await broadcastLiveState(supabase, liveSession, toPlayerSheet(updated))
-  }
-
-  const reminders = { expired: advance.expired, saves: advance.saves }
-
-  await broadcastSheetSync(
-    supabase,
-    encounterId,
-    updated,
-    broadcastReminders ? reminders : undefined,
-  )
+      events: [
+        ...(turn ? [turn] : []),
+        ...readyExpiredEvents(sheet.rows, advance.rows),
+        ...expiredEvents(advance.expired),
+      ],
+    }),
+    broadcastActiveLiveState(supabase, encounterId, session),
+    broadcastSheetSync(
+      supabase,
+      encounterId,
+      broadcastReminders ? reminders : undefined,
+    ),
+  ])
 
   return { sheet: updated, ...reminders }
 }

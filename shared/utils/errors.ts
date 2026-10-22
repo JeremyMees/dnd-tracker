@@ -45,12 +45,26 @@ function errorCode(error: unknown): unknown {
   )
 }
 
+export function getStatusCode(error: unknown): number | undefined {
+  const statusCode = readProp(error, 'statusCode') ?? readProp(error, 'status')
+
+  return typeof statusCode === 'number' ? statusCode : undefined
+}
+
+const liveSessionGoneStatusCodes = new Set([404, 410])
+
+export function isLiveSessionGone(error: unknown): boolean {
+  const statusCode = getStatusCode(error)
+
+  return statusCode !== undefined && liveSessionGoneStatusCodes.has(statusCode)
+}
+
 export function getFailureReason(error: unknown): FailureReason {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
     return 'offline'
   }
 
-  const statusCode = readProp(error, 'statusCode') ?? readProp(error, 'status')
+  const statusCode = getStatusCode(error)
   const code = errorCode(error)
 
   if (statusCode === 401 || code === 'PGRST301' || code === 'PGRST302') {
@@ -70,6 +84,10 @@ export function getFailureReason(error: unknown): FailureReason {
     ) {
       return message
     }
+  }
+
+  if (statusCode === 409 && getErrorMessage(error) === 'row-claimed') {
+    return 'rowClaimed'
   }
 
   if (readProp(error, 'name') === 'FetchError' && statusCode === undefined) {

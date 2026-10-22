@@ -37,6 +37,14 @@ const expiredReminder: TurnReminder = {
   condition: prone,
 }
 
+const recharge: RechargeReminder = {
+  rowId: 'row-1',
+  rowName: 'Goblin',
+  action: 'Fire Breath',
+  roll: 3,
+  recharged: false,
+}
+
 const patchRow = vi.fn().mockResolvedValue(undefined)
 const sheet = ref<InitiativeSheet | undefined>()
 
@@ -71,13 +79,13 @@ describe('useTurnReminders', () => {
   })
 
   it('Should show nothing without reminders', async () => {
-    await showReminders({ expired: [], saves: [] })
+    await showReminders({ expired: [], saves: [], recharges: [] })
 
     expectNoToast()
   })
 
   it('Should keep a save reminder open with saved and failed buttons', async () => {
-    await showReminders({ expired: [], saves: [saveReminder] })
+    await showReminders({ expired: [], saves: [saveReminder], recharges: [] })
 
     expect(toast.warning).toHaveBeenCalledWith(
       'components.turnReminders.save',
@@ -94,7 +102,7 @@ describe('useTurnReminders', () => {
   })
 
   it('Should only remove the saved condition from the row', async () => {
-    await showReminders({ expired: [], saves: [saveReminder] })
+    await showReminders({ expired: [], saves: [saveReminder], recharges: [] })
 
     saveToastOptions().action.onClick()
 
@@ -103,7 +111,7 @@ describe('useTurnReminders', () => {
   })
 
   it('Should leave the row alone when the save fails', async () => {
-    await showReminders({ expired: [], saves: [saveReminder] })
+    await showReminders({ expired: [], saves: [saveReminder], recharges: [] })
 
     saveToastOptions().cancel.onClick()
 
@@ -113,7 +121,7 @@ describe('useTurnReminders', () => {
   it('Should leave the row alone when it is gone', async () => {
     sheet.value = { rows: [], infoCards: [] } as unknown as InitiativeSheet
 
-    await showReminders({ expired: [], saves: [saveReminder] })
+    await showReminders({ expired: [], saves: [saveReminder], recharges: [] })
 
     saveToastOptions().action.onClick()
 
@@ -121,9 +129,39 @@ describe('useTurnReminders', () => {
   })
 
   it('Should announce an expired condition', async () => {
-    await showReminders({ expired: [expiredReminder], saves: [] })
+    await showReminders({
+      expired: [expiredReminder],
+      saves: [],
+      recharges: [],
+    })
 
     expect(toast.info).toHaveBeenCalledWith('components.turnReminders.expired')
+  })
+
+  it('Should announce a recharged action', async () => {
+    await showReminders({
+      expired: [],
+      saves: [],
+      recharges: [{ ...recharge, recharged: true }],
+    })
+
+    expect(toast.success).toHaveBeenCalledWith(
+      'components.turnReminders.recharged',
+    )
+  })
+
+  it('Should announce an action that did not recharge', async () => {
+    await showReminders({ expired: [], saves: [], recharges: [recharge] })
+
+    expect(toast.info).toHaveBeenCalledWith(
+      'components.turnReminders.notRecharged',
+    )
+  })
+
+  it('Should treat a broadcast without recharges as none', async () => {
+    await showReminders({ expired: [], saves: [] } as unknown as TurnReminders)
+
+    expectNoToast()
   })
 
   it('Should dismiss the previous turn reminders when new ones arrive', async () => {
@@ -133,9 +171,10 @@ describe('useTurnReminders', () => {
     const vm = await showReminders({
       expired: [expiredReminder],
       saves: [saveReminder],
+      recharges: [],
     })
 
-    vm.show({ expired: [], saves: [] })
+    vm.show({ expired: [], saves: [], recharges: [] })
 
     expect(toast.dismiss).toHaveBeenCalledWith('save-toast')
     expect(toast.dismiss).toHaveBeenCalledWith('expired-toast')

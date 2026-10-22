@@ -34,10 +34,14 @@ export default defineEventHandler(async event => {
     .eq('id', encounter.id)
     .single()
 
-  const rowExists = sheet?.rows.some(row => row.id === body.row)
+  const row = sheet?.rows.find(row => row.id === body.row)
 
-  if (!rowExists) {
+  if (!row) {
     throw createError({ statusCode: 404, statusMessage: 'row-not-found' })
+  }
+
+  if (row.hidden) {
+    throw createError({ statusCode: 409, statusMessage: 'row-hidden' })
   }
 
   const { data: seat, error } = await supabase.rpc('reassign_live_seat', {

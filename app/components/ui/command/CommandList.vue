@@ -2,6 +2,7 @@
 import type { ListboxContentProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { ListboxContent, useForwardProps } from 'reka-ui'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const props = defineProps<
   ListboxContentProps & { class?: HTMLAttributes['class'] }
@@ -15,10 +16,12 @@ const forwarded = useForwardProps(delegatedProps)
 <template>
   <ListboxContent
     v-bind="forwarded"
-    :class="cn('max-h-[300px] overflow-y-auto overflow-x-hidden', props.class)"
+    :class="cn('flex max-h-[300px] flex-col', props.class)"
   >
-    <div role="presentation">
-      <slot />
-    </div>
+    <ScrollArea class="min-h-0">
+      <div role="presentation">
+        <slot />
+      </div>
+    </ScrollArea>
   </ListboxContent>
 </template>

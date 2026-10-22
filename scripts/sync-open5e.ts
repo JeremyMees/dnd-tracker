@@ -2,13 +2,26 @@ import { createClient } from '@supabase/supabase-js'
 import { ONE_MINUTE } from '~~/constants/time'
 import type { DB } from '~~/shared/types/database'
 import type {
+  Open5eArmor,
+  Open5eCondition,
   Open5eDocument,
   Open5eItem,
+  Open5eMagicItem,
+  Open5eMonster,
+  Open5eSpell,
   Open5eType,
+  Open5eWeapon,
 } from '~~/shared/types/open5e'
 import { getErrorMessage } from '~~/shared/utils/errors'
 import { requestOpen5e } from '~~/shared/utils/open5e-request'
-import { transformOpen5eItem } from '~~/shared/utils/transformers/listing'
+import {
+  toArmor,
+  toCondition,
+  toMagicItem,
+  toMonster,
+  toSpell,
+  toWeapon,
+} from '~~/shared/utils/transformers'
 
 const PAGE_SIZE = 500
 const REQUEST_TIMEOUT = ONE_MINUTE
@@ -22,6 +35,35 @@ type SrdTable =
   | 'srd_weapons'
   | 'srd_armor'
   | 'srd_conditions'
+
+type ContentTable = Exclude<SrdTable, 'srd_documents'>
+
+type SrdInsert<T extends SrdTable = SrdTable> =
+  DB['public']['Tables'][T]['Insert']
+
+type ContentFields<T extends ContentTable> = Omit<
+  SrdInsert<T>,
+  'documentKey' | 'syncedAt' | 'manual'
+>
+
+const contentBuilders: {
+  [T in ContentTable]: (item: Open5eItem) => ContentFields<T>
+} = {
+  srd_monsters: item => toMonster(item as Open5eMonster),
+  srd_spells: item => toSpell(item as Open5eSpell),
+  srd_magic_items: item => toMagicItem(item as Open5eMagicItem),
+  srd_weapons: item => {
+    const weapon = toWeapon(item as Open5eWeapon)
+
+    return {
+      ...weapon,
+      range: weapon.range ?? 0,
+      longRange: weapon.longRange ?? 0,
+    }
+  },
+  srd_armor: item => toArmor(item as Open5eArmor),
+  srd_conditions: item => toCondition(item as Open5eCondition),
+}
 
 interface Target {
   type: Open5eType
@@ -89,17 +131,17 @@ interface WithDocument {
 }
 
 function contentRows(
-  type: Open5eType,
+  table: ContentTable,
   items: WithDocument[],
   syncedAt: string,
-): { rows: Record<string, unknown>[]; failed: string[] } {
-  const rows: Record<string, unknown>[] = []
+): { rows: SrdInsert[]; failed: string[] } {
+  const rows: SrdInsert[] = []
   const failed: string[] = []
 
   for (const item of items) {
     try {
       rows.push({
-        ...transformOpen5eItem(type, item as unknown as Open5eItem),
+        ...contentBuilders[table](item as unknown as Open5eItem),
         documentKey: item.document.key,
         syncedAt,
         manual: false,
@@ -115,7 +157,7 @@ function contentRows(
 function documentRows(
   items: Open5eDocument[],
   syncedAt: string,
-): Record<string, unknown>[] {
+): SrdInsert<'srd_documents'>[] {
   return items.map(document => ({
     id: document.key,
     name: document.name,
@@ -142,7 +184,7 @@ async function countRows(table: SrdTable): Promise<number> {
 
 async function upsertRows(
   table: SrdTable,
-  rows: Record<string, unknown>[],
+  rows: SrdInsert[],
   chunk: number,
 ): Promise<void> {
   for (let index = 0; index < rows.length; index += chunk) {
@@ -150,8 +192,7 @@ async function upsertRows(
 
     const { error } = await supabase
       .from(table)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .upsert(slice as any, { onConflict: 'id' })
+      .upsert(slice, { onConflict: 'id' })
 
     if (error) {
       throw new Error(
@@ -199,12 +240,12 @@ async function syncTarget(target: Target, syncedAt: string): Promise<boolean> {
   }
 
   const { rows, failed } =
-    type === 'documents'
+    table === 'srd_documents'
       ? {
           rows: documentRows(items as unknown as Open5eDocument[], syncedAt),
           failed: [] as string[],
         }
-      : contentRows(type, items, syncedAt)
+      : contentRows(table, items, syncedAt)
 
   if (dryRun) {
     console.info(
@@ -253,7 +294,9 @@ async function main(): Promise<void> {
   console.info('done')
 }
 
-main().catch((error: unknown) => {
+try {
+  await main()
+} catch (error) {
   console.error(getErrorMessage(error))
   process.exitCode = 1
-})
+}

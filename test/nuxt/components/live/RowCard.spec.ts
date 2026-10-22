@@ -34,6 +34,29 @@ describe('LiveRowCard', () => {
     expect(component.get('[test-id="initiative"]').text()).toContain('15')
   })
 
+  it('shows a hidden row as a creature lurking in the shadows', async () => {
+    const component = await mountWithTooltips(LiveRowCard, {
+      props: {
+        row: {
+          ...baseRow,
+          name: '???',
+          type: 'monster',
+          initiative: -1,
+          hidden: true,
+        },
+        active: true,
+      },
+    })
+
+    expect(component.get('[test-id="name"]').text()).toBe('???')
+    expect(component.get('[test-id="hidden"]').text()).toBe(
+      'pages.live.hiddenCreature',
+    )
+    expect(component.find('[test-id="concentration"]').exists()).toBe(false)
+
+    component.unmount()
+  })
+
   it('shows a placeholder dash when initiative has not been rolled', async () => {
     const component = await mountWithTooltips(LiveRowCard, {
       props: { row: { ...baseRow, initiative: -1 }, active: false },
@@ -260,8 +283,8 @@ describe('LiveRowCard', () => {
 
     const grid = component.get('[test-id="death-saves"]')
 
-    expect(grid.findAll('[test-id="save"]')).toHaveLength(3)
-    expect(grid.findAll('[test-id="fail"]')).toHaveLength(3)
+    expect(grid.findAll('[test-id="save"] [test-id="pip"]')).toHaveLength(3)
+    expect(grid.findAll('[test-id="fail"] [test-id="pip"]')).toHaveLength(3)
   })
 
   it.each(['monster', 'summon', 'lair'] as const)(
@@ -355,6 +378,19 @@ describe('LiveRowCard', () => {
     })
 
     expect(component.find('[test-id="own"]').exists()).toBe(false)
+  })
+
+  it.each([
+    [true, true],
+    [undefined, false],
+  ])('shows the readied badge when readied is %s', async (readied, shown) => {
+    const component = await mountWithTooltips(LiveRowCard, {
+      props: { row: { ...baseRow, readied }, active: false },
+    })
+
+    expect(component.find('[test-id="readied"]').exists()).toBe(shown)
+
+    component.unmount()
   })
 
   it('shows the own badge for the claimed row', async () => {

@@ -1,0 +1,120 @@
+{
+  "version": "v3.6.0",
+  "date": "2026-10-22",
+  "features": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Open the command palette to run actions, add monsters and jump to an encounter"
+        },
+        {
+          "text": "Keyboard shortcuts for damage, healing and conditions, with a target picker and an overview of every shortcut"
+        },
+        {
+          "text": "Undo and redo changes to the initiative sheet from the command palette or with a shortcut"
+        },
+        {
+          "text": "Apply area damage with saving throws to several creatures at once"
+        },
+        {
+          "text": "Resistances, immunities and vulnerabilities are applied by damage type to attack rolls and hit point damage"
+        },
+        {
+          "text": "Track monster resources like limited uses in the expanded row, with recharges rolled at the start of their turn"
+        },
+        {
+          "text": "Ready an action and use it later"
+        },
+        {
+          "text": "Hide a creature from the player portal and reveal it later"
+        },
+        {
+          "text": "Players can mark their reaction as used from the player portal"
+        },
+        {
+          "text": "The encounter difficulty is shown in the header, based on player levels and monster challenge ratings"
+        },
+        {
+          "text": "Give players a level and homebrew monsters a challenge rating"
+        },
+        {
+          "text": "The combat summary shows the XP each player earned for defeated monsters"
+        },
+        {
+          "text": "The combat log records turn changes, dice rolls and creatures being added or removed"
+        },
+        {
+          "text": "Export encounters and homebrew to a file and import them again"
+        },
+        {
+          "text": "Import creatures from Improved Initiative, Kobold Fight Club and 5e.tools"
+        },
+        {
+          "text": "Start a homebrew creature from an imported file"
+        }
+      ]
+    },
+    {
+      "title": "Improvements",
+      "items": [
+        {
+          "text": "Monsters roll initiative automatically when they are added"
+        },
+        {
+          "text": "Lair actions get initiative 20 automatically"
+        },
+        {
+          "text": "Dead monsters are skipped when going to the next turn"
+        },
+        {
+          "text": "Monsters keep their challenge rating on the initiative sheet"
+        },
+        {
+          "text": "Damage, row edits and combat log updates sync faster with fewer requests"
+        },
+        {
+          "text": "Icon buttons and the theme picker have labels for screen readers, and a skip to content link was added"
+        },
+        {
+          "text": "Keyboard keys are easier to read"
+        }
+      ]
+    },
+    {
+      "title": "Bug fixes",
+      "items": [
+        {
+          "text": "Ability modifiers stopped going up above a score of 20"
+        },
+        {
+          "text": "Expanded rows closed when the encounter changed"
+        },
+        {
+          "text": "Bestiary abilities that recharge on a roll had no usage limit"
+        },
+        {
+          "text": "Players lost their own character and controls in the portal panel outside their turn"
+        },
+        {
+          "text": "The player portal did not follow when the DM moved a player to another seat"
+        },
+        {
+          "text": "The player portal went blank after a short connection hiccup"
+        },
+        {
+          "text": "Players on the same wifi were rate limited together"
+        },
+        {
+          "text": "The initiative sheet missed changes made while the connection was dropped"
+        },
+        {
+          "text": "Changes made at the same time could reach the player portal out of order"
+        },
+        {
+          "text": "Protected pages could open before your profile finished loading after signing in"
+        }
+      ]
+    }
+  ]
+}

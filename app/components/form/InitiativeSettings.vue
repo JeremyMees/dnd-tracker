@@ -31,12 +31,17 @@ const onSubmit = form.handleSubmit(async values => {
 </script>
 
 <template>
-  <div class="overflow-y-hidden">
-    <UiFormWrapper @submit="onSubmit">
+  <UiFormWrapper
+    class="flex min-h-0 flex-col gap-4 space-y-0"
+    @submit="onSubmit"
+  >
+    <UiDialogBody class="space-y-4">
       <FormInitiativeSettingsFields />
+    </UiDialogBody>
+    <UiDialogFooter>
       <UiButton type="submit" class="w-full">
         {{ $t('actions.save') }}
       </UiButton>
-    </UiFormWrapper>
-  </div>
+    </UiDialogFooter>
+  </UiFormWrapper>
 </template>

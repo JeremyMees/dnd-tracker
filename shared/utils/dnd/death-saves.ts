@@ -1,8 +1,16 @@
-function hasDeathSaves(type: HomebrewType): boolean {
+export function hasDeathSaves(type: HomebrewType): boolean {
   return ['player', 'npc'].includes(type)
 }
 
-function checkDeathSaves(deathSaves: DndDeathSaves): {
+export function isDeadMonster(
+  row: Pick<InitiativeSheetRow, 'type' | 'hitPoints'>,
+): boolean {
+  return (
+    !hasDeathSaves(row.type) && isDefined(row.hitPoints) && row.hitPoints <= 0
+  )
+}
+
+export function checkDeathSaves(deathSaves: DndDeathSaves): {
   failed: boolean
   saved: boolean
 } {
@@ -12,7 +20,7 @@ function checkDeathSaves(deathSaves: DndDeathSaves): {
   }
 }
 
-function applyDeathSave(
+export function applyDeathSave(
   deathSaves: DndDeathSaves,
   type: 'fail' | 'save' = 'fail',
   count: number = 1,
@@ -33,24 +41,24 @@ function applyDeathSave(
   return updatedSaves
 }
 
-function resetDeathSaves(): DndDeathSaves {
+export function setDeathSaveCount(
+  deathSaves: DndDeathSaves,
+  type: 'fail' | 'save',
+  count: number,
+): DndDeathSaves {
+  return {
+    ...deathSaves,
+    [type]: deathSaves[type].map((_, i) => i < count) as [
+      boolean,
+      boolean,
+      boolean,
+    ],
+  }
+}
+
+export function resetDeathSaves(): DndDeathSaves {
   return {
     fail: [false, false, false],
     save: [false, false, false],
   }
-}
-
-const deathSavesFunctions = {
-  hasDeathSaves,
-  applyDeathSave,
-  checkDeathSaves,
-  resetDeathSaves,
-}
-
-export {
-  hasDeathSaves,
-  applyDeathSave,
-  checkDeathSaves,
-  resetDeathSaves,
-  deathSavesFunctions,
 }

@@ -21,6 +21,10 @@ const editingDuration = shallowRef<string>()
 
 const { data: conditions, isPending } = useConditionsListing()
 
+const descriptions = computed(
+  () => new Map(conditions.value?.map(({ id, desc }) => [id, desc])),
+)
+
 function removeCondition(name: string): void {
   patchRow(props.item.id, {
     conditions: props.item.conditions.filter(r => r.name !== name),
@@ -149,7 +153,7 @@ function toggleDurationEditor(id: string): void {
             <UiPopoverTitle>{{ condition.name }}</UiPopoverTitle>
           </UiPopoverHeader>
           <MarkdownText
-            :text="condition.desc"
+            :text="descriptions.get(condition.id) || condition.desc"
             class="text-sm text-muted-foreground"
           />
           <UiNumberField

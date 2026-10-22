@@ -48,6 +48,7 @@ function makeStats(overrides: Partial<CombatStats> = {}): CombatStats {
     deathSavesFailed: 1,
     conditionsApplied: 4,
     concentrationBroken: 2,
+    experience: { total: 0, perPlayer: 0, players: 0 },
     combatants: [makeCombatant({ rowId: 'a' })],
     ...overrides,
   }
@@ -84,6 +85,31 @@ describe('Combat summary stats', () => {
     expect(text).toContain('12')
     expect(text).toContain('components.combatSummary.totals.damage')
     expect(text).toContain('components.combatSummary.deathSavesValue')
+  })
+
+  it('Should show the XP per player for defeated monsters', async () => {
+    const component = await mount(
+      makeStats({ experience: { total: 900, perPlayer: 450, players: 2 } }),
+    )
+
+    expect(component.get('[test-id="experience-per-player"]').text()).toBe(
+      'components.combatSummary.experience.perPlayer',
+    )
+    expect(component.find('[test-id="experience-total"]').exists()).toBe(true)
+  })
+
+  it('Should hide the XP without defeated monsters', async () => {
+    const component = await mount(makeStats())
+
+    expect(component.find('[test-id="experience"]').exists()).toBe(false)
+  })
+
+  it('Should hide the XP without players', async () => {
+    const component = await mount(
+      makeStats({ experience: { total: 900, perPlayer: 0, players: 0 } }),
+    )
+
+    expect(component.find('[test-id="experience"]').exists()).toBe(false)
   })
 
   it('Should render one award card per combatant', async () => {

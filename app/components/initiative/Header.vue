@@ -15,6 +15,20 @@ const liveOpen = ref<boolean>(false)
 const { open: paletteOpen } = useCommandPalette()
 const { keyLabel } = useShortcutKeys()
 
+const difficulty = computed<EncounterDifficulty | undefined>(() =>
+  encounterDifficulty(props.data?.rows ?? []),
+)
+
+const difficultyClass: Record<DifficultyRating, string> = {
+  trivial: 'border-muted bg-muted/50',
+  low: 'border-success bg-success/20',
+  moderate: 'border-warning bg-warning/20',
+  high: 'border-destructive bg-destructive/20',
+  extreme: 'border-destructive bg-destructive text-destructive-foreground',
+}
+
+const budgetRatings: (keyof ExperienceBudget)[] = ['low', 'moderate', 'high']
+
 useCommands(() => [
   {
     id: 'live-session',
@@ -38,6 +52,68 @@ useCommands(() => [
       class="max-[350px]:hidden absolute top-13 sm:top-5 left-4"
     />
     <div class="flex gap-4 items-center">
+      <UiPopover v-if="difficulty">
+        <UiPopoverTrigger as-child>
+          <button
+            test-id="difficulty"
+            :aria-label="
+              $t('components.difficulty.label', {
+                rating: $t(
+                  `components.difficulty.ratings.${difficulty.rating}`,
+                ),
+              })
+            "
+            :class="difficultyClass[difficulty.rating]"
+            class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+          >
+            <Icon name="tabler:gauge" class="size-4" aria-hidden="true" />
+            {{ $t(`components.difficulty.ratings.${difficulty.rating}`) }}
+          </button>
+        </UiPopoverTrigger>
+        <UiPopoverContent test-id="difficulty-details" class="w-72">
+          <UiPopoverHeader>
+            <UiPopoverTitle>
+              {{ $t('components.difficulty.title') }}
+            </UiPopoverTitle>
+          </UiPopoverHeader>
+          <div class="flex flex-col gap-3 text-sm">
+            <p test-id="difficulty-experience">
+              {{
+                $t('components.difficulty.experience', {
+                  value: difficulty.experience,
+                })
+              }}
+            </p>
+            <ul class="flex flex-col gap-1">
+              <li
+                v-for="rating in budgetRatings"
+                :key="rating"
+                test-id="difficulty-budget"
+                :class="{ 'font-bold': difficulty.rating === rating }"
+                class="flex justify-between"
+              >
+                <span>{{ $t(`components.difficulty.ratings.${rating}`) }}</span>
+                <span class="tabular-nums">
+                  {{ difficulty.budget[rating] }} XP
+                </span>
+              </li>
+            </ul>
+            <p
+              v-if="difficulty.playersWithoutLevel"
+              test-id="difficulty-missing-levels"
+              class="text-xs text-muted-foreground"
+            >
+              {{
+                $t(
+                  'components.difficulty.missingLevels',
+                  { count: difficulty.playersWithoutLevel },
+                  difficulty.playersWithoutLevel,
+                )
+              }}
+            </p>
+          </div>
+        </UiPopoverContent>
+      </UiPopover>
       <span class="text-muted-foreground">
         {{ $t('general.round') }}:
         <span test-id="round" class="font-bold text-foreground">
@@ -59,7 +135,7 @@ useCommands(() => [
         </UiKbdGroup>
       </UiButton>
       <UiDialog v-if="encounterId" v-model:open="liveOpen">
-        <UiDialogScrollContent test-id="live-session-dialog" class="max-w-md">
+        <UiDialogContent test-id="live-session-dialog" class="max-w-md">
           <UiDialogHeader class="sr-only">
             <UiDialogTitle>
               {{ $t('components.liveSession.title') }}
@@ -68,8 +144,10 @@ useCommands(() => [
               {{ $t('components.liveSession.description') }}
             </UiDialogDescription>
           </UiDialogHeader>
-          <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
-        </UiDialogScrollContent>
+          <UiDialogBody>
+            <LiveSessionPanel :encounter-id="encounterId" :rows="data?.rows" />
+          </UiDialogBody>
+        </UiDialogContent>
       </UiDialog>
     </div>
     <div

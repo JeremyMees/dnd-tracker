@@ -1,7 +1,8 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import EncounterPage from '~/pages/encounters/[id]-[title].vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { authUser } from '~~/test/fixtures/auth-user'
@@ -13,34 +14,34 @@ import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 const {
   getQueryData,
   invalidateQueries,
+  logEvents,
   navigateTo,
   on,
   removeChannel,
   setQueryData,
   subscribe,
-  syncLiveSession,
-  unsubscribe,
   update,
   patch,
+  patchRows,
   turn,
   useSeo,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
   invalidateQueries: vi.fn(),
+  logEvents: vi.fn(),
   navigateTo: vi.fn(),
   on: vi.fn(),
   removeChannel: vi.fn(),
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
-  syncLiveSession: vi.fn(),
-  unsubscribe: vi.fn(),
   update: vi.fn(),
   patch: vi.fn(),
+  patchRows: vi.fn(),
   turn: vi.fn(),
   useSeo: vi.fn(),
 }))
 
-const channel = { on, subscribe, unsubscribe }
+const channel = { on, subscribe }
 
 on.mockReturnValue(channel)
 subscribe.mockReturnValue(channel)
@@ -58,7 +59,12 @@ vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetDetail: () => ({ data, isPending, isError }),
   useInitiativeSheetDetailUpdate: () => ({ mutateAsync: update }),
   useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
+  useInitiativeSheetPatchRows: () => ({ mutateAsync: patchRows }),
   useInitiativeSheetTurn: () => ({ mutateAsync: turn }),
+}))
+
+vi.mock('~/queries/combat-events', () => ({
+  useCombatEventsLog: () => ({ mutate: logEvents }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
@@ -77,7 +83,12 @@ mockNuxtImport('useSupabaseClient', () => () => ({
   channel: () => channel,
   removeChannel,
 }))
-mockNuxtImport('useLiveSession', () => () => ({ sync: syncLiveSession }))
+const liveSeats = ref<LiveSeat[]>([])
+
+mockNuxtImport('useLiveSession', () => () => ({
+  session: ref(undefined),
+}))
+mockNuxtImport('useLiveSeats', () => () => ({ seats: liveSeats }))
 
 const SheetProbe = defineComponent({
   props: { loading: Boolean },
@@ -106,15 +117,22 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
   onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
+  log: (events: CombatEventDraft[]) => void
   activeRow: InitiativeSheetRow | undefined
+  claimedRows?: Set<string>
 }
+
+let mounted: VueWrapper | undefined
 
 async function mountPage() {
   const component = await mountWithTooltips(EncounterPage, {
     global: { stubs },
   })
+
+  mounted = component
 
   await flushPromises()
 
@@ -148,6 +166,12 @@ describe('Encounter detail page', () => {
     data.value = { ...sheet, campaign: mockSheetCampaign }
     isPending.value = false
     isError.value = false
+    logEvents.mockReset()
+  })
+
+  afterEach(() => {
+    mounted?.unmount()
+    mounted = undefined
   })
 
   it('Should set the page seo with the title of the encounter', async () => {
@@ -196,6 +220,19 @@ describe('Encounter detail page', () => {
 
     expect(probe.sheet?.title).toBe(sheet.title)
     expect(probe.activeRow).toBeUndefined()
+  })
+
+  it('Should provide the rows players have claimed in the live session', async () => {
+    liveSeats.value = [
+      { seat: 'seat-1', row: 'row-1', name: 'Elara', spectator: false },
+      { seat: 'seat-2', row: null, name: 'Watcher', spectator: true },
+    ]
+
+    const { probe } = await mountPage()
+
+    expect([...probe.claimedRows!]).toEqual(['row-1'])
+
+    liveSeats.value = []
   })
 
   it('Should pass the pending state to the initiative table', async () => {
@@ -364,7 +401,6 @@ describe('Encounter detail page', () => {
 
     component.unmount()
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 
@@ -391,22 +427,80 @@ describe('Encounter detail page', () => {
     expect(update).not.toHaveBeenCalled()
   })
 
-  it('Should sync the live session after a successful update', async () => {
+  it('Should log the removed rows after a successful update', async () => {
     const { probe } = await mountPage()
+    const [first, ...rest] = sheet.rows
 
-    await probe.update({ round: 2, activeIndex: 1 })
+    await probe.update({ rows: rest, activeIndex: 0 })
 
-    expect(syncLiveSession).toHaveBeenCalledWith({ round: 2, activeIndex: 1 })
+    expect(logEvents).toHaveBeenCalledWith({
+      encounterId: 2,
+      events: [
+        {
+          type: 'row_removed',
+          rowId: first!.id,
+          payload: { rowName: first!.name },
+        },
+      ],
+    })
   })
 
-  it('Should not sync the live session when the update fails', async () => {
+  it('Should log a turn change made through an update', async () => {
+    const { probe } = await mountPage()
+
+    await probe.update({ activeIndex: 1 })
+
+    expect(logEvents).toHaveBeenCalledWith({
+      encounterId: 2,
+      events: [
+        {
+          type: 'turn',
+          rowId: sheet.rows[1]!.id,
+          payload: { rowName: sheet.rows[1]!.name },
+        },
+      ],
+    })
+  })
+
+  it('Should not log an update without rows or turn changes', async () => {
+    const { probe } = await mountPage()
+
+    await probe.update({ title: 'Renamed' })
+
+    expect(logEvents).not.toHaveBeenCalled()
+  })
+
+  it('Should not log when the update fails', async () => {
     update.mockRejectedValueOnce(new Error('Boom'))
 
     const { probe } = await mountPage()
 
-    await expect(probe.update({ title: 'Renamed' })).rejects.toThrow('Boom')
+    await expect(probe.update({ activeIndex: 1 })).rejects.toThrow('Boom')
 
-    expect(syncLiveSession).not.toHaveBeenCalled()
+    expect(logEvents).not.toHaveBeenCalled()
+  })
+
+  it('Should provide a log that posts the events of the encounter', async () => {
+    const { probe } = await mountPage()
+    const events: CombatEventDraft[] = [
+      { type: 'roll', rowId: null, payload: { kind: 'dice', total: 4 } },
+    ]
+
+    probe.log(events)
+    probe.log([])
+
+    expect(logEvents).toHaveBeenCalledOnce()
+    expect(logEvents).toHaveBeenCalledWith({ encounterId: 2, events })
+  })
+
+  it('Should refetch the combat log when another client logged events', async () => {
+    await mountPage()
+
+    emitBroadcast('events', {})
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useCombatEvents', 2],
+    })
   })
 
   it('Should leave the cache to realtime when the update settles', async () => {
@@ -469,6 +563,27 @@ describe('Encounter detail page', () => {
     expect(patch).not.toHaveBeenCalled()
   })
 
+  it('Should patch several rows in one batch through useInitiativeSheetPatchRows', async () => {
+    const { probe } = await mountPage()
+    const patches = [{ rowId: 'ylqr4a611g', patch: { hitPoints: 3 } }]
+
+    await probe.patchRows(patches)
+
+    expect(patchRows).toHaveBeenCalledWith({ id: 2, patches })
+    expect(patch).not.toHaveBeenCalled()
+  })
+
+  it('Should not patch rows when there is no encounter', async () => {
+    data.value = undefined
+
+    const { component } = await mountPage()
+    const probe = component.findComponent(SheetProbe).vm as unknown as Probe
+
+    await probe.patchRows([{ rowId: 'ylqr4a611g', patch: { hitPoints: 3 } }])
+
+    expect(patchRows).not.toHaveBeenCalled()
+  })
+
   it('Should advance the turn through useInitiativeSheetTurn and return the reminders', async () => {
     const expired: TurnReminder[] = [
       {
@@ -477,11 +592,15 @@ describe('Encounter detail page', () => {
         condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
       },
     ]
-    turn.mockResolvedValue({ sheet: {}, expired, saves: [] })
+    turn.mockResolvedValue({ sheet: {}, expired, saves: [], recharges: [] })
 
     const { probe } = await mountPage()
 
-    await expect(probe.nextTurn()).resolves.toEqual({ expired, saves: [] })
+    await expect(probe.nextTurn()).resolves.toEqual({
+      expired,
+      saves: [],
+      recharges: [],
+    })
     expect(turn).toHaveBeenCalledWith({ id: 2 })
   })
 
@@ -495,6 +614,7 @@ describe('Encounter detail page', () => {
         },
       ],
       saves: [],
+      recharges: [],
     }
     const listener = vi.fn()
 

@@ -4,7 +4,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{
   encounterId: number
-  rows?: { id: string; name: string }[]
+  rows?: { id: string; name: string; hidden?: boolean }[]
 }>()
 
 const { t, locale } = useI18n()
@@ -321,6 +321,28 @@ async function toggleLiveAllow(
               test-id="allow-conditions"
               :model-value="isAllowed('conditions')"
               @update:model-value="toggleLiveAllow('conditions', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('general.reaction') }}
+            </span>
+            <UiSwitch
+              test-id="allow-reaction"
+              :model-value="isAllowed('reaction')"
+              @update:model-value="toggleLiveAllow('reaction', $event)"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm">
+              {{ $t('actions.readyAction') }}
+            </span>
+            <UiSwitch
+              test-id="allow-ready"
+              :model-value="isAllowed('ready')"
+              @update:model-value="toggleLiveAllow('ready', $event)"
             />
           </div>
         </div>

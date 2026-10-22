@@ -54,7 +54,7 @@ export function useTour() {
       onDestroyed: () => close(),
       onDestroyStarted: () => {
         if (!driverObj.value?.hasNextStep() || confirm(t('tour.sure'))) {
-          close()
+          void close()
         }
       },
     })
@@ -64,7 +64,10 @@ export function useTour() {
 
   async function close(): Promise<void> {
     if (user.value)
-      await updateProfile({ data: { completedTour: true }, id: user.value.id })
+      await updateProfile({
+        data: { completedTour: true },
+        id: user.value.id,
+      }).catch(() => undefined)
     else isTourCompleted.value = true
 
     isTourActive.value = false

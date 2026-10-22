@@ -40,6 +40,8 @@ const homebrew: HomebrewItemRow = {
   name: 'Goblin Boss',
   type: 'monster',
   player: null,
+  level: null,
+  challengeRating: null,
   link: null,
   actions: [],
   abilityScores: null,
@@ -275,6 +277,28 @@ describe('transfer', () => {
         reasonOf(() =>
           parseTransferFile(
             fileText('homebrews', [{ name: 'Orc', speed: [30] }]),
+            'homebrews',
+          ),
+        ),
+      ).toBe('invalidFile')
+    })
+
+    it('Should reject a player level above 20', () => {
+      expect(
+        reasonOf(() =>
+          parseTransferFile(
+            fileText('homebrews', [{ name: 'Elara', level: 21 }]),
+            'homebrews',
+          ),
+        ),
+      ).toBe('invalidFile')
+    })
+
+    it('Should reject an unknown challenge rating', () => {
+      expect(
+        reasonOf(() =>
+          parseTransferFile(
+            fileText('homebrews', [{ name: 'Orc', challengeRating: 0.3 }]),
             'homebrews',
           ),
         ),

@@ -1,6 +1,6 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
-import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
+import { rowPatchSchema } from '~~/shared/utils/dnd/schema'
 import { getValidatedRouterParams } from 'h3'
 import { z } from 'zod'
 
@@ -8,21 +8,7 @@ const paramsSchema = z.object({ id: z.coerce.number().int().positive() })
 
 const bodySchema = z.object({
   rowId: z.string().min(1),
-  patch: z
-    .object({
-      hitPoints: z.number().int().optional(),
-      maxHitPoints: z.number().int().optional(),
-      maxHitPointsOld: z.number().int().optional(),
-      tempHitPoints: z.number().int().optional(),
-      armorClass: z.number().int().optional(),
-      maxArmorClass: z.number().int().optional(),
-      maxArmorClassOld: z.number().int().optional(),
-      tempArmorClass: z.number().int().optional(),
-      conditions: z.array(conditionSchema).optional(),
-      deathSaves: deathSavesSchema.optional(),
-      concentration: z.boolean().optional(),
-    })
-    .strict(),
+  patch: rowPatchSchema,
 })
 
 export default defineEventHandler(async event => {
@@ -36,7 +22,7 @@ export default defineEventHandler(async event => {
 
   const { data: sheet, error: sheetError } = await supabase
     .from('initiative_sheets')
-    .select('id, title, round, activeIndex, rows, settings')
+    .select('round, rows')
     .eq('id', id)
     .single()
 
@@ -48,6 +34,10 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 404, statusMessage: 'Row not found' })
   }
 
+  if (body.patch.hidden && (await isLiveRowClaimed(supabase, id, body.rowId))) {
+    throw createError({ statusCode: 409, statusMessage: 'row-claimed' })
+  }
+
   const { data: after, error } = await supabase.rpc('apply_live_action', {
     p_encounter: id,
     p_row_id: body.rowId,
@@ -56,31 +46,22 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
-  await logCombatEvents(supabase, {
-    encounterId: id,
-    rowId: body.rowId,
-    round: sheet.round,
-    actorId: user.id,
-    events: diffRow(before, after),
-  })
-
-  await broadcastSheetAction(supabase, id, {
-    row: body.rowId,
-    patch: body.patch,
-  })
-
-  const session = await activeLiveSession(supabase, id)
-
-  if (session) {
-    await broadcastLiveState(
-      supabase,
-      session,
-      toPlayerSheet({
-        ...sheet,
-        rows: sheet.rows.map(row => (row.id === body.rowId ? after : row)),
-      }),
-    )
-  }
+  await Promise.all([
+    logCombatEvents(supabase, {
+      encounterId: id,
+      rowId: body.rowId,
+      round: sheet.round,
+      actorId: user.id,
+      events: diffRow(before, after),
+    }),
+    broadcastSheetAction(supabase, id, {
+      row: body.rowId,
+      patch: body.patch,
+    }),
+    ...(touchesPlayerView(body.patch)
+      ? [broadcastActiveLiveState(supabase, id)]
+      : []),
+  ])
 
   return { row: after }
 })

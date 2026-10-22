@@ -1,3 +1,4 @@
+import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushNavigation, goto, spyOnReplace } from '~~/test/nuxt/stubs/router'
 import type { MockInstance } from 'vitest'
@@ -145,6 +146,23 @@ describe('useFilterState', () => {
       await flush()
 
       expect(replace).toHaveBeenCalledTimes(1)
+    })
+
+    it('should swallow a failed query update', async () => {
+      replace.mockRestore()
+
+      const removeGuard = useRouter().beforeEach(() => {
+        throw new Error('boom')
+      })
+      const { state } = setup('test', defaults, { persist: 'url' })
+
+      state.search = 'fire'
+
+      await nextTick()
+      await flushPromises()
+      removeGuard()
+
+      expect(route.query).toStrictEqual({})
     })
 
     it('should keep values that equal the default out of the query', async () => {

@@ -2,25 +2,34 @@ import seo from '~~/constants/seo'
 
 export function useSeo(title?: MaybeRefOrGetter<string | undefined>): void {
   const { locale, availableLocales } = useI18n({ useScope: 'global' })
+  const localeCodes = new Set<string>(availableLocales)
   const pageTitle = computed(() => toValue(title))
+  const localeHead = useLocaleHead({ seo: true })
+  const toSiteUrl = createSitePathResolver({ absolute: true, withBase: true })
+  const alternates = computed(() =>
+    (localeHead.value.link ?? [])
+      .filter(link => link.rel === 'alternate' && link.href)
+      .map(link => ({ ...link, href: toSiteUrl(link.href!).value })),
+  )
 
   useHead({
     ...(title ? { title: pageTitle } : {}),
     titleTemplate: (title?: string) => {
-      const lowered = title?.toLowerCase()
-      const isHome = availableLocales.some(locale => locale === lowered)
-      return title && !isHome ? `${title} | ${seo.name}` : seo.name
+      if (!title || localeCodes.has(title.toLowerCase())) return seo.name
+
+      return `${title} | ${seo.name}`
     },
     htmlAttrs: {
       lang: locale.value,
     },
-    link: [
+    link: computed(() => [
       {
         rel: 'icon',
         type: 'image/ico',
         href: '/favicon.ico',
       },
-    ],
+      ...alternates.value,
+    ]),
     meta: [
       {
         name: 'keywords',

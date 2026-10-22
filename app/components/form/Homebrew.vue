@@ -183,6 +183,7 @@ async function addRows(submission: HomebrewSubmission): Promise<boolean> {
     rows: appendRows(
       props.sheet.rows,
       Array.from({ length: submission.amount ?? 1 }, () => row),
+      props.sheet.settings,
     ),
   })
 

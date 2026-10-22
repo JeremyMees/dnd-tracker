@@ -792,6 +792,38 @@ describe('dnd/hp-ac', () => {
     )
   })
 
+  describe('isSkipDeadMonstersEnabled', () => {
+    it.each([
+      [undefined, true],
+      [null, true],
+      [{ spacing: 'normal', modified: false }, true],
+      [{ spacing: 'normal', modified: false, skipDeadMonsters: true }, true],
+      [{ spacing: 'normal', modified: false, skipDeadMonsters: false }, false],
+    ] as [InitiativeSettings | null | undefined, boolean][])(
+      'reads %o as enabled: %s',
+      (settings, result) => {
+        expect(isSkipDeadMonstersEnabled(settings)).toBe(result)
+      },
+    )
+  })
+
+  describe('isAutoRollInitiativeEnabled', () => {
+    it.each([
+      [undefined, true],
+      [{ spacing: 'normal', modified: false }, true],
+      [{ spacing: 'normal', modified: false, autoRollInitiative: true }, true],
+      [
+        { spacing: 'normal', modified: false, autoRollInitiative: false },
+        false,
+      ],
+    ] as [InitiativeSettings | undefined, boolean][])(
+      'reads %o as enabled: %s',
+      (settings, result) => {
+        expect(isAutoRollInitiativeEnabled(settings)).toBe(result)
+      },
+    )
+  })
+
   describe('withoutBloodied', () => {
     it('drops only the bloodied condition', () => {
       const prone: DndCondition = { id: 'prone', name: 'Prone', desc: '' }
@@ -829,11 +861,7 @@ describe('dnd/hp-ac', () => {
     it('adds a sanitized bloodied condition at half hp or lower', () => {
       expect(withBloodied(row, bloodied).conditions).toEqual([
         prone,
-        {
-          id: 'bloodied',
-          name: 'Bloodied',
-          desc: 'At half hit points or fewer.',
-        },
+        { id: 'bloodied', name: 'Bloodied', desc: '' },
       ])
     })
 

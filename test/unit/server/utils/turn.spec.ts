@@ -101,7 +101,33 @@ describe('turn', () => {
         activeIndex: 1,
         round: 1,
       })
-      expect(supabase.from('combat_events').insert).not.toHaveBeenCalled()
+    })
+
+    it('logs whose turn it is now', async () => {
+      const supabase = mockDatabase({ updated: updatedSheet([rowTwo, rowTwo]) })
+
+      await advanceEncounterTurn(
+        supabase,
+        7,
+        {
+          activeIndex: 0,
+          round: 1,
+          rows: [rowTwo, { ...rowTwo, id: 'row-3' }],
+        },
+        { actorId: 'user-1', actorName: 'Elara' },
+      )
+
+      expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        {
+          encounterId: 7,
+          rowId: 'row-3',
+          round: 1,
+          type: 'turn',
+          payload: { rowName: 'Elara' },
+          createdBy: 'user-1',
+          actorName: 'Elara',
+        },
+      ])
     })
 
     it('logs an expired condition and returns the reminders', async () => {
@@ -116,6 +142,15 @@ describe('turn', () => {
       )
 
       expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        {
+          encounterId: 7,
+          rowId: 'row-2',
+          round: 1,
+          type: 'turn',
+          payload: { rowName: 'Elara' },
+          createdBy: 'user-1',
+          actorName: null,
+        },
         {
           encounterId: 7,
           rowId: 'row-1',
@@ -133,7 +168,30 @@ describe('turn', () => {
         sheet: updated,
         expired: [{ rowId: 'row-1', rowName: 'Goblin', condition: prone }],
         saves: [],
+        recharges: [],
       })
+    })
+
+    it('logs a readied action that ran out when its row starts its turn', async () => {
+      const readied = { ...rowTwo, readied: true }
+      const supabase = mockDatabase({
+        updated: updatedSheet([rowOne, { ...rowTwo, readied: false }]),
+      })
+
+      await advanceEncounterTurn(supabase, 7, {
+        activeIndex: 0,
+        round: 1,
+        rows: [{ ...rowOne, conditions: [] }, readied],
+      })
+
+      expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+        expect.objectContaining({ type: 'turn', rowId: 'row-2' }),
+        expect.objectContaining({
+          type: 'ready_expired',
+          rowId: 'row-2',
+          payload: { rowName: 'Elara' },
+        }),
+      ])
     })
 
     it('broadcasts the new turn to the sheet channel', async () => {
@@ -175,6 +233,7 @@ describe('turn', () => {
           reminders: {
             expired: [{ rowId: 'row-1', rowName: 'Goblin', condition: prone }],
             saves: [],
+            recharges: [],
           },
         },
       )

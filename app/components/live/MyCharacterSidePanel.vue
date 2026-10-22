@@ -10,10 +10,12 @@ const active = computed(() => props.row.id === props.activeRow?.id)
 </script>
 
 <template>
-  <aside
+  <UiScrollArea
+    as="aside"
     test-id="my-character-side-panel"
     :data-active="active"
-    class="w-[380px] shrink-0 overflow-y-auto p-6 transition-all duration-300"
+    class="w-[380px] shrink-0 transition-all duration-300"
+    viewport-class="p-6"
     :class="
       active
         ? 'border-l-4 border-primary bg-primary/5'
@@ -23,14 +25,16 @@ const active = computed(() => props.row.id === props.activeRow?.id)
     <div class="flex items-start justify-between gap-2 mb-6">
       <div class="min-w-0">
         <p
-          class="text-xs font-bold uppercase tracking-wide text-muted-foreground"
+          test-id="turn"
+          class="text-xs font-bold uppercase tracking-wide text-muted-foreground truncate"
         >
-          {{
-            active ? $t('pages.live.yourTurn') : $t('pages.live.currentTurn')
-          }}
+          <template v-if="active">{{ $t('pages.live.yourTurn') }}</template>
+          <template v-else>
+            {{ $t('pages.live.currentTurn') }}: {{ activeRow?.name }}
+          </template>
         </p>
         <p test-id="heading" class="head-4 truncate">
-          {{ active ? row.name : activeRow?.name }}
+          {{ row.name }}
         </p>
       </div>
       <Icon
@@ -42,32 +46,10 @@ const active = computed(() => props.row.id === props.activeRow?.id)
     </div>
 
     <LiveMyCharacterControls
-      v-if="active"
       :row="row"
       :rows="rows"
       :active="active"
       :allow="allow"
     />
-
-    <div v-else test-id="waiting" class="flex flex-col gap-4">
-      <p class="text-sm text-muted-foreground">
-        {{ $t('pages.live.waitingText', { name: row.name }) }}
-      </p>
-
-      <UiSeparator class="bg-muted" />
-
-      <div class="flex flex-col gap-2">
-        <span class="text-xs font-bold text-muted-foreground">
-          {{ $t('pages.live.yourStatus') }}
-        </span>
-        <div class="flex flex-wrap items-center gap-4">
-          <LiveStatHp :row="row" icon>
-            <LiveStatHealthBand v-if="row.healthBand" :band="row.healthBand" />
-          </LiveStatHp>
-          <LiveStatAc :row="row" icon />
-          <LiveStatConcentration :active="row.concentration" label />
-        </div>
-      </div>
-    </div>
-  </aside>
+  </UiScrollArea>
 </template>

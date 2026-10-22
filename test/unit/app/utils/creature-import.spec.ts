@@ -40,6 +40,7 @@ describe('creature-import', () => {
         hitPoints: 18,
         hitDice: '4d6+4',
         proficiencyBonus: 2,
+        challengeRating: 2,
         initiativeModifier: '3',
         passivePerception: 11,
         languages: ['Sylvan', 'Common'],
@@ -145,6 +146,7 @@ describe('creature-import', () => {
       expect(hound).toMatchObject({
         armorClass: 13,
         proficiencyBonus: 3,
+        challengeRating: 5,
         initiativeModifier: '5',
         armorDetail: null,
       })
@@ -184,6 +186,7 @@ describe('creature-import', () => {
         hitDice: '6d8+6',
         initiativeModifier: '3',
         proficiencyBonus: 2,
+        challengeRating: 1,
         passivePerception: 10,
         languages: null,
       })
@@ -356,6 +359,7 @@ describe('creature-import', () => {
         hitDice: '10d10+40',
         initiativeModifier: '0',
         proficiencyBonus: 3,
+        challengeRating: 7,
         passivePerception: 16,
         languages: ['Common', 'Draconic'],
         speed: { unit: 'feet', walk: 40, climb: 20, fly: 80 },
@@ -420,6 +424,7 @@ describe('creature-import', () => {
         name: 'Moss Sprite',
         initiativeModifier: '4',
         proficiencyBonus: 2,
+        challengeRating: 0.25,
         passivePerception: 11,
         languages: null,
         sight: null,

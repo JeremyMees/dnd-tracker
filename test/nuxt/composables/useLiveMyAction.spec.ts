@@ -160,6 +160,7 @@ describe('useLiveMyAction', () => {
       hitPoints: 15,
       maxHitPoints: 20,
       tempHitPoints: undefined,
+      reaction: undefined,
     })
   })
 

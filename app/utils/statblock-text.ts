@@ -40,7 +40,7 @@ function replaceTag(tag: string, text: string): string {
     case 'atkr':
       return attackLabels[text.replace(/\s/g, '')] ?? 'Attack:'
     case 'hit':
-      return /^-/.test(text) ? text : `+${text}`
+      return text.startsWith('-') ? text : `+${text}`
     case 'dc':
       return `DC ${text}`
     case 'recharge':
@@ -65,8 +65,10 @@ export function stripFiveEToolsTags(text: string): string {
 
   while (previous !== result) {
     previous = result
-    result = result.replace(/\{@(\w+)\s*([^{}]*)\}/g, (_match, tag, value) =>
-      replaceTag(tag, value.trim()),
+    result = result.replace(
+      /\{@(\w+)(?:\s([^{}]*))?\}/g,
+      (_match, tag: string, value: string | undefined) =>
+        replaceTag(tag, value?.trim() ?? ''),
     )
   }
 
@@ -100,11 +102,11 @@ export function flattenEntries(entries: unknown): string {
 
 export function parseActionName(raw: string): ParsedActionName {
   const parsed: ParsedActionName = { name: raw }
-  const recharge = raw.match(/\(Recharge (\d)(?:\s*[–-]\s*6)?\)/i)
-  const perDay = raw.match(/\((\d+)\/Day[^)]*\)/i)
-  const perRest = raw.match(/\(Recharges after a (?:Short or )?Long Rest\)/i)
-  const cost = raw.match(/\(Costs (\d+) Actions\)/i)
-  const form = raw.match(/\(([^)]+?) Form Only\)/i)
+  const recharge = /\(Recharge (\d)(?:\s*[–-]\s*6)?\)/i.exec(raw)
+  const perDay = /\((\d+)\/Day[^)]*\)/i.exec(raw)
+  const perRest = /\(Recharges after a (?:Short or )?Long Rest\)/i.exec(raw)
+  const cost = /\(Costs (\d+) Actions\)/i.exec(raw)
+  const form = /\(([^()]+?) Form Only\)/i.exec(raw)
 
   if (recharge) {
     parsed.usageLimits = { type: 'recharge', param: Number(recharge[1]) }
@@ -126,14 +128,29 @@ export function parseActionName(raw: string): ParsedActionName {
   return parsed
 }
 
-const damagePattern =
-  /\(\s*(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?\s*\)\s*(?:([a-z]+)(?:\s+or\s+[a-z]+)?\s+)?damage/gi
+const dicePattern = /\(\s*(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+)\s*)?\)/g
+const damageTypeSuffix = /\s*(?:([a-z]+)(?:\s+or\s+[a-z]+)?\s+)?damage/iy
 
-function toDamage(match: RegExpMatchArray) {
+function damageMatches(
+  text: string,
+): { dice: RegExpExecArray; type: string | undefined }[] {
+  return [...text.matchAll(dicePattern)].flatMap(dice => {
+    damageTypeSuffix.lastIndex = dice.index + dice[0].length
+
+    const suffix = damageTypeSuffix.exec(text)
+
+    return suffix ? [{ dice, type: suffix[1] }] : []
+  })
+}
+
+function toDamage({
+  dice: match,
+  type: rawType,
+}: ReturnType<typeof damageMatches>[number]) {
   const count = Number(match[1])
   const sides = Number(match[2]) as DndDiceSide
   const bonus = match[4] ? Number(`${match[3]}${match[4]}`) : undefined
-  const type = match[5]?.toLowerCase() as DndDamageType | undefined
+  const type = rawType?.toLowerCase() as DndDamageType | undefined
 
   if (!dices.includes(sides) || count < 1 || count > 100) return undefined
 
@@ -145,68 +162,84 @@ function toDamage(match: RegExpMatchArray) {
   }
 }
 
-export function parseAttack(name: string, text: string): DndAttack | undefined {
-  const attack = text.match(
-    /(melee or ranged|melee|ranged)\s+(?:(weapon|spell)\s+)?attack(?:\s+roll)?:\s*([+-]?\d+)/i,
-  )
+function attackTypeOf(kind: string, isSpell: boolean): DndAttackType {
+  const ranged = kind.startsWith('ranged')
 
-  if (!attack) return undefined
+  if (isSpell) return ranged ? 'rangedSpell' : 'meleeSpell'
 
-  const kind = attack[1]!.toLowerCase()
-  const isSpell = attack[2]?.toLowerCase() === 'spell'
-  const toHitMod = Number(attack[3])
-  const reach = text.match(/reach (\d+)\s*ft/i)
-  const range = text.match(/range (\d+)(?:\s*\/\s*(\d+))?\s*ft/i)
-  const hitIndex = text.search(/Hit:/i)
-  const hitText = hitIndex >= 0 ? text.slice(hitIndex) : ''
-  const [primary, extra] = [...hitText.matchAll(damagePattern)]
-  const damage = primary ? toDamage(primary) : undefined
-  const plus =
-    extra && /plus\s*\d*\s*$/i.test(hitText.slice(0, extra.index))
-      ? toDamage(extra)
-      : undefined
+  return ranged ? 'ranged' : 'melee'
+}
 
-  const attackType: DndAttackType = kind.startsWith('ranged')
-    ? isSpell
-      ? 'rangedSpell'
-      : 'ranged'
-    : isSpell
-      ? 'meleeSpell'
-      : 'melee'
+function rangeFields(text: string): Partial<DndAttack> {
+  const reach = /reach (\d+)\s*ft/i.exec(text)
+  const range = /range (\d+)(?:\s*\/\s*(\d+))?\s*ft/i.exec(text)
 
   return {
-    name: name.slice(0, 100),
-    attackType,
-    distanceUnit: 'feet',
-    ...(toHitMod >= -20 && toHitMod <= 30 ? { toHitMod } : {}),
     ...(reach ? { reach: Math.min(Number(reach[1]), 1200) } : {}),
     ...(range ? { range: Math.min(Number(range[1]), 1200) } : {}),
     ...(range?.[2] ? { longRange: Math.min(Number(range[2]), 1200) } : {}),
-    ...(damage
-      ? {
-          damageDieCount: damage.count,
-          damageDieType: damage.dice,
-          ...(isDefined(damage.bonus) ? { damageBonus: damage.bonus } : {}),
-          ...(damage.type ? { damageType: damage.type } : {}),
-        }
-      : {}),
-    ...(plus
-      ? {
-          extraDamageDieCount: plus.count,
-          extraDamageDieType: plus.dice,
-          ...(isDefined(plus.bonus) ? { extraDamageBonus: plus.bonus } : {}),
-          ...(plus.type ? { extraDamageType: plus.type } : {}),
-        }
-      : {}),
   }
 }
 
-const entryPattern = /^(?:-\s*)?\*{2,3}([^*]+?)\.\*{2,3}\s*(.*)$/
-const propertyPattern = /^-?\s*\*\*([^*]+?)\*\*\s*(.*)$/
+function damageFields(damage: ReturnType<typeof toDamage>): Partial<DndAttack> {
+  if (!damage) return {}
+
+  return {
+    damageDieCount: damage.count,
+    damageDieType: damage.dice,
+    ...(isDefined(damage.bonus) ? { damageBonus: damage.bonus } : {}),
+    ...(damage.type ? { damageType: damage.type } : {}),
+  }
+}
+
+function extraDamageFields(
+  damage: ReturnType<typeof toDamage>,
+): Partial<DndAttack> {
+  if (!damage) return {}
+
+  return {
+    extraDamageDieCount: damage.count,
+    extraDamageDieType: damage.dice,
+    ...(isDefined(damage.bonus) ? { extraDamageBonus: damage.bonus } : {}),
+    ...(damage.type ? { extraDamageType: damage.type } : {}),
+  }
+}
+
+export function parseAttack(name: string, text: string): DndAttack | undefined {
+  const attack =
+    /(melee or ranged|melee|ranged)\s+(?:(weapon|spell)\s+)?attack(?:\s+roll)?:\s*([+-]?\d+)/i.exec(
+      text,
+    )
+
+  if (!attack) return undefined
+
+  const isSpell = attack[2]?.toLowerCase() === 'spell'
+  const toHitMod = Number(attack[3])
+  const hitIndex = text.search(/Hit:/i)
+  const hitText = hitIndex >= 0 ? text.slice(hitIndex) : ''
+  const [primary, extra] = damageMatches(hitText)
+  const plus =
+    extra && /plus(?:\s*\d+)?\s*$/i.test(hitText.slice(0, extra.dice.index))
+      ? toDamage(extra)
+      : undefined
+
+  return {
+    name: name.slice(0, 100),
+    attackType: attackTypeOf(attack[1]!.toLowerCase(), isSpell),
+    distanceUnit: 'feet',
+    ...(toHitMod >= -20 && toHitMod <= 30 ? { toHitMod } : {}),
+    ...rangeFields(text),
+    ...damageFields(primary ? toDamage(primary) : undefined),
+    ...extraDamageFields(plus),
+  }
+}
+
+const entryPattern = /^(?:-\s*)?\*{2,3}([^*]+?)\.\*{2,3}(.*)$/
+const propertyPattern = /^-?\s*\*\*([^*]+?)\*\*(.*)$/
 
 function cleanMarkdown(text: string): string {
   return text
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\][]*)\]\([^()]*\)/g, '$1')
     .replace(/\*+/g, '')
     .replace(/\s{2,}/g, ' ')
     .trim()
@@ -242,9 +275,9 @@ function parseStatblockLines(name: string, lines: string[]): MarkdownStatblock {
   let entry: StatblockEntry | undefined
 
   lines.forEach((line, index) => {
-    const heading = line.match(/^#{3,}\s*(.+)$/)
-    const entryMatch = line.match(entryPattern)
-    const property = line.match(propertyPattern)
+    const heading = /^#{3,}\s*([^#\s].*)$/.exec(line)
+    const entryMatch = entryPattern.exec(line)
+    const property = propertyPattern.exec(line)
 
     if (/^\|\s*:?-{3}/.test(line)) {
       statblock.abilityScores = readAbilityTable(
@@ -259,7 +292,10 @@ function parseStatblockLines(name: string, lines: string[]): MarkdownStatblock {
         name: cleanMarkdown(entryMatch[1]!),
         desc: cleanMarkdown(entryMatch[2]!),
       }
-      ;(statblock.sections[section] ??= []).push(entry)
+      const list = statblock.sections[section] ?? []
+
+      list.push(entry)
+      statblock.sections[section] = list
     } else if (property && !entry && section === 'traits') {
       statblock.properties[cleanMarkdown(property[1]!).toLowerCase()] =
         cleanMarkdown(property[2]!)
@@ -280,7 +316,7 @@ export function parseStatblockMarkdown(text: string): MarkdownStatblock[] {
   let current: { name: string; lines: string[] } | undefined
 
   for (const line of lines) {
-    const title = line.match(/^##\s+(.+)$/)
+    const title = /^##\s+(\S.*)$/.exec(line)
 
     if (title) {
       if (current)

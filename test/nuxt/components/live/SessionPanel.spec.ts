@@ -458,6 +458,18 @@ describe('LiveSessionPanel', () => {
       },
     })
 
+    await component.find('[test-id="allow-reaction"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { allow: { reaction: false } } },
+    })
+
+    await component.find('[test-id="allow-ready"]').trigger('click')
+
+    expect(injected.update).toHaveBeenLastCalledWith({
+      settings: { ...sheet.settings, live: { allow: { ready: false } } },
+    })
+
     await component.find('[test-id="allow-end-turn"]').trigger('click')
 
     expect(injected.update).toHaveBeenLastCalledWith({

@@ -15,6 +15,12 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   )
 }
 
+export function containsFocusable(element: Element): boolean {
+  return !!element.querySelector(
+    'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])',
+  )
+}
+
 export function isShortcutContext(target: EventTarget | null): boolean {
   if (isTypingTarget(target)) return false
 
@@ -27,14 +33,6 @@ export function isPlainKeyPress(event: KeyboardEvent): boolean {
   }
 
   return isShortcutContext(event.target)
-}
-
-export function randomString(): string {
-  return (Math.random() + 1).toString(36).substring(7)
-}
-
-export function randomColor(): string {
-  return Math.floor(Math.random() * 16777215).toString(16)
 }
 
 export function sortByNumber(a: unknown, b: unknown, acs: boolean): number {
@@ -129,7 +127,7 @@ export function timeRemaining(expiresAt: string | Date, now: number): string {
 }
 
 export function validateParamId(id: string | string[] | undefined): number {
-  if (!id || typeof id !== 'string' || isNaN(+id))
+  if (!id || typeof id !== 'string' || Number.isNaN(+id))
     throw createError({ status: 404, statusText: 'Id is not valid' })
 
   return +id
@@ -150,7 +148,7 @@ export function animateTableUpdate(id: string, color: 'green' | 'red'): void {
   if (!el) return
 
   el.style.animation = 'none'
-  void el.offsetHeight
+  el.getBoundingClientRect()
   el.style.animation = `pulse-${color} 1s ease-in-out`
 
   setTimeout(() => {

@@ -197,6 +197,7 @@ describe('url-generators', () => {
 
     it('should remove trailing dashes', () => {
       expect(slugify('hello world!')).toBe('hello-world')
+      expect(slugify('hello world --- !!')).toBe('hello-world')
     })
 
     it('should handle multiple special characters in a row', () => {

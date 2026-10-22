@@ -144,7 +144,7 @@ function resetFilters(): void {
 </script>
 
 <template>
-  <div class="max-h-full flex flex-col gap-4">
+  <div class="max-h-full min-h-0 flex-1 flex flex-col gap-4">
     <div class="flex flex-col gap-2">
       <div class="flex flex-col sm:flex-row items-end gap-x-4 gap-y-2">
         <div class="space-y-2 w-full sm:w-auto sm:flex-1">
@@ -250,7 +250,7 @@ function resetFilters(): void {
       </div>
     </div>
 
-    <div class="overflow-y-auto">
+    <UiScrollArea viewport-class="pr-3">
       <MasonryGrid
         v-if="isLoading"
         v-slot="{ column }"
@@ -286,7 +286,7 @@ function resetFilters(): void {
           @unpin="handlePinToggle(hit, true)"
         />
       </MasonryGrid>
-    </div>
+    </UiScrollArea>
 
     <Pagination
       v-if="

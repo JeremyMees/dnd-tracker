@@ -1,3 +1,9 @@
+const dmOnlyRowFields = new Set(['note'])
+
+export function touchesPlayerView(patch: object): boolean {
+  return Object.keys(patch).some(key => !dmOnlyRowFields.has(key))
+}
+
 function toPlayerRow(
   row: InitiativeSheetRow,
   monsterOrdinal: number,
@@ -26,6 +32,10 @@ function toPlayerRow(
 
   if (!hidePlayerHealth) playerRow.deathSaves = row.deathSaves
 
+  if (!isMonster && row.resources?.reaction) playerRow.reaction = true
+
+  if (!isMonster && row.readied) playerRow.readied = true
+
   if (!isMonster || !hideMonsterAc) {
     playerRow.armorClass = row.armorClass
     playerRow.tempArmorClass = row.tempArmorClass
@@ -42,6 +52,18 @@ function toPlayerRow(
   }
 
   return playerRow
+}
+
+function toHiddenPlayerRow(row: InitiativeSheetRow): PlayerRow {
+  return {
+    id: row.id,
+    index: row.index,
+    initiative: -1,
+    name: '???',
+    type: 'monster',
+    conditions: [],
+    hidden: true,
+  }
 }
 
 export function toPlayerSheet(
@@ -64,6 +86,8 @@ export function toPlayerSheet(
     round: sheet.round,
     activeIndex: sheet.activeIndex,
     rows: sheet.rows.map(row => {
+      if (row.hidden) return toHiddenPlayerRow(row)
+
       if (row.type === 'monster') monsterOrdinal += 1
 
       return toPlayerRow(
@@ -81,6 +105,8 @@ export function toPlayerSheet(
       deathSaves: allow?.deathSaves ?? true,
       concentration: allow?.concentration ?? true,
       conditions: allow?.conditions ?? true,
+      reaction: allow?.reaction ?? true,
+      ready: allow?.ready ?? true,
       endTurn: allow?.endTurn ?? true,
     },
   }

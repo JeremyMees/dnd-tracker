@@ -52,8 +52,7 @@ const provide = {
 
 const props = {
   attackBonus: 5,
-  damageDice: '2d6',
-  damageBonus: 3,
+  damage: [{ dice: '2d6', bonus: 3 }] as DndAttackDamage[],
   id: sheet.rows[0]!.id,
 }
 
@@ -63,6 +62,10 @@ describe('ActionRoll component', () => {
   beforeEach(() => {
     mockSheet.value = sheet
     mockConditions.value = []
+  })
+
+  afterEach(() => {
+    component?.unmount()
   })
 
   it('Should match snapshot', async () => {
@@ -128,7 +131,7 @@ describe('ActionRoll component', () => {
       expect(vm.result?.attackRoll).toBe(Math.min(...vm.result!.rolledToHit))
     })
 
-    it('Should calculate attackTotal with attackBonus and totalDamage with damageBonus', async () => {
+    it('Should calculate attackTotal with attackBonus and totalDamage with the damage bonus', async () => {
       component = await mountWithTooltips(ActionRoll, { props, provide })
 
       const vm = component.vm as unknown as ActionRollVM
@@ -143,7 +146,7 @@ describe('ActionRoll component', () => {
       expect(vm.result?.attackTotal).toBe(
         vm.result!.attackRoll + props.attackBonus!,
       )
-      expect(vm.result?.totalDamage).toBe(baseDamage + props.damageBonus)
+      expect(vm.result?.totalDamage).toBe(baseDamage + props.damage[0]!.bonus)
     })
 
     it('Should handle undefined attackBonus', async () => {
@@ -160,9 +163,9 @@ describe('ActionRoll component', () => {
       expect(vm.result?.attackTotal).toBe(vm.result?.attackRoll)
     })
 
-    it('Should handle undefined damageDice', async () => {
+    it('Should handle damage without dice', async () => {
       component = await mountWithTooltips(ActionRoll, {
-        props: { ...props, damageDice: undefined },
+        props: { ...props, damage: [{ bonus: 3 }] },
         provide,
       })
 
@@ -171,12 +174,12 @@ describe('ActionRoll component', () => {
       await nextTick()
 
       expect(vm.result).toBeDefined()
-      expect(vm.result?.totalDamage).toBe(props.damageBonus)
+      expect(vm.result?.totalDamage).toBe(props.damage[0]!.bonus)
     })
 
-    it('Should handle zero damageBonus', async () => {
+    it('Should handle a zero damage bonus', async () => {
       component = await mountWithTooltips(ActionRoll, {
-        props: { ...props, damageBonus: 0 },
+        props: { ...props, damage: [{ dice: '2d6', bonus: 0 }] },
         provide,
       })
 
@@ -210,6 +213,18 @@ describe('ActionRoll component', () => {
       })
     })
 
+    it('Should leave out rows without hit points', async () => {
+      const statue = { ...sheet.rows[1]!, id: 'statue', hitPoints: undefined }
+
+      mockSheet.value = { ...sheet, rows: [...sheet.rows, statue] }
+      component = await mountWithTooltips(ActionRoll, { props, provide })
+
+      const vm = component.vm as unknown as ActionRollVM
+
+      expect(vm.targets.find(t => t.value === 'statue')).toBeUndefined()
+      expect(vm.targets.length).toBe(sheet.rows.length - 1)
+    })
+
     it('Should have no targets when sheet has only current row or empty rows', async () => {
       mockSheet.value = { ...sheet, rows: [sheet.rows[0]!] }
       const component1 = await mountWithTooltips(ActionRoll, { props, provide })
@@ -233,9 +248,15 @@ describe('ActionRoll component', () => {
   })
 
   describe('Damage dice', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
     it('Should roll every die when several dice share the same sides', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
       component = await mountWithTooltips(ActionRoll, {
-        props: { ...props, damageDice: '2d6 + 1d6' },
+        props: { ...props, damage: [{ dice: '2d6 + 1d6', bonus: 3 }] },
         provide,
       })
 
@@ -418,12 +439,16 @@ describe('ActionRoll component', () => {
       await nextTick()
 
       expect(document.body.textContent).toContain(`+${props.attackBonus}`)
-      expect(document.body.textContent).toContain(`+${props.damageBonus}`)
+      expect(document.body.textContent).toContain(`+${props.damage[0]!.bonus}`)
     })
 
     it('Should hide the attack and damage bonuses when they are falsy', async () => {
       component = await mountWithTooltips(ActionRoll, {
-        props: { ...props, attackBonus: 0, damageBonus: 0 },
+        props: {
+          ...props,
+          attackBonus: 0,
+          damage: [{ dice: '2d6', bonus: 0 }],
+        },
         provide,
       })
       const vm = component.vm as unknown as ActionRollVM
@@ -439,8 +464,7 @@ describe('ActionRoll component', () => {
   describe('Submitting damage to a target', () => {
     const submitProps = {
       attackBonus: 5,
-      damageDice: undefined,
-      damageBonus: 2,
+      damage: [{ bonus: 2 }] as DndAttackDamage[],
       id: sheet.rows[1]!.id,
     }
     const targetId = sheet.rows[0]!.id
@@ -501,6 +525,102 @@ describe('ActionRoll component', () => {
       expect(mockPatchRow).toHaveBeenCalledWith(targetId, {
         hitPoints: 50,
         conditions: [...target.conditions, storedBloodiedCondition],
+      })
+    })
+
+    describe('Damage defenses', () => {
+      const defended = {
+        ...sheet.rows[0]!,
+        hitPoints: 52,
+        tempHitPoints: undefined,
+        concentration: false,
+        conditions: [],
+        resistancesAndImmunities: {
+          damageImmunities: ['poison'],
+          damageResistances: ['fire'],
+          damageVulnerabilities: ['cold'],
+          conditionImmunities: [],
+        },
+      } as InitiativeSheetRow
+
+      async function rollAgainst(damage: DndAttackDamage[]) {
+        mockSheet.value = { ...sheet, rows: [defended, ...sheet.rows.slice(1)] }
+
+        component = await mountWithTooltips(ActionRoll, {
+          props: { ...submitProps, damage },
+          provide,
+        })
+
+        const vm = component.vm as unknown as ActionRollVM
+
+        vm.onRoll('straight')
+        vm.form.setFieldValue('target', targetId)
+        await flushPromises()
+
+        return vm
+      }
+
+      it('Should apply each damage type against the target defenses', async () => {
+        const vm = await rollAgainst([
+          { bonus: 10, type: 'fire' },
+          { bonus: 6, type: 'acid' },
+        ])
+
+        await vm.onSubmit()
+
+        expect(mockPatchRow).toHaveBeenCalledWith(targetId, { hitPoints: 41 })
+      })
+
+      it('Should ignore immune damage and double vulnerable damage', async () => {
+        const vm = await rollAgainst([
+          { bonus: 10, type: 'poison' },
+          { bonus: 6, type: 'cold' },
+        ])
+
+        await vm.onSubmit()
+
+        expect(mockPatchRow).toHaveBeenCalledWith(targetId, { hitPoints: 40 })
+      })
+
+      it('Should show the target defenses before applying', async () => {
+        mockSheet.value = { ...sheet, rows: [defended, ...sheet.rows.slice(1)] }
+
+        component = await mountWithTooltips(ActionRoll, {
+          props: {
+            ...submitProps,
+            damage: [
+              { bonus: 10, type: 'fire' },
+              { bonus: 6, type: 'acid' },
+            ],
+          },
+          provide,
+        })
+
+        const vm = component.vm as unknown as ActionRollVM
+
+        await openPopover(component)
+        vm.onRoll('straight')
+        vm.form.setFieldValue('target', targetId)
+        await flushPromises()
+
+        const preview = document.body.querySelector('[test-id="target-damage"]')
+
+        expect(preview?.querySelectorAll('[test-id="defense"]')).toHaveLength(1)
+        expect(preview?.textContent).toContain(
+          'components.areaDamage.defense.resistant',
+        )
+      })
+
+      it('Should not show a preview when the target has no matching defenses', async () => {
+        const vm = await rollAgainst([{ bonus: 10, type: 'acid' }])
+
+        await openPopover(component)
+        vm.onRoll('straight')
+        await flushPromises()
+
+        expect(
+          document.body.querySelector('[test-id="target-damage"]'),
+        ).toBeNull()
       })
     })
 
@@ -595,6 +715,70 @@ describe('ActionRoll component', () => {
 
       expect(vm.popoverOpen).toBe(true)
       expect(document.body.querySelector('[test-id="error"]')).toBeNull()
+    })
+  })
+
+  describe('Combat log', () => {
+    const mockLog = vi.fn()
+    const logProvide = {
+      [INITIATIVE_SHEET]: { ...provide[INITIATIVE_SHEET], log: mockLog },
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      mockLog.mockReset()
+    })
+
+    it.each([
+      [0.5, 'hit', 16, 11],
+      [0.99, 'critical', 25, 27],
+    ])(
+      'Should log the attack roll as a %s roll',
+      async (random, result, total, damage) => {
+        vi.spyOn(Math, 'random').mockReturnValue(random)
+        component = await mountWithTooltips(ActionRoll, {
+          props,
+          provide: logProvide,
+        })
+
+        const vm = component.vm as unknown as ActionRollVM
+        vm.onRoll('straight')
+
+        expect(mockLog).toHaveBeenCalledWith([
+          {
+            type: 'roll',
+            rowId: props.id,
+            payload: {
+              rowName: sheet.rows[0]!.name,
+              kind: 'attack',
+              result,
+              total,
+              damage,
+            },
+          },
+        ])
+      },
+    )
+
+    it('Should log a natural 1 as a miss without damage', async () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0)
+      component = await mountWithTooltips(ActionRoll, {
+        props,
+        provide: logProvide,
+      })
+
+      const vm = component.vm as unknown as ActionRollVM
+      vm.onRoll('straight')
+
+      expect(mockLog).toHaveBeenCalledWith([
+        expect.objectContaining({
+          payload: expect.objectContaining({
+            result: 'miss',
+            total: 6,
+            damage: undefined,
+          }),
+        }),
+      ])
     })
   })
 })

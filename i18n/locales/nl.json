@@ -87,7 +87,12 @@
     "encounterStats": "Encounter statistieken",
     "openCombatLog": "Gevechtslog openen",
     "closeCombatLog": "Gevechtslog sluiten",
-    "skipToContent": "Ga naar inhoud"
+    "skipToContent": "Ga naar inhoud",
+    "readyAction": "Actie klaarhouden",
+    "useReadied": "Klaargehouden actie gebruiken",
+    "hideFromPlayers": "Verbergen voor spelers",
+    "revealToPlayers": "Tonen aan spelers",
+    "revealHidden": "Verborgen wezens tonen"
   },
   "general": {
     "pro": "Pro",
@@ -262,7 +267,8 @@
         "limitReached": "Je hebt de limiet van je abonnement bereikt. Verwijder er eerst een, of upgrade naar Pro voor meer.",
         "homebrewLimit": "Deze campagne heeft al het maximum aantal homebrew items. Verwijder er eerst een.",
         "noteLimit": "Deze campagne heeft al het maximum aantal notities. Verwijder er eerst een.",
-        "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren."
+        "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren.",
+        "rowClaimed": "Een speler heeft deze rij geclaimd, dus ze kan niet verborgen worden."
       },
       "loadFailed": {
         "content": "DnD inhoud kon niet geladen worden",
@@ -328,7 +334,10 @@
       "success": {
         "title": "Mail is succesvol verzonden"
       }
-    }
+    },
+    "readied": "Klaar",
+    "hidden": "Verborgen",
+    "claimed": "Geclaimd door een speler"
   },
   "pages": {
     "home": {
@@ -533,7 +542,9 @@
           "deathSaves": "Death saves voor {name} zijn niet opgeslagen",
           "concentration": "Concentratie voor {name} is niet opgeslagen",
           "row": "Je wijziging aan {name} is niet opgeslagen",
-          "generic": "Je wijziging is niet opgeslagen"
+          "generic": "Je wijziging is niet opgeslagen",
+          "readied": "Klaargehouden actie voor {name} is niet opgeslagen",
+          "hidden": "Zichtbaarheid voor {name} is niet opgeslagen"
         },
         "updateFailed": {
           "rows": "Wijzigingen aan de initiatieflijst zijn niet opgeslagen",
@@ -555,7 +566,8 @@
           "noActiveSession": "Geen actieve live sessie",
           "seatNotFound": "Die speler heeft de sessie al verlaten",
           "rowNotFound": "Die rij bestaat niet meer",
-          "rowClaimed": "Die rij is al bezet door een andere speler"
+          "rowClaimed": "Die rij is al bezet door een andere speler",
+          "rowHidden": "Die rij is verborgen voor spelers. Toon ze eerst."
         }
       }
     },
@@ -718,8 +730,6 @@
       "confirmed": "Kamercode bevestigd",
       "currentTurn": "Huidige beurt",
       "yourTurn": "Jouw beurt",
-      "yourStatus": "Jouw status",
-      "waitingText": "De besturing opent automatisch zodra {name} aan de beurt is.",
       "errors": {
         "notFound": "We konden geen live sessie met die code vinden.",
         "expired": "Deze live sessie is beëindigd.",
@@ -738,6 +748,8 @@
         "deathSaves": "Je death saves zijn niet bijgewerkt",
         "concentration": "Je concentratie is niet bijgewerkt",
         "conditions": "Je condities zijn niet bijgewerkt",
+        "reaction": "Je reactie is niet bijgewerkt",
+        "ready": "Je klaargehouden actie is niet bijgewerkt",
         "endTurn": "Je beurt kon niet beëindigd worden"
       },
       "actionErrors": {
@@ -748,7 +760,8 @@
         "noRowClaimed": "Je hebt nog geen personage gekozen.",
         "spectator": "Kijkers kunnen geen personages aanpassen.",
         "seatExpired": "Je plaats is verlopen. Neem opnieuw deel aan de live sessie."
-      }
+      },
+      "hiddenCreature": "Er loert iets in de schaduw…"
     }
   },
   "components": {
@@ -790,10 +803,20 @@
         "reassign": "De speler kon niet aan dat personage gekoppeld worden"
       }
     },
+    "deathSaves": {
+      "save": "Geslaagd",
+      "fail": "Mislukt"
+    },
+    "resources": {
+      "legendaryResistances": "Legendarische weerstanden",
+      "reset": "Gebruik resetten"
+    },
     "actionsTable": {
       "cost": "Kost { cost } actie | Kost { cost } acties",
       "form": " Terwijl in { form } vorm.",
-      "oneTarget": "Één doelwit"
+      "oneTarget": "Één doelwit",
+      "areaDamage": "Gebiedsschade gooien",
+      "targetDamage": "{name} krijgt {amount} schade"
     },
     "repeaterInput": {
       "noItems": "Geen items toegevoegd. Klik op \"Toevoegen\" om te beginnen."
@@ -840,13 +863,48 @@
         "fail": "{rowName} faalde een death save|{rowName} faalde {amount} death saves"
       },
       "stabilized": "{rowName} stabiliseerde",
-      "died": "{rowName} stierf"
+      "died": "{rowName} stierf",
+      "turn": "De beurt van {rowName} begon",
+      "rowAdded": "{rowName} kwam erbij",
+      "rowAddedInitiative": "{rowName} kwam erbij met initiative {initiative}",
+      "rowRemoved": "{rowName} werd uit het gevecht verwijderd",
+      "roll": {
+        "hit": "{rowName} gooide {total} om te raken voor {damage} schade",
+        "critical": "{rowName} gooide een critical hit ({total}) voor {damage} schade",
+        "miss": "{rowName} gooide een natuurlijke 1 en miste",
+        "dice": "{dice} gegooid, in totaal {total}"
+      },
+      "readied": "{rowName} hield een actie klaar",
+      "readyUsed": "{rowName} gebruikte de klaargehouden actie",
+      "readyExpired": "De klaargehouden actie van {rowName} is verlopen",
+      "hidden": "{rowName} is verborgen voor spelers",
+      "revealed": "{rowName} is getoond aan spelers"
+    },
+    "areaDamage": {
+      "title": "Gebiedsschade",
+      "description": "Breng schade toe aan meerdere wezens tegelijk, met een optionele saving throw.",
+      "dc": "Save DC",
+      "halfOnSave": "Halve schade bij een geslaagde save",
+      "askPlayers": "Vraag {names} om een {ability} save te gooien (DC {dc}).",
+      "reroll": "Gooi de save opnieuw",
+      "saved": "Geslaagd",
+      "defense": {
+        "immune": "Immuun",
+        "resistant": "Resistent",
+        "vulnerable": "Kwetsbaar"
+      },
+      "apply": "Schade toepassen | Toepassen op {count} wezen | Toepassen op {count} wezens",
+      "error": "De schade kon niet worden toegepast",
+      "markUsed": "Markeer {action} als gebruikt",
+      "usedUp": "{action} kan niet meer gebruikt worden"
     },
     "turnReminders": {
       "expired": "{condition} op {name} is afgelopen",
       "save": "{name}: {ability} save DC {dc} om {condition} te beëindigen",
       "saved": "Geslaagd",
-      "failed": "Gefaald"
+      "failed": "Gefaald",
+      "recharged": "{name}: {action} is weer klaar ({roll} gegooid)",
+      "notRecharged": "{name}: {action} is nog niet klaar ({roll} gegooid)"
     },
     "conditionDuration": {
       "title": "Duur",
@@ -883,6 +941,19 @@
         }
       }
     },
+    "difficulty": {
+      "title": "Moeilijkheid van het gevecht",
+      "label": "Moeilijkheid van het gevecht: {rating}",
+      "experience": "{value} XP aan monsters",
+      "missingLevels": "{count} speler heeft geen level en telt niet mee | {count} spelers hebben geen level en tellen niet mee",
+      "ratings": {
+        "trivial": "Triviaal",
+        "low": "Laag",
+        "moderate": "Gemiddeld",
+        "high": "Hoog",
+        "extreme": "Extreem"
+      }
+    },
     "combatSummary": {
       "title": "Gevecht samenvatting",
       "description": "Hoe het gevecht verliep voor iedereen",
@@ -898,6 +969,10 @@
         "concentration": "Concentratie verbroken"
       },
       "deathSavesValue": "{made} geslaagd / {failed} gefaald",
+      "experience": {
+        "perPlayer": "{value} XP per speler",
+        "total": "{total} XP van verslagen monsters, voor {players} speler | {total} XP van verslagen monsters, verdeeld over {players} spelers"
+      },
       "awards": {
         "title": "Uitschieters",
         "exclusive": {
@@ -1052,6 +1127,7 @@
       "questionLabel": "Je vraag?",
       "challengeLabel": "Challenge rating",
       "playerLabel": "Speler",
+      "levelLabel": "Level",
       "descriptionLabel": "Omschrijving",
       "actionsLabel": "Acties",
       "reactionsLabel": "Reacties",
@@ -1295,6 +1371,8 @@
       },
       "negative": "Sta HP en AC toe negatief te zijn",
       "bloodied": "Voeg Bloodied automatisch toe bij de helft van de HP of minder",
+      "autoRollInitiative": "Gooi automatisch initiatief voor monsters wanneer ze worden toegevoegd",
+      "skipDeadMonsters": "Sla monsters met 0 HP over bij de volgende beurt",
       "noActiveWidgets": "Geen actieve widgets. Gebruik het settings icoon om widgets in te schakelen."
     },
     "infoCard": {
@@ -1418,7 +1496,13 @@
       "sidebar": "Zijbalk tonen of verbergen",
       "overview": "Alle sneltoetsen tonen",
       "target": "Doelwit kiezen, vanaf het huidige wezen",
-      "clearTarget": "Huidig wezen weer als doelwit"
+      "clearTarget": "Huidig wezen weer als doelwit",
+      "undo": "De laatste wijziging ongedaan maken",
+      "redo": "De ongedaan gemaakte wijziging opnieuw doen"
+    },
+    "undo": {
+      "done": "Laatste wijziging ongedaan gemaakt",
+      "redone": "Wijziging opnieuw gedaan"
     }
   },
   "tour": {

@@ -42,7 +42,7 @@ describe('useLiveRowScroll', () => {
   it('scrolls the active row into view when it sits above the container', async () => {
     const row = createRow({ top: -50, bottom: -10 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', row.element)
 
     await setActive('row-1')
@@ -56,7 +56,7 @@ describe('useLiveRowScroll', () => {
   it('scrolls the active row into view when it sits below the container', async () => {
     const row = createRow({ top: 260, bottom: 300 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', row.element)
 
     await setActive('row-1')
@@ -67,7 +67,7 @@ describe('useLiveRowScroll', () => {
   it('leaves a row that is already in view alone', async () => {
     const row = createRow({ top: 10, bottom: 60 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', row.element)
 
     await setActive('row-1')
@@ -78,7 +78,7 @@ describe('useLiveRowScroll', () => {
   it('resolves a component ref to its root element', async () => {
     const row = createRow({ top: -50, bottom: -10 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', { $el: row.element })
 
     await setActive('row-1')
@@ -89,7 +89,7 @@ describe('useLiveRowScroll', () => {
   it('forgets a row once its ref is released', async () => {
     const row = createRow({ top: -50, bottom: -10 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', row.element)
     scroll.setRowRef('row-1', null)
 
@@ -111,7 +111,7 @@ describe('useLiveRowScroll', () => {
   it('does nothing when there is no longer an active row', async () => {
     const row = createRow({ top: -50, bottom: -10 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', row.element)
 
     await setActive('row-1')
@@ -125,7 +125,7 @@ describe('useLiveRowScroll', () => {
   it('does nothing when the active row was never registered', async () => {
     const row = createRow({ top: -50, bottom: -10 })
 
-    scroll.listRef.value = createContainer()
+    scroll.listRef.value = { viewport: createContainer() }
     scroll.setRowRef('row-1', row.element)
 
     await setActive('row-2')

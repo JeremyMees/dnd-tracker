@@ -8,7 +8,12 @@ import {
   mockSupabaseFrom,
   mountHook,
 } from '~~/test/nuxt/stubs/query'
-import { useCombatEvents, useCombatEventsClear } from '~/queries/combat-events'
+import {
+  optimisticCombatEvents,
+  useCombatEvents,
+  useCombatEventsClear,
+  useCombatEventsLog,
+} from '~/queries/combat-events'
 
 const event = { id: 1, encounterId: 7, type: 'damage' } as CombatEventRow
 
@@ -33,6 +38,69 @@ describe('combat-events queries', () => {
       expect(vm.data).toEqual([event])
       expect(chain.eq).toHaveBeenCalledWith('encounterId', 7)
       expect(chain.order).toHaveBeenCalledWith('id', { ascending: false })
+    })
+
+    it('only fetches events since the newest stored one on a refetch', async () => {
+      const first = {
+        ...event,
+        id: 1,
+        createdAt: '2026-10-22T10:00:30.000Z',
+      }
+      const second = {
+        ...event,
+        id: 2,
+        createdAt: '2026-10-22T10:00:40.000Z',
+      }
+      const initial = mockChain({ data: [first], error: null })
+      const incremental = mockChain({ data: [second, first], error: null })
+
+      mockSupabaseFrom({ combat_events: [initial, incremental] })
+
+      const { vm } = await mountHook(() => ({
+        ...useCombatEvents(7),
+        queryClient: useQueryClient(),
+      }))
+
+      await vi.waitFor(() => expect(vm.data).toEqual([first]))
+
+      expect(initial.gte).not.toHaveBeenCalled()
+
+      await vm.queryClient.invalidateQueries({
+        queryKey: ['useCombatEvents', 7],
+      })
+
+      await vi.waitFor(() => expect(vm.data).toEqual([second, first]))
+
+      expect(incremental.gte).toHaveBeenCalledWith(
+        'createdAt',
+        '2026-10-22T10:00:20.000Z',
+      )
+    })
+
+    it('fetches the whole log again once it was cleared', async () => {
+      const stored = {
+        ...event,
+        id: 3,
+        createdAt: '2026-10-22T10:00:30.000Z',
+      }
+      const chain = mockChain({ data: [stored], error: null })
+
+      mockSupabaseFrom({ combat_events: chain })
+
+      const { vm } = await mountHook(() => ({
+        ...useCombatEvents(7),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useCombatEvents', 7], [])
+
+      await vm.queryClient.invalidateQueries({
+        queryKey: ['useCombatEvents', 7],
+      })
+
+      await vi.waitFor(() => expect(vm.data).toEqual([stored]))
+
+      expect(chain.gte).not.toHaveBeenCalled()
     })
 
     it('fetches without being told to when enabled is left out', async () => {
@@ -143,6 +211,112 @@ describe('combat-events queries', () => {
         'pages.encounter.toasts.combatLogClearFailed',
         { description: 'general.error.reasons.forbidden' },
       )
+    })
+  })
+
+  describe('optimisticCombatEvents', () => {
+    it('turns drafts into rows, newest first, with negative ids', () => {
+      const rows = optimisticCombatEvents(
+        7,
+        2,
+        [
+          { type: 'hp', payload: { amount: 3 } },
+          { type: 'turn', rowId: 'row-2', payload: { rowName: 'Goblin' } },
+        ],
+        'row-1',
+      )
+
+      expect(rows.map(row => [row.type, row.rowId, row.round])).toEqual([
+        ['turn', 'row-2', 2],
+        ['hp', 'row-1', 2],
+      ])
+      expect(rows.every(row => row.id < 0)).toBe(true)
+    })
+
+    it('leaves the row empty when neither the draft nor the caller has one', () => {
+      const [row] = optimisticCombatEvents(7, 1, [
+        { type: 'roll', payload: { kind: 'dice' } },
+      ])
+
+      expect(row?.rowId).toBeNull()
+    })
+  })
+
+  describe('useCombatEventsLog', () => {
+    const events: CombatEventDraft[] = [
+      { type: 'row_added', rowId: 'row-3', payload: { rowName: 'Wolf' } },
+    ]
+
+    it('posts the events of the encounter', async () => {
+      const { vm } = await mountHook(() => useCombatEventsLog())
+
+      await vm.mutateAsync({ encounterId: 7, events })
+
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/events', {
+        method: 'POST',
+        body: { events },
+      })
+    })
+
+    it('shows the events in the cached log in the round of the sheet', async () => {
+      fetchMock.mockReturnValue(new Promise(() => {}))
+
+      const { vm } = await mountHook(() => ({
+        log: useCombatEventsLog(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        round: 4,
+      })
+      vm.queryClient.setQueryData(['useCombatEvents', 7], [event])
+
+      vm.log.mutate({ encounterId: 7, events })
+
+      await vi.waitFor(() =>
+        expect(
+          vm.queryClient.getQueryData<CombatEventRow[]>(['useCombatEvents', 7]),
+        ).toEqual([
+          expect.objectContaining({
+            type: 'row_added',
+            rowId: 'row-3',
+            round: 4,
+          }),
+          event,
+        ]),
+      )
+    })
+
+    it('does not create a log that was never loaded', async () => {
+      const { vm } = await mountHook(() => ({
+        log: useCombatEventsLog(),
+        queryClient: useQueryClient(),
+      }))
+
+      await vm.log.mutateAsync({ encounterId: 7, events })
+
+      expect(
+        vm.queryClient.getQueryData(['useCombatEvents', 7]),
+      ).toBeUndefined()
+    })
+
+    it.each([
+      ['succeeds', () => fetchMock.mockResolvedValue({ logged: 1 })],
+      ['fails', () => fetchMock.mockRejectedValue(new Error('boom'))],
+    ])('refetches the log when the post %s', async (_label, setup) => {
+      setup()
+
+      const { vm } = await mountHook(() => ({
+        log: useCombatEventsLog(),
+        queryClient: useQueryClient(),
+      }))
+      const invalidate = vi.spyOn(vm.queryClient, 'invalidateQueries')
+
+      await vm.log.mutateAsync({ encounterId: 7, events }).catch(() => {})
+
+      expect(invalidate).toHaveBeenCalledWith({
+        queryKey: ['useCombatEvents', 7],
+      })
     })
   })
 })

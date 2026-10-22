@@ -114,7 +114,7 @@ function buildSpeed(speeds: Partial<Record<keyof DndSpeed, unknown>>) {
 }
 
 function parseSpeedText(text: string): DndSpeed {
-  const walk = text.match(/^\s*(\d+)\s*ft/i)?.[1]
+  const walk = /^\s*(\d+)\s*ft/i.exec(text)?.[1]
   const speeds: Partial<Record<keyof DndSpeed, unknown>> = { walk }
 
   for (const match of text.matchAll(
@@ -130,7 +130,7 @@ function parseSpeedText(text: string): DndSpeed {
 
 function buildLanguages(languages: unknown[]): string[] | null {
   const result = languages
-    .flatMap(language => toTextOrUndefined(language)?.split(/,|;/) ?? [])
+    .flatMap(language => toTextOrUndefined(language)?.split(/[,;]/) ?? [])
     .map(language => stripFiveEToolsTags(language).trim().slice(0, 50))
     .filter(language => language && language !== '—' && language !== '-')
     .slice(0, 20)
@@ -200,6 +200,8 @@ function baseCreature(
     name: name.slice(0, 50),
     type,
     player: null,
+    level: null,
+    challengeRating: null,
     link: null,
     armorClass: null,
     armorDetail: null,
@@ -233,7 +235,7 @@ function spellcastingText(block: ImportedRecord): string {
     const each = key.endsWith('e') ? ' each' : ''
 
     lines.push(
-      `${parseInt(key)}/day${each}: ${flattenEntries(toListOrEmpty(list).join(', '))}`,
+      `${Number.parseInt(key, 10)}/day${each}: ${flattenEntries(toListOrEmpty(list).join(', '))}`,
     )
   }
 
@@ -241,10 +243,9 @@ function spellcastingText(block: ImportedRecord): string {
     const entry = toRecordOrUndefined(value) ?? {}
     const list = flattenEntries(toListOrEmpty(entry.spells).join(', '))
     const slots = toNumberOrUndefined(entry.slots)
+    const slotText = slots ? ` (${slots} slots)` : ''
     const label =
-      level === '0'
-        ? 'Cantrips (at will)'
-        : `Level ${level}${slots ? ` (${slots} slots)` : ''}`
+      level === '0' ? 'Cantrips (at will)' : `Level ${level}${slotText}`
 
     lines.push(`${label}: ${list}`)
   }
@@ -344,6 +345,7 @@ export function fromFiveETools(creature: ImportedRecord): HomebrewTransfer {
   result.hitDice = parseHitDiceText(hp?.formula) ?? null
   result.abilityScores = scores.abilityScores
   result.modifiers = scores.modifiers
+  result.challengeRating = toChallengeRating(challenge) ?? null
   result.proficiencyBonus = proficiency ?? null
   result.initiativeModifier = String(
     integerInRange(
@@ -415,7 +417,7 @@ export function fromImprovedInitiative(
   const player = toTextOrUndefined(statBlock.Player)
   const result = baseCreature(
     toTextOrUndefined(statBlock.Name) ?? '',
-    player === 'player' ? 'player' : player === 'npc' ? 'npc' : 'monster',
+    player === 'player' || player === 'npc' ? player : 'monster',
   )
   const ac = toRecordOrUndefined(statBlock.AC)
   const hp = toRecordOrUndefined(statBlock.HP)
@@ -471,11 +473,12 @@ export function fromImprovedInitiative(
   result.initiativeModifier = isDefined(integerInRange(initiative, -20, 20))
     ? String(integerInRange(initiative, -20, 20))
     : null
+  result.challengeRating = toChallengeRating(statBlock.Challenge) ?? null
   result.proficiencyBonus =
     proficiencyFromChallenge(toNumberOrUndefined(statBlock.Challenge)) ?? null
   result.passivePerception =
     integerInRange(
-      toNumberOrUndefined(senses.match(/passive perception (\d+)/i)?.[1]),
+      toNumberOrUndefined(/passive perception (\d+)/i.exec(senses)?.[1]),
       0,
       50,
     ) ?? null
@@ -519,6 +522,7 @@ export function fromKoboldFightClub(
   result.hitPoints =
     integerInRange(toNumberOrUndefined(creature.hp), 1, 1000) ?? null
   result.initiativeModifier = isDefined(initiative) ? String(initiative) : null
+  result.challengeRating = toChallengeRating(creature.cr) ?? null
   result.proficiencyBonus =
     proficiencyFromChallenge(toNumberOrUndefined(creature.cr)) ?? null
 
@@ -528,9 +532,9 @@ export function fromKoboldFightClub(
 function signedPairs(text: string | undefined): [unknown, unknown][] {
   return (text ?? '')
     .split(',')
-    .map(part => part.trim().match(/^(.+?)\s*([+-]\d+)/))
+    .map(part => /^(.+?)([+-]\d+)/.exec(part.trim()))
     .filter(isDefined)
-    .map(match => [match[1], match[2]])
+    .map(match => [match[1]!.trim(), match[2]])
 }
 
 export function fromStatblockMarkdown(
@@ -569,7 +573,7 @@ export function fromStatblockMarkdown(
     ) ?? null
   result.armorDetail =
     property('armor class')
-      ?.match(/\(([^)]+)\)/)?.[1]
+      ?.match(/\(([^()]+)\)/)?.[1]
       ?.slice(0, 100) ?? null
   result.hitPoints =
     integerInRange(
@@ -584,6 +588,7 @@ export function fromStatblockMarkdown(
   result.initiativeModifier = String(
     initiative ?? (hasScores ? scores.modifiers.dexterity : 0),
   )
+  result.challengeRating = toChallengeRating(challenge) ?? null
   result.proficiencyBonus = proficiency ?? null
   result.savingThrows = hasScores
     ? buildSavingThrows(
@@ -594,7 +599,7 @@ export function fromStatblockMarkdown(
   result.skillBonuses = buildSkills(signedPairs(property('skills')))
   result.passivePerception =
     integerInRange(
-      toNumberOrUndefined(senses.match(/passive perception (\d+)/i)?.[1]),
+      toNumberOrUndefined(/passive perception (\d+)/i.exec(senses)?.[1]),
       0,
       50,
     ) ?? null

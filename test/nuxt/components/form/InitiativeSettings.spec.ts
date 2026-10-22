@@ -33,6 +33,22 @@ describe('InitiativeSettings', () => {
     expect(component.get('button[type="submit"]').text()).toBe('actions.save')
   })
 
+  it('Should scroll the fields and keep the save button below them', async () => {
+    const component = await mountSettings().mount()
+
+    const body = component.get('[test-id="dialog-body"]')
+
+    expect(body.text()).toContain('components.initiativeSettings.spacing')
+    expect(body.find('button[type="submit"]').exists()).toBe(false)
+    expect(
+      body.element.nextElementSibling?.contains(
+        component.get('button[type="submit"]').element,
+      ),
+    ).toBe(true)
+
+    component.unmount()
+  })
+
   it('Should seed the form from the settings of the sheet', async () => {
     const component = await mountSettings().mount()
 
@@ -57,6 +73,8 @@ describe('InitiativeSettings', () => {
         pet: 'cat',
         negative: false,
         bloodied: true,
+        autoRollInitiative: true,
+        skipDeadMonsters: true,
         modified: true,
       },
     })

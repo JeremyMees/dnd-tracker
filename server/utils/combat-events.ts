@@ -2,7 +2,7 @@ import type { serverSupabaseServiceRole } from '#supabase/server'
 
 interface LogCombatEventsParams {
   encounterId: number
-  rowId: string
+  rowId?: string
   round: number
   actorId?: string | null
   actorName?: string | null
@@ -18,7 +18,7 @@ export async function logCombatEvents(
   const { error } = await supabase.from('combat_events').insert(
     params.events.map(event => ({
       encounterId: params.encounterId,
-      rowId: params.rowId,
+      rowId: event.rowId ?? params.rowId ?? null,
       round: params.round,
       type: event.type,
       payload: event.payload,
@@ -58,10 +58,18 @@ export async function broadcastSheetAction(
 export async function broadcastSheetSync(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,
-  sheet: SheetSyncEvent['sheet'],
   reminders?: TurnReminders,
 ): Promise<void> {
   const version = await incrementSheetVersion(supabase, encounterId)
+
+  const { data: sheet, error } = await supabase
+    .from('initiative_sheets')
+    .select('title, round, activeIndex, rows, settings, info, infoCards')
+    .eq('id', encounterId)
+    .single()
+
+  if (error) throw createError(postgresErrorToH3Error(error))
+
   const channel = supabase.channel(`sheet:${encounterId}`)
 
   await channel.httpSend('sync', {
@@ -69,6 +77,24 @@ export async function broadcastSheetSync(
     sheet,
     ...(reminders && { reminders }),
   })
+}
+
+export async function broadcastSheetEvents(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounterId: number,
+): Promise<void> {
+  const channel = supabase.channel(`sheet:${encounterId}`)
+
+  await channel.httpSend('events', {})
+}
+
+export async function broadcastSheetEventsCleared(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounterId: number,
+): Promise<void> {
+  const channel = supabase.channel(`sheet:${encounterId}`)
+
+  await channel.httpSend('events', { cleared: true })
 }
 
 export async function broadcastSheetDeleted(

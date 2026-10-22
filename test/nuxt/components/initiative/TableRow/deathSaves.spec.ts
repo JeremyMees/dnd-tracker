@@ -9,10 +9,6 @@ interface Props {
   item: InitiativeSheetRow
 }
 
-interface DeathSavesTestMethods {
-  updateDeathSave: (saveIndex: number, save: boolean) => void
-}
-
 const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
@@ -69,8 +65,8 @@ describe('Initiative table row death saves', async () => {
   it('Should render 3 save and 3 fail buttons', async () => {
     const component = await mountSuspended(DeathSaves, { props, provide })
 
-    expect(component.findAll('[test-id="save"]').length).toBe(3)
-    expect(component.findAll('[test-id="fail"]').length).toBe(3)
+    expect(component.findAll('[test-id="save"] [test-id="pip"]').length).toBe(3)
+    expect(component.findAll('[test-id="fail"] [test-id="pip"]').length).toBe(3)
   })
 
   it('Should show success styling when all saves are successful', async () => {
@@ -128,7 +124,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[test-id="save"]')
+    const buttons = component.findAll('[test-id="save"] [test-id="pip"]')
     await buttons[0]!.trigger('click')
 
     expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
@@ -154,7 +150,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[test-id="fail"]')
+    const buttons = component.findAll('[test-id="fail"] [test-id="pip"]')
     await buttons[0]!.trigger('click')
 
     expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
@@ -165,7 +161,7 @@ describe('Initiative table row death saves', async () => {
     })
   })
 
-  it('Should not call patchRow when the item has no death saves', async () => {
+  it('Should start from empty death saves when the item has none', async () => {
     const component = await mountSuspended(DeathSaves, {
       props: {
         item: {
@@ -177,10 +173,16 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const vm = component.vm as unknown as DeathSavesTestMethods
-    vm.updateDeathSave(0, true)
+    await component
+      .findAll('[test-id="fail"] [test-id="pip"]')[1]!
+      .trigger('click')
 
-    expect(mockPatchRow).not.toHaveBeenCalled()
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      deathSaves: {
+        save: [false, false, false],
+        fail: [true, true, false],
+      },
+    })
   })
 
   it('Should show stable toast when all saves are successful', async () => {
@@ -198,7 +200,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[test-id="save"]')
+    const buttons = component.findAll('[test-id="save"] [test-id="pip"]')
     await buttons[2]!.trigger('click')
 
     expect(toast.success).toHaveBeenCalledWith(
@@ -226,7 +228,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[test-id="fail"]')
+    const buttons = component.findAll('[test-id="fail"] [test-id="pip"]')
     await buttons[2]!.trigger('click')
 
     expect(toast.error).toHaveBeenCalledWith(
@@ -254,7 +256,7 @@ describe('Initiative table row death saves', async () => {
       provide,
     })
 
-    const buttons = component.findAll('[test-id="save"]')
+    const buttons = component.findAll('[test-id="save"] [test-id="pip"]')
     await buttons[1]!.trigger('click')
 
     expectNoToast()

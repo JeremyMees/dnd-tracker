@@ -7,10 +7,11 @@ defineProps<{
 
 <template>
   <span class="flex items-center gap-1">
-    <Icon
-      :name="active ? 'tabler:circle-filled' : 'tabler:circle-dotted'"
-      class="size-4 min-w-4"
-      aria-hidden="true"
+    <UsePips
+      :label="$t('general.concentration')"
+      :max="1"
+      :used="active ? 1 : 0"
+      disabled
     />
     <span v-if="label" class="text-xs">{{ $t('general.concentration') }}</span>
   </span>

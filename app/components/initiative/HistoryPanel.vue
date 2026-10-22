@@ -52,6 +52,37 @@ function describeEvent(event: CombatEventRow): string {
       return t('components.combatLog.stabilized', { rowName })
     case 'died':
       return t('components.combatLog.died', { rowName })
+    case 'turn':
+      return t('components.combatLog.turn', { rowName })
+    case 'row_added':
+      return payload.initiative === undefined
+        ? t('components.combatLog.rowAdded', { rowName })
+        : t('components.combatLog.rowAddedInitiative', {
+            rowName,
+            initiative: payload.initiative,
+          })
+    case 'row_removed':
+      return t('components.combatLog.rowRemoved', { rowName })
+    case 'roll':
+      return t(
+        `components.combatLog.roll.${payload.kind === 'dice' ? 'dice' : payload.result}`,
+        {
+          rowName,
+          total: payload.total,
+          damage: payload.damage,
+          dice: payload.dice,
+        },
+      )
+    case 'readied':
+      return t('components.combatLog.readied', { rowName })
+    case 'ready_used':
+      return t('components.combatLog.readyUsed', { rowName })
+    case 'ready_expired':
+      return t('components.combatLog.readyExpired', { rowName })
+    case 'hidden':
+      return t('components.combatLog.hidden', { rowName })
+    case 'revealed':
+      return t('components.combatLog.revealed', { rowName })
     default:
       return rowName
   }
@@ -79,6 +110,23 @@ function eventIcon(type: CombatEventType): string {
       return 'tabler:heart-bolt'
     case 'died':
       return 'tabler:grave'
+    case 'turn':
+      return 'tabler:arrow-right'
+    case 'row_added':
+      return 'tabler:user-plus'
+    case 'row_removed':
+      return 'tabler:user-minus'
+    case 'roll':
+      return 'tabler:hexagon'
+    case 'readied':
+    case 'ready_used':
+      return 'tabler:hand-stop'
+    case 'ready_expired':
+      return 'tabler:hourglass-off'
+    case 'hidden':
+      return 'tabler:eye-off'
+    case 'revealed':
+      return 'tabler:eye'
     default:
       return 'tabler:point'
   }
@@ -86,9 +134,11 @@ function eventIcon(type: CombatEventType): string {
 </script>
 
 <template>
-  <aside
+  <UiScrollArea
+    as="aside"
     test-id="history-panel"
-    class="w-full lg:w-[320px] shrink-0 overflow-y-auto p-6 border-t lg:border-t-0 lg:border-l border-border bg-background lg:sticky lg:top-4 lg:h-[calc(100vh-5rem)]"
+    viewport-class="p-6"
+    class="w-full lg:w-[320px] shrink-0 border-t lg:border-t-0 lg:border-l border-border bg-background lg:sticky lg:top-4 lg:h-[calc(100vh-5rem)]"
   >
     <p
       class="text-xs font-bold uppercase tracking-wide text-muted-foreground mb-6"
@@ -133,5 +183,5 @@ function eventIcon(type: CombatEventType): string {
         </div>
       </li>
     </ul>
-  </aside>
+  </UiScrollArea>
 </template>

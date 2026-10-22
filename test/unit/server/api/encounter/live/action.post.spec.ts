@@ -402,7 +402,30 @@ describe('POST /api/encounter/live/action', () => {
             },
             error: null,
           }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
         ],
+        combat_events: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: 9, error: null }) },
     )
@@ -465,6 +488,28 @@ describe('POST /api/encounter/live/action', () => {
             },
             error: null,
           }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 1,
+              activeIndex: 1,
+              rows: [row, otherRow],
+              settings: {},
+            },
+            error: null,
+          }),
         ],
         combat_events: combatEvents,
       },
@@ -476,6 +521,11 @@ describe('POST /api/encounter/live/action', () => {
     )
 
     expect(combatEvents.insert).toHaveBeenCalledWith([
+      expect.objectContaining({
+        rowId: 'row-2',
+        type: 'turn',
+        actorName: 'Elara',
+      }),
       expect.objectContaining({
         rowId: 'row-1',
         type: 'condition_expired',
@@ -490,6 +540,7 @@ describe('POST /api/encounter/live/action', () => {
         reminders: {
           expired: [{ rowId: 'row-1', rowName: row.name, condition: prone }],
           saves: [],
+          recharges: [],
         },
       }),
     )
@@ -523,7 +574,30 @@ describe('POST /api/encounter/live/action', () => {
             },
             error: null,
           }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 2,
+              activeIndex: 0,
+              rows: [otherRow, row],
+              settings: {},
+            },
+            error: null,
+          }),
+          mockChain({
+            data: {
+              id: 7,
+              title: 'Ambush',
+              round: 2,
+              activeIndex: 0,
+              rows: [otherRow, row],
+              settings: {},
+            },
+            error: null,
+          }),
         ],
+        combat_events: mockChain({ data: null, error: null }),
       },
       { rpc: mockChain({ data: 1, error: null }) },
     )
@@ -588,7 +662,10 @@ describe('POST /api/encounter/live/action', () => {
   it('throws a 404 when the live session no longer exists', async () => {
     const token = await seatToken()
 
-    mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
+    mockFrom({
+      live_sessions: mockChain({ data: null, error: null }),
+      initiative_sheets: mockChain({ data: null, error: null }),
+    })
 
     await expect(
       handler(
@@ -607,6 +684,7 @@ describe('POST /api/encounter/live/action', () => {
     const token = await seatToken()
 
     mockFrom({
+      initiative_sheets: mockChain({ data: null, error: null }),
       live_sessions: mockChain({
         data: { ...session, endedAt: new Date().toISOString() },
         error: null,
@@ -630,6 +708,7 @@ describe('POST /api/encounter/live/action', () => {
     const token = await seatToken()
 
     mockFrom({
+      initiative_sheets: mockChain({ data: null, error: null }),
       live_sessions: mockChain({
         data: {
           ...session,
@@ -655,7 +734,10 @@ describe('POST /api/encounter/live/action', () => {
   it('throws a 403 when the seat was kicked and no longer exists', async () => {
     const token = await seatToken({ seat: 'seat-missing' })
 
-    mockFrom({ live_sessions: mockChain({ data: session, error: null }) })
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({ data: null, error: null }),
+    })
 
     await expect(
       handler(
@@ -673,7 +755,10 @@ describe('POST /api/encounter/live/action', () => {
   it('throws a 403 when the seat has no claimed row', async () => {
     const token = await seatToken({ seat: 'seat-2', spectator: false })
 
-    mockFrom({ live_sessions: mockChain({ data: session, error: null }) })
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({ data: null, error: null }),
+    })
 
     await expect(
       handler(
@@ -712,6 +797,243 @@ describe('POST /api/encounter/live/action', () => {
     ).rejects.toMatchObject({
       statusCode: 403,
       statusMessage: 'Not your turn',
+    })
+  })
+
+  it("marks the reaction as used outside the seat's turn", async () => {
+    const token = await seatToken()
+    const ownRow = { ...row, resources: { legendaryResistances: 1 } }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 1, rows: [ownRow, { ...row, id: 'row-2' }] },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({
+            data: {
+              ...ownRow,
+              resources: { legendaryResistances: 1, reaction: true },
+            },
+            error: null,
+          }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'reaction', value: true },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { resources: { legendaryResistances: 1, reaction: true } },
+    })
+
+    const channel = supabase.channel('live:session-uuid')
+
+    expect(channel.httpSend).toHaveBeenCalledWith('action', {
+      version: 4,
+      row: 'row-1',
+      patch: { reaction: true },
+    })
+  })
+
+  it('drops the reaction from the resources when it is cleared', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: {
+            activeIndex: 0,
+            rows: [{ ...row, resources: { reaction: true } }],
+          },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, resources: {} }, error: null }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'reaction', value: false },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { resources: {} },
+    })
+  })
+
+  it('readies an action on the turn of the seat and logs it', async () => {
+    const token = await seatToken()
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 0, rows: [row] },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({ data: { ...row, readied: true }, error: null }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({ seatToken: token, action: { type: 'ready', value: true } }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: { readied: true },
+    })
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      expect.objectContaining({ type: 'readied', actorName: 'Elara' }),
+    ])
+    expect(supabase.channel('live:session-uuid').httpSend).toHaveBeenCalledWith(
+      'action',
+      {
+        version: 4,
+        row: 'row-1',
+        patch: { readied: true },
+      },
+    )
+  })
+
+  it('refuses to ready an action outside the turn of the seat', async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: { activeIndex: 1, rows: [row, { ...row, id: 'row-2' }] },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        actionEvent({
+          seatToken: token,
+          action: { type: 'ready', value: true },
+        }),
+      ),
+    ).rejects.toMatchObject({ statusCode: 403, statusMessage: 'Not your turn' })
+  })
+
+  it("uses a readied action outside the seat's turn and spends the reaction", async () => {
+    const token = await seatToken()
+    const ownRow = {
+      ...row,
+      readied: true,
+      resources: { legendaryResistances: 1 },
+    }
+
+    mockFrom(
+      {
+        live_sessions: mockChain({ data: session, error: null }),
+        initiative_sheets: mockChain({
+          data: { activeIndex: 1, rows: [ownRow, { ...row, id: 'row-2' }] },
+          error: null,
+        }),
+        combat_events: mockChain({ data: null, error: null }),
+      },
+      {
+        rpc: [
+          mockChain({
+            data: {
+              ...ownRow,
+              readied: false,
+              resources: { legendaryResistances: 1, reaction: true },
+            },
+            error: null,
+          }),
+          mockChain({ data: 4, error: null }),
+          mockChain({ data: 7, error: null }),
+        ],
+      },
+    )
+
+    await handler(
+      actionEvent({
+        seatToken: token,
+        action: { type: 'ready', value: false },
+      }),
+    )
+
+    const supabase = serverSupabaseServiceRole({} as never)
+
+    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
+      p_encounter: 7,
+      p_row_id: 'row-1',
+      p_patch: {
+        readied: false,
+        resources: { legendaryResistances: 1, reaction: true },
+      },
+    })
+    expect(supabase.from('combat_events').insert).toHaveBeenCalledWith([
+      expect.objectContaining({ type: 'ready_used' }),
+    ])
+  })
+
+  it("throws a 404 when the seat's row was removed from the encounter", async () => {
+    const token = await seatToken()
+
+    mockFrom({
+      live_sessions: mockChain({ data: session, error: null }),
+      initiative_sheets: mockChain({
+        data: { activeIndex: 0, rows: [{ ...row, id: 'row-2' }] },
+        error: null,
+      }),
+    })
+
+    await expect(
+      handler(
+        actionEvent({
+          seatToken: token,
+          action: { type: 'reaction', value: true },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      statusCode: 404,
+      statusMessage: 'Row not found',
     })
   })
 
@@ -802,28 +1124,40 @@ describe('POST /api/encounter/live/action', () => {
     })
   })
 
-  it('throws a 429 after too many action attempts from the same IP', async () => {
+  it('throws a 429 after too many actions from the same seat', async () => {
+    const token = await seatToken({ seat: 'seat-2', spectator: true })
+    const action = { type: 'concentration', value: true }
+
     for (let i = 0; i < 60; i++) {
       await expect(
-        handler(
-          actionEvent({
-            seatToken: 'not-a-jwt',
-            action: { type: 'concentration', value: true },
-          }),
-        ),
-      ).rejects.toMatchObject({ statusCode: 401 })
+        handler(actionEvent({ seatToken: token, action })),
+      ).rejects.toMatchObject({ statusCode: 403 })
     }
 
     await expect(
-      handler(
-        actionEvent({
-          seatToken: 'not-a-jwt',
-          action: { type: 'concentration', value: true },
-        }),
-      ),
+      handler(actionEvent({ seatToken: token, action })),
     ).rejects.toMatchObject({
       statusCode: 429,
       statusMessage: 'Too many requests',
+    })
+  })
+
+  it('rate-limits each seat separately on a shared IP', async () => {
+    const spectator = await seatToken({ seat: 'seat-2', spectator: true })
+    const other = await seatToken({ seat: 'seat-3', spectator: true })
+    const action = { type: 'concentration', value: true }
+
+    for (let i = 0; i < 60; i++) {
+      await expect(
+        handler(actionEvent({ seatToken: spectator, action })),
+      ).rejects.toMatchObject({ statusCode: 403 })
+    }
+
+    await expect(
+      handler(actionEvent({ seatToken: other, action })),
+    ).rejects.toMatchObject({
+      statusCode: 403,
+      statusMessage: 'Spectators cannot act',
     })
   })
 })

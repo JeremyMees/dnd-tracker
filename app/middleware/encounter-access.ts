@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async to => {
 
   const { params } = to
 
-  if (!('id' in params) || !('title' in params) || isNaN(+params.id)) {
+  if (!('id' in params) || !('title' in params) || Number.isNaN(+params.id)) {
     return navigateTo(localePath('index'))
   }
 
@@ -31,8 +31,7 @@ export default defineNuxtRouteMiddleware(async to => {
 
     // If no campaign is associated or user is not a team member, deny access
     if (
-      !data.campaign ||
-      !data.campaign.team.some(member => member.user.id === user.value?.id)
+      !data.campaign?.team.some(member => member.user.id === user.value?.id)
     ) {
       return navigateTo(localePath('no-access'))
     }

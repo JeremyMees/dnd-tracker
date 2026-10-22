@@ -13,6 +13,7 @@ import {
   useInitiativeSheetDetail,
   useInitiativeSheetDetailUpdate,
   useInitiativeSheetPatch,
+  useInitiativeSheetPatchRows,
   useInitiativeSheetSync,
   useInitiativeSheetTurn,
 } from '~/queries/initiative-sheets'
@@ -73,11 +74,114 @@ describe('initiative-sheets queries', () => {
 
       const { vm } = await mountHook(() => useInitiativeSheetSync())
 
-      await vm.mutateAsync({ id: 7 })
+      await vm.mutateAsync({ id: 7, live: true })
 
       expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
         method: 'POST',
+        body: { live: true },
       })
+    })
+  })
+
+  describe('useInitiativeSheetPatchRows', () => {
+    const orc: InitiativeSheetRow = {
+      ...row,
+      id: 'row-2',
+      index: 1,
+      name: 'Orc',
+      type: 'monster',
+      hitPoints: 15,
+      maxHitPoints: 15,
+    }
+    const patches = [
+      { rowId: 'row-1', patch: { hitPoints: 6 } },
+      { rowId: 'row-2', patch: { hitPoints: 9 } },
+    ]
+
+    async function mountWithSheet() {
+      const { vm } = await mountHook(() => ({
+        ...useInitiativeSheetPatchRows(),
+        queryClient: useQueryClient(),
+      }))
+
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
+        id: 7,
+        title: 'Ambush',
+        round: 2,
+        rows: [row, orc],
+      })
+
+      return vm
+    }
+
+    function cachedRows(vm: {
+      queryClient: ReturnType<typeof useQueryClient>
+    }) {
+      return vm.queryClient.getQueryData<InitiativeSheet>([
+        'useInitiativeSheetDetail',
+        7,
+      ])?.rows
+    }
+
+    it('patches every row in one request and updates the cache optimistically', async () => {
+      fetchMock.mockResolvedValue({
+        rows: [
+          { ...row, hitPoints: 6 },
+          { ...orc, hitPoints: 9 },
+        ],
+      })
+
+      const vm = await mountWithSheet()
+      const promise = vm.mutateAsync({ id: 7, patches })
+
+      await vi.waitFor(() =>
+        expect(cachedRows(vm)?.map(item => item.hitPoints)).toEqual([6, 9]),
+      )
+
+      await promise
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/patch-rows', {
+        method: 'POST',
+        body: { patches },
+      })
+    })
+
+    it('prepends one optimistic combat event per patched row with unique ids', async () => {
+      fetchMock.mockResolvedValue({ rows: [] })
+
+      const vm = await mountWithSheet()
+
+      await vm.mutateAsync({ id: 7, patches })
+
+      const events = vm.queryClient.getQueryData<CombatEventRow[]>([
+        'useCombatEvents',
+        7,
+      ])
+
+      expect(events?.map(event => event.rowId).sort()).toEqual([
+        'row-1',
+        'row-2',
+      ])
+      expect(new Set(events?.map(event => event.id)).size).toBe(2)
+      expect(events?.every(event => event.round === 2)).toBe(true)
+    })
+
+    it('rolls back every row and toasts when the request fails', async () => {
+      fetchMock.mockRejectedValue(new Error('boom'))
+
+      const vm = await mountWithSheet()
+
+      vm.queryClient.setQueryData(['useCombatEvents', 7], [])
+
+      await expect(vm.mutateAsync({ id: 7, patches })).rejects.toThrow('boom')
+
+      expect(cachedRows(vm)?.map(item => item.hitPoints)).toEqual([10, 15])
+      expect(vm.queryClient.getQueryData(['useCombatEvents', 7])).toEqual([])
+      expect(toast.error).toHaveBeenCalledWith(
+        'pages.encounter.toasts.patchFailed.generic',
+        expect.any(Object),
+      )
     })
   })
 
@@ -475,6 +579,7 @@ describe('initiative-sheets queries', () => {
         },
         expired,
         saves: [],
+        recharges: [],
       }
     }
 
@@ -522,10 +627,8 @@ describe('initiative-sheets queries', () => {
       })
     })
 
-    it('refreshes the combat log when a condition expired', async () => {
-      fetchMock.mockResolvedValue(
-        turnResult([{ rowId: 'row-1', rowName: 'Elara', condition: prone }]),
-      )
+    it('refreshes the combat log after the turn', async () => {
+      fetchMock.mockResolvedValue(turnResult())
 
       const { vm } = await mountHook(() => ({
         ...useInitiativeSheetTurn(),
@@ -538,20 +641,6 @@ describe('initiative-sheets queries', () => {
       expect(invalidate).toHaveBeenCalledWith({
         queryKey: ['useCombatEvents', 7],
       })
-    })
-
-    it('leaves the combat log alone when nothing expired', async () => {
-      fetchMock.mockResolvedValue(turnResult())
-
-      const { vm } = await mountHook(() => ({
-        ...useInitiativeSheetTurn(),
-        queryClient: useQueryClient(),
-      }))
-      const invalidate = vi.spyOn(vm.queryClient, 'invalidateQueries')
-
-      await vm.mutateAsync({ id: 7 })
-
-      expect(invalidate).not.toHaveBeenCalled()
     })
 
     it('rolls back and explains a failed turn', async () => {
@@ -627,7 +716,7 @@ describe('initiative-sheets queries', () => {
       ])
     })
 
-    it('gives every condition a description before updating', async () => {
+    it('stores conditions with an empty description before updating', async () => {
       const from = mockSupabaseFrom({
         initiative_sheets: mockChain({ data: null, error: null }),
       })
@@ -654,7 +743,7 @@ describe('initiative-sheets queries', () => {
       const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
 
       expect(updated.rows[0].conditions).toEqual([
-        { id: 'prone', name: 'Prone', desc: 'knocked down' },
+        { id: 'prone', name: 'Prone', desc: '' },
         { id: 'blinded', name: 'Blinded', desc: '' },
       ])
     })
@@ -698,11 +787,11 @@ describe('initiative-sheets queries', () => {
       const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
 
       expect(updated.rows[0].conditions).toStrictEqual([
-        { id: 'prone', name: 'Prone', desc: 'knocked down' },
+        { id: 'prone', name: 'Prone', desc: '' },
         {
           id: 'exhaustion',
           name: 'Exhaustion',
-          desc: 'tired',
+          desc: '',
           level: 2,
           hasLevels: true,
         },
@@ -741,6 +830,7 @@ describe('initiative-sheets queries', () => {
       await vi.waitFor(() =>
         expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
           method: 'POST',
+          body: { live: false },
         }),
       )
     })
@@ -768,6 +858,31 @@ describe('initiative-sheets queries', () => {
       await vi.waitFor(() =>
         expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
           method: 'POST',
+          body: { live: false },
+        }),
+      )
+    })
+
+    it.each([
+      [{ rows: [] }],
+      [{ round: 2 }],
+      [{ activeIndex: 1 }],
+      [{ settings: { spacing: 'normal' as const, modified: false } }],
+    ])('asks the sync to include the live session for %o', async data => {
+      mockSupabaseFrom({
+        initiative_sheets: mockChain({ data: null, error: null }),
+      })
+
+      fetchMock.mockResolvedValue(undefined)
+
+      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+
+      await vm.mutateAsync({ id: 7, data })
+
+      await vi.waitFor(() =>
+        expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
+          method: 'POST',
+          body: { live: true },
         }),
       )
     })

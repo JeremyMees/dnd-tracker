@@ -14,6 +14,9 @@ export interface PlayerRow {
   maxHitPoints?: number
   tempHitPoints?: number
   healthBand?: DndHealthBand
+  reaction?: boolean
+  readied?: boolean
+  hidden?: boolean
 }
 
 export interface PlayerSheet {
@@ -38,5 +41,6 @@ export interface LiveStateResponse {
     expiresAt: string
     version: number
     kicked: boolean
+    row?: string
   }
 }

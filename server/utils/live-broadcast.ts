@@ -32,6 +32,22 @@ export async function activeLiveSession(
   return session?.uuid
 }
 
+export async function isLiveRowClaimed(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounter: number,
+  row: string,
+): Promise<boolean> {
+  const { data: session } = await supabase
+    .from('live_sessions')
+    .select('seats')
+    .eq('encounter', encounter)
+    .is('endedAt', null)
+    .gt('expiresAt', new Date().toISOString())
+    .maybeSingle()
+
+  return !!session?.seats.some(seat => seat.row === row)
+}
+
 export async function broadcastLiveAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
@@ -46,12 +62,32 @@ export async function broadcastLiveAction(
 export async function broadcastLiveState(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
-  sheet: LiveSyncEvent['sheet'],
+  encounterId: number,
 ): Promise<void> {
   const version = await incrementLiveVersion(supabase, session)
+
+  const { data: sheet, error } = await supabase
+    .from('initiative_sheets')
+    .select('id, title, round, activeIndex, rows, settings')
+    .eq('id', encounterId)
+    .single()
+
+  if (error) throw createError(postgresErrorToH3Error(error))
+
   const channel = supabase.channel(`live:${session}`)
 
-  await channel.httpSend('sync', { version, sheet })
+  await channel.httpSend('sync', { version, sheet: toPlayerSheet(sheet) })
+}
+
+export async function broadcastActiveLiveState(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounterId: number,
+  session?: string,
+): Promise<void> {
+  const liveSession =
+    session ?? (await activeLiveSession(supabase, encounterId))
+
+  if (liveSession) await broadcastLiveState(supabase, liveSession, encounterId)
 }
 
 export function sanitizeBroadcastPatch(
@@ -59,6 +95,15 @@ export function sanitizeBroadcastPatch(
   actionType: string,
   patch: Partial<InitiativeSheetRow>,
 ): Partial<PlayerRow> {
+  if (actionType === 'reaction') return { reaction: patch.resources?.reaction }
+
+  if (actionType === 'ready') {
+    return {
+      readied: patch.readied,
+      ...(patch.resources && { reaction: patch.resources.reaction }),
+    }
+  }
+
   if (row.type !== 'player') return patch
 
   const conditions = patch.conditions && withoutBloodied(patch.conditions)
@@ -107,6 +152,8 @@ export async function broadcastLiveSeats(
   await channel.httpSend('seats', update)
 }
 
+type LiveActionSettings = Pick<InitiativeSettings, 'negative' | 'bloodied'>
+
 export const liveActionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('hp'),
@@ -121,34 +168,24 @@ export const liveActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('deathSaves'), value: deathSavesSchema }),
   z.object({ type: z.literal('concentration'), value: z.boolean() }),
   z.object({ type: z.literal('conditions'), value: z.array(conditionSchema) }),
+  z.object({ type: z.literal('reaction'), value: z.boolean() }),
+  z.object({ type: z.literal('ready'), value: z.boolean() }),
   z.object({ type: z.literal('endTurn') }),
 ])
 
 export async function buildHpPatch(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounter: number,
-  rowId: string,
+  row: InitiativeSheetRow,
+  settings: LiveActionSettings | undefined,
   action: Extract<z.infer<typeof liveActionSchema>, { type: 'hp' }>,
 ): Promise<Partial<InitiativeSheetRow>> {
-  const { data: sheet } = await supabase
-    .from('initiative_sheets')
-    .select('rows, settings')
-    .eq('id', encounter)
-    .single()
-
-  const row = sheet?.rows.find(r => r.id === rowId)
-
-  if (!row) {
-    throw createError({ statusCode: 404, statusMessage: 'Row not found' })
-  }
-
   const { row: updated } = handleHpChanges(
     action.amount,
     action.hpType,
     row,
-    sheet?.settings.negative ?? false,
+    settings?.negative ?? false,
   )
-  const bloodied = isBloodiedEnabled(sheet?.settings)
+  const bloodied = isBloodiedEnabled(settings)
     ? await srdCondition(supabase, bloodiedConditionId)
     : undefined
 
@@ -161,33 +198,45 @@ export async function buildHpPatch(
   }
 }
 
-export async function buildAcPatch(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounter: number,
-  rowId: string,
+export function buildAcPatch(
+  row: InitiativeSheetRow,
+  settings: LiveActionSettings | undefined,
   action: Extract<z.infer<typeof liveActionSchema>, { type: 'ac' }>,
-): Promise<Partial<InitiativeSheetRow>> {
-  const { data: sheet } = await supabase
-    .from('initiative_sheets')
-    .select('rows, settings')
-    .eq('id', encounter)
-    .single()
-
-  const row = sheet?.rows.find(r => r.id === rowId)
-
-  if (!row) {
-    throw createError({ statusCode: 404, statusMessage: 'Row not found' })
-  }
-
+): Partial<InitiativeSheetRow> {
   const updated = handleAcChanges(
     action.amount,
     action.acType,
     row,
-    sheet?.settings?.negative ?? false,
+    settings?.negative ?? false,
   )
 
   return {
     armorClass: updated.armorClass,
     tempArmorClass: updated.tempArmorClass,
   }
+}
+
+export async function buildLiveActionPatch(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  row: InitiativeSheetRow,
+  settings: LiveActionSettings | undefined,
+  action: Exclude<z.infer<typeof liveActionSchema>, { type: 'endTurn' }>,
+): Promise<Partial<InitiativeSheetRow>> {
+  if (action.type === 'hp') return buildHpPatch(supabase, row, settings, action)
+
+  if (action.type === 'ac') return buildAcPatch(row, settings, action)
+
+  if (action.type === 'reaction') {
+    return {
+      resources: { ...row.resources, reaction: action.value || undefined },
+    }
+  }
+
+  if (action.type === 'ready') {
+    return action.value
+      ? { readied: true }
+      : { readied: false, resources: { ...row.resources, reaction: true } }
+  }
+
+  return { [action.type]: action.value }
 }

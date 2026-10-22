@@ -7,6 +7,7 @@ export type FailureReason =
   | 'limitReached'
   | 'homebrewLimit'
   | 'noteLimit'
+  | 'rowClaimed'
   | 'rejected'
 
 export type AuthFailure =

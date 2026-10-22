@@ -1,7 +1,7 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Table from '~/components/initiative/Table.vue'
 import { useRegisteredCommands } from '~/composables/useCommands'
 import { useRowShortcut } from '~/composables/useRowShortcut'
@@ -19,7 +19,7 @@ interface Props {
   encounterId?: number
 }
 
-const mockUpdate = vi.fn()
+const mockUpdate = vi.fn().mockResolvedValue(undefined)
 const mockNextTurn = vi.fn().mockResolvedValue(undefined)
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
@@ -176,7 +176,11 @@ describe('Initiative table', () => {
       rowName: sheet.rows[0]!.name,
       condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
     }
-    mockNextTurn.mockResolvedValueOnce({ expired: [expired], saves: [] })
+    mockNextTurn.mockResolvedValueOnce({
+      expired: [expired],
+      saves: [],
+      recharges: [],
+    })
 
     const component = await mountWithTooltips(Table, {
       props,
@@ -210,7 +214,11 @@ describe('Initiative table', () => {
       global,
     })
 
-    await turnReminders.trigger({ expired: [expired], saves: [] })
+    await turnReminders.trigger({
+      expired: [expired],
+      saves: [],
+      recharges: [],
+    })
 
     expect(mockNextTurn).not.toHaveBeenCalled()
     expect(toast.info).toHaveBeenCalledWith('components.turnReminders.expired')
@@ -263,6 +271,48 @@ describe('Initiative table', () => {
 
       expect(commandIds()).not.toContain('combat-log')
       expect(component.find('[test-id="history-panel"]').exists()).toBeFalsy()
+    })
+  })
+
+  describe('Area damage', () => {
+    it('Should open the area damage dialog from the palette', async () => {
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      runCommand('area-damage')
+      await vi.waitUntil(() =>
+        component.findComponent({ name: 'InitiativeAreaDamage' }).exists(),
+      )
+
+      expect(
+        component.findComponent({ name: 'InitiativeAreaDamage' }).props('open'),
+      ).toBe(true)
+
+      component.unmount()
+    })
+
+    it('Should hide the area damage command when hit points are hidden', async () => {
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          modified: true,
+          rows: ['armorClass'],
+        } as InitiativeSheet['settings'],
+      }
+
+      const component = await mountWithTooltips(Table, {
+        props,
+        provide,
+        global,
+      })
+
+      expect(commandIds()).not.toContain('area-damage')
+
+      component.unmount()
     })
   })
 
@@ -522,6 +572,191 @@ describe('Initiative table', () => {
     expect(component.find('[test-id="expanded"]').exists()).toBeTruthy()
   })
 
+  it('Should keep a row expanded when the rows change', async () => {
+    const component = await mountWithTooltips(Table, { props, provide, global })
+
+    await component
+      .find('[test-id="row"]')
+      .find('button[arialabel="actions.show"]')
+      .trigger('click')
+    await nextTick()
+
+    mockSheet.value = {
+      ...sheet,
+      rows: sheet.rows.map((row, index) =>
+        index === 0 ? { ...row, hitPoints: 1 } : row,
+      ),
+    }
+    await flushPromises()
+
+    expect(component.find('[test-id="expanded"]').exists()).toBe(true)
+
+    component.unmount()
+  })
+
+  describe('Undo and redo', () => {
+    const undo = vi.fn().mockResolvedValue(true)
+    const redo = vi.fn().mockResolvedValue(true)
+    const canUndo = ref(true)
+    const canRedo = ref(true)
+    const undoProvide = {
+      [INITIATIVE_SHEET]: {
+        ...provide[INITIATIVE_SHEET],
+        undo,
+        canUndo,
+        redo,
+        canRedo,
+      },
+    }
+
+    let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+    async function mount() {
+      wrapper = await mountWithTooltips(Table, {
+        props,
+        provide: undoProvide,
+        global,
+      })
+
+      return wrapper
+    }
+
+    function press(
+      key: string,
+      init: KeyboardEventInit,
+      target: EventTarget = document,
+    ) {
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', { key, bubbles: true, ...init }),
+      )
+    }
+
+    beforeEach(() => {
+      undo.mockClear()
+      redo.mockClear()
+      canUndo.value = true
+      canRedo.value = true
+      vi.mocked(toast.success).mockClear()
+    })
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+    })
+
+    it.each([[{ metaKey: true }], [{ ctrlKey: true }]])(
+      'Should undo with %o + Z and toast it',
+      async modifier => {
+        await mount()
+
+        press('z', modifier)
+        await flushPromises()
+
+        expect(undo).toHaveBeenCalledOnce()
+        expect(redo).not.toHaveBeenCalled()
+        expect(toast.success).toHaveBeenCalledWith('components.undo.done')
+      },
+    )
+
+    it.each([
+      ['Z', { metaKey: true, shiftKey: true }],
+      ['Z', { ctrlKey: true, shiftKey: true }],
+      ['y', { ctrlKey: true }],
+    ])('Should redo with %s and %o and toast it', async (key, modifier) => {
+      await mount()
+
+      press(key, modifier)
+      await flushPromises()
+
+      expect(redo).toHaveBeenCalledOnce()
+      expect(undo).not.toHaveBeenCalled()
+      expect(toast.success).toHaveBeenCalledWith('components.undo.redone')
+    })
+
+    it('Should leave Z and Y alone without a modifier or with Cmd + Y', async () => {
+      await mount()
+
+      press('z', {})
+      press('y', {})
+      press('y', { metaKey: true })
+      await flushPromises()
+
+      expect(undo).not.toHaveBeenCalled()
+      expect(redo).not.toHaveBeenCalled()
+    })
+
+    it('Should leave the undo of a text field alone', async () => {
+      await mount()
+
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+
+      press('z', { metaKey: true }, input)
+      press('z', { metaKey: true, shiftKey: true }, input)
+      await flushPromises()
+
+      expect(undo).not.toHaveBeenCalled()
+      expect(redo).not.toHaveBeenCalled()
+
+      input.remove()
+    })
+
+    it('Should do nothing when there is nothing to undo or redo', async () => {
+      canUndo.value = false
+      canRedo.value = false
+
+      await mount()
+
+      press('z', { metaKey: true })
+      press('z', { metaKey: true, shiftKey: true })
+      await flushPromises()
+
+      expect(undo).not.toHaveBeenCalled()
+      expect(redo).not.toHaveBeenCalled()
+    })
+
+    it('Should not toast when the undo failed', async () => {
+      undo.mockResolvedValueOnce(false)
+
+      await mount()
+
+      press('z', { metaKey: true })
+      await flushPromises()
+
+      expect(toast.success).not.toHaveBeenCalled()
+    })
+
+    it('Should offer undo and redo in the command palette', async () => {
+      await mount()
+
+      expect(commands.value.find(({ id }) => id === 'undo')).toMatchObject({
+        shortcut: ['MOD', 'Z'],
+        disabled: false,
+      })
+      expect(commands.value.find(({ id }) => id === 'redo')).toMatchObject({
+        shortcut: ['MOD', 'SHIFT', 'Z'],
+        disabled: false,
+      })
+
+      runCommand('undo')
+      runCommand('redo')
+      await flushPromises()
+
+      expect(undo).toHaveBeenCalledOnce()
+      expect(redo).toHaveBeenCalledOnce()
+    })
+
+    it('Should hide the commands when there is nothing to undo or redo', async () => {
+      canUndo.value = false
+      canRedo.value = false
+
+      await mount()
+
+      expect(commandIds()).not.toContain('undo')
+      expect(commandIds()).not.toContain('redo')
+    })
+  })
+
   describe('Command palette', () => {
     it('Should offer the turn, row and reset commands', async () => {
       const component = await mountWithTooltips(Table, {
@@ -532,9 +767,11 @@ describe('Initiative table', () => {
 
       expect(commandIds()).toEqual([
         'next-turn',
+        'ready-action',
         'damage',
         'heal',
         'condition',
+        'area-damage',
         'reset-soft',
         'reset-hard',
       ])
@@ -698,6 +935,101 @@ describe('Initiative table', () => {
       expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
 
       component.unmount()
+    })
+  })
+
+  describe('Ready an action', () => {
+    const patchRow = vi.fn()
+    const readyProvide = {
+      [INITIATIVE_SHEET]: { ...provide[INITIATIVE_SHEET], patchRow },
+    }
+    const [first] = sheet.rows
+
+    let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+    async function mount() {
+      wrapper = await mountWithTooltips(Table, {
+        props,
+        provide: readyProvide,
+        global,
+      })
+
+      return wrapper
+    }
+
+    beforeEach(() => {
+      patchRow.mockReset().mockResolvedValue(undefined)
+      mockNextTurn.mockClear()
+    })
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+    })
+
+    it('Should ready an action for the active row without ending the turn', async () => {
+      await mount()
+
+      runCommand('ready-action')
+      await flushPromises()
+
+      expect(patchRow).toHaveBeenCalledWith(first!.id, { readied: true })
+      expect(mockNextTurn).not.toHaveBeenCalled()
+    })
+
+    it('Should hide ready when the active row already readied', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [{ ...first!, readied: true }, ...sheet.rows.slice(1)],
+      }
+      await mount()
+
+      expect(commandIds()).not.toContain('ready-action')
+    })
+
+    it('Should hide ready on a lair turn', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [{ ...first!, type: 'lair' }, ...sheet.rows.slice(1)],
+      }
+      await mount()
+
+      expect(commandIds()).not.toContain('ready-action')
+    })
+  })
+  describe('Reveal hidden creatures', () => {
+    const [first, second] = sheet.rows
+
+    let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+    beforeEach(() => {
+      mockUpdate.mockReset().mockResolvedValue(undefined)
+    })
+
+    afterEach(() => {
+      wrapper?.unmount()
+      wrapper = undefined
+    })
+
+    it('Should reveal every hidden row in one update', async () => {
+      mockSheet.value = {
+        ...sheet,
+        rows: [{ ...first!, hidden: true }, second!],
+      }
+      wrapper = await mountWithTooltips(Table, { props, provide, global })
+
+      runCommand('reveal-hidden')
+      await flushPromises()
+
+      expect(mockUpdate).toHaveBeenCalledWith({
+        rows: [{ ...first!, hidden: false }, second!],
+      })
+    })
+
+    it('Should hide the command when nothing is hidden', async () => {
+      wrapper = await mountWithTooltips(Table, { props, provide, global })
+
+      expect(commandIds()).not.toContain('reveal-hidden')
     })
   })
 })

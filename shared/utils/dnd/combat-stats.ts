@@ -119,6 +119,27 @@ function assignAwards(combatants: CombatantStats[]): void {
   }
 }
 
+function isDefeated(row: CombatStatsRow, stats?: CombatantStats): boolean {
+  return !!stats?.died || (row.hitPoints !== undefined && row.hitPoints <= 0)
+}
+
+export function combatExperience(
+  rows: CombatStatsRow[],
+  combatants: CombatantStats[],
+): CombatExperience {
+  const byRow = new Map(combatants.map(stats => [stats.rowId, stats]))
+  const players = rows.filter(row => row.type === 'player').length
+  const total = rows
+    .filter(row => row.type === 'monster' && isDefeated(row, byRow.get(row.id)))
+    .reduce((acc, row) => acc + experienceFromChallenge(row.challengeRating), 0)
+
+  return {
+    total,
+    perPlayer: players ? Math.floor(total / players) : 0,
+    players,
+  }
+}
+
 export function aggregateCombatStats(
   events: CombatStatsEvent[],
   rows: CombatStatsRow[],
@@ -128,7 +149,11 @@ export function aggregateCombatStats(
     rows.map(row => [row.id, emptyStats(row)]),
   )
 
-  for (const event of events) {
+  const statEvents = events.filter(isStatEvent)
+
+  for (const event of statEvents) {
+    if (!event.rowId) continue
+
     let stats = byRow.get(event.rowId)
 
     if (!stats) {
@@ -152,7 +177,7 @@ export function aggregateCombatStats(
 
   return {
     rounds,
-    events: events.length,
+    events: statEvents.length,
     damageTaken: combatants.reduce((acc, s) => acc + s.damageTaken, 0),
     healingReceived: combatants.reduce((acc, s) => acc + s.healingReceived, 0),
     timesDowned: combatants.reduce((acc, s) => acc + s.timesDowned, 0),
@@ -170,6 +195,7 @@ export function aggregateCombatStats(
       (acc, s) => acc + s.concentrationBroken,
       0,
     ),
+    experience: combatExperience(rows, combatants),
     combatants,
   }
 }

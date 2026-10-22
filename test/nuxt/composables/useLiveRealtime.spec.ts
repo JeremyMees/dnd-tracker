@@ -12,7 +12,6 @@ const {
   setQueryData,
   subscribe,
   track,
-  unsubscribe,
 } = vi.hoisted(() => ({
   getQueryData: vi.fn(),
   invalidateQueries: vi.fn(),
@@ -21,10 +20,9 @@ const {
   setQueryData: vi.fn(),
   subscribe: vi.fn(),
   track: vi.fn(),
-  unsubscribe: vi.fn(),
 }))
 
-const channel = { on, subscribe, unsubscribe, track }
+const channel = { on, subscribe, track }
 
 vi.mock('@tanstack/vue-query', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -157,6 +155,46 @@ describe('useLiveRealtime', () => {
     })
   })
 
+  it('refetches when the viewer own seat is reassigned', async () => {
+    await mountProbe()
+
+    const call = on.mock.calls.find(
+      call => call[0] === 'broadcast' && call[1].event === 'seats',
+    )
+    const handler = call![2] as (arg: { payload: unknown }) => void
+
+    handler({
+      payload: { type: 'reassigned', seat: 'seat-id-1', row: 'row-2' },
+    })
+
+    expect(invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ['useLiveState', 'session-token', 'seat-1'],
+    })
+  })
+
+  it('ignores a joined broadcast', async () => {
+    await mountProbe()
+
+    const call = on.mock.calls.find(
+      call => call[0] === 'broadcast' && call[1].event === 'seats',
+    )
+    const handler = call![2] as (arg: { payload: unknown }) => void
+
+    handler({
+      payload: {
+        type: 'joined',
+        seat: {
+          seat: 'seat-id-1',
+          row: 'row-1',
+          name: 'Elara',
+          spectator: false,
+        },
+      },
+    })
+
+    expect(invalidateQueries).not.toHaveBeenCalled()
+  })
+
   it('ignores a kicked broadcast for a different seat', async () => {
     await mountProbe()
 
@@ -201,7 +239,7 @@ describe('useLiveRealtime', () => {
     uuid.value = 'other-uuid'
     await flushPromises()
 
-    expect(unsubscribe).toHaveBeenCalledTimes(1)
+    expect(removeChannel).toHaveBeenCalledTimes(1)
     expect(subscribe).toHaveBeenCalledTimes(2)
   })
 
@@ -490,6 +528,31 @@ describe('useLiveRealtime', () => {
     })
   })
 
+  it('preserves the own row when merging a sync broadcast', async () => {
+    const oldState = {
+      sheet: { id: 1, title: 'Old', round: 1, activeIndex: 0, rows: [] },
+      session: {
+        code: 'ABC234',
+        expiresAt: 'later',
+        version: 2,
+        kicked: false,
+        row: 'row-1',
+      },
+    }
+
+    getQueryData.mockReturnValue(oldState)
+
+    await mountProbe()
+
+    emitBroadcast('sync', { version: 3, sheet: oldState.sheet })
+
+    const updater = setQueryData.mock.calls[0]![1] as (
+      old: unknown,
+    ) => LiveStateResponse
+
+    expect(updater(oldState).session.row).toBe('row-1')
+  })
+
   it('refetches instead of applying a sync broadcast when the viewer owns a row', async () => {
     const oldState = {
       sheet: { id: 1, title: 'Old', round: 1, activeIndex: 0, rows: [] },
@@ -598,7 +661,6 @@ describe('useLiveRealtime', () => {
     component.unmount()
     mounted = undefined
 
-    expect(unsubscribe).toHaveBeenCalled()
     expect(removeChannel).toHaveBeenCalledWith(channel)
   })
 })

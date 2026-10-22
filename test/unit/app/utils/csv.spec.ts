@@ -25,6 +25,14 @@ describe('csv', () => {
     it('Should keep empty fields', () => {
       expect(parseCsvRows('a,,c')).toEqual([['a', '', 'c']])
     })
+
+    it('Should join text around a quoted part into one field', () => {
+      expect(parseCsvRows('x"a,b"y,z')).toEqual([['xa,by', 'z']])
+    })
+
+    it('Should read an unclosed quote to the end of the text', () => {
+      expect(parseCsvRows('a,"b,c\nd')).toEqual([['a', 'b,c\nd']])
+    })
   })
 
   describe('parseCsv', () => {

@@ -40,6 +40,10 @@ describe('DELETE /api/encounter/[id]/events', () => {
 
     expect(table.delete).toHaveBeenCalled()
     expect(table.eq).toHaveBeenCalledWith('encounterId', 7)
+    expect(supabase.channel('sheet:7').httpSend).toHaveBeenCalledWith(
+      'events',
+      { cleared: true },
+    )
   })
 
   it('throws a 401 when the request is not authenticated', async () => {

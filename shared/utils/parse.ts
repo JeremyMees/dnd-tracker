@@ -1,3 +1,7 @@
+type NumericInput = string | number | null | undefined
+
+const TRUTHY_VALUES = new Set(['1', 'true', 'yes', 'required'])
+
 export function normalizeKey(value: string | null | undefined): string {
   return value?.trim().toLowerCase() ?? ''
 }
@@ -13,15 +17,12 @@ export function splitList(input: string | null | undefined): string[] {
   if (!input) return []
 
   return input
-    .split(/,|;/g)
+    .split(/[,;]/)
     .map(item => item.trim())
     .filter(Boolean)
 }
 
-export function parseNumber(
-  value: string | number | null | undefined,
-  fallback = 0,
-): number {
+export function parseNumber(value: NumericInput, fallback = 0): number {
   if (typeof value === 'number')
     return Number.isFinite(value) ? value : fallback
   if (typeof value !== 'string') return fallback
@@ -30,7 +31,7 @@ export function parseNumber(
 
   if (!trimmed) return fallback
 
-  const fraction = trimmed.match(/^(\d+)\/(\d+)$/)
+  const fraction = /^(\d+)\/(\d+)$/.exec(trimmed)
 
   if (fraction?.[1] && fraction[2]) {
     const numerator = Number.parseInt(fraction[1], 10)
@@ -46,34 +47,29 @@ export function parseNumber(
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
-export function parseInteger(
-  value: string | number | null | undefined,
-  fallback = 0,
-): number {
-  const parsed = parseNumber(value, NaN)
+export function parseInteger(value: NumericInput, fallback = 0): number {
+  const parsed = parseNumber(value, Number.NaN)
 
   return Number.isFinite(parsed) ? Math.round(parsed) : fallback
 }
 
-export function toIntegerOrUndefined(
-  value: string | number | null | undefined,
-): number | undefined {
+export function toIntegerOrUndefined(value: NumericInput): number | undefined {
   if (value === null || value === undefined) return undefined
 
-  const parsed = parseNumber(value, NaN)
+  const parsed = parseNumber(value, Number.NaN)
 
   return Number.isFinite(parsed) ? parseInteger(parsed) : undefined
 }
 
 export function parseIntegerFromText(
-  value: string | number | null | undefined,
+  value: NumericInput,
   fallback = 0,
 ): number {
   if (typeof value === 'number')
     return Number.isFinite(value) ? Math.trunc(value) : fallback
   if (typeof value !== 'string') return fallback
 
-  const match = value.match(/-?\d+/)
+  const match = /-?\d+/.exec(value)
 
   if (!match?.[0]) return fallback
 
@@ -89,13 +85,13 @@ export function parseBoolean(
   if (typeof value === 'number') return value === 1
   if (typeof value !== 'string') return false
 
-  return ['1', 'true', 'yes', 'required'].includes(normalizeKey(value))
+  return TRUTHY_VALUES.has(normalizeKey(value))
 }
 
 export function toNumberOrUndefined(value: unknown): number | undefined {
   if (typeof value !== 'number' && typeof value !== 'string') return undefined
 
-  const parsed = parseNumber(value, NaN)
+  const parsed = parseNumber(value, Number.NaN)
 
   return Number.isFinite(parsed) ? parsed : undefined
 }

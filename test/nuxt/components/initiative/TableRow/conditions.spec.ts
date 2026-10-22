@@ -463,6 +463,43 @@ describe('Initiative table row conditions', async () => {
       expect(removeButton).toBeTruthy()
     })
 
+    it('Should look up the description of a stored condition by id', async () => {
+      const listed = conditions[0]!
+      const item = {
+        ...props.item,
+        conditions: [{ id: listed.id, name: listed.name, desc: '' }],
+      }
+
+      const component = await mountWithTooltips(Conditions, {
+        props: { item },
+        provide,
+      })
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(
+        component.findComponent({ name: 'MarkdownText' }).props('text'),
+      ).toBe(listed.desc)
+    })
+
+    it('Should fall back to the stored description of an unlisted condition', async () => {
+      const item = {
+        ...props.item,
+        conditions: [{ id: 'retired', name: 'Retired', desc: 'Old text.' }],
+      }
+
+      const component = await mountWithTooltips(Conditions, {
+        props: { item },
+        provide,
+      })
+
+      await component.findComponent(Badge).trigger('click')
+
+      expect(
+        component.findComponent({ name: 'MarkdownText' }).props('text'),
+      ).toBe('Old text.')
+    })
+
     it('Should remove the condition when the remove button is clicked', async () => {
       const component = await mountWithTooltips(Conditions, { props, provide })
 

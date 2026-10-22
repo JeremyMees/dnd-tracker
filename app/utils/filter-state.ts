@@ -1,7 +1,7 @@
 export function oneOfFilterCodec<T>(values: readonly T[]): FilterCodec<T> {
   return {
     parse: raw => values.find(value => String(value) === raw),
-    serialize: value => String(value),
+    serialize: String,
   }
 }
 
@@ -26,7 +26,7 @@ export function inferFilterCodec<T>(defaultValue: T): FilterCodec<T> {
 
         return Number.isFinite(parsed) ? (parsed as T) : undefined
       },
-      serialize: value => String(value),
+      serialize: String,
     }
   }
 
@@ -37,20 +37,20 @@ export function inferFilterCodec<T>(defaultValue: T): FilterCodec<T> {
         if (raw === 'false') return false as T
         return undefined
       },
-      serialize: value => String(value),
+      serialize: String,
     }
   }
 
   if (typeof defaultValue === 'string') {
     return {
       parse: raw => raw as T,
-      serialize: value => String(value),
+      serialize: String,
     }
   }
 
   return {
     parse: () => undefined,
-    serialize: value => String(value),
+    serialize: String,
   }
 }
 

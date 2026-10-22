@@ -23,7 +23,7 @@ exports[`Footer > Should match snapshot 1`] = `
   </div>
   <div class="flex flex-col gap-2">
     <div data-orientation="horizontal" role="separator" class="shrink-0 relative h-px w-full bg-border"></div>
-    <div class="flex flex-wrap justify-between gap-x-20 gap-y-2"><a href="https://www.instagram.com/mount_lazarus/" target="_blank" class="text-muted-foreground text-sm" test-id="footer-illustration">components.navbar.illustrations Mount Lazarus </a><a href="/updates/changelog" class="text-muted-foreground text-sm" test-id="footer-version"> V3.5.0</a>
+    <div class="flex flex-wrap justify-between gap-x-20 gap-y-2"><a href="https://www.instagram.com/mount_lazarus/" target="_blank" class="text-muted-foreground text-sm" test-id="footer-illustration">components.navbar.illustrations Mount Lazarus </a><a href="/updates/changelog" class="text-muted-foreground text-sm" test-id="footer-version"> V3.6.0</a>
       <p class="text-tertiary text-sm" test-id="footer-copyright"> ©2026 dnd-tracker </p>
     </div>
   </div>

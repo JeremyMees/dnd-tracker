@@ -3,21 +3,41 @@
 exports[`LiveSeatList > Should match snapshot 1`] = `
 "<div test-id="seat-list" class="flex flex-col gap-2 w-full text-left">
   <p test-id="seat-list-title" class="text-xs text-muted-foreground">components.liveSession.seats.title</p>
-  <ul class="flex flex-col gap-2 max-h-48 overflow-y-auto">
-    <li test-id="seat-seat-1" class="flex items-center gap-2 text-sm"><span data-state="closed" data-grace-area-trigger="" test-id="seat-status-seat-1" class="size-2 rounded-full shrink-0 animate-pulse bg-success"></span>
-      <!--teleport start-->
-      <!--teleport end-->
-      <div class="flex flex-col flex-1 min-w-0"><span class="font-medium truncate">Elara</span><span class="text-xs text-muted-foreground truncate">components.liveSession.seats.playing</span></div><button class="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start w-auto" test-id="reassign-seat-1" size="sm" role="combobox" type="button" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">Elara</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
-      <!--teleport start-->
-      <!--teleport end-->
-      <!--v-if--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground size-7" test-id="kick-seat-1" aria-label="actions.kick"><span class="iconify i-tabler:user-x" aria-hidden="true"></span></button>
-    </li>
-    <li test-id="seat-seat-2" class="flex items-center gap-2 text-sm"><span data-state="closed" data-grace-area-trigger="" test-id="seat-status-seat-2" class="size-2 rounded-full shrink-0 animate-pulse bg-muted-foreground/30"></span>
-      <!--teleport start-->
-      <!--teleport end-->
-      <div class="flex flex-col flex-1 min-w-0"><span class="font-medium truncate">Watcher</span><span class="text-xs text-muted-foreground truncate">general.spectator</span></div>
-      <!--v-if--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground size-7" test-id="kick-seat-2" aria-label="actions.kick"><span class="iconify i-tabler:user-x" aria-hidden="true"></span></button>
-    </li>
-  </ul>
+  <div dir="ltr" style="position: relative; --reka-scroll-area-corner-width: 0px; --reka-scroll-area-corner-height: 0px;" data-slot="scroll-area" class="relative flex flex-col overflow-hidden max-h-48">
+    <div data-reka-scroll-area-viewport="" style="overflow-x: hidden; overflow-y: scroll;" data-slot="scroll-area-viewport" class="min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50 scroll-fade not-supports-[animation-timeline:scroll()]:scroll-fade-none pr-3" tabindex="-1">
+      <div>
+        <ul class="flex flex-col gap-2">
+          <li test-id="seat-seat-1" class="flex items-center gap-2 text-sm"><span data-state="closed" data-grace-area-trigger="" test-id="seat-status-seat-1" class="size-2 rounded-full shrink-0 animate-pulse bg-success"></span>
+            <!--teleport start-->
+            <!--teleport end-->
+            <div class="flex flex-col flex-1 min-w-0"><span class="font-medium truncate">Elara</span><span class="text-xs text-muted-foreground truncate">components.liveSession.seats.playing</span></div><button class="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&amp;>span]:truncate text-start w-auto" test-id="reassign-seat-1" size="sm" role="combobox" type="button" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events: none;">Elara</span><span class="iconify i-tabler:chevron-down size-4 min-w-4 opacity-50 shrink-0" aria-hidden="true"></span></button>
+            <!--teleport start-->
+            <!--teleport end-->
+            <!--v-if--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground size-7" test-id="kick-seat-1" aria-label="actions.kick"><span class="iconify i-tabler:user-x" aria-hidden="true"></span></button>
+          </li>
+          <li test-id="seat-seat-2" class="flex items-center gap-2 text-sm"><span data-state="closed" data-grace-area-trigger="" test-id="seat-status-seat-2" class="size-2 rounded-full shrink-0 animate-pulse bg-muted-foreground/30"></span>
+            <!--teleport start-->
+            <!--teleport end-->
+            <div class="flex flex-col flex-1 min-w-0"><span class="font-medium truncate">Watcher</span><span class="text-xs text-muted-foreground truncate">general.spectator</span></div>
+            <!--v-if--><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-destructive hover:text-destructive-foreground size-7" test-id="kick-seat-2" aria-label="actions.kick"><span class="iconify i-tabler:user-x" aria-hidden="true"></span></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <style>
+      /* Hide scrollbars cross-browser and enable momentum scroll for touch devices */
+      [data-reka-scroll-area-viewport] {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      [data-reka-scroll-area-viewport]::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+    <!---->
+    <!--v-if-->
+  </div>
 </div>"
 `;

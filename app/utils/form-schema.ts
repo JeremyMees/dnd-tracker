@@ -16,6 +16,7 @@ import {
   initiativeDefaultRows,
   initiativePets,
   initiativeWidgets,
+  maxHealthAndArmour,
 } from '~~/constants/validation'
 
 export const skillBonusesSchema = z.object({
@@ -80,7 +81,7 @@ export const sightSchema = z.object({
   trueSightRange: z.int().gte(0).lte(50000).optional(),
 })
 
-const damageTypeEnum = damageTypes as [DndDamageType, ...DndDamageType[]]
+export const damageTypeEnum = damageTypes as [DndDamageType, ...DndDamageType[]]
 const conditionTypeEnum = conditionTypes as [
   DndConditionType,
   ...DndConditionType[],
@@ -138,6 +139,14 @@ export const resistancesAndImmunitiesSchema = z.object({
   conditionImmunities: z.array(z.enum(conditionTypeEnum)).default([]),
 })
 
+export const areaDamageSchema = z.object({
+  amount: z.int().min(0).max(maxHealthAndArmour),
+  damageType: z.enum(damageTypeEnum).optional(),
+  dc: z.int().min(1).max(30).optional(),
+  ability: z.enum(abilityTypeEnum),
+  halfOnSave: z.boolean(),
+})
+
 export const initiativeSettingsSchema = z.object({
   spacing: z.enum(initiativeSpacingOptions),
   rows: z.array(z.enum(initiativeDefaultRows)),
@@ -148,6 +157,8 @@ export const initiativeSettingsSchema = z.object({
     .transform(val => (val === 'none' ? undefined : val)),
   negative: z.boolean(),
   bloodied: z.boolean(),
+  autoRollInitiative: z.boolean(),
+  skipDeadMonsters: z.boolean(),
 })
 
 export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
@@ -160,6 +171,8 @@ export function initiativeSettingsInitialValues(settings?: InitiativeSettings) {
     pet: settings?.pet || undefined,
     negative: settings?.negative || false,
     bloodied: isBloodiedEnabled(settings),
+    autoRollInitiative: isAutoRollInitiativeEnabled(settings),
+    skipDeadMonsters: isSkipDeadMonstersEnabled(settings),
   }
 }
 
@@ -179,11 +192,13 @@ export function homebrewFormSchema({
       summoner: z.string().max(50).optional().or(z.literal('')),
       name: z.string().min(3).max(50),
       player: z.string().min(3).max(30).optional().or(z.literal('')),
+      level: z.int().gte(1).lte(20).optional(),
+      challengeRating: z.number().refine(isChallengeRating).optional(),
       initiative: z.int().gte(1).lte(50).optional(),
       initiativeModifier: z.int().gte(-20).lte(20).optional(),
       armorClass: z.int().gte(1).lte(100).optional(),
       hitPoints: z.int().gte(1).lte(1000).optional(),
-      link: z.string().url().optional().or(z.literal('')),
+      link: z.url().optional().or(z.literal('')),
       hitDice: z
         .string()
         .min(3)
@@ -227,6 +242,8 @@ export function homebrewInitialValues(
     summoner,
     name: source?.name || '',
     player: source?.player || '',
+    level: source?.level || undefined,
+    challengeRating: source?.challengeRating ?? undefined,
     amount,
     initiative: undefined,
     initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),

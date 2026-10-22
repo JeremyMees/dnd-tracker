@@ -301,16 +301,10 @@ export function withBaseStats<T extends InitiativeSheetRow>(row: T) {
   return { ...row, hitPoints: getBaseHP(row), armorClass: getBaseAC(row) }
 }
 
-export function getHealthBand(
-  hitPoints?: number,
-  maxHitPoints?: number,
-): DndHealthBand {
-  const current = hitPoints ?? 0
-  const max = maxHitPoints ?? 0
+export function getHealthBand(hitPoints = 0, maxHitPoints = 0): DndHealthBand {
+  if (maxHitPoints <= 0) return hitPoints > 0 ? 'healthy' : 'critical'
 
-  if (max <= 0) return current > 0 ? 'healthy' : 'critical'
-
-  const ratio = current / max
+  const ratio = hitPoints / maxHitPoints
 
   if (ratio <= 0.25) return 'critical'
   if (ratio <= 0.5) return 'bloodied'
@@ -323,7 +317,21 @@ export function isBloodied(hitPoints?: number, maxHitPoints?: number): boolean {
   return hitPoints > 0 && hitPoints <= maxHitPoints / 2
 }
 
-export function isBloodiedEnabled(settings?: InitiativeSettings): boolean {
+export function isAutoRollInitiativeEnabled(
+  settings?: InitiativeSettings,
+): boolean {
+  return settings?.autoRollInitiative !== false
+}
+
+export function isSkipDeadMonstersEnabled(
+  settings?: InitiativeSettings | null,
+): boolean {
+  return settings?.skipDeadMonsters !== false
+}
+
+export function isBloodiedEnabled(
+  settings?: Pick<InitiativeSettings, 'bloodied'>,
+): boolean {
   return settings?.bloodied !== false
 }
 

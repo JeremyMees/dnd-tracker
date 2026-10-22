@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import Concentration from '~/components/initiative/TableRow/Concentration.vue'
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
@@ -22,58 +22,72 @@ const props: Props = {
   item: sheet.rows[0]!,
 }
 
+let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
+
+async function mount(item: InitiativeSheetRow = props.item) {
+  wrapper = await mountWithTooltips(Concentration, {
+    props: { item },
+    provide,
+  })
+
+  return wrapper
+}
+
 describe('Initiative table row concentration', async () => {
   beforeEach(() => {
     mockSheet.value = sheet
   })
 
+  afterEach(() => {
+    wrapper?.unmount()
+    wrapper = undefined
+  })
+
   it('Should match snapshot', async () => {
-    const component = await mountWithTooltips(Concentration, { props, provide })
+    const component = await mount()
 
     expect(component.html()).toMatchSnapshot()
   })
 
-  it('Should not render button for lair type', async () => {
-    const component = await mountWithTooltips(Concentration, {
-      props: {
-        item: { ...props.item, type: 'lair' as const },
-      },
-      provide,
-    })
+  it('Should not render for lair type', async () => {
+    const component = await mount({ ...props.item, type: 'lair' })
 
-    expect(component.find('button').exists()).toBeFalsy()
+    expect(component.find('[test-id="concentration"]').exists()).toBeFalsy()
   })
 
-  it('Should render button for non-lair type', async () => {
-    const component = await mountWithTooltips(Concentration, { props, provide })
+  it('Should fill the pip when concentrating', async () => {
+    const component = await mount({ ...props.item, concentration: true })
 
-    expect(component.find('button').exists()).toBeTruthy()
+    expect(component.get('[test-id="pip"]').attributes('aria-pressed')).toBe(
+      'true',
+    )
   })
 
-  it('Should show filled circle when concentration is true', async () => {
-    const component = await mountWithTooltips(Concentration, { props, provide })
+  it('Should leave the pip empty when not concentrating', async () => {
+    const component = await mount({ ...props.item, concentration: false })
 
-    expect(component.find('[test-id="true"]').exists()).toBeTruthy()
+    expect(component.get('[test-id="pip"]').attributes('aria-pressed')).toBe(
+      'false',
+    )
   })
 
-  it('Should show dotted circle when concentration is false', async () => {
-    const component = await mountWithTooltips(Concentration, {
-      props: {
-        item: { ...props.item, concentration: false },
-      },
-      provide,
-    })
+  it('Should start concentrating when the empty pip is clicked', async () => {
+    const component = await mount({ ...props.item, concentration: false })
 
-    expect(component.find('[test-id="false"]').exists()).toBeTruthy()
-  })
-
-  it('Should call patchRow with toggled concentration', async () => {
-    const component = await mountWithTooltips(Concentration, { props, provide })
-
-    await component.find('button').trigger('click')
+    await component.get('[test-id="pip"]').trigger('click')
 
     expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
-      concentration: !props.item.concentration,
+      concentration: true,
+    })
+  })
+
+  it('Should stop concentrating when the filled pip is clicked', async () => {
+    const component = await mount({ ...props.item, concentration: true })
+
+    await component.get('[test-id="pip"]').trigger('click')
+
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      concentration: false,
     })
   })
 })

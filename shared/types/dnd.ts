@@ -61,6 +61,19 @@ export type DndDamageType =
   | 'slashing'
   | 'thunder'
 
+export type DndDamageDefense = 'immune' | 'resistant' | 'vulnerable'
+
+export interface DndDamageRoll {
+  amount: number
+  type?: DndDamageType
+}
+
+export interface DndAttackDamage {
+  dice?: string
+  bonus: number
+  type?: DndDamageType
+}
+
 export type DndArmorType = 'light' | 'medium' | 'heavy'
 
 export type DndMagicItemType =
@@ -251,6 +264,15 @@ export interface DndAction {
   usageLimits?: DndUsageLimits
 }
 
+export interface DndSaveEffect {
+  dc: number
+  ability: DndAbility
+  dice: string
+  bonus: number
+  damageType?: DndDamageType
+  halfOnSuccess: boolean
+}
+
 export interface DndAttack {
   name: string
   attackType: DndAttackType
@@ -275,6 +297,13 @@ export interface DndAttack {
 export interface DndUsageLimits {
   type: DndUsageType
   param: number
+}
+
+export interface DndResourceUses {
+  legendaryActions?: number
+  legendaryResistances?: number
+  reaction?: boolean
+  actions?: Record<string, number>
 }
 
 export interface DndTrait {
@@ -491,3 +520,20 @@ export interface DndCondition {
 
 export type DndItem =
   DndSpell | DndMagicItem | DndWeapon | DndArmor | DndCondition | DndMonster
+
+export interface ExperienceBudget {
+  low: number
+  moderate: number
+  high: number
+}
+
+export type DifficultyRating =
+  'trivial' | 'low' | 'moderate' | 'high' | 'extreme'
+
+export interface EncounterDifficulty {
+  rating: DifficultyRating
+  experience: number
+  budget: ExperienceBudget
+  players: number
+  playersWithoutLevel: number
+}

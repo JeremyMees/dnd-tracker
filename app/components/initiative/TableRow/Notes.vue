@@ -3,7 +3,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { patchRow } = validateInject(INITIATIVE_SHEET)
 
 const note = ref<string>(props.item.note || '')
 
@@ -17,19 +17,7 @@ watch(
 watchDebounced(
   note,
   newValue => {
-    if (!sheet.value) return
-
-    const index = getCurrentRowIndex(sheet.value, props.item.id)
-    const rows = [...sheet.value.rows]
-
-    if (index === -1 || !rows[index]) return
-
-    rows[index] = {
-      ...rows[index],
-      note: newValue,
-    }
-
-    update({ rows })
+    patchRow(props.item.id, { note: newValue }).catch(() => undefined)
   },
   { debounce: 500, maxWait: 1000 },
 )

@@ -1,6 +1,6 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { claimableRowTypes } from '~~/constants/validation'
-import { FIVE_MINUTES } from '~~/constants/time'
+import { ONE_MINUTE } from '~~/constants/time'
 import * as z from 'zod'
 
 const bodySchema = z
@@ -18,8 +18,8 @@ const bodySchema = z
 export default defineEventHandler(async event => {
   await assertRateLimit(event, {
     key: 'live-join',
-    limit: 10,
-    windowMs: FIVE_MINUTES,
+    limit: 30,
+    windowMs: ONE_MINUTE,
   })
 
   const body = await readValidatedBody(event, bodySchema.parse)
@@ -57,7 +57,7 @@ export default defineEventHandler(async event => {
       row?.type as HomebrewType,
     )
 
-    if (!row || !claimable) {
+    if (!row || !claimable || row.hidden) {
       throw createError({ statusCode: 404, statusMessage: 'Row not found' })
     }
   }

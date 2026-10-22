@@ -684,6 +684,8 @@ describe('form-schema', () => {
       pet: initiativePets[0],
       negative: false,
       bloodied: true,
+      autoRollInitiative: true,
+      skipDeadMonsters: true,
     }
 
     it('Should accept a valid settings object', () => {
@@ -705,7 +707,7 @@ describe('form-schema', () => {
       ).toBeFalsy()
     })
 
-    it('Should require spacing, rows, widgets, negative and bloodied', () => {
+    it('Should require spacing, rows, widgets, negative, bloodied, autoRollInitiative and skipDeadMonsters', () => {
       const { spacing: _, ...noSpacing } = valid
       expect(initiativeSettingsSchema.safeParse(noSpacing).success).toBeFalsy()
 
@@ -720,6 +722,12 @@ describe('form-schema', () => {
 
       const { bloodied: _____, ...noBloodied } = valid
       expect(initiativeSettingsSchema.safeParse(noBloodied).success).toBeFalsy()
+
+      const { autoRollInitiative: ______, ...noRoll } = valid
+      expect(initiativeSettingsSchema.safeParse(noRoll).success).toBeFalsy()
+
+      const { skipDeadMonsters: _______, ...noSkip } = valid
+      expect(initiativeSettingsSchema.safeParse(noSkip).success).toBeFalsy()
     })
 
     it('Should accept empty rows and widgets arrays', () => {
@@ -808,6 +816,8 @@ describe('form-schema', () => {
       expect(values.pet).toBeUndefined()
       expect(values.negative).toBe(false)
       expect(values.bloodied).toBe(true)
+      expect(values.autoRollInitiative).toBe(true)
+      expect(values.skipDeadMonsters).toBe(true)
     })
 
     it('Should check all rows and widgets when settings are not modified', () => {
@@ -831,6 +841,8 @@ describe('form-schema', () => {
         pet: initiativePets[0],
         negative: true,
         bloodied: false,
+        autoRollInitiative: false,
+        skipDeadMonsters: false,
       })
 
       expect(values.rows).toEqual(['armorClass', 'hitPoints'])
@@ -839,6 +851,8 @@ describe('form-schema', () => {
       expect(values.pet).toBe(initiativePets[0])
       expect(values.negative).toBe(true)
       expect(values.bloodied).toBe(false)
+      expect(values.autoRollInitiative).toBe(false)
+      expect(values.skipDeadMonsters).toBe(false)
     })
 
     it('Should respect an empty selection when modified (nothing checked)', () => {
@@ -943,6 +957,26 @@ describe('form-schema', () => {
       expect(issueAt(result, 'summoner')?.message).toBe('zod.required')
     })
 
+    it.each([0, 21])('Should reject level %s', level => {
+      expect(schema().safeParse(values({ level })).success).toBeFalsy()
+    })
+
+    it.each([0, 0.125, 30])('Should accept challenge rating %s', cr => {
+      expect(
+        schema().safeParse(values({ challengeRating: cr })).success,
+      ).toBeTruthy()
+    })
+
+    it.each([0.3, 31])('Should reject challenge rating %s', cr => {
+      expect(
+        schema().safeParse(values({ challengeRating: cr })).success,
+      ).toBeFalsy()
+    })
+
+    it('Should accept a level between 1 and 20', () => {
+      expect(schema().safeParse(values({ level: 20 })).success).toBeTruthy()
+    })
+
     it('Should not require a summoner outside an encounter', () => {
       expect(
         schema().safeParse(values({ type: 'summon' })).success,
@@ -989,6 +1023,29 @@ describe('form-schema', () => {
         traits: [],
       })
       expect(values.abilityScores).toBeUndefined()
+    })
+
+    it('Should keep a challenge rating of 0', () => {
+      expect(
+        homebrewInitialValues({
+          name: 'Rat',
+          type: 'monster',
+          challengeRating: 0,
+        }).challengeRating,
+      ).toBe(0)
+    })
+
+    it('Should keep the challenge rating from the bestiary', () => {
+      expect(
+        homebrewInitialValues(monsterToRow(dndMonsterFixture)).challengeRating,
+      ).toBe(dndMonsterFixture.challengeRating)
+    })
+
+    it('Should keep the level of a player', () => {
+      expect(
+        homebrewInitialValues({ name: 'Elara', type: 'player', level: 4 })
+          .level,
+      ).toBe(4)
     })
 
     it('Should pass the amount and summoner through', () => {

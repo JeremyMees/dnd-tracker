@@ -4,22 +4,67 @@ import type { HTMLAttributes } from 'vue'
 import { ScrollAreaCorner, ScrollAreaRoot, ScrollAreaViewport } from 'reka-ui'
 import ScrollBar from './ScrollBar.vue'
 
-const props = defineProps<
-  ScrollAreaRootProps & { class?: HTMLAttributes['class'] }
->()
+const props = withDefaults(
+  defineProps<
+    ScrollAreaRootProps & {
+      class?: HTMLAttributes['class']
+      viewportClass?: HTMLAttributes['class']
+      orientation?: 'vertical' | 'horizontal'
+    }
+  >(),
+  { orientation: 'vertical' },
+)
 
-const delegatedProps = reactiveOmit(props, 'class')
+const delegatedProps = reactiveOmit(
+  props,
+  'class',
+  'viewportClass',
+  'orientation',
+)
+
+const root = useTemplateRef<InstanceType<typeof ScrollAreaRoot>>('root')
+const viewport = computed(() => root.value?.viewport)
+
+function syncTabIndex(): void {
+  if (!viewport.value) return
+
+  const tabIndex = containsFocusable(viewport.value) ? -1 : 0
+
+  if (viewport.value.tabIndex !== tabIndex) viewport.value.tabIndex = tabIndex
+}
+
+watch(viewport, syncTabIndex)
+useMutationObserver(viewport, syncTabIndex, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ['disabled', 'href', 'tabindex', 'contenteditable'],
+})
+
+defineExpose({ viewport })
 </script>
 
 <template>
   <ScrollAreaRoot
+    ref="root"
+    data-slot="scroll-area"
     v-bind="delegatedProps"
-    :class="cn('relative overflow-hidden', props.class)"
+    :class="cn('relative flex flex-col overflow-hidden', props.class)"
   >
-    <ScrollAreaViewport class="h-full w-full rounded-[inherit]">
+    <ScrollAreaViewport
+      data-slot="scroll-area-viewport"
+      :class="
+        cn(
+          'min-h-0 flex-1 rounded-[inherit] outline-none transition-[color,box-shadow] focus-visible:ring-3 focus-visible:ring-ring/50',
+          orientation === 'vertical' ? 'scroll-fade' : 'scroll-fade-x',
+          'not-supports-[animation-timeline:scroll()]:scroll-fade-none',
+          props.viewportClass,
+        )
+      "
+    >
       <slot />
     </ScrollAreaViewport>
-    <ScrollBar />
+    <ScrollBar :orientation />
     <ScrollAreaCorner />
   </ScrollAreaRoot>
 </template>

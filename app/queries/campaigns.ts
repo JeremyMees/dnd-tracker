@@ -87,14 +87,14 @@ export function useCampaignMinimalListing(id: string) {
       `),
     select: ({ data, error }) => {
       if (error) throw createError(error)
-      else
-        return data.filter(campaign => {
-          if (
-            campaign.createdBy.id === id ||
-            campaign.team.find(u => u.user.id === id && u.role !== 'Viewer')
-          )
-            return true
-        })
+
+      return data.filter(
+        campaign =>
+          campaign.createdBy.id === id ||
+          campaign.team.some(
+            member => member.user.id === id && member.role !== 'Viewer',
+          ),
+      )
     },
   })
 }

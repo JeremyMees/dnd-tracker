@@ -26,6 +26,16 @@ const monsterRow: PlayerRow = {
   deathSaves: { save: [false, false, false], fail: [true, true, true] },
 }
 
+const hiddenRow: PlayerRow = {
+  id: 'row-3',
+  index: 2,
+  initiative: -1,
+  name: '???',
+  type: 'monster',
+  conditions: [],
+  hidden: true,
+}
+
 function sheetWith(rows: PlayerRow[], activeIndex = 0): PlayerSheet {
   return { ...playerSheet, rows, activeIndex }
 }
@@ -116,6 +126,40 @@ describe('LiveRowTable', () => {
     expect(rows[1]!.find('[test-id="own"]').exists()).toBe(false)
   })
 
+  it('shows the readied badge only for rows that readied an action', async () => {
+    const component = await mountWithTooltips(LiveRowTable, {
+      props: {
+        sheet: sheetWith([{ ...ownRow, readied: true }, monsterRow]),
+        loading: false,
+      },
+    })
+
+    const rows = component.findAll('[test-id="row"]')
+
+    expect(rows[0]!.get('[test-id="readied"]').text()).toContain(
+      'general.readied',
+    )
+    expect(rows[1]!.find('[test-id="readied"]').exists()).toBe(false)
+
+    component.unmount()
+  })
+
+  it('shows a hidden row as an unknown creature', async () => {
+    const component = await mountWithTooltips(LiveRowTable, {
+      props: { sheet: sheetWith([ownRow, hiddenRow], 1), loading: false },
+    })
+
+    const row = component.findAll('[test-id="row"]')[1]!
+
+    expect(row.attributes('data-active')).toBe('true')
+    expect(row.get('[test-id="name"]').text()).toBe('???')
+    expect(row.find('[test-id="initiative-empty"]').exists()).toBe(true)
+    expect(row.find('[test-id="hidden"]').exists()).toBe(true)
+    expect(row.find('[test-id="concentration"]').exists()).toBe(false)
+
+    component.unmount()
+  })
+
   it('shows death saves only for the claimed row', async () => {
     setSeat({ row: ownRow.id })
 
@@ -173,7 +217,9 @@ describe('LiveRowTable', () => {
       props: { sheet, loading: false },
     })
 
-    const container = component.get('[test-id="list"]').element as HTMLElement
+    const container = component.get(
+      '[test-id="list"] [data-slot="scroll-area-viewport"]',
+    ).element as HTMLElement
     const scrollIntoView = stubRowElement(
       component.findAll('[test-id="row"]')[0]!,
       { top: -50, bottom: -10 },

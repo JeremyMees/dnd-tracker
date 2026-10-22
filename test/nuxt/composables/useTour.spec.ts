@@ -1,4 +1,5 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Config, DriveStep } from 'driver.js'
 import examples from '~~/constants/initiative-examples.json'
@@ -6,7 +7,7 @@ import { useTour } from '~/composables/useTour'
 
 const { driverMock, updateProfileMock, loaded } = vi.hoisted(() => ({
   driverMock: vi.fn(),
-  updateProfileMock: vi.fn(),
+  updateProfileMock: vi.fn().mockResolvedValue(undefined),
   loaded: { driver: 0, css: 0 },
 }))
 
@@ -48,7 +49,7 @@ function driverSteps(): DriveStep[] {
 }
 
 // The driver.js hooks are sync, but `close` behind them is not.
-function closeTour(hook: keyof Config): Promise<void> {
+async function closeTour(hook: keyof Config): Promise<void> {
   const config = driverConfig()
 
   ;(config[hook] as (...args: unknown[]) => void)(
@@ -57,7 +58,7 @@ function closeTour(hook: keyof Config): Promise<void> {
     {},
   )
 
-  return nextTick()
+  await flushPromises()
 }
 
 describe('useTour', () => {
@@ -210,6 +211,21 @@ describe('useTour', () => {
     })
     expect(tourCompleted.value).toBeUndefined()
     expect(isTourActive.value).toBe(false)
+  })
+
+  it('Should still close the tour when persisting completion fails', async () => {
+    updateProfileMock.mockRejectedValueOnce(new Error('boom'))
+
+    const { startTour, isTourActive, tourData } = useTour()
+
+    await startTour()
+
+    user.value = { id: 'user-1', completedTour: false }
+
+    await closeTour('onCloseClick')
+
+    expect(isTourActive.value).toBe(false)
+    expect(tourData.value).toBeUndefined()
   })
 
   it('Should ask for confirmation before closing an unfinished tour', async () => {

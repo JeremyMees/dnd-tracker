@@ -9,3 +9,7 @@ export interface SheetSyncEvent {
   sheet: Partial<InitiativeSheet>
   reminders?: TurnReminders
 }
+
+export interface SheetEventsEvent {
+  cleared?: boolean
+}

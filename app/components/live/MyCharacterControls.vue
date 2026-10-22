@@ -16,24 +16,27 @@ const { data: conditionsList, isPending: conditionsPending } =
 
 const locked = computed(() => pending.value || !props.active)
 
-async function toggleDeathSave(index: number, isSave: boolean): Promise<void> {
-  if (!props.row.deathSaves) return
-
-  const save = [...props.row.deathSaves.save] as [boolean, boolean, boolean]
-  const fail = [...props.row.deathSaves.fail] as [boolean, boolean, boolean]
-
-  if (isSave) save[index] = !save[index]
-  else fail[index] = !fail[index]
-
-  const value = { save, fail }
-
+async function updateDeathSaves(value: DndDeathSaves): Promise<void> {
   await apply({ type: 'deathSaves', value }, { deathSaves: value })
 }
 
-async function toggleConcentration(): Promise<void> {
-  const value = !props.row.concentration
+async function setConcentration(used: number): Promise<void> {
+  const value = used > 0
 
   await apply({ type: 'concentration', value }, { concentration: value })
+}
+
+async function setReaction(used: number): Promise<void> {
+  const value = used > 0
+
+  await apply({ type: 'reaction', value }, { reaction: value || undefined })
+}
+
+async function setReadied(value: boolean): Promise<void> {
+  await apply(
+    { type: 'ready', value },
+    value ? { readied: true } : { readied: false, reaction: true },
+  )
 }
 
 async function applyConditions(value: DndCondition[]): Promise<void> {
@@ -53,6 +56,29 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
     >
       {{ $t('general.endTurn') }}
       <Icon name="tabler:chevron-right" aria-hidden="true" />
+    </UiButton>
+
+    <UiButton
+      v-if="row.readied"
+      test-id="use-readied"
+      variant="foreground"
+      :disabled="pending || !allow.ready"
+      class="w-full"
+      @click="setReadied(false)"
+    >
+      <Icon name="tabler:hand-stop" aria-hidden="true" />
+      {{ $t('actions.useReadied') }}
+    </UiButton>
+    <UiButton
+      v-else-if="row.type !== 'lair'"
+      test-id="ready"
+      variant="foreground"
+      :disabled="locked || !allow.ready"
+      class="w-full"
+      @click="setReadied(true)"
+    >
+      <Icon name="tabler:hand-stop" aria-hidden="true" />
+      {{ $t('actions.readyAction') }}
     </UiButton>
 
     <UiSeparator class="bg-muted" />
@@ -80,25 +106,46 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
       <span class="text-xs font-bold text-muted-foreground">
         {{ $t('general.deathSaves') }}
       </span>
-      <LiveDeathSaves
+      <DeathSavePips
         :saves="row.deathSaves"
         :disabled="locked || !allow.deathSaves"
-        @toggle="toggleDeathSave"
+        @update:saves="updateDeathSaves"
       />
     </div>
 
     <UiSeparator class="bg-muted" />
 
-    <button
-      test-id="concentration"
-      type="button"
-      :disabled="locked || !allow.concentration"
-      :data-active="row.concentration"
-      class="w-fit"
-      @click="toggleConcentration"
-    >
-      <LiveStatConcentration :active="row.concentration" label />
-    </button>
+    <div class="flex flex-wrap gap-x-8 gap-y-4">
+      <div test-id="concentration" class="flex flex-col gap-2">
+        <span class="text-xs font-bold text-muted-foreground">
+          {{ $t('general.concentration') }}
+        </span>
+        <UsePips
+          :label="$t('general.concentration')"
+          :max="1"
+          :used="row.concentration ? 1 : 0"
+          :disabled="locked || !allow.concentration"
+          @update:used="setConcentration"
+        />
+      </div>
+
+      <div
+        v-if="row.type !== 'lair'"
+        test-id="reaction"
+        class="flex flex-col gap-2"
+      >
+        <span class="text-xs font-bold text-muted-foreground">
+          {{ $t('general.reaction') }}
+        </span>
+        <UsePips
+          :label="$t('general.reaction')"
+          :max="1"
+          :used="row.reaction ? 1 : 0"
+          :disabled="pending || !allow.reaction"
+          @update:used="setReaction"
+        />
+      </div>
+    </div>
 
     <div class="flex flex-col gap-2">
       <span class="text-xs font-bold text-muted-foreground">
@@ -108,7 +155,7 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
         :conditions="conditionsList ?? []"
         :applied="row.conditions"
         :item="row"
-        :rows="rows"
+        :rows="rows.filter(other => !other.hidden)"
         :active-row-id="row.id"
         :disabled="locked || conditionsPending || !allow.conditions"
         @add="applyConditions([...row.conditions, $event])"

@@ -9,12 +9,13 @@ interface Props {
 }
 
 const mockUpdate = vi.fn()
-const mockSheet = ref<InitiativeSheet | undefined>(sheet)
+const mockPatchRow = vi.fn()
 
 const provide = {
   [INITIATIVE_SHEET]: {
-    sheet: mockSheet,
+    sheet: ref(sheet),
     update: mockUpdate,
+    patchRow: mockPatchRow,
   },
 }
 
@@ -24,7 +25,7 @@ const props: Props = {
 
 describe('Initiative table row notes', async () => {
   beforeEach(() => {
-    mockSheet.value = sheet
+    mockPatchRow.mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -65,53 +66,28 @@ describe('Initiative table row notes', async () => {
     const textarea = component.find('textarea')
 
     await textarea.setValue('New note')
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockPatchRow).not.toHaveBeenCalled()
 
     await vi.advanceTimersByTimeAsync(400)
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockPatchRow).not.toHaveBeenCalled()
 
     await vi.advanceTimersByTimeAsync(100)
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
-        expect.objectContaining({
-          id: props.item.id,
-          note: 'New note',
-        }),
-      ]),
+    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
+      note: 'New note',
     })
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 
-  it('Should not update when sheet is undefined', async () => {
+  it('Should swallow a failed note patch', async () => {
     vi.useFakeTimers()
-    mockSheet.value = undefined
+    mockPatchRow.mockRejectedValueOnce(new Error('Patch failed'))
 
-    const component = await mountSuspended(Notes, {
-      props,
-      provide,
-    })
+    const component = await mountSuspended(Notes, { props, provide })
 
     await component.find('textarea').setValue('New note')
     await vi.advanceTimersByTimeAsync(500)
 
-    expect(mockUpdate).not.toHaveBeenCalled()
-  })
-
-  it('Should not update when the row is no longer found in the sheet', async () => {
-    vi.useFakeTimers()
-    mockSheet.value = {
-      ...sheet,
-      rows: sheet.rows.filter(row => row.id !== props.item.id),
-    }
-
-    const component = await mountSuspended(Notes, {
-      props,
-      provide,
-    })
-
-    await component.find('textarea').setValue('New note')
-    await vi.advanceTimersByTimeAsync(500)
-
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockPatchRow).toHaveBeenCalledOnce()
   })
 
   it('Should sync the note when the item prop changes', async () => {

@@ -197,11 +197,12 @@ async function logoutUser(): Promise<void> {
           </h1>
         </div>
       </header>
-      <div
-        class="w-full h-full pt-1 pb-4 px-4 md:px-6 lg:px-10 mx-auto overflow-auto no-scrollbar"
+      <UiScrollArea
+        class="w-full min-h-0 flex-1"
+        viewport-class="pt-1 pb-4 px-4 md:px-6 lg:px-10"
       >
         <slot />
-      </div>
+      </UiScrollArea>
     </UiSidebarInset>
     <CommandPalette />
   </UiSidebarProvider>

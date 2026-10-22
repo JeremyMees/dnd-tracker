@@ -18,10 +18,9 @@ export function useModal() {
   function open(newModal: Omit<Modal, 'uuid'>): string {
     const uuid = crypto.randomUUID()
 
-    const modalExists: boolean =
-      modals.value.findIndex(
-        ({ component }) => component === newModal.component,
-      ) > -1
+    const modalExists = modals.value.some(
+      ({ component }) => component === newModal.component,
+    )
 
     if (!modalExists) {
       modals.value = [...modals.value, { ...newModal, uuid }]

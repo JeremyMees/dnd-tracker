@@ -3,7 +3,10 @@ export type CombatStatsEvent = Pick<
   'rowId' | 'round' | 'type' | 'payload'
 >
 
-export type CombatStatsRow = Pick<InitiativeSheetRow, 'id' | 'name' | 'type'>
+export type CombatStatsRow = Pick<
+  InitiativeSheetRow,
+  'id' | 'name' | 'type' | 'challengeRating' | 'hitPoints'
+>
 
 export type CombatAward =
   | 'died'
@@ -38,6 +41,12 @@ export interface CombatantStats {
   awardExclusive: boolean
 }
 
+export interface CombatExperience {
+  total: number
+  perPlayer: number
+  players: number
+}
+
 export interface CombatStats {
   rounds: number
   events: number
@@ -49,5 +58,6 @@ export interface CombatStats {
   deathSavesFailed: number
   conditionsApplied: number
   concentrationBroken: number
+  experience: CombatExperience
   combatants: CombatantStats[]
 }

@@ -6,12 +6,40 @@ function durationOwner(
   return rowIds.has(duration.rowId) ? duration.rowId : row.id
 }
 
-export function advanceTurn(
-  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'>,
-): TurnAdvance {
+export function nextTurnPosition(
+  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'> &
+    Partial<Pick<InitiativeSheet, 'settings'>>,
+): Pick<InitiativeSheet, 'activeIndex' | 'round'> {
+  const skipDead = isSkipDeadMonstersEnabled(sheet.settings)
+  let activeIndex = sheet.activeIndex
+  let round = sheet.round
+
+  for (const _ of sheet.rows) {
+    activeIndex += 1
+
+    if (activeIndex >= sheet.rows.length) {
+      activeIndex = 0
+      round += 1
+    }
+
+    const row = sheet.rows[activeIndex]
+    if (!skipDead || !row || !isDeadMonster(row)) return { activeIndex, round }
+  }
+
   const isAtEnd = sheet.activeIndex + 1 >= sheet.rows.length
-  const activeIndex = isAtEnd ? 0 : sheet.activeIndex + 1
-  const round = isAtEnd ? sheet.round + 1 : sheet.round
+
+  return {
+    activeIndex: isAtEnd ? 0 : sheet.activeIndex + 1,
+    round: isAtEnd ? sheet.round + 1 : sheet.round,
+  }
+}
+
+export function advanceTurn(
+  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'> &
+    Partial<Pick<InitiativeSheet, 'settings'>>,
+  roll: (sides: number) => number = randomRoll,
+): TurnAdvance {
+  const { activeIndex, round } = nextTurnPosition(sheet)
 
   const boundaries: { rowId: string; timing: DndConditionTiming }[] = []
   const ending = sheet.rows[sheet.activeIndex]?.id
@@ -23,6 +51,7 @@ export function advanceTurn(
   const rowIds = new Set(sheet.rows.map(row => row.id))
   const expired: TurnReminder[] = []
   const saves: TurnReminder[] = []
+  const recharges: RechargeReminder[] = []
 
   const rows = sheet.rows.map(row => {
     let changed = false
@@ -65,10 +94,20 @@ export function advanceTurn(
       return [condition]
     })
 
-    return changed ? { ...row, conditions } : row
+    const updated = changed ? { ...row, conditions } : row
+
+    if (row.id !== starting) return updated
+
+    const refreshed = refreshResources(updated, roll)
+
+    recharges.push(...refreshed.recharges)
+
+    return refreshed.row.readied
+      ? { ...refreshed.row, readied: false }
+      : refreshed.row
   })
 
-  return { activeIndex, round, rows, expired, saves }
+  return { activeIndex, round, rows, expired, saves, recharges }
 }
 
 export function conditionDurationPreset(
@@ -96,10 +135,9 @@ const SPELL_DURATION_ROUNDS: Record<string, number> = {
 }
 
 export function spellDurationRounds(duration: string): number | undefined {
-  const match = duration
-    .trim()
-    .toLowerCase()
-    .match(/^(\d+)\s+(round|turn|minute|hour)s?$/)
+  const match = /^(\d+)\s+(round|turn|minute|hour)s?$/.exec(
+    duration.trim().toLowerCase(),
+  )
 
   if (!match) return undefined
 

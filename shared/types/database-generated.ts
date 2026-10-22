@@ -52,7 +52,7 @@ export type Database = {
           id: number
           payload: Json
           round: number
-          rowId: string
+          rowId: string | null
           type: string
         }
         Insert: {
@@ -63,7 +63,7 @@ export type Database = {
           id?: never
           payload?: Json
           round?: number
-          rowId: string
+          rowId?: string | null
           type: string
         }
         Update: {
@@ -74,7 +74,7 @@ export type Database = {
           id?: never
           payload?: Json
           round?: number
-          rowId?: string
+          rowId?: string | null
           type?: string
         }
         Relationships: [
@@ -139,12 +139,14 @@ export type Database = {
           armorClass: number | null
           armorDetail: string | null
           campaign: number
+          challengeRating: number | null
           createdAt: string
           hitDice: string | null
           hitPoints: number | null
           id: number
           initiativeModifier: string | null
           languages: Json | null
+          level: number | null
           link: string | null
           modifiers: Json | null
           name: string
@@ -165,12 +167,14 @@ export type Database = {
           armorClass?: number | null
           armorDetail?: string | null
           campaign: number
+          challengeRating?: number | null
           createdAt?: string
           hitDice?: string | null
           hitPoints?: number | null
           id?: number
           initiativeModifier?: string | null
           languages?: Json | null
+          level?: number | null
           link?: string | null
           modifiers?: Json | null
           name: string
@@ -191,12 +195,14 @@ export type Database = {
           armorClass?: number | null
           armorDetail?: string | null
           campaign?: number
+          challengeRating?: number | null
           createdAt?: string
           hitDice?: string | null
           hitPoints?: number | null
           id?: number
           initiativeModifier?: string | null
           languages?: Json | null
+          level?: number | null
           link?: string | null
           modifiers?: Json | null
           name?: string
@@ -947,6 +953,10 @@ export type Database = {
     Functions: {
       apply_live_action: {
         Args: { p_encounter: number; p_patch: Json; p_row_id: string }
+        Returns: Json
+      }
+      apply_live_actions: {
+        Args: { p_encounter: number; p_patches: Json }
         Returns: Json
       }
       claim_live_seat: {

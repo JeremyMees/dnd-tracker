@@ -7,7 +7,7 @@ export function useInitiativeSheet(
   ) => Promise<void>,
   nextTurn: () => Promise<void>,
 ) {
-  const defaultColumns = ['index', 'name', 'initiative']
+  const defaultColumns = new Set(['index', 'name', 'initiative'])
   const hidableColumns = [
     'armorClass',
     'hitPoints',
@@ -29,17 +29,16 @@ export function useInitiativeSheet(
   })
 
   const columnVisibility = computed(() => {
-    const rows = sheet.value?.settings
-      ? sheet.value.settings.modified
+    const rows = new Set(
+      sheet.value?.settings?.modified
         ? sheet.value.settings.rows || []
-        : hidableColumns
-      : hidableColumns
+        : hidableColumns,
+    )
 
     return [...defaultColumns, ...hidableColumns].reduce(
       (acc, column) => {
-        const defaultColumn = defaultColumns.includes(column)
-        acc[column] =
-          defaultColumn || !sheet.value ? true : rows.includes(column)
+        const defaultColumn = defaultColumns.has(column)
+        acc[column] = defaultColumn || !sheet.value ? true : rows.has(column)
         return acc
       },
       {} as Record<string, boolean>,
@@ -129,8 +128,6 @@ export function useInitiativeSheet(
   watch(
     () => sheet.value?.rows,
     () => {
-      expanded.value = {} // this is a hack otherwise the table doesn't update when the data changes
-
       if (!sheet.value?.rows?.length) return
 
       const active = sheet.value.activeIndex
@@ -163,7 +160,7 @@ export function useInitiativeSheet(
       : sheet.value.activeIndex - 1
     const round = isAtStart ? sheet.value.round - 1 : sheet.value.round
 
-    update({ activeIndex, round })
+    update({ activeIndex, round }).catch(() => undefined)
 
     const index = sheet.value.rows[activeIndex] ? activeIndex : 0
 
@@ -175,8 +172,7 @@ export function useInitiativeSheet(
   function next(): void {
     if (!sheet.value) return
 
-    const isAtEnd = sheet.value.activeIndex + 1 >= sheet.value.rows.length
-    const activeIndex = isAtEnd ? 0 : sheet.value.activeIndex + 1
+    const { activeIndex } = nextTurnPosition(sheet.value)
 
     nextTurn().catch(() => undefined)
 
@@ -190,9 +186,14 @@ export function useInitiativeSheet(
   function reset(hard: boolean): void {
     if (!sheet.value) return
 
+    const isReadied = sheet.value.rows.some(row => row.readied)
+
     let updatePayload: Omit<Partial<InitiativeSheet>, NotUpdatable> = {
       activeIndex: 0,
       round: 1,
+      ...(isReadied && {
+        rows: sheet.value.rows.map(row => ({ ...row, readied: undefined })),
+      }),
     }
 
     if (hard) {
@@ -200,7 +201,7 @@ export function useInitiativeSheet(
         ...updatePayload,
         rows: sheet.value.rows.map(row => ({
           ...row,
-          initiative: -1,
+          initiative: defaultInitiative(row.type),
           conditions: [],
           ...(row.concentration !== undefined && { concentration: false }),
           ...(row.deathSaves !== undefined && {
@@ -221,6 +222,7 @@ export function useInitiativeSheet(
           ...(row.maxHitPointsOld !== undefined && {
             maxHitPoints: row.maxHitPointsOld,
           }),
+          readied: undefined,
           maxArmorClassOld: undefined,
           maxHitPointsOld: undefined,
           tempHitPoints: undefined,
@@ -229,7 +231,7 @@ export function useInitiativeSheet(
       }
     }
 
-    update(updatePayload)
+    update(updatePayload).catch(() => undefined)
 
     if (!sheet.value.rows[0]) return
 

@@ -42,6 +42,7 @@ interface Probe {
   sheet: InitiativeSheet | undefined
   update: (payload: Partial<InitiativeSheet>) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
+  patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
 }
 
@@ -205,6 +206,29 @@ describe('Playground page', () => {
     expect(tourData.value?.rows.find(row => row.id === '1')?.hitPoints).toBe(50)
   })
 
+  it('Should apply a patchRows batch purely locally', async () => {
+    startTour.mockImplementation(async () => {
+      isTourActive.value = true
+      tourData.value = { ...tourSheet }
+    })
+
+    const { probe } = await mountPlayground()
+    const [first, second, ...rest] = tourSheet.rows
+
+    await probe.patchRows([
+      { rowId: first!.id, patch: { hitPoints: 1 } },
+      { rowId: second!.id, patch: { hitPoints: 2 } },
+    ])
+    await nextTick()
+
+    expect(probe.sheet?.rows.map(row => row.hitPoints)).toEqual([
+      1,
+      2,
+      ...rest.map(row => row.hitPoints),
+    ])
+    expect(tourData.value?.rows[0]?.hitPoints).toBe(1)
+  })
+
   it('Should advance the turn locally and count condition durations down', async () => {
     const pinnedProne = { id: 'prone', name: 'Prone', desc: 'On the ground.' }
     const timed: InitiativeSheetRow = {
@@ -254,6 +278,7 @@ describe('Playground page', () => {
         },
       ],
       saves: [],
+      recharges: [],
     })
   })
 

@@ -2,7 +2,7 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
   const supabase = useSupabaseClient<DB>()
 
   const { table, select, page, perPage, filters, fuzzy, fields } = options
-  const { eq, search, sortBy, sortDesc } = filters || {}
+  const { eq, search, sortBy, sortDesc } = filters ?? {}
 
   let query = supabase.from(table).select(select || '*', { count: 'estimated' })
 
@@ -39,7 +39,8 @@ export async function sbQuery<T>(options: SbFetchOptions): Promise<SbQuery<T>> {
 }
 
 export function sbQuoteValue(value: string): string {
-  return `"${value.replace(/(["\\])/g, '\\$1')}"`
+  const escaped = value.replace(/(["\\])/g, String.raw`\$1`)
+  return `"${escaped}"`
 }
 
 export function sbOrQuery(keys: string[], search: string): string {

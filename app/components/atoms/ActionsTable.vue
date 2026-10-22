@@ -30,8 +30,27 @@ const grouped = computed(() =>
     .filter(group => group.items.length > 0),
 )
 
+const { show: showAreaDamage } = useAreaDamage()
+
 function hasRoll(attack: DndAttack): boolean {
   return !!(attack.toHitMod || attack.damageDieCount)
+}
+
+function saveEffect(action: DndAction): DndSaveEffect | undefined {
+  return props.allowRoll && props.id ? actionSaveEffect(action) : undefined
+}
+
+function rollAreaDamage(action: DndAction, effect: DndSaveEffect): void {
+  showAreaDamage({
+    values: {
+      amount: rollSaveEffectDamage(effect),
+      damageType: effect.damageType,
+      dc: effect.dc,
+      ability: effect.ability,
+      halfOnSave: effect.halfOnSuccess,
+    },
+    source: props.id ? { rowId: props.id, action: action.name } : undefined,
+  })
 }
 </script>
 
@@ -48,6 +67,21 @@ function hasRoll(attack: DndAttack): boolean {
           class="text-sm flex w-full flex-col border-b-2 border-secondary py-2 last:border-b-0 last:pb-0 first:pt-0"
         >
           <div class="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
+            <Tooltip
+              v-if="saveEffect(action)"
+              :text="$t('components.actionsTable.areaDamage')"
+            >
+              <UiButton
+                test-id="area-damage"
+                variant="destructive"
+                size="icon-sm"
+                class="self-center"
+                :aria-label="$t('components.actionsTable.areaDamage')"
+                @click="rollAreaDamage(action, saveEffect(action)!)"
+              >
+                <Icon name="tabler:flame" aria-hidden="true" />
+              </UiButton>
+            </Tooltip>
             <p class="font-bold">{{ action.name }}:</p>
             <span
               v-if="action.legendaryActionCost"
@@ -95,10 +129,7 @@ function hasRoll(attack: DndAttack): boolean {
                   v-if="allowRoll && id && hasRoll(attack)"
                   :id="id"
                   :attack-bonus="attack.toHitMod"
-                  :damage-dice="formatAttackDamage(attack)"
-                  :damage-bonus="
-                    (attack.damageBonus ?? 0) + (attack.extraDamageBonus ?? 0)
-                  "
+                  :damage="attackDamageParts(attack)"
                 />
 
                 <span
@@ -148,8 +179,8 @@ function hasRoll(attack: DndAttack): boolean {
                     <template v-if="attack.damageBonus">
                       + {{ attack.damageBonus }}</template
                     >
-                    <template v-if="attack.damageType">
-                      ({{ attack.damageType }})</template
+                    <template v-if="attackDamageParts(attack)[0]?.type">
+                      ({{ attackDamageParts(attack)[0]?.type }})</template
                     >
                   </span>
                 </div>

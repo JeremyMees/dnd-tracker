@@ -162,8 +162,12 @@ export function useEncounterImport() {
       if (error) throw createError(error)
     },
     onSuccess: (_data, { data }) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.encounterListing() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.encounterCount() })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.encounterListing(),
+      })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.encounterCount(),
+      })
 
       toast.success(
         t('components.toast.import.success', {

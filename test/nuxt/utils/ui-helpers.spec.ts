@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  containsFocusable,
   isPlainKeyPress,
   isShortcutContext,
   isTypingTarget,
@@ -28,6 +29,45 @@ describe('ui-helpers in the browser', () => {
     it('is false when there is no element', () => {
       expect(isTypingTarget(null)).toBe(false)
       expect(isTypingTarget(window)).toBe(false)
+    })
+  })
+
+  describe('containsFocusable', () => {
+    function wrap(html: string): HTMLElement {
+      const element = document.createElement('div')
+      element.innerHTML = html
+
+      return element
+    }
+
+    it.each([
+      '<a href="/">Link</a>',
+      '<button>Save</button>',
+      '<input>',
+      '<select></select>',
+      '<textarea></textarea>',
+      '<div contenteditable="true"></div>',
+      '<div tabindex="0"></div>',
+    ])('is true when it holds %s', html => {
+      expect(containsFocusable(wrap(html))).toBe(true)
+    })
+
+    it.each([
+      '<p>Text</p>',
+      '<a>No href</a>',
+      '<button disabled>Save</button>',
+      '<input type="hidden">',
+      '<div tabindex="-1"></div>',
+      '<div contenteditable="false"></div>',
+    ])('is false when it only holds %s', html => {
+      expect(containsFocusable(wrap(html))).toBe(false)
+    })
+
+    it('ignores the element itself', () => {
+      const element = wrap('<p>Text</p>')
+      element.tabIndex = 0
+
+      expect(containsFocusable(element)).toBe(false)
     })
   })
 

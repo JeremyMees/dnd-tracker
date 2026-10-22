@@ -22,16 +22,26 @@ const deathSaves = computed(() =>
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2 min-w-0">
           <Icon
-            :name="homebrewIcon(row.type)"
-            :class="homebrewColor(row.type)"
+            :name="row.hidden ? 'tabler:question-mark' : homebrewIcon(row.type)"
+            :class="
+              row.hidden ? 'text-muted-foreground' : homebrewColor(row.type)
+            "
             class="size-5 min-w-5"
             aria-hidden="true"
           />
-          <UiCardTitle test-id="name" class="text-lg truncate">
+          <UiCardTitle
+            test-id="name"
+            class="text-lg truncate"
+            :class="{ 'italic text-muted-foreground': row.hidden }"
+          >
             {{ row.name }}
           </UiCardTitle>
           <UiBadge v-if="own" test-id="own" class="shrink-0">
             {{ $t('general.you') }}
+          </UiBadge>
+          <UiBadge v-if="row.readied" test-id="readied" class="shrink-0">
+            <Icon name="tabler:hand-stop" aria-hidden="true" />
+            {{ $t('general.readied') }}
           </UiBadge>
         </div>
         <UiBadge test-id="initiative" variant="outline" class="shrink-0">
@@ -41,7 +51,15 @@ const deathSaves = computed(() =>
       </div>
     </UiCardHeader>
 
-    <UiCardContent class="p-4 pt-0 flex flex-col gap-3">
+    <UiCardContent
+      v-if="row.hidden"
+      test-id="hidden"
+      class="p-4 pt-0 italic text-muted-foreground"
+    >
+      {{ $t('pages.live.hiddenCreature') }}
+    </UiCardContent>
+
+    <UiCardContent v-else class="p-4 pt-0 flex flex-col gap-3">
       <div class="flex flex-wrap gap-x-4 gap-y-2 items-center">
         <LiveStatHp :row="row" icon>
           <LiveStatHealthBand v-if="row.healthBand" :band="row.healthBand" />
@@ -71,7 +89,7 @@ const deathSaves = computed(() =>
       </div>
 
       <Tooltip v-if="deathSaves" :text="$t('general.deathSaves')">
-        <LiveDeathSaves test-id="death-saves" :saves="deathSaves" disabled />
+        <DeathSavePips test-id="death-saves" :saves="deathSaves" disabled />
       </Tooltip>
     </UiCardContent>
   </UiCard>

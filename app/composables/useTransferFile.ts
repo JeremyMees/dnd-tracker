@@ -1,14 +1,14 @@
 import { toast } from 'vue-sonner'
 
+function download<K extends TransferKind>(
+  kind: K,
+  items: TransferItems[K][],
+): void {
+  downloadJson(transferFileName(kind), createTransferFile(kind, items))
+}
+
 export function useTransferFile() {
   const { t } = useI18n()
-
-  function download<K extends TransferKind>(
-    kind: K,
-    items: TransferItems[K][],
-  ): void {
-    downloadJson(transferFileName(kind), createTransferFile(kind, items))
-  }
 
   async function read<K extends TransferKind>(
     file: File,

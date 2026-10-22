@@ -87,7 +87,12 @@
     "encounterStats": "Encounter statistics",
     "openCombatLog": "Open combat log",
     "closeCombatLog": "Close combat log",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "readyAction": "Ready an action",
+    "useReadied": "Use readied action",
+    "hideFromPlayers": "Hide from players",
+    "revealToPlayers": "Reveal to players",
+    "revealHidden": "Reveal hidden creatures"
   },
   "general": {
     "pro": "Pro",
@@ -262,7 +267,8 @@
         "limitReached": "You've reached the limit of your plan. Remove one first, or upgrade to Pro for more.",
         "homebrewLimit": "This campaign already has the maximum number of homebrew items. Remove one first.",
         "noteLimit": "This campaign already has the maximum number of notes. Remove one first.",
-        "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening."
+        "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening.",
+        "rowClaimed": "A player has claimed this row, so it can't be hidden."
       },
       "loadFailed": {
         "content": "DnD content couldn't be loaded",
@@ -328,7 +334,10 @@
       "success": {
         "title": "Mail is sent successfully"
       }
-    }
+    },
+    "readied": "Readied",
+    "hidden": "Hidden",
+    "claimed": "Claimed by a player"
   },
   "pages": {
     "home": {
@@ -533,7 +542,9 @@
           "deathSaves": "Death saves for {name} weren't saved",
           "concentration": "Concentration for {name} wasn't saved",
           "row": "Your change to {name} wasn't saved",
-          "generic": "Your change wasn't saved"
+          "generic": "Your change wasn't saved",
+          "readied": "Readied action for {name} wasn't saved",
+          "hidden": "Visibility for {name} wasn't saved"
         },
         "updateFailed": {
           "rows": "Changes to the initiative list weren't saved",
@@ -555,7 +566,8 @@
           "noActiveSession": "No active live session",
           "seatNotFound": "That player already left",
           "rowNotFound": "That row no longer exists",
-          "rowClaimed": "That row is already claimed by another player"
+          "rowClaimed": "That row is already claimed by another player",
+          "rowHidden": "That row is hidden from players. Reveal it first."
         }
       }
     },
@@ -718,8 +730,6 @@
       "confirmed": "Room code confirmed",
       "currentTurn": "Current turn",
       "yourTurn": "Your turn",
-      "yourStatus": "Your status",
-      "waitingText": "The controls open automatically once {name} is up.",
       "errors": {
         "notFound": "We couldn't find a live session with that code.",
         "expired": "This live session has ended.",
@@ -738,6 +748,8 @@
         "deathSaves": "Your death saves weren't updated",
         "concentration": "Your concentration wasn't updated",
         "conditions": "Your conditions weren't updated",
+        "reaction": "Your reaction wasn't updated",
+        "ready": "Your readied action wasn't updated",
         "endTurn": "Your turn couldn't be ended"
       },
       "actionErrors": {
@@ -748,7 +760,8 @@
         "noRowClaimed": "You haven't claimed a character yet.",
         "spectator": "Spectators can't change characters.",
         "seatExpired": "Your seat has expired. Rejoin the live session."
-      }
+      },
+      "hiddenCreature": "Something lurks in the shadows…"
     }
   },
   "components": {
@@ -790,10 +803,20 @@
         "reassign": "The player couldn't be moved to that character"
       }
     },
+    "deathSaves": {
+      "save": "Successes",
+      "fail": "Failures"
+    },
+    "resources": {
+      "legendaryResistances": "Legendary resistances",
+      "reset": "Reset uses"
+    },
     "actionsTable": {
       "cost": "Cost { cost } action | Costs { cost } actions",
       "form": " While in { form } form.",
-      "oneTarget": "One target"
+      "oneTarget": "One target",
+      "areaDamage": "Roll area damage",
+      "targetDamage": "{name} takes {amount} damage"
     },
     "repeaterInput": {
       "noItems": "No items added yet. Click \"Add\" to get started."
@@ -840,13 +863,48 @@
         "fail": "{rowName} failed a death save|{rowName} failed {amount} death saves"
       },
       "stabilized": "{rowName} stabilized",
-      "died": "{rowName} died"
+      "died": "{rowName} died",
+      "turn": "{rowName}'s turn started",
+      "rowAdded": "{rowName} joined the encounter",
+      "rowAddedInitiative": "{rowName} joined with initiative {initiative}",
+      "rowRemoved": "{rowName} was removed from the encounter",
+      "roll": {
+        "hit": "{rowName} rolled {total} to hit for {damage} damage",
+        "critical": "{rowName} rolled a critical hit ({total}) for {damage} damage",
+        "miss": "{rowName} rolled a natural 1 and missed",
+        "dice": "Rolled {dice} for a total of {total}"
+      },
+      "readied": "{rowName} readied an action",
+      "readyUsed": "{rowName} used their readied action",
+      "readyExpired": "{rowName}'s readied action ran out",
+      "hidden": "{rowName} was hidden from players",
+      "revealed": "{rowName} was revealed to players"
+    },
+    "areaDamage": {
+      "title": "Area damage",
+      "description": "Damage several creatures at once, with an optional saving throw.",
+      "dc": "Save DC",
+      "halfOnSave": "Half damage on a save",
+      "askPlayers": "Ask {names} to roll a {ability} save (DC {dc}).",
+      "reroll": "Roll the save again",
+      "saved": "Saved",
+      "defense": {
+        "immune": "Immune",
+        "resistant": "Resistant",
+        "vulnerable": "Vulnerable"
+      },
+      "apply": "Apply damage | Apply to {count} creature | Apply to {count} creatures",
+      "error": "The damage could not be applied",
+      "markUsed": "Mark {action} as used",
+      "usedUp": "{action} has no uses left"
     },
     "turnReminders": {
       "expired": "{condition} on {name} ran out",
       "save": "{name}: {ability} save DC {dc} to end {condition}",
       "saved": "Saved",
-      "failed": "Failed"
+      "failed": "Failed",
+      "recharged": "{name}: {action} recharged (rolled {roll})",
+      "notRecharged": "{name}: {action} did not recharge (rolled {roll})"
     },
     "conditionDuration": {
       "title": "Duration",
@@ -883,6 +941,19 @@
         }
       }
     },
+    "difficulty": {
+      "title": "Encounter difficulty",
+      "label": "Encounter difficulty: {rating}",
+      "experience": "{value} XP in monsters",
+      "missingLevels": "{count} player has no level and is not counted | {count} players have no level and are not counted",
+      "ratings": {
+        "trivial": "Trivial",
+        "low": "Low",
+        "moderate": "Moderate",
+        "high": "High",
+        "extreme": "Extreme"
+      }
+    },
     "combatSummary": {
       "title": "Encounter summary",
       "description": "How the fight went for everyone involved",
@@ -898,6 +969,10 @@
         "concentration": "Concentration broken"
       },
       "deathSavesValue": "{made} made / {failed} failed",
+      "experience": {
+        "perPlayer": "{value} XP per player",
+        "total": "{total} XP from defeated monsters, for {players} player | {total} XP from defeated monsters, split over {players} players"
+      },
       "awards": {
         "title": "Standouts",
         "exclusive": {
@@ -1052,6 +1127,7 @@
       "questionLabel": "Your question?",
       "challengeLabel": "Challenge rating",
       "playerLabel": "Player",
+      "levelLabel": "Level",
       "descriptionLabel": "Description",
       "actionsLabel": "Actions",
       "reactionsLabel": "Reactions",
@@ -1295,6 +1371,8 @@
       },
       "negative": "Allow HP and AC to be negative",
       "bloodied": "Add Bloodied automatically at half HP or lower",
+      "autoRollInitiative": "Auto-roll initiative for monsters when they are added",
+      "skipDeadMonsters": "Skip monsters at 0 HP when going to the next turn",
       "noActiveWidgets": "No active widgets. Use the settings icon to enable widgets."
     },
     "infoCard": {
@@ -1418,7 +1496,13 @@
       "sidebar": "Show or hide the sidebar",
       "overview": "Show all shortcuts",
       "target": "Choose a target, starting at the current creature",
-      "clearTarget": "Target the current creature again"
+      "clearTarget": "Target the current creature again",
+      "undo": "Undo the last change",
+      "redo": "Redo the change you undid"
+    },
+    "undo": {
+      "done": "Last change undone",
+      "redone": "Change redone"
     }
   },
   "tour": {

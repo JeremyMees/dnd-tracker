@@ -3,7 +3,7 @@ const props = withDefaults(
   defineProps<{
     encounterId: number
     session: LiveSessionResponse | undefined
-    rows: { id: string; name: string }[]
+    rows: { id: string; name: string; hidden?: boolean }[]
     showTitle?: boolean
   }>(),
   {
@@ -24,7 +24,9 @@ function rowName(id: string | null): string {
 
 function availableRows(seat: LiveSeat): { id: string; name: string }[] {
   return props.rows.filter(
-    row => row.id === seat.row || !seats.value.some(s => s.row === row.id),
+    row =>
+      row.id === seat.row ||
+      (!row.hidden && !seats.value.some(s => s.row === row.id)),
   )
 }
 
@@ -61,79 +63,83 @@ function confirmKick(seat: LiveSeat): void {
       {{ $t('components.liveSession.seats.empty') }}
     </p>
 
-    <ul v-else class="flex flex-col gap-2 max-h-48 overflow-y-auto">
-      <li
-        v-for="seat in seats"
-        :key="seat.seat"
-        :test-id="`seat-${seat.seat}`"
-        class="flex items-center gap-2 text-sm"
-      >
-        <Tooltip
-          :text="
-            connected.has(seat.seat)
-              ? $t('general.online')
-              : $t('general.offline')
-          "
+    <UiScrollArea v-else class="max-h-48" viewport-class="pr-3">
+      <ul class="flex flex-col gap-2">
+        <li
+          v-for="seat in seats"
+          :key="seat.seat"
+          :test-id="`seat-${seat.seat}`"
+          class="flex items-center gap-2 text-sm"
         >
-          <span
-            :test-id="`seat-status-${seat.seat}`"
-            class="size-2 rounded-full shrink-0 animate-pulse"
-            :class="
-              connected.has(seat.seat) ? 'bg-success' : 'bg-muted-foreground/30'
+          <Tooltip
+            :text="
+              connected.has(seat.seat)
+                ? $t('general.online')
+                : $t('general.offline')
             "
-          />
-        </Tooltip>
-
-        <div class="flex flex-col flex-1 min-w-0">
-          <span class="font-medium truncate">{{ seat.name }}</span>
-          <span class="text-xs text-muted-foreground truncate">
-            {{
-              seat.spectator
-                ? $t('general.spectator')
-                : $t('components.liveSession.seats.playing', {
-                    row: rowName(seat.row),
-                  })
-            }}
-          </span>
-        </div>
-
-        <UiSelect
-          v-if="!seat.spectator"
-          :model-value="seat.row ?? undefined"
-          @update:model-value="value => reassign(seat.seat, value as string)"
-        >
-          <UiSelectTrigger
-            :test-id="`reassign-${seat.seat}`"
-            size="sm"
-            class="w-auto"
           >
-            <UiSelectValue
-              :placeholder="
-                $t('components.liveSession.seats.reassignPlaceholder')
+            <span
+              :test-id="`seat-status-${seat.seat}`"
+              class="size-2 rounded-full shrink-0 animate-pulse"
+              :class="
+                connected.has(seat.seat)
+                  ? 'bg-success'
+                  : 'bg-muted-foreground/30'
               "
             />
-          </UiSelectTrigger>
-          <UiSelectContent>
-            <UiSelectItem
-              v-for="row in availableRows(seat)"
-              :key="row.id"
-              :value="row.id"
-            >
-              {{ row.name }}
-            </UiSelectItem>
-          </UiSelectContent>
-        </UiSelect>
+          </Tooltip>
 
-        <UiButton
-          :test-id="`kick-${seat.seat}`"
-          variant="destructive-ghost"
-          size="icon-sm"
-          :aria-label="$t('actions.kick')"
-          @click="confirmKick(seat)"
-        >
-          <Icon name="tabler:user-x" aria-hidden="true" />
-        </UiButton>
-      </li>
-    </ul>
+          <div class="flex flex-col flex-1 min-w-0">
+            <span class="font-medium truncate">{{ seat.name }}</span>
+            <span class="text-xs text-muted-foreground truncate">
+              {{
+                seat.spectator
+                  ? $t('general.spectator')
+                  : $t('components.liveSession.seats.playing', {
+                      row: rowName(seat.row),
+                    })
+              }}
+            </span>
+          </div>
+
+          <UiSelect
+            v-if="!seat.spectator"
+            :model-value="seat.row ?? undefined"
+            @update:model-value="value => reassign(seat.seat, value as string)"
+          >
+            <UiSelectTrigger
+              :test-id="`reassign-${seat.seat}`"
+              size="sm"
+              class="w-auto"
+            >
+              <UiSelectValue
+                :placeholder="
+                  $t('components.liveSession.seats.reassignPlaceholder')
+                "
+              />
+            </UiSelectTrigger>
+            <UiSelectContent>
+              <UiSelectItem
+                v-for="row in availableRows(seat)"
+                :key="row.id"
+                :value="row.id"
+              >
+                {{ row.name }}
+              </UiSelectItem>
+            </UiSelectContent>
+          </UiSelect>
+
+          <UiButton
+            :test-id="`kick-${seat.seat}`"
+            variant="destructive-ghost"
+            size="icon-sm"
+            :aria-label="$t('actions.kick')"
+            @click="confirmKick(seat)"
+          >
+            <Icon name="tabler:user-x" aria-hidden="true" />
+          </UiButton>
+        </li>
+      </ul>
+    </UiScrollArea>
   </div>
 </template>

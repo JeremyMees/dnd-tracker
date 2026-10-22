@@ -9,5 +9,5 @@ export const bloodiedCondition: DndCondition = {
 export const storedBloodiedCondition: DndCondition = {
   id: 'bloodied',
   name: 'Bloodied',
-  desc: 'A creature is Bloodied while it has half its Hit Points or fewer.',
+  desc: '',
 }

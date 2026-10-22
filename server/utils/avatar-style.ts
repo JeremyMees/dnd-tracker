@@ -45,12 +45,18 @@ const backgroundColors = [
   '6b7280', // gray
 ]
 
-const blackListedKeys = ['headContrastColor', 'inkColor', 'maskVariant']
+const blackListedKeys = new Set([
+  'headContrastColor',
+  'inkColor',
+  'maskVariant',
+])
 
 let style: Style<typeof openPeeps> | undefined
 
 export function getAvatarStyle(): Style<typeof openPeeps> {
-  return (style ??= new Style(openPeeps))
+  style ??= new Style(openPeeps)
+
+  return style
 }
 
 export function buildStyleOptions(): ConfigStyleOptions {
@@ -62,7 +68,7 @@ export function buildStyleOptions(): ConfigStyleOptions {
   for (const key in descriptor) {
     const field = descriptor[key]
 
-    if (!field || blackListedKeys.includes(key)) continue
+    if (!field || blackListedKeys.has(key)) continue
 
     if (field.type === 'color') {
       const palette = colors.get(key.replace(/Color$/, ''))?.values()

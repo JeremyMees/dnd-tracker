@@ -6,7 +6,6 @@ defineEmits<{ toggleSidebar: [] }>()
 defineProps<{ isExpanded: boolean }>()
 
 const { sheet, update } = validateInject(INITIATIVE_SHEET)
-const { t } = useI18n()
 const { keyLabel } = useShortcutKeys()
 
 const shortcutsOpen = ref<boolean>(false)
@@ -41,53 +40,6 @@ function remixMonster(monster: DndMonster): void {
 onBeforeUnmount(() => (openModal.value = undefined))
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
-
-useCommands(() => [
-  {
-    id: 'bestiary',
-    label: t('general.bestiary'),
-    icon: 'tabler:bat',
-    iconClass: 'text-destructive',
-    disabled: maxCharacters.value,
-    run: () => (openModal.value = 'bestiary'),
-  },
-  {
-    id: 'campaign-homebrew',
-    label: t('general.campaignHomebrew'),
-    icon: 'tabler:meeple',
-    iconClass: 'text-primary',
-    disabled: maxCharacters.value || !sheet.value?.campaign?.id,
-    run: () => (openModal.value = 'addHomebrew'),
-  },
-  {
-    id: 'new-homebrew',
-    label: t('general.newHomebrew'),
-    icon: 'tabler:beer',
-    iconClass: 'text-warning',
-    disabled: maxCharacters.value,
-    run: () => (openModal.value = 'newHomebrew'),
-  },
-  {
-    id: 'content',
-    label: t('components.navbar.dnd-content'),
-    icon: 'tabler:book',
-    iconClass: 'text-help',
-    run: () => (openModal.value = 'content'),
-  },
-  {
-    id: 'shortcuts',
-    label: t('components.shortcuts.overview'),
-    icon: 'tabler:keyboard',
-    shortcut: ['?'],
-    run: () => (shortcutsOpen.value = true),
-  },
-  {
-    id: 'settings',
-    label: t('general.setting', 2),
-    icon: 'tabler:settings',
-    run: () => (openModal.value = 'settings'),
-  },
-])
 </script>
 
 <template>
@@ -288,7 +240,7 @@ useCommands(() => [
                 </UiDialogTitle>
                 <UiDialogDescription class="sr-only" />
               </UiDialogHeader>
-              <div class="overflow-y-auto">
+              <UiDialogBody>
                 <FormHomebrew
                   :campaign-id="sheet?.campaign?.id"
                   :template="remix"
@@ -297,7 +249,7 @@ useCommands(() => [
                   is-encounter
                   @close="openModal = undefined"
                 />
-              </div>
+              </UiDialogBody>
             </UiDialogContent>
           </UiDialog>
         </UiSidebarMenuItem>

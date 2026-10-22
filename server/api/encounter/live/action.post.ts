@@ -9,14 +9,14 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async event => {
+  const body = await readValidatedBody(event, bodySchema.parse)
+  const payload = await verifyLiveSeatToken(body.seatToken)
+
   await assertRateLimit(event, {
-    key: 'live-action',
+    key: `live-action:${payload.seat}`,
     limit: 60,
     windowMs: ONE_MINUTE,
   })
-
-  const body = await readValidatedBody(event, bodySchema.parse)
-  const payload = await verifyLiveSeatToken(body.seatToken)
 
   if (payload.spectator) {
     throw createError({
@@ -27,12 +27,19 @@ export default defineEventHandler(async event => {
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
-  const { data: session } = await supabase
-    .from('live_sessions')
-    .select('seats, expiresAt, endedAt')
-    .eq('uuid', payload.session)
-    .eq('encounter', payload.encounter)
-    .maybeSingle()
+  const [{ data: session }, { data: sheet }] = await Promise.all([
+    supabase
+      .from('live_sessions')
+      .select('seats, expiresAt, endedAt')
+      .eq('uuid', payload.session)
+      .eq('encounter', payload.encounter)
+      .maybeSingle(),
+    supabase
+      .from('initiative_sheets')
+      .select('activeIndex, round, rows, settings')
+      .eq('id', payload.encounter)
+      .single(),
+  ])
 
   if (!session) {
     throw createError({
@@ -50,23 +57,27 @@ export default defineEventHandler(async event => {
 
   const seat = session.seats.find(s => s.seat === payload.seat)
 
-  if (!seat || !seat.row) {
+  if (!seat?.row) {
     throw createError({ statusCode: 403, statusMessage: 'No row claimed' })
   }
-
-  const { data: sheet } = await supabase
-    .from('initiative_sheets')
-    .select('activeIndex, round, rows, settings')
-    .eq('id', payload.encounter)
-    .single()
 
   if (!sheet) {
     throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
   }
 
-  const activeRow = sheet.rows[sheet.activeIndex]
+  const ownRow = sheet.rows.find(row => row.id === seat.row)
 
-  if (activeRow?.id !== seat.row) {
+  if (!ownRow) {
+    throw createError({ statusCode: 404, statusMessage: 'Row not found' })
+  }
+
+  const isOwnTurn = sheet.rows[sheet.activeIndex]?.id === seat.row
+
+  const anyTurn =
+    body.action.type === 'reaction' ||
+    (body.action.type === 'ready' && !body.action.value)
+
+  if (!isOwnTurn && !anyTurn) {
     throw createError({ statusCode: 403, statusMessage: 'Not your turn' })
   }
 
@@ -84,25 +95,12 @@ export default defineEventHandler(async event => {
     return { synced: true }
   }
 
-  let patch
-
-  if (body.action.type === 'hp') {
-    patch = await buildHpPatch(
-      supabase,
-      payload.encounter,
-      seat.row,
-      body.action,
-    )
-  } else if (body.action.type === 'ac') {
-    patch = await buildAcPatch(
-      supabase,
-      payload.encounter,
-      seat.row,
-      body.action,
-    )
-  } else {
-    patch = { [body.action.type]: body.action.value }
-  }
+  const patch = await buildLiveActionPatch(
+    supabase,
+    ownRow,
+    sheet.settings,
+    body.action,
+  )
 
   const { data: row, error } = await supabase.rpc('apply_live_action', {
     p_encounter: payload.encounter,
@@ -112,23 +110,23 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
-  await logCombatEvents(supabase, {
-    encounterId: payload.encounter,
-    rowId: seat.row,
-    round: sheet.round,
-    actorName: seat.name,
-    events: diffRow(activeRow, row),
-  })
-
-  await broadcastLiveAction(supabase, payload.session, {
-    row: seat.row,
-    patch: sanitizeBroadcastPatch(row, body.action.type, patch),
-  })
-
-  await broadcastSheetAction(supabase, payload.encounter, {
-    row: seat.row,
-    patch,
-  })
+  await Promise.all([
+    logCombatEvents(supabase, {
+      encounterId: payload.encounter,
+      rowId: seat.row,
+      round: sheet.round,
+      actorName: seat.name,
+      events: diffRow(ownRow, row),
+    }),
+    broadcastLiveAction(supabase, payload.session, {
+      row: seat.row,
+      patch: sanitizeBroadcastPatch(row, body.action.type, patch),
+    }),
+    broadcastSheetAction(supabase, payload.encounter, {
+      row: seat.row,
+      patch,
+    }),
+  ])
 
   return { row }
 })

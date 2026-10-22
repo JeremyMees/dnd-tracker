@@ -1,9 +1,9 @@
 import { serverSupabaseUser } from '#supabase/server'
 
 export default defineNitroPlugin(nitroApp => {
-  nitroApp.hooks.hook('request', async event => {
+  nitroApp.hooks.hook('request', event => {
     event.context.$authorization = {
-      resolveServerUser: async () => await serverSupabaseUser(event),
+      resolveServerUser: () => serverSupabaseUser(event),
     }
   })
 })

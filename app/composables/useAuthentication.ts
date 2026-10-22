@@ -13,6 +13,10 @@ interface Register extends Credentials {
   avatarOptions: Avatar['extra']
 }
 
+async function register(form: Register): Promise<void> {
+  await $fetch('/api/user/create', { method: 'POST', body: form })
+}
+
 export function useAuthentication() {
   const user = useState<AuthUser | null>('auth-user', () => null)
   const gc = useState<number | null>('auth-gc', () => null)
@@ -20,15 +24,6 @@ export function useAuthentication() {
 
   const supabase = useSupabaseClient<DB>()
   const localePath = useLocalePath()
-
-  supabase.auth.onAuthStateChange(event => {
-    if (['USER_UPDATED', 'SIGNED_IN'].includes(event)) fetch()
-    else if (event === 'INITIAL_SESSION' && !user.value) fetch()
-  })
-
-  async function register(form: Register): Promise<void> {
-    await $fetch('/api/user/create', { method: 'POST', body: form })
-  }
 
   async function login(credentials: Credentials): Promise<void> {
     const { error } = await supabase.auth.signInWithPassword(credentials)
@@ -55,7 +50,7 @@ export function useAuthentication() {
       if (
         user.value &&
         gc.value &&
-        new Date().getTime() - gc.value < FIVE_MINUTES &&
+        Date.now() - gc.value < FIVE_MINUTES &&
         !forceRefresh
       )
         return
@@ -77,7 +72,7 @@ export function useAuthentication() {
 
       if (data) {
         user.value = data
-        gc.value = new Date().getTime()
+        gc.value = Date.now()
       }
     }
 

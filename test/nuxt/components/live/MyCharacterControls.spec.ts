@@ -1,5 +1,6 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { VueWrapper } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import MyCharacterAc from '~/components/live/MyCharacterAc.vue'
 import MyCharacterControls from '~/components/live/MyCharacterControls.vue'
 import conditions from '~~/test/fixtures/conditions.json'
@@ -46,6 +47,8 @@ const defaultAllow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  reaction: true,
+  ready: true,
   endTurn: true,
 }
 
@@ -135,7 +138,7 @@ describe('LiveMyCharacterControls', () => {
       },
     })
 
-    await component.get('[test-id="save"]').trigger('click')
+    await component.get('[test-id="save"] [test-id="pip"]').trigger('click')
 
     expect(apply).toHaveBeenCalledWith(
       {
@@ -154,6 +157,29 @@ describe('LiveMyCharacterControls', () => {
     )
   })
 
+  it('fills every death save up to the clicked one', async () => {
+    const component = await mountControls({
+      deathSaves: {
+        save: [false, false, false],
+        fail: [false, false, false],
+      },
+    })
+
+    await component
+      .findAll('[test-id="save"] [test-id="pip"]')[1]!
+      .trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      {
+        type: 'deathSaves',
+        value: { save: [true, true, false], fail: [false, false, false] },
+      },
+      {
+        deathSaves: { save: [true, true, false], fail: [false, false, false] },
+      },
+    )
+  })
+
   it('toggles a death save failure and applies the new value', async () => {
     const component = await mountControls({
       deathSaves: {
@@ -162,7 +188,7 @@ describe('LiveMyCharacterControls', () => {
       },
     })
 
-    await component.get('[test-id="fail"]').trigger('click')
+    await component.get('[test-id="fail"] [test-id="pip"]').trigger('click')
 
     expect(apply).toHaveBeenCalledWith(
       {
@@ -185,14 +211,18 @@ describe('LiveMyCharacterControls', () => {
     const component = await mountControls({ concentration: true })
 
     expect(
-      component.get('[test-id="concentration"] .iconify').classes(),
-    ).toContain('i-tabler:circle-filled')
+      component
+        .get('[test-id="concentration"] [test-id="pip"]')
+        .attributes('aria-pressed'),
+    ).toBe('true')
   })
 
   it('toggles concentration', async () => {
     const component = await mountControls({ concentration: false })
 
-    await component.get('[test-id="concentration"]').trigger('click')
+    await component
+      .get('[test-id="concentration"] [test-id="pip"]')
+      .trigger('click')
 
     expect(apply).toHaveBeenCalledWith(
       { type: 'concentration', value: true },
@@ -213,6 +243,23 @@ describe('LiveMyCharacterControls', () => {
       activeRowId: row.id,
       disabled: false,
     })
+  })
+
+  it('leaves hidden rows out of the picker', async () => {
+    const component = await mountSuspended(MyCharacterControls, {
+      props: {
+        row,
+        rows: [row, goblin, { ...goblin, id: 'row-3', hidden: true }],
+        active: true,
+        allow: defaultAllow,
+      },
+    })
+
+    expect(
+      component.findComponent({ name: 'ConditionPicker' }).props('rows'),
+    ).toEqual([row, goblin])
+
+    component.unmount()
   })
 
   it('adds a picked condition with its duration', async () => {
@@ -266,10 +313,12 @@ describe('LiveMyCharacterControls', () => {
     )
 
     expect(
-      component.get('[test-id="save"]').attributes('disabled'),
+      component.get('[test-id="save"] [test-id="pip"]').attributes('disabled'),
     ).toBeDefined()
     expect(
-      component.get('[test-id="concentration"]').attributes('disabled'),
+      component
+        .get('[test-id="concentration"] [test-id="pip"]')
+        .attributes('disabled'),
     ).toBeDefined()
 
     expect(
@@ -313,7 +362,7 @@ describe('LiveMyCharacterControls', () => {
     )
 
     expect(
-      component.get('[test-id="save"]').attributes('disabled'),
+      component.get('[test-id="save"] [test-id="pip"]').attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -321,7 +370,9 @@ describe('LiveMyCharacterControls', () => {
     const component = await mountControls({}, true, { concentration: false })
 
     expect(
-      component.get('[test-id="concentration"]').attributes('disabled'),
+      component
+        .get('[test-id="concentration"] [test-id="pip"]')
+        .attributes('disabled'),
     ).toBeDefined()
   })
 
@@ -334,6 +385,47 @@ describe('LiveMyCharacterControls', () => {
     await picker.vm.$emit('add', conditions[0])
 
     expect(apply).not.toHaveBeenCalled()
+  })
+
+  it("marks the reaction as used outside the row's turn", async () => {
+    const component = await mountControls({}, false)
+
+    await component.get('[test-id="reaction"] [test-id="pip"]').trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'reaction', value: true },
+      { reaction: true },
+    )
+  })
+
+  it('clears a used reaction', async () => {
+    const component = await mountControls({ reaction: true })
+    const pip = component.get('[test-id="reaction"] [test-id="pip"]')
+
+    expect(pip.attributes('aria-pressed')).toBe('true')
+
+    await pip.trigger('click')
+
+    expect(apply).toHaveBeenCalledWith(
+      { type: 'reaction', value: false },
+      { reaction: undefined },
+    )
+  })
+
+  it('disables the reaction when the DM has disallowed it', async () => {
+    const component = await mountControls({}, true, { reaction: false })
+
+    expect(
+      component
+        .get('[test-id="reaction"] [test-id="pip"]')
+        .attributes('disabled'),
+    ).toBeDefined()
+  })
+
+  it('hides the reaction for a lair row', async () => {
+    const component = await mountControls({ type: 'lair' })
+
+    expect(component.find('[test-id="reaction"]').exists()).toBe(false)
   })
 
   it('ends the turn when the end turn button is clicked', async () => {
@@ -358,5 +450,66 @@ describe('LiveMyCharacterControls', () => {
     expect(
       component.get('[test-id="end-turn"]').attributes('disabled'),
     ).toBeDefined()
+  })
+
+  describe('Ready an action', () => {
+    let component: VueWrapper
+
+    beforeEach(() => {
+      apply.mockClear()
+    })
+
+    afterEach(() => {
+      component?.unmount()
+    })
+
+    it('readies an action on the turn of the row', async () => {
+      component = await mountControls()
+
+      await component.get('[test-id="ready"]').trigger('click')
+
+      expect(apply).toHaveBeenCalledWith(
+        { type: 'ready', value: true },
+        { readied: true },
+      )
+    })
+
+    it.each([
+      ['it is not the turn of the row', false, {}],
+      ['the DM has disallowed it', true, { ready: false }],
+    ])('disables ready when %s', async (_label, active, allow) => {
+      component = await mountControls({}, active, allow)
+
+      expect(
+        component.get('[test-id="ready"]').attributes('disabled'),
+      ).toBeDefined()
+    })
+
+    it('hides ready for a lair row', async () => {
+      component = await mountControls({ type: 'lair' })
+
+      expect(component.find('[test-id="ready"]').exists()).toBe(false)
+    })
+
+    it('uses a readied action outside the turn and spends the reaction', async () => {
+      component = await mountControls({ readied: true }, false)
+
+      expect(component.find('[test-id="ready"]').exists()).toBe(false)
+
+      await component.get('[test-id="use-readied"]').trigger('click')
+
+      expect(apply).toHaveBeenCalledWith(
+        { type: 'ready', value: false },
+        { readied: false, reaction: true },
+      )
+    })
+
+    it('disables using a readied action when the DM has disallowed it', async () => {
+      component = await mountControls({ readied: true }, true, { ready: false })
+
+      expect(
+        component.get('[test-id="use-readied"]').attributes('disabled'),
+      ).toBeDefined()
+    })
   })
 })

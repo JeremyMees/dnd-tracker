@@ -124,8 +124,12 @@ export function useHomebrewImport() {
       if (error) throw createError(error)
     },
     onSuccess: (_data, { data }) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.homebrewListing() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.homebrewCount() })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.homebrewListing(),
+      })
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.homebrewCount(),
+      })
 
       toast.success(
         t('components.toast.import.success', {

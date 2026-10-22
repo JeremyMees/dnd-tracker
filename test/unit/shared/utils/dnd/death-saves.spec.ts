@@ -11,6 +11,24 @@ describe('dnd/deathsaves', () => {
     })
   })
 
+  describe('isDeadMonster', () => {
+    it.each([
+      [{ type: 'monster', hitPoints: 0 }, true],
+      [{ type: 'monster', hitPoints: -4 }, true],
+      [{ type: 'summon', hitPoints: 0 }, true],
+      [{ type: 'monster', hitPoints: 1 }, false],
+      [{ type: 'monster', hitPoints: undefined }, false],
+      [{ type: 'lair', hitPoints: undefined }, false],
+      [{ type: 'player', hitPoints: 0 }, false],
+      [{ type: 'npc', hitPoints: 0 }, false],
+    ] as [Pick<InitiativeSheetRow, 'type' | 'hitPoints'>, boolean][])(
+      'reads %o as dead: %s',
+      (row, result) => {
+        expect(isDeadMonster(row)).toBe(result)
+      },
+    )
+  })
+
   describe('checkDeathSaves', () => {
     it('should detect failed and saved outcomes', () => {
       expect(
@@ -57,21 +75,34 @@ describe('dnd/deathsaves', () => {
     })
   })
 
+  describe('setDeathSaveCount', () => {
+    const base: DndDeathSaves = {
+      save: [false, true, false],
+      fail: [true, false, false],
+    }
+
+    it('should fill the first slots up to the count', () => {
+      expect(setDeathSaveCount(base, 'save', 2)).toEqual({
+        save: [true, true, false],
+        fail: [true, false, false],
+      })
+    })
+
+    it('should clear every slot for a count of zero', () => {
+      expect(setDeathSaveCount(base, 'fail', 0).fail).toEqual([
+        false,
+        false,
+        false,
+      ])
+    })
+  })
+
   describe('resetDeathSaves', () => {
     it('should reset death saves to all false', () => {
       expect(resetDeathSaves()).toEqual({
         fail: [false, false, false],
         save: [false, false, false],
       })
-    })
-  })
-
-  describe('deathSavesFunctions', () => {
-    it('should expose the same helper functions on deathSavesFunctions', () => {
-      expect(deathSavesFunctions.hasDeathSaves).toBe(hasDeathSaves)
-      expect(deathSavesFunctions.applyDeathSave).toBe(applyDeathSave)
-      expect(deathSavesFunctions.checkDeathSaves).toBe(checkDeathSaves)
-      expect(deathSavesFunctions.resetDeathSaves).toBe(resetDeathSaves)
     })
   })
 })

@@ -9,32 +9,6 @@ describe('array-utils', () => {
     })
   })
 
-  describe('randomArrayItems', () => {
-    it('should return the specified number of items', () => {
-      const array = [1, 2, 3, 4, 5]
-      const result = randomArrayItems(array, 3)
-
-      expect(result.length).toBe(3)
-      result.forEach(item => expect(array).toContain(item))
-    })
-
-    it('should return all items shuffled when number is greater than array length', () => {
-      const array = [1, 2, 3, 4, 5]
-      const result = randomArrayItems(array, 10)
-
-      expect(result.length).toBe(array.length)
-      expect(result.sort()).toEqual(array.sort())
-    })
-
-    it('should use default of 1 item when number is not specified', () => {
-      const array = [1, 2, 3, 4, 5]
-      const result = randomArrayItems(array)
-
-      expect(result.length).toBe(1)
-      expect(array).toContain(result[0])
-    })
-  })
-
   describe('searchArray', () => {
     it('should filter array items based on search string', () => {
       const array = [
@@ -57,15 +31,6 @@ describe('array-utils', () => {
       const result = searchArray(array, 'name', '')
 
       expect(result).toEqual(array)
-    })
-  })
-
-  describe('shuffleArray', () => {
-    it('should return an array with the same items', () => {
-      const array = [1, 2, 3, 4, 5]
-      const result = shuffleArray([...array])
-
-      expect(result.sort()).toEqual(array.sort())
     })
   })
 

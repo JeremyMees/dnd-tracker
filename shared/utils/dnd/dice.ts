@@ -71,6 +71,44 @@ export function formatAttackDamage(
   return dice.length ? dice.join(' + ') : undefined
 }
 
+export function attackDamageParts(
+  attack: Pick<
+    DndAttack,
+    | 'damageDieCount'
+    | 'damageDieType'
+    | 'damageBonus'
+    | 'damageType'
+    | 'extraDamageDieCount'
+    | 'extraDamageDieType'
+    | 'extraDamageBonus'
+    | 'extraDamageType'
+  >,
+): DndAttackDamage[] {
+  const extraDice = formatAttackDice(
+    attack.extraDamageDieCount,
+    attack.extraDamageDieType,
+  )
+  const hasExtra = !!extraDice || !!attack.extraDamageBonus
+  const parts: DndAttackDamage[] = [
+    {
+      dice: formatAttackDice(attack.damageDieCount, attack.damageDieType),
+      bonus: attack.damageBonus ?? 0,
+      type:
+        attack.damageType ?? (hasExtra ? undefined : attack.extraDamageType),
+    },
+  ]
+
+  if (hasExtra) {
+    parts.push({
+      dice: extraDice,
+      bonus: attack.extraDamageBonus ?? 0,
+      type: attack.extraDamageType,
+    })
+  }
+
+  return parts
+}
+
 export function parseAttackDice(
   expr?: string | null,
 ): { damageDieCount: number; damageDieType: DndDice } | undefined {

@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async to => {
 
   const { params } = to
 
-  if (!('id' in params) || !('title' in params) || isNaN(+params.id)) {
+  if (!('id' in params) || !('title' in params) || Number.isNaN(+params.id)) {
     return navigateTo(localePath('index'))
   }
 

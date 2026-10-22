@@ -1,12 +1,12 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { claimableRowTypes } from '~~/constants/validation'
-import { FIVE_MINUTES } from '~~/constants/time'
+import { ONE_MINUTE } from '~~/constants/time'
 
 export default defineEventHandler(async (event): Promise<LiveCodeSession> => {
   await assertRateLimit(event, {
     key: 'live-code',
     limit: 30,
-    windowMs: FIVE_MINUTES,
+    windowMs: ONE_MINUTE,
   })
 
   const { code } = getQuery(event)

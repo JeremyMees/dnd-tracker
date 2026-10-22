@@ -17,6 +17,8 @@ const allow: LiveAllowActions = {
   deathSaves: true,
   concentration: true,
   conditions: true,
+  reaction: true,
+  ready: true,
   endTurn: true,
 }
 
@@ -45,7 +47,7 @@ describe('LiveMyCharacterSidePanel', () => {
     expect(
       component.get('[test-id="controls-probe"]').attributes('data-rows'),
     ).toBe(rows.map(row => row.id).join())
-    expect(component.find('[test-id="waiting"]').exists()).toBe(false)
+    expect(component.get('[test-id="turn"]').text()).toBe('pages.live.yourTurn')
   })
 
   it('highlights the panel when the row is taking its turn', async () => {
@@ -60,7 +62,7 @@ describe('LiveMyCharacterSidePanel', () => {
     expect(panel.classes()).toContain('border-primary')
   })
 
-  it('shows the waiting state with your own status while another row acts', async () => {
+  it('keeps your own character and controls while another row acts', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
       props: { row: ownRow, rows, activeRow: otherRow, allow },
       global: { stubs },
@@ -70,28 +72,15 @@ describe('LiveMyCharacterSidePanel', () => {
 
     expect(panel.attributes('data-active')).toBe('false')
     expect(panel.classes()).not.toContain('border-primary')
-    expect(component.get('[test-id="heading"]').text()).toBe('Goblin 1')
-    expect(component.get('[test-id="waiting"]').text()).toContain(
-      'pages.live.waitingText',
+    expect(component.get('[test-id="heading"]').text()).toBe('Elara')
+    expect(component.get('[test-id="turn"]').text()).toContain(
+      'pages.live.currentTurn: Goblin 1',
     )
-    expect(component.get('[test-id="hp"]').text()).toContain('9')
-    expect(component.get('[test-id="ac"]').text()).toBe('15')
-    expect(component.find('[test-id="controls-probe"]').exists()).toBe(false)
-  })
+    expect(component.get('[test-id="controls-probe"]').text()).toBe(ownRow.id)
+    expect(
+      component.get('[test-id="controls-probe"]').attributes('data-active'),
+    ).toBe('false')
 
-  it('falls back to the health band when the hit points are hidden', async () => {
-    const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: {
-        row: { ...baseRow, healthBand: 'critical' },
-        rows,
-        activeRow: otherRow,
-        allow,
-      },
-      global: { stubs },
-    })
-
-    expect(component.get('[test-id="health-band"]').text()).toBe(
-      'general.critical',
-    )
+    component.unmount()
   })
 })

@@ -221,7 +221,21 @@ describe('Live page', () => {
 
     expect(view.props('sheet')).toEqual(playerSheet)
     expect(view.props('loading')).toBe(true)
-    expect(view.props('error')).toBe(true)
+    expect(view.props('error')).toBe(false)
+  })
+
+  it('only reports an error to the live player view when no sheet is cached', async () => {
+    isError.value = true
+
+    const component = await mountPage()
+
+    component.findComponent(CodeFormProbe).vm.$emit('validated', codeSession)
+    await nextTick()
+
+    component.findComponent(JoinFormProbe).vm.$emit('joined', joinedSession)
+    await nextTick()
+
+    expect(component.findComponent(PlayerViewProbe).props('error')).toBe(true)
   })
 
   it('resumes a previously joined seat on mount when there is no query code', async () => {
@@ -334,5 +348,53 @@ describe('Live page', () => {
       'pages.live.ended.title',
     )
     expect(localStorage.getItem('live-seat')).toBeNull()
+  })
+
+  it('follows a seat reassigned to another row', async () => {
+    localStorage.setItem('live-seat', JSON.stringify(joinedSession))
+
+    await mountPage()
+
+    liveState.value = {
+      sheet: playerSheet,
+      session: {
+        code: 'ABC234',
+        expiresAt: 'later',
+        version: 1,
+        kicked: false,
+        row: 'row-2',
+      },
+    }
+    await nextTick()
+
+    const ownRow = useLiveRealtime.mock.calls[0]![4] as ComputedRef<string>
+
+    expect(ownRow.value).toBe('row-2')
+    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual({
+      ...joinedSession,
+      row: 'row-2',
+    })
+  })
+
+  it('keeps the stored seat when the own row is unchanged', async () => {
+    localStorage.setItem('live-seat', JSON.stringify(joinedSession))
+
+    await mountPage()
+
+    liveState.value = {
+      sheet: playerSheet,
+      session: {
+        code: 'ABC234',
+        expiresAt: 'later',
+        version: 1,
+        kicked: false,
+        row: 'row-1',
+      },
+    }
+    await nextTick()
+
+    expect(JSON.parse(localStorage.getItem('live-seat')!)).toEqual(
+      joinedSession,
+    )
   })
 })

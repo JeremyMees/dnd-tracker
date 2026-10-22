@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 function row(id: string, conditions: DndCondition[] = []): InitiativeSheetRow {
   return { id, name: id, index: 0, initiative: 10, type: 'monster', conditions }
@@ -6,6 +6,14 @@ function row(id: string, conditions: DndCondition[] = []): InitiativeSheetRow {
 
 function condition(duration?: DndConditionDuration): DndCondition {
   return { id: 'prone', name: 'Prone', desc: 'On the ground.', duration }
+}
+
+const breath: DndAction = {
+  name: 'Fire Breath',
+  desc: 'Exhales fire.',
+  attacks: [],
+  actionType: 'action',
+  usageLimits: { type: 'recharge', param: 5 },
 }
 
 describe('dnd/turn', () => {
@@ -168,6 +176,162 @@ describe('dnd/turn', () => {
       expect(result.round).toBe(2)
     })
 
+    it('refreshes the resources of the row whose turn starts', () => {
+      const dragon: InitiativeSheetRow = {
+        ...row('b'),
+        actions: [breath],
+        resources: { legendaryActions: 2, actions: { 'Fire Breath': 1 } },
+      }
+      const roll = vi.fn(() => 5)
+
+      const result = advanceTurn(
+        { rows: [row('a'), dragon], activeIndex: 0, round: 1 },
+        roll,
+      )
+
+      expect(roll).toHaveBeenCalledWith(6)
+      expect(result.rows[1]?.resources).toEqual({})
+      expect(result.recharges).toEqual([
+        {
+          rowId: 'b',
+          rowName: 'b',
+          action: 'Fire Breath',
+          roll: 5,
+          recharged: true,
+        },
+      ])
+    })
+
+    it('leaves the resources of the row whose turn ends alone', () => {
+      const dragon: InitiativeSheetRow = {
+        ...row('a'),
+        actions: [breath],
+        resources: { legendaryActions: 2, actions: { 'Fire Breath': 1 } },
+      }
+      const roll = vi.fn(() => 6)
+
+      const result = advanceTurn(
+        { rows: [dragon, row('b')], activeIndex: 0, round: 1 },
+        roll,
+      )
+
+      expect(roll).not.toHaveBeenCalled()
+      expect(result.rows[0]).toBe(dragon)
+      expect(result.recharges).toEqual([])
+    })
+
+    describe('Dead monsters', () => {
+      function dead(id: string): InitiativeSheetRow {
+        return { ...row(id), hitPoints: 0 }
+      }
+
+      it('skips monsters at 0 hp', () => {
+        const result = advanceTurn({
+          rows: [row('a'), dead('b'), dead('c'), row('d')],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.activeIndex).toBe(3)
+        expect(result.round).toBe(1)
+      })
+
+      it('starts a new round when it skips past the last row', () => {
+        const result = advanceTurn({
+          rows: [dead('a'), row('b'), dead('c')],
+          activeIndex: 1,
+          round: 2,
+        })
+
+        expect(result.activeIndex).toBe(1)
+        expect(result.round).toBe(3)
+      })
+
+      it('does not skip players and npcs at 0 hp', () => {
+        const result = advanceTurn({
+          rows: [
+            row('a'),
+            { ...dead('b'), type: 'player' },
+            { ...dead('c'), type: 'npc' },
+          ],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.activeIndex).toBe(1)
+      })
+
+      it('refreshes the resources of the next living row', () => {
+        const rows = [
+          row('a'),
+          {
+            ...dead('b'),
+            actions: [breath],
+            resources: { actions: { 'Fire Breath': 1 } },
+          },
+          {
+            ...row('c'),
+            actions: [breath],
+            resources: { actions: { 'Fire Breath': 1 } },
+          },
+        ] as InitiativeSheetRow[]
+
+        const result = advanceTurn({ rows, activeIndex: 0, round: 1 }, () => 6)
+
+        expect(result.rows[1]).toBe(rows[1])
+        expect(result.recharges.map(({ rowId }) => rowId)).toEqual(['c'])
+      })
+
+      it('does not skip when the setting is off', () => {
+        const result = advanceTurn({
+          rows: [row('a'), dead('b'), row('c')],
+          activeIndex: 0,
+          round: 1,
+          settings: {
+            spacing: 'normal',
+            modified: true,
+            skipDeadMonsters: false,
+          },
+        })
+
+        expect(result.activeIndex).toBe(1)
+      })
+
+      it('moves to the next row when every other row is dead', () => {
+        const result = advanceTurn({
+          rows: [dead('a'), dead('b')],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.activeIndex).toBe(1)
+        expect(result.round).toBe(1)
+      })
+    })
+
+    describe('readied rows', () => {
+      it('clears a readied action when its row starts its turn', () => {
+        const result = advanceTurn({
+          rows: [row('a'), { ...row('b'), readied: true }],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.rows[1]?.readied).toBe(false)
+      })
+
+      it('keeps a readied action while other rows take their turn', () => {
+        const readied = { ...row('c'), readied: true }
+        const result = advanceTurn({
+          rows: [row('a'), row('b'), readied],
+          activeIndex: 0,
+          round: 1,
+        })
+
+        expect(result.rows[2]).toBe(readied)
+      })
+    })
+
     it('handles an empty encounter', () => {
       expect(advanceTurn({ rows: [], activeIndex: 0, round: 1 })).toEqual({
         activeIndex: 0,
@@ -175,6 +339,7 @@ describe('dnd/turn', () => {
         rows: [],
         expired: [],
         saves: [],
+        recharges: [],
       })
     })
   })

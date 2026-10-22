@@ -1,25 +1,94 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { toast } from 'vue-sonner'
+import { combatLogSince, mergeCombatLog } from '~/utils/combat-log'
 
 export function useCombatEvents(
   encounterId: number,
   enabled?: MaybeRefOrGetter<boolean>,
 ) {
   const supabase = useSupabaseClient<DB>()
+  const queryClient = useQueryClient()
 
   return useQuery({
     queryKey: queryKeys.combatEvents(encounterId),
     enabled: () => (enabled === undefined ? true : toValue(enabled)),
-    queryFn: async () => {
-      const { data, error } = await supabase
+    queryFn: async ({ queryKey }) => {
+      const cached = queryClient.getQueryData<CombatEventRow[]>(queryKey)
+      const since = combatLogSince(cached)
+
+      let query = supabase
         .from('combat_events')
         .select()
         .eq('encounterId', encounterId)
-        .order('id', { ascending: false })
+
+      if (since) query = query.gte('createdAt', since)
+
+      const { data, error } = await query.order('id', { ascending: false })
 
       if (error) throw createError(error)
 
-      return data
+      return since && cached ? mergeCombatLog(cached, data) : data
+    },
+  })
+}
+
+export function optimisticCombatEvents(
+  encounterId: number,
+  round: number,
+  drafts: CombatEventDraft[],
+  rowId: string | null = null,
+): CombatEventRow[] {
+  return drafts
+    .slice()
+    .reverse()
+    .map((draft, index) => ({
+      id: -(Date.now() + index),
+      encounterId,
+      rowId: draft.rowId ?? rowId,
+      round,
+      type: draft.type,
+      payload: draft.payload as Json,
+      createdBy: null,
+      actorName: null,
+      createdAt: new Date().toISOString(),
+    }))
+}
+
+export function useCombatEventsLog() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      encounterId,
+      events,
+    }: {
+      encounterId: number
+      events: CombatEventDraft[]
+    }) => {
+      await $fetch(`/api/encounter/${encounterId}/events`, {
+        method: 'POST',
+        body: { events },
+      })
+    },
+    onMutate: ({ encounterId, events }) => {
+      const round =
+        queryClient.getQueryData<InitiativeSheet>(
+          queryKeys.initiativeSheetDetail(encounterId),
+        )?.round ?? 1
+
+      queryClient.setQueryData<CombatEventRow[]>(
+        queryKeys.combatEvents(encounterId),
+        old =>
+          old && [
+            ...optimisticCombatEvents(encounterId, round, events),
+            ...old,
+          ],
+      )
+    },
+    onSettled: (_result, _error, { encounterId }) => {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.combatEvents(encounterId),
+      })
     },
   })
 }

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
+import {
+  conditionSchema,
+  deathSavesSchema,
+  resourceUsesSchema,
+} from '~~/shared/utils/dnd/schema'
 
 describe('dnd/schema', () => {
   describe('deathSavesSchema', () => {
@@ -37,6 +41,38 @@ describe('dnd/schema', () => {
     })
   })
 
+  describe('resourceUsesSchema', () => {
+    it('accepts used legendary actions, resistances, reaction and actions', () => {
+      const uses = {
+        legendaryActions: 1,
+        legendaryResistances: 2,
+        reaction: true,
+        actions: { 'Fire Breath': 1 },
+      }
+
+      expect(resourceUsesSchema.parse(uses)).toEqual(uses)
+    })
+
+    it('accepts an empty object', () => {
+      expect(resourceUsesSchema.parse({})).toEqual({})
+    })
+
+    it('rejects unknown fields', () => {
+      expect(resourceUsesSchema.safeParse({ spellSlots: 1 }).success).toBe(
+        false,
+      )
+    })
+
+    it('rejects negative and fractional uses', () => {
+      expect(
+        resourceUsesSchema.safeParse({ legendaryActions: -1 }).success,
+      ).toBe(false)
+      expect(
+        resourceUsesSchema.safeParse({ actions: { Bite: 1.5 } }).success,
+      ).toBe(false)
+    })
+  })
+
   describe('conditionSchema', () => {
     it('accepts a minimal condition', () => {
       expect(() =>
@@ -69,7 +105,7 @@ describe('dnd/schema', () => {
           level: null,
           hasLevels: null,
         }),
-      ).toStrictEqual({ id: 'blinded', name: 'Blinded', desc: 'Cannot see.' })
+      ).toStrictEqual({ id: 'blinded', name: 'Blinded', desc: '' })
     })
 
     describe('duration', () => {
@@ -83,6 +119,7 @@ describe('dnd/schema', () => {
           }),
         ).toStrictEqual({
           ...prone,
+          desc: '',
           duration: { rowId: 'row-1', timing: 'end', rounds: 1 },
         })
       })
@@ -107,7 +144,7 @@ describe('dnd/schema', () => {
       it('drops a null duration', () => {
         expect(
           conditionSchema.parse({ ...prone, duration: null }),
-        ).toStrictEqual(prone)
+        ).toStrictEqual({ ...prone, desc: '' })
       })
 
       it('rejects a duration without rounds or a save', () => {

@@ -89,21 +89,25 @@ describe('LiveStatHealthBand', () => {
 })
 
 describe('LiveStatConcentration', () => {
-  it('shows the filled icon and no label by default', async () => {
+  it('shows a filled, read-only pip and no label by default', async () => {
     const component = await mountWithTooltips(LiveStatConcentration, {
       props: { active: true },
     })
+    const pip = component.get('[test-id="pip"]')
 
-    expect(component.html()).toContain('circle-filled')
+    expect(pip.attributes('aria-pressed')).toBe('true')
+    expect(pip.attributes('disabled')).toBeDefined()
     expect(component.text()).toBe('')
   })
 
-  it('shows the dotted icon and the label when asked for', async () => {
+  it('shows an empty pip and the label when asked for', async () => {
     const component = await mountWithTooltips(LiveStatConcentration, {
       props: { active: false, label: true },
     })
 
-    expect(component.html()).toContain('circle-dotted')
+    expect(component.get('[test-id="pip"]').attributes('aria-pressed')).toBe(
+      'false',
+    )
     expect(component.text()).toBe('general.concentration')
   })
 })

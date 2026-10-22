@@ -50,6 +50,7 @@ export default defineEventHandler(async event => {
       expiresAt: session.expiresAt,
       version: session.version,
       kicked: ownSeat.kicked,
+      row: ownSeat.row,
     },
   }
 })

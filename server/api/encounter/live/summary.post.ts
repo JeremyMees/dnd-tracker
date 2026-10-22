@@ -40,12 +40,21 @@ export default defineEventHandler(async event => {
 
   if (error) throw createError(postgresErrorToH3Error(error))
 
-  const masked = toPlayerSheet(sheet).rows
+  const masked = toPlayerSheet(sheet).rows.filter(row => !row.hidden)
   const known = new Set(masked.map(row => row.id))
+  const original = new Map(sheet.rows.map(row => [row.id, row]))
 
   const stats = aggregateCombatStats(
-    events.filter(combatEvent => known.has(combatEvent.rowId)),
-    masked.map(row => ({ id: row.id, name: row.name, type: row.type })),
+    events.filter(
+      combatEvent => combatEvent.rowId !== null && known.has(combatEvent.rowId),
+    ),
+    masked.map(row => ({
+      id: row.id,
+      name: row.name,
+      type: row.type,
+      challengeRating: original.get(row.id)?.challengeRating,
+      hitPoints: original.get(row.id)?.hitPoints,
+    })),
     sheet.round,
   )
 

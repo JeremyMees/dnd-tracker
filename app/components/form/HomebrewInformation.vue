@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { speedTypes, speedMap, sightRangeMap } from '~~/constants/dnd'
+import {
+  challengeRatings,
+  speedTypes,
+  speedMap,
+  sightRangeMap,
+} from '~~/constants/dnd'
 import { useRandomName } from '~/queries/names'
 import { useFormErrors, useSubmitCount } from 'vee-validate'
 
@@ -138,7 +143,14 @@ function generateName(setValue: (value: string) => void): void {
       <UiFormMessage />
     </UiFormItem>
   </UiFormField>
-  <div :class="{ 'grid sm:grid-cols-2 gap-x-3': type === 'player' && !sheet }">
+  <div
+    :class="{
+      'grid gap-x-3': type === 'player' || type === 'monster',
+      'sm:grid-cols-[1fr_1fr_6rem]': type === 'player' && !sheet,
+      'sm:grid-cols-[1fr_6rem]': type === 'player' && sheet,
+      'sm:grid-cols-[1fr_9rem]': type === 'monster',
+    }"
+  >
     <UiFormField v-slot="{ componentField, setValue }" name="name">
       <UiFormItem v-auto-animate>
         <UiFormLabel required>
@@ -176,6 +188,57 @@ function generateName(setValue: (value: string) => void): void {
         <UiFormControl>
           <UiInput type="text" v-bind="componentField" />
         </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <UiFormField
+      v-if="type === 'player'"
+      v-slot="{ componentField }"
+      name="level"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel>
+          {{ $t('components.inputs.levelLabel') }}
+        </UiFormLabel>
+        <UiFormControl>
+          <UiInput
+            test-id="level"
+            type="number"
+            min="1"
+            max="20"
+            v-bind="componentField"
+          />
+        </UiFormControl>
+        <UiFormMessage />
+      </UiFormItem>
+    </UiFormField>
+    <UiFormField
+      v-if="type === 'monster'"
+      v-slot="{ componentField }"
+      name="challengeRating"
+    >
+      <UiFormItem v-auto-animate>
+        <UiFormLabel>
+          {{ $t('components.inputs.challengeLabel') }}
+        </UiFormLabel>
+        <UiSelect v-bind="componentField">
+          <UiFormControl>
+            <UiSelectTrigger test-id="challenge-rating">
+              <UiSelectValue :placeholder="$t('components.inputs.nothing')" />
+            </UiSelectTrigger>
+          </UiFormControl>
+          <UiSelectContent>
+            <UiSelectGroup>
+              <UiSelectItem
+                v-for="challenge in challengeRatings"
+                :key="challenge"
+                :value="challenge"
+              >
+                {{ formatChallengeRating(challenge) }}
+              </UiSelectItem>
+            </UiSelectGroup>
+          </UiSelectContent>
+        </UiSelect>
         <UiFormMessage />
       </UiFormItem>
     </UiFormField>

@@ -1,5 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from '@tanstack/vue-query'
 import { diffRow } from '~~/shared/utils/dnd/combat-events'
+import { optimisticCombatEvents } from '~/queries/combat-events'
 import { toast } from 'vue-sonner'
 
 export function useInitiativeSheetDetail(id: number) {
@@ -82,8 +88,8 @@ export function useInitiativeSheetDetailUpdate() {
 
       return { previous }
     },
-    onSuccess: (_data, { id }) => {
-      sync({ id }).catch(() => {})
+    onSuccess: (_data, { id, data }) => {
+      sync({ id, live: touchesLiveView(data) }).catch(() => {})
     },
     onError: (error, { id, data }, context) => {
       if (context?.previous) {
@@ -104,10 +110,19 @@ export function useInitiativeSheetDetailUpdate() {
   })
 }
 
+const liveViewFields = new Set(['round', 'activeIndex', 'rows', 'settings'])
+
+function touchesLiveView(data: object): boolean {
+  return Object.keys(data).some(key => liveViewFields.has(key))
+}
+
 export function useInitiativeSheetSync() {
   return useMutation({
-    mutationFn: async ({ id }: { id: number }) => {
-      await $fetch(`/api/encounter/${id}/sync`, { method: 'POST' })
+    mutationFn: async ({ id, live }: { id: number; live: boolean }) => {
+      await $fetch(`/api/encounter/${id}/sync`, {
+        method: 'POST',
+        body: { live },
+      })
     },
   })
 }
@@ -141,7 +156,7 @@ export function useInitiativeSheetTurn() {
 
       return { previous }
     },
-    onSuccess: ({ sheet, expired }, { id }) => {
+    onSuccess: ({ sheet }, { id }) => {
       queryClient.setQueryData(
         queryKeys.initiativeSheetDetail(id),
         (old: InitiativeSheet | undefined) =>
@@ -153,11 +168,9 @@ export function useInitiativeSheetTurn() {
           },
       )
 
-      if (expired.length) {
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.combatEvents(id),
-        })
-      }
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.combatEvents(id),
+      })
     },
     onError: (error, { id }, context) => {
       if (context?.previous) {
@@ -186,6 +199,8 @@ const PATCH_FAILED_FIELDS = [
   ],
   ['deathSaves', ['deathSaves']],
   ['concentration', ['concentration']],
+  ['readied', ['readied']],
+  ['hidden', ['hidden']],
 ] as const satisfies readonly (readonly [
   string,
   readonly (keyof InitiativeSheetRow)[],
@@ -214,6 +229,86 @@ function failedFieldKey(
   return match ? match[0] : fallback
 }
 
+interface PatchedRowsContext {
+  previous?: InitiativeSheet
+  previousEvents?: CombatEventRow[]
+}
+
+async function patchRowsOptimistically(
+  queryClient: QueryClient,
+  id: number,
+  patches: RowPatch[],
+): Promise<PatchedRowsContext> {
+  await queryClient.cancelQueries({
+    queryKey: queryKeys.initiativeSheetDetail(id),
+  })
+
+  const previous = queryClient.getQueryData<InitiativeSheet>(
+    queryKeys.initiativeSheetDetail(id),
+  )
+  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+  queryClient.setQueryData(
+    queryKeys.initiativeSheetDetail(id),
+    (old: InitiativeSheet) => {
+      if (!old) return old
+
+      return {
+        ...old,
+        rows: old.rows.map(row => {
+          const patch = byRow.get(row.id)
+
+          return patch ? { ...row, ...patch } : row
+        }),
+      }
+    },
+  )
+
+  const drafts = (previous?.rows ?? []).flatMap(row => {
+    const patch = byRow.get(row.id)
+
+    if (!patch) return []
+
+    return diffRow(row, { ...row, ...patch }).map(draft => ({
+      ...draft,
+      rowId: draft.rowId ?? row.id,
+    }))
+  })
+
+  if (!drafts.length) return { previous }
+
+  const previousEvents = queryClient.getQueryData<CombatEventRow[]>(
+    queryKeys.combatEvents(id),
+  )
+
+  queryClient.setQueryData<CombatEventRow[]>(
+    queryKeys.combatEvents(id),
+    (old = []) => [
+      ...optimisticCombatEvents(id, previous?.round ?? 1, drafts),
+      ...old,
+    ],
+  )
+
+  return { previous, previousEvents }
+}
+
+function rollbackPatchedRows(
+  queryClient: QueryClient,
+  id: number,
+  context?: PatchedRowsContext,
+): void {
+  if (context?.previous) {
+    queryClient.setQueryData(
+      queryKeys.initiativeSheetDetail(id),
+      context.previous,
+    )
+  }
+
+  if (context?.previousEvents !== undefined) {
+    queryClient.setQueryData(queryKeys.combatEvents(id), context.previousEvents)
+  }
+}
+
 export function useInitiativeSheetPatch() {
   const queryClient = useQueryClient()
   const { t } = useI18n()
@@ -235,78 +330,10 @@ export function useInitiativeSheetPatch() {
 
       return row
     },
-    onMutate: async ({ id, rowId, patch }) => {
-      await queryClient.cancelQueries({
-        queryKey: queryKeys.initiativeSheetDetail(id),
-      })
-
-      const previous = queryClient.getQueryData<InitiativeSheet>(
-        queryKeys.initiativeSheetDetail(id),
-      )
-      const before = previous?.rows.find(row => row.id === rowId)
-
-      queryClient.setQueryData(
-        queryKeys.initiativeSheetDetail(id),
-        (old: InitiativeSheet) => {
-          if (!old) return old
-
-          return {
-            ...old,
-            rows: old.rows.map(row =>
-              row.id === rowId ? { ...row, ...patch } : row,
-            ),
-          }
-        },
-      )
-
-      let previousEvents: CombatEventRow[] | undefined
-
-      if (before) {
-        const drafts = diffRow(before, { ...before, ...patch })
-
-        if (drafts.length) {
-          previousEvents = queryClient.getQueryData<CombatEventRow[]>(
-            queryKeys.combatEvents(id),
-          )
-
-          const optimisticEvents = drafts
-            .slice()
-            .reverse()
-            .map((draft, index): CombatEventRow => ({
-              id: -(Date.now() + index),
-              encounterId: id,
-              rowId,
-              round: previous?.round ?? 1,
-              type: draft.type,
-              payload: draft.payload as Json,
-              createdBy: null,
-              actorName: null,
-              createdAt: new Date().toISOString(),
-            }))
-
-          queryClient.setQueryData<CombatEventRow[]>(
-            queryKeys.combatEvents(id),
-            (old = []) => [...optimisticEvents, ...old],
-          )
-        }
-      }
-
-      return { previous, previousEvents }
-    },
+    onMutate: ({ id, rowId, patch }) =>
+      patchRowsOptimistically(queryClient, id, [{ rowId, patch }]),
     onError: (error, { id, rowId, patch }, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(
-          queryKeys.initiativeSheetDetail(id),
-          context.previous,
-        )
-      }
-
-      if (context?.previousEvents !== undefined) {
-        queryClient.setQueryData(
-          queryKeys.combatEvents(id),
-          context.previousEvents,
-        )
-      }
+      rollbackPatchedRows(queryClient, id, context)
 
       const name = context?.previous?.rows.find(row => row.id === rowId)?.name
 
@@ -319,6 +346,34 @@ export function useInitiativeSheetPatch() {
           : t('pages.encounter.toasts.patchFailed.generic'),
         { description: t(`general.error.reasons.${getFailureReason(error)}`) },
       )
+    },
+  })
+}
+
+export function useInitiativeSheetPatchRows() {
+  const queryClient = useQueryClient()
+  const { t } = useI18n()
+
+  return useCallbackMutation({
+    mutationFn: async ({
+      id,
+      patches,
+    }: { id: number; patches: RowPatch[] } & QueryDefaults) => {
+      const { rows } = await $fetch<{ rows: InitiativeSheetRow[] }>(
+        `/api/encounter/${id}/patch-rows`,
+        { method: 'POST', body: { patches } },
+      )
+
+      return rows
+    },
+    onMutate: ({ id, patches }) =>
+      patchRowsOptimistically(queryClient, id, patches),
+    onError: (error, { id }, context) => {
+      rollbackPatchedRows(queryClient, id, context)
+
+      toast.error(t('pages.encounter.toasts.patchFailed.generic'), {
+        description: t(`general.error.reasons.${getFailureReason(error)}`),
+      })
     },
   })
 }

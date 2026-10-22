@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './scroll-fade.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -198,6 +199,8 @@
 
   html {
     @apply font-geist text-base scroll-smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
 
   body {
@@ -359,17 +362,7 @@
     @apply h-12 px-4 text-left align-middle font-medium;
   }
 
-  .no-scrollbar::-webkit-scrollbar {
-    @apply hidden;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  abbr[title],
-  acronym[title] {
+  abbr[title] {
     @apply no-underline;
   }
 

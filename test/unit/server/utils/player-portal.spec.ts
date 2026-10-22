@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { toPlayerSheet } from '~~/server/utils/player-portal'
+import { toPlayerSheet, touchesPlayerView } from '~~/server/utils/player-portal'
 import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 const prone = { id: 'prone', name: 'Prone', desc: '' }
@@ -230,6 +230,43 @@ describe('toPlayerSheet', () => {
     expect(result.rows[0]!.armorClass).toBe(18)
   })
 
+  it('shows a used reaction on a player row', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [
+          playerRow({ resources: { reaction: true, legendaryResistances: 1 } }),
+        ],
+      }),
+    )
+
+    expect(result.rows[0]!.reaction).toBe(true)
+    expect(result.rows[0]!).not.toHaveProperty('resources')
+  })
+
+  it('shows a readied action on a player row', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [playerRow({ readied: true })] }),
+    )
+
+    expect(result.rows[0]!.readied).toBe(true)
+  })
+
+  it('hides the readied action of a monster row', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ readied: true })] }),
+    )
+
+    expect(result.rows[0]!).not.toHaveProperty('readied')
+  })
+
+  it('hides the reaction of a monster row', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ resources: { reaction: true } })] }),
+    )
+
+    expect(result.rows[0]!).not.toHaveProperty('reaction')
+  })
+
   it('keeps monster names by default', () => {
     const result = toPlayerSheet(
       sheet({ rows: [monsterRow({ name: 'Goblin' })] }),
@@ -263,6 +300,72 @@ describe('toPlayerSheet', () => {
     ])
   })
 
+  it('replaces a hidden row with an unknown placeholder', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [
+          playerRow({ id: 'row-1' }),
+          monsterRow({
+            id: 'row-2',
+            index: 1,
+            type: 'npc',
+            hidden: true,
+            concentration: true,
+            conditions: [prone],
+          }),
+        ],
+      }),
+    )
+
+    expect(result.rows[1]).toEqual({
+      id: 'row-2',
+      index: 1,
+      initiative: -1,
+      name: '???',
+      type: 'monster',
+      conditions: [],
+      hidden: true,
+    })
+  })
+
+  it('keeps visible rows free of the hidden flag', () => {
+    const result = toPlayerSheet(
+      sheet({ rows: [monsterRow({ hidden: false })] }),
+    )
+
+    expect(result.rows[0]).not.toHaveProperty('hidden')
+  })
+
+  it('keeps the active index on a hidden row taking its turn', () => {
+    const result = toPlayerSheet(
+      sheet({
+        activeIndex: 1,
+        rows: [playerRow(), monsterRow({ hidden: true })],
+      }),
+    )
+
+    expect(result.activeIndex).toBe(1)
+    expect(result.rows[1]!.name).toBe('???')
+  })
+
+  it('skips hidden monsters when numbering hidden monster names', () => {
+    const result = toPlayerSheet(
+      sheet({
+        rows: [
+          monsterRow({ id: 'row-1', hidden: true }),
+          monsterRow({ id: 'row-2' }),
+        ],
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          live: { hideMonsterNames: true },
+        } as unknown as InitiativeSettings,
+      }),
+    )
+
+    expect(result.rows.map(row => row.name)).toEqual(['???', 'Monster 1'])
+  })
+
   it('defaults every action to allowed when settings.live.allow is unset', () => {
     const result = toPlayerSheet(sheet())
 
@@ -272,6 +375,8 @@ describe('toPlayerSheet', () => {
       deathSaves: true,
       concentration: true,
       conditions: true,
+      reaction: true,
+      ready: true,
       endTurn: true,
     })
   })
@@ -293,7 +398,23 @@ describe('toPlayerSheet', () => {
       deathSaves: true,
       concentration: true,
       conditions: false,
+      reaction: true,
+      ready: true,
       endTurn: true,
     })
+  })
+})
+
+describe('touchesPlayerView', () => {
+  it('is false for a DM-only note change', () => {
+    expect(touchesPlayerView({ note: 'Flanking' })).toBe(false)
+  })
+
+  it.each([
+    [{ hitPoints: 3 }],
+    [{ name: 'Renamed' }],
+    [{ note: 'Flanking', conditions: [] }],
+  ])('is true for %o', patch => {
+    expect(touchesPlayerView(patch)).toBe(true)
   })
 })

@@ -1,14 +1,16 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import seo from '~~/constants/seo'
 import { useSeo } from '~/composables/useSeo'
 
 const {
+  createSitePathResolver,
   defineOrganization,
   defineWebPage,
   defineWebSite,
   useHead,
+  useLocaleHead,
   useSchemaOrg,
   useSeoMeta,
   withSiteUrl,
@@ -20,12 +22,19 @@ const {
   defineWebPage: vi.fn((options: unknown) => ({ type: 'webPage', options })),
   defineWebSite: vi.fn((options: unknown) => ({ type: 'webSite', options })),
   useHead: vi.fn(),
+  useLocaleHead: vi.fn(),
   useSchemaOrg: vi.fn(),
   useSeoMeta: vi.fn(),
   withSiteUrl: vi.fn((path: string) => `https://www.dnd-tracker.com${path}`),
+  createSitePathResolver: vi.fn(
+    () => (path: string) =>
+      computed(() => `https://www.dnd-tracker.com${path}`),
+  ),
 }))
 
 mockNuxtImport('useHead', () => useHead)
+mockNuxtImport('createSitePathResolver', () => createSitePathResolver)
+mockNuxtImport('useLocaleHead', () => useLocaleHead)
 mockNuxtImport('useSeoMeta', () => useSeoMeta)
 mockNuxtImport('useSchemaOrg', () => useSchemaOrg)
 mockNuxtImport('defineOrganization', () => defineOrganization)
@@ -41,6 +50,8 @@ mockNuxtImport('useI18n', () => () => ({
   availableLocales,
 }))
 
+let mounted: Awaited<ReturnType<typeof mountSuspended>> | undefined
+
 async function mountProbe(title?: MaybeRefOrGetter<string | undefined>) {
   const component = await mountSuspended(
     defineComponent({
@@ -55,7 +66,15 @@ async function mountProbe(title?: MaybeRefOrGetter<string | undefined>) {
 
   await flushPromises()
 
+  mounted = component
+
   return component
+}
+
+function headLinks(call = 0): unknown {
+  const options = useHead.mock.calls[call]![0] as { link?: unknown }
+
+  return toValue(options.link)
 }
 
 function headTitle(call = 0): unknown {
@@ -67,6 +86,12 @@ function headTitle(call = 0): unknown {
 describe('useSeo', () => {
   beforeEach(() => {
     locale.value = 'en'
+    useLocaleHead.mockReturnValue(ref({ link: [] }))
+  })
+
+  afterEach(() => {
+    mounted?.unmount()
+    mounted = undefined
   })
 
   it('sets the html lang attribute from the current locale', async () => {
@@ -83,12 +108,71 @@ describe('useSeo', () => {
     await mountProbe('Profile')
 
     expect(headTitle()).toBe('Profile')
+    expect(headLinks()).toEqual([
+      { rel: 'icon', type: 'image/ico', href: '/favicon.ico' },
+    ])
     expect(useHead).toHaveBeenCalledWith(
       expect.objectContaining({
-        link: [{ rel: 'icon', type: 'image/ico', href: '/favicon.ico' }],
         meta: [{ name: 'keywords', content: seo.keywords }],
       }),
     )
+  })
+
+  it('links every locale version of the page with absolute hreflang urls', async () => {
+    useLocaleHead.mockReturnValue(
+      ref({
+        link: [
+          {
+            id: 'i18n-alt-en',
+            rel: 'alternate',
+            href: '/contact',
+            hreflang: 'en-US',
+          },
+          {
+            id: 'i18n-alt-nl',
+            rel: 'alternate',
+            href: '/nl/contact',
+            hreflang: 'nl-BE',
+          },
+          {
+            id: 'i18n-xd',
+            rel: 'alternate',
+            href: '/contact',
+            hreflang: 'x-default',
+          },
+          { id: 'i18n-can', rel: 'canonical', href: '/contact' },
+        ],
+      }),
+    )
+
+    await mountProbe('Contact')
+
+    expect(useLocaleHead).toHaveBeenCalledWith({ seo: true })
+    expect(createSitePathResolver).toHaveBeenCalledWith({
+      absolute: true,
+      withBase: true,
+    })
+    expect(headLinks()).toEqual([
+      { rel: 'icon', type: 'image/ico', href: '/favicon.ico' },
+      {
+        id: 'i18n-alt-en',
+        rel: 'alternate',
+        href: 'https://www.dnd-tracker.com/contact',
+        hreflang: 'en-US',
+      },
+      {
+        id: 'i18n-alt-nl',
+        rel: 'alternate',
+        href: 'https://www.dnd-tracker.com/nl/contact',
+        hreflang: 'nl-BE',
+      },
+      {
+        id: 'i18n-xd',
+        rel: 'alternate',
+        href: 'https://www.dnd-tracker.com/contact',
+        hreflang: 'x-default',
+      },
+    ])
   })
 
   it('tracks a reactive title so a renamed page updates the document title', async () => {

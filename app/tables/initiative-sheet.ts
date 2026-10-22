@@ -23,6 +23,7 @@ import {
   InitiativeTableRowConcentration,
   InitiativeTableRowModify,
   InitiativeTableHeaderInit,
+  InitiativeResources,
 } from '#components'
 
 const columnHelper = createColumnHelper<
@@ -130,6 +131,7 @@ export function expandedMarkup(
       class: 'flex flex-col gap-4',
     },
     [
+      h(InitiativeResources, { item: row.original }),
       statsBadgesElement({
         proficiencyBonus: row.original.proficiencyBonus,
         initiativeModifier: row.original.initiativeModifier,

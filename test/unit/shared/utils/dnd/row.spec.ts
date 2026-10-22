@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
 import { dndMonsterFixture } from '~~/test/fixtures/open5e'
@@ -120,6 +120,45 @@ describe('dnd/row', () => {
       ).toEqual(['goblin', 'player'])
     })
 
+    it('should place a lair row after rows tied on initiative 20', () => {
+      const tied = [
+        {
+          id: 'monster',
+          initiative: 20,
+          initiativeModifier: -2,
+          type: 'monster',
+        },
+        { id: 'low', initiative: 4, type: 'monster' },
+      ] as InitiativeSheetRow[]
+      const lair = {
+        id: 'lair',
+        initiative: 20,
+        type: 'lair',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([lair, ...tied], ['lair']).map(row => row.id),
+      ).toEqual(['monster', 'lair', 'low'])
+    })
+
+    it('should place a row before a lair row tied on initiative 20', () => {
+      const lair = {
+        id: 'lair',
+        initiative: 20,
+        type: 'lair',
+      } as InitiativeSheetRow
+      const monster = {
+        id: 'monster',
+        initiative: 20,
+        initiativeModifier: -2,
+        type: 'monster',
+      } as InitiativeSheetRow
+
+      expect(
+        placeByInitiative([lair, monster], ['monster']).map(row => row.id),
+      ).toEqual(['monster', 'lair'])
+    })
+
     it('should leave the order of rows that are not placed untouched', () => {
       expect(placeByInitiative(rows, []).map(row => row.id)).toEqual([
         'high',
@@ -209,7 +248,7 @@ describe('dnd/row', () => {
           level: null,
           hasLevels: null,
         }),
-      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: '' })
     })
 
     it('keeps a duration and drops its empty fields', () => {
@@ -228,7 +267,7 @@ describe('dnd/row', () => {
       ).toStrictEqual({
         id: 'prone',
         name: 'Prone',
-        desc: 'On the ground.',
+        desc: '',
         duration: { rowId: 'row-1', timing: 'start', rounds: 2 },
       })
     })
@@ -261,7 +300,7 @@ describe('dnd/row', () => {
           desc: 'On the ground.',
           duration: null,
         }),
-      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: 'On the ground.' })
+      ).toStrictEqual({ id: 'prone', name: 'Prone', desc: '' })
     })
 
     it('keeps level and hasLevels when set', () => {
@@ -276,7 +315,7 @@ describe('dnd/row', () => {
       ).toStrictEqual({
         id: 'exhaustion',
         name: 'Exhaustion',
-        desc: 'Tired.',
+        desc: '',
         level: 3,
         hasLevels: true,
       })
@@ -304,7 +343,7 @@ describe('dnd/row', () => {
       expect(sanitizeCondition(condition)).toStrictEqual({
         id: 'blinded',
         name: 'Blinded',
-        desc: 'Cannot see.',
+        desc: '',
       })
     })
 
@@ -312,6 +351,16 @@ describe('dnd/row', () => {
       const condition = { id: 'blinded', name: 'Blinded' } as DndCondition
 
       expect(sanitizeCondition(condition).desc).toBe('')
+    })
+
+    it('never stores the description, which is looked up by id instead', () => {
+      expect(
+        sanitizeCondition({
+          id: 'blinded',
+          name: 'Blinded',
+          desc: 'A long rules text that should not ride along on every row.',
+        }).desc,
+      ).toBe('')
     })
   })
 
@@ -347,6 +396,32 @@ describe('dnd/row', () => {
         fail: [false, false, false],
         save: [false, false, false],
       })
+    })
+
+    it('should give a lair row initiative 20 without an initiative', () => {
+      expect(createInitiativeRow({ name: 'Lair' }, 'lair', 0).initiative).toBe(
+        20,
+      )
+    })
+
+    it('should keep the given initiative of a lair row', () => {
+      expect(
+        createInitiativeRow({ name: 'Lair', initiative: 15 }, 'lair', 0)
+          .initiative,
+      ).toBe(15)
+    })
+
+    it('should leave other rows without an initiative unrolled', () => {
+      expect(
+        createInitiativeRow({ name: 'Goblin' }, 'monster', 0).initiative,
+      ).toBe(-1)
+    })
+
+    it('should keep an initiative of 0', () => {
+      expect(
+        createInitiativeRow({ name: 'Goblin', initiative: 0 }, 'monster', 0)
+          .initiative,
+      ).toBe(0)
     })
 
     it('should preserve extended homebrew fields from formData', () => {
@@ -419,6 +494,95 @@ describe('dnd/row', () => {
       expect(result.map(r => r.name)).toEqual(['Goblin', 'Aragorn', 'Boromir'])
     })
 
+    it('Should add a lair row at initiative 20', () => {
+      const result = appendRows(existing, [{ name: 'Lair', type: 'lair' }])
+
+      expect(result.map(r => r.name)).toEqual(['Lair', 'Aragorn', 'Boromir'])
+      expect(result[0]!.initiative).toBe(20)
+    })
+
+    describe('Rolling initiative', () => {
+      const off: InitiativeSettings = {
+        spacing: 'normal',
+        modified: true,
+        autoRollInitiative: false,
+      }
+
+      afterEach(() => {
+        vi.restoreAllMocks()
+      })
+
+      it('Should roll initiative with the modifier for added monsters', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
+        const result = appendRows(existing, [
+          { name: 'Goblin', type: 'monster', initiativeModifier: 2 },
+        ])
+
+        expect(result.find(r => r.name === 'Goblin')!.initiative).toBe(13)
+        expect(result.map(r => r.name)).toEqual([
+          'Goblin',
+          'Aragorn',
+          'Boromir',
+        ])
+      })
+
+      it('Should roll every copy of a monster on its own', () => {
+        vi.spyOn(Math, 'random')
+          .mockReturnValueOnce(0)
+          .mockReturnValueOnce(0.95)
+
+        const goblin = { name: 'Goblin', type: 'monster' as const }
+
+        expect(appendRows([], [goblin, goblin]).map(r => r.initiative)).toEqual(
+          [20, 1],
+        )
+      })
+
+      it('Should not roll below 0', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+
+        const result = appendRows(
+          [],
+          [{ name: 'Slug', type: 'monster', initiativeModifier: -5 }],
+        )
+
+        expect(result[0]!.initiative).toBe(0)
+      })
+
+      it('Should keep a given initiative', () => {
+        const result = appendRows(
+          [],
+          [{ name: 'Goblin', type: 'monster', initiative: 7 }],
+        )
+
+        expect(result[0]!.initiative).toBe(7)
+      })
+
+      it('Should not roll for other row types', () => {
+        const result = appendRows(
+          [],
+          [
+            { name: 'Gimli', type: 'player' },
+            { name: 'Guard', type: 'npc' },
+            { name: 'Wolf', type: 'summon' },
+          ],
+        )
+
+        expect(result.map(r => r.initiative)).toEqual([-1, -1, -1])
+      })
+
+      it('Should not roll when the setting is off', () => {
+        const result = appendRows(
+          [],
+          [{ name: 'Goblin', type: 'monster' }],
+          off,
+        )
+
+        expect(result[0]!.initiative).toBe(-1)
+      })
+    })
+
     it('Should give copies of the same row their own id', () => {
       const goblin = { name: 'Goblin', type: 'monster' as const }
 
@@ -451,12 +615,17 @@ describe('dnd/row', () => {
       })
     })
 
+    it('should keep the challenge rating', () => {
+      const row = monsterToRow(dndMonsterFixture)
+
+      expect(row.challengeRating).toBe(dndMonsterFixture.challengeRating)
+    })
+
     it('should drop the monster fields a row has no place for', () => {
       const row = monsterToRow(dndMonsterFixture)
 
       for (const field of [
         'size',
-        'challengeRating',
         'alignment',
         'experiencePoints',
         'initiativeBonus',
