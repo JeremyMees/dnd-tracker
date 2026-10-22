@@ -66,11 +66,17 @@ interface SrdSpellOverride {
 
 interface SrdSpellInsertOverride extends Omit<
   SrdSpellOverride,
-  'classes' | 'damageTypes' | 'castingOptions'
+  | 'classes'
+  | 'damageTypes'
+  | 'castingOptions'
+  | 'shapeType'
+  | 'savingThrowAbility'
 > {
   classes?: DndClass[]
   damageTypes?: DndDamageType[]
   castingOptions?: DndSpellCastingOption[]
+  shapeType?: DndShapeType | null
+  savingThrowAbility?: DndAbility | null
 }
 
 interface SrdMagicItemOverride {
@@ -116,7 +122,10 @@ interface DatabaseOverrides {
       }
       srd_magic_items: {
         Row: SrdMagicItemOverride
-        Insert: SrdMagicItemOverride
+        Insert: Omit<SrdMagicItemOverride, 'weapon' | 'armor'> & {
+          weapon?: DndWeapon | null
+          armor?: DndArmor | null
+        }
         Update: Partial<SrdMagicItemOverride>
       }
       srd_weapons: {
