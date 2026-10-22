@@ -21,11 +21,6 @@ export function useAuthentication() {
   const supabase = useSupabaseClient<DB>()
   const localePath = useLocalePath()
 
-  supabase.auth.onAuthStateChange(event => {
-    if (['USER_UPDATED', 'SIGNED_IN'].includes(event)) fetch()
-    else if (event === 'INITIAL_SESSION' && !user.value) fetch()
-  })
-
   async function register(form: Register): Promise<void> {
     await $fetch('/api/user/create', { method: 'POST', body: form })
   }

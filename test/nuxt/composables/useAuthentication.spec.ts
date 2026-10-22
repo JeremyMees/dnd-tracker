@@ -10,7 +10,6 @@ const mockSignUp = vi.fn()
 const mockCreateUser = vi.fn()
 const mockSignInWithPassword = vi.fn()
 const mockSignOut = vi.fn()
-const mockOnAuthStateChange = vi.fn()
 const mockSupabaseSelect = vi.fn()
 const mockSupabaseFrom = vi.fn().mockReturnValue({
   select: mockSupabaseSelect,
@@ -22,8 +21,6 @@ const mockGetUser = vi.fn().mockReturnValue({
   data: { user: { id: 'test-user-id' } },
 })
 const mockNavigateTo = vi.fn()
-
-let authStateChangeCallback: ((event: string) => void) | null = null
 
 registerEndpoint('/api/user/create', {
   method: 'POST',
@@ -38,10 +35,6 @@ mockNuxtImport('useSupabaseClient', () => () => ({
     signInWithPassword: mockSignInWithPassword,
     signOut: mockSignOut,
     getUser: mockGetUser,
-    onAuthStateChange: (callback: (event: string) => void) => {
-      authStateChangeCallback = callback
-      return mockOnAuthStateChange(callback)
-    },
   },
   from: mockSupabaseFrom,
 }))
@@ -90,8 +83,6 @@ describe('useAuthentication', () => {
     mockNavigateTo.mockReset()
 
     auth = useAuthentication()
-
-    if (authStateChangeCallback) authStateChangeCallback('SIGNED_OUT')
   })
 
   it('should have the correct API', () => {
@@ -262,34 +253,6 @@ describe('useAuthentication', () => {
       await auth.fetch(true)
 
       expect(mockSupabaseSingle).toHaveBeenCalledTimes(2)
-    })
-  })
-
-  describe('onAuthStateChange', () => {
-    it('should fetch user data on SIGNED_IN event', async () => {
-      mockSupabaseSingle.mockResolvedValue({
-        data: { id: 'test-user-id' },
-        error: null,
-      })
-
-      if (authStateChangeCallback) authStateChangeCallback('SIGNED_IN')
-
-      await new Promise(resolve => setTimeout(resolve, 0))
-
-      expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
-    })
-
-    it('should fetch user data on USER_UPDATED event', async () => {
-      mockSupabaseSingle.mockResolvedValue({
-        data: { id: 'test-user-id' },
-        error: null,
-      })
-
-      if (authStateChangeCallback) authStateChangeCallback('USER_UPDATED')
-
-      await new Promise(resolve => setTimeout(resolve, 0))
-
-      expect(mockSupabaseFrom).toHaveBeenCalledWith('profiles')
     })
   })
 
