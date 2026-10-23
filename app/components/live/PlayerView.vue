@@ -21,6 +21,7 @@ const defaultAllow: LiveAllowActions = {
 }
 
 const allow = computed(() => props.sheet?.allow ?? defaultAllow)
+const settings = computed(() => props.sheet?.settings ?? {})
 
 const ownRow = computed(() =>
   props.sheet?.rows.find(row => row.id === ownRowId.value),
@@ -75,6 +76,7 @@ const activeRow = computed(() => props.sheet?.rows[props.sheet.activeIndex])
         :rows="sheet?.rows ?? []"
         :active-row="activeRow"
         :allow="allow"
+        :settings="settings"
       />
     </div>
 
@@ -84,6 +86,7 @@ const activeRow = computed(() => props.sheet?.rows[props.sheet.activeIndex])
       :rows="sheet?.rows ?? []"
       :active-row="activeRow"
       :allow="allow"
+      :settings="settings"
     />
 
     <LiveSummary />

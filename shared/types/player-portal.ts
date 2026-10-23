@@ -8,6 +8,7 @@ export interface PlayerRow {
   deathSaves?: DndDeathSaves
   concentration?: boolean
   armorClass?: number
+  maxArmorClass?: number
   tempArmorClass?: number
   player?: string
   hitPoints?: number
@@ -26,7 +27,13 @@ export interface PlayerSheet {
   activeIndex: number
   rows: PlayerRow[]
   allow: LiveAllowActions
+  settings: PlayerSheetSettings
 }
+
+export type PlayerSheetSettings = Pick<
+  InitiativeSettings,
+  'negative' | 'bloodied'
+>
 
 export interface LiveCodeSession {
   code: string

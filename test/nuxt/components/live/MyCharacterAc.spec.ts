@@ -55,71 +55,20 @@ describe('LiveMyCharacterAc', () => {
     expect(component.text()).toContain('actions.decrease')
   })
 
-  it('increases the armor class with no upper cap', async () => {
-    const component = await mountAc()
+  it.each(['add', 'temp', 'remove'] as const)(
+    'sends a %s action with the amount',
+    async type => {
+      const component = await mountAc()
 
-    await submitAs(component, 'add', 4)
+      await submitAs(component, type, 7)
 
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'add', amount: 4 },
-      { armorClass: 18 },
-    )
-  })
-
-  it('sets temporary armor class directly rather than adding to it', async () => {
-    const component = await mountAc()
-
-    await submitAs(component, 'temp', 6)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'temp', amount: 6 },
-      { tempArmorClass: 6 },
-    )
-  })
-
-  it('removes from temporary armor class first', async () => {
-    const component = await mountAc()
-
-    await submitAs(component, 'remove', 2)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'remove', amount: 2 },
-      { tempArmorClass: 1 },
-    )
-  })
-
-  it('takes the rest of the reduction from armor class once temp is exhausted', async () => {
-    const component = await mountAc()
-
-    await submitAs(component, 'remove', 5)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'remove', amount: 5 },
-      { tempArmorClass: 0, armorClass: 12 },
-    )
-  })
-
-  it('treats a missing temporary armor class as zero when removing', async () => {
-    const component = await mountAc({ tempArmorClass: undefined })
-
-    await submitAs(component, 'remove', 5)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'remove', amount: 5 },
-      { tempArmorClass: 0, armorClass: 9 },
-    )
-  })
-
-  it('predicts nothing when armor class is not defined', async () => {
-    const component = await mountAc({ armorClass: undefined })
-
-    await submitAs(component, 'add', 4)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'add', amount: 4 },
-      {},
-    )
-  })
+      expect(apply).toHaveBeenCalledWith({
+        type: 'ac',
+        acType: type,
+        amount: 7,
+      })
+    },
+  )
 
   it('clears the amount once the action is applied', async () => {
     const component = await mountAc()

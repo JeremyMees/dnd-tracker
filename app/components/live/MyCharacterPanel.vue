@@ -3,6 +3,7 @@ const props = defineProps<{
   row: PlayerRow
   rows: PlayerRow[]
   allow: LiveAllowActions
+  settings: PlayerSheetSettings
   activeRow?: PlayerRow
 }>()
 
@@ -70,6 +71,7 @@ function toggle(): void {
             :rows="rows"
             :active="active"
             :allow="allow"
+            :settings="settings"
           />
         </UiScrollArea>
       </div>

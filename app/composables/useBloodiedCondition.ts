@@ -2,7 +2,7 @@ import { useConditionsListing } from '~/queries/srd'
 import { bloodiedConditionId } from '~~/constants/dnd'
 
 export function useBloodiedCondition(
-  settings: MaybeRefOrGetter<InitiativeSettings | undefined>,
+  settings: MaybeRefOrGetter<Pick<InitiativeSettings, 'bloodied'> | undefined>,
 ): ComputedRef<DndCondition | undefined> {
   const { data: conditions } = useConditionsListing()
 

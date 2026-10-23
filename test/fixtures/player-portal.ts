@@ -33,4 +33,5 @@ export const playerSheet: PlayerSheet = {
     ready: true,
     endTurn: true,
   },
+  settings: { negative: false, bloodied: true },
 }

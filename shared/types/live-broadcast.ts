@@ -57,6 +57,10 @@ export type LiveRowAction =
 
 export type LiveAction = LiveRowAction | { type: 'endTurn' }
 
+export type LiveHpAction = Extract<LiveRowAction, { type: 'hp' }>
+
+export type LiveAcAction = Extract<LiveRowAction, { type: 'ac' }>
+
 export type LiveAllowActions = Record<LiveAction['type'], boolean>
 
 export interface LiveSessionResponse {

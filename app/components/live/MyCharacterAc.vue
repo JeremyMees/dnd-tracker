@@ -6,7 +6,7 @@ import { maxHealthAndArmour } from '~~/constants/validation'
 const props = defineProps<{
   row: PlayerRow
   pending: boolean
-  apply: (action: LiveRowAction, patch: Partial<PlayerRow>) => Promise<boolean>
+  apply: (action: LiveAcAction) => Promise<boolean>
 }>()
 
 const selected = ref<'add' | 'remove' | 'temp'>('add')
@@ -17,32 +17,12 @@ const form = useForm({
   }),
 })
 
-function predict(
-  acType: 'add' | 'remove' | 'temp',
-  amount: number,
-): Partial<PlayerRow> {
-  if (!isDefined(props.row.armorClass)) return {}
-
-  if (acType === 'temp') return { tempArmorClass: amount }
-  if (acType === 'add') return { armorClass: props.row.armorClass + amount }
-
-  const temp = props.row.tempArmorClass ?? 0
-
-  if (temp >= amount) return { tempArmorClass: temp - amount }
-
-  return {
-    tempArmorClass: 0,
-    armorClass: props.row.armorClass - (amount - temp),
-  }
-}
-
 const onSubmit = form.handleSubmit(async values => {
-  const amount = parseInteger(values.amount)
-
-  const applied = await props.apply(
-    { type: 'ac', acType: selected.value, amount },
-    predict(selected.value, amount),
-  )
+  const applied = await props.apply({
+    type: 'ac',
+    acType: selected.value,
+    amount: parseInteger(values.amount),
+  })
 
   if (applied) form.resetForm()
 })

@@ -311,6 +311,15 @@ export function applyHpChange(
   }
 }
 
+export function liveHpChange(
+  hpType: 'heal' | 'damage' | 'temp',
+  amount: number,
+): DndHpChange {
+  return hpType === 'damage'
+    ? { type: 'damage', rolls: [{ amount }] }
+    : { type: hpType, amount }
+}
+
 export function applyAcChange(
   row: InitiativeSheetRow,
   change: DndAcChange,

@@ -182,12 +182,7 @@ export async function buildHpPatch(
   const bloodied = isBloodiedEnabled(settings)
     ? await srdCondition(supabase, bloodiedConditionId)
     : undefined
-  const change: DndHpChange =
-    action.hpType === 'damage'
-      ? { type: 'damage', rolls: [{ amount: action.amount }] }
-      : { type: action.hpType, amount: action.amount }
-
-  return applyHpChange(row, change, {
+  return applyHpChange(row, liveHpChange(action.hpType, action.amount), {
     negative: settings?.negative,
     bloodied,
   }).patch

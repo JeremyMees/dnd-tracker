@@ -12,6 +12,7 @@ function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
     deathSaves: row.deathSaves,
     concentration: row.concentration,
     armorClass: row.armorClass,
+    maxArmorClass: row.maxArmorClass,
     tempArmorClass: row.tempArmorClass,
     player: row.player,
     hitPoints: row.hitPoints,

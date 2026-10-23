@@ -61,7 +61,7 @@ describe('toPlayerSheet', () => {
     expect(result).not.toHaveProperty('infoCards')
     expect(result).not.toHaveProperty('campaign')
     expect(result).not.toHaveProperty('createdBy')
-    expect(result).not.toHaveProperty('settings')
+    expect(result.settings).toEqual({ negative: false, bloodied: true })
     expect(result).toMatchObject({
       id: 1,
       title: 'Ambush',
@@ -84,6 +84,32 @@ describe('toPlayerSheet', () => {
       maxHitPoints: 30,
     })
     expect(result.rows[0]!).not.toHaveProperty('healthBand')
+  })
+
+  it('gives only the own row its max armor class', () => {
+    const rows = [
+      playerRow({ armorClass: 15, maxArmorClass: 18 }),
+      playerRow({ id: 'row-2', armorClass: 12, maxArmorClass: 14 }),
+    ]
+    const result = toPlayerSheet(sheet({ rows }), 'row-1')
+
+    expect(result.rows[0]!.maxArmorClass).toBe(18)
+    expect(result.rows[1]!).not.toHaveProperty('maxArmorClass')
+  })
+
+  it('passes on the hp settings players need to predict their own changes', () => {
+    const result = toPlayerSheet(
+      sheet({
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          negative: true,
+          bloodied: false,
+        },
+      }),
+    )
+
+    expect(result.settings).toEqual({ negative: true, bloodied: false })
   })
 
   it('keeps real HP and death saves for a non-player row with no owning seat', () => {

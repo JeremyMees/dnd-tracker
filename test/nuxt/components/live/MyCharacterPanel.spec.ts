@@ -35,7 +35,7 @@ function isHidden(wrapper: {
 describe('LiveMyCharacterPanel', () => {
   it('expands the controls when the row is taking its turn', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, rows, activeRow: baseRow, allow },
+      props: { row: baseRow, rows, activeRow: baseRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -52,7 +52,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('shows your own character and who is up while waiting, collapsed', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, rows, activeRow: otherRow, allow },
+      props: { row: baseRow, rows, activeRow: otherRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -70,7 +70,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('collapses the controls when the toggle is clicked', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, rows, activeRow: baseRow, allow },
+      props: { row: baseRow, rows, activeRow: baseRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -83,7 +83,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('re-expands the controls once the row becomes active again', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, rows, activeRow: otherRow, allow },
+      props: { row: baseRow, rows, activeRow: otherRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -94,7 +94,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('collapses the controls once the row is no longer active', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, rows, activeRow: baseRow, allow },
+      props: { row: baseRow, rows, activeRow: baseRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -107,7 +107,7 @@ describe('LiveMyCharacterPanel', () => {
 
   it('opens the controls while waiting so a readied action can be used', async () => {
     const component = await mountSuspended(LiveMyCharacterPanel, {
-      props: { row: baseRow, rows, activeRow: otherRow, allow },
+      props: { row: baseRow, rows, activeRow: otherRow, allow, settings: {} },
       global: { stubs },
     })
 

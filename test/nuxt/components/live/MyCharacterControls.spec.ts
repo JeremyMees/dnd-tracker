@@ -1,8 +1,10 @@
+import { resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import type { VueWrapper } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import MyCharacterAc from '~/components/live/MyCharacterAc.vue'
 import MyCharacterControls from '~/components/live/MyCharacterControls.vue'
+import { bloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 import conditions from '~~/test/fixtures/conditions.json'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
@@ -35,7 +37,7 @@ mockNuxtImport('useLiveMyAction', () => () => ({ apply, pending, endTurn }))
 
 vi.mock('~/queries/srd', () => ({
   useConditionsListing: () => ({
-    data: ref(conditions),
+    data: ref([...conditions, bloodiedCondition]),
     isPending: ref(false),
   }),
   useSrdListing: () => ({ data: ref(undefined) }),
@@ -56,6 +58,7 @@ function mountControls(
   overrides: Partial<PlayerRow> = {},
   active = true,
   allow: Partial<LiveAllowActions> = {},
+  settings: PlayerSheetSettings = {},
 ) {
   return mountSuspended(MyCharacterControls, {
     props: {
@@ -63,8 +66,19 @@ function mountControls(
       rows: [row, goblin],
       active,
       allow: { ...defaultAllow, ...allow },
+      settings,
     },
   })
+}
+
+async function submitHp(
+  component: Awaited<ReturnType<typeof mountControls>>,
+  hpType: 'heal' | 'damage',
+  amount: number,
+) {
+  await component.get('input[name="amount"]').setValue(amount)
+  await component.get(`[test-id="${hpType}"]`).trigger('click')
+  await submitForm(component)
 }
 
 describe('LiveMyCharacterControls', () => {
@@ -98,25 +112,104 @@ describe('LiveMyCharacterControls', () => {
     )
   })
 
+  describe('hp prediction', () => {
+    beforeEach(() => {
+      resetToast()
+    })
+
+    it('predicts a death save failure for damage at 0 hp', async () => {
+      const component = await mountControls({
+        hitPoints: 0,
+        deathSaves: {
+          save: [false, false, false],
+          fail: [false, false, false],
+        },
+      })
+
+      await submitHp(component, 'damage', 3)
+
+      expect(apply).toHaveBeenCalledWith(
+        { type: 'hp', hpType: 'damage', amount: 3 },
+        {
+          deathSaves: {
+            save: [false, false, false],
+            fail: [true, false, false],
+          },
+        },
+      )
+    })
+
+    it.each([
+      [{}, 0],
+      [{ negative: true }, -5],
+    ])('predicts damage below 0 hp with settings %o', async (settings, hp) => {
+      const component = await mountControls({}, true, {}, settings)
+
+      await submitHp(component, 'damage', 15)
+
+      expect(apply.mock.lastCall![1].hitPoints).toBe(hp)
+    })
+
+    it('predicts the bloodied condition when the sheet has it on', async () => {
+      const component = await mountControls({}, true, {}, { bloodied: true })
+
+      await submitHp(component, 'damage', 1)
+
+      expect(apply.mock.lastCall![1]).toEqual({
+        hitPoints: 9,
+        conditions: [expect.objectContaining({ id: 'bloodied' })],
+      })
+    })
+
+    it('shows the concentration check once the server accepted the damage', async () => {
+      apply.mockResolvedValueOnce(true)
+
+      const component = await mountControls({ concentration: true })
+
+      await submitHp(component, 'damage', 4)
+
+      expect(toast.info).toHaveBeenCalledWith(
+        'components.initiativeTable.concentration.title',
+        expect.anything(),
+      )
+    })
+
+    it('shows no message when the server rejected the damage', async () => {
+      apply.mockResolvedValueOnce(false)
+
+      const component = await mountControls({ concentration: true })
+
+      await submitHp(component, 'damage', 4)
+
+      expect(toast.info).not.toHaveBeenCalled()
+    })
+  })
+
   it('does not render the hp section when hit points are hidden', async () => {
     const component = await mountControls({ hitPoints: undefined })
 
     expect(component.find('[test-id="heal"]').exists()).toBe(false)
   })
 
-  it('increases ac and applies the predicted optimistic patch', async () => {
-    const component = await mountControls()
-    const ac = component.getComponent(MyCharacterAc)
+  it.each([
+    [20, 18],
+    [16, 16],
+  ])(
+    'increases ac and predicts it capped at a max of %i',
+    async (maxArmorClass, armorClass) => {
+      const component = await mountControls({ maxArmorClass })
+      const ac = component.getComponent(MyCharacterAc)
 
-    await ac.get('input[name="amount"]').setValue(4)
-    await ac.get('[test-id="add-ac"]').trigger('click')
-    await submitForm(ac)
+      await ac.get('input[name="amount"]').setValue(4)
+      await ac.get('[test-id="add-ac"]').trigger('click')
+      await submitForm(ac)
 
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'ac', acType: 'add', amount: 4 },
-      { armorClass: 18 },
-    )
-  })
+      expect(apply).toHaveBeenCalledWith(
+        { type: 'ac', acType: 'add', amount: 4 },
+        { armorClass },
+      )
+    },
+  )
 
   it('does not render the ac section when armor class is hidden', async () => {
     const component = await mountControls({ armorClass: undefined })
@@ -236,7 +329,7 @@ describe('LiveMyCharacterControls', () => {
     expect(
       component.findComponent({ name: 'ConditionPicker' }).props(),
     ).toMatchObject({
-      conditions,
+      conditions: [...conditions, bloodiedCondition],
       applied: [],
       item: row,
       rows: [row, goblin],
@@ -252,6 +345,7 @@ describe('LiveMyCharacterControls', () => {
         rows: [row, goblin, { ...goblin, id: 'row-3', hidden: true }],
         active: true,
         allow: defaultAllow,
+        settings: {},
       },
     })
 

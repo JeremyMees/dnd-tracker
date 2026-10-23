@@ -864,6 +864,19 @@ describe('dnd/hp-ac', () => {
     })
   })
 
+  describe('liveHpChange', () => {
+    it('turns live damage into one untyped roll', () => {
+      expect(liveHpChange('damage', 7)).toEqual({
+        type: 'damage',
+        rolls: [{ amount: 7 }],
+      })
+    })
+
+    it.each(['heal', 'temp'] as const)('keeps a live %s as is', hpType => {
+      expect(liveHpChange(hpType, 7)).toEqual({ type: hpType, amount: 7 })
+    })
+  })
+
   describe('applyAcChange', () => {
     const row: InitiativeSheetRow = {
       id: 'row-1',

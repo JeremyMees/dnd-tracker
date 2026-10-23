@@ -41,6 +41,8 @@ function toPlayerRow(
     playerRow.tempArmorClass = row.tempArmorClass
   }
 
+  if (isOwnRow) playerRow.maxArmorClass = row.maxArmorClass
+
   if (hidePlayerHealth) {
     playerRow.healthBand = getHealthBand(row.hitPoints, row.maxHitPoints)
   } else if (!isMonster) {
@@ -108,6 +110,10 @@ export function toPlayerSheet(
       reaction: allow?.reaction ?? true,
       ready: allow?.ready ?? true,
       endTurn: allow?.endTurn ?? true,
+    },
+    settings: {
+      negative: sheet.settings.negative ?? false,
+      bloodied: isBloodiedEnabled(sheet.settings),
     },
   }
 }

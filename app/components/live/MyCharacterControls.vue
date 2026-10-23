@@ -6,6 +6,7 @@ const props = defineProps<{
   rows: PlayerRow[]
   active: boolean
   allow: LiveAllowActions
+  settings: PlayerSheetSettings
 }>()
 
 const { apply, pending, endTurn } = useLiveMyAction(
@@ -14,7 +15,34 @@ const { apply, pending, endTurn } = useLiveMyAction(
 const { data: conditionsList, isPending: conditionsPending } =
   useConditionsListing()
 
+const bloodied = useBloodiedCondition(() => props.settings)
+const handleToasts = useToastItems()
+
 const locked = computed(() => pending.value || !props.active)
+
+async function applyHp(action: LiveHpAction): Promise<boolean> {
+  const { patch, toasts } = applyHpChange(
+    props.row,
+    liveHpChange(action.hpType, action.amount),
+    { negative: props.settings.negative, bloodied: bloodied.value },
+  )
+
+  const applied = await apply(action, patch)
+
+  if (applied) handleToasts(toasts)
+
+  return applied
+}
+
+async function applyAc(action: LiveAcAction): Promise<boolean> {
+  const patch = applyAcChange(
+    props.row,
+    { type: action.acType, amount: action.amount },
+    { negative: props.settings.negative },
+  )
+
+  return apply(action, patch)
+}
 
 async function updateDeathSaves(value: DndDeathSaves): Promise<void> {
   await apply({ type: 'deathSaves', value }, { deathSaves: value })
@@ -86,7 +114,7 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
       v-if="isDefined(row.hitPoints)"
       :row="row"
       :pending="locked || !allow.hp"
-      :apply="apply"
+      :apply="applyHp"
     />
 
     <UiSeparator class="bg-muted" />
@@ -95,7 +123,7 @@ async function applyConditions(value: DndCondition[]): Promise<void> {
       v-if="isDefined(row.armorClass)"
       :row="row"
       :pending="locked || !allow.ac"
-      :apply="apply"
+      :apply="applyAc"
     />
 
     <div
