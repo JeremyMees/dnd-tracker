@@ -44,6 +44,13 @@ engine, such as sanitizer policy tests, goes in `unit` with
   Pass `mockFrom` an array of chains when a route calls `.from()` on the same
   table more than once. For Stripe, spy on the real singleton with
   `vi.spyOn(stripe.<namespace>, '<method>')`.
+- Sheet changes are tested against in-memory adapters from
+  `test/unit/stubs/sheet-changes.ts`, which store rows through a JSON round trip
+  like jsonb and record each message with its topic and version. Module specs
+  build a context with `memorySheetContext`; route specs call `useMemorySheet`
+  (which swaps the adapters in) and keep `mockFrom` only for the access check.
+  Assert the stored rows, `state.events` and `sent('sheet:7')`, not the order of
+  Supabase calls.
 - `export const { a } = vi.hoisted(…)` throws. Assign the hoisted object to a
   `const` first, then destructure it in a separate export.
 - A promise returned by a `vi.fn` never counts as unhandled, so a

@@ -38,6 +38,10 @@ export interface SheetStore {
     from: SheetTurn,
     to: SheetTurn & Partial<Pick<InitiativeSheet, 'rows'>>,
   ) => Promise<TurnSheet | undefined>
+  updateSheet: (
+    encounterId: number,
+    update: InitiativeSheetUpdate,
+  ) => Promise<void>
   liveSession: (encounterId: number) => Promise<SheetLiveSession | undefined>
   logEvents: (events: TablesInsert<'combat_events'>[]) => Promise<void>
 }

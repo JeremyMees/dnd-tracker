@@ -156,6 +156,27 @@ describe('sheet-adapters', () => {
       ).rejects.toThrow()
     })
 
+    it('writes a whole-sheet update', async () => {
+      const chain = mockChain({ data: null, error: null })
+
+      mockFrom({ initiative_sheets: chain })
+
+      await supabaseSheetStore(client()).updateSheet(7, { round: 3 })
+
+      expect(chain.update).toHaveBeenCalledWith({ round: 3 })
+      expect(chain.eq).toHaveBeenCalledWith('id', 7)
+    })
+
+    it('throws when the update is rejected', async () => {
+      mockFrom({
+        initiative_sheets: mockChain({ data: null, error: postgresError }),
+      })
+
+      await expect(
+        supabaseSheetStore(client()).updateSheet(7, { round: 3 }),
+      ).rejects.toThrow()
+    })
+
     it('finds the active live session of the encounter', async () => {
       const session = { uuid: 'session-uuid', seats: [] }
       const chain = mockChain({ data: session, error: null })

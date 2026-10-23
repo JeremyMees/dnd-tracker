@@ -1,5 +1,9 @@
 import type { serverSupabaseServiceRole } from '#supabase/server'
-import { diffRow, turnEvent } from '~~/shared/utils/dnd/combat-events'
+import {
+  diffRow,
+  diffSheet,
+  turnEvent,
+} from '~~/shared/utils/dnd/combat-events'
 
 export function sheetChangeContext(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
@@ -79,6 +83,10 @@ function claimedRows(session: SheetLiveSession | undefined): Set<string> {
   return new Set(session?.seats.flatMap(seat => (seat.row ? [seat.row] : [])))
 }
 
+function rowClaimedError() {
+  return createError({ statusCode: 409, statusMessage: 'row-claimed' })
+}
+
 async function sendLiveActions(
   ctx: SheetChangeContext,
   seat: SheetSeatOrigin,
@@ -123,7 +131,7 @@ export async function applyRowPatches(
   const claimed = claimedRows(live)
 
   if (patches.some(({ rowId, patch }) => patch.hidden && claimed.has(rowId))) {
-    throw createError({ statusCode: 409, statusMessage: 'row-claimed' })
+    throw rowClaimedError()
   }
 
   const after = await ctx.store.patchRows(ctx.encounterId, patches)
@@ -227,4 +235,44 @@ export async function advanceSheetTurn(
   ])
 
   return { sheet: updated, ...reminders }
+}
+
+const liveViewFields = new Set(['round', 'activeIndex', 'rows', 'settings'])
+
+function hidesClaimedRow(
+  before: InitiativeSheetRow[],
+  after: InitiativeSheetRow[],
+  claimed: Set<string>,
+): boolean {
+  const wasHidden = new Set(before.filter(row => row.hidden).map(row => row.id))
+
+  return after.some(
+    row => row.hidden && claimed.has(row.id) && !wasHidden.has(row.id),
+  )
+}
+
+export async function applySheetUpdate(
+  ctx: SheetChangeContext,
+  data: InitiativeSheetUpdate,
+): Promise<void> {
+  const before = await readSheet(ctx)
+  const update = data.rows ? { ...data, rows: normalizeRows(data.rows) } : data
+  const live = Object.keys(update).some(key => liveViewFields.has(key))
+    ? await ctx.store.liveSession(ctx.encounterId)
+    : undefined
+
+  if (
+    update.rows &&
+    hidesClaimedRow(before.rows, update.rows, claimedRows(live))
+  ) {
+    throw rowClaimedError()
+  }
+
+  await ctx.store.updateSheet(ctx.encounterId, update)
+
+  await Promise.all([
+    logEvents(ctx, update.round ?? before.round, diffSheet(before, update)),
+    sendSheetSync(ctx),
+    ...(live ? [sendLiveState(ctx, live.uuid)] : []),
+  ])
 }

@@ -364,6 +364,40 @@ describe('dnd/row', () => {
     })
   })
 
+  describe('normalizeRows', () => {
+    it('reindexes by initiative and cleans numbers and conditions', () => {
+      const elara: InitiativeSheetRow = {
+        id: 'row-1',
+        index: 0,
+        initiative: 5,
+        name: 'Elara',
+        type: 'player',
+        conditions: [
+          { id: 'prone', name: 'Prone', desc: 'Down.', level: null },
+        ],
+        hitPoints: 7.6,
+      }
+      const goblin: InitiativeSheetRow = {
+        ...elara,
+        id: 'row-2',
+        index: 1,
+        initiative: 15,
+        conditions: [],
+        hitPoints: 3,
+      }
+
+      expect(normalizeRows([elara, goblin])).toStrictEqual([
+        { ...goblin, index: 0 },
+        {
+          ...elara,
+          index: 1,
+          hitPoints: 8,
+          conditions: [{ id: 'prone', name: 'Prone', desc: '' }],
+        },
+      ])
+    })
+  })
+
   describe('getCurrentRowIndex', () => {
     it('should return correct index for existing id', () => {
       const index = getCurrentRowIndex(sheet, sheet.rows[0]?.id ?? '')

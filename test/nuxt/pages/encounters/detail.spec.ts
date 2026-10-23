@@ -427,55 +427,11 @@ describe('Encounter detail page', () => {
     expect(update).not.toHaveBeenCalled()
   })
 
-  it('Should log the removed rows after a successful update', async () => {
+  it('Should leave logging the changes of an update to the server', async () => {
     const { probe } = await mountPage()
-    const [first, ...rest] = sheet.rows
+    const [, ...rest] = sheet.rows
 
-    await probe.update({ rows: rest, activeIndex: 0 })
-
-    expect(logEvents).toHaveBeenCalledWith({
-      encounterId: 2,
-      events: [
-        {
-          type: 'row_removed',
-          rowId: first!.id,
-          payload: { rowName: first!.name },
-        },
-      ],
-    })
-  })
-
-  it('Should log a turn change made through an update', async () => {
-    const { probe } = await mountPage()
-
-    await probe.update({ activeIndex: 1 })
-
-    expect(logEvents).toHaveBeenCalledWith({
-      encounterId: 2,
-      events: [
-        {
-          type: 'turn',
-          rowId: sheet.rows[1]!.id,
-          payload: { rowName: sheet.rows[1]!.name },
-        },
-      ],
-    })
-  })
-
-  it('Should not log an update without rows or turn changes', async () => {
-    const { probe } = await mountPage()
-
-    await probe.update({ title: 'Renamed' })
-
-    expect(logEvents).not.toHaveBeenCalled()
-  })
-
-  it('Should not log when the update fails', async () => {
-    update.mockRejectedValueOnce(new Error('Boom'))
-
-    const { probe } = await mountPage()
-
-    await expect(probe.update({ activeIndex: 1 })).rejects.toThrow('Boom')
+    await probe.update({ rows: rest, activeIndex: 1 })
 
     expect(logEvents).not.toHaveBeenCalled()
   })

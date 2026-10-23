@@ -87,6 +87,10 @@ export function useRealTimeInitiativeSheet(
       return { ...old, ...payload.sheet, version: payload.version }
     })
 
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.combatEvents(id),
+    })
+
     if (payload.reminders) void turnReminders.trigger(payload.reminders)
   }
 

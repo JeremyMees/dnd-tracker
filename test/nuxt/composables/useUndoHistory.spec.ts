@@ -152,7 +152,7 @@ describe('useUndoHistory', () => {
   it('does not record updates that leave rows and turn alone', async () => {
     const history = useUndoHistory(sheet, actions)
 
-    await history.update({ title: 'Renamed' })
+    await history.update({ info: 'Ambush at dawn' })
 
     expect(history.canUndo.value).toBe(false)
   })

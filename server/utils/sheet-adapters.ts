@@ -62,6 +62,14 @@ export function supabaseSheetStore(supabase: ServiceClient): SheetStore {
 
       return data ?? undefined
     },
+    async updateSheet(encounterId, changes) {
+      const { error } = await supabase
+        .from('initiative_sheets')
+        .update(changes)
+        .eq('id', encounterId)
+
+      if (error) throw createError(postgresErrorToH3Error(error))
+    },
     async liveSession(encounterId) {
       const { data } = await supabase
         .from('live_sessions')

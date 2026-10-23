@@ -51,8 +51,6 @@ function log(events: CombatEventDraft[]): void {
 async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
   if (!data.value) return
 
-  const events = diffSheet(data.value, payload)
-
   await update({
     data: payload,
     id,
@@ -60,8 +58,6 @@ async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
       if (!realtimeData.value && !error) updateQueryData(payload)
     },
   })
-
-  log(events)
 }
 
 async function handlePatchRow(

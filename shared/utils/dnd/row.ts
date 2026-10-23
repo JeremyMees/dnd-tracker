@@ -292,3 +292,12 @@ export const editInitiativeRow = (
       : { armorClass: ac, maxArmorClass: ac, maxArmorClassOld: undefined }),
   }
 }
+
+export function normalizeRows(
+  rows: InitiativeSheetRow[],
+): InitiativeSheetRow[] {
+  return indexCorrect(rows).map(row => ({
+    ...sanitizeRowNumbers(row),
+    conditions: row.conditions.map(sanitizeCondition),
+  }))
+}

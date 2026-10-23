@@ -9,6 +9,7 @@ import {
   applyRowPatches,
   sendLiveState,
   sendSheetSync,
+  applySheetUpdate,
 } from '~~/server/utils/sheet-changes'
 
 const elara: InitiativeSheetRow = {
@@ -468,6 +469,137 @@ describe('sheet-changes', () => {
       expect(state.sheet.activeIndex).toBe(1)
       expect(state.events).toEqual([])
       expect(state.messages).toEqual([])
+    })
+  })
+
+  describe('applySheetUpdate', () => {
+    it('stores the update, logs what changed and syncs the sheet', async () => {
+      const { ctx, state, sent } = memorySheetContext(sheet)
+
+      await applySheetUpdate(ctx, { rows: [elara], activeIndex: 0 })
+
+      expect(state.sheet.rows).toEqual([elara])
+      expect(state.events).toEqual([
+        {
+          encounterId: 7,
+          rowId: 'row-2',
+          round: 2,
+          type: 'row_removed',
+          payload: { rowName: 'Goblin' },
+          createdBy: 'user-1',
+          actorName: null,
+        },
+      ])
+      expect(sent('sheet:7')).toEqual([
+        {
+          topic: 'sheet:7',
+          event: 'sync',
+          payload: { version: 1, sheet: state.sheet },
+        },
+      ])
+    })
+
+    it('reindexes the rows by initiative and cleans their numbers and conditions', async () => {
+      const { ctx, state } = memorySheetContext(storedSheet())
+
+      await applySheetUpdate(ctx, {
+        rows: [
+          { ...elara, initiative: 5, index: 0, hitPoints: 7.6 },
+          {
+            ...goblin,
+            initiative: 15,
+            index: 1,
+            conditions: [{ id: 'prone', name: 'Prone', desc: 'Down.' }],
+          },
+        ],
+      })
+
+      expect(state.sheet.rows).toEqual([
+        {
+          ...goblin,
+          initiative: 15,
+          index: 0,
+          conditions: [{ id: 'prone', name: 'Prone', desc: '' }],
+        },
+        { ...elara, initiative: 5, index: 1, hitPoints: 8 },
+      ])
+    })
+
+    it('logs a turn change with the new round', async () => {
+      const { ctx, state } = memorySheetContext(sheet)
+
+      await applySheetUpdate(ctx, { activeIndex: 1, round: 3 })
+
+      expect(state.events).toEqual([
+        expect.objectContaining({ type: 'turn', rowId: 'row-2', round: 3 }),
+      ])
+    })
+
+    it.each([
+      [{ rows: [elara, goblin] }],
+      [{ round: 3 }],
+      [{ activeIndex: 1 }],
+      [{ settings: { spacing: 'compact', modified: true } }],
+    ] as InitiativeSheetUpdate[][])(
+      'sends the player view to the live session for %o',
+      async update => {
+        const { ctx, sent } = memorySheetContext(sheet, { liveSession })
+
+        await applySheetUpdate(ctx, update)
+
+        expect(sent('live:session-uuid')).toHaveLength(1)
+      },
+    )
+
+    it.each([
+      [{ info: 'Ambush at dawn' }],
+      [{ infoCards: [] }],
+    ] as InitiativeSheetUpdate[][])(
+      'leaves the live session alone for %o',
+      async update => {
+        const { ctx, sent } = memorySheetContext(sheet, { liveSession })
+
+        await applySheetUpdate(ctx, update)
+
+        expect(sent('sheet:7')).toHaveLength(1)
+        expect(sent('live:session-uuid')).toEqual([])
+      },
+    )
+
+    it('refuses to hide a row a player has claimed', async () => {
+      const { ctx, state } = memorySheetContext(sheet, { liveSession })
+
+      await expect(
+        applySheetUpdate(ctx, { rows: [{ ...elara, hidden: true }, goblin] }),
+      ).rejects.toMatchObject({ statusCode: 409, statusMessage: 'row-claimed' })
+
+      expect(state.sheet.rows).toEqual(sheet.rows)
+      expect(state.events).toEqual([])
+      expect(state.messages).toEqual([])
+    })
+
+    it('keeps a claimed row that was already hidden hidden', async () => {
+      const hidden = { ...elara, hidden: true }
+      const { ctx, state } = memorySheetContext(
+        storedSheet({ rows: [hidden, goblin] }),
+        { liveSession },
+      )
+
+      await applySheetUpdate(ctx, {
+        rows: [hidden, { ...goblin, hidden: true }],
+      })
+
+      expect(state.sheet.rows).toEqual([hidden, { ...goblin, hidden: true }])
+    })
+
+    it('hides a row nobody claimed', async () => {
+      const { ctx, state } = memorySheetContext(sheet, { liveSession })
+
+      await applySheetUpdate(ctx, {
+        rows: [elara, { ...goblin, hidden: true }],
+      })
+
+      expect(state.sheet.rows[1]?.hidden).toBe(true)
     })
   })
 

@@ -57,6 +57,14 @@ House rules a reviewer will ask for. Each one came from a real review comment.
   suggests one.
 - **Row changes go through a patch** where one exists (`patchRow`, `patchRows`),
   rather than writing the whole `rows` array. See ADR-0002.
+- **Sheet writes go through `server/utils/sheet-changes.ts`.** Row patches
+  (`applyRowPatches`), turn advance (`advanceSheetTurn`) and whole-sheet edits
+  (`applySheetUpdate`) read the sheet before the change, enforce the row rules
+  (rows exist, a claimed row can't be hidden), log the combat events and send
+  the broadcasts per topic. A route only checks auth, parses the body and calls
+  one of them; the browser never writes the rows, turn, settings or info of a
+  sheet directly. Supabase and Realtime sit behind the `SheetStore` and
+  `SheetBroadcaster` adapters in `server/utils/sheet-adapters.ts`.
 - **HP and AC changes go through `applyHpChange` / `applyAcChange`**
   (`shared/utils/dnd/hp-ac.ts`). Pass the row, the change and the context (the
   negative HP setting, and the Bloodied condition when the sheet has it on); get

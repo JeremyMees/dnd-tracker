@@ -14,7 +14,6 @@ import {
   useInitiativeSheetDetailUpdate,
   useInitiativeSheetPatch,
   useInitiativeSheetPatchRows,
-  useInitiativeSheetSync,
   useInitiativeSheetTurn,
 } from '~/queries/initiative-sheets'
 
@@ -65,21 +64,6 @@ describe('initiative-sheets queries', () => {
       })
 
       await vi.waitFor(() => expect(vm.isError).toBe(true))
-    })
-  })
-
-  describe('useInitiativeSheetSync', () => {
-    it('posts to the sync endpoint', async () => {
-      fetchMock.mockResolvedValue(undefined)
-
-      const { vm } = await mountHook(() => useInitiativeSheetSync())
-
-      await vm.mutateAsync({ id: 7, live: true })
-
-      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
-        method: 'POST',
-        body: { live: true },
-      })
     })
   })
 
@@ -683,244 +667,133 @@ describe('initiative-sheets queries', () => {
   })
 
   describe('useInitiativeSheetDetailUpdate', () => {
-    it('sanitizes and reindexes rows before updating', async () => {
-      const from = mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
+    function mountUpdate() {
+      return mountHook(() => ({
+        ...useInitiativeSheetDetailUpdate(),
+        queryClient: useQueryClient(),
+      }))
+    }
+
+    it('sends the update to the encounter route in one request', async () => {
+      fetchMock.mockResolvedValue({ updated: true })
+
+      const { vm } = await mountUpdate()
+
+      await vm.mutateAsync({ id: 7, data: { activeIndex: 1, round: 2 } })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7', {
+        method: 'PATCH',
+        body: { activeIndex: 1, round: 2 },
       })
+    })
 
-      fetchMock.mockResolvedValue(undefined)
+    it('updates the cache and the combat log optimistically', async () => {
+      fetchMock.mockReturnValue(new Promise(() => {}))
 
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+      const { vm } = await mountUpdate()
+      const other = { ...row, id: 'row-2', name: 'Goblin' }
 
-      await vm.mutateAsync({
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
         id: 7,
-        data: {
-          rows: [
-            { ...row, initiative: 5, index: 3 },
-            { ...row, id: 'row-2', initiative: 15, index: 1 },
-          ],
-        },
+        round: 2,
+        activeIndex: 0,
+        rows: [row, other],
       })
 
-      expect(from).toHaveBeenCalledWith('initiative_sheets')
+      void vm.mutateAsync({ id: 7, data: { rows: [row] } })
 
-      const chain = from.mock.results[0]!.value
-      const updated = chain.update.mock.calls[0]![0]
+      await vi.waitFor(() =>
+        expect(
+          vm.queryClient.getQueryData<InitiativeSheet>([
+            'useInitiativeSheetDetail',
+            7,
+          ])?.rows,
+        ).toEqual([row]),
+      )
 
-      expect(updated.rows.map((r: InitiativeSheetRow) => r.id)).toEqual([
-        'row-2',
-        'row-1',
-      ])
-      expect(updated.rows.map((r: InitiativeSheetRow) => r.index)).toEqual([
-        0, 1,
+      expect(
+        vm.queryClient.getQueryData<CombatEventRow[]>(['useCombatEvents', 7]),
+      ).toEqual([
+        expect.objectContaining({
+          encounterId: 7,
+          round: 2,
+          rowId: 'row-2',
+          type: 'row_removed',
+          payload: { rowName: 'Goblin' },
+        }),
       ])
     })
 
-    it('stores conditions with an empty description before updating', async () => {
-      const from = mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
+    it('leaves the combat log alone for an update without combat effect', async () => {
+      fetchMock.mockReturnValue(new Promise(() => {}))
 
-      fetchMock.mockResolvedValue(undefined)
+      const { vm } = await mountUpdate()
 
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
-
-      await vm.mutateAsync({
+      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
         id: 7,
-        data: {
-          rows: [
-            {
-              ...row,
-              conditions: [
-                { id: 'prone', name: 'Prone', desc: 'knocked down' },
-                { id: 'blinded', name: 'Blinded' },
-              ],
-            } as InitiativeSheetRow,
-          ],
-        },
+        round: 1,
+        activeIndex: 0,
+        rows: [row],
       })
 
-      const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
+      void vm.mutateAsync({ id: 7, data: { info: 'Ambush at dawn' } })
 
-      expect(updated.rows[0].conditions).toEqual([
-        { id: 'prone', name: 'Prone', desc: '' },
-        { id: 'blinded', name: 'Blinded', desc: '' },
-      ])
-    })
+      await vi.waitFor(() =>
+        expect(
+          vm.queryClient.getQueryData<InitiativeSheet>([
+            'useInitiativeSheetDetail',
+            7,
+          ])?.info,
+        ).toBe('Ambush at dawn'),
+      )
 
-    it('drops null condition fields that the rows check constraint rejects', async () => {
-      const from = mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
-
-      fetchMock.mockResolvedValue(undefined)
-
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
-
-      await vm.mutateAsync({
-        id: 7,
-        data: {
-          rows: [
-            {
-              ...row,
-              conditions: [
-                {
-                  id: 'prone',
-                  name: 'Prone',
-                  desc: 'knocked down',
-                  level: null,
-                  hasLevels: null,
-                },
-                {
-                  id: 'exhaustion',
-                  name: 'Exhaustion',
-                  desc: 'tired',
-                  level: 2,
-                  hasLevels: true,
-                },
-              ],
-            },
-          ],
-        },
-      })
-
-      const updated = from.mock.results[0]!.value.update.mock.calls[0]![0]
-
-      expect(updated.rows[0].conditions).toStrictEqual([
-        { id: 'prone', name: 'Prone', desc: '' },
-        {
-          id: 'exhaustion',
-          name: 'Exhaustion',
-          desc: '',
-          level: 2,
-          hasLevels: true,
-        },
-      ])
+      expect(
+        vm.queryClient.getQueryData(['useCombatEvents', 7]),
+      ).toBeUndefined()
     })
 
     it('hands the caller its callbacks on success', async () => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
+      fetchMock.mockResolvedValue({ updated: true })
 
-      fetchMock.mockResolvedValue(undefined)
-
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+      const { vm } = await mountUpdate()
       const spies = mutationSpies()
 
-      await vm.mutateAsync({ id: 7, data: { title: 'Renamed' }, ...spies })
+      await vm.mutateAsync({ id: 7, data: { info: 'Renamed' }, ...spies })
 
       expect(spies.onSuccess).toHaveBeenCalledOnce()
       expect(spies.onSettled).toHaveBeenCalledWith(undefined)
     })
 
-    it('still resolves when the sheet sync fails', async () => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
+    it('rolls back the cache and the combat log and reports the error when the update fails', async () => {
+      fetchMock.mockRejectedValue(new Error('boom'))
 
-      fetchMock.mockRejectedValue(new Error('sync down'))
-
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
-
-      await expect(
-        vm.mutateAsync({ id: 7, data: { title: 'Renamed' } }),
-      ).resolves.toBeUndefined()
-
-      await vi.waitFor(() =>
-        expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
-          method: 'POST',
-          body: { live: false },
-        }),
-      )
-    })
-
-    it('syncs the sheet channel after a successful update', async () => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
-
-      fetchMock.mockResolvedValue(undefined)
-
-      const { vm } = await mountHook(() => ({
-        ...useInitiativeSheetDetailUpdate(),
-        queryClient: useQueryClient(),
-      }))
+      const { vm } = await mountUpdate()
+      const other = { ...row, id: 'row-2', name: 'Goblin' }
 
       vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
         id: 7,
-        title: 'Ambush',
-        rows: [],
+        round: 1,
+        activeIndex: 0,
+        rows: [row, other],
       })
-
-      await vm.mutateAsync({ id: 7, data: { title: 'Renamed' } })
-
-      await vi.waitFor(() =>
-        expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
-          method: 'POST',
-          body: { live: false },
-        }),
-      )
-    })
-
-    it.each([
-      [{ rows: [] }],
-      [{ round: 2 }],
-      [{ activeIndex: 1 }],
-      [{ settings: { spacing: 'normal' as const, modified: false } }],
-    ])('asks the sync to include the live session for %o', async data => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({ data: null, error: null }),
-      })
-
-      fetchMock.mockResolvedValue(undefined)
-
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
-
-      await vm.mutateAsync({ id: 7, data })
-
-      await vi.waitFor(() =>
-        expect(fetchMock).toHaveBeenCalledWith('/api/encounter/7/sync', {
-          method: 'POST',
-          body: { live: true },
-        }),
-      )
-    })
-
-    it('rolls back the cache and reports the error when the update fails', async () => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({
-          data: null,
-          error: { message: 'boom' },
-        }),
-      })
-
-      const { vm } = await mountHook(() => ({
-        ...useInitiativeSheetDetailUpdate(),
-        queryClient: useQueryClient(),
-      }))
-
-      vm.queryClient.setQueryData(['useInitiativeSheetDetail', 7], {
-        id: 7,
-        title: 'Ambush',
-        rows: [],
-      })
+      vm.queryClient.setQueryData(['useCombatEvents', 7], [])
 
       const spies = mutationSpies()
 
       await expect(
-        vm.mutateAsync({ id: 7, data: { title: 'Renamed' }, ...spies }),
+        vm.mutateAsync({ id: 7, data: { rows: [row] }, ...spies }),
       ).rejects.toThrow('boom')
 
       expect(spies.onError).toHaveBeenCalledWith('boom')
       expect(spies.onSettled).toHaveBeenCalledWith('boom')
-
-      const cached = vm.queryClient.getQueryData<InitiativeSheet>([
-        'useInitiativeSheetDetail',
-        7,
-      ])
-
-      expect(cached?.title).toBe('Ambush')
+      expect(
+        vm.queryClient.getQueryData<InitiativeSheet>([
+          'useInitiativeSheetDetail',
+          7,
+        ])?.rows,
+      ).toEqual([row, other])
+      expect(vm.queryClient.getQueryData(['useCombatEvents', 7])).toEqual([])
     })
 
     it.each([
@@ -930,18 +803,13 @@ describe('initiative-sheets queries', () => {
       [{ settings: { modified: true } }, 'settings'],
       [{ infoCards: [] }, 'infoCards'],
       [{ info: 'Ambush at dawn' }, 'info'],
-      [{ title: 'Renamed' }, 'generic'],
+      [{}, 'generic'],
     ] as [UpdateInitiativeSheetData, string][])(
       'names what failed when a %o update fails',
       async (data, field) => {
-        mockSupabaseFrom({
-          initiative_sheets: mockChain({
-            data: null,
-            error: { message: 'boom', code: '23514' },
-          }),
-        })
+        fetchMock.mockRejectedValue(new Error('boom'))
 
-        const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+        const { vm } = await mountUpdate()
 
         await expect(vm.mutateAsync({ id: 7, data })).rejects.toThrow('boom')
 
@@ -952,41 +820,33 @@ describe('initiative-sheets queries', () => {
       },
     )
 
-    it('explains a row level security failure in the toast', async () => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({
-          data: null,
-          error: { message: 'denied', code: '42501' },
+    it('explains a claimed row in the toast', async () => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('row-claimed'), {
+          statusCode: 409,
+          data: { statusMessage: 'row-claimed' },
         }),
-      })
+      )
 
-      const { vm } = await mountHook(() => useInitiativeSheetDetailUpdate())
+      const { vm } = await mountUpdate()
 
       await expect(
-        vm.mutateAsync({ id: 7, data: { activeIndex: 1 } }),
-      ).rejects.toThrow('denied')
+        vm.mutateAsync({ id: 7, data: { rows: [{ ...row, hidden: true }] } }),
+      ).rejects.toThrow('row-claimed')
 
       expect(toast.error).toHaveBeenCalledWith(
-        'pages.encounter.toasts.updateFailed.turn',
-        { description: 'general.error.reasons.forbidden' },
+        'pages.encounter.toasts.updateFailed.rows',
+        { description: 'general.error.reasons.rowClaimed' },
       )
     })
 
     it('reports the error without a cached sheet to roll back to', async () => {
-      mockSupabaseFrom({
-        initiative_sheets: mockChain({
-          data: null,
-          error: { message: 'boom' },
-        }),
-      })
+      fetchMock.mockRejectedValue(new Error('boom'))
 
-      const { vm } = await mountHook(() => ({
-        ...useInitiativeSheetDetailUpdate(),
-        queryClient: useQueryClient(),
-      }))
+      const { vm } = await mountUpdate()
 
       await expect(
-        vm.mutateAsync({ id: 7, data: { title: 'Renamed' } }),
+        vm.mutateAsync({ id: 7, data: { info: 'Renamed' } }),
       ).rejects.toThrow('boom')
 
       expect(

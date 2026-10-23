@@ -80,6 +80,9 @@ export function memorySheet(
 
       return asJsonb({ id, title, round, activeIndex, rows, settings })
     },
+    updateSheet: async (_encounterId, update) => {
+      state.sheet = asJsonb({ ...state.sheet, ...update })
+    },
     liveSession: async () => liveSession,
     logEvents: async events => {
       state.events.push(...events)

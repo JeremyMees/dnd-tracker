@@ -286,6 +286,18 @@ describe('useRealTimeInitiativeSheet', () => {
       })
     })
 
+    it('Should refresh the combat log on a newer sync broadcast', async () => {
+      getQueryData.mockReturnValue({ ...sheet, version: 2 })
+
+      await mountProbe()
+
+      emitBroadcast('sync', { version: 3, sheet })
+
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['useCombatEvents', 2],
+      })
+    })
+
     it('Should ignore a stale sync broadcast', async () => {
       getQueryData.mockReturnValue({ ...sheet, version: 5 })
 
@@ -294,6 +306,7 @@ describe('useRealTimeInitiativeSheet', () => {
       emitBroadcast('sync', { version: 5, sheet })
 
       expect(setQueryData).not.toHaveBeenCalled()
+      expect(invalidateQueries).not.toHaveBeenCalled()
     })
 
     it('Should pass the reminders of a portal turn to the listeners', async () => {
