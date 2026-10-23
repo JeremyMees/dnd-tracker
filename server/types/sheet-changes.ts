@@ -15,6 +15,13 @@ export interface SheetRowPatch {
   patch: Partial<InitiativeSheetRow>
 }
 
+export type SheetTurn = Pick<InitiativeSheet, 'activeIndex' | 'round'>
+
+export interface SheetSeatOrigin {
+  session: string
+  action: LiveRowAction['type']
+}
+
 export interface SheetLiveSession {
   uuid: string
   seats: LiveSeat[]
@@ -26,6 +33,11 @@ export interface SheetStore {
     encounterId: number,
     patches: SheetRowPatch[],
   ) => Promise<InitiativeSheetRow[]>
+  updateTurn: (
+    encounterId: number,
+    from: SheetTurn,
+    to: SheetTurn & Partial<Pick<InitiativeSheet, 'rows'>>,
+  ) => Promise<TurnSheet | undefined>
   liveSession: (encounterId: number) => Promise<SheetLiveSession | undefined>
   logEvents: (events: TablesInsert<'combat_events'>[]) => Promise<void>
 }

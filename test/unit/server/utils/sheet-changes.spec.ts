@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import '~~/test/unit/stubs/supabase'
 import {
   memorySheetContext,
   storedSheet,
 } from '~~/test/unit/stubs/sheet-changes'
 import {
+  advanceSheetTurn,
   applyRowPatches,
   sendLiveState,
   sendSheetSync,
@@ -215,7 +217,13 @@ describe('sheet-changes', () => {
       await applyRowPatches(
         ctx,
         [{ rowId: 'row-1', patch: { hitPoints: 6 } }],
-        { ...sheet, round: 5, rows: [{ ...elara, hitPoints: 12 }, goblin] },
+        {
+          before: {
+            ...sheet,
+            round: 5,
+            rows: [{ ...elara, hitPoints: 12 }, goblin],
+          },
+        },
       )
 
       expect(state.events).toEqual([
@@ -224,6 +232,73 @@ describe('sheet-changes', () => {
           payload: expect.objectContaining({ before: 12, after: 6 }),
         }),
       ])
+    })
+
+    describe('from a player seat', () => {
+      const seat: SheetSeatOrigin = { session: 'seat-session', action: 'hp' }
+
+      it('sends what the other players may see as a live action', async () => {
+        const { ctx, sent } = memorySheetContext(sheet, {
+          actor: { name: 'Elara' },
+        })
+
+        await applyRowPatches(
+          ctx,
+          [{ rowId: 'row-1', patch: { hitPoints: 7 } }],
+          {
+            seat,
+          },
+        )
+
+        expect(sent('live:seat-session')).toEqual([
+          {
+            topic: 'live:seat-session',
+            event: 'action',
+            payload: {
+              version: 1,
+              row: 'row-1',
+              patch: { healthBand: 'bloodied' },
+            },
+          },
+        ])
+        expect(sent('sheet:7')).toEqual([
+          {
+            topic: 'sheet:7',
+            event: 'action',
+            payload: { version: 1, row: 'row-1', patch: { hitPoints: 7 } },
+          },
+        ])
+      })
+
+      it('sends the raw patch for a monster row', async () => {
+        const { ctx, sent } = memorySheetContext(sheet)
+
+        await applyRowPatches(
+          ctx,
+          [{ rowId: 'row-2', patch: { hitPoints: 3 } }],
+          {
+            seat,
+          },
+        )
+
+        expect(sent('live:seat-session')[0]?.payload.patch).toEqual({
+          hitPoints: 3,
+        })
+      })
+
+      it('skips the full player view sync of the session it came from', async () => {
+        const { ctx, sent } = memorySheetContext(sheet, { liveSession })
+
+        await applyRowPatches(
+          ctx,
+          [{ rowId: 'row-1', patch: { hitPoints: 7 } }],
+          {
+            seat,
+          },
+        )
+
+        expect(sent('live:session-uuid')).toEqual([])
+      })
     })
 
     it('stores a cleared override as null, as jsonb keeps it', async () => {
@@ -236,6 +311,163 @@ describe('sheet-changes', () => {
       ])
 
       expect(state.sheet.rows[0]?.maxHitPointsOld).toBeNull()
+    })
+  })
+
+  describe('advanceSheetTurn', () => {
+    const prone: DndCondition = {
+      id: 'prone',
+      name: 'Prone',
+      desc: 'On the ground.',
+      duration: { rowId: 'row-2', timing: 'end', rounds: 1 },
+    }
+
+    const proneGoblin: InitiativeSheetRow = { ...goblin, conditions: [prone] }
+
+    it('moves to the next row and logs whose turn it is', async () => {
+      const { ctx, state } = memorySheetContext(
+        storedSheet({ rows: [elara, goblin] }),
+        { actor: { id: 'user-1', name: 'Elara' } },
+      )
+
+      const result = await advanceSheetTurn(ctx)
+
+      expect(state.sheet).toMatchObject({ activeIndex: 1, round: 1 })
+      expect(result).toEqual({
+        sheet: expect.objectContaining({ activeIndex: 1, round: 1 }),
+        expired: [],
+        saves: [],
+        recharges: [],
+      })
+      expect(state.events).toEqual([
+        {
+          encounterId: 7,
+          rowId: 'row-2',
+          round: 1,
+          type: 'turn',
+          payload: { rowName: 'Goblin' },
+          createdBy: 'user-1',
+          actorName: 'Elara',
+        },
+      ])
+    })
+
+    it('wraps to the first row in the next round', async () => {
+      const { ctx, state } = memorySheetContext(
+        storedSheet({ activeIndex: 1, round: 2, rows: [elara, goblin] }),
+      )
+
+      await advanceSheetTurn(ctx)
+
+      expect(state.sheet).toMatchObject({ activeIndex: 0, round: 3 })
+      expect(state.events).toEqual([
+        expect.objectContaining({ type: 'turn', rowId: 'row-1', round: 3 }),
+      ])
+    })
+
+    it('expires a timed condition, logs it and returns the reminder', async () => {
+      const { ctx, state } = memorySheetContext(
+        storedSheet({ activeIndex: 1, rows: [elara, proneGoblin] }),
+      )
+
+      const result = await advanceSheetTurn(ctx)
+
+      expect(state.sheet.rows).toEqual([elara, goblin])
+      expect(state.events).toEqual([
+        expect.objectContaining({ type: 'turn', rowId: 'row-1' }),
+        expect.objectContaining({
+          type: 'condition_expired',
+          rowId: 'row-2',
+          payload: {
+            rowName: 'Goblin',
+            condition: { id: 'prone', name: 'Prone' },
+          },
+        }),
+      ])
+      expect(result.expired).toEqual([
+        { rowId: 'row-2', rowName: 'Goblin', condition: prone },
+      ])
+    })
+
+    it('logs a readied action that ran out when its row starts its turn', async () => {
+      const { ctx, state } = memorySheetContext(
+        storedSheet({ rows: [elara, { ...goblin, readied: true }] }),
+      )
+
+      await advanceSheetTurn(ctx)
+
+      expect(state.sheet.rows[1]?.readied).toBe(false)
+      expect(state.events).toEqual([
+        expect.objectContaining({ type: 'turn', rowId: 'row-2' }),
+        expect.objectContaining({
+          type: 'ready_expired',
+          rowId: 'row-2',
+          payload: { rowName: 'Goblin' },
+        }),
+      ])
+    })
+
+    it('syncs the sheet and the active live session', async () => {
+      const { ctx, state, sent } = memorySheetContext(
+        storedSheet({ rows: [elara, goblin] }),
+        { liveSession },
+      )
+
+      await advanceSheetTurn(ctx)
+
+      expect(sent('sheet:7')).toEqual([
+        {
+          topic: 'sheet:7',
+          event: 'sync',
+          payload: { version: 1, sheet: state.sheet },
+        },
+      ])
+      expect(sent('live:session-uuid')).toEqual([
+        {
+          topic: 'live:session-uuid',
+          event: 'sync',
+          payload: { version: 1, sheet: toPlayerSheet(state.sheet) },
+        },
+      ])
+    })
+
+    it('sends the reminders to the sheet when asked to', async () => {
+      const { ctx, sent } = memorySheetContext(
+        storedSheet({ activeIndex: 1, rows: [elara, proneGoblin] }),
+      )
+
+      await advanceSheetTurn(ctx, { sendReminders: true })
+
+      expect(sent('sheet:7')[0]?.payload.reminders).toEqual({
+        expired: [{ rowId: 'row-2', rowName: 'Goblin', condition: prone }],
+        saves: [],
+        recharges: [],
+      })
+    })
+
+    it('syncs the given live session instead of looking one up', async () => {
+      const { ctx, sent } = memorySheetContext(
+        storedSheet({ rows: [elara, goblin] }),
+        { liveSession },
+      )
+
+      await advanceSheetTurn(ctx, { session: 'seat-session' })
+
+      expect(sent('live:seat-session')).toHaveLength(1)
+      expect(sent('live:session-uuid')).toEqual([])
+    })
+
+    it('rejects with a 409 and logs nothing when another request already advanced the turn', async () => {
+      const stored = storedSheet({ rows: [elara, goblin] })
+      const { ctx, state } = memorySheetContext({ ...stored, activeIndex: 1 })
+
+      await expect(
+        advanceSheetTurn(ctx, { before: stored }),
+      ).rejects.toMatchObject({ statusCode: 409 })
+
+      expect(state.sheet.activeIndex).toBe(1)
+      expect(state.events).toEqual([])
+      expect(state.messages).toEqual([])
     })
   })
 

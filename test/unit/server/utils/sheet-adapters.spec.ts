@@ -104,6 +104,58 @@ describe('sheet-adapters', () => {
       ).rejects.toThrow()
     })
 
+    it('advances the turn only while it is still the one that was read', async () => {
+      const turnSheet = { id: 7, activeIndex: 1, round: 2 }
+      const chain = mockChain({ data: turnSheet, error: null })
+
+      mockFrom({ initiative_sheets: chain })
+
+      await expect(
+        supabaseSheetStore(client()).updateTurn(
+          7,
+          { activeIndex: 0, round: 2 },
+          { activeIndex: 1, round: 2, rows: [row] },
+        ),
+      ).resolves.toEqual(turnSheet)
+      expect(chain.update).toHaveBeenCalledWith({
+        activeIndex: 1,
+        round: 2,
+        rows: [row],
+      })
+      expect(chain.eq).toHaveBeenCalledWith('id', 7)
+      expect(chain.eq).toHaveBeenCalledWith('activeIndex', 0)
+      expect(chain.eq).toHaveBeenCalledWith('round', 2)
+      expect(chain.select).toHaveBeenCalledWith(
+        'id, title, round, activeIndex, rows, settings',
+      )
+    })
+
+    it('returns nothing when another request already advanced the turn', async () => {
+      mockFrom({ initiative_sheets: mockChain({ data: null, error: null }) })
+
+      await expect(
+        supabaseSheetStore(client()).updateTurn(
+          7,
+          { activeIndex: 0, round: 2 },
+          { activeIndex: 1, round: 2 },
+        ),
+      ).resolves.toBeUndefined()
+    })
+
+    it('throws when the turn cannot be stored', async () => {
+      mockFrom({
+        initiative_sheets: mockChain({ data: null, error: postgresError }),
+      })
+
+      await expect(
+        supabaseSheetStore(client()).updateTurn(
+          7,
+          { activeIndex: 0, round: 2 },
+          { activeIndex: 1, round: 2 },
+        ),
+      ).rejects.toThrow()
+    })
+
     it('finds the active live session of the encounter', async () => {
       const session = { uuid: 'session-uuid', seats: [] }
       const chain = mockChain({ data: session, error: null })

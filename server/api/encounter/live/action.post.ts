@@ -1,6 +1,5 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
 import { ONE_MINUTE } from '~~/constants/time'
-import { diffRow } from '~~/shared/utils/dnd/combat-events'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -27,18 +26,16 @@ export default defineEventHandler(async event => {
 
   const supabase = serverSupabaseServiceRole<DB>(event)
 
-  const [{ data: session }, { data: sheet }] = await Promise.all([
+  const encounter = sheetChangeContext(supabase, payload.encounter, {})
+
+  const [{ data: session }, sheet] = await Promise.all([
     supabase
       .from('live_sessions')
       .select('seats, expiresAt, endedAt')
       .eq('uuid', payload.session)
       .eq('encounter', payload.encounter)
       .maybeSingle(),
-    supabase
-      .from('initiative_sheets')
-      .select('activeIndex, round, rows, settings')
-      .eq('id', payload.encounter)
-      .single(),
+    readSheet(encounter),
   ])
 
   if (!session) {
@@ -61,10 +58,7 @@ export default defineEventHandler(async event => {
     throw createError({ statusCode: 403, statusMessage: 'No row claimed' })
   }
 
-  if (!sheet) {
-    throw createError({ statusCode: 404, statusMessage: 'Encounter not found' })
-  }
-
+  const changes = { ...encounter, actor: { name: seat.name } }
   const ownRow = sheet.rows.find(row => row.id === seat.row)
 
   if (!ownRow) {
@@ -86,10 +80,10 @@ export default defineEventHandler(async event => {
   }
 
   if (body.action.type === 'endTurn') {
-    await advanceEncounterTurn(supabase, payload.encounter, sheet, {
-      actorName: seat.name,
+    await advanceSheetTurn(changes, {
+      before: sheet,
       session: payload.session,
-      broadcastReminders: true,
+      sendReminders: true,
     })
 
     return { synced: true }
@@ -102,31 +96,10 @@ export default defineEventHandler(async event => {
     body.action,
   )
 
-  const { data: row, error } = await supabase.rpc('apply_live_action', {
-    p_encounter: payload.encounter,
-    p_row_id: seat.row,
-    p_patch: patch,
+  const [row] = await applyRowPatches(changes, [{ rowId: seat.row, patch }], {
+    before: sheet,
+    seat: { session: payload.session, action: body.action.type },
   })
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  await Promise.all([
-    logCombatEvents(supabase, {
-      encounterId: payload.encounter,
-      rowId: seat.row,
-      round: sheet.round,
-      actorName: seat.name,
-      events: diffRow(ownRow, row),
-    }),
-    broadcastLiveAction(supabase, payload.session, {
-      row: seat.row,
-      patch: sanitizeBroadcastPatch(row, body.action.type, patch),
-    }),
-    broadcastSheetAction(supabase, payload.encounter, {
-      row: seat.row,
-      patch,
-    }),
-  ])
 
   return { row }
 })

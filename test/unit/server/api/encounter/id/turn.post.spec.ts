@@ -5,6 +5,7 @@ import {
   mockFrom,
   serverSupabaseUser,
 } from '~~/test/unit/stubs/supabase'
+import { storedSheet, useMemorySheet } from '~~/test/unit/stubs/sheet-changes'
 import handler from '~~/server/api/encounter/[id]/turn.post'
 
 const goblin: InitiativeSheetRow = {
@@ -26,6 +27,15 @@ function turnEvent() {
   })
 }
 
+function mockAccess(createdBy = 'user-1') {
+  mockFrom({
+    initiative_sheets: mockChain({
+      data: { id: 7, campaign: null, createdBy },
+      error: null,
+    }),
+  })
+}
+
 describe('POST /api/encounter/[id]/turn', () => {
   beforeEach(() => {
     serverSupabaseUser.mockResolvedValue({
@@ -34,79 +44,33 @@ describe('POST /api/encounter/[id]/turn', () => {
     })
   })
 
-  it('advances the turn of an encounter the user can access', async () => {
-    const updated = {
-      id: 7,
-      title: 'Ambush',
-      round: 3,
-      activeIndex: 1,
-      rows: [goblin, elara],
-      settings: {},
-    }
-
-    const updateChain = mockChain({ data: updated, error: null })
-
-    mockFrom(
-      {
-        initiative_sheets: [
-          mockChain({
-            data: { id: 7, campaign: null, createdBy: 'user-1' },
-            error: null,
-          }),
-          mockChain({
-            data: { activeIndex: 0, round: 3, rows: [goblin, elara] },
-            error: null,
-          }),
-          updateChain,
-          mockChain({ data: updated, error: null }),
-        ],
-        combat_events: mockChain({ data: null, error: null }),
-        live_sessions: mockChain({ data: null, error: null }),
-      },
-      { rpc: mockChain({ data: 2, error: null }) },
+  it('advances the turn as the DM and returns the stored sheet', async () => {
+    mockAccess()
+    const { state } = useMemorySheet(
+      storedSheet({ round: 3, rows: [goblin, elara] }),
     )
 
     const result = await handler(turnEvent())
 
     expect(result).toEqual({
-      sheet: updated,
+      sheet: expect.objectContaining({ activeIndex: 1, round: 3 }),
       expired: [],
       saves: [],
       recharges: [],
     })
-    expect(updateChain.update).toHaveBeenCalledWith({
-      activeIndex: 1,
-      round: 3,
-    })
+    expect(state.events).toEqual([
+      expect.objectContaining({ type: 'turn', createdBy: 'user-1' }),
+    ])
   })
 
-  it('rejects users without access to the encounter', async () => {
-    mockFrom({
-      initiative_sheets: mockChain({
-        data: { id: 7, campaign: null, createdBy: 'someone-else' },
-        error: null,
-      }),
-    })
+  it('rejects users without access and leaves the turn alone', async () => {
+    mockAccess('someone-else')
+    const { state } = useMemorySheet(storedSheet({ rows: [goblin, elara] }))
 
     await expect(handler(turnEvent())).rejects.toMatchObject({
       statusCode: 403,
     })
-  })
 
-  it('rejects when the encounter cannot be read', async () => {
-    mockFrom({
-      initiative_sheets: [
-        mockChain({
-          data: { id: 7, campaign: null, createdBy: 'user-1' },
-          error: null,
-        }),
-        mockChain({
-          data: null,
-          error: { code: 'PGRST116', message: 'not found' },
-        }),
-      ],
-    })
-
-    await expect(handler(turnEvent())).rejects.toBeTruthy()
+    expect(state.sheet.activeIndex).toBe(0)
   })
 })

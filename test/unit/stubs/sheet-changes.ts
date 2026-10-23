@@ -66,6 +66,20 @@ export function memorySheet(
 
       return asJsonb(state.sheet.rows.filter(row => byRow.has(row.id)))
     },
+    updateTurn: async (_encounterId, from, to) => {
+      if (
+        state.sheet.activeIndex !== from.activeIndex ||
+        state.sheet.round !== from.round
+      ) {
+        return undefined
+      }
+
+      state.sheet = asJsonb({ ...state.sheet, ...to })
+
+      const { id, title, round, activeIndex, rows, settings } = state.sheet
+
+      return asJsonb({ id, title, round, activeIndex, rows, settings })
+    },
     liveSession: async () => liveSession,
     logEvents: async events => {
       state.events.push(...events)

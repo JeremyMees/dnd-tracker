@@ -48,6 +48,20 @@ export function supabaseSheetStore(supabase: ServiceClient): SheetStore {
 
       return data
     },
+    async updateTurn(encounterId, from, to) {
+      const { data, error } = await supabase
+        .from('initiative_sheets')
+        .update(to)
+        .eq('id', encounterId)
+        .eq('activeIndex', from.activeIndex)
+        .eq('round', from.round)
+        .select('id, title, round, activeIndex, rows, settings')
+        .maybeSingle()
+
+      if (error) throw createError(postgresErrorToH3Error(error))
+
+      return data ?? undefined
+    },
     async liveSession(encounterId) {
       const { data } = await supabase
         .from('live_sessions')

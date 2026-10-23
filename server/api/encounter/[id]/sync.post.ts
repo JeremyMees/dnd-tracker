@@ -15,11 +15,14 @@ export default defineEventHandler(async event => {
 
   await requireEncounterAccess(event, id, user.id)
 
-  const supabase = serverSupabaseServiceRole<DB>(event)
+  const changes = sheetChangeContext(serverSupabaseServiceRole<DB>(event), id, {
+    id: user.id,
+  })
+  const session = live ? await changes.store.liveSession(id) : undefined
 
   await Promise.all([
-    broadcastSheetSync(supabase, id),
-    ...(live ? [broadcastActiveLiveState(supabase, id)] : []),
+    sendSheetSync(changes),
+    ...(session ? [sendLiveState(changes, session.uuid)] : []),
   ])
 
   return { synced: true }
