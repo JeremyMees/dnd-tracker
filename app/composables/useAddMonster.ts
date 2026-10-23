@@ -13,9 +13,9 @@ export function useAddMonster() {
 
     if (!injected || !sheet) return
 
-    await injected.update({
-      rows: appendRows(sheet.rows, [monsterToRow(monster)], sheet.settings),
-    })
+    await injected.editRows(
+      appendRows(sheet.rows, [monsterToRow(monster)], sheet.settings),
+    )
 
     toast.success(
       t('components.initiativeTable.bestiary.added', {

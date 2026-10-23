@@ -28,14 +28,14 @@ interface InitVM {
   }
 }
 
-const mockUpdate = vi.fn()
+const mockEditRows = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    editRows: mockEditRows,
     activeRow: mockActiveRow,
   },
 }
@@ -153,7 +153,7 @@ describe('Initiative TableHeader Init', () => {
       const vm = component.vm as unknown as InitVM
       await vm.onSubmit()
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockEditRows).not.toHaveBeenCalled()
     })
   })
 
@@ -343,11 +343,11 @@ describe('Initiative TableHeader Init', () => {
       })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: expect.arrayContaining([
+      expect(mockEditRows).toHaveBeenCalledWith(
+        expect.arrayContaining([
           expect.objectContaining({ id: 'row1', initiative: 13 }),
         ]),
-      })
+      )
       expect(vm.popoverOpen).toBeFalsy()
     })
 
@@ -367,11 +367,11 @@ describe('Initiative TableHeader Init', () => {
       })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: expect.arrayContaining([
+      expect(mockEditRows).toHaveBeenCalledWith(
+        expect.arrayContaining([
           expect.objectContaining({ id: 'row1', initiative: 10 }),
         ]),
-      })
+      )
     })
 
     it('Should not go below 0 when the modifier is negative', async () => {
@@ -390,11 +390,11 @@ describe('Initiative TableHeader Init', () => {
       })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: expect.arrayContaining([
+      expect(mockEditRows).toHaveBeenCalledWith(
+        expect.arrayContaining([
           expect.objectContaining({ id: 'row1', initiative: 0 }),
         ]),
-      })
+      )
     })
 
     it('Should place rolled rows and keep the manual order of the others', async () => {
@@ -417,8 +417,8 @@ describe('Initiative TableHeader Init', () => {
       })
       await vm.onSubmit()
 
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
+      const payload = {
+        rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
       }
       expect(payload.rows.map(row => row.id)).toEqual(['b', 'c', 'a'])
     })
@@ -439,11 +439,11 @@ describe('Initiative TableHeader Init', () => {
       })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: expect.arrayContaining([
+      expect(mockEditRows).toHaveBeenCalledWith(
+        expect.arrayContaining([
           expect.objectContaining({ id: 'row1', initiative: 5 }),
         ]),
-      })
+      )
     })
 
     it('Should skip creature entries that are not found in the sheet rows', async () => {
@@ -462,15 +462,15 @@ describe('Initiative TableHeader Init', () => {
       })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: expect.arrayContaining([
+      expect(mockEditRows).toHaveBeenCalledWith(
+        expect.arrayContaining([
           expect.objectContaining({ id: 'row1', initiative: 5 }),
         ]),
-      })
+      )
     })
 
     it('Should keep the popover open when update throws', async () => {
-      mockUpdate.mockRejectedValueOnce(new Error('roll failed'))
+      mockEditRows.mockRejectedValueOnce(new Error('roll failed'))
       mockSheet.value = {
         ...sheet,
         rows: [{ ...sheet.rows[0]!, id: 'row1' }],

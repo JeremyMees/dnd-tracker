@@ -169,7 +169,7 @@ describe('Bestiary', () => {
       .vm.$emit('add', dndMonsterFixture)
     await flushPromises()
 
-    const rows = injected.update.mock.calls[0]![0].rows
+    const rows = injected.editRows.mock.calls[0]![0]
 
     expect(rows).toHaveLength(sheet.rows.length + 1)
     expect(
@@ -192,7 +192,7 @@ describe('Bestiary', () => {
     await flushPromises()
 
     expect(component.emitted('remix')![0]).toEqual([dndMonsterFixture])
-    expect(injected.update).not.toHaveBeenCalled()
+    expect(injected.editRows).not.toHaveBeenCalled()
   })
 
   it('Should reindex the rows after adding a monster', async () => {
@@ -204,7 +204,7 @@ describe('Bestiary', () => {
       .vm.$emit('add', dndMonsterFixture)
     await flushPromises()
 
-    const rows = injected.update.mock.calls[0]![0].rows
+    const rows = injected.editRows.mock.calls[0]![0]
 
     expect(rows.map((row: InitiativeSheetRow) => row.index)).toEqual(
       rows.map((_row: InitiativeSheetRow, index: number) => index),
@@ -234,7 +234,7 @@ describe('Bestiary', () => {
       .vm.$emit('add', dndMonsterFixture)
     await flushPromises()
 
-    expect(injected.update).not.toHaveBeenCalled()
+    expect(injected.editRows).not.toHaveBeenCalled()
     expectNoToast()
   })
 

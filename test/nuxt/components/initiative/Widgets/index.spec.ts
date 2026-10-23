@@ -20,13 +20,13 @@ interface WidgetsVM {
   }
 }
 
-const mockUpdate = vi.fn()
+const mockUpdateSheet = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    updateSheet: mockUpdateSheet,
   },
 }
 
@@ -179,7 +179,7 @@ describe('Initiative widgets wrapper', async () => {
 
     await noteWidget.vm.$emit('update', 'New note content')
 
-    expect(mockUpdate).toHaveBeenCalledWith({ info: 'New note content' })
+    expect(mockUpdateSheet).toHaveBeenCalledWith({ info: 'New note content' })
   })
 
   it('Should call update when pinned content changes', async () => {
@@ -190,7 +190,7 @@ describe('Initiative widgets wrapper', async () => {
 
     await pinnedContentWidget.vm.$emit('update', [])
 
-    expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+    expect(mockUpdateSheet).toHaveBeenCalledWith({ infoCards: [] })
   })
 
   it('Should render fantasy name generator widget when enabled', async () => {
@@ -278,14 +278,14 @@ describe('Initiative widgets wrapper', async () => {
 
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
+      expect(mockUpdateSheet).toHaveBeenCalledWith({
         settings: expect.objectContaining({ modified: true }),
       })
       expect(vm.popoverOpen).toBe(false)
     })
 
     it('Should keep the popover open when the update fails', async () => {
-      mockUpdate.mockRejectedValueOnce(new Error('boom'))
+      mockUpdateSheet.mockRejectedValueOnce(new Error('boom'))
 
       component = await mountWithTooltips(Widgets, { provide })
       const vm = component.vm as unknown as WidgetsVM
@@ -306,7 +306,7 @@ describe('Initiative widgets wrapper', async () => {
 
       await vm.onSubmit()
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockUpdateSheet).not.toHaveBeenCalled()
     })
   })
 
@@ -317,7 +317,7 @@ describe('Initiative widgets wrapper', async () => {
 
       vm.onDragEnd()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
+      expect(mockUpdateSheet).toHaveBeenCalledWith({
         settings: expect.objectContaining({ widgets: vm.localWidgets }),
       })
     })
@@ -330,7 +330,7 @@ describe('Initiative widgets wrapper', async () => {
 
       vm.saveWidgets(['note'])
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockUpdateSheet).not.toHaveBeenCalled()
     })
 
     it('Should remove a widget and call update when the remove button is clicked', async () => {
@@ -347,7 +347,7 @@ describe('Initiative widgets wrapper', async () => {
 
       await component.findAll('[test-id="remove-widget"]')[0]!.trigger('click')
 
-      expect(mockUpdate).toHaveBeenCalledWith({
+      expect(mockUpdateSheet).toHaveBeenCalledWith({
         settings: expect.objectContaining({ widgets: ['dice-roll'] }),
       })
     })

@@ -43,12 +43,12 @@ function mountCampaignHomebrew(
   }
 }
 
-function rowsOf(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
-  return update.mock.calls[0]![0].rows
+function rowsOf(editRows: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
+  return editRows.mock.calls[0]![0]
 }
 
-function addedRows(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
-  return rowsOf(update).filter(
+function addedRows(editRows: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
+  return rowsOf(editRows).filter(
     row => !sheet.rows.some(existing => existing.id === row.id),
   )
 }
@@ -130,7 +130,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added).toHaveLength(2)
     expect(added.map(row => row.name)).toEqual([
@@ -146,7 +146,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added.map(row => row.homebrew)).toEqual([
       mockHomebrewItem.id,
@@ -161,7 +161,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const rows = rowsOf(injected.update)
+    const rows = rowsOf(injected.editRows)
 
     expect(rows.map(row => row.index)).toEqual(rows.map((_row, i) => i))
   })
@@ -182,7 +182,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added[0]!.initiativeModifier).toBe(
       Number(mockHomebrewItem.initiativeModifier),
@@ -219,7 +219,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    expect(injected.update).not.toHaveBeenCalled()
+    expect(injected.editRows).not.toHaveBeenCalled()
     expect(component.emitted('close')).toBeUndefined()
   })
 
@@ -281,7 +281,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addSelected"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added).toHaveLength(1)
     expect(added[0]!.name).toBe(mockHomebrewItem.name)
@@ -301,7 +301,7 @@ describe('CampaignHomebrew', () => {
       .trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added[0]!.summoner).toEqual({
       name: sheet.rows[0]!.name,

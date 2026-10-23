@@ -7,9 +7,7 @@ const props = withDefaults(
   defineProps<{
     variant?: 'secondary' | 'background'
     sheet?: InitiativeSheet
-    update?: (
-      payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
-    ) => Promise<void>
+    updateSheet?: (fields: SheetFieldsUpdate) => Promise<void>
     allowPin?: boolean
     system?: DndGameSystem
     preSelectedDocuments?: string[]
@@ -22,7 +20,7 @@ const props = withDefaults(
     preSelectedDocuments: () => [...defaultSrdDocuments],
     class: '',
     sheet: undefined,
-    update: undefined,
+    updateSheet: undefined,
     persist: 'none',
   },
 )
@@ -103,7 +101,7 @@ async function handlePinToggle(
   content: DndItem,
   remove: boolean,
 ): Promise<void> {
-  if (!props.sheet || !props.update) return
+  if (!props.sheet || !props.updateSheet) return
 
   let cards = [...props.sheet.infoCards]
 
@@ -114,13 +112,13 @@ async function handlePinToggle(
     })
   } else cards.push(content)
 
-  await props.update({ infoCards: cards })
+  await props.updateSheet({ infoCards: cards })
 }
 
 async function removePins(): Promise<void> {
-  if (!props.sheet || !props.update) return
+  if (!props.sheet || !props.updateSheet) return
 
-  await props.update({ infoCards: [] })
+  await props.updateSheet({ infoCards: [] })
 
   showPinned.value = false
 }

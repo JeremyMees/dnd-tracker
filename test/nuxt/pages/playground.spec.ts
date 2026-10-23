@@ -40,7 +40,8 @@ const stubs = {
 
 interface Probe {
   sheet: InitiativeSheet | undefined
-  update: (payload: Partial<InitiativeSheet>) => Promise<void>
+  updateSheet: (fields: SheetFieldsUpdate) => Promise<void>
+  editRows: (rows: InitiativeSheetRow[]) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
@@ -114,10 +115,10 @@ describe('Playground page', () => {
   it('Should apply updates to the playground sheet when no tour runs', async () => {
     const { probe } = await mountPlayground()
 
-    await probe.update({ title: 'Renamed' })
+    await probe.updateSheet({ round: 5 })
     await nextTick()
 
-    expect(probe.sheet?.title).toBe('Renamed')
+    expect(probe.sheet?.round).toBe(5)
   })
 
   it('Should apply updates to the tour sheet while the tour runs', async () => {
@@ -128,14 +129,14 @@ describe('Playground page', () => {
 
     const { probe } = await mountPlayground()
 
-    await probe.update({ title: 'Renamed' })
+    await probe.updateSheet({ round: 5 })
     await nextTick()
 
-    expect(probe.sheet?.title).toBe('Renamed')
-    expect(tourData.value?.title).toBe('Renamed')
+    expect(probe.sheet?.round).toBe(5)
+    expect(tourData.value?.round).toBe(5)
   })
 
-  it('Should reindex rows on update', async () => {
+  it('Should reindex rows on a rows edit', async () => {
     startTour.mockImplementation(async () => {
       isTourActive.value = true
       tourData.value = { ...tourSheet }
@@ -144,7 +145,7 @@ describe('Playground page', () => {
     const { probe } = await mountPlayground()
     const rows = [...tourSheet.rows].reverse()
 
-    await probe.update({ rows })
+    await probe.editRows(rows)
     await nextTick()
 
     expect(probe.sheet?.rows.map(row => row.index)).toEqual(
@@ -181,10 +182,10 @@ describe('Playground page', () => {
 
     const { probe } = await mountPlayground()
 
-    await probe.update({ title: 'Renamed' })
+    await probe.updateSheet({ round: 5 })
     await nextTick()
 
-    expect(probe.sheet?.title).toBe('Renamed')
+    expect(probe.sheet?.round).toBe(5)
   })
 
   it('Should apply a patchRow purely locally, without touching other rows', async () => {

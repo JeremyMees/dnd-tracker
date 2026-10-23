@@ -21,13 +21,13 @@ interface InitVM {
   }
 }
 
-const mockUpdate = vi.fn()
+const mockEditRows = vi.fn()
 const mockSheet = ref<InitiativeSheet>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    editRows: mockEditRows,
   },
 }
 
@@ -158,10 +158,10 @@ describe('Initiative table row init', async () => {
 
     await component.get('[test-id="up"]').trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalled()
+    expect(mockEditRows).toHaveBeenCalled()
 
-    const payload = mockUpdate.mock.calls[0]?.[0] as {
-      rows: InitiativeSheetRow[]
+    const payload = {
+      rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
     }
     expect(payload).toBeDefined()
 
@@ -193,10 +193,10 @@ describe('Initiative table row init', async () => {
 
     await component.get('[test-id="down"]').trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalled()
+    expect(mockEditRows).toHaveBeenCalled()
 
-    const payload = mockUpdate.mock.calls[0]?.[0] as {
-      rows: InitiativeSheetRow[]
+    const payload = {
+      rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
     }
     expect(payload).toBeDefined()
 
@@ -254,9 +254,9 @@ describe('Initiative table row init', async () => {
 
     await vm.moveRow(true)
 
-    expect(mockUpdate).toHaveBeenCalled()
-    const payload = mockUpdate.mock.calls[0]?.[0] as {
-      rows: InitiativeSheetRow[]
+    expect(mockEditRows).toHaveBeenCalled()
+    const payload = {
+      rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
     }
     const resultRows = payload.rows
     expect(resultRows.map(row => row.id)).toEqual([
@@ -277,7 +277,7 @@ describe('Initiative table row init', async () => {
 
     await vm.moveRow(true)
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockEditRows).not.toHaveBeenCalled()
   })
 
   it('Should not move the row when already at the bottom', async () => {
@@ -289,7 +289,7 @@ describe('Initiative table row init', async () => {
 
     await vm.moveRow(false)
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockEditRows).not.toHaveBeenCalled()
   })
 
   describe('Form submission', () => {
@@ -303,9 +303,9 @@ describe('Initiative table row init', async () => {
       vm.form.setValues({ initiative: 12, modifier: 3 })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalled()
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
+      expect(mockEditRows).toHaveBeenCalled()
+      const payload = {
+        rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
       }
       const resultRow = payload.rows.find(row => row.id === props.item.id)
       expect(resultRow?.initiative).toBe(15)
@@ -347,8 +347,8 @@ describe('Initiative table row init', async () => {
       vm.form.setValues({ initiative: 12, modifier: 0 })
       await vm.onSubmit()
 
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
+      const payload = {
+        rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
       }
       expect(payload.rows.map(row => row.id)).toEqual([
         'moved',
@@ -386,14 +386,14 @@ describe('Initiative table row init', async () => {
       vm.form.setValues({ initiative: 12, modifier: 0 })
       await vm.onSubmit()
 
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
+      const payload = {
+        rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
       }
       expect(payload.rows.map(row => row.id)).toEqual(['first', 'item'])
     })
 
     it('Should keep the popover open when update throws', async () => {
-      mockUpdate.mockRejectedValueOnce(new Error('Update failed'))
+      mockEditRows.mockRejectedValueOnce(new Error('Update failed'))
 
       const component = await mountWithTooltips(Init, { props, provide })
       const vm = component.vm as unknown as InitVM
@@ -404,7 +404,7 @@ describe('Initiative table row init', async () => {
       vm.form.setValues({ initiative: 12, modifier: 3 })
       await vm.onSubmit()
 
-      expect(mockUpdate).toHaveBeenCalled()
+      expect(mockEditRows).toHaveBeenCalled()
       expect(vm.popoverOpen).toBe(true)
     })
 
@@ -418,8 +418,8 @@ describe('Initiative table row init', async () => {
       vm.form.setValues({ initiative: 2, modifier: -10 })
       await vm.onSubmit()
 
-      const payload = mockUpdate.mock.calls[0]?.[0] as {
-        rows: InitiativeSheetRow[]
+      const payload = {
+        rows: mockEditRows.mock.calls[0]?.[0] as InitiativeSheetRow[],
       }
       const resultRow = payload.rows.find(row => row.id === props.item.id)
       expect(resultRow?.initiative).toBe(0)
@@ -434,7 +434,7 @@ describe('Initiative table row init', async () => {
       vm.form.setValues({ initiative: 10 })
       await vm.onSubmit()
 
-      expect(mockUpdate).not.toHaveBeenCalled()
+      expect(mockEditRows).not.toHaveBeenCalled()
     })
 
     it('Should roll a random initiative when the roll button is clicked', async () => {

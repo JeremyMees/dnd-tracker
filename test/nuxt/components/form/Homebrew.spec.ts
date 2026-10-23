@@ -57,7 +57,7 @@ mockNuxtImport('useI18n', () => () => ({
   locale: { value: 'en' },
 }))
 
-const update = vi.fn()
+const editRows = vi.fn()
 
 const FormBestiaryStub = defineComponent({
   props: { addable: Boolean, persist: String },
@@ -108,7 +108,7 @@ function mountHomebrew({
       sheet: withSheet
         ? { ...sheet, rows, campaign: campaign ?? undefined }
         : undefined,
-      update: withSheet ? update : undefined,
+      editRows: withSheet ? editRows : undefined,
     },
     global: { stubs: { FormBestiary: FormBestiaryStub } },
   })
@@ -144,7 +144,7 @@ describe('Homebrew', () => {
     mockConditions.value = []
     createHomebrew.mockResolvedValue(undefined)
     updateHomebrew.mockResolvedValue(undefined)
-    update.mockResolvedValue(undefined)
+    editRows.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -361,7 +361,7 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    const rows = update.mock.calls[0]![0].rows
+    const rows = editRows.mock.calls[0]![0]
 
     expect(rows).toHaveLength(sheet.rows.length + 1)
     expect(rows.at(-1)!.name).toBe('Grommash')
@@ -479,7 +479,7 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    expect(update).toHaveBeenCalled()
+    expect(editRows).toHaveBeenCalled()
     expect(createHomebrew).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ campaign: mockCampaignFull.id }),
@@ -500,7 +500,7 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+    const rows: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
     const added = rows.find(row => row.name === 'Grommash')
 
     expect(added?.homebrew).toBe(42)
@@ -520,7 +520,7 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    expect(update).not.toHaveBeenCalled()
+    expect(editRows).not.toHaveBeenCalled()
     expect(component.emitted('close')).toBeUndefined()
   })
 
@@ -534,7 +534,7 @@ describe('Homebrew', () => {
     await fillName(component)
     await submitForm(component)
 
-    const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+    const rows: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
     const added = rows.find(row => row.name === 'Grommash')
 
     expect(added).toBeDefined()
@@ -566,7 +566,7 @@ describe('Homebrew', () => {
     await nextTick()
     await submitForm(component)
 
-    expect(update).not.toHaveBeenCalled()
+    expect(editRows).not.toHaveBeenCalled()
     expect(component.text()).toContain('zod.required')
   })
 
@@ -582,7 +582,7 @@ describe('Homebrew', () => {
     await component.get('input[name="amount"]').setValue(1)
     await submitForm(component)
 
-    expect(update).not.toHaveBeenCalled()
+    expect(editRows).not.toHaveBeenCalled()
     expect(component.text()).toContain('zod.required')
   })
 
@@ -590,7 +590,7 @@ describe('Homebrew', () => {
     const component = await mountWithTooltips(Homebrew, {
       props: {
         sheet: { ...sheet },
-        update: undefined,
+        editRows: undefined,
       },
     })
 
@@ -620,7 +620,7 @@ describe('Homebrew', () => {
     await selectOption(component, sheet.rows[0]!.id, { index: 1 })
     await submitForm(component)
 
-    const rows = update.mock.calls[0]![0].rows
+    const rows = editRows.mock.calls[0]![0]
 
     expect(rows.at(-1)!.summoner).toEqual({
       name: sheet.rows[0]!.name,
@@ -637,7 +637,7 @@ describe('Homebrew', () => {
     await selectOption(component, 'unknown-id', { index: 1 })
     await submitForm(component)
 
-    const rows = update.mock.calls[0]![0].rows
+    const rows = editRows.mock.calls[0]![0]
 
     expect(rows.at(-1)!.summoner).toBeUndefined()
   })
@@ -933,7 +933,7 @@ describe('Homebrew', () => {
       await flushPromises()
       await submitForm(component)
 
-      const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+      const rows: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
 
       expect(rows).toHaveLength(sheet.rows.length + 1)
       expect(
@@ -950,7 +950,7 @@ describe('Homebrew', () => {
       await remixFromBestiary(component)
       await submitForm(component)
 
-      const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+      const rows: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
 
       expect(rows).toHaveLength(sheet.rows.length + 1)
       expect(
@@ -1086,7 +1086,7 @@ describe('Homebrew', () => {
       await fillName(component, 'Goblin Warlord')
       await submitForm(component)
 
-      const rows: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+      const rows: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
 
       expect(rows).toHaveLength(sheet.rows.length + 1)
       expect(rows.find(r => r.name === 'Goblin Warlord')).toMatchObject({
@@ -1118,7 +1118,7 @@ describe('Homebrew', () => {
     }
 
     function editedRow(): InitiativeSheetRow | undefined {
-      const updated: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+      const updated: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
 
       return updated.find(r => r.id === damaged.id)
     }
@@ -1204,7 +1204,7 @@ describe('Homebrew', () => {
       await component.get('#saveToCampaign').trigger('click')
       await submitForm(component)
 
-      expect(update).not.toHaveBeenCalled()
+      expect(editRows).not.toHaveBeenCalled()
       expect(component.emitted('close')).toBeUndefined()
     })
 
@@ -1244,7 +1244,7 @@ describe('Homebrew', () => {
       await flushPromises()
       await submitForm(component)
 
-      const updated: InitiativeSheetRow[] = update.mock.calls[0]![0].rows
+      const updated: InitiativeSheetRow[] = editRows.mock.calls[0]![0]
 
       expect(updated).toHaveLength(rows.length)
       expect(editedRow()).toMatchObject({

@@ -39,15 +39,22 @@ const nextTurn = async (): Promise<void> => {
   nextTurnFn()
 }
 
+const turns = {
+  next: nextTurn,
+  previous: async () => {
+    const position = previousTurnPosition(mockSheet.value)
+
+    if (position) await update(position)
+  },
+  reset: (hard: boolean) =>
+    update(resetEncounter(mockSheet.value.rows, { hard })),
+}
+
 describe('useInitiativeSheet', async () => {
   beforeEach(() => (mockSheet.value = { ...sheet }))
 
   it('Should set the first row as selected and navigate properly', async () => {
-    const { next, previous } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { next, previous } = useInitiativeSheet(sheetComputed, turns)
 
     expect(mockSheet.value.activeIndex).toBe(0)
 
@@ -61,7 +68,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should advance through nextTurn instead of a direct update', async () => {
-    const { next } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { next } = useInitiativeSheet(sheetComputed, turns)
 
     updateFn.mockClear()
     nextTurnFn.mockClear()
@@ -74,7 +81,7 @@ describe('useInitiativeSheet', async () => {
 
   it('Should go to first row when the last row is active and next is called', async () => {
     mockSheet.value.activeIndex = sheet.rows.length - 1
-    const { next } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { next } = useInitiativeSheet(sheetComputed, turns)
 
     expect(mockSheet.value.round).toBe(1)
 
@@ -85,9 +92,10 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should swallow a failed turn advance', async () => {
-    const { next } = useInitiativeSheet(sheetComputed, update, () =>
-      Promise.reject(new Error('boom')),
-    )
+    const { next } = useInitiativeSheet(sheetComputed, {
+      ...turns,
+      next: () => Promise.reject(new Error('boom')),
+    })
 
     expect(() => next()).not.toThrow()
     await flushPromises()
@@ -96,11 +104,11 @@ describe('useInitiativeSheet', async () => {
   it('Should swallow a failed update when going back or resetting', async () => {
     mockSheet.value.round = 2
 
-    const { previous, reset } = useInitiativeSheet(
-      sheetComputed,
-      () => Promise.reject(new Error('boom')),
-      nextTurn,
-    )
+    const { previous, reset } = useInitiativeSheet(sheetComputed, {
+      next: nextTurn,
+      previous: () => Promise.reject(new Error('boom')),
+      reset: () => Promise.reject(new Error('boom')),
+    })
 
     expect(() => previous()).not.toThrow()
     expect(() => reset(true)).not.toThrow()
@@ -110,7 +118,7 @@ describe('useInitiativeSheet', async () => {
   it('Should go to last row when the first row is active the round is not 1 and previous is called', async () => {
     mockSheet.value.round = 2
 
-    const { previous } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { previous } = useInitiativeSheet(sheetComputed, turns)
 
     expect(mockSheet.value.round).toBe(2)
 
@@ -121,7 +129,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should not go to last row when the first row is active and previous is called', async () => {
-    const { previous } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { previous } = useInitiativeSheet(sheetComputed, turns)
 
     expect(mockSheet.value.activeIndex).toBe(0)
     expect(mockSheet.value.round).toBe(1)
@@ -136,7 +144,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.activeIndex = mockSheet.value.rows.length - 1
     mockSheet.value.round = 4
 
-    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { reset } = useInitiativeSheet(sheetComputed, turns)
 
     expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
     expect(mockSheet.value.round).toBe(4)
@@ -152,11 +160,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.activeIndex = 2
     const rows = mockSheet.value.rows
 
-    const { reset, selected } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { reset, selected } = useInitiativeSheet(sheetComputed, turns)
 
     reset(true)
 
@@ -171,11 +175,7 @@ describe('useInitiativeSheet', async () => {
       { ...mockSheet.value.rows[2]!, type: 'monster' },
     ]
 
-    const { next, selected } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { next, selected } = useInitiativeSheet(sheetComputed, turns)
 
     next()
 
@@ -185,7 +185,7 @@ describe('useInitiativeSheet', async () => {
 
   it('Should leave the rows alone on a soft reset without readied actions', async () => {
     updateFn.mockClear()
-    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { reset } = useInitiativeSheet(sheetComputed, turns)
 
     reset(false)
 
@@ -193,11 +193,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should show all columns by default', async () => {
-    const { columnVisibility } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { columnVisibility } = useInitiativeSheet(sheetComputed, turns)
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -217,11 +213,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.rows = ['armorClass', 'hitPoints']
     mockSheet.value.settings.modified = true
 
-    const { columnVisibility } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { columnVisibility } = useInitiativeSheet(sheetComputed, turns)
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -241,11 +233,7 @@ describe('useInitiativeSheet', async () => {
     mockSheet.value.settings.rows = []
     mockSheet.value.settings.modified = true
 
-    const { columnVisibility } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { columnVisibility } = useInitiativeSheet(sheetComputed, turns)
 
     expect(columnVisibility.value).toStrictEqual({
       index: true,
@@ -262,13 +250,13 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should expose the active row based on the current selection', () => {
-    const { active } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { active } = useInitiativeSheet(sheetComputed, turns)
 
     expect(active.value).toEqual(sheet.rows[0])
   })
 
   it('Should re-select the active row when the rows change without an existing match', async () => {
-    const { selected } = useInitiativeSheet(sheetComputed, update, nextTurn)
+    const { selected } = useInitiativeSheet(sheetComputed, turns)
 
     selected.value = { 'some-other-id': true }
 
@@ -279,11 +267,7 @@ describe('useInitiativeSheet', async () => {
   })
 
   it('Should have no active row when the selection matches no row', () => {
-    const { selected, active } = useInitiativeSheet(
-      sheetComputed,
-      update,
-      nextTurn,
-    )
+    const { selected, active } = useInitiativeSheet(sheetComputed, turns)
 
     selected.value = { 'unknown-id': true }
 
@@ -324,7 +308,7 @@ describe('useInitiativeSheet', async () => {
     }
 
     it('Should ignore key strokes without a shift or meta modifier', () => {
-      useInitiativeSheet(sheetComputed, update, nextTurn)
+      useInitiativeSheet(sheetComputed, turns)
 
       pressKey('ArrowRight')
 
@@ -332,7 +316,7 @@ describe('useInitiativeSheet', async () => {
     })
 
     it('Should navigate to the next row on shift+ArrowRight', () => {
-      useInitiativeSheet(sheetComputed, update, nextTurn)
+      useInitiativeSheet(sheetComputed, turns)
 
       pressKey('ArrowRight', { shiftKey: true })
 
@@ -342,7 +326,7 @@ describe('useInitiativeSheet', async () => {
     it('Should navigate to the previous row on meta+ArrowLeft', () => {
       mockSheet.value.activeIndex = 1
 
-      useInitiativeSheet(sheetComputed, update, nextTurn)
+      useInitiativeSheet(sheetComputed, turns)
 
       pressKey('ArrowLeft', { metaKey: true })
 
@@ -350,7 +334,7 @@ describe('useInitiativeSheet', async () => {
     })
 
     it('Should expand the active row on shift+Enter and collapse it again', () => {
-      const { expanded } = useInitiativeSheet(sheetComputed, update, nextTurn)
+      const { expanded } = useInitiativeSheet(sheetComputed, turns)
 
       const currentId = sheet.rows[0]!.id
 
@@ -366,7 +350,7 @@ describe('useInitiativeSheet', async () => {
     it.each(['input', 'textarea', 'select'])(
       'Should ignore shortcuts while typing in a %s',
       tag => {
-        const { expanded } = useInitiativeSheet(sheetComputed, update, nextTurn)
+        const { expanded } = useInitiativeSheet(sheetComputed, turns)
         const target = document.createElement(tag)
 
         pressKey('ArrowRight', { shiftKey: true, target })
@@ -380,7 +364,7 @@ describe('useInitiativeSheet', async () => {
     it('Should do nothing when there is no sheet', () => {
       mockSheet.value = undefined as unknown as InitiativeSheet
 
-      useInitiativeSheet(sheetComputed, update, nextTurn)
+      useInitiativeSheet(sheetComputed, turns)
 
       expect(() => pressKey('ArrowRight', { shiftKey: true })).not.toThrow()
     })
@@ -388,7 +372,7 @@ describe('useInitiativeSheet', async () => {
     it('Should do nothing when the active row cannot be found', () => {
       mockSheet.value.activeIndex = 999
 
-      useInitiativeSheet(sheetComputed, update, nextTurn)
+      useInitiativeSheet(sheetComputed, turns)
       updateFn.mockClear()
 
       expect(() => pressKey('ArrowRight', { shiftKey: true })).not.toThrow()
@@ -406,7 +390,7 @@ describe('useInitiativeSheet', async () => {
       })
 
       it('Should move the target with alt and the arrow keys', () => {
-        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+        const { target } = useInitiativeSheet(sheetComputed, turns)
 
         pressKey('ArrowDown', { altKey: true })
         expect(target.value?.id).toBe(sheet.rows[1]!.id)
@@ -417,7 +401,7 @@ describe('useInitiativeSheet', async () => {
       })
 
       it('Should act on the target instead of the current creature', () => {
-        useInitiativeSheet(sheetComputed, update, nextTurn)
+        useInitiativeSheet(sheetComputed, turns)
 
         pressKey('ArrowDown', { altKey: true })
         pressKey('d')
@@ -435,7 +419,7 @@ describe('useInitiativeSheet', async () => {
         { altKey: true, ctrlKey: true },
         { altKey: true, target: document.createElement('input') },
       ])('Should not move the target with %o', modifiers => {
-        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+        const { target } = useInitiativeSheet(sheetComputed, turns)
 
         pressKey('ArrowDown', modifiers)
 
@@ -443,7 +427,7 @@ describe('useInitiativeSheet', async () => {
       })
 
       it('Should go back to the current creature on escape', () => {
-        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+        const { target } = useInitiativeSheet(sheetComputed, turns)
 
         pressKey('ArrowDown', { altKey: true })
         pressKey('Escape')
@@ -452,7 +436,7 @@ describe('useInitiativeSheet', async () => {
       })
 
       it('Should reset the target when the turn changes', async () => {
-        const { target } = useInitiativeSheet(sheetComputed, update, nextTurn)
+        const { target } = useInitiativeSheet(sheetComputed, turns)
 
         pressKey('ArrowDown', { altKey: true })
         pressKey('ArrowDown', { altKey: true })
@@ -468,7 +452,7 @@ describe('useInitiativeSheet', async () => {
         ['h', 'heal'],
         ['c', 'condition'],
       ])('Should request %s for the active row', (key, action) => {
-        useInitiativeSheet(sheetComputed, update, nextTurn)
+        useInitiativeSheet(sheetComputed, turns)
 
         pressKey(key)
 
@@ -482,7 +466,7 @@ describe('useInitiativeSheet', async () => {
         { altKey: true },
         { repeat: true },
       ])('Should ignore the key with %o', modifiers => {
-        useInitiativeSheet(sheetComputed, update, nextTurn)
+        useInitiativeSheet(sheetComputed, turns)
 
         pressKey('d', modifiers)
 
@@ -490,7 +474,7 @@ describe('useInitiativeSheet', async () => {
       })
 
       it('Should ignore the key while typing', () => {
-        useInitiativeSheet(sheetComputed, update, nextTurn)
+        useInitiativeSheet(sheetComputed, turns)
 
         pressKey('d', { target: document.createElement('input') })
 
@@ -504,7 +488,7 @@ describe('useInitiativeSheet', async () => {
         dialog.setAttribute('role', 'dialog')
         dialog.appendChild(button)
 
-        useInitiativeSheet(sheetComputed, update, nextTurn)
+        useInitiativeSheet(sheetComputed, turns)
 
         pressKey('h', { target: button })
 
@@ -514,7 +498,7 @@ describe('useInitiativeSheet', async () => {
       it('Should do nothing without an active row', () => {
         mockSheet.value = { ...sheet, rows: [] }
 
-        useInitiativeSheet(sheetComputed, update, nextTurn)
+        useInitiativeSheet(sheetComputed, turns)
 
         pressKey('c')
 

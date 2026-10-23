@@ -3,7 +3,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update, patchRow, portal, claimedRows } =
+const { sheet, editRows, patchRow, portal, claimedRows } =
   validateInject(INITIATIVE_SHEET)
 
 const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
@@ -28,9 +28,7 @@ function copyRow(): void {
 
   if (index === -1) return
 
-  update({
-    rows: [...rows, { ...props.item, id: crypto.randomUUID() }],
-  })
+  editRows([...rows, { ...props.item, id: crypto.randomUUID() }])
 }
 
 function toggleHidden(): void {
@@ -47,7 +45,7 @@ function deleteRow(): void {
 
   rows = rows.filter(r => r.id !== props.item.id)
 
-  update({ rows })
+  editRows(rows)
 }
 </script>
 
@@ -130,7 +128,7 @@ function deleteRow(): void {
             :campaign-id="sheet?.campaign?.id"
             :row="item"
             :sheet="sheet"
-            :update="update"
+            :edit-rows="editRows"
             is-encounter
             @close="isEditing = false"
           />

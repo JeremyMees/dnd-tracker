@@ -56,7 +56,10 @@ House rules a reviewer will ask for. Each one came from a real review comment.
   bending the source. Ask before adding a dependency, even when an error message
   suggests one.
 - **Row changes go through a patch** where one exists (`patchRow`, `patchRows`),
-  rather than writing the whole `rows` array. See ADR-0002.
+  rather than writing the whole `rows` array. See ADR-0002. Components write
+  through the `INITIATIVE_SHEET` commands from `useSheetSession`: `editRows`
+  only for adding, removing or reordering rows, `updateSheet` for settings, info
+  and pinned cards, and the turn commands for turns.
 - **Sheet writes go through `server/utils/sheet-changes.ts`.** Row patches
   (`applyRowPatches`), turn advance (`advanceSheetTurn`) and whole-sheet edits
   (`applySheetUpdate`) read the sheet before the change, enforce the row rules

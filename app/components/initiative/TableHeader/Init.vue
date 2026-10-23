@@ -5,7 +5,7 @@ import * as z from 'zod'
 
 defineProps<{ label: string }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = shallowRef(false)
 
@@ -95,7 +95,7 @@ const onSubmit = form.handleSubmit(async values => {
   })
 
   try {
-    await update({ rows: placeByInitiative(rows, changed) })
+    await editRows(placeByInitiative(rows, changed))
   } catch {
     return
   }

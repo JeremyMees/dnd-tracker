@@ -5,7 +5,7 @@ import { encounterShortcuts } from '~~/constants/shortcuts'
 defineEmits<{ toggleSidebar: [] }>()
 defineProps<{ isExpanded: boolean }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
 const { keyLabel } = useShortcutKeys()
 
 const shortcutsOpen = ref<boolean>(false)
@@ -245,7 +245,7 @@ const maxCharacters = computed(() => hasMaxCharacters(sheet.value))
                   :campaign-id="sheet?.campaign?.id"
                   :template="remix"
                   :sheet="sheet"
-                  :update="update"
+                  :edit-rows="editRows"
                   is-encounter
                   @close="openModal = undefined"
                 />

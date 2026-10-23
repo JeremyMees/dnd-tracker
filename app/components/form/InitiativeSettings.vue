@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate'
 
 const emit = defineEmits<{ close: [] }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, updateSheet } = validateInject(INITIATIVE_SHEET)
 
 const form = useForm({
   validationSchema: initiativeSettingsSchema,
@@ -15,7 +15,7 @@ const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
 
   try {
-    await update({
+    await updateSheet({
       settings: {
         ...sheet.value.settings,
         ...values,

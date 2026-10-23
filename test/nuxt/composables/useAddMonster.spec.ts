@@ -59,14 +59,14 @@ describe('useAddMonster', () => {
 
     await mounted.vm.addMonster(dndMonsterFixture)
 
-    expect(injected.update).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
+    expect(injected.editRows).toHaveBeenCalledWith(
+      expect.arrayContaining([
         ...sheetFixture.rows.map(row =>
           expect.objectContaining({ id: row.id }),
         ),
         expect.objectContaining({ name: dndMonsterFixture.name }),
       ]),
-    })
+    )
     expect(toast.success).toHaveBeenCalledWith(
       'components.initiativeTable.bestiary.added',
       { description: 'components.initiativeTable.bestiary.addedDescription' },
@@ -82,9 +82,7 @@ describe('useAddMonster', () => {
 
     await mounted.vm.addMonster({ ...dndMonsterFixture, initiativeBonus: 2 })
 
-    const { rows } = injected.update.mock.calls[0]![0] as {
-      rows: InitiativeSheetRow[]
-    }
+    const rows = injected.editRows.mock.calls[0]![0] as InitiativeSheetRow[]
 
     expect(rows.find(row => row.name === dndMonsterFixture.name)).toEqual(
       expect.objectContaining({ initiative: 13 }),
@@ -101,15 +99,13 @@ describe('useAddMonster', () => {
 
     await mounted.vm.addMonster(dndMonsterFixture)
 
-    expect(injected.update).toHaveBeenCalledWith({
-      rows: [
-        ...sheetFixture.rows,
-        expect.objectContaining({
-          name: dndMonsterFixture.name,
-          initiative: -1,
-        }),
-      ],
-    })
+    expect(injected.editRows).toHaveBeenCalledWith([
+      ...sheetFixture.rows,
+      expect.objectContaining({
+        name: dndMonsterFixture.name,
+        initiative: -1,
+      }),
+    ])
   })
 
   it('Should be full when the encounter has the maximum amount of rows', async () => {

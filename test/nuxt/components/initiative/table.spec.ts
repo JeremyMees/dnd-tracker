@@ -19,19 +19,21 @@ interface Props {
   encounterId?: number
 }
 
-const mockUpdate = vi.fn().mockResolvedValue(undefined)
 const mockNextTurn = vi.fn().mockResolvedValue(undefined)
 const mockPatchRows = vi.fn().mockResolvedValue(undefined)
+const mockPreviousTurn = vi.fn().mockResolvedValue(undefined)
+const mockReset = vi.fn().mockResolvedValue(undefined)
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
     patchRow: vi.fn(),
     patchRows: mockPatchRows,
     nextTurn: mockNextTurn,
+    previousTurn: mockPreviousTurn,
+    reset: mockReset,
     activeRow: mockActiveRow,
   },
 }
@@ -796,7 +798,7 @@ describe('Initiative table', () => {
 
       runCommand('previous-turn')
 
-      expect(mockUpdate).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(mockPreviousTurn).toHaveBeenCalled()
 
       component.unmount()
     })
@@ -933,7 +935,7 @@ describe('Initiative table', () => {
 
       runCommand('reset-soft')
 
-      expect(mockUpdate).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(mockReset).toHaveBeenCalledWith(false)
       expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
 
       component.unmount()
@@ -1005,7 +1007,6 @@ describe('Initiative table', () => {
     let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
 
     beforeEach(() => {
-      mockUpdate.mockReset().mockResolvedValue(undefined)
       mockPatchRows.mockReset().mockResolvedValue(undefined)
     })
 
@@ -1027,7 +1028,6 @@ describe('Initiative table', () => {
       expect(mockPatchRows).toHaveBeenCalledWith([
         { rowId: first!.id, patch: { hidden: false } },
       ])
-      expect(mockUpdate).not.toHaveBeenCalled()
     })
 
     it('Should hide the command when nothing is hidden', async () => {

@@ -356,7 +356,7 @@ describe('LiveSessionPanel', () => {
     await component.find('[test-id="tab-options"]').trigger('mousedown')
     await component.find('[test-id="hide-monster-names"]').trigger('click')
 
-    expect(injected.update).toHaveBeenCalledWith({
+    expect(injected.updateSheet).toHaveBeenCalledWith({
       settings: {
         ...withLive.settings,
         live: { hideMonsterHealth: true, hideMonsterNames: true },
@@ -421,37 +421,37 @@ describe('LiveSessionPanel', () => {
 
     await component.find('[test-id="hide-monster-health"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { hideMonsterHealth: true } },
     })
 
     await component.find('[test-id="hide-monster-ac"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { hideMonsterAc: true } },
     })
 
     await component.find('[test-id="allow-hp"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { allow: { hp: false } } },
     })
 
     await component.find('[test-id="allow-ac"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { allow: { ac: false } } },
     })
 
     await component.find('[test-id="allow-death-saves"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { allow: { deathSaves: false } } },
     })
 
     await component.find('[test-id="allow-concentration"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: {
         ...sheet.settings,
         live: { allow: { concentration: false } },
@@ -460,19 +460,19 @@ describe('LiveSessionPanel', () => {
 
     await component.find('[test-id="allow-reaction"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { allow: { reaction: false } } },
     })
 
     await component.find('[test-id="allow-ready"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { allow: { ready: false } } },
     })
 
     await component.find('[test-id="allow-end-turn"]').trigger('click')
 
-    expect(injected.update).toHaveBeenLastCalledWith({
+    expect(injected.updateSheet).toHaveBeenLastCalledWith({
       settings: { ...sheet.settings, live: { allow: { endTurn: false } } },
     })
   })
@@ -496,7 +496,7 @@ describe('LiveSessionPanel', () => {
     await component.find('[test-id="hide-monster-names"]').trigger('click')
     await component.find('[test-id="allow-conditions"]').trigger('click')
 
-    expect(injected.update).not.toHaveBeenCalled()
+    expect(injected.updateSheet).not.toHaveBeenCalled()
   })
 
   it('Should toggle an allow setting without wiping other live settings', async () => {
@@ -521,7 +521,7 @@ describe('LiveSessionPanel', () => {
     await component.find('[test-id="tab-options"]').trigger('mousedown')
     await component.find('[test-id="allow-conditions"]').trigger('click')
 
-    expect(injected.update).toHaveBeenCalledWith({
+    expect(injected.updateSheet).toHaveBeenCalledWith({
       settings: {
         ...withLive.settings,
         live: {

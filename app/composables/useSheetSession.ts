@@ -67,6 +67,18 @@ export function useSheetSession(
     return update(fields)
   }
 
+  function previousTurn(): Promise<void> {
+    const position = sheet.value && previousTurnPosition(sheet.value)
+
+    return position ? update(position) : Promise.resolve()
+  }
+
+  function reset(hard: boolean): Promise<void> {
+    if (!sheet.value) return Promise.resolve()
+
+    return update(resetEncounter(sheet.value.rows, { hard }))
+  }
+
   function nextTurn(): Promise<TurnReminders | undefined> {
     return recorded(adapter.nextTurn, before =>
       sheet.value ? snapshotSheet(sheet.value) : before,
@@ -123,8 +135,9 @@ export function useSheetSession(
     patchRow,
     editRows,
     updateSheet,
-    update,
     nextTurn,
+    previousTurn,
+    reset,
     undo,
     redo,
     canUndo,

@@ -117,7 +117,8 @@ const stubs = {
 
 interface Probe {
   sheet: InitiativeSheet | undefined
-  update: (payload: Partial<InitiativeSheet>) => Promise<void>
+  updateSheet: (fields: SheetFieldsUpdate) => Promise<void>
+  editRows: (rows: InitiativeSheetRow[]) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
@@ -406,7 +407,7 @@ describe('Encounter detail page', () => {
   it('Should update the encounter with the provided update', async () => {
     const { probe } = await mountPage()
 
-    await probe.update({ round: 4 })
+    await probe.updateSheet({ round: 4 })
 
     expect(update).toHaveBeenCalledWith({ data: { round: 4 }, id: 2 })
   })
@@ -417,7 +418,7 @@ describe('Encounter detail page', () => {
     const { component } = await mountPage()
     const probe = component.findComponent(SheetProbe).vm as unknown as Probe
 
-    await probe.update({ round: 4 })
+    await probe.updateSheet({ round: 4 })
 
     expect(update).not.toHaveBeenCalled()
   })
@@ -426,7 +427,7 @@ describe('Encounter detail page', () => {
     const { probe } = await mountPage()
     const [, ...rest] = sheet.rows
 
-    await probe.update({ rows: rest, activeIndex: 1 })
+    await probe.editRows(rest)
 
     expect(logEvents).not.toHaveBeenCalled()
   })

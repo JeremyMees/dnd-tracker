@@ -2,10 +2,11 @@ import type { RowSelectionState } from '@tanstack/vue-table'
 
 export function useInitiativeSheet(
   sheet: ComputedRef<InitiativeSheet | undefined>,
-  update: (
-    payload: Omit<Partial<InitiativeSheet>, NotUpdatable>,
-  ) => Promise<void>,
-  nextTurn: () => Promise<void>,
+  turns: {
+    next: () => Promise<void>
+    previous: () => Promise<void>
+    reset: (hard: boolean) => Promise<void>
+  },
 ) {
   const defaultColumns = new Set(['index', 'name', 'initiative'])
   const hidableColumns = [
@@ -155,7 +156,7 @@ export function useInitiativeSheet(
 
     if (!position) return
 
-    update(position).catch(() => undefined)
+    turns.previous().catch(() => undefined)
 
     const index = sheet.value.rows[position.activeIndex]
       ? position.activeIndex
@@ -171,7 +172,7 @@ export function useInitiativeSheet(
 
     const { activeIndex } = nextTurnPosition(sheet.value)
 
-    nextTurn().catch(() => undefined)
+    turns.next().catch(() => undefined)
 
     const index = sheet.value.rows[activeIndex] ? activeIndex : 0
 
@@ -183,7 +184,7 @@ export function useInitiativeSheet(
   function reset(hard: boolean): void {
     if (!sheet.value) return
 
-    update(resetEncounter(sheet.value.rows, { hard })).catch(() => undefined)
+    turns.reset(hard).catch(() => undefined)
 
     if (!sheet.value.rows[0]) return
 

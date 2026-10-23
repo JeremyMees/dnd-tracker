@@ -9,14 +9,14 @@ interface Props {
   item: InitiativeSheetRow
 }
 
-const mockUpdate = vi.fn()
+const mockEditRows = vi.fn()
 const mockPatchRow = vi.fn()
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
+    editRows: mockEditRows,
     patchRow: mockPatchRow,
     portal: ref(true),
     claimedRows: ref(new Set<string>()),
@@ -33,7 +33,7 @@ const formStubs = {
     props: {
       row: Object,
       sheet: Object,
-      update: Function,
+      editRows: Function,
       campaignId: Number,
       isEncounter: Boolean,
     },
@@ -73,7 +73,7 @@ describe('Initiative table row modify', async () => {
     expect(form.props()).toMatchObject({
       row: props.item,
       sheet,
-      update: mockUpdate,
+      editRows: mockEditRows,
       isEncounter: true,
     })
   })
@@ -128,14 +128,14 @@ describe('Initiative table row modify', async () => {
 
     await component.find('[test-id="copy"]').trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
+    expect(mockEditRows).toHaveBeenCalledWith(
+      expect.arrayContaining([
         expect.objectContaining({
           ...props.item,
           id: expect.any(String),
         }),
       ]),
-    })
+    )
   })
 
   it('Should call update with filtered rows when delete button is clicked', async () => {
@@ -143,11 +143,11 @@ describe('Initiative table row modify', async () => {
 
     await component.find('[test-id="delete"]').trigger('click')
 
-    expect(mockUpdate).toHaveBeenCalledWith({
-      rows: expect.arrayContaining(
+    expect(mockEditRows).toHaveBeenCalledWith(
+      expect.arrayContaining(
         mockSheet.value!.rows.filter(row => row.id !== props.item.id),
       ),
-    })
+    )
   })
 
   it('Should disable copy button when max characters is reached', async () => {
@@ -182,7 +182,7 @@ describe('Initiative table row modify', async () => {
     await component.find('[test-id="copy"]').trigger('click')
     await component.find('[test-id="delete"]').trigger('click')
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockEditRows).not.toHaveBeenCalled()
   })
 
   describe('Visibility', () => {

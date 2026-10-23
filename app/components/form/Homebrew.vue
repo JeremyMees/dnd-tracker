@@ -12,9 +12,7 @@ const props = withDefaults(
     template?: Partial<InitiativeSheetRow> & { name: string }
     isEncounter?: boolean
     sheet?: InitiativeSheet
-    update?: (
-      payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
-    ) => Promise<void>
+    editRows?: (rows: InitiativeSheetRow[]) => Promise<void>
   }>(),
   {
     isEncounter: false,
@@ -23,7 +21,7 @@ const props = withDefaults(
     row: undefined,
     template: undefined,
     sheet: undefined,
-    update: undefined,
+    editRows: undefined,
   },
 )
 
@@ -133,7 +131,7 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
 }
 
 async function editRow(submission: HomebrewSubmission): Promise<boolean> {
-  if (!props.sheet || !props.update || !props.row) return false
+  if (!props.sheet || !props.editRows || !props.row) return false
 
   const homebrew = saveToCampaign.value
     ? await syncToCampaign(submission.homebrew)
@@ -152,15 +150,15 @@ async function editRow(submission: HomebrewSubmission): Promise<boolean> {
     submission.row.type,
   )
 
-  await props.update({
-    rows: replaceRow(props.sheet.rows, withBloodied(edited, bloodied.value)),
-  })
+  await props.editRows(
+    replaceRow(props.sheet.rows, withBloodied(edited, bloodied.value)),
+  )
 
   return true
 }
 
 async function addRows(submission: HomebrewSubmission): Promise<boolean> {
-  if (!props.sheet || !props.update) return false
+  if (!props.sheet || !props.editRows) return false
 
   const { initiative, initiativeModifier } = submission
   const homebrew = saveToCampaign.value
@@ -179,13 +177,13 @@ async function addRows(submission: HomebrewSubmission): Promise<boolean> {
     ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
   }
 
-  await props.update({
-    rows: appendRows(
+  await props.editRows(
+    appendRows(
       props.sheet.rows,
       Array.from({ length: submission.amount ?? 1 }, () => row),
       props.sheet.settings,
     ),
-  })
+  )
 
   return true
 }

@@ -8,7 +8,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const emit = defineEmits<{ close: [] }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
@@ -98,8 +98,8 @@ async function addHomebrews(addAll: boolean): Promise<void> {
     ? data.value?.homebrews.filter(hb => hb.type !== 'summon') || []
     : selected.value
 
-  await update({
-    rows: appendRows(
+  await editRows(
+    appendRows(
       sheet.value.rows,
       selection.map(hb => ({
         ...homebrewToRow(hb),
@@ -109,7 +109,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       })),
       sheet.value.settings,
     ),
-  })
+  )
 
   emit('close')
 }

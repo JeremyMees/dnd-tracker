@@ -12,10 +12,11 @@ const props = defineProps<{ loading: boolean; encounterId?: number }>()
 const {
   activeRow,
   sheet,
-  update,
   patchRow,
   patchRows,
   nextTurn,
+  previousTurn,
+  reset: resetSheet,
   onTurnReminders,
   undo,
   canUndo,
@@ -44,8 +45,11 @@ const {
   columnVisibility,
 } = useInitiativeSheet(
   computed(() => sheet.value),
-  update,
-  nextTurnWithReminders,
+  {
+    next: nextTurnWithReminders,
+    previous: previousTurn,
+    reset: resetSheet,
+  },
 )
 
 syncRef(activeRow, active, { direction: 'rtl' })

@@ -90,6 +90,50 @@ describe('useSheetSession', () => {
       expect(sheet.value!.info).toBe('Ambush at dawn')
     })
 
+    it('goes back a turn', async () => {
+      sheet.value = { ...sheet.value!, activeIndex: 1 }
+      const session = useSheetSession(sheet, adapter)
+
+      await session.previousTurn()
+
+      expect(adapter.update).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(sheet.value!.activeIndex).toBe(0)
+    })
+
+    it('does not go back before the first turn', async () => {
+      const session = useSheetSession(sheet, adapter)
+
+      await session.previousTurn()
+
+      expect(adapter.update).not.toHaveBeenCalled()
+    })
+
+    it('soft resets to the first turn and keeps the rows', async () => {
+      sheet.value = { ...sheet.value!, activeIndex: 1, round: 3 }
+      const session = useSheetSession(sheet, adapter)
+
+      await session.reset(false)
+
+      expect(adapter.update).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(hitPoints()).toEqual([20, 8])
+    })
+
+    it('hard resets the rows with the turn in one write', async () => {
+      sheet.value = { ...sheet.value!, activeIndex: 1, round: 3 }
+      const session = useSheetSession(sheet, adapter)
+
+      await session.reset(true)
+
+      expect(adapter.update).toHaveBeenCalledTimes(1)
+      expect(adapter.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          activeIndex: 0,
+          round: 1,
+          rows: expect.any(Array),
+        }),
+      )
+    })
+
     it('passes on the reminders of the next turn', async () => {
       const session = useSheetSession(sheet, adapter)
 
@@ -164,6 +208,16 @@ describe('useSheetSession', () => {
       await session.undo()
 
       expect(sheet.value!.rows.map(item => item.id)).toEqual(['a', 'b'])
+    })
+
+    it('undoes a reset', async () => {
+      sheet.value = { ...sheet.value!, activeIndex: 1, round: 3 }
+      const session = useSheetSession(sheet, adapter)
+
+      await session.reset(false)
+      await session.undo()
+
+      expect(sheet.value!).toMatchObject({ activeIndex: 1, round: 3 })
     })
 
     it('undoes the next turn', async () => {
