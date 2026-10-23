@@ -1,5 +1,6 @@
 export * from './locale'
 export * from './parse'
+export * from './player-view'
 
 export * from './transformers/armor'
 export * from './transformers/condition'

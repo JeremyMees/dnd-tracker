@@ -19,7 +19,6 @@ export type SheetTurn = Pick<InitiativeSheet, 'activeIndex' | 'round'>
 
 export interface SheetSeatOrigin {
   session: string
-  action: LiveRowAction['type']
 }
 
 export interface SheetLiveSession {

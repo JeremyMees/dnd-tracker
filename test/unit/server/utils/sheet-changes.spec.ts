@@ -91,7 +91,7 @@ describe('sheet-changes', () => {
       ])
     })
 
-    it('sends the new player view to an active live session', async () => {
+    it('sends the changed row as the players see it to an active live session', async () => {
       const { ctx, sent } = memorySheetContext(sheet, { liveSession })
 
       await applyRowPatches(ctx, [
@@ -101,13 +101,13 @@ describe('sheet-changes', () => {
       expect(sent('live:session-uuid')).toEqual([
         {
           topic: 'live:session-uuid',
-          event: 'sync',
+          event: 'action',
           payload: {
             version: 1,
-            sheet: toPlayerSheet({
+            row: toPlayerSheet({
               ...sheet,
               rows: [{ ...elara, name: 'Elara Moonwhisper' }, goblin],
-            }),
+            }).rows[0],
           },
         },
       ])
@@ -125,11 +125,10 @@ describe('sheet-changes', () => {
           payload: { rowName: 'Goblin' },
         }),
       ])
-      expect(sent('live:session-uuid')[0]?.payload.sheet).toMatchObject({
-        rows: [
-          expect.objectContaining({ id: 'row-1', name: 'Elara' }),
-          expect.objectContaining({ id: 'row-2', name: '???', hidden: true }),
-        ],
+      expect(sent('live:session-uuid')[0]?.payload.row).toMatchObject({
+        id: 'row-2',
+        name: '???',
+        hidden: true,
       })
     })
 
@@ -184,17 +183,17 @@ describe('sheet-changes', () => {
       expect(state.messages).toEqual([])
     })
 
-    it('patches several rows, logs each change and sends one sync per topic', async () => {
+    it('patches several rows, logs each change and sends one sync per topic when several rows look different', async () => {
       const { ctx, state, sent } = memorySheetContext(sheet, { liveSession })
 
       await applyRowPatches(ctx, [
         { rowId: 'row-1', patch: { hitPoints: 4 } },
-        { rowId: 'row-2', patch: { hitPoints: 8 } },
+        { rowId: 'row-2', patch: { hitPoints: 1 } },
       ])
 
       const after = [
         { ...elara, hitPoints: 4 },
-        { ...goblin, hitPoints: 8 },
+        { ...goblin, hitPoints: 1 },
       ]
 
       expect(state.sheet.rows).toEqual(after)
@@ -209,7 +208,9 @@ describe('sheet-changes', () => {
           payload: { version: 1, sheet: { ...sheet, rows: after } },
         },
       ])
-      expect(sent('live:session-uuid')).toHaveLength(1)
+      expect(sent('live:session-uuid')).toEqual([
+        expect.objectContaining({ event: 'sync' }),
+      ])
     })
 
     it('diffs against the sheet it is given instead of reading it again', async () => {
@@ -236,7 +237,7 @@ describe('sheet-changes', () => {
     })
 
     describe('from a player seat', () => {
-      const seat: SheetSeatOrigin = { session: 'seat-session', action: 'hp' }
+      const seat: SheetSeatOrigin = { session: 'seat-session' }
 
       it('sends what the other players may see as a live action', async () => {
         const { ctx, sent } = memorySheetContext(sheet, {
@@ -257,8 +258,10 @@ describe('sheet-changes', () => {
             event: 'action',
             payload: {
               version: 1,
-              row: 'row-1',
-              patch: { healthBand: 'bloodied' },
+              row: toPlayerSheet({
+                ...sheet,
+                rows: [{ ...elara, hitPoints: 7 }, goblin],
+              }).rows[0],
             },
           },
         ])
@@ -271,7 +274,7 @@ describe('sheet-changes', () => {
         ])
       })
 
-      it('sends the raw patch for a monster row', async () => {
+      it('sends a monster row as the players see it', async () => {
         const { ctx, sent } = memorySheetContext(sheet)
 
         await applyRowPatches(
@@ -282,9 +285,12 @@ describe('sheet-changes', () => {
           },
         )
 
-        expect(sent('live:seat-session')[0]?.payload.patch).toEqual({
-          hitPoints: 3,
-        })
+        expect(sent('live:seat-session')[0]?.payload.row).toEqual(
+          expect.objectContaining({ id: 'row-2', healthBand: 'critical' }),
+        )
+        expect(sent('live:seat-session')[0]?.payload.row).not.toHaveProperty(
+          'hitPoints',
+        )
       })
 
       it('skips the full player view sync of the session it came from', async () => {

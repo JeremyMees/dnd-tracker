@@ -33,8 +33,7 @@ export type LiveSeatsBroadcast =
 
 export interface LiveActionEvent {
   version: number
-  row: string
-  patch: Partial<PlayerRow>
+  row: PlayerRow
 }
 
 export interface LiveSyncEvent {

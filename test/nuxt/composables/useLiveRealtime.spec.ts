@@ -243,7 +243,7 @@ describe('useLiveRealtime', () => {
     expect(subscribe).toHaveBeenCalledTimes(2)
   })
 
-  it('merges a sequential action broadcast into the cached row and bumps the version', async () => {
+  it('replaces the cached row with a sequential action broadcast and bumps the version', async () => {
     const current = {
       sheet: {
         id: 1,
@@ -269,27 +269,23 @@ describe('useLiveRealtime', () => {
 
     await mountProbe()
 
-    emitBroadcast('action', {
-      version: 4,
-      row: 'row-1',
-      patch: { hitPoints: 15 },
-    })
+    const { hitPoints: _hitPoints, ...masked } = current.sheet.rows[0]!
+    const row = { ...masked, healthBand: 'bloodied' }
+
+    emitBroadcast('action', { version: 4, row })
 
     expect(setQueryData).toHaveBeenCalledWith(
       ['useLiveState', 'session-token', 'seat-1'],
       {
         ...current,
         session: { ...current.session, version: 4 },
-        sheet: {
-          ...current.sheet,
-          rows: [{ ...current.sheet.rows[0], hitPoints: 15 }],
-        },
+        sheet: { ...current.sheet, rows: [row] },
       },
     )
     expect(invalidateQueries).not.toHaveBeenCalled()
   })
 
-  it('refetches instead of merging an action broadcast for the viewer own row', async () => {
+  it('refetches instead of applying an action broadcast for the viewer own row', async () => {
     const current = {
       sheet: {
         id: 1,
@@ -318,8 +314,7 @@ describe('useLiveRealtime', () => {
 
     emitBroadcast('action', {
       version: 4,
-      row: 'row-1',
-      patch: { healthBand: 'bloodied' },
+      row: { ...current.sheet.rows[0], healthBand: 'bloodied' },
     })
 
     expect(setQueryData).not.toHaveBeenCalled()
@@ -328,7 +323,7 @@ describe('useLiveRealtime', () => {
     })
   })
 
-  it('merges an action broadcast for a row other than the viewer own row', async () => {
+  it('replaces a row other than the viewer own row from an action broadcast', async () => {
     const current = {
       sheet: {
         id: 1,
@@ -357,8 +352,7 @@ describe('useLiveRealtime', () => {
 
     emitBroadcast('action', {
       version: 4,
-      row: 'row-1',
-      patch: { healthBand: 'bloodied' },
+      row: { ...current.sheet.rows[0], healthBand: 'bloodied' },
     })
 
     expect(invalidateQueries).not.toHaveBeenCalled()
@@ -412,8 +406,7 @@ describe('useLiveRealtime', () => {
 
     emitBroadcast('action', {
       version: 4,
-      row: 'row-2',
-      patch: { hitPoints: 5 },
+      row: { ...current.sheet.rows[1], hitPoints: 5 },
     })
 
     expect(setQueryData).toHaveBeenCalledWith(
@@ -440,7 +433,7 @@ describe('useLiveRealtime', () => {
 
     await mountProbe()
 
-    emitBroadcast('action', { version: 6, row: 'row-1', patch: {} })
+    emitBroadcast('action', { version: 6, row: { id: 'row-1' } })
 
     expect(setQueryData).not.toHaveBeenCalled()
     expect(invalidateQueries).toHaveBeenCalledWith({
@@ -456,7 +449,7 @@ describe('useLiveRealtime', () => {
 
     await mountProbe()
 
-    emitBroadcast('action', { version: 5, row: 'row-1', patch: {} })
+    emitBroadcast('action', { version: 5, row: { id: 'row-1' } })
 
     expect(setQueryData).not.toHaveBeenCalled()
     expect(invalidateQueries).not.toHaveBeenCalled()
@@ -468,7 +461,7 @@ describe('useLiveRealtime', () => {
     await mountProbe()
 
     expect(() =>
-      emitBroadcast('action', { version: 1, row: 'row-1', patch: {} }),
+      emitBroadcast('action', { version: 1, row: { id: 'row-1' } }),
     ).not.toThrow()
     expect(setQueryData).not.toHaveBeenCalled()
     expect(invalidateQueries).not.toHaveBeenCalled()

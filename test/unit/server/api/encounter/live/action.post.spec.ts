@@ -121,11 +121,13 @@ describe('POST /api/encounter/live/action', () => {
         event: 'action',
         payload: {
           version: 1,
-          row: 'row-1',
-          patch: { healthBand: 'bloodied' },
+          row: expect.objectContaining({ id: 'row-1', healthBand: 'bloodied' }),
         },
       },
     ])
+    expect(sent('live:session-uuid')[0]?.payload.row).not.toHaveProperty(
+      'hitPoints',
+    )
   })
 
   it('shows the other players nothing of a death save', async () => {
@@ -135,7 +137,9 @@ describe('POST /api/encounter/live/action', () => {
     await act({ type: 'deathSaves', value })
 
     expect(state.sheet.rows[0]?.deathSaves).toEqual(value)
-    expect(sent('live:session-uuid')[0]?.payload.patch).toEqual({})
+    expect(sent('live:session-uuid')[0]?.payload.row).not.toHaveProperty(
+      'deathSaves',
+    )
   })
 
   it('shows the raw hp of a non-player row', async () => {
@@ -143,7 +147,7 @@ describe('POST /api/encounter/live/action', () => {
 
     await act({ type: 'hp', hpType: 'heal', amount: 5 })
 
-    expect(sent('live:session-uuid')[0]?.payload.patch).toEqual({
+    expect(sent('live:session-uuid')[0]?.payload.row).toMatchObject({
       hitPoints: 15,
     })
   })
@@ -154,7 +158,7 @@ describe('POST /api/encounter/live/action', () => {
     await act({ type: 'concentration', value: true })
 
     expect(state.sheet.rows[0]?.concentration).toBe(true)
-    expect(sent('live:session-uuid')[0]?.payload.patch).toEqual({
+    expect(sent('live:session-uuid')[0]?.payload.row).toMatchObject({
       concentration: true,
     })
   })
@@ -324,7 +328,7 @@ describe('POST /api/encounter/live/action', () => {
       legendaryResistances: 1,
       reaction: true,
     })
-    expect(sent('live:session-uuid')[0]?.payload.patch).toEqual({
+    expect(sent('live:session-uuid')[0]?.payload.row).toMatchObject({
       reaction: true,
     })
   })
@@ -348,7 +352,7 @@ describe('POST /api/encounter/live/action', () => {
     expect(state.events).toEqual([
       expect.objectContaining({ type: 'readied', actorName: 'Elara' }),
     ])
-    expect(sent('live:session-uuid')[0]?.payload.patch).toEqual({
+    expect(sent('live:session-uuid')[0]?.payload.row).toMatchObject({
       readied: true,
     })
   })

@@ -3,39 +3,6 @@ import { bloodiedConditionId } from '~~/constants/dnd'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { z } from 'zod'
 
-export function sanitizeBroadcastPatch(
-  row: InitiativeSheetRow,
-  actionType: string,
-  patch: Partial<InitiativeSheetRow>,
-): Partial<PlayerRow> {
-  if (actionType === 'reaction') return { reaction: patch.resources?.reaction }
-
-  if (actionType === 'ready') {
-    return {
-      readied: patch.readied,
-      ...(patch.resources && { reaction: patch.resources.reaction }),
-    }
-  }
-
-  if (row.type !== 'player') return patch
-
-  const conditions = patch.conditions && withoutBloodied(patch.conditions)
-
-  if (actionType === 'hp') {
-    return {
-      healthBand: getHealthBand(row.hitPoints, row.maxHitPoints),
-      concentration: patch.concentration,
-      conditions,
-    }
-  }
-
-  if (actionType === 'deathSaves') return {}
-
-  if (actionType === 'conditions') return { conditions }
-
-  return patch
-}
-
 export async function broadcastLiveEnded(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,

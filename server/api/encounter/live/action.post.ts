@@ -98,7 +98,7 @@ export default defineEventHandler(async event => {
 
   const [row] = await applyRowPatches(changes, [{ rowId: seat.row, patch }], {
     before: sheet,
-    seat: { session: payload.session, action: body.action.type },
+    seat: { session: payload.session },
   })
 
   return { row }

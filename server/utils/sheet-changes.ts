@@ -87,24 +87,30 @@ function rowClaimedError() {
   return createError({ statusCode: 409, statusMessage: 'row-claimed' })
 }
 
-async function sendLiveActions(
+async function sendLiveChanges(
   ctx: SheetChangeContext,
-  seat: SheetSeatOrigin,
-  patches: SheetRowPatch[],
-  after: InitiativeSheetRow[],
+  session: string,
+  changed: PlayerRow[],
 ): Promise<void> {
-  const topic: SheetTopic = { kind: 'live', session: seat.session }
-  const afterRows = new Map(after.map(row => [row.id, row]))
+  if (changed.length > 1) return sendLiveState(ctx, session)
 
-  for (const { rowId, patch } of patches) {
-    const version = await ctx.broadcaster.nextVersion(topic)
+  const [row] = changed
 
-    await ctx.broadcaster.send(topic, 'action', {
-      version,
-      row: rowId,
-      patch: sanitizeBroadcastPatch(afterRows.get(rowId)!, seat.action, patch),
-    })
-  }
+  if (!row) return
+
+  const topic: SheetTopic = { kind: 'live', session }
+  const version = await ctx.broadcaster.nextVersion(topic)
+
+  await ctx.broadcaster.send(topic, 'action', { version, row })
+}
+
+function withPatches(
+  rows: InitiativeSheetRow[],
+  patches: SheetRowPatch[],
+): InitiativeSheetRow[] {
+  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+  return rows.map(row => ({ ...row, ...byRow.get(row.id) }))
 }
 
 interface ApplyRowPatchesOptions {
@@ -124,10 +130,14 @@ export async function applyRowPatches(
     throw createError({ statusCode: 404, statusMessage: 'Row not found' })
   }
 
+  const visible =
+    changedPlayerRows(sheet, {
+      ...sheet,
+      rows: withPatches(sheet.rows, patches),
+    }).length > 0
   const live =
-    !seat && patches.some(({ patch }) => touchesPlayerView(patch))
-      ? await ctx.store.liveSession(ctx.encounterId)
-      : undefined
+    !seat && visible ? await ctx.store.liveSession(ctx.encounterId) : undefined
+  const session = seat?.session ?? live?.uuid
   const claimed = claimedRows(live)
 
   if (patches.some(({ rowId, patch }) => patch.hidden && claimed.has(rowId))) {
@@ -135,6 +145,11 @@ export async function applyRowPatches(
   }
 
   const after = await ctx.store.patchRows(ctx.encounterId, patches)
+  const afterRows = new Map(after.map(row => [row.id, row]))
+  const afterSheet = {
+    ...sheet,
+    rows: sheet.rows.map(row => afterRows.get(row.id) ?? row),
+  }
   const [only] = patches
 
   await Promise.all([
@@ -151,8 +166,9 @@ export async function applyRowPatches(
     patches.length === 1 && only
       ? sendSheetAction(ctx, only)
       : sendSheetSync(ctx),
-    ...(seat ? [sendLiveActions(ctx, seat, patches, after)] : []),
-    ...(live ? [sendLiveState(ctx, live.uuid)] : []),
+    ...(session
+      ? [sendLiveChanges(ctx, session, changedPlayerRows(sheet, afterSheet))]
+      : []),
   ])
 
   return after

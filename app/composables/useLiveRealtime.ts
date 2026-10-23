@@ -34,7 +34,7 @@ export function useLiveRealtime(
       return
     }
 
-    if (ownRow.value && payload.row === ownRow.value) {
+    if (ownRow.value && payload.row.id === ownRow.value) {
       refetch()
       return
     }
@@ -45,7 +45,7 @@ export function useLiveRealtime(
       sheet: {
         ...current.sheet,
         rows: current.sheet.rows.map(row =>
-          row.id === payload.row ? { ...row, ...payload.patch } : row,
+          row.id === payload.row.id ? payload.row : row,
         ),
       },
     })
