@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/vue-query'
+import { withPendingEdits } from '~/queries/initiative-sheets'
 import { toast } from 'vue-sonner'
 
 export function useRealTimeInitiativeSheet(
@@ -58,13 +59,15 @@ export function useRealTimeInitiativeSheet(
     queryKey: () => queryKeys.initiativeSheetDetail(id),
     version: sheet => sheet.version,
     withVersion: (sheet, version) => ({ ...sheet, version }),
-    mergeAction: (sheet, { row, patch }) => ({
-      ...sheet,
-      rows: sheet.rows.map(item =>
-        item.id === row ? { ...item, ...patch } : item,
-      ),
-    }),
-    mergeSync: (sheet, event) => ({ ...sheet, ...event.sheet }),
+    mergeAction: (sheet, { row, patch }) =>
+      withPendingEdits(queryClient, id, {
+        ...sheet,
+        rows: sheet.rows.map(item =>
+          item.id === row ? { ...item, ...patch } : item,
+        ),
+      }),
+    mergeSync: (sheet, event) =>
+      withPendingEdits(queryClient, id, { ...sheet, ...event.sheet }),
     onAction: refetchCombatEvents,
     onSync: ({ reminders }) => {
       refetchCombatEvents()

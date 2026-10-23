@@ -6,16 +6,24 @@ import { useQueryClient, type QueryClient } from '@tanstack/vue-query'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useRealTimeInitiativeSheet } from '~/composables/useRealTimeInitiativeSheet'
+import {
+  useInitiativeSheetDetailUpdate,
+  useInitiativeSheetPatch,
+} from '~/queries/initiative-sheets'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 
-const { navigateTo } = vi.hoisted(() => ({ navigateTo: vi.fn() }))
+const { fetchMock, navigateTo } = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
+  navigateTo: vi.fn(),
+}))
 
 const user = ref<AuthUser>({ ...authUser })
 const data = ref<InitiativeSheet | undefined>()
 const visibility = ref<DocumentVisibilityState>('visible')
 
+mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('navigateTo', () => navigateTo)
 mockNuxtImport('useAuthenticatedUser', () => () => user)
 mockNuxtImport('useSupabaseClient', () => () => realtime.client)
@@ -209,6 +217,114 @@ describe('useRealTimeInitiativeSheet', () => {
       realtime.emit('sync', { version: 3, sheet: {}, reminders })
 
       expect(listener).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('edits in flight', () => {
+    const rowId = sheet.rows[0]!.id
+    let release: (value: unknown) => void
+
+    function mountWithEdits() {
+      return mountHook(() => {
+        useRealTimeInitiativeSheet(2, data)
+
+        return {
+          patch: useInitiativeSheetPatch().mutate,
+          update: useInitiativeSheetDetailUpdate().mutate,
+        }
+      })
+    }
+
+    function cachedSheet(): InitiativeSheet | undefined {
+      return queryClient.getQueryData<InitiativeSheet>(sheetKey)
+    }
+
+    beforeEach(() => {
+      fetchMock.mockReset()
+      fetchMock.mockImplementation(
+        () =>
+          new Promise(resolve => {
+            release = resolve
+          }),
+      )
+    })
+
+    it('keeps a row edit through a snapshot', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.patch({ id: 2, rowId, patch: { hitPoints: 1 } })
+      await flushPromises()
+
+      realtime.emit('sync', {
+        version: 4,
+        sheet: {
+          round: 2,
+          rows: cached.rows.map(row => ({ ...row, hitPoints: 50 })),
+        },
+      })
+
+      expect(cachedSheet()).toMatchObject({ version: 4, round: 2 })
+      expect(cachedSheet()?.rows[0]?.hitPoints).toBe(1)
+      expect(cachedSheet()?.rows[1]?.hitPoints).toBe(50)
+    })
+
+    it('keeps a row edit through an action on the same row', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.patch({ id: 2, rowId, patch: { hitPoints: 1 } })
+      await flushPromises()
+
+      realtime.emit('action', {
+        version: 4,
+        row: rowId,
+        patch: { hitPoints: 50, initiative: 3 },
+      })
+
+      expect(cachedSheet()?.rows[0]).toMatchObject({
+        hitPoints: 1,
+        initiative: 3,
+      })
+    })
+
+    it('keeps a sheet edit through a snapshot', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.update({ id: 2, data: { round: 7 } })
+      await flushPromises()
+
+      realtime.emit('sync', { version: 4, sheet: { round: 2 } })
+
+      expect(cachedSheet()).toMatchObject({ version: 4, round: 7 })
+    })
+
+    it('takes the snapshot once the edit has been saved', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.patch({ id: 2, rowId, patch: { hitPoints: 1 } })
+      await flushPromises()
+      release({ row: {} })
+      await flushPromises()
+
+      realtime.emit('sync', {
+        version: 4,
+        sheet: { rows: cached.rows.map(row => ({ ...row, hitPoints: 50 })) },
+      })
+
+      expect(cachedSheet()?.rows[0]?.hitPoints).toBe(50)
+    })
+
+    it('ignores an edit to another encounter', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.patch({ id: 9, rowId, patch: { hitPoints: 1 } })
+      await flushPromises()
+
+      realtime.emit('sync', {
+        version: 4,
+        sheet: { rows: cached.rows.map(row => ({ ...row, hitPoints: 50 })) },
+      })
+
+      expect(cachedSheet()?.rows[0]?.hitPoints).toBe(50)
     })
   })
 

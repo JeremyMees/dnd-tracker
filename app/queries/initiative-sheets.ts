@@ -35,11 +35,62 @@ export function useInitiativeSheetDetail(id: number) {
   })
 }
 
+const SHEET_EDIT_KEY = ['initiativeSheetEdit']
+
+type PendingSheetEdit = { id: number } & (
+  | { data: UpdateInitiativeSheetData }
+  | { rowId: string; patch: Partial<InitiativeSheetRow> }
+  | { patches: RowPatch[] }
+)
+
+function withRowPatches(
+  sheet: InitiativeSheet,
+  patches: RowPatch[],
+): InitiativeSheet {
+  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+  return {
+    ...sheet,
+    rows: sheet.rows.map(row => {
+      const patch = byRow.get(row.id)
+
+      return patch ? { ...row, ...patch } : row
+    }),
+  }
+}
+
+function withPendingEdit(
+  sheet: InitiativeSheet,
+  edit: PendingSheetEdit,
+): InitiativeSheet {
+  if ('data' in edit) {
+    return { ...sheet, ...edit.data, rows: edit.data.rows || sheet.rows }
+  }
+
+  if ('patches' in edit) return withRowPatches(sheet, edit.patches)
+
+  return withRowPatches(sheet, [{ rowId: edit.rowId, patch: edit.patch }])
+}
+
+export function withPendingEdits(
+  queryClient: QueryClient,
+  id: number,
+  sheet: InitiativeSheet,
+): InitiativeSheet {
+  return queryClient
+    .getMutationCache()
+    .findAll({ mutationKey: SHEET_EDIT_KEY, status: 'pending' })
+    .map(mutation => mutation.state.variables as PendingSheetEdit)
+    .filter(edit => edit.id === id)
+    .reduce(withPendingEdit, sheet)
+}
+
 export function useInitiativeSheetDetailUpdate() {
   const queryClient = useQueryClient()
   const { t } = useI18n()
 
   return useCallbackMutation({
+    mutationKey: SHEET_EDIT_KEY,
     mutationFn: async ({
       data,
       id,
@@ -57,11 +108,7 @@ export function useInitiativeSheetDetailUpdate() {
 
       queryClient.setQueryData(
         queryKeys.initiativeSheetDetail(id),
-        (old: InitiativeSheet) => {
-          if (!old) return old
-
-          return { ...old, ...data, rows: data.rows || old.rows }
-        },
+        (old: InitiativeSheet) => old && withPendingEdit(old, { id, data }),
       )
 
       const drafts = previous ? diffSheet(previous, data) : []
@@ -227,18 +274,7 @@ async function patchRowsOptimistically(
 
   queryClient.setQueryData(
     queryKeys.initiativeSheetDetail(id),
-    (old: InitiativeSheet) => {
-      if (!old) return old
-
-      return {
-        ...old,
-        rows: old.rows.map(row => {
-          const patch = byRow.get(row.id)
-
-          return patch ? { ...row, ...patch } : row
-        }),
-      }
-    },
+    (old: InitiativeSheet) => old && withRowPatches(old, patches),
   )
 
   const drafts = (previous?.rows ?? []).flatMap(row => {
@@ -291,6 +327,7 @@ export function useInitiativeSheetPatch() {
   const { t } = useI18n()
 
   return useCallbackMutation({
+    mutationKey: SHEET_EDIT_KEY,
     mutationFn: async ({
       id,
       rowId,
@@ -332,6 +369,7 @@ export function useInitiativeSheetPatchRows() {
   const { t } = useI18n()
 
   return useCallbackMutation({
+    mutationKey: SHEET_EDIT_KEY,
     mutationFn: async ({
       id,
       patches,
