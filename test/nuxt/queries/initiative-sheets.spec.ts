@@ -15,6 +15,7 @@ import {
   useInitiativeSheetPatch,
   useInitiativeSheetPatchRows,
   useInitiativeSheetTurn,
+  withPendingEdits,
 } from '~/queries/initiative-sheets'
 
 const row: InitiativeSheetRow = {
@@ -723,6 +724,30 @@ describe('initiative-sheets queries', () => {
           payload: { rowName: 'Goblin' },
         }),
       ])
+    })
+
+    it('keeps a change from a sync that arrives while the update is pending', async () => {
+      fetchMock.mockReturnValue(new Promise(() => {}))
+
+      const { vm } = await mountUpdate()
+      const other = { ...row, id: 'row-2', name: 'Goblin' }
+      const synced = {
+        id: 7,
+        round: 2,
+        activeIndex: 0,
+        rows: [{ ...row, hitPoints: 3 }, other],
+      } as InitiativeSheet
+
+      void vm.mutateAsync({
+        id: 7,
+        data: { baseRows: [row, other], rows: [row] },
+      })
+
+      await vi.waitFor(() =>
+        expect(withPendingEdits(vm.queryClient, 7, synced).rows).toEqual([
+          { ...row, hitPoints: 3 },
+        ]),
+      )
     })
 
     it('leaves the combat log alone for an update without combat effect', async () => {

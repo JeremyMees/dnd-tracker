@@ -4,4 +4,7 @@ export interface SheetAdapter {
   nextTurn: () => Promise<TurnReminders | undefined>
 }
 
-export type SheetFieldsUpdate = Omit<UpdateInitiativeSheetData, 'rows'>
+export type SheetFieldsUpdate = Omit<
+  UpdateInitiativeSheetData,
+  'rows' | 'baseRows'
+>

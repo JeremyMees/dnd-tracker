@@ -5,10 +5,12 @@ export function memorySheetAdapter(
     async update(data) {
       if (!sheet.value) return
 
+      const fields = mergeSheetUpdate(sheet.value.rows, data)
+
       sheet.value = {
         ...sheet.value,
-        ...data,
-        ...(data.rows && { rows: indexCorrect(data.rows) }),
+        ...fields,
+        ...(fields.rows && { rows: indexCorrect(fields.rows) }),
       }
     },
     async patchRows(patches) {

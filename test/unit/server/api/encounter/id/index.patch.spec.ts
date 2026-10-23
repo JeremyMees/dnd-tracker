@@ -64,6 +64,16 @@ describe('PATCH /api/encounter/[id]', () => {
     ])
   })
 
+  it('keeps a change made since the rows were edited', async () => {
+    mockAccess()
+    const hurt = { ...row, hitPoints: 3 }
+    const { state } = useMemorySheet(storedSheet({ rows: [hurt, goblin] }))
+
+    await handler(updateEvent({ baseRows: [row, goblin], rows: [row] }))
+
+    expect(state.sheet.rows).toEqual([hurt])
+  })
+
   it('drops null condition fields before they reach the rows check constraint', async () => {
     const stored = { id: 'prone', name: 'Prone', desc: 'On the ground.' }
 

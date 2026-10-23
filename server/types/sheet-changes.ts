@@ -34,7 +34,7 @@ export interface SheetStore {
   ) => Promise<TurnSheet | undefined>
   updateSheet: (
     encounterId: number,
-    update: InitiativeSheetUpdate,
+    update: InitiativeSheetFields,
   ) => Promise<void>
   liveSession: (encounterId: number) => Promise<SheetLiveSession | undefined>
   logEvents: (events: TablesInsert<'combat_events'>[]) => Promise<void>

@@ -505,6 +505,70 @@ describe('sheet-changes', () => {
       ])
     })
 
+    describe('rows edited from an older copy of the sheet', () => {
+      const player = { ...elara, hitPoints: 4 }
+      const latest = storedSheet({ round: 2, rows: [player, goblin] })
+
+      it('keeps a change a player made since', async () => {
+        const { ctx, state } = memorySheetContext(latest)
+
+        await applySheetUpdate(ctx, {
+          baseRows: [elara, goblin],
+          rows: [elara, { ...goblin, name: 'Goblin boss' }],
+        })
+
+        expect(state.sheet.rows).toEqual([
+          player,
+          { ...goblin, name: 'Goblin boss' },
+        ])
+      })
+
+      it('still applies a field the edit changed', async () => {
+        const { ctx, state } = memorySheetContext(latest)
+
+        await applySheetUpdate(ctx, {
+          baseRows: [elara, goblin],
+          rows: [{ ...elara, hitPoints: 20 }, goblin],
+        })
+
+        expect(state.sheet.rows[0]?.hitPoints).toBe(20)
+      })
+
+      it('adds and removes the rows the edit added and removed', async () => {
+        const orc = { ...goblin, id: 'row-3', index: 2, name: 'Orc' }
+        const { ctx, state } = memorySheetContext(latest)
+
+        await applySheetUpdate(ctx, {
+          baseRows: [elara, goblin],
+          rows: [elara, orc],
+        })
+
+        expect(state.sheet.rows).toEqual([player, { ...orc, index: 1 }])
+      })
+
+      it('only logs what the edit changed', async () => {
+        const { ctx, state } = memorySheetContext(latest)
+
+        await applySheetUpdate(ctx, {
+          baseRows: [elara, goblin],
+          rows: [elara],
+        })
+
+        expect(state.events.map(event => event.type)).toEqual(['row_removed'])
+      })
+
+      it('does not store the rows it was edited from', async () => {
+        const { ctx, state } = memorySheetContext(latest)
+
+        await applySheetUpdate(ctx, {
+          baseRows: [elara, goblin],
+          rows: [elara, goblin],
+        })
+
+        expect(state.sheet).not.toHaveProperty('baseRows')
+      })
+    })
+
     it('reindexes the rows by initiative and cleans their numbers and conditions', async () => {
       const { ctx, state } = memorySheetContext(storedSheet())
 

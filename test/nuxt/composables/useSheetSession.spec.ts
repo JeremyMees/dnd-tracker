@@ -71,9 +71,11 @@ describe('useSheetSession', () => {
       const session = useSheetSession(sheet, adapter)
       const rows = [...sheet.value!.rows, row('goblin')]
 
+      const base = sheet.value!.rows
+
       await session.editRows(rows)
 
-      expect(adapter.update).toHaveBeenCalledWith({ rows })
+      expect(adapter.update).toHaveBeenCalledWith({ rows, baseRows: base })
       expect(sheet.value!.rows.map(item => item.id)).toEqual([
         'a',
         'b',
@@ -130,6 +132,7 @@ describe('useSheetSession', () => {
           activeIndex: 0,
           round: 1,
           rows: expect.any(Array),
+          baseRows: expect.any(Array),
         }),
       )
     })
@@ -208,6 +211,15 @@ describe('useSheetSession', () => {
       await session.undo()
 
       expect(sheet.value!.rows.map(item => item.id)).toEqual(['a', 'b'])
+      expect(adapter.update).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          baseRows: [
+            expect.objectContaining({ id: 'a' }),
+            expect.objectContaining({ id: 'b' }),
+            expect.objectContaining({ id: 'goblin' }),
+          ],
+        }),
+      )
     })
 
     it('undoes a reset', async () => {

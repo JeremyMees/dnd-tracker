@@ -23,6 +23,23 @@ describe('memorySheetAdapter', () => {
     ])
   })
 
+  it('merges edited rows onto changes made since', async () => {
+    const [first, second] = fixture.rows
+    const sheet = shallowRef<InitiativeSheet | undefined>({
+      ...fixture,
+      rows: [{ ...first!, hitPoints: 1 }, second!],
+    })
+
+    await memorySheetAdapter(sheet).update({
+      baseRows: [first!, second!],
+      rows: [first!, { ...second!, name: 'Renamed' }],
+    })
+
+    expect(sheet.value?.rows[0]?.hitPoints).toBe(1)
+    expect(sheet.value?.rows[1]?.name).toBe('Renamed')
+    expect(sheet.value).not.toHaveProperty('baseRows')
+  })
+
   it('patches rows in place', async () => {
     const sheet = shallowRef<InitiativeSheet | undefined>({ ...fixture })
     const [first] = fixture.rows

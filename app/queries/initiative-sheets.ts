@@ -48,7 +48,9 @@ function withPendingEdit(
   edit: PendingSheetEdit,
 ): InitiativeSheet {
   if ('data' in edit) {
-    return { ...sheet, ...edit.data, rows: edit.data.rows || sheet.rows }
+    const fields = mergeSheetUpdate(sheet.rows, edit.data)
+
+    return { ...sheet, ...fields, rows: fields.rows ?? sheet.rows }
   }
 
   const patches =

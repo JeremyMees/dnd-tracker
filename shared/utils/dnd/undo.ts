@@ -53,6 +53,23 @@ export function revertRows(
   return [...restored, ...addedSince].map((row, index) => ({ ...row, index }))
 }
 
+export function mergeRows(
+  current: InitiativeSheetRow[],
+  base: InitiativeSheetRow[],
+  edited: InitiativeSheetRow[],
+): InitiativeSheetRow[] {
+  return revertRows(current, edited, base)
+}
+
+export function mergeSheetUpdate(
+  current: InitiativeSheetRow[],
+  { baseRows, ...update }: InitiativeSheetUpdate,
+): InitiativeSheetFields {
+  return update.rows && baseRows
+    ? { ...update, rows: mergeRows(current, baseRows, update.rows) }
+    : update
+}
+
 export function revertSheet(
   current: SheetSnapshot,
   { before, after }: UndoEntry,

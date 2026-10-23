@@ -21,13 +21,13 @@ export function useSheetSession(
   }
 
   async function recorded<T>(
-    change: () => Promise<T>,
+    change: (before: SheetSnapshot) => Promise<T>,
     after: (before: SheetSnapshot) => SheetSnapshot,
   ): Promise<T | undefined> {
     if (!sheet.value) return undefined
 
     const before = snapshotSheet(sheet.value)
-    const result = await change()
+    const result = await change(before)
 
     push({ before, after: snapshotSheet(after(before)) })
 
@@ -50,7 +50,8 @@ export function useSheetSession(
 
   function update(data: UpdateInitiativeSheetData): Promise<void> {
     return recorded(
-      () => adapter.update(data),
+      before =>
+        adapter.update(data.rows ? { ...data, baseRows: before.rows } : data),
       before => ({
         rows: data.rows ?? before.rows,
         activeIndex: data.activeIndex ?? before.activeIndex,
@@ -88,9 +89,10 @@ export function useSheetSession(
   async function write(target: SheetSnapshot): Promise<void> {
     if (!sheet.value) return
 
-    const patches = patchesBetween(snapshotSheet(sheet.value), target)
+    const current = snapshotSheet(sheet.value)
+    const patches = patchesBetween(current, target)
 
-    if (!patches) await adapter.update(target)
+    if (!patches) await adapter.update({ ...target, baseRows: current.rows })
     else if (patches.length) await adapter.patchRows(patches)
   }
 

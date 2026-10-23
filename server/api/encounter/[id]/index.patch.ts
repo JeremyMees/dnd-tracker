@@ -14,6 +14,7 @@ const rowSchema = z.looseObject({
 const bodySchema = z
   .object({
     rows: z.array(rowSchema).optional(),
+    baseRows: z.array(rowSchema).optional(),
     activeIndex: z.number().int().min(0).optional(),
     round: z.number().int().min(0).optional(),
     settings: z.looseObject({}).optional(),

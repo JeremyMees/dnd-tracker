@@ -271,7 +271,10 @@ export async function applySheetUpdate(
   data: InitiativeSheetUpdate,
 ): Promise<void> {
   const before = await readSheet(ctx)
-  const update = data.rows ? { ...data, rows: normalizeRows(data.rows) } : data
+  const merged = mergeSheetUpdate(before.rows, data)
+  const update = merged.rows
+    ? { ...merged, rows: normalizeRows(merged.rows) }
+    : merged
   const live = Object.keys(update).some(key => liveViewFields.has(key))
     ? await ctx.store.liveSession(ctx.encounterId)
     : undefined
