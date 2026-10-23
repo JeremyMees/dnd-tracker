@@ -1,23 +1,12 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import HpUpdateBase from '~/components/form/HpUpdateBase.vue'
-import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
-const handleToasts = vi.fn()
-const updateRow = vi.fn()
+const apply = vi.fn()
 
-const item = sheet.rows[0]!
-
-function mountHpUpdateBase({ withSheet = true } = {}) {
-  return mountSuspended(HpUpdateBase, {
-    props: {
-      sheet: withSheet ? sheet : undefined,
-      item,
-      handleToasts,
-      updateRow,
-    },
-  })
+function mountHpUpdateBase() {
+  return mountSuspended(HpUpdateBase, { props: { apply } })
 }
 
 async function submitAmount(
@@ -30,7 +19,8 @@ async function submitAmount(
 
 describe('HpUpdateBase', () => {
   beforeEach(() => {
-    updateRow.mockResolvedValue(undefined)
+    apply.mockReset()
+    apply.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -47,53 +37,32 @@ describe('HpUpdateBase', () => {
     expect(component.text()).toContain('components.inputs.baseFieldHelp')
   })
 
-  it('Should set both the max and the current HP on submit', async () => {
+  it('Should apply a new base on submit', async () => {
     const component = await mountHpUpdateBase()
 
     await submitAmount(component, 120)
 
-    expect(updateRow).toHaveBeenCalledWith({
-      ...item,
-      maxHitPoints: 120,
-      maxHitPointsOld: null,
-      hitPoints: 120,
-    })
+    expect(apply).toHaveBeenCalledWith({ type: 'base', amount: 120 })
   })
 
-  it('Should not toast when only the base is changed', async () => {
-    const component = await mountHpUpdateBase()
-
-    await submitAmount(component, 120)
-
-    expect(handleToasts).not.toHaveBeenCalled()
-  })
-
-  it('Should not update without a sheet', async () => {
-    const component = await mountHpUpdateBase({ withSheet: false })
-
-    await submitAmount(component, 120)
-
-    expect(updateRow).not.toHaveBeenCalled()
-  })
-
-  it('Should not update when the amount is invalid', async () => {
+  it('Should not apply when the amount is invalid', async () => {
     const component = await mountHpUpdateBase()
 
     await submitAmount(component, 1001)
 
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).not.toHaveBeenCalled()
   })
 
-  it('Should not update when the amount is missing', async () => {
+  it('Should not apply when the amount is missing', async () => {
     const component = await mountHpUpdateBase()
 
     await submitForm(component)
 
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).not.toHaveBeenCalled()
   })
 
-  it('Should show the error when updating fails', async () => {
-    updateRow.mockRejectedValue(new Error('Update failed'))
+  it('Should show the error when applying fails', async () => {
+    apply.mockRejectedValue(new Error('Update failed'))
 
     const component = await mountHpUpdateBase()
 
@@ -103,7 +72,7 @@ describe('HpUpdateBase', () => {
   })
 
   it('Should show a generic error when the failure has no message', async () => {
-    updateRow.mockRejectedValue({})
+    apply.mockRejectedValue({})
 
     const component = await mountHpUpdateBase()
 

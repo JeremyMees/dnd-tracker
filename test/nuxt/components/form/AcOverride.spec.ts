@@ -4,25 +4,13 @@ import AcOverride from '~/components/form/AcOverride.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
-const handleAcChanges = vi.fn()
-const updateRow = vi.fn()
+const apply = vi.fn()
 
 const overridden = sheet.rows[0]!
 const plain = sheet.rows[1]!
-const updatedRow: Partial<InitiativeSheetRow> = { armorClass: 25 }
 
-function mountAcOverride({
-  withSheet = true,
-  item = plain,
-}: { withSheet?: boolean; item?: InitiativeSheetRow } = {}) {
-  return mountSuspended(AcOverride, {
-    props: {
-      sheet: withSheet ? sheet : undefined,
-      item,
-      handleAcChanges,
-      updateRow,
-    },
-  })
+function mountAcOverride({ item = plain }: { item?: InitiativeSheetRow } = {}) {
+  return mountSuspended(AcOverride, { props: { item, apply } })
 }
 
 async function submitAmount(
@@ -39,8 +27,8 @@ async function submitAmount(
 
 describe('AcOverride', () => {
   beforeEach(() => {
-    handleAcChanges.mockReturnValue(updatedRow)
-    updateRow.mockResolvedValue(undefined)
+    apply.mockReset()
+    apply.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -94,8 +82,7 @@ describe('AcOverride', () => {
 
     await submitAmount(component, 25)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(25, 'override')
-    expect(updateRow).toHaveBeenCalledWith(updatedRow)
+    expect(apply).toHaveBeenCalledWith({ type: 'override', amount: 25 })
   })
 
   it('Should reset to the old max when the row is already overridden', async () => {
@@ -103,10 +90,10 @@ describe('AcOverride', () => {
 
     await submitAmount(component)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(
-      overridden.maxArmorClassOld,
-      'override-reset',
-    )
+    expect(apply).toHaveBeenCalledWith({
+      type: 'override-reset',
+      amount: overridden.maxArmorClassOld,
+    })
   })
 
   it('Should reset when the given amount equals the old max', async () => {
@@ -116,16 +103,7 @@ describe('AcOverride', () => {
 
     await submitAmount(component, 12)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(12, 'override-reset')
-  })
-
-  it('Should not update without a sheet', async () => {
-    const component = await mountAcOverride({ withSheet: false })
-
-    await submitAmount(component, 25)
-
-    expect(handleAcChanges).not.toHaveBeenCalled()
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).toHaveBeenCalledWith({ type: 'override-reset', amount: 12 })
   })
 
   it('Should not update when the amount is invalid', async () => {
@@ -133,11 +111,11 @@ describe('AcOverride', () => {
 
     await submitAmount(component, 1001)
 
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).not.toHaveBeenCalled()
   })
 
   it('Should show the error when updating fails', async () => {
-    updateRow.mockRejectedValue(new Error('Update failed'))
+    apply.mockRejectedValue(new Error('Update failed'))
 
     const component = await mountAcOverride()
 
@@ -147,7 +125,7 @@ describe('AcOverride', () => {
   })
 
   it('Should show a generic error when the failure has no message', async () => {
-    updateRow.mockRejectedValue({})
+    apply.mockRejectedValue({})
 
     const component = await mountAcOverride()
 

@@ -4,10 +4,8 @@ import * as z from 'zod'
 import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
-  sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleToasts: (toasts: ToastItem[]) => void
-  updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  apply: (change: DndHpChange) => Promise<void>
 }>()
 
 const formSchema = z.object({
@@ -28,29 +26,13 @@ const onSubmit = handleSubmit(async values => {
   formError.value = ''
 
   try {
-    if (!props.sheet) return
-
-    const { reset } = values
     const amount = parseInteger(values.amount)
 
-    const { row, toasts } =
-      reset || amount === props.item.maxHitPointsOld
-        ? handleHpChanges(
-            props.item.maxHitPointsOld ?? 0,
-            'override-reset',
-            props.item,
-            props.sheet?.settings?.negative ?? false,
-          )
-        : handleHpChanges(
-            amount,
-            'override',
-            props.item,
-            props.sheet?.settings?.negative ?? false,
-          )
-
-    props.handleToasts(toasts)
-
-    await props.updateRow(row)
+    await props.apply(
+      values.reset || amount === props.item.maxHitPointsOld
+        ? { type: 'override-reset', amount: props.item.maxHitPointsOld ?? 0 }
+        : { type: 'override', amount },
+    )
   } catch (err) {
     formError.value =
       getErrorMessage(err) || 'An error occurred while updating base HP'

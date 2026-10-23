@@ -74,6 +74,20 @@ function overrideReset(
   row[max] = amount
 }
 
+function base(
+  type: ModifierType,
+  row: InitiativeSheetRow,
+  amount: number,
+): void {
+  const max = type === 'hitPoints' ? 'maxHitPoints' : 'maxArmorClass'
+  const old = type === 'hitPoints' ? 'maxHitPointsOld' : 'maxArmorClassOld'
+
+  row[type] = amount
+  row[max] = amount
+
+  if (isDefined(row[old])) row[old] = null
+}
+
 export const hpFunctions = {
   heal: (row: InitiativeSheetRow, amount: number) =>
     heal('hitPoints', row, amount),
@@ -113,6 +127,7 @@ export function handleAcChanges(
   else if (type === 'temp') acFunctions.temp(row, amount)
   else if (type === 'override') acFunctions.override(row, amount)
   else if (type === 'override-reset') acFunctions.overrideReset(row, amount)
+  else if (type === 'base') base('armorClass', row, amount)
 
   if (!allowNegative && row.armorClass && row.armorClass < 0) row.armorClass = 0
 
@@ -261,6 +276,7 @@ export function handleHpChanges(
   else if (type === 'temp') temp('hitPoints', row, amount)
   else if (type === 'override') override('hitPoints', row, amount)
   else if (type === 'override-reset') overrideReset('hitPoints', row, amount)
+  else if (type === 'base') base('hitPoints', row, amount)
   else if (type === 'damage') {
     toasts.push(...damageHitPoints(row, amount, { critical, instantDeath }))
   }

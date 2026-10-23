@@ -1,12 +1,11 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import HpUpdate from '~/components/form/HpUpdate.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { settle, submitForm } from '~~/test/nuxt/stubs/form'
 
-const handleToasts = vi.fn()
-const updateRow = vi.fn()
+const apply = vi.fn()
 
 const item = sheet.rows[0]!
 
@@ -15,23 +14,10 @@ type HpAction = Extract<DndHpType, 'heal' | 'temp' | 'damage'>
 const buttons: Record<HpAction, number> = { heal: 0, temp: 1, damage: 2 }
 
 function mountHpUpdate({
-  withSheet = true,
   row = item,
   intent,
-}: {
-  withSheet?: boolean
-  row?: InitiativeSheetRow
-  intent?: DndHpType
-} = {}) {
-  return mountSuspended(HpUpdate, {
-    props: {
-      sheet: withSheet ? sheet : undefined,
-      item: row,
-      handleToasts,
-      updateRow,
-      intent,
-    },
-  })
+}: { row?: InitiativeSheetRow; intent?: DndHpType } = {}) {
+  return mountSuspended(HpUpdate, { props: { item: row, apply, intent } })
 }
 
 async function pressEnter(
@@ -67,26 +53,10 @@ async function setDamageType(
   await flushPromises()
 }
 
-const defended: InitiativeSheetRow = {
-  ...item,
-  hitPoints: 50,
-  tempHitPoints: 0,
-  concentration: false,
-  resistancesAndImmunities: {
-    damageImmunities: ['poison'],
-    damageResistances: ['fire'],
-    damageVulnerabilities: ['cold'],
-    conditionImmunities: [],
-  },
-}
-
-function updatedRow(): InitiativeSheetRow {
-  return updateRow.mock.calls[0]![0]
-}
-
 describe('HpUpdate', () => {
   beforeEach(() => {
-    updateRow.mockResolvedValue(undefined)
+    apply.mockReset()
+    apply.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -105,87 +75,35 @@ describe('HpUpdate', () => {
     expect(component.text()).toContain('actions.damage')
   })
 
-  it('Should heal the row', async () => {
+  it.each(['heal', 'temp'] as const)('Should apply a %s change', async type => {
     const component = await mountHpUpdate()
 
-    await submitAs(component, 'heal', 5)
+    await submitAs(component, type, 8)
 
-    expect(updatedRow().hitPoints).toBe(item.hitPoints! + 5)
+    expect(apply).toHaveBeenCalledWith({ type, amount: 8 })
   })
 
-  it('Should never heal above the maximum', async () => {
-    const component = await mountHpUpdate()
-
-    await submitAs(component, 'heal', 500)
-
-    expect(updatedRow().hitPoints).toBe(item.maxHitPoints)
-  })
-
-  it('Should set temporary hit points', async () => {
-    const component = await mountHpUpdate()
-
-    await submitAs(component, 'temp', 8)
-
-    expect(updatedRow().tempHitPoints).toBe(8)
-  })
-
-  it('Should take damage from the temporary hit points first', async () => {
-    const component = await mountHpUpdate()
-
-    await submitAs(component, 'damage', 3)
-
-    expect(updatedRow().tempHitPoints).toBe(item.tempHitPoints! - 3)
-    expect(updatedRow().hitPoints).toBe(item.hitPoints)
-  })
-
-  it('Should take the rest of the damage from the hit points', async () => {
+  it('Should apply untyped damage', async () => {
     const component = await mountHpUpdate()
 
     await submitAs(component, 'damage', 8)
 
-    expect(updatedRow().tempHitPoints).toBe(0)
-    expect(updatedRow().hitPoints).toBe(item.hitPoints! - 3)
+    expect(apply).toHaveBeenCalledWith({
+      type: 'damage',
+      rolls: [{ amount: 8, type: undefined }],
+    })
   })
 
-  it('Should warn about concentration when a concentrating row takes damage', async () => {
-    const component = await mountHpUpdate()
-
-    await submitAs(component, 'damage', 3)
-
-    expect(handleToasts).toHaveBeenCalledWith([
-      expect.objectContaining({
-        title: ['components.initiativeTable.concentration.title'],
-        variant: 'info',
-      }),
-    ])
-  })
-
-  it('Should not warn about concentration when healing', async () => {
-    const component = await mountHpUpdate()
-
-    await submitAs(component, 'heal', 3)
-
-    expect(handleToasts).toHaveBeenCalledWith([])
-  })
-
-  it('Should not update without a sheet', async () => {
-    const component = await mountHpUpdate({ withSheet: false })
-
-    await submitAs(component, 'heal')
-
-    expect(updateRow).not.toHaveBeenCalled()
-  })
-
-  it('Should not update when the amount is invalid', async () => {
+  it('Should not apply when the amount is invalid', async () => {
     const component = await mountHpUpdate()
 
     await submitAs(component, 'heal', 1001)
 
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).not.toHaveBeenCalled()
   })
 
-  it('Should show the error when updating fails', async () => {
-    updateRow.mockRejectedValue(new Error('Update failed'))
+  it('Should show the error when applying fails', async () => {
+    apply.mockRejectedValue(new Error('Update failed'))
 
     const component = await mountHpUpdate()
 
@@ -195,7 +113,7 @@ describe('HpUpdate', () => {
   })
 
   it('Should show a generic error when the failure has no message', async () => {
-    updateRow.mockRejectedValue({})
+    apply.mockRejectedValue({})
 
     const component = await mountHpUpdate()
 
@@ -205,34 +123,22 @@ describe('HpUpdate', () => {
   })
 
   describe('Shortcut intent', () => {
-    const row = {
-      ...item,
-      hitPoints: 20,
-      maxHitPoints: 30,
-      tempHitPoints: undefined,
-    }
-
-    it.each([
-      ['damage', 15],
-      ['heal', 25],
-    ] as const)(
+    it.each(['damage', 'heal'] as const)(
       'Should %s on enter when it was opened with that intent',
-      async (intent, hitPoints) => {
-        updateRow.mockClear()
-
-        const component = await mountHpUpdate({ row, intent })
+      async intent => {
+        const component = await mountHpUpdate({ intent })
 
         await pressEnter(component)
 
-        expect(updateRow).toHaveBeenCalledOnce()
-        expect(updatedRow().hitPoints).toBe(hitPoints)
+        expect(apply).toHaveBeenCalledOnce()
+        expect(apply.mock.calls[0]![0].type).toBe(intent)
 
         component.unmount()
       },
     )
 
     it('Should highlight the button of the intent', async () => {
-      const component = await mountHpUpdate({ row, intent: 'damage' })
+      const component = await mountHpUpdate({ intent: 'damage' })
 
       expect(component.get('[test-id="hp-damage"]').classes()).toContain(
         'ring-2',
@@ -245,55 +151,43 @@ describe('HpUpdate', () => {
     })
 
     it('Should leave enter alone without an intent', async () => {
-      updateRow.mockClear()
-
-      const component = await mountHpUpdate({ row })
+      const component = await mountHpUpdate()
 
       await pressEnter(component)
 
-      expect(updateRow).not.toHaveBeenCalled()
+      expect(apply).not.toHaveBeenCalled()
 
       component.unmount()
     })
   })
 
   describe('Damage type', () => {
-    let mounted: Awaited<ReturnType<typeof mountHpUpdate>> | undefined
-
-    async function mountDefended() {
-      mounted = await mountHpUpdate({ row: defended })
-
-      return mounted
+    const defended: InitiativeSheetRow = {
+      ...item,
+      resistancesAndImmunities: {
+        damageImmunities: ['poison'],
+        damageResistances: ['fire'],
+        damageVulnerabilities: ['cold'],
+        conditionImmunities: [],
+      },
     }
 
-    beforeEach(() => {
-      updateRow.mockClear()
+    it('Should send the picked damage type with the damage', async () => {
+      const component = await mountHpUpdate({ row: defended })
+
+      await setDamageType(component, 'fire')
+      await submitAs(component, 'damage', 10)
+
+      expect(apply).toHaveBeenCalledWith({
+        type: 'damage',
+        rolls: [{ amount: 10, type: 'fire' }],
+      })
+
+      component.unmount()
     })
-
-    afterEach(() => {
-      mounted?.unmount()
-      mounted = undefined
-    })
-
-    it.each([
-      ['fire', 45],
-      ['cold', 30],
-      ['poison', 50],
-      ['acid', 40],
-    ] as const)(
-      'Should apply %s damage against the defenses',
-      async (type, hp) => {
-        const component = await mountDefended()
-
-        await setDamageType(component, type)
-        await submitAs(component, 'damage', 10)
-
-        expect(updatedRow().hitPoints).toBe(hp)
-      },
-    )
 
     it('Should show the defense of the picked damage type', async () => {
-      const component = await mountDefended()
+      const component = await mountHpUpdate({ row: defended })
 
       expect(component.find('[test-id="defense"]').exists()).toBe(false)
 
@@ -302,15 +196,19 @@ describe('HpUpdate', () => {
       expect(component.get('[test-id="defense"]').text()).toBe(
         'components.areaDamage.defense.resistant',
       )
+
+      component.unmount()
     })
 
     it('Should ignore the damage type when healing', async () => {
-      const component = await mountDefended()
+      const component = await mountHpUpdate({ row: defended })
 
       await setDamageType(component, 'fire')
       await submitAs(component, 'heal', 10)
 
-      expect(updatedRow().hitPoints).toBe(60)
+      expect(apply).toHaveBeenCalledWith({ type: 'heal', amount: 10 })
+
+      component.unmount()
     })
   })
 })

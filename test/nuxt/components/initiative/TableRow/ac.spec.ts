@@ -6,11 +6,7 @@ import { openPopover } from '~~/test/nuxt/stubs/popover'
 import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 
 interface AcTestMethods {
-  changeAc: (
-    amount: number,
-    type: 'add' | 'remove' | 'temp' | 'override' | 'override-reset',
-  ) => InitiativeSheetRow
-  updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  apply: (change: DndAcChange) => Promise<void>
   hasArmorClass: boolean
 }
 
@@ -99,113 +95,86 @@ describe('Initiative table row ac', async () => {
     expect(component.get('[test-id="empty"]').isVisible()).toBeTruthy()
   })
 
-  it('Should set AC to 0 when negative values are not allowed', async () => {
-    const component = await mountWithTooltips(Ac, {
-      props: {
-        item: {
-          ...props.item,
-          armorClass: 10,
-          maxArmorClass: 20,
-          tempArmorClass: 0,
-        },
-      },
-      provide,
-    })
-
-    const vm = component.vm as unknown as AcTestMethods
-    const updatedRow = vm.changeAc(15, 'remove')
-    await vm.updateRow(updatedRow)
-
-    expect(updatedRow.armorClass).toBe(0)
-    expect(mockPatchRow).toHaveBeenCalledWith(props.item.id, {
-      armorClass: 0,
-    })
-  })
-
-  it('Should allow negative AC when negative values are allowed', async () => {
-    mockSheet.value = {
-      ...sheet,
-      settings: {
-        ...sheet.settings,
-        negative: true,
-      } as InitiativeSheet['settings'],
+  describe('apply', () => {
+    const item = {
+      ...props.item,
+      armorClass: 10,
+      maxArmorClass: 20,
+      tempArmorClass: 0,
     }
 
-    const component = await mountWithTooltips(Ac, {
-      props: {
-        item: {
-          ...props.item,
-          armorClass: 10,
-          maxArmorClass: 20,
-          tempArmorClass: 0,
-        },
-      },
-      provide,
+    beforeEach(() => {
+      mockPatchRow.mockReset()
     })
 
-    const vm = component.vm as unknown as AcTestMethods
-    const updatedRow = vm.changeAc(15, 'remove')
-    await vm.updateRow(updatedRow)
-
-    expect(updatedRow.armorClass).toBe(-5)
-  })
-
-  describe('changeAc', () => {
-    it('Should add to the armor class', async () => {
+    it('Should patch only the changed fields, clamped at 0', async () => {
       const component = await mountWithTooltips(Ac, {
-        props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
+        props: { item },
         provide,
       })
 
-      const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.changeAc(5, 'add')
+      await (component.vm as unknown as AcTestMethods).apply({
+        type: 'remove',
+        amount: 15,
+      })
 
-      expect(updatedRow.armorClass).toBe(15)
+      expect(mockPatchRow).toHaveBeenCalledWith(item.id, { armorClass: 0 })
     })
 
-    it('Should set a temporary armor class', async () => {
+    it('Should allow negative AC when the sheet allows it', async () => {
+      mockSheet.value = {
+        ...sheet,
+        settings: {
+          ...sheet.settings,
+          negative: true,
+        } as InitiativeSheet['settings'],
+      }
+
       const component = await mountWithTooltips(Ac, {
-        props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
+        props: { item },
         provide,
       })
 
-      const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.changeAc(3, 'temp')
+      await (component.vm as unknown as AcTestMethods).apply({
+        type: 'remove',
+        amount: 15,
+      })
 
-      expect(updatedRow.tempArmorClass).toBe(3)
+      expect(mockPatchRow).toHaveBeenCalledWith(item.id, { armorClass: -5 })
     })
 
-    it('Should override the max armor class', async () => {
+    it('Should set a new base', async () => {
       const component = await mountWithTooltips(Ac, {
-        props: { item: { ...props.item, armorClass: 10, maxArmorClass: 20 } },
+        props: { item: { ...item, maxArmorClassOld: 18 } },
         provide,
       })
 
-      const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.changeAc(25, 'override')
+      await (component.vm as unknown as AcTestMethods).apply({
+        type: 'base',
+        amount: 16,
+      })
 
-      expect(updatedRow.maxArmorClass).toBe(25)
-      expect(updatedRow.maxArmorClassOld).toBe(20)
+      expect(mockPatchRow).toHaveBeenCalledWith(item.id, {
+        armorClass: 16,
+        maxArmorClass: 16,
+        maxArmorClassOld: null,
+      })
     })
 
-    it('Should reset an overridden max armor class', async () => {
+    it('Should not patch without a sheet', async () => {
+      mockSheet.value = undefined as never
+
       const component = await mountWithTooltips(Ac, {
-        props: {
-          item: {
-            ...props.item,
-            armorClass: 15,
-            maxArmorClass: 25,
-            maxArmorClassOld: 20,
-          },
-        },
+        props: { item },
         provide,
       })
 
-      const vm = component.vm as unknown as AcTestMethods
-      const updatedRow = vm.changeAc(20, 'override-reset')
+      await (component.vm as unknown as AcTestMethods).apply({
+        type: 'add',
+        amount: 1,
+      })
 
-      expect(updatedRow.maxArmorClass).toBe(20)
-      expect(updatedRow.maxArmorClassOld).toBeNull()
+      expect(mockPatchRow).not.toHaveBeenCalled()
     })
   })
 

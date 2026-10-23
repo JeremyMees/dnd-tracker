@@ -806,6 +806,33 @@ describe('dnd/hp-ac', () => {
       ).toEqual({ maxHitPoints: 100, maxHitPointsOld: null })
     })
 
+    it('sets a new base, healing to it and dropping the override', () => {
+      const { patch } = applyHpChange(
+        { ...row, maxHitPointsOld: 90 },
+        { type: 'base', amount: 120 },
+      )
+
+      expect(patch).toEqual({
+        hitPoints: 120,
+        maxHitPoints: 120,
+        maxHitPointsOld: null,
+      })
+    })
+
+    it('removes bloodied when a new base heals the row to full', () => {
+      const { patch } = applyHpChange(
+        { ...row, hitPoints: 30, conditions: [storedBloodiedCondition] },
+        { type: 'base', amount: 40 },
+        { bloodied: bloodiedCondition },
+      )
+
+      expect(patch).toEqual({
+        hitPoints: 40,
+        maxHitPoints: 40,
+        conditions: [],
+      })
+    })
+
     it('clears the override in a patch that survives JSON', () => {
       const overridden = {
         ...row,
@@ -871,6 +898,15 @@ describe('dnd/hp-ac', () => {
         applyAcChange(row, { type: 'remove', amount: 20 }, { negative })
           .armorClass,
       ).toBe(armorClass)
+    })
+
+    it('sets a new base and drops the override', () => {
+      expect(
+        applyAcChange(
+          { ...row, maxArmorClassOld: 16 },
+          { type: 'base', amount: 14 },
+        ),
+      ).toEqual({ armorClass: 14, maxArmorClass: 14, maxArmorClassOld: null })
     })
 
     it('overrides the max armor class', () => {

@@ -32,11 +32,15 @@ const hasHp = computed(
 
 const handleToasts = useToastItems()
 
-async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  const patch = buildCombatPatch(
-    props.item,
-    withBloodied({ ...props.item, ...row }, bloodied.value),
-  )
+async function apply(change: DndHpChange): Promise<void> {
+  if (!sheet.value) return
+
+  const { patch, toasts } = applyHpChange(props.item, change, {
+    negative: sheet.value.settings?.negative,
+    bloodied: bloodied.value,
+  })
+
+  handleToasts(toasts)
 
   await patchRow(props.item.id, patch)
   popoverOpen.value = false
@@ -164,31 +168,18 @@ async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
 
         <FormHpUpdate
           v-if="hasHp"
-          :sheet="sheet"
           :item="item"
           :intent="intent"
-          :handle-toasts="handleToasts"
-          :update-row="updateRow"
+          :apply="apply"
         />
 
         <UiSeparator v-if="hasHp" class="my-3 bg-muted" />
 
-        <FormHpUpdateBase
-          :sheet="sheet"
-          :item="item"
-          :handle-toasts="handleToasts"
-          :update-row="updateRow"
-        />
+        <FormHpUpdateBase :apply="apply" />
 
         <UiSeparator v-if="hasHp" class="my-3 bg-muted" />
 
-        <FormHpOverride
-          v-if="hasHp"
-          :sheet="sheet"
-          :item="item"
-          :handle-toasts="handleToasts"
-          :update-row="updateRow"
-        />
+        <FormHpOverride v-if="hasHp" :item="item" :apply="apply" />
       </UiPopoverContent>
     </UiPopover>
   </div>

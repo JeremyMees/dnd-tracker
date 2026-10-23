@@ -4,10 +4,10 @@ export type DndRollableDice = Exclude<DndDice, 'd3'>
 export type DndDiceSide = 4 | 6 | 8 | 10 | 12 | 20 | 100
 
 export type DndHpType =
-  'heal' | 'damage' | 'temp' | 'override' | 'override-reset'
+  'heal' | 'damage' | 'temp' | 'override' | 'override-reset' | 'base'
 
 export type DndAcType =
-  'add' | 'remove' | 'temp' | 'override' | 'override-reset'
+  'add' | 'remove' | 'temp' | 'override' | 'override-reset' | 'base'
 
 export type DndHpChange =
   | { type: 'damage'; rolls: DndDamageRoll[]; critical?: boolean }
