@@ -9,6 +9,25 @@ export type DndHpType =
 export type DndAcType =
   'add' | 'remove' | 'temp' | 'override' | 'override-reset'
 
+export type DndHpChange =
+  | { type: 'damage'; rolls: DndDamageRoll[]; critical?: boolean }
+  | { type: Exclude<DndHpType, 'damage'>; amount: number }
+
+export interface DndAcChange {
+  type: DndAcType
+  amount: number
+}
+
+export interface DndRowChangeContext {
+  negative?: boolean
+  bloodied?: DndCondition
+}
+
+export interface DndRowChangeResult {
+  patch: Partial<InitiativeSheetRow>
+  toasts: ToastItem[]
+}
+
 export type DndRace =
   | 'human'
   | 'elf'

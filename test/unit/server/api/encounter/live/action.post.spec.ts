@@ -146,13 +146,7 @@ describe('POST /api/encounter/live/action', () => {
     expect(channel.httpSend).toHaveBeenCalledWith('action', {
       version: 8,
       row: 'row-1',
-      patch: {
-        hitPoints: 15,
-        tempHitPoints: undefined,
-        deathSaves: undefined,
-        concentration: undefined,
-        conditions: [],
-      },
+      patch: { hitPoints: 15 },
     })
   })
 
@@ -191,11 +185,7 @@ describe('POST /api/encounter/live/action', () => {
     expect(channel.httpSend).toHaveBeenCalledWith('action', {
       version: 4,
       row: 'row-1',
-      patch: {
-        healthBand: 'bloodied',
-        concentration: undefined,
-        conditions: [],
-      },
+      patch: { healthBand: 'bloodied' },
     })
   })
 
@@ -279,13 +269,7 @@ describe('POST /api/encounter/live/action', () => {
     expect(channel.httpSend).toHaveBeenCalledWith('action', {
       version: 6,
       row: 'row-1',
-      patch: {
-        hitPoints: 15,
-        tempHitPoints: undefined,
-        deathSaves: undefined,
-        concentration: undefined,
-        conditions: [],
-      },
+      patch: { hitPoints: 15 },
     })
   })
 
@@ -370,7 +354,7 @@ describe('POST /api/encounter/live/action', () => {
     expect(supabase.rpc).toHaveBeenCalledWith('apply_live_action', {
       p_encounter: 7,
       p_row_id: 'row-1',
-      p_patch: { armorClass: 18, tempArmorClass: 0 },
+      p_patch: { armorClass: 18 },
     })
   })
 

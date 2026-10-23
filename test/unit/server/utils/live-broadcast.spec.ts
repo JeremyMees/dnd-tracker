@@ -495,7 +495,7 @@ describe('live-broadcast', () => {
       concentration: false,
     }
 
-    it('heals hitPoints up to the max and leaves other fields untouched', async () => {
+    it('patches only the fields the heal changed', async () => {
       const patch = await buildHpPatch(
         supabaseWithoutBloodied(),
         row,
@@ -503,13 +503,7 @@ describe('live-broadcast', () => {
         { type: 'hp', hpType: 'heal', amount: 15 },
       )
 
-      expect(patch).toEqual({
-        hitPoints: 25,
-        tempHitPoints: 0,
-        deathSaves: undefined,
-        concentration: false,
-        conditions: [],
-      })
+      expect(patch).toEqual({ hitPoints: 25 })
     })
 
     it('does not read the sheet', async () => {
@@ -578,7 +572,7 @@ describe('live-broadcast', () => {
       )
 
       expect(from).not.toHaveBeenCalledWith('srd_conditions')
-      expect(patch.conditions).toEqual([])
+      expect(patch).toEqual({ hitPoints: 5 })
     })
 
     it('clamps damage to zero when negative hp is not allowed', async () => {
@@ -653,7 +647,7 @@ describe('live-broadcast', () => {
     it('adds armor class without exceeding the max', () => {
       expect(
         buildAcPatch(row, undefined, { type: 'ac', acType: 'add', amount: 10 }),
-      ).toEqual({ armorClass: 18, tempArmorClass: 0 })
+      ).toEqual({ armorClass: 18 })
     })
 
     it('removes armor class, spending temp AC first', () => {
@@ -669,7 +663,7 @@ describe('live-broadcast', () => {
     it('sets temporary armor class', () => {
       expect(
         buildAcPatch(row, undefined, { type: 'ac', acType: 'temp', amount: 5 }),
-      ).toEqual({ armorClass: 15, tempArmorClass: 5 })
+      ).toEqual({ tempArmorClass: 5 })
     })
 
     it('clamps armor class at zero when negative values are not allowed', () => {
@@ -679,7 +673,7 @@ describe('live-broadcast', () => {
           { negative: false },
           { type: 'ac', acType: 'remove', amount: 20 },
         ),
-      ).toEqual({ armorClass: 0, tempArmorClass: 0 })
+      ).toEqual({ armorClass: 0 })
     })
 
     it('clamps armor class at zero when the setting is missing', () => {
@@ -735,7 +729,7 @@ describe('live-broadcast', () => {
         { type: 'ac', acType: 'add', amount: 1 },
       )
 
-      expect(patch).toEqual({ armorClass: 16, tempArmorClass: 0 })
+      expect(patch).toEqual({ armorClass: 16 })
     })
 
     it.each([

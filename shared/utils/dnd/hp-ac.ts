@@ -273,6 +273,39 @@ export function handleHpChanges(
   return { row, toasts }
 }
 
+export function applyHpChange(
+  row: InitiativeSheetRow,
+  change: DndHpChange,
+  { negative = false, bloodied }: DndRowChangeContext = {},
+): DndRowChangeResult {
+  const { row: updated, toasts } =
+    change.type === 'damage'
+      ? handleHpChanges(
+          damageAfterDefenses(row, change.rolls),
+          'damage',
+          row,
+          negative,
+          { critical: change.critical },
+        )
+      : handleHpChanges(change.amount, change.type, row, negative)
+
+  return {
+    patch: buildCombatPatch(row, withBloodied(updated, bloodied)),
+    toasts,
+  }
+}
+
+export function applyAcChange(
+  row: InitiativeSheetRow,
+  change: DndAcChange,
+  { negative = false }: Pick<DndRowChangeContext, 'negative'> = {},
+): Partial<InitiativeSheetRow> {
+  return buildCombatPatch(
+    row,
+    handleAcChanges(change.amount, change.type, row, negative),
+  )
+}
+
 export function getHP(
   item: DndMonster | (Partial<InitiativeSheetRow> & { name: string }),
 ): number | undefined {

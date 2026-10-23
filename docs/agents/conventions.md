@@ -57,6 +57,11 @@ House rules a reviewer will ask for. Each one came from a real review comment.
   suggests one.
 - **Row changes go through a patch** where one exists (`patchRow`, `patchRows`),
   rather than writing the whole `rows` array. See ADR-0002.
+- **HP and AC changes go through `applyHpChange` / `applyAcChange`**
+  (`shared/utils/dnd/hp-ac.ts`). Pass the row, the change and the context (the
+  negative HP setting, and the Bloodied condition when the sheet has it on); get
+  back the combat patch and the messages to show. Damage defenses, criticals,
+  death saves and Bloodied happen inside, so don't rebuild them at a call site.
 - **Icons are tabler via `@nuxt/icon`:**
   `<Icon name="tabler:…" aria-hidden="true" />`. `components.json` still says
   lucide, so after any `shadcn-vue add`, replace the lucide imports, uninstall

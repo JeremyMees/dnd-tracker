@@ -179,23 +179,18 @@ export async function buildHpPatch(
   settings: LiveActionSettings | undefined,
   action: Extract<z.infer<typeof liveActionSchema>, { type: 'hp' }>,
 ): Promise<Partial<InitiativeSheetRow>> {
-  const { row: updated } = handleHpChanges(
-    action.amount,
-    action.hpType,
-    row,
-    settings?.negative ?? false,
-  )
   const bloodied = isBloodiedEnabled(settings)
     ? await srdCondition(supabase, bloodiedConditionId)
     : undefined
+  const change: DndHpChange =
+    action.hpType === 'damage'
+      ? { type: 'damage', rolls: [{ amount: action.amount }] }
+      : { type: action.hpType, amount: action.amount }
 
-  return {
-    hitPoints: updated.hitPoints,
-    tempHitPoints: updated.tempHitPoints,
-    deathSaves: updated.deathSaves,
-    concentration: updated.concentration,
-    conditions: withBloodied(updated, bloodied).conditions,
-  }
+  return applyHpChange(row, change, {
+    negative: settings?.negative,
+    bloodied,
+  }).patch
 }
 
 export function buildAcPatch(
@@ -203,17 +198,11 @@ export function buildAcPatch(
   settings: LiveActionSettings | undefined,
   action: Extract<z.infer<typeof liveActionSchema>, { type: 'ac' }>,
 ): Partial<InitiativeSheetRow> {
-  const updated = handleAcChanges(
-    action.amount,
-    action.acType,
+  return applyAcChange(
     row,
-    settings?.negative ?? false,
+    { type: action.acType, amount: action.amount },
+    { negative: settings?.negative },
   )
-
-  return {
-    armorClass: updated.armorClass,
-    tempArmorClass: updated.tempArmorClass,
-  }
 }
 
 export async function buildLiveActionPatch(
