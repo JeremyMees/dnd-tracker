@@ -1072,6 +1072,11 @@
         "added": "Added {name} to your encounter",
         "addedDescription": "The selected monster is successfully added to your encounter"
       },
+      "full": {
+        "title": "This encounter is full",
+        "none": "An encounter holds at most {max} creatures and there is no room left",
+        "some": "An encounter holds at most {max} creatures and there is room for {room} more"
+      },
       "emptyState": {
         "title": "No initiative holders found",
         "text": "Add some using the sidebar to get started",

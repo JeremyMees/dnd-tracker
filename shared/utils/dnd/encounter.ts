@@ -1,3 +1,5 @@
+import { maxEncounterRows } from '~~/constants/dnd'
+
 function creatureToRow(creature: EncounterCreature): NewInitiativeRow {
   if ('monster' in creature) return monsterToRow(creature.monster)
   if ('homebrew' in creature) return homebrewToRow(creature.homebrew)
@@ -11,11 +13,32 @@ function creatureToRow(creature: EncounterCreature): NewInitiativeRow {
   }
 }
 
+function encounterRoom(sheet: Pick<InitiativeSheet, 'rows'>): number {
+  return Math.max(maxEncounterRows - sheet.rows.length, 0)
+}
+
+function encounterFullToast(room: number): ToastItem {
+  return {
+    title: ['components.initiativeTable.full.title'],
+    description: [
+      `components.initiativeTable.full.${room ? 'some' : 'none'}`,
+      { max: maxEncounterRows, room },
+    ],
+    variant: 'warning',
+  }
+}
+
 export function addToEncounter(
   sheet: Pick<InitiativeSheet, 'rows' | 'settings'>,
   creatures: EncounterCreature[],
   { amount = 1, summoner }: AddToEncounterOptions = {},
-): InitiativeSheetRow[] {
+): AddToEncounterResult {
+  const room = encounterRoom(sheet)
+
+  if (creatures.length * amount > room) {
+    return { full: true, room, toast: encounterFullToast(room) }
+  }
+
   const linked = toSummoner(sheet.rows, summoner)
   const added = creatures.flatMap(creature => {
     const row = creatureToRow(creature)
@@ -25,7 +48,7 @@ export function addToEncounter(
     return Array.from({ length: amount }, () => placed)
   })
 
-  return appendRows(sheet.rows, added, sheet.settings)
+  return { full: false, rows: appendRows(sheet.rows, added, sheet.settings) }
 }
 
 export function editEncounterRow(

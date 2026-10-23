@@ -487,6 +487,29 @@ describe('Homebrew', () => {
     )
   })
 
+  it('Should not add more creatures than fit in the encounter', async () => {
+    const component = await mountHomebrew({
+      withSheet: true,
+      isEncounter: true,
+      campaignId: mockCampaignFull.id,
+      rows: Array.from({ length: 50 }, (_, index) => ({
+        ...sheet.rows[0]!,
+        id: `row-${index}`,
+      })),
+    })
+
+    await component.get('#saveToCampaign').trigger('click')
+    await fillName(component)
+    await submitForm(component)
+
+    expect(editRows).not.toHaveBeenCalled()
+    expect(createHomebrew).not.toHaveBeenCalled()
+    expect(component.get('[test-id="form-error"]').text()).toContain(
+      'components.initiativeTable.full.none',
+    )
+    expect(component.emitted('close')).toBeUndefined()
+  })
+
   it('Should link the added rows to the new campaign homebrew', async () => {
     createHomebrew.mockResolvedValue(42)
 

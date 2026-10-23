@@ -157,17 +157,13 @@ async function editRow(submission: HomebrewSubmission): Promise<boolean> {
 }
 
 async function addRows(submission: HomebrewSubmission): Promise<boolean> {
-  if (!props.sheet || !props.editRows) return false
+  const { sheet, editRows } = props
 
-  const homebrew = saveToCampaign.value
-    ? await syncToCampaign(submission.homebrew)
-    : undefined
+  if (!sheet || !editRows) return false
 
-  if (homebrew === null) return false
-
-  await props.editRows(
+  const addWith = (homebrew?: number) =>
     addToEncounter(
-      props.sheet,
+      sheet,
       [
         {
           row: { ...submission.row, homebrew },
@@ -176,8 +172,28 @@ async function addRows(submission: HomebrewSubmission): Promise<boolean> {
         },
       ],
       { amount: submission.amount, summoner: submission.summoner },
-    ),
-  )
+    )
+
+  const unlinked = addWith()
+
+  if (unlinked.full) {
+    const [message, params] = unlinked.toast.description
+
+    formError.value = t(message, params ?? {})
+    return false
+  }
+
+  const homebrew = saveToCampaign.value
+    ? await syncToCampaign(submission.homebrew)
+    : undefined
+
+  if (homebrew === null) return false
+
+  const added = homebrew ? addWith(homebrew) : unlinked
+
+  if (added.full) return false
+
+  await editRows(added.rows)
 
   return true
 }

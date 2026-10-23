@@ -86,4 +86,25 @@ describe('useAddMonster', () => {
 
     expect(mounted.vm.isFull).toBe(true)
   })
+
+  it('Should warn and add nothing when the encounter is full', async () => {
+    const injected = createInitiativeSheetProvide({
+      ...sheetFixture,
+      rows: Array.from({ length: 50 }, (_, index) => ({
+        ...sheetFixture.rows[0]!,
+        id: `row-${index}`,
+      })),
+    })
+    const mounted = await mountAddMonster(injected.provide)
+    component = mounted.component
+
+    await mounted.vm.addMonster(dndMonsterFixture)
+
+    expect(injected.editRows).not.toHaveBeenCalled()
+    expect(toast.success).not.toHaveBeenCalled()
+    expect(toast.warning).toHaveBeenCalledWith(
+      'components.initiativeTable.full.title',
+      { description: 'components.initiativeTable.full.none' },
+    )
+  })
 })

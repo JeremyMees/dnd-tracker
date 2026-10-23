@@ -30,8 +30,21 @@ const existing = [
 
 const sheet = { rows: existing, settings: noAutoRoll }
 
-function added(rows: InitiativeSheetRow[]): InitiativeSheetRow[] {
-  return rows.filter(row => !existing.some(({ id }) => id === row.id))
+function rowsOf(result: AddToEncounterResult): InitiativeSheetRow[] {
+  if (result.full) throw new Error('The encounter is full')
+
+  return result.rows
+}
+
+function added(result: AddToEncounterResult): InitiativeSheetRow[] {
+  return rowsOf(result).filter(row => !existing.some(({ id }) => id === row.id))
+}
+
+function rowsAt(amount: number): InitiativeSheetRow[] {
+  return Array.from({ length: amount }, (_, index) => ({
+    ...existing[0]!,
+    id: `row-${index}`,
+  }))
 }
 
 describe('dnd/encounter', () => {
@@ -103,9 +116,11 @@ describe('dnd/encounter', () => {
     })
 
     it('places the new rows by initiative and reindexes them', () => {
-      const rows = addToEncounter(sheet, [
-        { row: { name: 'Goblin', type: 'monster' }, roll: 8 },
-      ])
+      const rows = rowsOf(
+        addToEncounter(sheet, [
+          { row: { name: 'Goblin', type: 'monster' }, roll: 8 },
+        ]),
+      )
 
       expect(rows.map(row => row.name)).toEqual([
         'Aragorn',
@@ -167,6 +182,71 @@ describe('dnd/encounter', () => {
       ])
 
       expect(rows).toEqual(existing)
+    })
+
+    describe('The row cap', () => {
+      const goblin: EncounterCreature = {
+        row: { name: 'Goblin', type: 'monster' },
+      }
+
+      it('fills the encounter up to 50 rows', () => {
+        const rows = rowsOf(
+          addToEncounter({ rows: rowsAt(45), settings: noAutoRoll }, [goblin], {
+            amount: 5,
+          }),
+        )
+
+        expect(rows).toHaveLength(50)
+      })
+
+      it('adds nothing when the creatures do not fit', () => {
+        const result = addToEncounter(
+          { rows: rowsAt(45), settings: noAutoRoll },
+          [goblin],
+          { amount: 6 },
+        )
+
+        expect(result).toEqual({
+          full: true,
+          room: 5,
+          toast: {
+            title: ['components.initiativeTable.full.title'],
+            description: [
+              'components.initiativeTable.full.some',
+              { max: 50, room: 5 },
+            ],
+            variant: 'warning',
+          },
+        })
+      })
+
+      it('counts every creature times the amount', () => {
+        const result = addToEncounter(
+          { rows: rowsAt(45), settings: noAutoRoll },
+          [goblin, goblin, goblin],
+          { amount: 2 },
+        )
+
+        expect(result.full).toBe(true)
+      })
+
+      it('says there is no room left in a full encounter', () => {
+        const result = addToEncounter(
+          { rows: rowsAt(50), settings: noAutoRoll },
+          [goblin],
+        )
+
+        expect(result).toMatchObject({
+          full: true,
+          room: 0,
+          toast: {
+            description: [
+              'components.initiativeTable.full.none',
+              { max: 50, room: 0 },
+            ],
+          },
+        })
+      })
     })
   })
 

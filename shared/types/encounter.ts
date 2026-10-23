@@ -13,6 +13,10 @@ export interface AddToEncounterOptions {
   summoner?: string
 }
 
+export type AddToEncounterResult =
+  | { full: false; rows: InitiativeSheetRow[] }
+  | { full: true; room: number; toast: ToastItem }
+
 export type EncounterRowEdit = Omit<NewInitiativeRow, 'summoner'> & {
   summoner?: string
 }

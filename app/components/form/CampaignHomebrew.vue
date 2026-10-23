@@ -9,6 +9,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 const emit = defineEmits<{ close: [] }>()
 
 const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
+const showToastItems = useToastItems()
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
@@ -103,13 +104,15 @@ async function addHomebrews(addAll: boolean): Promise<void> {
     ? data.value?.homebrews.filter(hb => hb.type !== 'summon') || []
     : selected.value
 
-  await editRows(
-    addToEncounter(
-      sheet.value,
-      selection.map(homebrew => ({ homebrew })),
-      { summoner: summoner.value },
-    ),
+  const added = addToEncounter(
+    sheet.value,
+    selection.map(homebrew => ({ homebrew })),
+    { summoner: summoner.value },
   )
+
+  if (added.full) return showToastItems([added.toast])
+
+  await editRows(added.rows)
 
   emit('close')
 }

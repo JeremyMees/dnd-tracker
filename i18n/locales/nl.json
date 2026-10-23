@@ -1072,6 +1072,11 @@
         "added": "{name} toegevoegd aan je encounter",
         "addedDescription": "Het geselecteerde monster is succesvol toegevoegd aan je encounter"
       },
+      "full": {
+        "title": "Deze encounter is vol",
+        "none": "Een encounter kan maximaal {max} wezens bevatten en er is geen plaats meer",
+        "some": "Een encounter kan maximaal {max} wezens bevatten en er is nog plaats voor {room}"
+      },
       "emptyState": {
         "title": "Geen initiatiefhouder gevonden",
         "text": "Voeg er wat toe met de zijbalk om te beginnen",

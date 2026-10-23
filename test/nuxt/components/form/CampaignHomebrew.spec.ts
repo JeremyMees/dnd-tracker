@@ -1,3 +1,4 @@
+import { resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import CampaignHomebrew from '~/components/form/CampaignHomebrew.vue'
@@ -57,6 +58,7 @@ describe('CampaignHomebrew', () => {
   beforeEach(() => {
     homebrews.value = mockHomebrewListing
     isPending.value = false
+    resetToast()
   })
 
   it('Should match snapshot', async () => {
@@ -137,6 +139,27 @@ describe('CampaignHomebrew', () => {
       mockHomebrewItem.name,
       mockHomebrewPlayer.name,
     ])
+  })
+
+  it('Should warn and add nothing when the homebrews do not fit', async () => {
+    const { injected, mount } = mountCampaignHomebrew({
+      ...campaignSheet,
+      rows: Array.from({ length: 49 }, (_, index) => ({
+        ...sheet.rows[0]!,
+        id: `row-${index}`,
+      })),
+    })
+    const component = await mount()
+
+    await component.get('[aria-label="actions.addAll"]').trigger('click')
+    await flushPromises()
+
+    expect(injected.editRows).not.toHaveBeenCalled()
+    expect(toast.warning).toHaveBeenCalledWith(
+      'components.initiativeTable.full.title',
+      { description: 'components.initiativeTable.full.some' },
+    )
+    expect(component.emitted('close')).toBeUndefined()
   })
 
   it('Should close after adding', async () => {

@@ -1,3 +1,5 @@
+import { maxEncounterRows } from '~~/constants/dnd'
+
 export function hasResistances(
   resistances: DndResistancesAndImmunities,
 ): boolean {
@@ -36,7 +38,7 @@ export function hasAbilityScores(creature: {
 }
 
 export function hasMaxCharacters(sheet?: InitiativeSheet): boolean {
-  return sheet ? sheet.rows.length >= 50 : false
+  return sheet ? sheet.rows.length >= maxEncounterRows : false
 }
 
 export function concentrationDC(damage: number): number {
