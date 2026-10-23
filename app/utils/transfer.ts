@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { maxEncounterRows } from '~~/constants/dnd'
 import { homebrewType } from '~~/constants/validation'
 
 export const maxTransferFileSize = 2 * 1024 * 1024
@@ -148,6 +149,15 @@ function validateItems<K extends TransferKind>(
   const parsed = transferSchemas[kind].safeParse(items)
 
   if (!parsed.success) throw new TransferError('invalidFile')
+
+  if (
+    kind === 'encounters' &&
+    (parsed.data as EncounterTransfer[]).some(
+      ({ rows }) => rows.length > maxEncounterRows,
+    )
+  ) {
+    throw new TransferError('tooManyRows', maxEncounterRows)
+  }
 
   return parsed.data
 }

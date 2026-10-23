@@ -90,6 +90,10 @@ export function getFailureReason(error: unknown): FailureReason {
     return 'rowClaimed'
   }
 
+  if (statusCode === 422 && getErrorMessage(error) === 'encounter-full') {
+    return 'encounterFull'
+  }
+
   if (readProp(error, 'name') === 'FetchError' && statusCode === undefined) {
     return 'offline'
   }

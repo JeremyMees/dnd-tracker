@@ -189,6 +189,17 @@ describe('getFailureReason', () => {
     ).toBe('rowClaimed')
   })
 
+  it('names an encounter that is full', () => {
+    expect(
+      getFailureReason(
+        createError({
+          statusCode: 422,
+          data: { statusMessage: 'encounter-full' },
+        }),
+      ),
+    ).toBe('encounterFull')
+  })
+
   it('reads the postgres code a server route forwards in data', () => {
     expect(getFailureReason(createError({ data: { code: '42501' } }))).toBe(
       'forbidden',

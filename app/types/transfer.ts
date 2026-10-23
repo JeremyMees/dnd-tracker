@@ -7,6 +7,7 @@ export type TransferErrorReason =
   | 'tooLarge'
   | 'empty'
   | 'tooMany'
+  | 'tooManyRows'
 
 export type EncounterTransfer = Pick<
   InitiativeInsert,

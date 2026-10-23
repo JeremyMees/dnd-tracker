@@ -1,4 +1,5 @@
 import type { serverSupabaseServiceRole } from '#supabase/server'
+import { maxEncounterRows } from '~~/constants/dnd'
 import {
   diffRow,
   diffSheet,
@@ -85,6 +86,13 @@ function claimedRows(session: SheetLiveSession | undefined): Set<string> {
 
 function rowClaimedError() {
   return createError({ statusCode: 409, statusMessage: 'row-claimed' })
+}
+
+function addsPastRowCap(
+  before: InitiativeSheetRow[],
+  after: InitiativeSheetRow[],
+): boolean {
+  return after.length > maxEncounterRows && after.length > before.length
 }
 
 async function sendLiveChanges(
@@ -267,6 +275,10 @@ export async function applySheetUpdate(
   const live = Object.keys(update).some(key => liveViewFields.has(key))
     ? await ctx.store.liveSession(ctx.encounterId)
     : undefined
+
+  if (update.rows && addsPastRowCap(before.rows, update.rows)) {
+    throw createError({ statusCode: 422, statusMessage: 'encounter-full' })
+  }
 
   if (
     update.rows &&

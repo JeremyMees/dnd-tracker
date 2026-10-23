@@ -305,6 +305,38 @@ describe('transfer', () => {
       ).toBe('invalidFile')
     })
 
+    it('Should reject an encounter with more than 50 rows', () => {
+      const rows = Array.from({ length: 51 }, (_, index) => ({
+        ...row,
+        id: `row-${index}`,
+      }))
+
+      expect(
+        reasonOf(() =>
+          parseTransferFile(
+            fileText('encounters', [
+              toEncounterTransfer({ ...encounter, rows }),
+            ]),
+            'encounters',
+          ),
+        ),
+      ).toBe('tooManyRows')
+    })
+
+    it('Should read back an encounter with exactly 50 rows', () => {
+      const rows = Array.from({ length: 50 }, (_, index) => ({
+        ...row,
+        id: `row-${index}`,
+      }))
+
+      const [item] = parseTransferFile(
+        fileText('encounters', [toEncounterTransfer({ ...encounter, rows })]),
+        'encounters',
+      )
+
+      expect(item!.rows).toHaveLength(50)
+    })
+
     it('Should reject a file of the other kind', () => {
       expect(
         reasonOf(() =>

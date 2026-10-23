@@ -584,6 +584,36 @@ describe('sheet-changes', () => {
       expect(state.messages).toEqual([])
     })
 
+    it('refuses rows that take the encounter past 50', async () => {
+      const { ctx, state } = memorySheetContext(sheet)
+      const rows = Array.from({ length: 51 }, (_, index) => ({
+        ...goblin,
+        id: `row-${index}`,
+      }))
+
+      await expect(applySheetUpdate(ctx, { rows })).rejects.toMatchObject({
+        statusCode: 422,
+        statusMessage: 'encounter-full',
+      })
+
+      expect(state.sheet.rows).toEqual(sheet.rows)
+      expect(state.events).toEqual([])
+      expect(state.messages).toEqual([])
+    })
+
+    it('still edits an encounter that was already past 50', async () => {
+      const crowded = Array.from({ length: 55 }, (_, index) => ({
+        ...goblin,
+        id: `row-${index}`,
+        index,
+      }))
+      const { ctx, state } = memorySheetContext(storedSheet({ rows: crowded }))
+
+      await applySheetUpdate(ctx, { rows: crowded.slice(1) })
+
+      expect(state.sheet.rows).toHaveLength(54)
+    })
+
     it('keeps a claimed row that was already hidden hidden', async () => {
       const hidden = { ...elara, hidden: true }
       const { ctx, state } = memorySheetContext(
