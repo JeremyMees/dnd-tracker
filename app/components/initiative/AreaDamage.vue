@@ -124,21 +124,15 @@ function damagePatch(row: InitiativeSheetRow): RowPatch[] {
 
   if (!amount) return []
 
-  const { row: updated, toasts } = handleHpChanges(
-    amount,
-    'damage',
+  const { patch, toasts } = applyHpChange(
     row,
-    sheet.value?.settings?.negative ?? false,
+    { type: 'damage', rolls: [{ amount }] },
+    { negative: sheet.value?.settings?.negative, bloodied: bloodied.value },
   )
 
   handleToasts(toasts)
 
-  return [
-    {
-      rowId: row.id,
-      patch: buildCombatPatch(row, withBloodied(updated, bloodied.value)),
-    },
-  ]
+  return [{ rowId: row.id, patch }]
 }
 
 function withSourceUsed(patches: RowPatch[]): RowPatch[] {
