@@ -147,84 +147,21 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.round).toBe(1)
   })
 
-  it('Should hard reset the initiative sheet', async () => {
-    mockSheet.value.activeIndex = mockSheet.value.rows.length - 1
-    mockSheet.value.round = 4
+  it('Should send the hard reset of the rows and select the first row', async () => {
+    updateFn.mockClear()
+    mockSheet.value.activeIndex = 2
+    const rows = mockSheet.value.rows
 
-    const firstItem = mockSheet.value.rows[0]!
-    const currentAc = firstItem.armorClass
-    const currentHp = firstItem.hitPoints
-    const maxAcOld = firstItem.maxArmorClassOld
-    const maxHpOld = firstItem.maxHitPointsOld
-
-    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
-
-    expect(mockSheet.value.activeIndex).toBe(mockSheet.value.rows.length - 1)
-    expect(mockSheet.value.round).toBe(4)
-    expect(mockSheet.value.rows[0]!.armorClass).toBe(currentAc)
-    expect(mockSheet.value.rows[0]!.hitPoints).toBe(currentHp)
-    expect(mockSheet.value.rows[0]!.tempArmorClass).toBe(5)
-    expect(mockSheet.value.rows[0]!.tempHitPoints).toBe(5)
-    expect(mockSheet.value.rows[0]!.concentration).toBeTruthy()
-    expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([
-      true,
-      false,
-      false,
-    ])
-    expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([
-      true,
-      false,
-      false,
-    ])
-    expect(mockSheet.value.rows[0]!.conditions.length).toBe(1)
+    const { reset, selected } = useInitiativeSheet(
+      sheetComputed,
+      update,
+      nextTurn,
+    )
 
     reset(true)
 
-    expect(mockSheet.value.activeIndex).toBe(0)
-    expect(mockSheet.value.round).toBe(1)
-    expect(mockSheet.value.rows[0]!.armorClass).toBe(maxAcOld)
-    expect(mockSheet.value.rows[0]!.hitPoints).toBe(maxHpOld)
-    expect(mockSheet.value.rows[0]!.maxArmorClassOld).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.maxHitPointsOld).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.tempArmorClass).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.tempHitPoints).toBe(undefined)
-    expect(mockSheet.value.rows[0]!.concentration).toBeFalsy()
-    expect(mockSheet.value.rows[0]!.deathSaves!.fail).toEqual([
-      false,
-      false,
-      false,
-    ])
-    expect(mockSheet.value.rows[0]!.deathSaves!.save).toEqual([
-      false,
-      false,
-      false,
-    ])
-    expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
-  })
-
-  it('Should keep the max on a hard reset when a cleared override is stored as null', async () => {
-    mockSheet.value.rows = [
-      {
-        ...mockSheet.value.rows[0]!,
-        hitPoints: 3,
-        maxHitPoints: 30,
-        maxHitPointsOld: null,
-        armorClass: 10,
-        maxArmorClass: 16,
-        maxArmorClassOld: null,
-      },
-    ]
-
-    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
-
-    reset(true)
-
-    expect(mockSheet.value.rows[0]).toMatchObject({
-      hitPoints: 30,
-      maxHitPoints: 30,
-      armorClass: 16,
-      maxArmorClass: 16,
-    })
+    expect(updateFn).toHaveBeenCalledWith(resetEncounter(rows, { hard: true }))
+    expect(selected.value).toEqual({ [rows[0]!.id]: true })
   })
 
   it('Should skip dead monsters and select the next living row', async () => {
@@ -246,25 +183,6 @@ describe('useInitiativeSheet', async () => {
     expect(selected.value).toEqual({ [mockSheet.value.rows[2]!.id]: true })
   })
 
-  it.each([false, true])(
-    'Should clear readied actions on a reset (hard: %s)',
-    async hard => {
-      mockSheet.value.rows = [
-        mockSheet.value.rows[0]!,
-        { ...mockSheet.value.rows[1]!, readied: true },
-      ]
-
-      const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
-
-      reset(hard)
-
-      expect(mockSheet.value.rows.map(row => row.readied)).toEqual([
-        undefined,
-        undefined,
-      ])
-    },
-  )
-
   it('Should leave the rows alone on a soft reset without readied actions', async () => {
     updateFn.mockClear()
     const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
@@ -272,19 +190,6 @@ describe('useInitiativeSheet', async () => {
     reset(false)
 
     expect(updateFn).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
-  })
-
-  it('Should keep lair rows at initiative 20 on a hard reset', async () => {
-    mockSheet.value.rows = [
-      { ...mockSheet.value.rows[0]!, type: 'lair', initiative: 20 },
-      { ...mockSheet.value.rows[1]!, type: 'monster', initiative: 12 },
-    ]
-
-    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
-
-    reset(true)
-
-    expect(mockSheet.value.rows.map(row => row.initiative)).toEqual([20, -1])
   })
 
   it('Should show all columns by default', async () => {

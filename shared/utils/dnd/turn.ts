@@ -110,6 +110,75 @@ export function advanceTurn(
   return { activeIndex, round, rows, expired, saves, recharges }
 }
 
+export function previousTurnPosition(
+  sheet: Pick<InitiativeSheet, 'rows' | 'activeIndex' | 'round'>,
+): Pick<InitiativeSheet, 'activeIndex' | 'round'> | undefined {
+  const isAtStart = sheet.activeIndex === 0
+
+  if (isAtStart && sheet.round <= 1) return undefined
+
+  return {
+    activeIndex: isAtStart ? sheet.rows.length - 1 : sheet.activeIndex - 1,
+    round: isAtStart ? sheet.round - 1 : sheet.round,
+  }
+}
+
+function hardResetRow(row: InitiativeSheetRow): InitiativeSheetRow {
+  return {
+    ...row,
+    initiative: defaultInitiative(row.type),
+    conditions: [],
+    ...(row.concentration !== undefined && { concentration: false }),
+    ...(row.deathSaves !== undefined && {
+      deathSaves: {
+        fail: [false, false, false],
+        save: [false, false, false],
+      },
+    }),
+    ...(row.armorClass !== undefined && {
+      armorClass: row.maxArmorClassOld || row.maxArmorClass,
+    }),
+    ...(row.hitPoints !== undefined && {
+      hitPoints: row.maxHitPointsOld || row.maxHitPoints,
+    }),
+    ...(isDefined(row.maxArmorClassOld) && {
+      maxArmorClass: row.maxArmorClassOld,
+    }),
+    ...(isDefined(row.maxHitPointsOld) && {
+      maxHitPoints: row.maxHitPointsOld,
+    }),
+    readied: undefined,
+    maxArmorClassOld: undefined,
+    maxHitPointsOld: undefined,
+    tempHitPoints: undefined,
+    tempArmorClass: undefined,
+  }
+}
+
+export function resetEncounter(
+  rows: InitiativeSheetRow[],
+  { hard }: { hard: boolean },
+): InitiativeSheetUpdate {
+  if (hard) return { activeIndex: 0, round: 1, rows: rows.map(hardResetRow) }
+
+  return {
+    activeIndex: 0,
+    round: 1,
+    ...(rows.some(row => row.readied) && {
+      rows: rows.map(row => ({ ...row, readied: undefined })),
+    }),
+  }
+}
+
+export function resolveSave(
+  row: Pick<InitiativeSheetRow, 'conditions'>,
+  conditionId: string,
+): Pick<InitiativeSheetRow, 'conditions'> {
+  return {
+    conditions: row.conditions.filter(item => item.id !== conditionId),
+  }
+}
+
 export function conditionDurationPreset(
   preset: DndConditionPreset,
   { rowId, activeRowId }: { rowId: string; activeRowId?: string },

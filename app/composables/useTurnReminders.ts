@@ -16,9 +16,7 @@ export function useTurnReminders(
 
     if (!row) return
 
-    patchRow(row.id, {
-      conditions: row.conditions.filter(item => item.id !== condition.id),
-    })
+    patchRow(row.id, resolveSave(row, condition.id))
   }
 
   function saveMessage({ rowName, condition }: TurnReminder): string {

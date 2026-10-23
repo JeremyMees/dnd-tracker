@@ -344,6 +344,143 @@ describe('dnd/turn', () => {
     })
   })
 
+  describe('previousTurnPosition', () => {
+    const rows = [row('a'), row('b'), row('c')]
+
+    it('steps back one row in the same round', () => {
+      expect(previousTurnPosition({ rows, activeIndex: 2, round: 3 })).toEqual({
+        activeIndex: 1,
+        round: 3,
+      })
+    })
+
+    it('wraps to the last row of the round before', () => {
+      expect(previousTurnPosition({ rows, activeIndex: 0, round: 3 })).toEqual({
+        activeIndex: 2,
+        round: 2,
+      })
+    })
+
+    it('stays put on the first turn of the encounter', () => {
+      expect(
+        previousTurnPosition({ rows, activeIndex: 0, round: 1 }),
+      ).toBeUndefined()
+    })
+  })
+
+  describe('resetEncounter', () => {
+    const wounded: InitiativeSheetRow = {
+      ...row('a', [condition()]),
+      type: 'player',
+      initiative: 18,
+      hitPoints: 4,
+      maxHitPoints: 40,
+      maxHitPointsOld: 30,
+      tempHitPoints: 5,
+      armorClass: 12,
+      maxArmorClass: 18,
+      maxArmorClassOld: 15,
+      tempArmorClass: 2,
+      concentration: true,
+      readied: true,
+      deathSaves: { save: [true, false, false], fail: [true, true, false] },
+    }
+
+    it('goes back to the first turn and leaves rows alone on a soft reset', () => {
+      expect(resetEncounter([row('a'), row('b')], { hard: false })).toEqual({
+        activeIndex: 0,
+        round: 1,
+      })
+    })
+
+    it('clears readied actions on a soft reset', () => {
+      const rows = [row('a'), { ...row('b'), readied: true }]
+
+      expect(resetEncounter(rows, { hard: false }).rows).toEqual([
+        { ...row('a'), readied: undefined },
+        { ...row('b'), readied: undefined },
+      ])
+    })
+
+    it('brings every row back to its base on a hard reset', () => {
+      expect(resetEncounter([wounded], { hard: true })).toEqual({
+        activeIndex: 0,
+        round: 1,
+        rows: [
+          {
+            ...wounded,
+            initiative: -1,
+            conditions: [],
+            hitPoints: 30,
+            maxHitPoints: 30,
+            maxHitPointsOld: undefined,
+            tempHitPoints: undefined,
+            armorClass: 15,
+            maxArmorClass: 15,
+            maxArmorClassOld: undefined,
+            tempArmorClass: undefined,
+            concentration: false,
+            readied: undefined,
+            deathSaves: {
+              save: [false, false, false],
+              fail: [false, false, false],
+            },
+          },
+        ],
+      })
+    })
+
+    it('keeps the max on a hard reset when a cleared override is stored as null', () => {
+      const [reset] = resetEncounter(
+        [
+          {
+            ...wounded,
+            maxHitPointsOld: null,
+            maxArmorClassOld: null,
+          },
+        ],
+        { hard: true },
+      ).rows!
+
+      expect(reset).toMatchObject({
+        hitPoints: 40,
+        maxHitPoints: 40,
+        armorClass: 18,
+        maxArmorClass: 18,
+      })
+    })
+
+    it('keeps lair rows at initiative 20 on a hard reset', () => {
+      const rows = [
+        { ...row('lair'), type: 'lair' as const, initiative: 20 },
+        { ...row('goblin'), initiative: 12 },
+      ]
+
+      expect(
+        resetEncounter(rows, { hard: true }).rows!.map(item => item.initiative),
+      ).toEqual([20, -1])
+    })
+
+    it('leaves out fields a row never had on a hard reset', () => {
+      const [reset] = resetEncounter([row('a')], { hard: true }).rows!
+
+      expect(reset).not.toHaveProperty('hitPoints')
+      expect(reset).not.toHaveProperty('armorClass')
+      expect(reset).not.toHaveProperty('concentration')
+      expect(reset).not.toHaveProperty('deathSaves')
+    })
+  })
+
+  describe('resolveSave', () => {
+    it('removes only the saved condition', () => {
+      const blinded = { ...condition(), id: 'blinded', name: 'Blinded' }
+
+      expect(resolveSave(row('a', [condition(), blinded]), 'prone')).toEqual({
+        conditions: [blinded],
+      })
+    })
+  })
+
   describe('conditionDurationPreset', () => {
     it('ends at the end of the affected row its next turn', () => {
       expect(
