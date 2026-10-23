@@ -40,15 +40,20 @@ const transferRowSchema = z
   })
   .transform(({ campaign, homebrew, ...row }) => row as InitiativeSheetRow)
 
-const encounterTransferSchema = z.object({
-  title: z.string().trim().min(1).max(30),
-  info: z.string().nullish(),
-  rows: z.array(transferRowSchema),
-  settings: jsonObject<InitiativeSettings>().optional(),
-  infoCards: z.array(jsonObject<DndItem>()).max(10).default([]),
-  round: z.int().min(1).default(1),
-  activeIndex: z.int().min(0).default(0),
-})
+const encounterTransferSchema = z
+  .object({
+    title: z.string().trim().min(1).max(30),
+    info: z.string().nullish(),
+    rows: z.array(transferRowSchema),
+    settings: jsonObject<InitiativeSettings>().optional(),
+    infoCards: z.array(jsonObject<DndItem>()).max(10).default([]),
+    round: z.int().min(1).default(1),
+    activeIndex: z.int().min(0).default(0),
+  })
+  .transform(encounter => ({
+    ...encounter,
+    rows: normalizeRows(encounter.rows),
+  }))
 
 const homebrewTransferSchema = z.object({
   name: z.string().trim().min(1).max(50),

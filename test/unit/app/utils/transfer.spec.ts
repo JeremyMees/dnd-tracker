@@ -201,6 +201,44 @@ describe('transfer', () => {
       expect(item!.rows[0]).toHaveProperty('hitPoints', 7)
     })
 
+    it('Should clean imported rows the way a saved encounter is cleaned', () => {
+      const [item] = parseTransferFile(
+        fileText('encounters', [
+          {
+            title: 'Ambush',
+            rows: [
+              { ...row, id: 'slow', initiative: 3, index: 0, hitPoints: 7.6 },
+              {
+                ...row,
+                id: 'fast',
+                initiative: 18,
+                index: 1,
+                conditions: [
+                  {
+                    id: 'srd_prone',
+                    name: 'Prone',
+                    desc: 'A long rules text',
+                    level: null,
+                    hasLevels: null,
+                  },
+                ],
+              },
+            ],
+          },
+        ]),
+        'encounters',
+      )
+
+      expect(item!.rows.map(({ id, index }) => [id, index])).toEqual([
+        ['fast', 0],
+        ['slow', 1],
+      ])
+      expect(item!.rows[1]!.hitPoints).toBe(8)
+      expect(item!.rows[0]!.conditions).toEqual([
+        { id: 'srd_prone', name: 'Prone', desc: '' },
+      ])
+    })
+
     it('Should fill in the encounter defaults', () => {
       const [item] = parseTransferFile(
         fileText('encounters', [{ title: 'Ambush', rows: [] }]),
