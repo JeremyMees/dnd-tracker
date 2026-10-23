@@ -13,3 +13,8 @@ export interface RowPatch {
   rowId: string
   patch: Partial<InitiativeSheetRow>
 }
+
+export interface PatchedRows {
+  rows: InitiativeSheetRow[]
+  version: number
+}

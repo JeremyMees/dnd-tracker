@@ -24,20 +24,7 @@ export function supabaseSheetStore(supabase: ServiceClient): SheetStore {
       return data
     },
     async patchRows(encounterId, patches) {
-      if (patches.length === 1) {
-        const [{ rowId, patch }] = patches as [RowPatch]
-        const { data, error } = await supabase.rpc('apply_live_action', {
-          p_encounter: encounterId,
-          p_row_id: rowId,
-          p_patch: patch,
-        })
-
-        if (error) throw createError(postgresErrorToH3Error(error))
-
-        return [data]
-      }
-
-      const { data, error } = await supabase.rpc('apply_live_actions', {
+      const { data, error } = await supabase.rpc('apply_row_patches', {
         p_encounter: encounterId,
         p_patches: Object.fromEntries(
           patches.map(({ rowId, patch }) => [rowId, patch]),

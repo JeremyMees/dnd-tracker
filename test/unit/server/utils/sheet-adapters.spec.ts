@@ -58,30 +58,41 @@ describe('sheet-adapters', () => {
       await expect(supabaseSheetStore(client()).read(7)).rejects.toThrow()
     })
 
-    it('patches one row through apply_live_action', async () => {
-      mockFrom({}, { rpc: mockChain({ data: row, error: null }) })
+    it('patches rows and returns them with the version of the write', async () => {
+      mockFrom(
+        {},
+        { rpc: mockChain({ data: { rows: [row], version: 4 }, error: null }) },
+      )
 
       await expect(
         supabaseSheetStore(client()).patchRows(7, [
           { rowId: 'row-1', patch: { hitPoints: 6 } },
         ]),
-      ).resolves.toEqual([row])
-      expect(client().rpc).toHaveBeenCalledWith('apply_live_action', {
+      ).resolves.toEqual({ rows: [row], version: 4 })
+      expect(client().rpc).toHaveBeenCalledWith('apply_row_patches', {
         p_encounter: 7,
-        p_row_id: 'row-1',
-        p_patch: { hitPoints: 6 },
+        p_patches: { 'row-1': { hitPoints: 6 } },
       })
     })
 
-    it('patches several rows in one apply_live_actions call', async () => {
-      mockFrom({}, { rpc: mockChain({ data: [row, row], error: null }) })
+    it('patches several rows in one call', async () => {
+      mockFrom(
+        {},
+        {
+          rpc: mockChain({
+            data: { rows: [row, row], version: 5 },
+            error: null,
+          }),
+        },
+      )
 
       await supabaseSheetStore(client()).patchRows(7, [
         { rowId: 'row-1', patch: { hitPoints: 6 } },
         { rowId: 'row-2', patch: { hitPoints: 3 } },
       ])
 
-      expect(client().rpc).toHaveBeenCalledWith('apply_live_actions', {
+      expect(client().rpc).toHaveBeenCalledOnce()
+      expect(client().rpc).toHaveBeenCalledWith('apply_row_patches', {
         p_encounter: 7,
         p_patches: { 'row-1': { hitPoints: 6 }, 'row-2': { hitPoints: 3 } },
       })

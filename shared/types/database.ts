@@ -195,20 +195,12 @@ interface DatabaseOverrides {
         }
         Returns: LiveSeat
       }
-      apply_live_action: {
-        Args: {
-          p_encounter: number
-          p_row_id: string
-          p_patch: Partial<InitiativeSheetRow>
-        }
-        Returns: InitiativeSheetRow
-      }
-      apply_live_actions: {
+      apply_row_patches: {
         Args: {
           p_encounter: number
           p_patches: Record<string, Partial<InitiativeSheetRow>>
         }
-        Returns: InitiativeSheetRow[]
+        Returns: PatchedRows
       }
       increment_live_version: {
         Args: {

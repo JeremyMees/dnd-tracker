@@ -53,6 +53,14 @@ export function memorySheet(
   }
   const versions = new Map<string, number>()
 
+  function bump(name: string): number {
+    const version = (versions.get(name) ?? 0) + 1
+
+    versions.set(name, version)
+
+    return version
+  }
+
   const store: SheetStore = {
     read: async () => asJsonb(state.sheet),
     patchRows: async (_encounterId, patches) => {
@@ -64,7 +72,10 @@ export function memorySheet(
         return patch ? asJsonb({ ...row, ...patch }) : row
       })
 
-      return asJsonb(state.sheet.rows.filter(row => byRow.has(row.id)))
+      return {
+        rows: asJsonb(state.sheet.rows.filter(row => byRow.has(row.id))),
+        version: bump(topicName({ kind: 'sheet', encounterId: sheet.id })),
+      }
     },
     updateTurn: async (_encounterId, from, to) => {
       if (
@@ -90,14 +101,7 @@ export function memorySheet(
   }
 
   const broadcaster: SheetBroadcaster = {
-    nextVersion: async topic => {
-      const name = topicName(topic)
-      const version = (versions.get(name) ?? 0) + 1
-
-      versions.set(name, version)
-
-      return version
-    },
+    nextVersion: async topic => bump(topicName(topic)),
     send: async (topic, event, payload) => {
       state.messages.push({
         topic: topicName(topic),

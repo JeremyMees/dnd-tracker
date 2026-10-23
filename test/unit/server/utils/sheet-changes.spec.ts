@@ -75,6 +75,42 @@ describe('sheet-changes', () => {
       ])
     })
 
+    it('numbers each patch in the order it was written', async () => {
+      const { ctx, state, sent } = memorySheetContext(sheet)
+      const write = ctx.store.patchRows
+      let release = () => {}
+      const held = new Promise<void>(resolve => {
+        release = resolve
+      })
+      let writes = 0
+
+      ctx.store = {
+        ...ctx.store,
+        async patchRows(...args) {
+          const written = await write(...args)
+
+          if (writes++ === 0) await held
+
+          return written
+        },
+      }
+
+      const first = applyRowPatches(ctx, [
+        { rowId: 'row-2', patch: { hitPoints: 6 } },
+      ])
+
+      await applyRowPatches(ctx, [{ rowId: 'row-2', patch: { hitPoints: 2 } }])
+      release()
+      await first
+
+      const [latest] = sent('sheet:7')
+        .map(({ payload }) => payload as { version: number; patch: object })
+        .sort((a, b) => b.version - a.version)
+
+      expect(state.sheet.rows[1]?.hitPoints).toBe(2)
+      expect(latest?.patch).toEqual({ hitPoints: 2 })
+    })
+
     it('credits a named actor in the log', async () => {
       const { ctx, state } = memorySheetContext(sheet, {
         actor: { name: 'Elara' },
@@ -205,7 +241,7 @@ describe('sheet-changes', () => {
         {
           topic: 'sheet:7',
           event: 'sync',
-          payload: { version: 1, sheet: { ...sheet, rows: after } },
+          payload: { version: 2, sheet: { ...sheet, rows: after } },
         },
       ])
       expect(sent('live:session-uuid')).toEqual([

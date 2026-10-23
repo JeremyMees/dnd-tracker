@@ -23,10 +23,7 @@ export interface SheetLiveSession {
 
 export interface SheetStore {
   read: (encounterId: number) => Promise<StoredSheet>
-  patchRows: (
-    encounterId: number,
-    patches: RowPatch[],
-  ) => Promise<InitiativeSheetRow[]>
+  patchRows: (encounterId: number, patches: RowPatch[]) => Promise<PatchedRows>
   updateTurn: (
     encounterId: number,
     from: SheetTurn,

@@ -44,9 +44,9 @@ async function logEvents(
 async function sendSheetAction(
   ctx: SheetChangeContext,
   { rowId, patch }: RowPatch,
+  version: number,
 ): Promise<void> {
   const topic: SheetTopic = { kind: 'sheet', encounterId: ctx.encounterId }
-  const version = await ctx.broadcaster.nextVersion(topic)
 
   await ctx.broadcaster.send(topic, 'action', { version, row: rowId, patch })
 }
@@ -143,7 +143,10 @@ export async function applyRowPatches(
     throw rowClaimedError()
   }
 
-  const after = await ctx.store.patchRows(ctx.encounterId, patches)
+  const { rows: after, version } = await ctx.store.patchRows(
+    ctx.encounterId,
+    patches,
+  )
   const afterRows = new Map(after.map(row => [row.id, row]))
   const afterSheet = {
     ...sheet,
@@ -163,7 +166,7 @@ export async function applyRowPatches(
       ),
     ),
     patches.length === 1 && only
-      ? sendSheetAction(ctx, only)
+      ? sendSheetAction(ctx, only, version)
       : sendSheetSync(ctx),
     ...(session
       ? [sendLiveChanges(ctx, session, changedPlayerRows(sheet, afterSheet))]

@@ -57,7 +57,7 @@ Server routes call RPCs with the service-role client. An RPC is
 `revoke all … from public`, and is granted to `service_role` only. Raise `P0001`
 / `P0002` for expected failures and map them to HTTP status codes with
 `postgresErrorToH3Error`'s `statusCode` option. Keep the atomic RPCs
-(`apply_live_action`, `claim_live_seat`) in SQL; their atomicity is the reason
+(`apply_row_patches`, `claim_live_seat`) in SQL; their atomicity is the reason
 they exist.
 
 ## RLS

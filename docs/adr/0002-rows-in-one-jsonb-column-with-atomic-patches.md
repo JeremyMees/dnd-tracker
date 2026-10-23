@@ -2,10 +2,11 @@
 
 There is no table of rows: `initiative_sheets.rows` is one jsonb array, checked
 by a JSON schema constraint in the database. Up to 20 players and the DM can
-write the same encounter at once, so single-row changes go through the
-`apply_live_action` RPC, which shallow-merges a patch (`elem || p_patch`) into
-one row in a single UPDATE. A read-modify-write from the server would lose
-concurrent writes.
+write the same encounter at once, so row changes go through the
+`apply_row_patches` RPC, which shallow-merges each patch (`elem || patch`) into
+its row and bumps the broadcast `version` in a single UPDATE. A
+read-modify-write from the server would lose concurrent writes, and a version
+taken after the write could number two patches in the wrong order.
 
 ## Consequences
 
