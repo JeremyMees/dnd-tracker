@@ -10,7 +10,7 @@ const bodySchema = z.object({
     .array(
       z.object({
         rowId: z.string().min(1),
-        patch: rowPatchSchema.omit({ hidden: true }),
+        patch: rowPatchSchema,
       }),
     )
     .min(1)

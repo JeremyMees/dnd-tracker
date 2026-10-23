@@ -78,6 +78,57 @@ describe('POST /api/encounter/[id]/patch-rows', () => {
     ])
   })
 
+  it('reveals several hidden rows in one request', async () => {
+    mockAccess()
+    const { state } = useMemorySheet(
+      storedSheet({
+        rows: [
+          { ...goblin, hidden: true },
+          { ...orc, hidden: true },
+        ],
+      }),
+    )
+
+    await handler(
+      patchEvent({
+        patches: [
+          { rowId: 'goblin', patch: { hidden: false } },
+          { rowId: 'orc', patch: { hidden: false } },
+        ],
+      }),
+    )
+
+    expect(state.sheet.rows).toEqual([
+      { ...goblin, hidden: false },
+      { ...orc, hidden: false },
+    ])
+  })
+
+  it('refuses to hide a row a player has claimed', async () => {
+    mockAccess()
+    const { state } = useMemorySheet(storedSheet({ rows: [goblin, orc] }), {
+      liveSession: {
+        uuid: 'session-uuid',
+        seats: [
+          { seat: 'seat-1', row: 'goblin', name: 'Gob', spectator: false },
+        ],
+      },
+    })
+
+    await expect(
+      handler(
+        patchEvent({
+          patches: [
+            { rowId: 'goblin', patch: { hidden: true } },
+            { rowId: 'orc', patch: { hidden: true } },
+          ],
+        }),
+      ),
+    ).rejects.toMatchObject({ statusCode: 409, statusMessage: 'row-claimed' })
+
+    expect(state.sheet.rows).toEqual([goblin, orc])
+  })
+
   it('throws a 403 when the user has no access to the encounter', async () => {
     mockAccess('someone-else')
     const { state } = useMemorySheet(storedSheet({ rows: [goblin, orc] }))
@@ -99,10 +150,6 @@ describe('POST /api/encounter/[id]/patch-rows', () => {
           { rowId: 'goblin', patch: { hitPoints: 2 } },
         ],
       },
-    ],
-    [
-      'hiding a row',
-      { patches: [{ rowId: 'goblin', patch: { hidden: true } }] },
     ],
     [
       'an unknown field',

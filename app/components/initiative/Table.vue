@@ -14,6 +14,7 @@ const {
   sheet,
   update,
   patchRow,
+  patchRows,
   nextTurn,
   onTurnReminders,
   undo,
@@ -114,13 +115,11 @@ function readyAction(): void {
 }
 
 function revealHidden(): void {
-  if (!sheet.value) return
+  const patches = (sheet.value?.rows ?? [])
+    .filter(row => row.hidden)
+    .map(row => ({ rowId: row.id, patch: { hidden: false } }))
 
-  update({
-    rows: sheet.value.rows.map(row =>
-      row.hidden ? { ...row, hidden: false } : row,
-    ),
-  }).catch(() => undefined)
+  if (patches.length) patchRows(patches).catch(() => undefined)
 }
 
 function rowShortcut(action: RowShortcutAction): void {
