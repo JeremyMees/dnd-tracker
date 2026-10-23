@@ -5,7 +5,7 @@ import * as z from 'zod'
 
 const props = defineProps<{ item: InitiativeSheetRow }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
 
 const popoverOpen = shallowRef<boolean>(false)
 
@@ -43,9 +43,7 @@ const onSubmit = form.handleSubmit(async values => {
   rows[index] = { ...rows[index], initiative: updated }
 
   try {
-    await update({
-      rows: changed ? placeByInitiative(rows, [props.item.id]) : rows,
-    })
+    await editRows(changed ? placeByInitiative(rows, [props.item.id]) : rows)
   } catch {
     return
   }
@@ -103,7 +101,7 @@ async function moveRow(up: boolean): Promise<void> {
     }
   }
 
-  await update({ rows: [...rows].sort((a, b) => a.index - b.index) })
+  await editRows([...rows].sort((a, b) => a.index - b.index))
 }
 </script>
 

@@ -268,7 +268,8 @@
         "homebrewLimit": "This campaign already has the maximum number of homebrew items. Remove one first.",
         "noteLimit": "This campaign already has the maximum number of notes. Remove one first.",
         "rejected": "The server couldn't complete this. Try again, and refresh the page if it keeps happening.",
-        "rowClaimed": "A player has claimed this row, so it can't be hidden."
+        "rowClaimed": "A player has claimed this row, so it can't be hidden.",
+        "encounterFull": "An encounter holds at most 50 creatures. Remove some before adding more."
       },
       "loadFailed": {
         "content": "DnD content couldn't be loaded",
@@ -1072,6 +1073,11 @@
         "added": "Added {name} to your encounter",
         "addedDescription": "The selected monster is successfully added to your encounter"
       },
+      "full": {
+        "title": "This encounter is full",
+        "none": "An encounter holds at most {max} creatures and there is no room left",
+        "some": "An encounter holds at most {max} creatures and there is room for {room} more"
+      },
       "emptyState": {
         "title": "No initiative holders found",
         "text": "Add some using the sidebar to get started",
@@ -1470,7 +1476,8 @@
         "wrongKind": "This file contains a different kind of item. Import it on the matching page.",
         "tooLarge": "The file is too large. Files can be at most 2 MB.",
         "empty": "The file has nothing to import.",
-        "tooMany": "You don't have room for this many items. You can import no more items.|You don't have room for this many items. You can import {count} more item.|You don't have room for this many items. You can import {count} more items."
+        "tooMany": "You don't have room for this many items. You can import no more items.|You don't have room for this many items. You can import {count} more item.|You don't have room for this many items. You can import {count} more items.",
+        "tooManyRows": "An encounter in this file has more than {count} creatures. Encounters can hold at most {count}."
       }
     },
     "commandPalette": {

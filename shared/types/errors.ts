@@ -8,6 +8,7 @@ export type FailureReason =
   | 'homebrewLimit'
   | 'noteLimit'
   | 'rowClaimed'
+  | 'encounterFull'
   | 'rejected'
 
 export type AuthFailure =

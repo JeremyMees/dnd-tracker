@@ -7,15 +7,11 @@ export type TransferErrorReason =
   | 'tooLarge'
   | 'empty'
   | 'tooMany'
+  | 'tooManyRows'
 
 export type EncounterTransfer = Pick<
   InitiativeInsert,
   'title' | 'info' | 'rows' | 'settings' | 'infoCards' | 'round' | 'activeIndex'
->
-
-export type HomebrewTransfer = Omit<
-  HomebrewItemInsert,
-  'id' | 'campaign' | 'createdAt'
 >
 
 export interface TransferItems {

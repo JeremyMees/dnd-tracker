@@ -11,7 +11,7 @@ const { t, locale } = useI18n()
 const clipboard = useClipboard()
 const { ask } = useConfirm()
 const user = useAuthenticatedUser()
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, updateSheet } = validateInject(INITIATIVE_SHEET)
 const { session, active, loading, start, stop } = useLiveSession(
   props.encounterId,
 )
@@ -82,7 +82,7 @@ async function toggleLiveVisibility(
 ): Promise<void> {
   if (!sheet.value) return
 
-  await update({
+  await updateSheet({
     settings: {
       ...sheet.value.settings,
       live: {
@@ -99,7 +99,7 @@ async function toggleLiveAllow(
 ): Promise<void> {
   if (!sheet.value) return
 
-  await update({
+  await updateSheet({
     settings: {
       ...sheet.value.settings,
       live: {

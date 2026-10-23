@@ -1,4 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import {
+  bloodiedCondition,
+  storedBloodiedCondition,
+} from '~~/test/fixtures/bloodied-condition'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 
 describe('dnd/hp-ac', () => {
@@ -563,7 +567,7 @@ describe('dnd/hp-ac', () => {
 
       expect(mockRow.hitPoints).toBe(20)
       expect(mockRow.maxHitPoints).toBe(30)
-      expect(mockRow.maxHitPointsOld).toBeUndefined()
+      expect(mockRow.maxHitPointsOld).toBeNull()
     })
 
     it('should keep the current/max difference on overrideReset when the old max exceeds the new max', () => {
@@ -652,7 +656,7 @@ describe('dnd/hp-ac', () => {
       ).toMatchObject({
         armorClass: 20,
         maxArmorClass: 20,
-        maxArmorClassOld: undefined,
+        maxArmorClassOld: null,
       })
     })
 
@@ -668,6 +672,275 @@ describe('dnd/hp-ac', () => {
       handleAcChanges(5, 'add', row, false)
 
       expect(row.armorClass).toBe(10)
+    })
+  })
+
+  describe('applyHpChange', () => {
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'player',
+      conditions: [],
+      hitPoints: 80,
+      maxHitPoints: 100,
+      tempHitPoints: 0,
+      concentration: false,
+      resistancesAndImmunities: {
+        damageImmunities: ['poison'],
+        damageResistances: ['fire'],
+        damageVulnerabilities: ['cold'],
+        conditionImmunities: [],
+      },
+    }
+
+    it('patches only the fields the change touched', () => {
+      expect(applyHpChange(row, { type: 'heal', amount: 5 })).toEqual({
+        patch: { hitPoints: 85 },
+        toasts: [],
+      })
+    })
+
+    it('applies damage defenses per roll', () => {
+      const { patch } = applyHpChange(row, {
+        type: 'damage',
+        rolls: [
+          { amount: 10, type: 'poison' },
+          { amount: 10, type: 'fire' },
+          { amount: 10, type: 'cold' },
+          { amount: 3 },
+        ],
+      })
+
+      expect(patch).toEqual({ hitPoints: 52 })
+    })
+
+    it('adds two death save failures on a critical hit at 0 hp', () => {
+      const { patch } = applyHpChange(
+        { ...row, hitPoints: 0 },
+        { type: 'damage', rolls: [{ amount: 5 }], critical: true },
+      )
+
+      expect(patch.deathSaves).toEqual({
+        fail: [true, true, false],
+        save: [false, false, false],
+      })
+    })
+
+    it('adds the bloodied condition it is given at half hp', () => {
+      const { patch } = applyHpChange(
+        row,
+        { type: 'damage', rolls: [{ amount: 40 }] },
+        { bloodied: bloodiedCondition },
+      )
+
+      expect(patch).toEqual({
+        hitPoints: 40,
+        conditions: [storedBloodiedCondition],
+      })
+    })
+
+    it('removes bloodied when a heal lifts the row above half hp', () => {
+      const { patch } = applyHpChange(
+        { ...row, hitPoints: 40, conditions: [storedBloodiedCondition] },
+        { type: 'heal', amount: 20 },
+        { bloodied: bloodiedCondition },
+      )
+
+      expect(patch).toEqual({ hitPoints: 60, conditions: [] })
+    })
+
+    it('leaves conditions alone without a bloodied condition', () => {
+      const { patch } = applyHpChange(row, {
+        type: 'damage',
+        rolls: [{ amount: 40 }],
+      })
+
+      expect(patch).toEqual({ hitPoints: 40 })
+    })
+
+    it.each([
+      [false, 0],
+      [true, -20],
+    ])('with negative hp %s, damage stops at %i', (negative, hitPoints) => {
+      const { patch } = applyHpChange(
+        row,
+        { type: 'damage', rolls: [{ amount: 100 }] },
+        { negative },
+      )
+
+      expect(patch.hitPoints).toBe(hitPoints)
+    })
+
+    it('returns the concentration check message', () => {
+      const { toasts } = applyHpChange(
+        { ...row, concentration: true },
+        { type: 'damage', rolls: [{ amount: 30 }] },
+      )
+
+      expect(toasts).toEqual([
+        expect.objectContaining({
+          description: [
+            'components.initiativeTable.concentration.text',
+            { name: 'Elara', dc: 15 },
+          ],
+        }),
+      ])
+    })
+
+    it('overrides and resets the max hit points', () => {
+      const { patch } = applyHpChange(row, { type: 'override', amount: 120 })
+
+      expect(patch).toEqual({
+        hitPoints: 100,
+        maxHitPoints: 120,
+        maxHitPointsOld: 100,
+      })
+
+      const overridden = { ...row, ...patch }
+
+      expect(
+        applyHpChange(overridden, { type: 'override-reset', amount: 100 })
+          .patch,
+      ).toEqual({ maxHitPoints: 100, maxHitPointsOld: null })
+    })
+
+    it('sets a new base, healing to it and dropping the override', () => {
+      const { patch } = applyHpChange(
+        { ...row, maxHitPointsOld: 90 },
+        { type: 'base', amount: 120 },
+      )
+
+      expect(patch).toEqual({
+        hitPoints: 120,
+        maxHitPoints: 120,
+        maxHitPointsOld: null,
+      })
+    })
+
+    it('removes bloodied when a new base heals the row to full', () => {
+      const { patch } = applyHpChange(
+        { ...row, hitPoints: 30, conditions: [storedBloodiedCondition] },
+        { type: 'base', amount: 40 },
+        { bloodied: bloodiedCondition },
+      )
+
+      expect(patch).toEqual({
+        hitPoints: 40,
+        maxHitPoints: 40,
+        conditions: [],
+      })
+    })
+
+    it('clears the override in a patch that survives JSON', () => {
+      const overridden = {
+        ...row,
+        hitPoints: 100,
+        maxHitPoints: 120,
+        maxHitPointsOld: 100,
+      }
+      const { patch } = applyHpChange(overridden, {
+        type: 'override-reset',
+        amount: 100,
+      })
+
+      expect(JSON.parse(JSON.stringify(patch))).toEqual({
+        maxHitPoints: 100,
+        maxHitPointsOld: null,
+      })
+    })
+
+    it('does not change the row it is given', () => {
+      const before = structuredClone(row)
+
+      applyHpChange(
+        row,
+        { type: 'damage', rolls: [{ amount: 90 }] },
+        { bloodied: bloodiedCondition },
+      )
+
+      expect(row).toEqual(before)
+    })
+  })
+
+  describe('liveHpChange', () => {
+    it('turns live damage into one untyped roll', () => {
+      expect(liveHpChange('damage', 7)).toEqual({
+        type: 'damage',
+        rolls: [{ amount: 7 }],
+      })
+    })
+
+    it.each(['heal', 'temp'] as const)('keeps a live %s as is', hpType => {
+      expect(liveHpChange(hpType, 7)).toEqual({ type: hpType, amount: 7 })
+    })
+  })
+
+  describe('applyAcChange', () => {
+    const row: InitiativeSheetRow = {
+      id: 'row-1',
+      index: 0,
+      initiative: 10,
+      name: 'Elara',
+      type: 'player',
+      conditions: [],
+      armorClass: 15,
+      maxArmorClass: 18,
+      tempArmorClass: 2,
+    }
+
+    it('patches only the fields the change touched', () => {
+      expect(applyAcChange(row, { type: 'add', amount: 1 })).toEqual({
+        armorClass: 16,
+      })
+    })
+
+    it('spends temp AC first', () => {
+      expect(applyAcChange(row, { type: 'remove', amount: 5 })).toEqual({
+        armorClass: 12,
+        tempArmorClass: 0,
+      })
+    })
+
+    it.each([
+      [false, 0],
+      [true, -3],
+    ])('with negative AC %s, removal stops at %i', (negative, armorClass) => {
+      expect(
+        applyAcChange(row, { type: 'remove', amount: 20 }, { negative })
+          .armorClass,
+      ).toBe(armorClass)
+    })
+
+    it('sets a new base and drops the override', () => {
+      expect(
+        applyAcChange(
+          { ...row, maxArmorClassOld: 16 },
+          { type: 'base', amount: 14 },
+        ),
+      ).toEqual({ armorClass: 14, maxArmorClass: 14, maxArmorClassOld: null })
+    })
+
+    it('overrides the max armor class', () => {
+      expect(applyAcChange(row, { type: 'override', amount: 20 })).toEqual({
+        armorClass: 17,
+        maxArmorClass: 20,
+        maxArmorClassOld: 18,
+      })
+    })
+
+    it('clears the override in a patch that survives JSON', () => {
+      const patch = applyAcChange(
+        { ...row, maxArmorClass: 20, maxArmorClassOld: 18 },
+        { type: 'override-reset', amount: 18 },
+      )
+
+      expect(JSON.parse(JSON.stringify(patch))).toEqual({
+        armorClass: 18,
+        maxArmorClass: 18,
+        maxArmorClassOld: null,
+      })
     })
   })
 

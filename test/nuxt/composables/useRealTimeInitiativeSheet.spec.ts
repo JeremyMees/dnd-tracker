@@ -1,471 +1,343 @@
 import { toast } from '~~/test/nuxt/stubs/toast'
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { realtime } from '~~/test/nuxt/stubs/realtime'
+import { mountHook } from '~~/test/nuxt/stubs/query-client'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { useQueryClient, type QueryClient } from '@tanstack/vue-query'
 import { flushPromises } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useRealTimeInitiativeSheet } from '~/composables/useRealTimeInitiativeSheet'
+import {
+  useInitiativeSheetDetailUpdate,
+  useInitiativeSheetPatch,
+} from '~/queries/initiative-sheets'
 import { authUser } from '~~/test/fixtures/auth-user'
 import { mockSheetCampaign } from '~~/test/fixtures/campaign'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 
-const {
-  getQueryData,
-  invalidateQueries,
-  navigateTo,
-  on,
-  removeChannel,
-  setQueryData,
-  subscribe,
-} = vi.hoisted(() => ({
-  getQueryData: vi.fn(),
-  invalidateQueries: vi.fn(),
+const { fetchMock, navigateTo } = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
   navigateTo: vi.fn(),
-  on: vi.fn(),
-  removeChannel: vi.fn(),
-  setQueryData: vi.fn(),
-  subscribe: vi.fn(),
-}))
-
-const channel = { on, subscribe }
-
-on.mockReturnValue(channel)
-subscribe.mockReturnValue(channel)
-
-vi.mock('@tanstack/vue-query', async importOriginal => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  useQueryClient: () => ({ getQueryData, setQueryData, invalidateQueries }),
 }))
 
 const user = ref<AuthUser>({ ...authUser })
 const data = ref<InitiativeSheet | undefined>()
-const isOnline = ref(true)
 const visibility = ref<DocumentVisibilityState>('visible')
 
-mockNuxtImport('useOnline', () => () => isOnline)
-mockNuxtImport('useDocumentVisibility', () => () => visibility)
-
+mockNuxtImport('$fetch', () => fetchMock)
 mockNuxtImport('navigateTo', () => navigateTo)
 mockNuxtImport('useAuthenticatedUser', () => () => user)
-mockNuxtImport('useSupabaseClient', () => () => ({
-  channel: () => channel,
-  removeChannel,
-}))
+mockNuxtImport('useSupabaseClient', () => () => realtime.client)
+mockNuxtImport('useDocumentVisibility', () => () => visibility)
 
-interface Probe {
-  enabled: boolean
-  updateQueryData: (payload: Record<string, unknown>) => void
-  onTurnReminders: (callback: (reminders: TurnReminders) => void) => void
+const sheetKey = queryKeys.initiativeSheetDetail(2)
+const eventsKey = queryKeys.combatEvents(2)
+const cached: InitiativeSheet = {
+  ...sheet,
+  version: 3,
+  campaign: mockSheetCampaign,
 }
 
-const Probe = defineComponent({
-  setup() {
-    return useRealTimeInitiativeSheet(2, data)
-  },
-  template: '<div />',
-})
-
-let mounted: Awaited<ReturnType<typeof mountSuspended>> | undefined
-
-async function mountProbe() {
-  const component = await mountSuspended(Probe)
-
-  mounted = component
-
-  await flushPromises()
-
-  return { component, vm: component.vm as unknown as Probe }
-}
-
-function emitBroadcast(event: string, payload: unknown): void {
-  const call = on.mock.calls.find(
-    call => call[0] === 'broadcast' && call[1].event === event,
-  )
-  const handler = call![2] as (arg: { payload: unknown }) => void
-
-  handler({ payload })
+function mountProbe() {
+  return mountHook(() => useRealTimeInitiativeSheet(2, data))
 }
 
 describe('useRealTimeInitiativeSheet', () => {
-  beforeEach(() => {
-    on.mockReturnValue(channel)
-    subscribe.mockReturnValue(channel)
+  let queryClient: QueryClient
 
+  function eventsInvalidated(): boolean {
+    return !!queryClient.getQueryState(eventsKey)?.isInvalidated
+  }
+
+  beforeEach(async () => {
+    const { vm } = await mountHook(() => ({ queryClient: useQueryClient() }))
+
+    queryClient = vm.queryClient
+    queryClient.clear()
+    queryClient.setQueryData(sheetKey, cached)
+    queryClient.setQueryData(eventsKey, [{ id: 1 }])
+    realtime.reset()
+    navigateTo.mockClear()
     user.value = { ...authUser, subscriptionType: 'pro' }
-    data.value = { ...sheet, campaign: mockSheetCampaign }
-    isOnline.value = true
+    data.value = cached
     visibility.value = 'visible'
   })
 
-  afterEach(() => {
-    mounted?.unmount()
-    mounted = undefined
-  })
+  describe('enabled', () => {
+    it('is on for a campaign encounter with a pro subscription', async () => {
+      const { vm } = await mountProbe()
 
-  it('Should be enabled for a campaign encounter with a high enough subscription', async () => {
-    const { vm } = await mountProbe()
+      expect(vm.enabled).toBe(true)
+      expect(realtime.latest()?.topic).toBe('sheet:2')
+    })
 
-    expect(vm.enabled).toBe(true)
-  })
+    it('is on for a personal encounter with a pro subscription', async () => {
+      data.value = { ...cached, campaign: undefined }
 
-  it('Should not be enabled without an encounter', async () => {
-    data.value = undefined
+      const { vm } = await mountProbe()
 
-    const { vm } = await mountProbe()
+      expect(vm.enabled).toBe(true)
+    })
 
-    expect(vm.enabled).toBe(false)
-  })
+    it('is off without an encounter', async () => {
+      data.value = undefined
 
-  it('Should be enabled for a personal encounter with a high enough subscription', async () => {
-    data.value = { ...sheet, campaign: undefined }
+      const { vm } = await mountProbe()
 
-    const { vm } = await mountProbe()
+      expect(vm.enabled).toBe(false)
+      expect(realtime.channels).toHaveLength(0)
+    })
 
-    expect(vm.enabled).toBe(true)
-  })
+    it('is off when the subscription is too low', async () => {
+      user.value = { ...authUser, subscriptionType: 'free' }
 
-  it('Should not be enabled when the subscription is too low', async () => {
-    user.value = { ...authUser, subscriptionType: 'free' }
+      const { vm } = await mountProbe()
 
-    const { vm } = await mountProbe()
+      expect(vm.enabled).toBe(false)
+      expect(realtime.channels).toHaveLength(0)
+    })
 
-    expect(vm.enabled).toBe(false)
-  })
-
-  it('Should subscribe to the sheet broadcast channel when enabled', async () => {
-    await mountProbe()
-
-    expect(on).toHaveBeenCalledWith(
-      'broadcast',
-      { event: 'action' },
-      expect.any(Function),
-    )
-    expect(on).toHaveBeenCalledWith(
-      'broadcast',
-      { event: 'sync' },
-      expect.any(Function),
-    )
-    expect(on).toHaveBeenCalledWith(
-      'broadcast',
-      { event: 'deleted' },
-      expect.any(Function),
-    )
-    expect(subscribe).toHaveBeenCalled()
-  })
-
-  it('Should not subscribe when disabled', async () => {
-    user.value = { ...authUser, subscriptionType: 'free' }
-
-    await mountProbe()
-
-    expect(on).not.toHaveBeenCalled()
-  })
-
-  describe('action broadcast', () => {
-    it('Should merge a sequential action into the cached row and bump the version', async () => {
-      const current = { ...sheet, version: 3 }
-
-      getQueryData.mockReturnValue(current)
-
+    it('does not catch up without a subscription', async () => {
+      user.value = { ...authUser, subscriptionType: 'free' }
+      visibility.value = 'hidden'
       await mountProbe()
 
-      emitBroadcast('action', {
+      visibility.value = 'visible'
+      await flushPromises()
+
+      expect(queryClient.getQueryState(sheetKey)?.isInvalidated).toBe(false)
+    })
+  })
+
+  describe('combat log', () => {
+    it('refetches after an action', async () => {
+      await mountProbe()
+
+      realtime.emit('action', {
         version: 4,
-        row: current.rows[0]!.id,
+        row: sheet.rows[0]!.id,
         patch: { hitPoints: 3 },
       })
 
-      expect(setQueryData).toHaveBeenCalledWith(
-        ['useInitiativeSheetDetail', 2],
-        {
-          ...current,
-          version: 4,
-          rows: [
-            { ...current.rows[0], hitPoints: 3 },
-            ...current.rows.slice(1),
-          ],
-        },
-      )
-      expect(invalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['useCombatEvents', 2],
-      })
+      expect(eventsInvalidated()).toBe(true)
     })
 
-    it('Should invalidate instead of merging on a version gap', async () => {
-      getQueryData.mockReturnValue({ ...sheet, version: 3 })
-
+    it('refetches after a snapshot', async () => {
       await mountProbe()
 
-      emitBroadcast('action', {
-        version: 6,
-        row: sheet.rows[0]!.id,
-        patch: {},
-      })
+      realtime.emit('sync', { version: 4, sheet: { round: 2 } })
 
-      expect(setQueryData).not.toHaveBeenCalled()
-      expect(invalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['useInitiativeSheetDetail', 2],
-      })
+      expect(eventsInvalidated()).toBe(true)
     })
 
-    it('Should ignore an already-applied or stale action broadcast', async () => {
-      getQueryData.mockReturnValue({ ...sheet, version: 5 })
-
+    it('does not refetch for a broadcast it already has', async () => {
       await mountProbe()
 
-      emitBroadcast('action', { version: 5, row: sheet.rows[0]!.id, patch: {} })
+      realtime.emit('sync', { version: 3, sheet: { round: 2 } })
 
-      expect(setQueryData).not.toHaveBeenCalled()
-      expect(invalidateQueries).not.toHaveBeenCalled()
+      expect(eventsInvalidated()).toBe(false)
     })
 
-    it('Should ignore an action broadcast when there is no cached state yet', async () => {
-      getQueryData.mockReturnValue(undefined)
-
+    it('refetches when catching up', async () => {
+      visibility.value = 'hidden'
       await mountProbe()
 
-      expect(() =>
-        emitBroadcast('action', {
-          version: 1,
-          row: sheet.rows[0]!.id,
-          patch: {},
-        }),
-      ).not.toThrow()
-      expect(setQueryData).not.toHaveBeenCalled()
-      expect(invalidateQueries).not.toHaveBeenCalled()
+      visibility.value = 'visible'
+      await flushPromises()
+
+      expect(eventsInvalidated()).toBe(true)
+    })
+
+    it('refetches when new events were logged', async () => {
+      await mountProbe()
+
+      realtime.emit('events', {})
+
+      expect(eventsInvalidated()).toBe(true)
+    })
+
+    it('empties when it was cleared elsewhere', async () => {
+      await mountProbe()
+
+      realtime.emit('events', { cleared: true })
+
+      expect(queryClient.getQueryData(eventsKey)).toEqual([])
     })
   })
 
-  describe('sync broadcast', () => {
-    it('Should replace the sheet on a newer sync broadcast while keeping the campaign', async () => {
-      const current = { ...sheet, version: 2, campaign: mockSheetCampaign }
+  it('keeps the campaign when taking a snapshot', async () => {
+    await mountProbe()
 
-      getQueryData.mockReturnValue(current)
+    realtime.emit('sync', { version: 4, sheet: { title: 'Renamed' } })
 
-      await mountProbe()
-
-      const newSheet = { ...sheet, title: 'Renamed' }
-
-      emitBroadcast('sync', { version: 3, sheet: newSheet })
-
-      expect(setQueryData).toHaveBeenCalledWith(
-        ['useInitiativeSheetDetail', 2],
-        expect.any(Function),
-      )
-
-      const updater = setQueryData.mock.calls[0]![1] as (
-        old: unknown,
-      ) => unknown
-
-      expect(updater(current)).toEqual({
-        ...current,
-        ...newSheet,
-        version: 3,
-        campaign: mockSheetCampaign,
-      })
+    expect(queryClient.getQueryData(sheetKey)).toEqual({
+      ...cached,
+      title: 'Renamed',
+      version: 4,
     })
+  })
 
-    it('Should merge a sync broadcast without a campaign to keep', async () => {
-      const current = { ...sheet, version: 2, campaign: undefined }
+  describe('turn reminders', () => {
+    const reminders: TurnReminders = {
+      expired: [
+        {
+          rowId: sheet.rows[0]!.id,
+          rowName: sheet.rows[0]!.name,
+          condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
+        },
+      ],
+      saves: [],
+      recharges: [],
+    }
 
-      getQueryData.mockReturnValue(current)
-
-      await mountProbe()
-
-      emitBroadcast('sync', {
-        version: 3,
-        sheet: { ...sheet, title: 'Renamed' },
-      })
-
-      const updater = setQueryData.mock.calls[0]![1] as (
-        old: unknown,
-      ) => unknown
-
-      expect(updater(undefined)).toEqual({
-        ...sheet,
-        title: 'Renamed',
-        version: 3,
-      })
-    })
-
-    it('Should ignore a stale sync broadcast', async () => {
-      getQueryData.mockReturnValue({ ...sheet, version: 5 })
-
-      await mountProbe()
-
-      emitBroadcast('sync', { version: 5, sheet })
-
-      expect(setQueryData).not.toHaveBeenCalled()
-    })
-
-    it('Should pass the reminders of a portal turn to the listeners', async () => {
-      getQueryData.mockReturnValue({ ...sheet, version: 2 })
-
+    it('passes the reminders of a player turn to the listeners', async () => {
       const listener = vi.fn()
       const { vm } = await mountProbe()
 
       vm.onTurnReminders(listener)
-
-      const reminders: TurnReminders = {
-        expired: [
-          {
-            rowId: sheet.rows[0]!.id,
-            rowName: sheet.rows[0]!.name,
-            condition: { id: 'prone', name: 'Prone', desc: 'Down.' },
-          },
-        ],
-        saves: [],
-        recharges: [],
-      }
-
-      emitBroadcast('sync', { version: 3, sheet, reminders })
+      realtime.emit('sync', { version: 4, sheet: {}, reminders })
 
       expect(listener).toHaveBeenCalledWith(reminders)
     })
 
-    it('Should not notify the listeners for a sync without reminders', async () => {
-      getQueryData.mockReturnValue({ ...sheet, version: 2 })
-
+    it('does not notify for a snapshot without reminders', async () => {
       const listener = vi.fn()
       const { vm } = await mountProbe()
 
       vm.onTurnReminders(listener)
-      emitBroadcast('sync', { version: 3, sheet })
+      realtime.emit('sync', { version: 4, sheet: {} })
 
       expect(listener).not.toHaveBeenCalled()
     })
 
-    it('Should not notify the listeners for a stale sync', async () => {
-      getQueryData.mockReturnValue({ ...sheet, version: 5 })
-
+    it('does not notify for a snapshot it already has', async () => {
       const listener = vi.fn()
       const { vm } = await mountProbe()
 
       vm.onTurnReminders(listener)
-      emitBroadcast('sync', {
-        version: 5,
-        sheet,
-        reminders: { expired: [], saves: [], recharges: [] },
-      })
+      realtime.emit('sync', { version: 3, sheet: {}, reminders })
 
       expect(listener).not.toHaveBeenCalled()
     })
+  })
 
-    it('Should accept a sync broadcast even with no cached state yet', async () => {
-      getQueryData.mockReturnValue(undefined)
+  describe('edits in flight', () => {
+    const rowId = sheet.rows[0]!.id
+    let release: (value: unknown) => void
 
-      await mountProbe()
+    function mountWithEdits() {
+      return mountHook(() => {
+        useRealTimeInitiativeSheet(2, data)
 
-      emitBroadcast('sync', { version: 1, sheet })
+        return {
+          patch: useInitiativeSheetPatch().mutate,
+          update: useInitiativeSheetDetailUpdate().mutate,
+        }
+      })
+    }
 
-      expect(setQueryData).toHaveBeenCalledWith(
-        ['useInitiativeSheetDetail', 2],
-        expect.any(Function),
+    function cachedSheet(): InitiativeSheet | undefined {
+      return queryClient.getQueryData<InitiativeSheet>(sheetKey)
+    }
+
+    beforeEach(() => {
+      fetchMock.mockReset()
+      fetchMock.mockImplementation(
+        () =>
+          new Promise(resolve => {
+            release = resolve
+          }),
       )
     })
-  })
 
-  describe('deleted broadcast', () => {
-    it('Should redirect and warn when the encounter is removed', async () => {
-      await mountProbe()
+    it('keeps a row edit through a snapshot', async () => {
+      const { vm } = await mountWithEdits()
 
-      emitBroadcast('deleted', {})
-
-      expect(toast.warning).toHaveBeenCalledWith(
-        'pages.encounter.toasts.removed.title',
-        { description: 'pages.encounter.toasts.removed.text' },
-      )
-      expect(navigateTo).toHaveBeenCalledWith('/encounters')
-      expect(setQueryData).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('catching up', () => {
-    const sheetKey = { queryKey: ['useInitiativeSheetDetail', 2] }
-    const eventsKey = { queryKey: ['useCombatEvents', 2] }
-
-    it('Should refetch the sheet and combat log when coming back online', async () => {
-      isOnline.value = false
-
-      await mountProbe()
-
-      isOnline.value = true
+      vm.patch({ id: 2, rowId, patch: { hitPoints: 1 } })
       await flushPromises()
 
-      expect(invalidateQueries).toHaveBeenCalledWith(sheetKey)
-      expect(invalidateQueries).toHaveBeenCalledWith(eventsKey)
+      realtime.emit('sync', {
+        version: 4,
+        sheet: {
+          round: 2,
+          rows: cached.rows.map(row => ({ ...row, hitPoints: 50 })),
+        },
+      })
+
+      expect(cachedSheet()).toMatchObject({ version: 4, round: 2 })
+      expect(cachedSheet()?.rows[0]?.hitPoints).toBe(1)
+      expect(cachedSheet()?.rows[1]?.hitPoints).toBe(50)
     })
 
-    it('Should refetch the sheet and combat log when the tab regains focus', async () => {
-      visibility.value = 'hidden'
+    it('keeps a row edit through an action on the same row', async () => {
+      const { vm } = await mountWithEdits()
 
-      await mountProbe()
-
-      visibility.value = 'visible'
+      vm.patch({ id: 2, rowId, patch: { hitPoints: 1 } })
       await flushPromises()
 
-      expect(invalidateQueries).toHaveBeenCalledWith(sheetKey)
-      expect(invalidateQueries).toHaveBeenCalledWith(eventsKey)
-    })
+      realtime.emit('action', {
+        version: 4,
+        row: rowId,
+        patch: { hitPoints: 50, initiative: 3 },
+      })
 
-    it('Should not refetch when going offline or hiding the tab', async () => {
-      await mountProbe()
-
-      isOnline.value = false
-      visibility.value = 'hidden'
-      await flushPromises()
-
-      expect(invalidateQueries).not.toHaveBeenCalled()
-    })
-
-    it('Should not refetch without a realtime subscription', async () => {
-      user.value = { ...authUser, subscriptionType: 'free' }
-      visibility.value = 'hidden'
-
-      await mountProbe()
-
-      visibility.value = 'visible'
-      await flushPromises()
-
-      expect(invalidateQueries).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('events broadcast', () => {
-    it('Should refetch the combat log when new events were logged', async () => {
-      await mountProbe()
-
-      emitBroadcast('events', {})
-
-      expect(invalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['useCombatEvents', 2],
+      expect(cachedSheet()?.rows[0]).toMatchObject({
+        hitPoints: 1,
+        initiative: 3,
       })
     })
 
-    it('Should empty the combat log when it was cleared elsewhere', async () => {
-      await mountProbe()
+    it('keeps a sheet edit through a snapshot', async () => {
+      const { vm } = await mountWithEdits()
 
-      emitBroadcast('events', { cleared: true })
+      vm.update({ id: 2, data: { round: 7 } })
+      await flushPromises()
 
-      expect(setQueryData).toHaveBeenCalledWith(['useCombatEvents', 2], [])
-      expect(invalidateQueries).not.toHaveBeenCalled()
+      realtime.emit('sync', { version: 4, sheet: { round: 2 } })
+
+      expect(cachedSheet()).toMatchObject({ version: 4, round: 7 })
+    })
+
+    it('takes the snapshot once the edit has been saved', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.patch({ id: 2, rowId, patch: { hitPoints: 1 } })
+      await flushPromises()
+      release({ row: {} })
+      await flushPromises()
+
+      realtime.emit('sync', {
+        version: 4,
+        sheet: { rows: cached.rows.map(row => ({ ...row, hitPoints: 50 })) },
+      })
+
+      expect(cachedSheet()?.rows[0]?.hitPoints).toBe(50)
+    })
+
+    it('ignores an edit to another encounter', async () => {
+      const { vm } = await mountWithEdits()
+
+      vm.patch({ id: 9, rowId, patch: { hitPoints: 1 } })
+      await flushPromises()
+
+      realtime.emit('sync', {
+        version: 4,
+        sheet: { rows: cached.rows.map(row => ({ ...row, hitPoints: 50 })) },
+      })
+
+      expect(cachedSheet()?.rows[0]?.hitPoints).toBe(50)
     })
   })
 
-  it('Should leave the channel when unmounted', async () => {
-    const { component } = await mountProbe()
+  it('warns and leaves when the encounter is removed', async () => {
+    await mountProbe()
 
-    component.unmount()
+    realtime.emit('deleted', {})
+    await flushPromises()
 
-    expect(removeChannel).toHaveBeenCalledWith(channel)
-  })
-
-  it('Should expose updateQueryData for manual cache writes', async () => {
-    const { vm } = await mountProbe()
-
-    vm.updateQueryData({ title: 'Manual' })
-
-    expect(setQueryData).toHaveBeenCalledWith(
-      ['useInitiativeSheetDetail', 2],
-      expect.any(Function),
+    expect(toast.warning).toHaveBeenCalledWith(
+      'pages.encounter.toasts.removed.title',
+      { description: 'pages.encounter.toasts.removed.text' },
     )
+    expect(navigateTo).toHaveBeenCalledWith('/encounters')
   })
 })

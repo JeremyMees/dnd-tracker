@@ -1,7 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
-import { mockHomebrewItem } from '~~/test/fixtures/homebrew'
-import { dndMonsterFixture } from '~~/test/fixtures/open5e'
 
 describe('dnd/row', () => {
   describe('indexCorrect', () => {
@@ -364,6 +362,40 @@ describe('dnd/row', () => {
     })
   })
 
+  describe('normalizeRows', () => {
+    it('reindexes by initiative and cleans numbers and conditions', () => {
+      const elara: InitiativeSheetRow = {
+        id: 'row-1',
+        index: 0,
+        initiative: 5,
+        name: 'Elara',
+        type: 'player',
+        conditions: [
+          { id: 'prone', name: 'Prone', desc: 'Down.', level: null },
+        ],
+        hitPoints: 7.6,
+      }
+      const goblin: InitiativeSheetRow = {
+        ...elara,
+        id: 'row-2',
+        index: 1,
+        initiative: 15,
+        conditions: [],
+        hitPoints: 3,
+      }
+
+      expect(normalizeRows([elara, goblin])).toStrictEqual([
+        { ...goblin, index: 0 },
+        {
+          ...elara,
+          index: 1,
+          hitPoints: 8,
+          conditions: [{ id: 'prone', name: 'Prone', desc: '' }],
+        },
+      ])
+    })
+  })
+
   describe('getCurrentRowIndex', () => {
     it('should return correct index for existing id', () => {
       const index = getCurrentRowIndex(sheet, sheet.rows[0]?.id ?? '')
@@ -600,86 +632,6 @@ describe('dnd/row', () => {
     })
   })
 
-  describe('monsterToRow', () => {
-    it('should turn a bestiary monster into monster row data', () => {
-      const row = monsterToRow(dndMonsterFixture)
-
-      expect(row).toMatchObject({
-        name: dndMonsterFixture.name,
-        type: 'monster',
-        hitPoints: dndMonsterFixture.hitPoints,
-        armorClass: dndMonsterFixture.armorClass,
-        hitDice: parseDndDiceToString(dndMonsterFixture.hitDice),
-        languages: dndMonsterFixture.languages.map(language => language.name),
-        initiativeModifier: dndMonsterFixture.initiativeBonus,
-      })
-    })
-
-    it('should keep the challenge rating', () => {
-      const row = monsterToRow(dndMonsterFixture)
-
-      expect(row.challengeRating).toBe(dndMonsterFixture.challengeRating)
-    })
-
-    it('should drop the monster fields a row has no place for', () => {
-      const row = monsterToRow(dndMonsterFixture)
-
-      for (const field of [
-        'size',
-        'alignment',
-        'experiencePoints',
-        'initiativeBonus',
-      ]) {
-        expect(row).not.toHaveProperty(field)
-      }
-    })
-
-    it('should leave out a missing proficiency bonus', () => {
-      const row = monsterToRow({ ...dndMonsterFixture, proficiencyBonus: null })
-
-      expect(row.proficiencyBonus).toBeUndefined()
-    })
-  })
-
-  describe('homebrewToRow', () => {
-    it('should link the row to the homebrew it came from', () => {
-      const row = homebrewToRow(mockHomebrewItem)
-
-      expect(row.homebrew).toBe(mockHomebrewItem.id)
-      expect(row).not.toHaveProperty('id')
-      expect(row).toMatchObject({
-        name: mockHomebrewItem.name,
-        type: mockHomebrewItem.type,
-        campaign: mockHomebrewItem.campaign,
-        hitPoints: mockHomebrewItem.hitPoints,
-      })
-    })
-
-    it('should turn nulls into undefined', () => {
-      const row = homebrewToRow(mockHomebrewItem)
-
-      expect(row.player).toBeUndefined()
-      expect(row.link).toBeUndefined()
-      expect(row.traits).toBeUndefined()
-    })
-
-    it('should parse the stored initiative modifier', () => {
-      expect(homebrewToRow(mockHomebrewItem).initiativeModifier).toBe(2)
-      expect(
-        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: '0' })
-          .initiativeModifier,
-      ).toBe(0)
-      expect(
-        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: '' })
-          .initiativeModifier,
-      ).toBeUndefined()
-      expect(
-        homebrewToRow({ ...mockHomebrewItem, initiativeModifier: null })
-          .initiativeModifier,
-      ).toBeUndefined()
-    })
-  })
-
   describe('toSummoner', () => {
     it('should return the name and id of the summoning row', () => {
       const summoner = sheet.rows[0]!
@@ -858,6 +810,27 @@ describe('dnd/row', () => {
       const after = { ...baseRow, concentration: true }
 
       expect(buildCombatPatch(baseRow, after)).toEqual({ concentration: true })
+    })
+  })
+
+  describe('withRowPatches', () => {
+    const [first, second] = sheet.rows
+
+    it('merges each patch into its row and leaves the rest as they were', () => {
+      const rows = withRowPatches(sheet.rows, [
+        { rowId: first!.id, patch: { hitPoints: 1, note: 'Down' } },
+      ])
+
+      expect(rows[0]).toEqual({ ...first, hitPoints: 1, note: 'Down' })
+      expect(rows[1]).toBe(second)
+    })
+
+    it('ignores a patch for a row that is not there', () => {
+      expect(
+        withRowPatches(sheet.rows, [
+          { rowId: 'gone', patch: { hitPoints: 1 } },
+        ]),
+      ).toEqual(sheet.rows)
     })
   })
 })

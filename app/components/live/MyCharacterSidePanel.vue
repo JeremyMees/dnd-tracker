@@ -3,6 +3,7 @@ const props = defineProps<{
   row: PlayerRow
   rows: PlayerRow[]
   allow: LiveAllowActions
+  settings: PlayerSheetSettings
   activeRow?: PlayerRow
 }>()
 
@@ -50,6 +51,7 @@ const active = computed(() => props.row.id === props.activeRow?.id)
       :rows="rows"
       :active="active"
       :allow="allow"
+      :settings="settings"
     />
   </UiScrollArea>
 </template>

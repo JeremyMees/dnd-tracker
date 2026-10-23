@@ -194,7 +194,7 @@ export function rollRowInitiative(
 
 export function appendRows(
   rows: InitiativeSheetRow[],
-  added: (Partial<InitiativeSheetRow> & { name: string; type: HomebrewType })[],
+  added: NewInitiativeRow[],
   settings?: InitiativeSettings,
 ): InitiativeSheetRow[] {
   const autoRollInitiative = isAutoRollInitiativeEnabled(settings)
@@ -214,43 +214,6 @@ export function appendRows(
       created.map(row => row.id),
     ),
   )
-}
-
-export const monsterToRow = (
-  monster: DndMonster,
-): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
-  const {
-    initiativeBonus,
-    hitDice,
-    languages,
-    proficiencyBonus,
-    type: _type,
-    size: _size,
-    alignment: _alignment,
-    experiencePoints: _experiencePoints,
-    ...rest
-  } = monster
-
-  return {
-    ...rest,
-    type: 'monster',
-    hitDice: parseDndDiceToString(hitDice),
-    languages: parseDndLanguages(languages),
-    initiativeModifier: initiativeBonus,
-    proficiencyBonus: proficiencyBonus ?? undefined,
-  }
-}
-
-export const homebrewToRow = (
-  homebrew: HomebrewItemRow,
-): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
-  const { id, initiativeModifier, ...rest } = homebrew
-
-  return {
-    ...nullsToUndefined(rest),
-    homebrew: id,
-    initiativeModifier: toIntegerOrUndefined(initiativeModifier),
-  }
 }
 
 export function toSummoner(
@@ -291,4 +254,26 @@ export const editInitiativeRow = (
       ? {}
       : { armorClass: ac, maxArmorClass: ac, maxArmorClassOld: undefined }),
   }
+}
+
+export function normalizeRows(
+  rows: InitiativeSheetRow[],
+): InitiativeSheetRow[] {
+  return indexCorrect(rows).map(row => ({
+    ...sanitizeRowNumbers(row),
+    conditions: row.conditions.map(sanitizeCondition),
+  }))
+}
+
+export function withRowPatches(
+  rows: InitiativeSheetRow[],
+  patches: RowPatch[],
+): InitiativeSheetRow[] {
+  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+  return rows.map(row => {
+    const patch = byRow.get(row.id)
+
+    return patch ? { ...row, ...patch } : row
+  })
 }

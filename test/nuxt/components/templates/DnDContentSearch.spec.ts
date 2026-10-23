@@ -15,9 +15,7 @@ import { mountWithTooltips } from '~~/test/nuxt/stubs/tooltip'
 interface Props {
   variant?: 'secondary' | 'background'
   sheet?: InitiativeSheet
-  update?: (
-    payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
-  ) => Promise<void>
+  updateSheet?: (fields: SheetFieldsUpdate) => Promise<void>
   allowPin?: boolean
   persist?: FilterPersistence
 }
@@ -32,7 +30,7 @@ mockNuxtImport('useRoute', () => () => ({
   },
 }))
 
-const mockUpdate = vi.fn()
+const mockUpdateSheet = vi.fn()
 
 const mockItem = dndArmorFixture
 const status = ref('success')
@@ -65,7 +63,7 @@ vi.mock('~/queries/srd', () => ({
 const props: Props = {
   allowPin: false,
   variant: 'secondary',
-  update: mockUpdate,
+  updateSheet: mockUpdateSheet,
   sheet: {
     ...sheet,
     infoCards: [mockItem],
@@ -147,7 +145,7 @@ describe('DnDContentSearch', async () => {
     await component.find('[test-id="remove-pins"]').trigger('click')
     await vi.advanceTimersByTimeAsync(600)
 
-    expect(mockUpdate).toHaveBeenCalledWith({
+    expect(mockUpdateSheet).toHaveBeenCalledWith({
       infoCards: [],
     })
   })
@@ -354,7 +352,7 @@ describe('DnDContentSearch', async () => {
     await contentCard!.vm.$emit('pin')
     await vi.advanceTimersByTimeAsync(600)
 
-    expect(mockUpdate).toHaveBeenCalledWith({
+    expect(mockUpdateSheet).toHaveBeenCalledWith({
       infoCards: [mockItem, open5eV2ArmorListingFixture[1]],
     })
     expectNoToast()
@@ -380,7 +378,7 @@ describe('DnDContentSearch', async () => {
     await contentCard!.vm.$emit('unpin')
     await vi.advanceTimersByTimeAsync(600)
 
-    expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+    expect(mockUpdateSheet).toHaveBeenCalledWith({ infoCards: [] })
   })
 
   describe('Pinned conditions with a duration on a row', () => {
@@ -420,7 +418,7 @@ describe('DnDContentSearch', async () => {
       await component.findComponent({ name: 'ContentCard' }).vm.$emit('pin')
       await vi.advanceTimersByTimeAsync(600)
 
-      expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [blinded] })
+      expect(mockUpdateSheet).toHaveBeenCalledWith({ infoCards: [blinded] })
     })
 
     it('Should unpin the condition and leave the row duration alone', async () => {
@@ -438,7 +436,7 @@ describe('DnDContentSearch', async () => {
       await component.findComponent({ name: 'ContentCard' }).vm.$emit('unpin')
       await vi.advanceTimersByTimeAsync(600)
 
-      expect(mockUpdate).toHaveBeenCalledWith({ infoCards: [] })
+      expect(mockUpdateSheet).toHaveBeenCalledWith({ infoCards: [] })
     })
   })
 
@@ -450,7 +448,7 @@ describe('DnDContentSearch', async () => {
     const contentCard = component.findComponent({ name: 'ContentCard' })
     await contentCard.vm.$emit('pin', open5eV2ArmorListingFixture[0])
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockUpdateSheet).not.toHaveBeenCalled()
   })
 
   it('Should not remove pins without a sheet or update handler', async () => {
@@ -464,7 +462,7 @@ describe('DnDContentSearch', async () => {
 
     await (component.vm as unknown as DnDContentSearchVm).removePins()
 
-    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockUpdateSheet).not.toHaveBeenCalled()
   })
 
   it('Should not persist the filters by default', async () => {

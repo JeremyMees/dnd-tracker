@@ -5,20 +5,13 @@ import {
   serverSupabaseServiceRole,
 } from '~~/test/unit/stubs/supabase'
 import {
-  activeLiveSession,
-  broadcastActiveLiveState,
-  broadcastLiveAction,
   broadcastLiveEnded,
   broadcastLiveSeats,
-  broadcastLiveState,
   buildAcPatch,
   buildHpPatch,
   buildLiveActionPatch,
   liveActionSchema,
-  sanitizeBroadcastPatch,
 } from '~~/server/utils/live-broadcast'
-import { toPlayerSheet } from '~~/server/utils/player-portal'
-import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 function supabaseWithoutBloodied() {
   mockFrom({ srd_conditions: mockChain({ data: null, error: null }) })
@@ -27,236 +20,6 @@ function supabaseWithoutBloodied() {
 }
 
 describe('live-broadcast', () => {
-  describe('activeLiveSession', () => {
-    it('returns the uuid of the open, unexpired session for the encounter', async () => {
-      const chain = mockChain({ data: { uuid: 'session-uuid' }, error: null })
-
-      mockFrom({ live_sessions: chain })
-
-      await expect(
-        activeLiveSession(serverSupabaseServiceRole({} as never), 7),
-      ).resolves.toBe('session-uuid')
-
-      expect(chain.eq).toHaveBeenCalledWith('encounter', 7)
-      expect(chain.is).toHaveBeenCalledWith('endedAt', null)
-      expect(chain.gt).toHaveBeenCalledWith('expiresAt', expect.any(String))
-    })
-
-    it('returns undefined when the encounter has no live session', async () => {
-      mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
-
-      await expect(
-        activeLiveSession(serverSupabaseServiceRole({} as never), 7),
-      ).resolves.toBeUndefined()
-    })
-  })
-
-  describe('broadcastLiveAction', () => {
-    it('increments the session version and broadcasts the patch over the session channel', async () => {
-      mockFrom({}, { rpc: mockChain({ data: 4, error: null }) })
-
-      await broadcastLiveAction(
-        serverSupabaseServiceRole({} as never),
-        'session-uuid',
-        {
-          row: 'row-1',
-          patch: { hitPoints: 10 },
-        },
-      )
-
-      const supabase = serverSupabaseServiceRole({} as never)
-
-      expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
-        p_session: 'session-uuid',
-      })
-      expect(supabase.channel).toHaveBeenCalledWith('live:session-uuid')
-
-      const channel = supabase.channel('live:session-uuid')
-
-      expect(channel.httpSend).toHaveBeenCalledWith('action', {
-        version: 4,
-        row: 'row-1',
-        patch: { hitPoints: 10 },
-      })
-    })
-
-    it('propagates a postgres error from increment_live_version', async () => {
-      mockFrom(
-        {},
-        {
-          rpc: mockChain({
-            data: null,
-            error: { code: '23505', message: 'boom', details: '', hint: '' },
-          }),
-        },
-      )
-
-      await expect(
-        broadcastLiveAction(
-          serverSupabaseServiceRole({} as never),
-          'session-uuid',
-          {
-            row: 'row-1',
-            patch: { hitPoints: 10 },
-          },
-        ),
-      ).rejects.toMatchObject({ statusCode: 409 })
-    })
-  })
-
-  describe('broadcastLiveState', () => {
-    const sheet = {
-      id: 7,
-      title: 'Ambush',
-      round: 2,
-      activeIndex: 0,
-      rows: [
-        {
-          id: 'row-1',
-          index: 0,
-          initiative: 12,
-          name: 'Goblin',
-          type: 'monster',
-          conditions: [],
-          hitPoints: 4,
-          maxHitPoints: 7,
-        },
-      ],
-      settings: {},
-    } as unknown as InitiativeSheet
-
-    it('increments the live version and broadcasts the sanitized current sheet', async () => {
-      mockFrom(
-        { initiative_sheets: mockChain({ data: sheet, error: null }) },
-        { rpc: mockChain({ data: 6, error: null }) },
-      )
-
-      await broadcastLiveState(
-        serverSupabaseServiceRole({} as never),
-        'session-uuid',
-        7,
-      )
-
-      const supabase = serverSupabaseServiceRole({} as never)
-
-      expect(supabase.rpc).toHaveBeenCalledWith('increment_live_version', {
-        p_session: 'session-uuid',
-      })
-      expect(
-        supabase.channel('live:session-uuid').httpSend,
-      ).toHaveBeenCalledWith('sync', {
-        version: 6,
-        sheet: toPlayerSheet(sheet),
-      })
-    })
-
-    it('reads the sheet only after incrementing the version', async () => {
-      mockFrom(
-        { initiative_sheets: mockChain({ data: sheet, error: null }) },
-        { rpc: mockChain({ data: 6, error: null }) },
-      )
-
-      await broadcastLiveState(
-        serverSupabaseServiceRole({} as never),
-        'session-uuid',
-        7,
-      )
-
-      const supabase = serverSupabaseServiceRole({} as never)
-
-      expect(supabase.rpc.mock.invocationCallOrder[0]).toBeLessThan(
-        supabase.from.mock.invocationCallOrder[0]!,
-      )
-    })
-
-    it('propagates a postgres error from the sheet read', async () => {
-      mockFrom(
-        {
-          initiative_sheets: mockChain({
-            data: null,
-            error: { code: 'PGRST116', message: 'not found' },
-          }),
-        },
-        { rpc: mockChain({ data: 6, error: null }) },
-      )
-
-      await expect(
-        broadcastLiveState(
-          serverSupabaseServiceRole({} as never),
-          'session-uuid',
-          7,
-        ),
-      ).rejects.toMatchObject({ statusCode: 404 })
-    })
-  })
-
-  describe('broadcastActiveLiveState', () => {
-    const sheet = {
-      id: 7,
-      title: 'Ambush',
-      round: 1,
-      activeIndex: 0,
-      rows: [],
-      settings: {},
-    } as unknown as InitiativeSheet
-
-    it('syncs the given session without looking one up', async () => {
-      const from = mockFrom(
-        { initiative_sheets: mockChain({ data: sheet, error: null }) },
-        { rpc: mockChain({ data: 4, error: null }) },
-      )
-
-      await broadcastActiveLiveState(
-        serverSupabaseServiceRole({} as never),
-        7,
-        'session-uuid',
-      )
-
-      expect(from).not.toHaveBeenCalledWith('live_sessions')
-      expect(
-        serverSupabaseServiceRole({} as never).channel('live:session-uuid')
-          .httpSend,
-      ).toHaveBeenCalledWith('sync', {
-        version: 4,
-        sheet: toPlayerSheet(sheet),
-      })
-    })
-
-    it('looks up and syncs the active session of the encounter', async () => {
-      mockFrom(
-        {
-          live_sessions: mockChain({
-            data: { uuid: 'session-uuid' },
-            error: null,
-          }),
-          initiative_sheets: mockChain({ data: sheet, error: null }),
-        },
-        { rpc: mockChain({ data: 4, error: null }) },
-      )
-
-      await broadcastActiveLiveState(serverSupabaseServiceRole({} as never), 7)
-
-      expect(
-        serverSupabaseServiceRole({} as never).channel('live:session-uuid')
-          .httpSend,
-      ).toHaveBeenCalledWith('sync', {
-        version: 4,
-        sheet: toPlayerSheet(sheet),
-      })
-    })
-
-    it('does nothing without an active session', async () => {
-      mockFrom({ live_sessions: mockChain({ data: null, error: null }) })
-
-      await broadcastActiveLiveState(serverSupabaseServiceRole({} as never), 7)
-
-      expect(
-        serverSupabaseServiceRole({} as never).channel('live:session-uuid')
-          .httpSend,
-      ).not.toHaveBeenCalled()
-    })
-  })
-
   describe('broadcastLiveEnded', () => {
     it('broadcasts an ended event over the session channel', async () => {
       mockFrom({})
@@ -299,85 +62,6 @@ describe('live-broadcast', () => {
         type: 'kicked',
         seat: 'seat-1',
       })
-    })
-  })
-
-  describe('sanitizeBroadcastPatch', () => {
-    const prone = { id: 'prone', name: 'Prone', desc: '' }
-    const conditions = [prone, storedBloodiedCondition]
-    const row: InitiativeSheetRow = {
-      id: 'row-1',
-      index: 0,
-      initiative: 10,
-      name: 'Elara',
-      type: 'player',
-      conditions,
-      hitPoints: 40,
-      maxHitPoints: 100,
-    }
-
-    it('sends a player hp change as a health band without bloodied', () => {
-      expect(
-        sanitizeBroadcastPatch(row, 'hp', {
-          hitPoints: 40,
-          concentration: false,
-          conditions,
-        }),
-      ).toEqual({
-        healthBand: 'bloodied',
-        concentration: false,
-        conditions: [prone],
-      })
-    })
-
-    it('drops bloodied from a player conditions change', () => {
-      expect(sanitizeBroadcastPatch(row, 'conditions', { conditions })).toEqual(
-        { conditions: [prone] },
-      )
-    })
-
-    it('sends nothing for a player death saves change', () => {
-      expect(
-        sanitizeBroadcastPatch(row, 'deathSaves', {
-          deathSaves: {
-            fail: [true, false, false],
-            save: [false, false, false],
-          },
-        }),
-      ).toEqual({})
-    })
-
-    it('sends only the reaction for a reaction change', () => {
-      expect(
-        sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'reaction', {
-          resources: { reaction: true, legendaryResistances: 1 },
-        }),
-      ).toEqual({ reaction: true })
-    })
-
-    it('sends the readied flag when an action is readied', () => {
-      expect(
-        sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'ready', {
-          readied: true,
-        }),
-      ).toEqual({ readied: true })
-    })
-
-    it('sends the spent reaction when a readied action is used', () => {
-      expect(
-        sanitizeBroadcastPatch(row, 'ready', {
-          readied: false,
-          resources: { reaction: true, legendaryResistances: 1 },
-        }),
-      ).toEqual({ readied: false, reaction: true })
-    })
-
-    it('passes a non-player patch through untouched', () => {
-      const patch = { hitPoints: 40, conditions }
-
-      expect(sanitizeBroadcastPatch({ ...row, type: 'npc' }, 'hp', patch)).toBe(
-        patch,
-      )
     })
   })
 
@@ -495,7 +179,7 @@ describe('live-broadcast', () => {
       concentration: false,
     }
 
-    it('heals hitPoints up to the max and leaves other fields untouched', async () => {
+    it('patches only the fields the heal changed', async () => {
       const patch = await buildHpPatch(
         supabaseWithoutBloodied(),
         row,
@@ -503,13 +187,7 @@ describe('live-broadcast', () => {
         { type: 'hp', hpType: 'heal', amount: 15 },
       )
 
-      expect(patch).toEqual({
-        hitPoints: 25,
-        tempHitPoints: 0,
-        deathSaves: undefined,
-        concentration: false,
-        conditions: [],
-      })
+      expect(patch).toEqual({ hitPoints: 25 })
     })
 
     it('does not read the sheet', async () => {
@@ -578,7 +256,7 @@ describe('live-broadcast', () => {
       )
 
       expect(from).not.toHaveBeenCalledWith('srd_conditions')
-      expect(patch.conditions).toEqual([])
+      expect(patch).toEqual({ hitPoints: 5 })
     })
 
     it('clamps damage to zero when negative hp is not allowed', async () => {
@@ -653,7 +331,7 @@ describe('live-broadcast', () => {
     it('adds armor class without exceeding the max', () => {
       expect(
         buildAcPatch(row, undefined, { type: 'ac', acType: 'add', amount: 10 }),
-      ).toEqual({ armorClass: 18, tempArmorClass: 0 })
+      ).toEqual({ armorClass: 18 })
     })
 
     it('removes armor class, spending temp AC first', () => {
@@ -669,7 +347,7 @@ describe('live-broadcast', () => {
     it('sets temporary armor class', () => {
       expect(
         buildAcPatch(row, undefined, { type: 'ac', acType: 'temp', amount: 5 }),
-      ).toEqual({ armorClass: 15, tempArmorClass: 5 })
+      ).toEqual({ tempArmorClass: 5 })
     })
 
     it('clamps armor class at zero when negative values are not allowed', () => {
@@ -679,7 +357,7 @@ describe('live-broadcast', () => {
           { negative: false },
           { type: 'ac', acType: 'remove', amount: 20 },
         ),
-      ).toEqual({ armorClass: 0, tempArmorClass: 0 })
+      ).toEqual({ armorClass: 0 })
     })
 
     it('clamps armor class at zero when the setting is missing', () => {
@@ -735,7 +413,7 @@ describe('live-broadcast', () => {
         { type: 'ac', acType: 'add', amount: 1 },
       )
 
-      expect(patch).toEqual({ armorClass: 16, tempArmorClass: 0 })
+      expect(patch).toEqual({ armorClass: 16 })
     })
 
     it.each([

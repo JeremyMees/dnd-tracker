@@ -30,55 +30,6 @@ export async function logCombatEvents(
   if (error) throw createError(postgresErrorToH3Error(error))
 }
 
-async function incrementSheetVersion(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounterId: number,
-): Promise<number> {
-  const { data: version, error } = await supabase.rpc(
-    'increment_sheet_version',
-    { p_encounter: encounterId },
-  )
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  return version
-}
-
-export async function broadcastSheetAction(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounterId: number,
-  action: Omit<SheetActionEvent, 'version'>,
-): Promise<void> {
-  const version = await incrementSheetVersion(supabase, encounterId)
-  const channel = supabase.channel(`sheet:${encounterId}`)
-
-  await channel.httpSend('action', { version, ...action })
-}
-
-export async function broadcastSheetSync(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounterId: number,
-  reminders?: TurnReminders,
-): Promise<void> {
-  const version = await incrementSheetVersion(supabase, encounterId)
-
-  const { data: sheet, error } = await supabase
-    .from('initiative_sheets')
-    .select('title, round, activeIndex, rows, settings, info, infoCards')
-    .eq('id', encounterId)
-    .single()
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  const channel = supabase.channel(`sheet:${encounterId}`)
-
-  await channel.httpSend('sync', {
-    version,
-    sheet,
-    ...(reminders && { reminders }),
-  })
-}
-
 export async function broadcastSheetEvents(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   encounterId: number,

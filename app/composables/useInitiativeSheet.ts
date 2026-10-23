@@ -2,10 +2,11 @@ import type { RowSelectionState } from '@tanstack/vue-table'
 
 export function useInitiativeSheet(
   sheet: ComputedRef<InitiativeSheet | undefined>,
-  update: (
-    payload: Omit<Partial<InitiativeSheet>, NotUpdatable>,
-  ) => Promise<void>,
-  nextTurn: () => Promise<void>,
+  turns: {
+    next: () => Promise<void>
+    previous: () => Promise<void>
+    reset: (hard: boolean) => Promise<void>
+  },
 ) {
   const defaultColumns = new Set(['index', 'name', 'initiative'])
   const hidableColumns = [
@@ -151,18 +152,15 @@ export function useInitiativeSheet(
   function previous(): void {
     if (!sheet.value) return
 
-    const isAtStart = sheet.value.activeIndex === 0
+    const position = previousTurnPosition(sheet.value)
 
-    if (isAtStart && sheet.value.round <= 1) return
+    if (!position) return
 
-    const activeIndex = isAtStart
-      ? sheet.value.rows.length - 1
-      : sheet.value.activeIndex - 1
-    const round = isAtStart ? sheet.value.round - 1 : sheet.value.round
+    turns.previous().catch(() => undefined)
 
-    update({ activeIndex, round }).catch(() => undefined)
-
-    const index = sheet.value.rows[activeIndex] ? activeIndex : 0
+    const index = sheet.value.rows[position.activeIndex]
+      ? position.activeIndex
+      : 0
 
     if (!sheet.value.rows[index]) return
 
@@ -174,7 +172,7 @@ export function useInitiativeSheet(
 
     const { activeIndex } = nextTurnPosition(sheet.value)
 
-    nextTurn().catch(() => undefined)
+    turns.next().catch(() => undefined)
 
     const index = sheet.value.rows[activeIndex] ? activeIndex : 0
 
@@ -186,52 +184,7 @@ export function useInitiativeSheet(
   function reset(hard: boolean): void {
     if (!sheet.value) return
 
-    const isReadied = sheet.value.rows.some(row => row.readied)
-
-    let updatePayload: Omit<Partial<InitiativeSheet>, NotUpdatable> = {
-      activeIndex: 0,
-      round: 1,
-      ...(isReadied && {
-        rows: sheet.value.rows.map(row => ({ ...row, readied: undefined })),
-      }),
-    }
-
-    if (hard) {
-      updatePayload = {
-        ...updatePayload,
-        rows: sheet.value.rows.map(row => ({
-          ...row,
-          initiative: defaultInitiative(row.type),
-          conditions: [],
-          ...(row.concentration !== undefined && { concentration: false }),
-          ...(row.deathSaves !== undefined && {
-            deathSaves: {
-              fail: [false, false, false],
-              save: [false, false, false],
-            },
-          }),
-          ...(row.armorClass !== undefined && {
-            armorClass: row.maxArmorClassOld || row.maxArmorClass,
-          }),
-          ...(row.hitPoints !== undefined && {
-            hitPoints: row.maxHitPointsOld || row.maxHitPoints,
-          }),
-          ...(row.maxArmorClassOld !== undefined && {
-            maxArmorClass: row.maxArmorClassOld,
-          }),
-          ...(row.maxHitPointsOld !== undefined && {
-            maxHitPoints: row.maxHitPointsOld,
-          }),
-          readied: undefined,
-          maxArmorClassOld: undefined,
-          maxHitPointsOld: undefined,
-          tempHitPoints: undefined,
-          tempArmorClass: undefined,
-        })),
-      }
-    }
-
-    update(updatePayload).catch(() => undefined)
+    turns.reset(hard).catch(() => undefined)
 
     if (!sheet.value.rows[0]) return
 

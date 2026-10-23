@@ -90,6 +90,7 @@ describe('GET /api/encounter/live/state', () => {
           ready: true,
           endTurn: true,
         },
+        settings: { negative: false, bloodied: true },
       },
       session: {
         code: 'ABC234',

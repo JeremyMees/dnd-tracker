@@ -4,24 +4,13 @@ import HpOverride from '~/components/form/HpOverride.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
-const handleToasts = vi.fn()
-const updateRow = vi.fn()
+const apply = vi.fn()
 
 const overridden = sheet.rows[0]!
 const plain = sheet.rows[1]!
 
-function mountHpOverride({
-  withSheet = true,
-  item = plain,
-}: { withSheet?: boolean; item?: InitiativeSheetRow } = {}) {
-  return mountSuspended(HpOverride, {
-    props: {
-      sheet: withSheet ? sheet : undefined,
-      item,
-      handleToasts,
-      updateRow,
-    },
-  })
+function mountHpOverride({ item = plain }: { item?: InitiativeSheetRow } = {}) {
+  return mountSuspended(HpOverride, { props: { item, apply } })
 }
 
 async function submitAmount(
@@ -36,13 +25,10 @@ async function submitAmount(
   await submitForm(component)
 }
 
-function updatedRow(): InitiativeSheetRow {
-  return updateRow.mock.calls[0]![0]
-}
-
 describe('HpOverride', () => {
   beforeEach(() => {
-    updateRow.mockResolvedValue(undefined)
+    apply.mockReset()
+    apply.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -96,8 +82,7 @@ describe('HpOverride', () => {
 
     await submitAmount(component, 150)
 
-    expect(updatedRow().maxHitPoints).toBe(150)
-    expect(updatedRow().maxHitPointsOld).toBe(plain.maxHitPoints)
+    expect(apply).toHaveBeenCalledWith({ type: 'override', amount: 150 })
   })
 
   it('Should reset to the old max when the row is already overridden', async () => {
@@ -105,8 +90,10 @@ describe('HpOverride', () => {
 
     await submitAmount(component)
 
-    expect(updatedRow().maxHitPoints).toBe(overridden.maxHitPointsOld)
-    expect(updatedRow().maxHitPointsOld).toBeUndefined()
+    expect(apply).toHaveBeenCalledWith({
+      type: 'override-reset',
+      amount: overridden.maxHitPointsOld,
+    })
   })
 
   it('Should reset when the given amount equals the old max', async () => {
@@ -116,24 +103,7 @@ describe('HpOverride', () => {
 
     await submitAmount(component, 50)
 
-    expect(updatedRow().maxHitPoints).toBe(50)
-    expect(updatedRow().maxHitPointsOld).toBeUndefined()
-  })
-
-  it('Should pass the toasts of the change on', async () => {
-    const component = await mountHpOverride()
-
-    await submitAmount(component, 150)
-
-    expect(handleToasts).toHaveBeenCalledWith(expect.any(Array))
-  })
-
-  it('Should not update without a sheet', async () => {
-    const component = await mountHpOverride({ withSheet: false })
-
-    await submitAmount(component, 150)
-
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).toHaveBeenCalledWith({ type: 'override-reset', amount: 50 })
   })
 
   it('Should not update when the amount is invalid', async () => {
@@ -141,11 +111,11 @@ describe('HpOverride', () => {
 
     await submitAmount(component, 1001)
 
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).not.toHaveBeenCalled()
   })
 
   it('Should show the error when updating fails', async () => {
-    updateRow.mockRejectedValue(new Error('Update failed'))
+    apply.mockRejectedValue(new Error('Update failed'))
 
     const component = await mountHpOverride()
 
@@ -155,7 +125,7 @@ describe('HpOverride', () => {
   })
 
   it('Should show a generic error when the failure has no message', async () => {
-    updateRow.mockRejectedValue({})
+    apply.mockRejectedValue({})
 
     const component = await mountHpOverride()
 

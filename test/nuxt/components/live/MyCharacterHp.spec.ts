@@ -56,93 +56,20 @@ describe('LiveMyCharacterHp', () => {
     expect(component.text()).toContain('actions.damage')
   })
 
-  it('heals up to the max hp', async () => {
-    const component = await mountHp()
+  it.each(['heal', 'temp', 'damage'] as const)(
+    'sends a %s action with the amount',
+    async type => {
+      const component = await mountHp()
 
-    await submitAs(component, 'heal', 5)
+      await submitAs(component, type, 7)
 
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'heal', amount: 5 },
-      { hitPoints: 15 },
-    )
-  })
-
-  it('never predicts healing above the max hp', async () => {
-    const component = await mountHp()
-
-    await submitAs(component, 'heal', 500)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'heal', amount: 500 },
-      { hitPoints: 20 },
-    )
-  })
-
-  it('sets temporary hit points directly rather than adding to them', async () => {
-    const component = await mountHp()
-
-    await submitAs(component, 'temp', 8)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'temp', amount: 8 },
-      { tempHitPoints: 8 },
-    )
-  })
-
-  it('takes damage from temporary hit points first', async () => {
-    const component = await mountHp()
-
-    await submitAs(component, 'damage', 1)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'damage', amount: 1 },
-      { tempHitPoints: 1 },
-    )
-  })
-
-  it('takes the rest of the damage from hit points once temp is exhausted', async () => {
-    const component = await mountHp()
-
-    await submitAs(component, 'damage', 5)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'damage', amount: 5 },
-      { tempHitPoints: 0, hitPoints: 7 },
-    )
-  })
-
-  it('treats a missing temporary hit points as zero when taking damage', async () => {
-    const component = await mountHp({ tempHitPoints: undefined })
-
-    await submitAs(component, 'damage', 5)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'damage', amount: 5 },
-      { tempHitPoints: 0, hitPoints: 5 },
-    )
-  })
-
-  it('does not predict a heal when max hit points is not defined, matching the server no-op', async () => {
-    const component = await mountHp({ maxHitPoints: undefined })
-
-    await submitAs(component, 'heal', 5)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'heal', amount: 5 },
-      {},
-    )
-  })
-
-  it('predicts nothing when hit points are not defined', async () => {
-    const component = await mountHp({ hitPoints: undefined })
-
-    await submitAs(component, 'heal', 5)
-
-    expect(apply).toHaveBeenCalledWith(
-      { type: 'hp', hpType: 'heal', amount: 5 },
-      {},
-    )
-  })
+      expect(apply).toHaveBeenCalledWith({
+        type: 'hp',
+        hpType: type,
+        amount: 7,
+      })
+    },
+  )
 
   it('clears the amount once the action is applied', async () => {
     const component = await mountHp()

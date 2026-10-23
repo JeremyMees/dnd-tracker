@@ -3,126 +3,6 @@ import { bloodiedConditionId } from '~~/constants/dnd'
 import { conditionSchema, deathSavesSchema } from '~~/shared/utils/dnd/schema'
 import { z } from 'zod'
 
-async function incrementLiveVersion(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  session: string,
-): Promise<number> {
-  const { data: version, error } = await supabase.rpc(
-    'increment_live_version',
-    { p_session: session },
-  )
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  return version
-}
-
-export async function activeLiveSession(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounter: number,
-): Promise<string | undefined> {
-  const { data: session } = await supabase
-    .from('live_sessions')
-    .select('uuid')
-    .eq('encounter', encounter)
-    .is('endedAt', null)
-    .gt('expiresAt', new Date().toISOString())
-    .maybeSingle()
-
-  return session?.uuid
-}
-
-export async function isLiveRowClaimed(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounter: number,
-  row: string,
-): Promise<boolean> {
-  const { data: session } = await supabase
-    .from('live_sessions')
-    .select('seats')
-    .eq('encounter', encounter)
-    .is('endedAt', null)
-    .gt('expiresAt', new Date().toISOString())
-    .maybeSingle()
-
-  return !!session?.seats.some(seat => seat.row === row)
-}
-
-export async function broadcastLiveAction(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  session: string,
-  action: Omit<LiveActionEvent, 'version'>,
-): Promise<void> {
-  const version = await incrementLiveVersion(supabase, session)
-  const channel = supabase.channel(`live:${session}`)
-
-  await channel.httpSend('action', { version, ...action })
-}
-
-export async function broadcastLiveState(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  session: string,
-  encounterId: number,
-): Promise<void> {
-  const version = await incrementLiveVersion(supabase, session)
-
-  const { data: sheet, error } = await supabase
-    .from('initiative_sheets')
-    .select('id, title, round, activeIndex, rows, settings')
-    .eq('id', encounterId)
-    .single()
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  const channel = supabase.channel(`live:${session}`)
-
-  await channel.httpSend('sync', { version, sheet: toPlayerSheet(sheet) })
-}
-
-export async function broadcastActiveLiveState(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounterId: number,
-  session?: string,
-): Promise<void> {
-  const liveSession =
-    session ?? (await activeLiveSession(supabase, encounterId))
-
-  if (liveSession) await broadcastLiveState(supabase, liveSession, encounterId)
-}
-
-export function sanitizeBroadcastPatch(
-  row: InitiativeSheetRow,
-  actionType: string,
-  patch: Partial<InitiativeSheetRow>,
-): Partial<PlayerRow> {
-  if (actionType === 'reaction') return { reaction: patch.resources?.reaction }
-
-  if (actionType === 'ready') {
-    return {
-      readied: patch.readied,
-      ...(patch.resources && { reaction: patch.resources.reaction }),
-    }
-  }
-
-  if (row.type !== 'player') return patch
-
-  const conditions = patch.conditions && withoutBloodied(patch.conditions)
-
-  if (actionType === 'hp') {
-    return {
-      healthBand: getHealthBand(row.hitPoints, row.maxHitPoints),
-      concentration: patch.concentration,
-      conditions,
-    }
-  }
-
-  if (actionType === 'deathSaves') return {}
-
-  if (actionType === 'conditions') return { conditions }
-
-  return patch
-}
-
 export async function broadcastLiveEnded(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,
@@ -179,23 +59,13 @@ export async function buildHpPatch(
   settings: LiveActionSettings | undefined,
   action: Extract<z.infer<typeof liveActionSchema>, { type: 'hp' }>,
 ): Promise<Partial<InitiativeSheetRow>> {
-  const { row: updated } = handleHpChanges(
-    action.amount,
-    action.hpType,
-    row,
-    settings?.negative ?? false,
-  )
   const bloodied = isBloodiedEnabled(settings)
     ? await srdCondition(supabase, bloodiedConditionId)
     : undefined
-
-  return {
-    hitPoints: updated.hitPoints,
-    tempHitPoints: updated.tempHitPoints,
-    deathSaves: updated.deathSaves,
-    concentration: updated.concentration,
-    conditions: withBloodied(updated, bloodied).conditions,
-  }
+  return applyHpChange(row, liveHpChange(action.hpType, action.amount), {
+    negative: settings?.negative,
+    bloodied,
+  }).patch
 }
 
 export function buildAcPatch(
@@ -203,17 +73,11 @@ export function buildAcPatch(
   settings: LiveActionSettings | undefined,
   action: Extract<z.infer<typeof liveActionSchema>, { type: 'ac' }>,
 ): Partial<InitiativeSheetRow> {
-  const updated = handleAcChanges(
-    action.amount,
-    action.acType,
+  return applyAcChange(
     row,
-    settings?.negative ?? false,
+    { type: action.acType, amount: action.amount },
+    { negative: settings?.negative },
   )
-
-  return {
-    armorClass: updated.armorClass,
-    tempArmorClass: updated.tempArmorClass,
-  }
 }
 
 export async function buildLiveActionPatch(

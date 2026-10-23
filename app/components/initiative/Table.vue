@@ -12,9 +12,11 @@ const props = defineProps<{ loading: boolean; encounterId?: number }>()
 const {
   activeRow,
   sheet,
-  update,
   patchRow,
+  patchRows,
   nextTurn,
+  previousTurn,
+  reset: resetSheet,
   onTurnReminders,
   undo,
   canUndo,
@@ -43,8 +45,11 @@ const {
   columnVisibility,
 } = useInitiativeSheet(
   computed(() => sheet.value),
-  update,
-  nextTurnWithReminders,
+  {
+    next: nextTurnWithReminders,
+    previous: previousTurn,
+    reset: resetSheet,
+  },
 )
 
 syncRef(activeRow, active, { direction: 'rtl' })
@@ -114,13 +119,11 @@ function readyAction(): void {
 }
 
 function revealHidden(): void {
-  if (!sheet.value) return
+  const patches = (sheet.value?.rows ?? [])
+    .filter(row => row.hidden)
+    .map(row => ({ rowId: row.id, patch: { hidden: false } }))
 
-  update({
-    rows: sheet.value.rows.map(row =>
-      row.hidden ? { ...row, hidden: false } : row,
-    ),
-  }).catch(() => undefined)
+  if (patches.length) patchRows(patches).catch(() => undefined)
 }
 
 function rowShortcut(action: RowShortcutAction): void {

@@ -37,6 +37,115 @@ efficient gameplay sessions.
 - [Sentry](https://sentry.io/) - Error tracking
 - [Vitest](https://vitest.dev/) - Unit and component tests
 
+## Architecture
+
+The browser reads through Supabase directly, guarded by row-level security, but
+every write to an encounter goes through a Nuxt server route. The server applies
+the change, logs it in the combat log and broadcasts it, so the DM's other tabs
+and the players' phones stay in sync. The words used here (encounter, sheet,
+row) are defined in [GLOSSARY.md](GLOSSARY.md), and the reasons behind each
+choice are in [docs/adr](docs/adr).
+
+```mermaid
+flowchart LR
+  subgraph Browser
+    DM["DM: encounter page"]
+    PG["Playground<br/>in memory, no server"]
+    PP["Player Portal"]
+  end
+
+  subgraph Nuxt server
+    Routes["Server routes<br/>/api/encounter/..."]
+    Changes["sheet-changes.ts<br/>rules, combat log, broadcasts"]
+  end
+
+  subgraph Supabase
+    DB[("Postgres<br/>initiative_sheets.rows (jsonb)")]
+    RT["Realtime broadcast<br/>sheet and live topics"]
+  end
+
+  DM -- "reads (RLS)" --> DB
+  DM -- writes --> Routes
+  PP -- "writes (seat token)" --> Routes
+  Routes --> Changes
+  Changes -- "atomic RPCs" --> DB
+  Changes -- "versioned messages" --> RT
+  RT -- "sheet topic" --> DM
+  RT -- "live topic" --> PP
+```
+
+### One encounter, three places
+
+The encounter page, the playground and the Player Portal run the same combat
+rules from `shared/utils/dnd/`. The DM's pages talk to a `useSheetSession`,
+which offers named commands (`patchRow`, `editRows`, `updateSheet`, `nextTurn`,
+undo and redo). Behind it sits an adapter: the encounter page sends changes to
+the server, and the playground keeps everything in memory.
+
+```mermaid
+flowchart TB
+  C["Components<br/>inject INITIATIVE_SHEET"] --> S["useSheetSession<br/>commands, undo / redo"]
+  S --> R["useRemoteSheetAdapter<br/>encounter page"]
+  S --> M["memorySheetAdapter<br/>playground"]
+  R --> Q["TanStack Query mutations<br/>optimistic cache update"]
+  Q --> API["Server routes"]
+  M --> Rules["shared/utils/dnd<br/>same rules, run locally"]
+  API --> Rules2["sheet-changes.ts<br/>uses shared/utils/dnd"]
+```
+
+### How a change travels
+
+Rows live in one jsonb column. A change to a row is a patch that the database
+merges into that row in a single update, which also hands out the broadcast
+version. Clients apply messages in version order and refetch the whole sheet
+when they notice a gap, so two people changing the same creature at once end up
+seeing the same result.
+
+```mermaid
+sequenceDiagram
+  participant DM as DM browser
+  participant API as Server route
+  participant SC as sheet-changes.ts
+  participant DB as Postgres
+  participant RT as Realtime
+  participant P as Other tabs and players
+
+  DM->>DM: optimistic update of the cached sheet
+  DM->>API: POST /api/encounter/:id/patch-row
+  API->>API: check access
+  API->>SC: applyRowPatches
+  SC->>DB: apply_row_patches (rows + version in one update)
+  DB-->>SC: patched rows, version
+  par
+    SC->>DB: log combat events
+    SC->>RT: action on the sheet topic, with the version
+    SC->>RT: player view on the live topic
+  end
+  RT-->>P: apply in version order
+```
+
+Adding, removing or reordering rows sends the whole row list together with the
+rows it was edited from. The server applies only what the DM changed onto the
+rows it has stored, so a player's change made in the meantime survives. Moving
+to the next turn also happens on the server, so condition durations, resources
+and reminders are handled in one place.
+
+### Where the code lives
+
+| Folder              | What goes there                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| `shared/utils/dnd/` | Combat rules used by both the browser and the server: rows, HP and AC, turns, undo |
+| `shared/types/`     | Types used by both sides, and request and response payloads                        |
+| `app/pages/`        | Routes; each page wires its data to the components                                 |
+| `app/components/`   | UI; `components/ui` holds the shadcn-vue building blocks                           |
+| `app/composables/`  | Sheet session, realtime sync, Player Portal and other stateful logic               |
+| `app/queries/`      | TanStack Query hooks for reading and writing data                                  |
+| `app/utils/`        | Browser-only helpers, such as import and export files and form schemas             |
+| `server/api/`       | Server routes; each one checks access, validates the body and calls one util       |
+| `server/utils/`     | Sheet writes (`sheet-changes.ts`), their Supabase adapters, auth and email         |
+| `docs/adr/`         | Architecture decisions and why they were made                                      |
+| `docs/agents/`      | House rules for code, tests, the database and deploys                              |
+
 ## Getting Started
 
 ### Prerequisites

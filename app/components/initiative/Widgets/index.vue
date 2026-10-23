@@ -7,7 +7,7 @@ import * as z from 'zod'
 
 const props = defineProps<{ encounterId?: number }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, updateSheet } = validateInject(INITIATIVE_SHEET)
 
 const liveActive = props.encounterId
   ? useLiveSession(props.encounterId).active
@@ -48,7 +48,7 @@ const onSubmit = form.handleSubmit(async values => {
   if (!sheet.value) return
 
   try {
-    await update({
+    await updateSheet({
       settings: {
         ...sheet.value.settings,
         ...values,
@@ -64,7 +64,7 @@ const onSubmit = form.handleSubmit(async values => {
 
 function saveWidgets(widgets: InitiativeWidget[]) {
   if (!sheet.value) return
-  update({
+  updateSheet({
     settings: {
       ...sheet.value.settings,
       widgets,
@@ -163,13 +163,13 @@ function removeWidget(id: InitiativeWidget) {
           v-if="widget === 'note'"
           hydrate-on-idle
           :value="sheet?.info ?? ''"
-          @update="update({ info: $event })"
+          @update="updateSheet({ info: $event })"
         />
         <LazyInitiativeWidgetsPinnedContent
           v-if="widget === 'info-pins'"
           hydrate-on-idle
           :value="sheet?.infoCards ?? []"
-          @update="update({ infoCards: $event })"
+          @update="updateSheet({ infoCards: $event })"
         />
         <LazyInitiativeWidgetsFantasyNameGenerator
           v-if="widget === 'fantasy-name-generator'"

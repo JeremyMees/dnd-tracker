@@ -6,7 +6,7 @@ import { maxHealthAndArmour } from '~~/constants/validation'
 const props = defineProps<{
   row: PlayerRow
   pending: boolean
-  apply: (action: LiveRowAction, patch: Partial<PlayerRow>) => Promise<boolean>
+  apply: (action: LiveHpAction) => Promise<boolean>
 }>()
 
 const selected = ref<'heal' | 'damage' | 'temp'>('heal')
@@ -17,36 +17,12 @@ const form = useForm({
   }),
 })
 
-function predict(
-  hpType: 'heal' | 'damage' | 'temp',
-  amount: number,
-): Partial<PlayerRow> {
-  if (!isDefined(props.row.hitPoints)) return {}
-
-  if (hpType === 'heal') {
-    if (!isDefined(props.row.maxHitPoints)) return {}
-
-    return {
-      hitPoints: Math.min(props.row.hitPoints + amount, props.row.maxHitPoints),
-    }
-  }
-
-  if (hpType === 'temp') return { tempHitPoints: amount }
-
-  const temp = props.row.tempHitPoints ?? 0
-
-  if (temp >= amount) return { tempHitPoints: temp - amount }
-
-  return { tempHitPoints: 0, hitPoints: props.row.hitPoints - (amount - temp) }
-}
-
 const onSubmit = form.handleSubmit(async values => {
-  const amount = parseInteger(values.amount)
-
-  const applied = await props.apply(
-    { type: 'hp', hpType: selected.value, amount },
-    predict(selected.value, amount),
-  )
+  const applied = await props.apply({
+    type: 'hp',
+    hpType: selected.value,
+    amount: parseInteger(values.amount),
+  })
 
   if (applied) form.resetForm()
 })

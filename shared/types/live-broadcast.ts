@@ -33,8 +33,7 @@ export type LiveSeatsBroadcast =
 
 export interface LiveActionEvent {
   version: number
-  row: string
-  patch: Partial<PlayerRow>
+  row: PlayerRow
 }
 
 export interface LiveSyncEvent {
@@ -56,6 +55,10 @@ export type LiveRowAction =
   | { type: 'ready'; value: boolean }
 
 export type LiveAction = LiveRowAction | { type: 'endTurn' }
+
+export type LiveHpAction = Extract<LiveRowAction, { type: 'hp' }>
+
+export type LiveAcAction = Extract<LiveRowAction, { type: 'ac' }>
 
 export type LiveAllowActions = Record<LiveAction['type'], boolean>
 

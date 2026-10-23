@@ -36,84 +36,17 @@ function getQueryData(): void {
   isPending.value = false
 }
 
-async function handleUpdate(
-  payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
-): Promise<void> {
-  const target = isTourActive.value ? tourData : data
-
-  if (!target.value) return
-
-  target.value = {
-    ...target.value,
-    ...payload,
-    ...(payload.rows && { rows: indexCorrect(payload.rows) }),
-  }
-}
-
-async function handlePatchRow(
-  rowId: string,
-  patch: Partial<InitiativeSheetRow>,
-): Promise<void> {
-  const target = isTourActive.value ? tourData : data
-
-  if (!target.value) return
-
-  target.value = {
-    ...target.value,
-    rows: target.value.rows.map(row =>
-      row.id === rowId ? { ...row, ...patch } : row,
-    ),
-  }
-}
-
-async function handlePatchRows(patches: RowPatch[]): Promise<void> {
-  const target = isTourActive.value ? tourData : data
-
-  if (!target.value) return
-
-  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
-
-  target.value = {
-    ...target.value,
-    rows: target.value.rows.map(row => ({ ...row, ...byRow.get(row.id) })),
-  }
-}
-
-async function handleNextTurn(): Promise<TurnReminders | undefined> {
-  const target = isTourActive.value ? tourData : data
-
-  if (!target.value) return
-
-  const { activeIndex, round, rows, expired, saves, recharges } = advanceTurn(
-    target.value,
-  )
-
-  target.value = { ...target.value, activeIndex, round, rows }
-
-  return { expired, saves, recharges }
-}
-
-const sheet = computed(() => (isTourActive.value ? tourData.value : data.value))
-
-const history = useUndoHistory(sheet, {
-  update: handleUpdate,
-  patchRow: handlePatchRow,
-  patchRows: handlePatchRows,
-  nextTurn: handleNextTurn,
+const sheet = computed({
+  get: () => (isTourActive.value ? tourData.value : data.value),
+  set: value => {
+    if (isTourActive.value) tourData.value = value
+    else data.value = value
+  },
 })
 
-provide(INITIATIVE_SHEET, {
-  sheet,
-  update: history.update,
-  patchRow: history.patchRow,
-  patchRows: history.patchRows,
-  nextTurn: history.nextTurn,
-  undo: history.undo,
-  canUndo: history.canUndo,
-  redo: history.redo,
-  canRedo: history.canRedo,
-  activeRow,
-})
+const session = useSheetSession(sheet, memorySheetAdapter(sheet))
+
+provide(INITIATIVE_SHEET, { ...session, activeRow })
 </script>
 
 <template>

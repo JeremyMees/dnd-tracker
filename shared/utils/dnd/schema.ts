@@ -47,11 +47,11 @@ export const rowPatchSchema = z
   .object({
     hitPoints: z.number().int().optional(),
     maxHitPoints: z.number().int().optional(),
-    maxHitPointsOld: z.number().int().optional(),
+    maxHitPointsOld: z.number().int().nullish(),
     tempHitPoints: z.number().int().optional(),
     armorClass: z.number().int().optional(),
     maxArmorClass: z.number().int().optional(),
-    maxArmorClassOld: z.number().int().optional(),
+    maxArmorClassOld: z.number().int().nullish(),
     tempArmorClass: z.number().int().optional(),
     conditions: z.array(conditionSchema).optional(),
     deathSaves: deathSavesSchema.optional(),

@@ -61,6 +61,8 @@ vi.mock('~/queries/initiative-sheets', () => ({
   useInitiativeSheetPatch: () => ({ mutateAsync: patch }),
   useInitiativeSheetPatchRows: () => ({ mutateAsync: patchRows }),
   useInitiativeSheetTurn: () => ({ mutateAsync: turn }),
+  withPendingEdits: (_client: unknown, _id: number, sheet: InitiativeSheet) =>
+    sheet,
 }))
 
 vi.mock('~/queries/combat-events', () => ({
@@ -115,7 +117,8 @@ const stubs = {
 
 interface Probe {
   sheet: InitiativeSheet | undefined
-  update: (payload: Partial<InitiativeSheet>) => Promise<void>
+  updateSheet: (fields: SheetFieldsUpdate) => Promise<void>
+  editRows: (rows: InitiativeSheetRow[]) => Promise<void>
   patchRow: (rowId: string, patch: Partial<InitiativeSheetRow>) => Promise<void>
   patchRows: (patches: RowPatch[]) => Promise<void>
   nextTurn: () => Promise<TurnReminders | undefined>
@@ -358,15 +361,12 @@ describe('Encounter detail page', () => {
 
     await mountPage()
 
-    emitBroadcast('sync', { version: 3, sheet: { ...sheet, title: 'Renamed' } })
+    emitBroadcast('sync', { version: 3, sheet: { title: 'Renamed' } })
 
-    const updater = setQueryData.mock.calls[0]![1] as (old: unknown) => unknown
-
-    expect(updater(current)).toEqual({
+    expect(setQueryData).toHaveBeenCalledWith(['useInitiativeSheetDetail', 2], {
       ...current,
       title: 'Renamed',
       version: 3,
-      campaign: mockSheetCampaign,
     })
   })
 
@@ -407,13 +407,9 @@ describe('Encounter detail page', () => {
   it('Should update the encounter with the provided update', async () => {
     const { probe } = await mountPage()
 
-    await probe.update({ title: 'Renamed' })
+    await probe.updateSheet({ round: 4 })
 
-    expect(update).toHaveBeenCalledWith({
-      data: { title: 'Renamed' },
-      id: 2,
-      onSettled: expect.any(Function),
-    })
+    expect(update).toHaveBeenCalledWith({ data: { round: 4 }, id: 2 })
   })
 
   it('Should not update when there is no encounter', async () => {
@@ -422,60 +418,16 @@ describe('Encounter detail page', () => {
     const { component } = await mountPage()
     const probe = component.findComponent(SheetProbe).vm as unknown as Probe
 
-    await probe.update({ title: 'Renamed' })
+    await probe.updateSheet({ round: 4 })
 
     expect(update).not.toHaveBeenCalled()
   })
 
-  it('Should log the removed rows after a successful update', async () => {
+  it('Should leave logging the changes of an update to the server', async () => {
     const { probe } = await mountPage()
-    const [first, ...rest] = sheet.rows
+    const [, ...rest] = sheet.rows
 
-    await probe.update({ rows: rest, activeIndex: 0 })
-
-    expect(logEvents).toHaveBeenCalledWith({
-      encounterId: 2,
-      events: [
-        {
-          type: 'row_removed',
-          rowId: first!.id,
-          payload: { rowName: first!.name },
-        },
-      ],
-    })
-  })
-
-  it('Should log a turn change made through an update', async () => {
-    const { probe } = await mountPage()
-
-    await probe.update({ activeIndex: 1 })
-
-    expect(logEvents).toHaveBeenCalledWith({
-      encounterId: 2,
-      events: [
-        {
-          type: 'turn',
-          rowId: sheet.rows[1]!.id,
-          payload: { rowName: sheet.rows[1]!.name },
-        },
-      ],
-    })
-  })
-
-  it('Should not log an update without rows or turn changes', async () => {
-    const { probe } = await mountPage()
-
-    await probe.update({ title: 'Renamed' })
-
-    expect(logEvents).not.toHaveBeenCalled()
-  })
-
-  it('Should not log when the update fails', async () => {
-    update.mockRejectedValueOnce(new Error('Boom'))
-
-    const { probe } = await mountPage()
-
-    await expect(probe.update({ activeIndex: 1 })).rejects.toThrow('Boom')
+    await probe.editRows(rest)
 
     expect(logEvents).not.toHaveBeenCalled()
   })
@@ -503,43 +455,6 @@ describe('Encounter detail page', () => {
     })
   })
 
-  it('Should leave the cache to realtime when the update settles', async () => {
-    const { probe } = await mountPage()
-
-    await probe.update({ title: 'Renamed' })
-
-    await update.mock.calls[0]![0].onSettled(undefined)
-
-    expect(setQueryData).not.toHaveBeenCalled()
-  })
-
-  it('Should update the cache itself when the update settles without realtime', async () => {
-    user.value = { ...authUser, subscriptionType: 'free' }
-
-    const { probe } = await mountPage()
-
-    await probe.update({ title: 'Renamed' })
-
-    await update.mock.calls[0]![0].onSettled(undefined)
-
-    expect(setQueryData).toHaveBeenCalledWith(
-      ['useInitiativeSheetDetail', 2],
-      expect.any(Function),
-    )
-  })
-
-  it('Should not update the cache when the update settles with an error', async () => {
-    user.value = { ...authUser, subscriptionType: 'free' }
-
-    const { probe } = await mountPage()
-
-    await probe.update({ title: 'Renamed' })
-
-    await update.mock.calls[0]![0].onSettled('Boom')
-
-    expect(setQueryData).not.toHaveBeenCalled()
-  })
-
   it('Should patch a single row through useInitiativeSheetPatch', async () => {
     const { probe } = await mountPage()
 
@@ -565,7 +480,10 @@ describe('Encounter detail page', () => {
 
   it('Should patch several rows in one batch through useInitiativeSheetPatchRows', async () => {
     const { probe } = await mountPage()
-    const patches = [{ rowId: 'ylqr4a611g', patch: { hitPoints: 3 } }]
+    const patches = [
+      { rowId: 'ylqr4a611g', patch: { hitPoints: 3 } },
+      { rowId: 'zywxbg0xy9', patch: { hitPoints: 4 } },
+    ]
 
     await probe.patchRows(patches)
 
@@ -617,6 +535,8 @@ describe('Encounter detail page', () => {
       recharges: [],
     }
     const listener = vi.fn()
+
+    getQueryData.mockReturnValue({ ...sheet, version: 2 })
 
     const { probe } = await mountPage()
 

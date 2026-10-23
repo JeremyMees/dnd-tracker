@@ -138,11 +138,11 @@ export interface InitiativeSheetRow {
   hidden?: boolean
   armorClass?: number
   maxArmorClass?: number
-  maxArmorClassOld?: number
+  maxArmorClassOld?: number | null
   tempArmorClass?: number
   hitPoints?: number
   maxHitPoints?: number
-  maxHitPointsOld?: number
+  maxHitPointsOld?: number | null
   tempHitPoints?: number
   initiativeModifier?: number
   campaign?: number

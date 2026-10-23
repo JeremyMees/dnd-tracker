@@ -12,9 +12,7 @@ const props = withDefaults(
     template?: Partial<InitiativeSheetRow> & { name: string }
     isEncounter?: boolean
     sheet?: InitiativeSheet
-    update?: (
-      payload: Omit<Partial<InitiativeSheet>, NotUpdatable | 'campaign'>,
-    ) => Promise<void>
+    editRows?: (rows: InitiativeSheetRow[]) => Promise<void>
   }>(),
   {
     isEncounter: false,
@@ -23,7 +21,7 @@ const props = withDefaults(
     row: undefined,
     template: undefined,
     sheet: undefined,
-    update: undefined,
+    editRows: undefined,
   },
 )
 
@@ -133,7 +131,7 @@ function onInvalidSubmit({ errors }: InvalidSubmissionContext) {
 }
 
 async function editRow(submission: HomebrewSubmission): Promise<boolean> {
-  if (!props.sheet || !props.update || !props.row) return false
+  if (!props.sheet || !props.editRows || !props.row) return false
 
   const homebrew = saveToCampaign.value
     ? await syncToCampaign(submission.homebrew)
@@ -141,51 +139,61 @@ async function editRow(submission: HomebrewSubmission): Promise<boolean> {
 
   if (homebrew === null) return false
 
-  const edited = editInitiativeRow(
-    props.row,
-    {
-      ...submission.row,
-      homebrew,
-      initiativeModifier: submission.initiativeModifier,
-      summoner: toSummoner(props.sheet.rows, submission.summoner),
-    },
-    submission.row.type,
+  await props.editRows(
+    editEncounterRow(
+      props.sheet,
+      props.row,
+      {
+        ...submission.row,
+        homebrew,
+        initiativeModifier: submission.initiativeModifier,
+        summoner: submission.summoner,
+      },
+      bloodied.value,
+    ),
   )
-
-  await props.update({
-    rows: replaceRow(props.sheet.rows, withBloodied(edited, bloodied.value)),
-  })
 
   return true
 }
 
 async function addRows(submission: HomebrewSubmission): Promise<boolean> {
-  if (!props.sheet || !props.update) return false
+  const { sheet, editRows } = props
 
-  const { initiative, initiativeModifier } = submission
+  if (!sheet || !editRows) return false
+
+  const addWith = (homebrew?: number) =>
+    addToEncounter(
+      sheet,
+      [
+        {
+          row: { ...submission.row, homebrew },
+          roll: submission.initiative,
+          initiativeModifier: submission.initiativeModifier,
+        },
+      ],
+      { amount: submission.amount, summoner: submission.summoner },
+    )
+
+  const unlinked = addWith()
+
+  if (unlinked.full) {
+    const [message, params] = unlinked.toast.description
+
+    formError.value = t(message, params ?? {})
+    return false
+  }
+
   const homebrew = saveToCampaign.value
     ? await syncToCampaign(submission.homebrew)
     : undefined
 
   if (homebrew === null) return false
 
-  const row = {
-    ...submission.row,
-    homebrew,
-    summoner: toSummoner(props.sheet.rows, submission.summoner),
-    ...(initiative
-      ? { initiative: initiative + (initiativeModifier ?? 0) }
-      : {}),
-    ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
-  }
+  const added = homebrew ? addWith(homebrew) : unlinked
 
-  await props.update({
-    rows: appendRows(
-      props.sheet.rows,
-      Array.from({ length: submission.amount ?? 1 }, () => row),
-      props.sheet.settings,
-    ),
-  })
+  if (added.full) return false
+
+  await editRows(added.rows)
 
   return true
 }

@@ -1,3 +1,4 @@
+import { resetToast, toast } from '~~/test/nuxt/stubs/toast'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import CampaignHomebrew from '~/components/form/CampaignHomebrew.vue'
@@ -43,12 +44,12 @@ function mountCampaignHomebrew(
   }
 }
 
-function rowsOf(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
-  return update.mock.calls[0]![0].rows
+function rowsOf(editRows: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
+  return editRows.mock.calls[0]![0]
 }
 
-function addedRows(update: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
-  return rowsOf(update).filter(
+function addedRows(editRows: ReturnType<typeof vi.fn>): InitiativeSheetRow[] {
+  return rowsOf(editRows).filter(
     row => !sheet.rows.some(existing => existing.id === row.id),
   )
 }
@@ -57,6 +58,7 @@ describe('CampaignHomebrew', () => {
   beforeEach(() => {
     homebrews.value = mockHomebrewListing
     isPending.value = false
+    resetToast()
   })
 
   it('Should match snapshot', async () => {
@@ -130,7 +132,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added).toHaveLength(2)
     expect(added.map(row => row.name)).toEqual([
@@ -139,31 +141,25 @@ describe('CampaignHomebrew', () => {
     ])
   })
 
-  it('Should remember which homebrew each row came from', async () => {
-    const { injected, mount } = mountCampaignHomebrew()
+  it('Should warn and add nothing when the homebrews do not fit', async () => {
+    const { injected, mount } = mountCampaignHomebrew({
+      ...campaignSheet,
+      rows: Array.from({ length: 49 }, (_, index) => ({
+        ...sheet.rows[0]!,
+        id: `row-${index}`,
+      })),
+    })
     const component = await mount()
 
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
-
-    expect(added.map(row => row.homebrew)).toEqual([
-      mockHomebrewItem.id,
-      mockHomebrewPlayer.id,
-    ])
-  })
-
-  it('Should reindex the rows after adding', async () => {
-    const { injected, mount } = mountCampaignHomebrew()
-    const component = await mount()
-
-    await component.get('[aria-label="actions.addAll"]').trigger('click')
-    await flushPromises()
-
-    const rows = rowsOf(injected.update)
-
-    expect(rows.map(row => row.index)).toEqual(rows.map((_row, i) => i))
+    expect(injected.editRows).not.toHaveBeenCalled()
+    expect(toast.warning).toHaveBeenCalledWith(
+      'components.initiativeTable.full.title',
+      { description: 'components.initiativeTable.full.some' },
+    )
+    expect(component.emitted('close')).toBeUndefined()
   })
 
   it('Should close after adding', async () => {
@@ -173,20 +169,6 @@ describe('CampaignHomebrew', () => {
     await flushPromises()
 
     expect(component.emitted('close')).toHaveLength(1)
-  })
-
-  it('Should turn the initiative modifier into a number', async () => {
-    const { injected, mount } = mountCampaignHomebrew()
-    const component = await mount()
-
-    await component.get('[aria-label="actions.addAll"]').trigger('click')
-    await flushPromises()
-
-    const added = addedRows(injected.update)
-
-    expect(added[0]!.initiativeModifier).toBe(
-      Number(mockHomebrewItem.initiativeModifier),
-    )
   })
 
   it('Should ask for a summoner once a summon is selected', async () => {
@@ -219,7 +201,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addAll"]').trigger('click')
     await flushPromises()
 
-    expect(injected.update).not.toHaveBeenCalled()
+    expect(injected.editRows).not.toHaveBeenCalled()
     expect(component.emitted('close')).toBeUndefined()
   })
 
@@ -281,7 +263,7 @@ describe('CampaignHomebrew', () => {
     await component.get('[aria-label="actions.addSelected"]').trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added).toHaveLength(1)
     expect(added[0]!.name).toBe(mockHomebrewItem.name)
@@ -301,7 +283,7 @@ describe('CampaignHomebrew', () => {
       .trigger('click')
     await flushPromises()
 
-    const added = addedRows(injected.update)
+    const added = addedRows(injected.editRows)
 
     expect(added[0]!.summoner).toEqual({
       name: sheet.rows[0]!.name,

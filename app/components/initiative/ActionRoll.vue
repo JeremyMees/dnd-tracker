@@ -120,17 +120,17 @@ const onSubmit = form.handleSubmit(async values => {
 
   if (!target || !isDefined(target.hitPoints)) return
 
-  const { row, toasts } = handleHpChanges(
-    damageAfterDefenses(target, result.value?.rolls ?? []),
-    'damage',
+  const { patch, toasts } = applyHpChange(
     target,
-    sheet.value?.settings?.negative ?? false,
-    { critical: result.value?.attackRoll === 20 },
+    {
+      type: 'damage',
+      rolls: result.value?.rolls ?? [],
+      critical: result.value?.attackRoll === 20,
+    },
+    { negative: sheet.value.settings?.negative, bloodied: bloodied.value },
   )
 
   handleToasts(toasts)
-
-  const patch = buildCombatPatch(target, withBloodied(row, bloodied.value))
 
   try {
     await patchRow(values.target, patch)

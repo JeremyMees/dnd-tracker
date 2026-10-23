@@ -268,7 +268,8 @@
         "homebrewLimit": "Deze campagne heeft al het maximum aantal homebrew items. Verwijder er eerst een.",
         "noteLimit": "Deze campagne heeft al het maximum aantal notities. Verwijder er eerst een.",
         "rejected": "De server kon dit niet afronden. Probeer opnieuw en vernieuw de pagina als het blijft gebeuren.",
-        "rowClaimed": "Een speler heeft deze rij geclaimd, dus ze kan niet verborgen worden."
+        "rowClaimed": "Een speler heeft deze rij geclaimd, dus ze kan niet verborgen worden.",
+        "encounterFull": "Een encounter kan maximaal 50 wezens bevatten. Verwijder er eerst een paar."
       },
       "loadFailed": {
         "content": "DnD inhoud kon niet geladen worden",
@@ -1072,6 +1073,11 @@
         "added": "{name} toegevoegd aan je encounter",
         "addedDescription": "Het geselecteerde monster is succesvol toegevoegd aan je encounter"
       },
+      "full": {
+        "title": "Deze encounter is vol",
+        "none": "Een encounter kan maximaal {max} wezens bevatten en er is geen plaats meer",
+        "some": "Een encounter kan maximaal {max} wezens bevatten en er is nog plaats voor {room}"
+      },
       "emptyState": {
         "title": "Geen initiatiefhouder gevonden",
         "text": "Voeg er wat toe met de zijbalk om te beginnen",
@@ -1470,7 +1476,8 @@
         "wrongKind": "Dit bestand bevat een ander soort items. Importeer het op de juiste pagina.",
         "tooLarge": "Het bestand is te groot. Bestanden mogen maximaal 2 MB zijn.",
         "empty": "Het bestand bevat niets om te importeren.",
-        "tooMany": "Je hebt geen plaats voor zoveel items. Je kunt geen items meer importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} item importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} items importeren."
+        "tooMany": "Je hebt geen plaats voor zoveel items. Je kunt geen items meer importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} item importeren.|Je hebt geen plaats voor zoveel items. Je kunt nog {count} items importeren.",
+        "tooManyRows": "Een encounter in dit bestand heeft meer dan {count} wezens. Encounters kunnen er maximaal {count} bevatten."
       }
     },
     "commandPalette": {

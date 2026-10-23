@@ -7,12 +7,16 @@ export function createInitiativeSheetProvide(
 ) {
   const sheet = ref<InitiativeSheet | undefined>(initial ?? undefined)
   const activeRow = ref<InitiativeSheetRow | undefined>(initial?.rows[0])
-  const update = vi.fn().mockResolvedValue(undefined)
+  const editRows = vi.fn().mockResolvedValue(undefined)
+  const updateSheet = vi.fn().mockResolvedValue(undefined)
 
   return {
     sheet,
     activeRow,
-    update,
-    provide: { [INITIATIVE_SHEET]: { sheet, activeRow, update } },
+    editRows,
+    updateSheet,
+    provide: {
+      [INITIATIVE_SHEET]: { sheet, activeRow, editRows, updateSheet },
+    },
   }
 }

@@ -8,7 +8,7 @@ const DnDContentSearchStub = defineComponent({
   props: {
     variant: String,
     sheet: Object,
-    update: Function,
+    updateSheet: Function,
     allowPin: Boolean,
   },
   template: '<div test-id="content-search" />',
@@ -42,14 +42,14 @@ describe('PinContent', () => {
     expect(component.find('[test-id="content-search"]').exists()).toBeTruthy()
   })
 
-  it('Should pass the injected sheet and update through', async () => {
+  it('Should pass the injected sheet and sheet update through', async () => {
     const { injected, mount } = mountPinContent()
     const component = await mount()
 
     const search = component.findComponent(DnDContentSearchStub)
 
     expect(search.props('sheet')).toEqual(sheet)
-    expect(search.props('update')).toBe(injected.update)
+    expect(search.props('updateSheet')).toBe(injected.updateSheet)
   })
 
   it('Should always allow pinning from the secondary variant', async () => {

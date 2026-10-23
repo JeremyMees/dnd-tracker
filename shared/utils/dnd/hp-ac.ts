@@ -70,8 +70,22 @@ function overrideReset(
       row[old] < row[max] ? row[old] : row[old] - (row[max] - row[type])
   }
 
-  row[old] = undefined
+  row[old] = null
   row[max] = amount
+}
+
+function base(
+  type: ModifierType,
+  row: InitiativeSheetRow,
+  amount: number,
+): void {
+  const max = type === 'hitPoints' ? 'maxHitPoints' : 'maxArmorClass'
+  const old = type === 'hitPoints' ? 'maxHitPointsOld' : 'maxArmorClassOld'
+
+  row[type] = amount
+  row[max] = amount
+
+  if (isDefined(row[old])) row[old] = null
 }
 
 export const hpFunctions = {
@@ -113,6 +127,7 @@ export function handleAcChanges(
   else if (type === 'temp') acFunctions.temp(row, amount)
   else if (type === 'override') acFunctions.override(row, amount)
   else if (type === 'override-reset') acFunctions.overrideReset(row, amount)
+  else if (type === 'base') base('armorClass', row, amount)
 
   if (!allowNegative && row.armorClass && row.armorClass < 0) row.armorClass = 0
 
@@ -261,6 +276,7 @@ export function handleHpChanges(
   else if (type === 'temp') temp('hitPoints', row, amount)
   else if (type === 'override') override('hitPoints', row, amount)
   else if (type === 'override-reset') overrideReset('hitPoints', row, amount)
+  else if (type === 'base') base('hitPoints', row, amount)
   else if (type === 'damage') {
     toasts.push(...damageHitPoints(row, amount, { critical, instantDeath }))
   }
@@ -271,6 +287,48 @@ export function handleHpChanges(
   if (!allowNegative && row.hitPoints && row.hitPoints < 0) row.hitPoints = 0
 
   return { row, toasts }
+}
+
+export function applyHpChange(
+  row: InitiativeSheetRow,
+  change: DndHpChange,
+  { negative = false, bloodied }: DndRowChangeContext = {},
+): DndRowChangeResult {
+  const { row: updated, toasts } =
+    change.type === 'damage'
+      ? handleHpChanges(
+          damageAfterDefenses(row, change.rolls),
+          'damage',
+          row,
+          negative,
+          { critical: change.critical },
+        )
+      : handleHpChanges(change.amount, change.type, row, negative)
+
+  return {
+    patch: buildCombatPatch(row, withBloodied(updated, bloodied)),
+    toasts,
+  }
+}
+
+export function liveHpChange(
+  hpType: 'heal' | 'damage' | 'temp',
+  amount: number,
+): DndHpChange {
+  return hpType === 'damage'
+    ? { type: 'damage', rolls: [{ amount }] }
+    : { type: hpType, amount }
+}
+
+export function applyAcChange(
+  row: InitiativeSheetRow,
+  change: DndAcChange,
+  { negative = false }: Pick<DndRowChangeContext, 'negative'> = {},
+): Partial<InitiativeSheetRow> {
+  return buildCombatPatch(
+    row,
+    handleAcChanges(change.amount, change.type, row, negative),
+  )
 }
 
 export function getHP(

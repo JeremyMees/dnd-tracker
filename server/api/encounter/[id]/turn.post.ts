@@ -10,15 +10,9 @@ export default defineEventHandler(async event => {
 
   await requireEncounterAccess(event, id, user.id)
 
-  const supabase = serverSupabaseServiceRole<DB>(event)
-
-  const { data: sheet, error } = await supabase
-    .from('initiative_sheets')
-    .select('activeIndex, round, rows, settings')
-    .eq('id', id)
-    .single()
-
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  return advanceEncounterTurn(supabase, id, sheet, { actorId: user.id })
+  return advanceSheetTurn(
+    sheetChangeContext(serverSupabaseServiceRole<DB>(event), id, {
+      id: user.id,
+    }),
+  )
 })

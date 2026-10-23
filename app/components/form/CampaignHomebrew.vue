@@ -8,12 +8,13 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
 const emit = defineEmits<{ close: [] }>()
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
+const showToastItems = useToastItems()
 
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
 const rowSelection = ref<RowSelectionState>({})
-const summoner = ref<{ name: string; id: string }>()
+const summoner = ref<string>()
 
 const selected = computed<HomebrewItemRow[]>(
   () => data.value?.homebrews.filter(({ id }) => rowSelection.value[id]) || [],
@@ -91,6 +92,11 @@ const table = useTable({
   },
 })
 
+function pickSummoner(value: unknown): void {
+  if (value)
+    summoner.value = toSummoner(sheet.value?.rows ?? [], `${value}`)?.id
+}
+
 async function addHomebrews(addAll: boolean): Promise<void> {
   if (!sheet.value) return
 
@@ -98,18 +104,15 @@ async function addHomebrews(addAll: boolean): Promise<void> {
     ? data.value?.homebrews.filter(hb => hb.type !== 'summon') || []
     : selected.value
 
-  await update({
-    rows: appendRows(
-      sheet.value.rows,
-      selection.map(hb => ({
-        ...homebrewToRow(hb),
-        ...(hb.type === 'summon' && summoner.value
-          ? { summoner: summoner.value }
-          : {}),
-      })),
-      sheet.value.settings,
-    ),
-  })
+  const added = addToEncounter(
+    sheet.value,
+    selection.map(homebrew => ({ homebrew })),
+    { summoner: summoner.value },
+  )
+
+  if (added.full) return showToastItems([added.toast])
+
+  await editRows(added.rows)
 
   emit('close')
 }
@@ -210,16 +213,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       <UiSelect
         id="summoner"
         name="summoner"
-        @update:model-value="
-          value => {
-            if (value) {
-              const filtered = sheet?.rows.find(s => s.id === value)
-              summoner = filtered
-                ? { name: filtered.name, id: filtered.id }
-                : undefined
-            }
-          }
-        "
+        @update:model-value="pickSummoner"
       >
         <UiSelectTrigger>
           <UiSelectValue

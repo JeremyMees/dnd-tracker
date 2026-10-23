@@ -6,15 +6,7 @@ export interface QueryDefaults {
   onSettled?: (error?: string) => void
 }
 
-export type UpdateInitiativeSheetData = Omit<
-  Partial<InitiativeSheet>,
-  NotUpdatable | 'campaign'
->
-
-export interface RowPatch {
-  rowId: string
-  patch: Partial<InitiativeSheetRow>
-}
+export type UpdateInitiativeSheetData = InitiativeSheetUpdate
 
 export type CrudAction = 'create' | 'update' | 'delete' | 'copy'
 

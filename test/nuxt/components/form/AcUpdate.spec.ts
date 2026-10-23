@@ -4,25 +4,16 @@ import AcUpdate from '~/components/form/AcUpdate.vue'
 import { sheet } from '~~/test/fixtures/initiative-sheet'
 import { submitForm } from '~~/test/nuxt/stubs/form'
 
-const handleAcChanges = vi.fn()
-const updateRow = vi.fn()
+const apply = vi.fn()
 
 const item = sheet.rows[0]!
-const updatedRow: Partial<InitiativeSheetRow> = { armorClass: 25 }
 
 type AcAction = Extract<DndAcType, 'add' | 'temp' | 'remove'>
 
 const buttons: Record<AcAction, number> = { add: 0, temp: 1, remove: 2 }
 
-function mountAcUpdate({ withSheet = true } = {}) {
-  return mountSuspended(AcUpdate, {
-    props: {
-      sheet: withSheet ? sheet : undefined,
-      item,
-      handleAcChanges,
-      updateRow,
-    },
-  })
+function mountAcUpdate() {
+  return mountSuspended(AcUpdate, { props: { item, apply } })
 }
 
 async function submitAs(
@@ -39,8 +30,8 @@ async function submitAs(
 
 describe('AcUpdate', () => {
   beforeEach(() => {
-    handleAcChanges.mockReturnValue(updatedRow)
-    updateRow.mockResolvedValue(undefined)
+    apply.mockReset()
+    apply.mockResolvedValue(undefined)
   })
 
   it('Should match snapshot', async () => {
@@ -64,8 +55,7 @@ describe('AcUpdate', () => {
 
     await submitAs(component, 'add', 3)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(3, 'add')
-    expect(updateRow).toHaveBeenCalledWith(updatedRow)
+    expect(apply).toHaveBeenCalledWith({ type: 'add', amount: 3 })
   })
 
   it('Should add temporary AC', async () => {
@@ -73,8 +63,7 @@ describe('AcUpdate', () => {
 
     await submitAs(component, 'temp', 4)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(4, 'temp')
-    expect(updateRow).toHaveBeenCalledWith(updatedRow)
+    expect(apply).toHaveBeenCalledWith({ type: 'temp', amount: 4 })
   })
 
   it('Should decrease the AC', async () => {
@@ -82,8 +71,7 @@ describe('AcUpdate', () => {
 
     await submitAs(component, 'remove', 6)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(6, 'remove')
-    expect(updateRow).toHaveBeenCalledWith(updatedRow)
+    expect(apply).toHaveBeenCalledWith({ type: 'remove', amount: 6 })
   })
 
   it('Should decrease by default when the form is submitted directly', async () => {
@@ -92,16 +80,7 @@ describe('AcUpdate', () => {
     await component.get('input[name="amount"]').setValue(2)
     await submitForm(component)
 
-    expect(handleAcChanges).toHaveBeenCalledWith(2, 'remove')
-  })
-
-  it('Should not update without a sheet', async () => {
-    const component = await mountAcUpdate({ withSheet: false })
-
-    await submitAs(component, 'add')
-
-    expect(handleAcChanges).not.toHaveBeenCalled()
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).toHaveBeenCalledWith({ type: 'remove', amount: 2 })
   })
 
   it('Should not update when the amount is invalid', async () => {
@@ -109,11 +88,11 @@ describe('AcUpdate', () => {
 
     await submitAs(component, 'add', 1001)
 
-    expect(updateRow).not.toHaveBeenCalled()
+    expect(apply).not.toHaveBeenCalled()
   })
 
   it('Should show the error when updating fails', async () => {
-    updateRow.mockRejectedValue(new Error('Update failed'))
+    apply.mockRejectedValue(new Error('Update failed'))
 
     const component = await mountAcUpdate()
 
@@ -123,7 +102,7 @@ describe('AcUpdate', () => {
   })
 
   it('Should show a generic error when the failure has no message', async () => {
-    updateRow.mockRejectedValue({})
+    apply.mockRejectedValue({})
 
     const component = await mountAcUpdate()
 

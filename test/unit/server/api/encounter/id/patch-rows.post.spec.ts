@@ -3,9 +3,9 @@ import { mockEvent } from '~~/test/unit/stubs/api-event'
 import {
   mockChain,
   mockFrom,
-  serverSupabaseServiceRole,
   serverSupabaseUser,
 } from '~~/test/unit/stubs/supabase'
+import { storedSheet, useMemorySheet } from '~~/test/unit/stubs/sheet-changes'
 import handler from '~~/server/api/encounter/[id]/patch-rows.post'
 
 const goblin: InitiativeSheetRow = {
@@ -28,29 +28,14 @@ const orc: InitiativeSheetRow = {
   maxHitPoints: 15,
 }
 
-const access = () =>
-  mockChain({
-    data: { id: 7, campaign: null, createdBy: 'user-1' },
-    error: null,
+function mockAccess(createdBy = 'user-1') {
+  mockFrom({
+    initiative_sheets: mockChain({
+      data: { id: 7, campaign: null, createdBy },
+      error: null,
+    }),
   })
-
-const sheetRead = (rows: InitiativeSheetRow[]) =>
-  mockChain({ data: { round: 3, rows }, error: null })
-
-const fullSheet = (rows: InitiativeSheetRow[]) =>
-  mockChain({
-    data: {
-      id: 7,
-      title: 'Ambush',
-      round: 3,
-      activeIndex: 0,
-      rows,
-      settings: {},
-      info: null,
-      infoCards: [],
-    },
-    error: null,
-  })
+}
 
 function patchEvent(body: Record<string, unknown>) {
   return mockEvent({
@@ -74,147 +59,85 @@ describe('POST /api/encounter/[id]/patch-rows', () => {
     })
   })
 
-  it('patches every row in one call and logs an event per change', async () => {
-    const after = [
-      { ...goblin, hitPoints: 0 },
-      { ...orc, hitPoints: 8 },
-    ]
-    const combatEvents = mockChain({ data: null, error: null })
-
-    mockFrom(
-      {
-        initiative_sheets: [
-          access(),
-          sheetRead([goblin, orc]),
-          fullSheet(after),
-        ],
-        combat_events: combatEvents,
-        live_sessions: mockChain({ data: null, error: null }),
-      },
-      {
-        rpc: [
-          mockChain({ data: after, error: null }),
-          mockChain({ data: 4, error: null }),
-        ],
-      },
-    )
+  it('applies every patch as the DM and returns the stored rows', async () => {
+    mockAccess()
+    const { state } = useMemorySheet(storedSheet({ rows: [goblin, orc] }))
 
     const result = await handler(patchEvent({ patches }))
 
-    expect(result).toEqual({ rows: after })
-
-    const supabase = serverSupabaseServiceRole({} as never)
-
-    expect(supabase.rpc).toHaveBeenCalledWith('apply_live_actions', {
-      p_encounter: 7,
-      p_patches: { goblin: { hitPoints: 0 }, orc: { hitPoints: 8 } },
-    })
-    expect(supabase.rpc).not.toHaveBeenCalledWith(
-      'apply_live_action',
-      expect.anything(),
-    )
-    expect(combatEvents.insert).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ rowId: 'goblin', type: 'hp', round: 3 }),
-        expect.objectContaining({ rowId: 'orc', type: 'hp', round: 3 }),
-      ]),
-    )
-  })
-
-  it('sends one sync to the sheet channel and one to the live session', async () => {
-    const after = [
+    const rows = [
       { ...goblin, hitPoints: 0 },
       { ...orc, hitPoints: 8 },
     ]
 
-    mockFrom(
-      {
-        initiative_sheets: [
-          access(),
-          sheetRead([goblin, orc]),
-          fullSheet(after),
-          fullSheet(after),
-        ],
-        combat_events: mockChain({ data: null, error: null }),
-        live_sessions: mockChain({
-          data: { uuid: 'session-uuid' },
-          error: null,
-        }),
-      },
-      {
-        rpc: [
-          mockChain({ data: after, error: null }),
-          mockChain({ data: 4, error: null }),
-          mockChain({ data: 9, error: null }),
-        ],
-      },
-    )
-
-    await handler(patchEvent({ patches }))
-
-    const supabase = serverSupabaseServiceRole({} as never)
-    const sheetSend = supabase.channel('sheet:7').httpSend
-    const liveSend = supabase.channel('live:session-uuid').httpSend
-
-    expect(sheetSend).toHaveBeenCalledWith('sync', expect.any(Object))
-    expect(sheetSend).not.toHaveBeenCalledWith('action', expect.anything())
-    expect(liveSend).toHaveBeenCalledWith('sync', expect.any(Object))
+    expect(result).toEqual({ rows })
+    expect(state.sheet.rows).toEqual(rows)
+    expect(state.events).toEqual([
+      expect.objectContaining({ rowId: 'goblin', createdBy: 'user-1' }),
+      expect.objectContaining({ rowId: 'orc', createdBy: 'user-1' }),
+    ])
   })
 
-  it('skips the live session when only DM notes change', async () => {
-    const from = mockFrom(
-      {
-        initiative_sheets: [
-          access(),
-          sheetRead([goblin, orc]),
-          fullSheet([goblin, orc]),
+  it('reveals several hidden rows in one request', async () => {
+    mockAccess()
+    const { state } = useMemorySheet(
+      storedSheet({
+        rows: [
+          { ...goblin, hidden: true },
+          { ...orc, hidden: true },
         ],
-        combat_events: mockChain({ data: null, error: null }),
-      },
-      {
-        rpc: [
-          mockChain({ data: [goblin, orc], error: null }),
-          mockChain({ data: 4, error: null }),
-        ],
-      },
+      }),
     )
 
     await handler(
       patchEvent({
         patches: [
-          { rowId: 'goblin', patch: { note: 'Fled' } },
-          { rowId: 'orc', patch: { note: 'Enraged' } },
+          { rowId: 'goblin', patch: { hidden: false } },
+          { rowId: 'orc', patch: { hidden: false } },
         ],
       }),
     )
 
-    expect(from).not.toHaveBeenCalledWith('live_sessions')
+    expect(state.sheet.rows).toEqual([
+      { ...goblin, hidden: false },
+      { ...orc, hidden: false },
+    ])
   })
 
-  it('throws a 404 when a row is not on the sheet', async () => {
-    mockFrom({
-      initiative_sheets: [access(), sheetRead([goblin])],
+  it('refuses to hide a row a player has claimed', async () => {
+    mockAccess()
+    const { state } = useMemorySheet(storedSheet({ rows: [goblin, orc] }), {
+      liveSession: {
+        uuid: 'session-uuid',
+        seats: [
+          { seat: 'seat-1', row: 'goblin', name: 'Gob', spectator: false },
+        ],
+      },
     })
 
-    await expect(handler(patchEvent({ patches }))).rejects.toMatchObject({
-      statusCode: 404,
-      statusMessage: 'Row not found',
-    })
+    await expect(
+      handler(
+        patchEvent({
+          patches: [
+            { rowId: 'goblin', patch: { hidden: true } },
+            { rowId: 'orc', patch: { hidden: true } },
+          ],
+        }),
+      ),
+    ).rejects.toMatchObject({ statusCode: 409, statusMessage: 'row-claimed' })
 
-    expect(serverSupabaseServiceRole({} as never).rpc).toBeUndefined()
+    expect(state.sheet.rows).toEqual([goblin, orc])
   })
 
   it('throws a 403 when the user has no access to the encounter', async () => {
-    mockFrom({
-      initiative_sheets: mockChain({
-        data: { id: 7, campaign: null, createdBy: 'someone-else' },
-        error: null,
-      }),
-    })
+    mockAccess('someone-else')
+    const { state } = useMemorySheet(storedSheet({ rows: [goblin, orc] }))
 
     await expect(handler(patchEvent({ patches }))).rejects.toMatchObject({
       statusCode: 403,
     })
+
+    expect(state.sheet.rows).toEqual([goblin, orc])
   })
 
   it.each([
@@ -227,10 +150,6 @@ describe('POST /api/encounter/[id]/patch-rows', () => {
           { rowId: 'goblin', patch: { hitPoints: 2 } },
         ],
       },
-    ],
-    [
-      'hiding a row',
-      { patches: [{ rowId: 'goblin', patch: { hidden: true } }] },
     ],
     [
       'an unknown field',

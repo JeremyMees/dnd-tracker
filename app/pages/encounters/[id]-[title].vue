@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 import { useCombatEventsLog } from '~/queries/combat-events'
-import {
-  useInitiativeSheetDetail,
-  useInitiativeSheetDetailUpdate,
-  useInitiativeSheetPatch,
-  useInitiativeSheetPatchRows,
-  useInitiativeSheetTurn,
-} from '~/queries/initiative-sheets'
+import { useInitiativeSheetDetail } from '~/queries/initiative-sheets'
 
 definePageMeta({
   auth: true,
@@ -20,16 +14,12 @@ const { startTour } = useTour()
 
 const id = validateParamId('id' in route.params ? route.params.id : undefined)
 const { data, isPending, isError } = useInitiativeSheetDetail(id)
-const { mutateAsync: update } = useInitiativeSheetDetailUpdate()
-const { mutateAsync: patch } = useInitiativeSheetPatch()
-const { mutateAsync: patchRows } = useInitiativeSheetPatchRows()
-const { mutateAsync: turn } = useInitiativeSheetTurn()
 const { mutate: logEvents } = useCombatEventsLog()
-const {
-  enabled: realtimeData,
-  updateQueryData,
-  onTurnReminders,
-} = useRealTimeInitiativeSheet(id, data)
+const { enabled: realtimeData, onTurnReminders } = useRealTimeInitiativeSheet(
+  id,
+  data,
+)
+const session = useSheetSession(data, useRemoteSheetAdapter(id))
 const { session: liveSession } = useLiveSession(id)
 const { seats } = useLiveSeats(id, liveSession)
 const claimedRows = computed(
@@ -48,62 +38,8 @@ function log(events: CombatEventDraft[]): void {
   if (events.length) logEvents({ encounterId: id, events })
 }
 
-async function handleUpdate(payload: UpdateInitiativeSheetData): Promise<void> {
-  if (!data.value) return
-
-  const events = diffSheet(data.value, payload)
-
-  await update({
-    data: payload,
-    id,
-    onSettled: async error => {
-      if (!realtimeData.value && !error) updateQueryData(payload)
-    },
-  })
-
-  log(events)
-}
-
-async function handlePatchRow(
-  rowId: string,
-  rowPatch: Partial<InitiativeSheetRow>,
-): Promise<void> {
-  if (!data.value) return
-
-  await patch({ id, rowId, patch: rowPatch })
-}
-
-async function handlePatchRows(patches: RowPatch[]): Promise<void> {
-  if (!data.value) return
-
-  await patchRows({ id, patches })
-}
-
-async function handleNextTurn(): Promise<TurnReminders | undefined> {
-  if (!data.value) return
-
-  const { expired, saves, recharges } = await turn({ id })
-
-  return { expired, saves, recharges }
-}
-
-const history = useUndoHistory(data, {
-  update: handleUpdate,
-  patchRow: handlePatchRow,
-  patchRows: handlePatchRows,
-  nextTurn: handleNextTurn,
-})
-
 provide(INITIATIVE_SHEET, {
-  sheet: data,
-  update: history.update,
-  patchRow: history.patchRow,
-  patchRows: history.patchRows,
-  nextTurn: history.nextTurn,
-  undo: history.undo,
-  canUndo: history.canUndo,
-  redo: history.redo,
-  canRedo: history.canRedo,
+  ...session,
   onTurnReminders,
   log,
   activeRow,

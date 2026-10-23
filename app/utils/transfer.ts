@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { maxEncounterRows } from '~~/constants/dnd'
 import { homebrewType } from '~~/constants/validation'
 
 export const maxTransferFileSize = 2 * 1024 * 1024
@@ -39,15 +40,20 @@ const transferRowSchema = z
   })
   .transform(({ campaign, homebrew, ...row }) => row as InitiativeSheetRow)
 
-const encounterTransferSchema = z.object({
-  title: z.string().trim().min(1).max(30),
-  info: z.string().nullish(),
-  rows: z.array(transferRowSchema),
-  settings: jsonObject<InitiativeSettings>().optional(),
-  infoCards: z.array(jsonObject<DndItem>()).max(10).default([]),
-  round: z.int().min(1).default(1),
-  activeIndex: z.int().min(0).default(0),
-})
+const encounterTransferSchema = z
+  .object({
+    title: z.string().trim().min(1).max(30),
+    info: z.string().nullish(),
+    rows: z.array(transferRowSchema),
+    settings: jsonObject<InitiativeSettings>().optional(),
+    infoCards: z.array(jsonObject<DndItem>()).max(10).default([]),
+    round: z.int().min(1).default(1),
+    activeIndex: z.int().min(0).default(0),
+  })
+  .transform(encounter => ({
+    ...encounter,
+    rows: normalizeRows(encounter.rows),
+  }))
 
 const homebrewTransferSchema = z.object({
   name: z.string().trim().min(1).max(50),
@@ -61,7 +67,7 @@ const homebrewTransferSchema = z.object({
   initiativeModifier: z
     .union([z.string(), z.int()])
     .nullish()
-    .transform(value => (isDefined(value) ? String(value) : value)),
+    .transform(storeInitiativeModifier),
   hitDice: z.string().nullish(),
   armorDetail: z.string().nullish(),
   proficiencyBonus: z.int().nullish(),
@@ -104,24 +110,6 @@ export function toEncounterTransfer(item: EncounterItem): EncounterTransfer {
   }
 }
 
-export function toHomebrewTransfer(item: HomebrewItemRow): HomebrewTransfer {
-  const { id, campaign, createdAt, ...homebrew } = item
-
-  return homebrew
-}
-
-export function homebrewTransferToRow(
-  item: HomebrewTransfer,
-): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } {
-  const { initiativeModifier, type, ...rest } = item
-
-  return {
-    ...nullsToUndefined(rest),
-    type: type ?? 'monster',
-    initiativeModifier: toIntegerOrUndefined(initiativeModifier),
-  }
-}
-
 export function createTransferFile<K extends TransferKind>(
   kind: K,
   items: TransferItems[K][],
@@ -148,6 +136,15 @@ function validateItems<K extends TransferKind>(
   const parsed = transferSchemas[kind].safeParse(items)
 
   if (!parsed.success) throw new TransferError('invalidFile')
+
+  if (
+    kind === 'encounters' &&
+    (parsed.data as EncounterTransfer[]).some(
+      ({ rows }) => rows.length > maxEncounterRows,
+    )
+  ) {
+    throw new TransferError('tooManyRows', maxEncounterRows)
+  }
 
   return parsed.data
 }

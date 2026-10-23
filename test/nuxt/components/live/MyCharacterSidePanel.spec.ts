@@ -36,7 +36,7 @@ const rows = [ownRow, otherRow]
 describe('LiveMyCharacterSidePanel', () => {
   it('shows the controls when the row is taking its turn', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: { row: ownRow, rows, activeRow: ownRow, allow },
+      props: { row: ownRow, rows, activeRow: ownRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -52,7 +52,7 @@ describe('LiveMyCharacterSidePanel', () => {
 
   it('highlights the panel when the row is taking its turn', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: { row: ownRow, rows, activeRow: ownRow, allow },
+      props: { row: ownRow, rows, activeRow: ownRow, allow, settings: {} },
       global: { stubs },
     })
 
@@ -64,7 +64,7 @@ describe('LiveMyCharacterSidePanel', () => {
 
   it('keeps your own character and controls while another row acts', async () => {
     const component = await mountSuspended(LiveMyCharacterSidePanel, {
-      props: { row: ownRow, rows, activeRow: otherRow, allow },
+      props: { row: ownRow, rows, activeRow: otherRow, allow, settings: {} },
       global: { stubs },
     })
 

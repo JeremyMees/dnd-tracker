@@ -11,20 +11,15 @@ const hasArmorClass = computed(
   () => isDefined(props.item.armorClass) && isDefined(props.item.maxArmorClass),
 )
 
-async function updateRow(row: Partial<InitiativeSheetRow>): Promise<void> {
-  const patch = buildCombatPatch(props.item, { ...props.item, ...row })
+async function apply(change: DndAcChange): Promise<void> {
+  if (!sheet.value) return
+
+  const patch = applyAcChange(props.item, change, {
+    negative: sheet.value.settings?.negative,
+  })
 
   await patchRow(props.item.id, patch)
   popoverOpen.value = false
-}
-
-function changeAc(amount: number, type: DndAcType): InitiativeSheetRow {
-  return handleAcChanges(
-    amount,
-    type,
-    props.item,
-    sheet.value?.settings?.negative ?? false,
-  )
 }
 </script>
 
@@ -134,32 +129,15 @@ function changeAc(amount: number, type: DndAcType): InitiativeSheetRow {
           </div>
         </div>
 
-        <FormAcUpdate
-          v-if="hasArmorClass"
-          :item="item"
-          :sheet="sheet"
-          :handle-ac-changes="changeAc"
-          :update-row="updateRow"
-        />
+        <FormAcUpdate v-if="hasArmorClass" :item="item" :apply="apply" />
 
         <UiSeparator v-if="hasArmorClass" class="my-3 bg-muted" />
 
-        <FormAcUpdateBase
-          :item="item"
-          :sheet="sheet"
-          :handle-ac-changes="changeAc"
-          :update-row="updateRow"
-        />
+        <FormAcUpdateBase :apply="apply" />
 
         <UiSeparator v-if="hasArmorClass" class="my-3 bg-muted" />
 
-        <FormAcOverride
-          v-if="hasArmorClass"
-          :item="item"
-          :sheet="sheet"
-          :handle-ac-changes="changeAc"
-          :update-row="updateRow"
-        />
+        <FormAcOverride v-if="hasArmorClass" :item="item" :apply="apply" />
       </UiPopoverContent>
     </UiPopover>
   </div>

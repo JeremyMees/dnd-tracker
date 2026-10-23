@@ -230,11 +230,11 @@ describe('CommandPalette', () => {
 
     await select('command-monster')
 
-    expect(injected.update).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
+    expect(injected.editRows).toHaveBeenCalledWith(
+      expect.arrayContaining([
         expect.objectContaining({ name: dndMonsterFixture.name }),
       ]),
-    })
+    )
     expect(dialogIsOpen(component!)).toBe(false)
   })
 
@@ -251,11 +251,11 @@ describe('CommandPalette', () => {
     )
     await flushPromises()
 
-    expect(injected.update).toHaveBeenCalledWith({
-      rows: expect.arrayContaining([
+    expect(injected.editRows).toHaveBeenCalledWith(
+      expect.arrayContaining([
         expect.objectContaining({ name: dndMonsterFixture.name }),
       ]),
-    })
+    )
   })
 
   it('Should jump to a found encounter', async () => {

@@ -65,7 +65,7 @@ describe('InitiativeSettings', () => {
 
     await submitForm(component)
 
-    expect(injected.update).toHaveBeenCalledWith({
+    expect(injected.updateSheet).toHaveBeenCalledWith({
       settings: {
         spacing: 'normal',
         rows: [...initiativeDefaultRows],
@@ -94,7 +94,7 @@ describe('InitiativeSettings', () => {
 
     await submitForm(component)
 
-    expect(injected.update).toHaveBeenCalledWith(
+    expect(injected.updateSheet).toHaveBeenCalledWith(
       expect.objectContaining({
         settings: expect.objectContaining({
           live: { hideMonsterNames: true },
@@ -117,14 +117,14 @@ describe('InitiativeSettings', () => {
 
     await submitForm(component)
 
-    expect(injected.update).not.toHaveBeenCalled()
+    expect(injected.updateSheet).not.toHaveBeenCalled()
     expect(component.emitted('close')).toBeUndefined()
   })
 
   it('Should stay open without an inline error when saving fails', async () => {
     const { injected, mount } = mountSettings()
 
-    injected.update.mockRejectedValue(new Error('Save failed'))
+    injected.updateSheet.mockRejectedValue(new Error('Save failed'))
 
     const component = await mount()
 

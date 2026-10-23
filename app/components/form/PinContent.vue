@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 
-const { sheet, update } = validateInject(INITIATIVE_SHEET)
+const { sheet, updateSheet } = validateInject(INITIATIVE_SHEET)
 </script>
 
 <template>
@@ -9,7 +9,7 @@ const { sheet, update } = validateInject(INITIATIVE_SHEET)
     variant="secondary"
     persist="local"
     :sheet="sheet"
-    :update="update"
+    :update-sheet="updateSheet"
     allow-pin
   />
 </template>

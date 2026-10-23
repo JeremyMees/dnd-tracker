@@ -1,10 +1,5 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  type QueryClient,
-} from '@tanstack/vue-query'
-import { diffRow } from '~~/shared/utils/dnd/combat-events'
+import { useQuery, useQueryClient, type QueryClient } from '@tanstack/vue-query'
+import { diffRow, diffSheet } from '~~/shared/utils/dnd/combat-events'
 import { optimisticCombatEvents } from '~/queries/combat-events'
 import { toast } from 'vue-sonner'
 
@@ -40,33 +35,56 @@ export function useInitiativeSheetDetail(id: number) {
   })
 }
 
+const SHEET_EDIT_KEY = ['initiativeSheetEdit']
+
+type PendingSheetEdit = { id: number } & (
+  | { data: UpdateInitiativeSheetData }
+  | { rowId: string; patch: Partial<InitiativeSheetRow> }
+  | { patches: RowPatch[] }
+)
+
+function withPendingEdit(
+  sheet: InitiativeSheet,
+  edit: PendingSheetEdit,
+): InitiativeSheet {
+  if ('data' in edit) {
+    const fields = mergeSheetUpdate(sheet.rows, edit.data)
+
+    return { ...sheet, ...fields, rows: fields.rows ?? sheet.rows }
+  }
+
+  const patches =
+    'patches' in edit
+      ? edit.patches
+      : [{ rowId: edit.rowId, patch: edit.patch }]
+
+  return { ...sheet, rows: withRowPatches(sheet.rows, patches) }
+}
+
+export function withPendingEdits(
+  queryClient: QueryClient,
+  id: number,
+  sheet: InitiativeSheet,
+): InitiativeSheet {
+  return queryClient
+    .getMutationCache()
+    .findAll({ mutationKey: SHEET_EDIT_KEY, status: 'pending' })
+    .map(mutation => mutation.state.variables as PendingSheetEdit)
+    .filter(edit => edit.id === id)
+    .reduce(withPendingEdit, sheet)
+}
+
 export function useInitiativeSheetDetailUpdate() {
-  const supabase = useSupabaseClient<DB>()
   const queryClient = useQueryClient()
   const { t } = useI18n()
-  const { mutateAsync: sync } = useInitiativeSheetSync()
 
   return useCallbackMutation({
+    mutationKey: SHEET_EDIT_KEY,
     mutationFn: async ({
       data,
       id,
-    }: {
-      data: Omit<InitiativeUpdate, NotUpdatable | 'campaign'>
-      id: number
-    } & QueryDefaults) => {
-      if (data.rows?.length) {
-        data.rows = indexCorrect(data.rows).map(row => ({
-          ...sanitizeRowNumbers(row),
-          conditions: row.conditions.map(sanitizeCondition),
-        }))
-      }
-
-      const { error } = await supabase
-        .from('initiative_sheets')
-        .update(data)
-        .eq('id', id)
-
-      if (error) throw createError(error)
+    }: { data: UpdateInitiativeSheetData; id: number } & QueryDefaults) => {
+      await $fetch(`/api/encounter/${id}`, { method: 'PATCH', body: data })
     },
     onMutate: async ({ data, id }) => {
       await queryClient.cancelQueries({
@@ -79,26 +97,38 @@ export function useInitiativeSheetDetailUpdate() {
 
       queryClient.setQueryData(
         queryKeys.initiativeSheetDetail(id),
-        (old: InitiativeSheet) => {
-          if (!old) return old
-
-          return { ...old, ...data, rows: data.rows || old.rows }
-        },
+        (old: InitiativeSheet) => old && withPendingEdit(old, { id, data }),
       )
 
-      return { previous }
+      const drafts = previous ? diffSheet(previous, data) : []
+
+      if (!drafts.length) return { previous }
+
+      const previousEvents = queryClient.getQueryData<CombatEventRow[]>(
+        queryKeys.combatEvents(id),
+      )
+
+      queryClient.setQueryData<CombatEventRow[]>(
+        queryKeys.combatEvents(id),
+        (old = []) => [
+          ...optimisticCombatEvents(
+            id,
+            data.round ?? previous?.round ?? 1,
+            drafts,
+          ),
+          ...old,
+        ],
+      )
+
+      return { previous, previousEvents }
     },
-    onSuccess: (_data, { id, data }) => {
-      sync({ id, live: touchesLiveView(data) }).catch(() => {})
+    onSettled: (_data, _error, { id }) => {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.combatEvents(id),
+      })
     },
     onError: (error, { id, data }, context) => {
-      if (context?.previous) {
-        // roll back the optimistic update
-        queryClient.setQueryData(
-          queryKeys.initiativeSheetDetail(id),
-          context.previous,
-        )
-      }
+      rollbackPatchedRows(queryClient, id, context)
 
       toast.error(
         t(
@@ -106,23 +136,6 @@ export function useInitiativeSheetDetailUpdate() {
         ),
         { description: t(`general.error.reasons.${getFailureReason(error)}`) },
       )
-    },
-  })
-}
-
-const liveViewFields = new Set(['round', 'activeIndex', 'rows', 'settings'])
-
-function touchesLiveView(data: object): boolean {
-  return Object.keys(data).some(key => liveViewFields.has(key))
-}
-
-export function useInitiativeSheetSync() {
-  return useMutation({
-    mutationFn: async ({ id, live }: { id: number; live: boolean }) => {
-      await $fetch(`/api/encounter/${id}/sync`, {
-        method: 'POST',
-        body: { live },
-      })
     },
   })
 }
@@ -250,18 +263,8 @@ async function patchRowsOptimistically(
 
   queryClient.setQueryData(
     queryKeys.initiativeSheetDetail(id),
-    (old: InitiativeSheet) => {
-      if (!old) return old
-
-      return {
-        ...old,
-        rows: old.rows.map(row => {
-          const patch = byRow.get(row.id)
-
-          return patch ? { ...row, ...patch } : row
-        }),
-      }
-    },
+    (old: InitiativeSheet) =>
+      old && { ...old, rows: withRowPatches(old.rows, patches) },
   )
 
   const drafts = (previous?.rows ?? []).flatMap(row => {
@@ -314,6 +317,7 @@ export function useInitiativeSheetPatch() {
   const { t } = useI18n()
 
   return useCallbackMutation({
+    mutationKey: SHEET_EDIT_KEY,
     mutationFn: async ({
       id,
       rowId,
@@ -355,6 +359,7 @@ export function useInitiativeSheetPatchRows() {
   const { t } = useI18n()
 
   return useCallbackMutation({
+    mutationKey: SHEET_EDIT_KEY,
     mutationFn: async ({
       id,
       patches,

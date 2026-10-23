@@ -4,13 +4,8 @@ import * as z from 'zod'
 import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
-  sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (
-    amount: number,
-    type: DndAcType,
-  ) => Partial<InitiativeSheetRow>
-  updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  apply: (change: DndAcChange) => Promise<void>
 }>()
 
 const formSchema = z.object({
@@ -33,20 +28,13 @@ const onSubmit = handleSubmit(async values => {
   formError.value = ''
 
   try {
-    if (!props.sheet) return
-
-    const { reset } = values
     const amount = parseInteger(values.amount)
 
-    const row =
-      reset || amount === props.item.maxArmorClassOld
-        ? props.handleAcChanges(
-            props.item.maxArmorClassOld ?? 0,
-            'override-reset',
-          )
-        : props.handleAcChanges(amount, 'override')
-
-    await props.updateRow(row)
+    await props.apply(
+      values.reset || amount === props.item.maxArmorClassOld
+        ? { type: 'override-reset', amount: props.item.maxArmorClassOld ?? 0 }
+        : { type: 'override', amount },
+    )
   } catch (err) {
     formError.value =
       getErrorMessage(err) || 'An error occurred while updating base AC'

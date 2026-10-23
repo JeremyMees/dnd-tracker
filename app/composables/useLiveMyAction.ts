@@ -1,27 +1,6 @@
 import { useQueryClient } from '@tanstack/vue-query'
 import { toast } from 'vue-sonner'
 
-function toOwnPlayerRow(row: InitiativeSheetRow): PlayerRow {
-  return {
-    id: row.id,
-    index: row.index,
-    initiative: row.initiative,
-    name: row.name,
-    type: row.type,
-    conditions: row.conditions,
-    deathSaves: row.deathSaves,
-    concentration: row.concentration,
-    armorClass: row.armorClass,
-    tempArmorClass: row.tempArmorClass,
-    player: row.player,
-    hitPoints: row.hitPoints,
-    maxHitPoints: row.maxHitPoints,
-    tempHitPoints: row.tempHitPoints,
-    reaction: row.resources?.reaction,
-    readied: row.readied,
-  }
-}
-
 const LIVE_ACTION_ERRORS: Record<string, string> = {
   'Not your turn': 'notYourTurn',
   'Action not allowed': 'actionNotAllowed',
@@ -80,7 +59,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
     pending.value = true
 
     try {
-      const { row } = await $fetch<{ row: InitiativeSheetRow }>(
+      const { row } = await $fetch<{ row: PlayerRow }>(
         '/api/encounter/live/action',
         { method: 'POST', body: { seatToken, action } },
       )
@@ -92,9 +71,7 @@ export function useLiveMyAction(rowId: ComputedRef<string | undefined>) {
           ...current,
           sheet: {
             ...current.sheet,
-            rows: current.sheet.rows.map(r =>
-              r.id === rowId.value ? toOwnPlayerRow(row) : r,
-            ),
+            rows: current.sheet.rows.map(r => (r.id === rowId.value ? row : r)),
           },
         })
       }

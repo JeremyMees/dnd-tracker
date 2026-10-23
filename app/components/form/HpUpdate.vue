@@ -5,10 +5,8 @@ import { damageTypes } from '~~/constants/dnd'
 import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
-  sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleToasts: (toasts: ToastItem[]) => void
-  updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  apply: (change: DndHpChange) => Promise<void>
   intent?: DndHpType
 }>()
 
@@ -34,27 +32,13 @@ const onSubmit = form.handleSubmit(async values => {
 
   try {
     const selected = selectedType.value
+    const amount = parseInteger(values.amount)
 
-    if (!props.sheet || !selected) return
-
-    const rolled = parseInteger(values.amount)
-    const amount =
+    await props.apply(
       selected === 'damage'
-        ? damageAfterDefenses(props.item, [
-            { amount: rolled, type: values.damageType },
-          ])
-        : rolled
-
-    const { row, toasts } = handleHpChanges(
-      amount,
-      selected,
-      props.item,
-      props.sheet?.settings?.negative ?? false,
+        ? { type: 'damage', rolls: [{ amount, type: values.damageType }] }
+        : { type: selected, amount },
     )
-
-    props.handleToasts(toasts)
-
-    await props.updateRow(row)
 
     if (selected === 'heal') animateTableUpdate(`${props.item.id}-hp`, 'green')
     if (selected === 'damage') animateTableUpdate(`${props.item.id}-hp`, 'red')

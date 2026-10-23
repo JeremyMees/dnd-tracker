@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { toPlayerSheet, touchesPlayerView } from '~~/server/utils/player-portal'
 import { storedBloodiedCondition } from '~~/test/fixtures/bloodied-condition'
 
 const prone = { id: 'prone', name: 'Prone', desc: '' }
@@ -61,7 +60,7 @@ describe('toPlayerSheet', () => {
     expect(result).not.toHaveProperty('infoCards')
     expect(result).not.toHaveProperty('campaign')
     expect(result).not.toHaveProperty('createdBy')
-    expect(result).not.toHaveProperty('settings')
+    expect(result.settings).toEqual({ negative: false, bloodied: true })
     expect(result).toMatchObject({
       id: 1,
       title: 'Ambush',
@@ -84,6 +83,32 @@ describe('toPlayerSheet', () => {
       maxHitPoints: 30,
     })
     expect(result.rows[0]!).not.toHaveProperty('healthBand')
+  })
+
+  it('gives only the own row its max armor class', () => {
+    const rows = [
+      playerRow({ armorClass: 15, maxArmorClass: 18 }),
+      playerRow({ id: 'row-2', armorClass: 12, maxArmorClass: 14 }),
+    ]
+    const result = toPlayerSheet(sheet({ rows }), 'row-1')
+
+    expect(result.rows[0]!.maxArmorClass).toBe(18)
+    expect(result.rows[1]!).not.toHaveProperty('maxArmorClass')
+  })
+
+  it('passes on the hp settings players need to predict their own changes', () => {
+    const result = toPlayerSheet(
+      sheet({
+        settings: {
+          spacing: 'normal',
+          modified: false,
+          negative: true,
+          bloodied: false,
+        },
+      }),
+    )
+
+    expect(result.settings).toEqual({ negative: true, bloodied: false })
   })
 
   it('keeps real HP and death saves for a non-player row with no owning seat', () => {
@@ -405,16 +430,123 @@ describe('toPlayerSheet', () => {
   })
 })
 
-describe('touchesPlayerView', () => {
-  it('is false for a DM-only note change', () => {
-    expect(touchesPlayerView({ note: 'Flanking' })).toBe(false)
+describe('changedPlayerRows', () => {
+  const rows = [
+    playerRow({ conditions }),
+    monsterRow(),
+    monsterRow({ id: 'row-3', index: 2, name: 'Orc' }),
+  ]
+
+  function patched(
+    patches: Record<string, Partial<InitiativeSheetRow>>,
+    base = sheet({ rows }),
+  ) {
+    return {
+      ...base,
+      rows: base.rows.map(row => ({ ...row, ...patches[row.id] })),
+    }
+  }
+
+  it('lists nothing for a DM-only note change', () => {
+    expect(
+      changedPlayerRows(
+        sheet({ rows }),
+        patched({ 'row-1': { note: 'Flanking' } }),
+      ),
+    ).toEqual([])
   })
 
-  it.each([
-    [{ hitPoints: 3 }],
-    [{ name: 'Renamed' }],
-    [{ note: 'Flanking', conditions: [] }],
-  ])('is true for %o', patch => {
-    expect(touchesPlayerView(patch)).toBe(true)
+  it('sends a player hp change as everyone else sees it', () => {
+    expect(
+      changedPlayerRows(
+        sheet({ rows }),
+        patched({ 'row-1': { hitPoints: 5 } }),
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        id: 'row-1',
+        healthBand: 'critical',
+        conditions: [prone],
+      }),
+    ])
   })
+
+  it('lists a player row whose change only its own player can see', () => {
+    const [changed] = changedPlayerRows(
+      sheet({ rows }),
+      patched({
+        'row-1': {
+          deathSaves: {
+            fail: [true, false, false],
+            save: [false, false, false],
+          },
+        },
+      }),
+    )
+
+    expect(changed?.id).toBe('row-1')
+    expect(changed).not.toHaveProperty('deathSaves')
+  })
+
+  it('renames the monsters after a row that is hidden', () => {
+    const base = sheet({
+      rows,
+      settings: {
+        spacing: 'normal',
+        modified: false,
+        live: { hideMonsterNames: true },
+      },
+    })
+
+    expect(
+      changedPlayerRows(base, patched({ 'row-2': { hidden: true } }, base)).map(
+        row => [row.id, row.name],
+      ),
+    ).toEqual([
+      ['row-2', '???'],
+      ['row-3', 'Monster 1'],
+    ])
+  })
+
+  it.each<[string, Record<string, Partial<InitiativeSheetRow>>]>([
+    ['a note', { 'row-1': { note: 'Flanking' } }],
+    ['player hp', { 'row-1': { hitPoints: 5, tempHitPoints: 3 } }],
+    ['monster hp', { 'row-2': { hitPoints: 1 } }],
+    ['armor class', { 'row-2': { armorClass: 10, tempArmorClass: 1 } }],
+    ['conditions', { 'row-1': { conditions: [prone] } }],
+    ['concentration', { 'row-2': { concentration: true } }],
+    ['a reaction', { 'row-1': { resources: { reaction: true } } }],
+    ['a readied action', { 'row-1': { readied: true } }],
+    ['a hidden row', { 'row-2': { hidden: true } }],
+    ['a revealed row', { 'row-3': { hidden: false } }],
+    ['a rename', { 'row-3': { name: 'Orc Chief' } }],
+    ['several rows', { 'row-1': { hitPoints: 1 }, 'row-2': { hitPoints: 0 } }],
+  ])(
+    'brings the player view up to date after %s with every setting',
+    (_label, patches) => {
+      for (const live of [
+        {},
+        {
+          hideMonsterNames: true,
+          hideMonsterHealth: true,
+          hideMonsterAc: true,
+        },
+      ]) {
+        const before = sheet({
+          rows: rows.map(row =>
+            row.id === 'row-3' ? { ...row, hidden: true } : row,
+          ),
+          settings: { spacing: 'normal', modified: false, live },
+        })
+        const after = patched(patches, before)
+        const changed = new Map(
+          changedPlayerRows(before, after).map(row => [row.id, row]),
+        )
+
+        expect(
+          toPlayerSheet(before).rows.map(row => changed.get(row.id) ?? row),
+        ).toEqual(toPlayerSheet(after).rows)
+      }
+    },
+  )
 })

@@ -4,6 +4,7 @@ import { INITIATIVE_SHEET } from '~~/constants/provide-keys'
 export function useAddMonster() {
   const injected = inject(INITIATIVE_SHEET, undefined)
   const { t } = useI18n()
+  const showToastItems = useToastItems()
 
   const isAvailable = computed(() => !!injected)
   const isFull = computed(() => hasMaxCharacters(injected?.sheet.value))
@@ -13,9 +14,11 @@ export function useAddMonster() {
 
     if (!injected || !sheet) return
 
-    await injected.update({
-      rows: appendRows(sheet.rows, [monsterToRow(monster)], sheet.settings),
-    })
+    const added = addToEncounter(sheet, [{ monster }])
+
+    if (added.full) return showToastItems([added.toast])
+
+    await injected.editRows(added.rows)
 
     toast.success(
       t('components.initiativeTable.bestiary.added', {

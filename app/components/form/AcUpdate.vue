@@ -4,13 +4,8 @@ import * as z from 'zod'
 import { maxHealthAndArmour } from '~~/constants/validation'
 
 const props = defineProps<{
-  sheet: InitiativeSheet | undefined
   item: InitiativeSheetRow
-  handleAcChanges: (
-    amount: number,
-    type: DndAcType,
-  ) => Partial<InitiativeSheetRow>
-  updateRow: (row: Partial<InitiativeSheetRow>) => Promise<void>
+  apply: (change: DndAcChange) => Promise<void>
 }>()
 
 const selectedType = ref<DndAcType>('remove')
@@ -31,12 +26,7 @@ const onSubmit = form.handleSubmit(async values => {
   try {
     const selected = selectedType.value
 
-    if (!props.sheet || !selected) return
-
-    const amount = parseInteger(values.amount)
-    const row = props.handleAcChanges(amount, selected || 'remove')
-
-    await props.updateRow(row)
+    await props.apply({ type: selected, amount: parseInteger(values.amount) })
 
     if (selected === 'add') animateTableUpdate(`${props.item.id}-ac`, 'green')
     if (selected === 'remove') animateTableUpdate(`${props.item.id}-ac`, 'red')

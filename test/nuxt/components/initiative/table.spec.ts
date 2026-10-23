@@ -19,17 +19,21 @@ interface Props {
   encounterId?: number
 }
 
-const mockUpdate = vi.fn().mockResolvedValue(undefined)
 const mockNextTurn = vi.fn().mockResolvedValue(undefined)
+const mockPatchRows = vi.fn().mockResolvedValue(undefined)
+const mockPreviousTurn = vi.fn().mockResolvedValue(undefined)
+const mockReset = vi.fn().mockResolvedValue(undefined)
 const mockSheet = ref<InitiativeSheet | undefined>(sheet)
 const mockActiveRow = ref<InitiativeSheetRow | undefined>()
 
 const provide = {
   [INITIATIVE_SHEET]: {
     sheet: mockSheet,
-    update: mockUpdate,
     patchRow: vi.fn(),
+    patchRows: mockPatchRows,
     nextTurn: mockNextTurn,
+    previousTurn: mockPreviousTurn,
+    reset: mockReset,
     activeRow: mockActiveRow,
   },
 }
@@ -794,7 +798,7 @@ describe('Initiative table', () => {
 
       runCommand('previous-turn')
 
-      expect(mockUpdate).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(mockPreviousTurn).toHaveBeenCalled()
 
       component.unmount()
     })
@@ -931,7 +935,7 @@ describe('Initiative table', () => {
 
       runCommand('reset-soft')
 
-      expect(mockUpdate).toHaveBeenCalledWith({ activeIndex: 0, round: 1 })
+      expect(mockReset).toHaveBeenCalledWith(false)
       expect(clearCombatEvents).toHaveBeenCalledWith({ encounterId: 42 })
 
       component.unmount()
@@ -1003,7 +1007,7 @@ describe('Initiative table', () => {
     let wrapper: Awaited<ReturnType<typeof mountWithTooltips>> | undefined
 
     beforeEach(() => {
-      mockUpdate.mockReset().mockResolvedValue(undefined)
+      mockPatchRows.mockReset().mockResolvedValue(undefined)
     })
 
     afterEach(() => {
@@ -1011,7 +1015,7 @@ describe('Initiative table', () => {
       wrapper = undefined
     })
 
-    it('Should reveal every hidden row in one update', async () => {
+    it('Should reveal only the hidden rows, as patches in one request', async () => {
       mockSheet.value = {
         ...sheet,
         rows: [{ ...first!, hidden: true }, second!],
@@ -1021,9 +1025,9 @@ describe('Initiative table', () => {
       runCommand('reveal-hidden')
       await flushPromises()
 
-      expect(mockUpdate).toHaveBeenCalledWith({
-        rows: [{ ...first!, hidden: false }, second!],
-      })
+      expect(mockPatchRows).toHaveBeenCalledWith([
+        { rowId: first!.id, patch: { hidden: false } },
+      ])
     })
 
     it('Should hide the command when nothing is hidden', async () => {
