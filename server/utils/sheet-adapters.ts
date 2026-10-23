@@ -25,7 +25,7 @@ export function supabaseSheetStore(supabase: ServiceClient): SheetStore {
     },
     async patchRows(encounterId, patches) {
       if (patches.length === 1) {
-        const [{ rowId, patch }] = patches as [SheetRowPatch]
+        const [{ rowId, patch }] = patches as [RowPatch]
         const { data, error } = await supabase.rpc('apply_live_action', {
           p_encounter: encounterId,
           p_row_id: rowId,

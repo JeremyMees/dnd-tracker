@@ -24,21 +24,6 @@ export function useRealTimeInitiativeSheet(
     })
   }
 
-  function updateQueryData(payload: UpdateInitiativeSheetData): void {
-    queryClient.setQueryData(
-      queryKeys.initiativeSheetDetail(id),
-      (old: InitiativeSheet) => {
-        if (!old) return old
-
-        return {
-          ...old,
-          ...payload,
-          ...(old?.campaign ? { campaign: old.campaign } : {}),
-        }
-      },
-    )
-  }
-
   function applyEvents(payload: SheetEventsEvent): void {
     const queryKey = queryKeys.combatEvents(id)
 
@@ -62,9 +47,7 @@ export function useRealTimeInitiativeSheet(
     mergeAction: (sheet, { row, patch }) =>
       withPendingEdits(queryClient, id, {
         ...sheet,
-        rows: sheet.rows.map(item =>
-          item.id === row ? { ...item, ...patch } : item,
-        ),
+        rows: withRowPatches(sheet.rows, [{ rowId: row, patch }]),
       }),
     mergeSync: (sheet, event) =>
       withPendingEdits(queryClient, id, { ...sheet, ...event.sheet }),
@@ -84,7 +67,6 @@ export function useRealTimeInitiativeSheet(
 
   return {
     enabled,
-    updateQueryData,
     onTurnReminders: turnReminders.on,
   }
 }

@@ -42,7 +42,7 @@ async function logEvents(
 
 async function sendSheetAction(
   ctx: SheetChangeContext,
-  { rowId, patch }: SheetRowPatch,
+  { rowId, patch }: RowPatch,
 ): Promise<void> {
   const topic: SheetTopic = { kind: 'sheet', encounterId: ctx.encounterId }
   const version = await ctx.broadcaster.nextVersion(topic)
@@ -104,15 +104,6 @@ async function sendLiveChanges(
   await ctx.broadcaster.send(topic, 'action', { version, row })
 }
 
-function withPatches(
-  rows: InitiativeSheetRow[],
-  patches: SheetRowPatch[],
-): InitiativeSheetRow[] {
-  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
-
-  return rows.map(row => ({ ...row, ...byRow.get(row.id) }))
-}
-
 interface ApplyRowPatchesOptions {
   before?: StoredSheet
   seat?: SheetSeatOrigin
@@ -120,7 +111,7 @@ interface ApplyRowPatchesOptions {
 
 export async function applyRowPatches(
   ctx: SheetChangeContext,
-  patches: SheetRowPatch[],
+  patches: RowPatch[],
   { before, seat }: ApplyRowPatchesOptions = {},
 ): Promise<InitiativeSheetRow[]> {
   const sheet = before ?? (await readSheet(ctx))
@@ -133,7 +124,7 @@ export async function applyRowPatches(
   const visible =
     changedPlayerRows(sheet, {
       ...sheet,
-      rows: withPatches(sheet.rows, patches),
+      rows: withRowPatches(sheet.rows, patches),
     }).length > 0
   const live =
     !seat && visible ? await ctx.store.liveSession(ctx.encounterId) : undefined

@@ -151,4 +151,53 @@ describe('dnd/undo', () => {
       expect(snapshot).toEqual({ rows: [row('a')], activeIndex: 0, round: 1 })
     })
   })
+
+  describe('patchesBetween', () => {
+    const current: SheetSnapshot = {
+      rows: [row('a', { hitPoints: 5 }), row('b', { index: 1, hitPoints: 8 })],
+      activeIndex: 0,
+      round: 1,
+    }
+
+    it('returns a patch with the changed fields of each changed row', () => {
+      expect(
+        patchesBetween(current, {
+          ...current,
+          rows: [
+            row('a', { hitPoints: 20, conditions: [prone] }),
+            current.rows[1]!,
+          ],
+        }),
+      ).toEqual([{ rowId: 'a', patch: { hitPoints: 20, conditions: [prone] } }])
+    })
+
+    it('returns no patches when nothing changed', () => {
+      expect(patchesBetween(current, current)).toEqual([])
+    })
+
+    it.each([
+      ['the turn moved', { ...current, activeIndex: 1 }],
+      [
+        'a row was added',
+        { ...current, rows: [...current.rows, row('c', { index: 2 })] },
+      ],
+      [
+        'the rows were reordered',
+        { ...current, rows: [current.rows[1]!, current.rows[0]!] },
+      ],
+      [
+        'a field was removed',
+        { ...current, rows: [row('a'), current.rows[1]!] },
+      ],
+      [
+        'a field a patch cannot set changed',
+        {
+          ...current,
+          rows: [row('a', { hitPoints: 5, initiative: 3 }), current.rows[1]!],
+        },
+      ],
+    ])('needs a whole write when %s', (_label, target) => {
+      expect(patchesBetween(current, target)).toBeUndefined()
+    })
+  })
 })

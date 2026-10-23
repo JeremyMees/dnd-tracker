@@ -43,22 +43,6 @@ type PendingSheetEdit = { id: number } & (
   | { patches: RowPatch[] }
 )
 
-function withRowPatches(
-  sheet: InitiativeSheet,
-  patches: RowPatch[],
-): InitiativeSheet {
-  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
-
-  return {
-    ...sheet,
-    rows: sheet.rows.map(row => {
-      const patch = byRow.get(row.id)
-
-      return patch ? { ...row, ...patch } : row
-    }),
-  }
-}
-
 function withPendingEdit(
   sheet: InitiativeSheet,
   edit: PendingSheetEdit,
@@ -67,9 +51,12 @@ function withPendingEdit(
     return { ...sheet, ...edit.data, rows: edit.data.rows || sheet.rows }
   }
 
-  if ('patches' in edit) return withRowPatches(sheet, edit.patches)
+  const patches =
+    'patches' in edit
+      ? edit.patches
+      : [{ rowId: edit.rowId, patch: edit.patch }]
 
-  return withRowPatches(sheet, [{ rowId: edit.rowId, patch: edit.patch }])
+  return { ...sheet, rows: withRowPatches(sheet.rows, patches) }
 }
 
 export function withPendingEdits(
@@ -274,7 +261,8 @@ async function patchRowsOptimistically(
 
   queryClient.setQueryData(
     queryKeys.initiativeSheetDetail(id),
-    (old: InitiativeSheet) => old && withRowPatches(old, patches),
+    (old: InitiativeSheet) =>
+      old && { ...old, rows: withRowPatches(old.rows, patches) },
   )
 
   const drafts = (previous?.rows ?? []).flatMap(row => {

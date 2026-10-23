@@ -8,11 +8,6 @@ export interface QueryDefaults {
 
 export type UpdateInitiativeSheetData = InitiativeSheetUpdate
 
-export interface RowPatch {
-  rowId: string
-  patch: Partial<InitiativeSheetRow>
-}
-
 export type CrudAction = 'create' | 'update' | 'delete' | 'copy'
 
 export interface CrudMutationOptions<TVariables extends QueryDefaults, TData> {

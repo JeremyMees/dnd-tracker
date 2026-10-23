@@ -340,12 +340,4 @@ describe('useRealTimeInitiativeSheet', () => {
     )
     expect(navigateTo).toHaveBeenCalledWith('/encounters')
   })
-
-  it('writes a manual update into the cache and keeps the campaign', async () => {
-    const { vm } = await mountProbe()
-
-    vm.updateQueryData({ round: 4 })
-
-    expect(queryClient.getQueryData(sheetKey)).toEqual({ ...cached, round: 4 })
-  })
 })

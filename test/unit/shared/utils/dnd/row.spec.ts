@@ -894,4 +894,25 @@ describe('dnd/row', () => {
       expect(buildCombatPatch(baseRow, after)).toEqual({ concentration: true })
     })
   })
+
+  describe('withRowPatches', () => {
+    const [first, second] = sheet.rows
+
+    it('merges each patch into its row and leaves the rest as they were', () => {
+      const rows = withRowPatches(sheet.rows, [
+        { rowId: first!.id, patch: { hitPoints: 1, note: 'Down' } },
+      ])
+
+      expect(rows[0]).toEqual({ ...first, hitPoints: 1, note: 'Down' })
+      expect(rows[1]).toBe(second)
+    })
+
+    it('ignores a patch for a row that is not there', () => {
+      expect(
+        withRowPatches(sheet.rows, [
+          { rowId: 'gone', patch: { hitPoints: 1 } },
+        ]),
+      ).toEqual(sheet.rows)
+    })
+  })
 })

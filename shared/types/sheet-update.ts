@@ -4,3 +4,8 @@ export type InitiativeSheetUpdate = Partial<
     'rows' | 'activeIndex' | 'round' | 'settings' | 'info' | 'infoCards'
   >
 >
+
+export interface RowPatch {
+  rowId: string
+  patch: Partial<InitiativeSheetRow>
+}

@@ -301,3 +301,16 @@ export function normalizeRows(
     conditions: row.conditions.map(sanitizeCondition),
   }))
 }
+
+export function withRowPatches(
+  rows: InitiativeSheetRow[],
+  patches: RowPatch[],
+): InitiativeSheetRow[] {
+  const byRow = new Map(patches.map(({ rowId, patch }) => [rowId, patch]))
+
+  return rows.map(row => {
+    const patch = byRow.get(row.id)
+
+    return patch ? { ...row, ...patch } : row
+  })
+}

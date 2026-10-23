@@ -1,3 +1,5 @@
+import { rowPatchSchema } from '~~/shared/utils/dnd/schema'
+
 function changedFields(
   before: InitiativeSheetRow,
   after: InitiativeSheetRow,
@@ -73,4 +75,45 @@ export function snapshotSheet(sheet: SheetSnapshot): SheetSnapshot {
       round: sheet.round,
     }),
   )
+}
+
+const patchableFields = new Set(Object.keys(rowPatchSchema.shape))
+
+function sameTurn(a: SheetSnapshot, b: SheetSnapshot): boolean {
+  return a.activeIndex === b.activeIndex && a.round === b.round
+}
+
+export function patchesBetween(
+  current: SheetSnapshot,
+  target: SheetSnapshot,
+): RowPatch[] | undefined {
+  if (!sameTurn(current, target)) return undefined
+  if (current.rows.length !== target.rows.length) return undefined
+
+  const patches: RowPatch[] = []
+
+  for (const [index, row] of current.rows.entries()) {
+    const next = target.rows[index]
+
+    if (next?.id !== row.id) return undefined
+
+    const fields = changedFields(row, next)
+
+    if (
+      fields.some(
+        field => !patchableFields.has(field) || next[field] === undefined,
+      )
+    ) {
+      return undefined
+    }
+
+    if (fields.length) {
+      patches.push({
+        rowId: row.id,
+        patch: Object.fromEntries(fields.map(field => [field, next[field]])),
+      })
+    }
+  }
+
+  return patches
 }

@@ -10,11 +10,6 @@ export type StoredSheet = Pick<
   | 'infoCards'
 >
 
-export interface SheetRowPatch {
-  rowId: string
-  patch: Partial<InitiativeSheetRow>
-}
-
 export type SheetTurn = Pick<InitiativeSheet, 'activeIndex' | 'round'>
 
 export interface SheetSeatOrigin {
@@ -30,7 +25,7 @@ export interface SheetStore {
   read: (encounterId: number) => Promise<StoredSheet>
   patchRows: (
     encounterId: number,
-    patches: SheetRowPatch[],
+    patches: RowPatch[],
   ) => Promise<InitiativeSheetRow[]>
   updateTurn: (
     encounterId: number,
