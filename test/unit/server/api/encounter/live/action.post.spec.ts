@@ -82,7 +82,9 @@ describe('POST /api/encounter/live/action', () => {
 
     const result = await act({ type: 'hp', hpType: 'heal', amount: 5 })
 
-    expect(result).toEqual({ row: { ...row, hitPoints: 15 } })
+    expect(result).toEqual({
+      row: toPlayerSheet({ ...state.sheet }, 'row-1').rows[0],
+    })
     expect(state.sheet.rows).toEqual([{ ...row, hitPoints: 15 }])
     expect(state.events).toEqual([
       {
@@ -161,6 +163,17 @@ describe('POST /api/encounter/live/action', () => {
     expect(sent('live:session-uuid')[0]?.payload.row).toMatchObject({
       concentration: true,
     })
+  })
+
+  it('returns the claimed row as its player sees it, without the DM note', async () => {
+    setup({ rows: [{ ...row, note: 'Secretly a doppelganger' }] })
+
+    const result = await act({ type: 'hp', hpType: 'damage', amount: 3 })
+
+    expect(result).toEqual({
+      row: expect.objectContaining({ id: 'row-1', hitPoints: 7 }),
+    })
+    expect(result.row).not.toHaveProperty('note')
   })
 
   it("applies an ac action to the seat's claimed row", async () => {

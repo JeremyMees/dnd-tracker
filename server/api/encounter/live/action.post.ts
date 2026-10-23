@@ -100,6 +100,13 @@ export default defineEventHandler(async event => {
     before: sheet,
     seat: { session: payload.session },
   })
+  const { rows } = toPlayerSheet(
+    {
+      ...sheet,
+      rows: sheet.rows.map(item => (item.id === row?.id ? row : item)),
+    },
+    seat.row,
+  )
 
-  return { row }
+  return { row: rows.find(item => item.id === seat.row) }
 })

@@ -111,8 +111,8 @@ describe('useLiveMyAction', () => {
     )
   })
 
-  it('reconciles with the real row returned by the server on success', async () => {
-    const realRow = {
+  it('replaces the cached row with the row the server returns', async () => {
+    const serverRow: PlayerRow = {
       id: 'row-1',
       index: 0,
       initiative: 10,
@@ -121,10 +121,9 @@ describe('useLiveMyAction', () => {
       conditions: [],
       hitPoints: 15,
       maxHitPoints: 20,
-      note: 'DM secret',
     }
 
-    fetchMock.mockResolvedValue({ row: realRow })
+    fetchMock.mockResolvedValue({ row: serverRow })
     getQueryData.mockReturnValue(cachedState)
 
     const vm = await mountProbe()
@@ -142,26 +141,7 @@ describe('useLiveMyAction', () => {
         action: { type: 'hp', hpType: 'heal', amount: 5 },
       },
     })
-
-    const lastCall = setQueryData.mock.calls.at(-1)!
-
-    expect(lastCall[1].sheet.rows[0]).toEqual({
-      id: 'row-1',
-      index: 0,
-      initiative: 10,
-      name: 'Elara',
-      type: 'player',
-      conditions: [],
-      deathSaves: undefined,
-      concentration: undefined,
-      armorClass: undefined,
-      tempArmorClass: undefined,
-      player: undefined,
-      hitPoints: 15,
-      maxHitPoints: 20,
-      tempHitPoints: undefined,
-      reaction: undefined,
-    })
+    expect(setQueryData.mock.calls.at(-1)![1].sheet.rows[0]).toEqual(serverRow)
   })
 
   it('rolls back the cache and toasts on a failed request', async () => {
@@ -312,7 +292,7 @@ describe('useLiveMyAction', () => {
   })
 
   it('tracks pending state across the request lifecycle', async () => {
-    let resolveFetch: (value: { row: InitiativeSheetRow }) => void = () => {}
+    let resolveFetch: (value: { row: PlayerRow }) => void = () => {}
 
     fetchMock.mockImplementation(
       () =>
@@ -331,7 +311,7 @@ describe('useLiveMyAction', () => {
     await flushPromises()
     expect(vm.pending).toBe(true)
 
-    resolveFetch({ row: cachedState.sheet.rows[0] as InitiativeSheetRow })
+    resolveFetch({ row: cachedState.sheet.rows[0] as PlayerRow })
     await promise
 
     expect(vm.pending).toBe(false)
