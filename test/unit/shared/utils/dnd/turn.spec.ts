@@ -384,6 +384,7 @@ describe('dnd/turn', () => {
       concentration: true,
       readied: true,
       deathSaves: { save: [true, false, false], fail: [true, true, false] },
+      resources: { legendaryResistances: 2, actions: { 'Fire Breath': 1 } },
     }
 
     it('goes back to the first turn and leaves rows alone on a soft reset', () => {
@@ -421,6 +422,7 @@ describe('dnd/turn', () => {
             tempArmorClass: undefined,
             concentration: false,
             readied: undefined,
+            resources: undefined,
             deathSaves: {
               save: [false, false, false],
               fail: [false, false, false],
@@ -448,6 +450,28 @@ describe('dnd/turn', () => {
         armorClass: 18,
         maxArmorClass: 18,
       })
+    })
+
+    it('keeps a base of 0 on a hard reset', () => {
+      const [reset] = resetEncounter(
+        [{ ...wounded, maxHitPointsOld: 0, maxArmorClassOld: 0 }],
+        { hard: true },
+      ).rows!
+
+      expect(reset).toMatchObject({
+        hitPoints: 0,
+        maxHitPoints: 0,
+        armorClass: 0,
+        maxArmorClass: 0,
+      })
+    })
+
+    it('keeps hidden rows hidden on a hard reset', () => {
+      const [reset] = resetEncounter([{ ...wounded, hidden: true }], {
+        hard: true,
+      }).rows!
+
+      expect(reset?.hidden).toBe(true)
     })
 
     it('keeps lair rows at initiative 20 on a hard reset', () => {

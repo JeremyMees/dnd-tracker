@@ -129,18 +129,9 @@ function hardResetRow(row: InitiativeSheetRow): InitiativeSheetRow {
     initiative: defaultInitiative(row.type),
     conditions: [],
     ...(row.concentration !== undefined && { concentration: false }),
-    ...(row.deathSaves !== undefined && {
-      deathSaves: {
-        fail: [false, false, false],
-        save: [false, false, false],
-      },
-    }),
-    ...(row.armorClass !== undefined && {
-      armorClass: row.maxArmorClassOld || row.maxArmorClass,
-    }),
-    ...(row.hitPoints !== undefined && {
-      hitPoints: row.maxHitPointsOld || row.maxHitPoints,
-    }),
+    ...(row.deathSaves !== undefined && { deathSaves: resetDeathSaves() }),
+    ...(row.armorClass !== undefined && { armorClass: getBaseAC(row) }),
+    ...(row.hitPoints !== undefined && { hitPoints: getBaseHP(row) }),
     ...(isDefined(row.maxArmorClassOld) && {
       maxArmorClass: row.maxArmorClassOld,
     }),
@@ -148,6 +139,7 @@ function hardResetRow(row: InitiativeSheetRow): InitiativeSheetRow {
       maxHitPoints: row.maxHitPointsOld,
     }),
     readied: undefined,
+    resources: undefined,
     maxArmorClassOld: undefined,
     maxHitPointsOld: undefined,
     tempHitPoints: undefined,
