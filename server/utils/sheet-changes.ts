@@ -1,0 +1,124 @@
+import type { serverSupabaseServiceRole } from '#supabase/server'
+import { diffRow } from '~~/shared/utils/dnd/combat-events'
+
+export function sheetChangeContext(
+  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
+  encounterId: number,
+  actor: SheetActor,
+): SheetChangeContext {
+  return {
+    store: supabaseSheetStore(supabase),
+    broadcaster: realtimeBroadcaster(supabase),
+    encounterId,
+    actor,
+  }
+}
+
+export function readSheet(ctx: SheetChangeContext): Promise<StoredSheet> {
+  return ctx.store.read(ctx.encounterId)
+}
+
+async function logEvents(
+  ctx: SheetChangeContext,
+  round: number,
+  events: CombatEventDraft[],
+): Promise<void> {
+  await ctx.store.logEvents(
+    events.map(event => ({
+      encounterId: ctx.encounterId,
+      rowId: event.rowId ?? null,
+      round,
+      type: event.type,
+      payload: event.payload,
+      createdBy: ctx.actor.id ?? null,
+      actorName: ctx.actor.name ?? null,
+    })),
+  )
+}
+
+async function sendSheetAction(
+  ctx: SheetChangeContext,
+  { rowId, patch }: SheetRowPatch,
+): Promise<void> {
+  const topic: SheetTopic = { kind: 'sheet', encounterId: ctx.encounterId }
+  const version = await ctx.broadcaster.nextVersion(topic)
+
+  await ctx.broadcaster.send(topic, 'action', { version, row: rowId, patch })
+}
+
+export async function sendSheetSync(
+  ctx: SheetChangeContext,
+  reminders?: TurnReminders,
+): Promise<void> {
+  const topic: SheetTopic = { kind: 'sheet', encounterId: ctx.encounterId }
+  const version = await ctx.broadcaster.nextVersion(topic)
+  const sheet = await readSheet(ctx)
+
+  await ctx.broadcaster.send(topic, 'sync', {
+    version,
+    sheet,
+    ...(reminders && { reminders }),
+  })
+}
+
+export async function sendLiveState(
+  ctx: SheetChangeContext,
+  session: string,
+): Promise<void> {
+  const topic: SheetTopic = { kind: 'live', session }
+  const version = await ctx.broadcaster.nextVersion(topic)
+  const sheet = await readSheet(ctx)
+
+  await ctx.broadcaster.send(topic, 'sync', {
+    version,
+    sheet: toPlayerSheet(sheet),
+  })
+}
+
+function claimedRows(session: SheetLiveSession | undefined): Set<string> {
+  return new Set(session?.seats.flatMap(seat => (seat.row ? [seat.row] : [])))
+}
+
+export async function applyRowPatches(
+  ctx: SheetChangeContext,
+  patches: SheetRowPatch[],
+  before?: StoredSheet,
+): Promise<InitiativeSheetRow[]> {
+  const sheet = before ?? (await readSheet(ctx))
+  const beforeRows = new Map(sheet.rows.map(row => [row.id, row]))
+
+  if (patches.some(({ rowId }) => !beforeRows.has(rowId))) {
+    throw createError({ statusCode: 404, statusMessage: 'Row not found' })
+  }
+
+  const live = patches.some(({ patch }) => touchesPlayerView(patch))
+    ? await ctx.store.liveSession(ctx.encounterId)
+    : undefined
+  const claimed = claimedRows(live)
+
+  if (patches.some(({ rowId, patch }) => patch.hidden && claimed.has(rowId))) {
+    throw createError({ statusCode: 409, statusMessage: 'row-claimed' })
+  }
+
+  const after = await ctx.store.patchRows(ctx.encounterId, patches)
+  const [only] = patches
+
+  await Promise.all([
+    logEvents(
+      ctx,
+      sheet.round,
+      after.flatMap(row =>
+        diffRow(beforeRows.get(row.id)!, row).map(draft => ({
+          ...draft,
+          rowId: draft.rowId ?? row.id,
+        })),
+      ),
+    ),
+    patches.length === 1 && only
+      ? sendSheetAction(ctx, only)
+      : sendSheetSync(ctx),
+    ...(live ? [sendLiveState(ctx, live.uuid)] : []),
+  ])
+
+  return after
+}

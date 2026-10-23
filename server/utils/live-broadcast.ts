@@ -32,22 +32,6 @@ export async function activeLiveSession(
   return session?.uuid
 }
 
-export async function isLiveRowClaimed(
-  supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
-  encounter: number,
-  row: string,
-): Promise<boolean> {
-  const { data: session } = await supabase
-    .from('live_sessions')
-    .select('seats')
-    .eq('encounter', encounter)
-    .is('endedAt', null)
-    .gt('expiresAt', new Date().toISOString())
-    .maybeSingle()
-
-  return !!session?.seats.some(seat => seat.row === row)
-}
-
 export async function broadcastLiveAction(
   supabase: ReturnType<typeof serverSupabaseServiceRole<DB>>,
   session: string,

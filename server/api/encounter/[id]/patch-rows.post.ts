@@ -1,5 +1,4 @@
 import { serverSupabaseServiceRole } from '#supabase/server'
-import { diffRow } from '~~/shared/utils/dnd/combat-events'
 import { rowPatchSchema } from '~~/shared/utils/dnd/schema'
 import { getValidatedRouterParams } from 'h3'
 import { z } from 'zod'
@@ -30,50 +29,10 @@ export default defineEventHandler(async event => {
 
   await requireEncounterAccess(event, id, user.id)
 
-  const supabase = serverSupabaseServiceRole<DB>(event)
-
-  const { data: sheet, error: sheetError } = await supabase
-    .from('initiative_sheets')
-    .select('round, rows')
-    .eq('id', id)
-    .single()
-
-  if (sheetError) throw createError(postgresErrorToH3Error(sheetError))
-
-  const before = new Map(sheet.rows.map(row => [row.id, row]))
-
-  if (patches.some(({ rowId }) => !before.has(rowId))) {
-    throw createError({ statusCode: 404, statusMessage: 'Row not found' })
-  }
-
-  const { data: after, error } = await supabase.rpc('apply_live_actions', {
-    p_encounter: id,
-    p_patches: Object.fromEntries(
-      patches.map(({ rowId, patch }) => [rowId, patch]),
-    ),
+  const changes = sheetChangeContext(serverSupabaseServiceRole<DB>(event), id, {
+    id: user.id,
   })
+  const rows = await applyRowPatches(changes, patches)
 
-  if (error) throw createError(postgresErrorToH3Error(error))
-
-  const events = after.flatMap(row =>
-    diffRow(before.get(row.id)!, row).map(draft => ({
-      ...draft,
-      rowId: draft.rowId ?? row.id,
-    })),
-  )
-
-  await Promise.all([
-    logCombatEvents(supabase, {
-      encounterId: id,
-      round: sheet.round,
-      actorId: user.id,
-      events,
-    }),
-    broadcastSheetSync(supabase, id),
-    ...(patches.some(({ patch }) => touchesPlayerView(patch))
-      ? [broadcastActiveLiveState(supabase, id)]
-      : []),
-  ])
-
-  return { rows: after }
+  return { rows }
 })
