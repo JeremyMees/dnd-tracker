@@ -4,8 +4,8 @@
 
 ### Issue tracker
 
-Issues and specs live as GitHub issues on `lilmees/dnd-tracker-2.0`, via the
-`gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues and specs live as GitHub issues on `JeremyMees/dnd-tracker`, via the `gh`
+CLI. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
