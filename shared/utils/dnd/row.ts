@@ -216,39 +216,6 @@ export function appendRows(
   )
 }
 
-export const monsterToRow = (monster: DndMonster): NewInitiativeRow => {
-  const {
-    initiativeBonus,
-    hitDice,
-    languages,
-    proficiencyBonus,
-    type: _type,
-    size: _size,
-    alignment: _alignment,
-    experiencePoints: _experiencePoints,
-    ...rest
-  } = monster
-
-  return {
-    ...rest,
-    type: 'monster',
-    hitDice: parseDndDiceToString(hitDice),
-    languages: parseDndLanguages(languages),
-    initiativeModifier: initiativeBonus,
-    proficiencyBonus: proficiencyBonus ?? undefined,
-  }
-}
-
-export const homebrewToRow = (homebrew: HomebrewItemRow): NewInitiativeRow => {
-  const { id, initiativeModifier, ...rest } = homebrew
-
-  return {
-    ...nullsToUndefined(rest),
-    homebrew: id,
-    initiativeModifier: toIntegerOrUndefined(initiativeModifier),
-  }
-}
-
 export function toSummoner(
   rows: InitiativeSheetRow[],
   id?: string,

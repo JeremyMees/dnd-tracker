@@ -110,41 +110,6 @@ describe('transfer', () => {
     })
   })
 
-  describe('toHomebrewTransfer', () => {
-    it('Should drop the id, campaign and creation date', () => {
-      const result = toHomebrewTransfer(homebrew)
-
-      expect(result).not.toHaveProperty('id')
-      expect(result).not.toHaveProperty('campaign')
-      expect(result).not.toHaveProperty('createdAt')
-      expect(result).toMatchObject({ name: 'Goblin Boss', armorClass: 17 })
-    })
-  })
-
-  describe('homebrewTransferToRow', () => {
-    it('Should turn an imported creature into form values', () => {
-      expect(
-        homebrewTransferToRow({
-          ...toHomebrewTransfer(homebrew),
-          initiativeModifier: '-1',
-        }),
-      ).toEqual({
-        name: 'Goblin Boss',
-        type: 'monster',
-        actions: [],
-        armorClass: 17,
-        hitPoints: 21,
-        initiativeModifier: -1,
-      })
-    })
-
-    it('Should fall back to a monster without a type', () => {
-      expect(homebrewTransferToRow({ name: 'Orc', actions: [] }).type).toBe(
-        'monster',
-      )
-    })
-  })
-
   describe('createTransferFile', () => {
     it('Should wrap the items with the format, kind and version', () => {
       vi.useFakeTimers()
@@ -452,6 +417,57 @@ describe('transfer', () => {
           parseTransferFile(JSON.stringify(fiveEToolsCreature), 'encounters'),
         ),
       ).toBe('invalidFile')
+    })
+  })
+
+  describe('round trip', () => {
+    function exported<K extends TransferKind>(
+      kind: K,
+      items: TransferItems[K][],
+    ): TransferItems[K][] {
+      return parseTransferFile(
+        JSON.stringify(createTransferFile(kind, items)),
+        kind,
+      )
+    }
+
+    it('Should keep an imported creature the same through an encounter export', () => {
+      const [creature] = parseTransferFile(
+        JSON.stringify(fiveEToolsCreature),
+        'homebrews',
+      )
+      const added = addToEncounter(
+        { rows: [], settings: { spacing: 'normal', modified: false } },
+        [{ row: homebrewTransferToRow(creature!) }],
+      )
+
+      if (added.full) throw new Error('The encounter is full')
+
+      const [item] = exported('encounters', [
+        toEncounterTransfer({ ...encounter, rows: added.rows }),
+      ])
+
+      expect(item!.rows).toEqual(added.rows)
+      expect(item!.rows[0]).toMatchObject({
+        name: creature!.name,
+        armorClass: creature!.armorClass,
+        hitPoints: creature!.hitPoints,
+        initiativeModifier: readInitiativeModifier(
+          creature!.initiativeModifier,
+        ),
+      })
+    })
+
+    it('Should keep a saved homebrew the same through a homebrew export', () => {
+      const [creature] = parseTransferFile(
+        JSON.stringify(fiveEToolsCreature),
+        'homebrews',
+      )
+      const saved = { ...homebrew, ...creature }
+
+      expect(exported('homebrews', [toHomebrewTransfer(saved)])).toEqual([
+        toHomebrewTransfer(saved),
+      ])
     })
   })
 

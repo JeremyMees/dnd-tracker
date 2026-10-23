@@ -14,11 +14,6 @@ export type EncounterTransfer = Pick<
   'title' | 'info' | 'rows' | 'settings' | 'infoCards' | 'round' | 'activeIndex'
 >
 
-export type HomebrewTransfer = Omit<
-  HomebrewItemInsert,
-  'id' | 'campaign' | 'createdAt'
->
-
 export interface TransferItems {
   encounters: EncounterTransfer
   homebrews: HomebrewTransfer

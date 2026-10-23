@@ -105,7 +105,7 @@ export function generateColumns({ onUpdate, hasRights }: ColumnOptions) {
 
 export function expandedMarkup(row: Row<ListingFeatures, HomebrewItemRow>) {
   const { t } = useI18n()
-  const initiativeModifier = toIntegerOrUndefined(
+  const initiativeModifier = readInitiativeModifier(
     row.original.initiativeModifier,
   )
 

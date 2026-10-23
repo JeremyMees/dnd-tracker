@@ -246,7 +246,7 @@ export function homebrewInitialValues(
     challengeRating: source?.challengeRating ?? undefined,
     amount,
     initiative: undefined,
-    initiativeModifier: toIntegerOrUndefined(source?.initiativeModifier),
+    initiativeModifier: readInitiativeModifier(source?.initiativeModifier),
     armorClass: source?.armorClass || undefined,
     hitPoints: source?.hitPoints || undefined,
     link: source?.link || '',

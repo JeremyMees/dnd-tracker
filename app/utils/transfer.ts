@@ -67,7 +67,7 @@ const homebrewTransferSchema = z.object({
   initiativeModifier: z
     .union([z.string(), z.int()])
     .nullish()
-    .transform(value => (isDefined(value) ? String(value) : value)),
+    .transform(storeInitiativeModifier),
   hitDice: z.string().nullish(),
   armorDetail: z.string().nullish(),
   proficiencyBonus: z.int().nullish(),
@@ -107,24 +107,6 @@ export function toEncounterTransfer(item: EncounterItem): EncounterTransfer {
     infoCards: item.infoCards,
     round: item.round,
     activeIndex: item.activeIndex,
-  }
-}
-
-export function toHomebrewTransfer(item: HomebrewItemRow): HomebrewTransfer {
-  const { id, campaign, createdAt, ...homebrew } = item
-
-  return homebrew
-}
-
-export function homebrewTransferToRow(
-  item: HomebrewTransfer,
-): NewInitiativeRow {
-  const { initiativeModifier, type, ...rest } = item
-
-  return {
-    ...nullsToUndefined(rest),
-    type: type ?? 'monster',
-    initiativeModifier: toIntegerOrUndefined(initiativeModifier),
   }
 }
 

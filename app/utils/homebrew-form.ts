@@ -44,7 +44,7 @@ export function toHomebrewSubmission(
       level: level ?? null,
       challengeRating: challengeRating ?? null,
       ...(isDefined(initiativeModifier)
-        ? { initiativeModifier: initiativeModifier.toString() }
+        ? { initiativeModifier: storeInitiativeModifier(initiativeModifier) }
         : {}),
     } as HomebrewData,
     amount,

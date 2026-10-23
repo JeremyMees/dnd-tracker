@@ -347,7 +347,7 @@ export function fromFiveETools(creature: ImportedRecord): HomebrewTransfer {
   result.modifiers = scores.modifiers
   result.challengeRating = toChallengeRating(challenge) ?? null
   result.proficiencyBonus = proficiency ?? null
-  result.initiativeModifier = String(
+  result.initiativeModifier = storeInitiativeModifier(
     integerInRange(
       toNumberOrUndefined(initiative) ??
         scores.modifiers.dexterity +
@@ -470,9 +470,9 @@ export function fromImprovedInitiative(
   result.hitPoints =
     integerInRange(toNumberOrUndefined(hp?.Value), 1, 1000) ?? null
   result.hitDice = parseHitDiceText(hp?.Notes) ?? null
-  result.initiativeModifier = isDefined(integerInRange(initiative, -20, 20))
-    ? String(integerInRange(initiative, -20, 20))
-    : null
+  result.initiativeModifier = storeInitiativeModifier(
+    integerInRange(initiative, -20, 20),
+  )
   result.challengeRating = toChallengeRating(statBlock.Challenge) ?? null
   result.proficiencyBonus =
     proficiencyFromChallenge(toNumberOrUndefined(statBlock.Challenge)) ?? null
@@ -521,7 +521,7 @@ export function fromKoboldFightClub(
     integerInRange(toNumberOrUndefined(creature.ac), 1, 100) ?? null
   result.hitPoints =
     integerInRange(toNumberOrUndefined(creature.hp), 1, 1000) ?? null
-  result.initiativeModifier = isDefined(initiative) ? String(initiative) : null
+  result.initiativeModifier = storeInitiativeModifier(initiative)
   result.challengeRating = toChallengeRating(creature.cr) ?? null
   result.proficiencyBonus =
     proficiencyFromChallenge(toNumberOrUndefined(creature.cr)) ?? null
@@ -585,7 +585,7 @@ export function fromStatblockMarkdown(
   result.speed = property('speed') ? parseSpeedText(property('speed')!) : null
   result.abilityScores = hasScores ? scores.abilityScores : null
   result.modifiers = hasScores ? scores.modifiers : null
-  result.initiativeModifier = String(
+  result.initiativeModifier = storeInitiativeModifier(
     initiative ?? (hasScores ? scores.modifiers.dexterity : 0),
   )
   result.challengeRating = toChallengeRating(challenge) ?? null
