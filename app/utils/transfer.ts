@@ -112,7 +112,7 @@ export function toHomebrewTransfer(item: HomebrewItemRow): HomebrewTransfer {
 
 export function homebrewTransferToRow(
   item: HomebrewTransfer,
-): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } {
+): NewInitiativeRow {
   const { initiativeModifier, type, ...rest } = item
 
   return {

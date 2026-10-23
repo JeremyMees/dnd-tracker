@@ -194,7 +194,7 @@ export function rollRowInitiative(
 
 export function appendRows(
   rows: InitiativeSheetRow[],
-  added: (Partial<InitiativeSheetRow> & { name: string; type: HomebrewType })[],
+  added: NewInitiativeRow[],
   settings?: InitiativeSettings,
 ): InitiativeSheetRow[] {
   const autoRollInitiative = isAutoRollInitiativeEnabled(settings)
@@ -216,9 +216,7 @@ export function appendRows(
   )
 }
 
-export const monsterToRow = (
-  monster: DndMonster,
-): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
+export const monsterToRow = (monster: DndMonster): NewInitiativeRow => {
   const {
     initiativeBonus,
     hitDice,
@@ -241,9 +239,7 @@ export const monsterToRow = (
   }
 }
 
-export const homebrewToRow = (
-  homebrew: HomebrewItemRow,
-): Partial<InitiativeSheetRow> & { name: string; type: HomebrewType } => {
+export const homebrewToRow = (homebrew: HomebrewItemRow): NewInitiativeRow => {
   const { id, initiativeModifier, ...rest } = homebrew
 
   return {

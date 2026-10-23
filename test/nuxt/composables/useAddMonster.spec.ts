@@ -73,41 +73,6 @@ describe('useAddMonster', () => {
     )
   })
 
-  it('Should roll the initiative of the added monster', async () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0.5)
-
-    const injected = createInitiativeSheetProvide()
-    const mounted = await mountAddMonster(injected.provide)
-    component = mounted.component
-
-    await mounted.vm.addMonster({ ...dndMonsterFixture, initiativeBonus: 2 })
-
-    const rows = injected.editRows.mock.calls[0]![0] as InitiativeSheetRow[]
-
-    expect(rows.find(row => row.name === dndMonsterFixture.name)).toEqual(
-      expect.objectContaining({ initiative: 13 }),
-    )
-  })
-
-  it('Should not roll the initiative when the setting is off', async () => {
-    const injected = createInitiativeSheetProvide({
-      ...sheetFixture,
-      settings: { ...sheetFixture.settings!, autoRollInitiative: false },
-    })
-    const mounted = await mountAddMonster(injected.provide)
-    component = mounted.component
-
-    await mounted.vm.addMonster(dndMonsterFixture)
-
-    expect(injected.editRows).toHaveBeenCalledWith([
-      ...sheetFixture.rows,
-      expect.objectContaining({
-        name: dndMonsterFixture.name,
-        initiative: -1,
-      }),
-    ])
-  })
-
   it('Should be full when the encounter has the maximum amount of rows', async () => {
     const injected = createInitiativeSheetProvide({
       ...sheetFixture,

@@ -139,19 +139,18 @@ async function editRow(submission: HomebrewSubmission): Promise<boolean> {
 
   if (homebrew === null) return false
 
-  const edited = editInitiativeRow(
-    props.row,
-    {
-      ...submission.row,
-      homebrew,
-      initiativeModifier: submission.initiativeModifier,
-      summoner: toSummoner(props.sheet.rows, submission.summoner),
-    },
-    submission.row.type,
-  )
-
   await props.editRows(
-    replaceRow(props.sheet.rows, withBloodied(edited, bloodied.value)),
+    editEncounterRow(
+      props.sheet,
+      props.row,
+      {
+        ...submission.row,
+        homebrew,
+        initiativeModifier: submission.initiativeModifier,
+        summoner: submission.summoner,
+      },
+      bloodied.value,
+    ),
   )
 
   return true
@@ -160,28 +159,23 @@ async function editRow(submission: HomebrewSubmission): Promise<boolean> {
 async function addRows(submission: HomebrewSubmission): Promise<boolean> {
   if (!props.sheet || !props.editRows) return false
 
-  const { initiative, initiativeModifier } = submission
   const homebrew = saveToCampaign.value
     ? await syncToCampaign(submission.homebrew)
     : undefined
 
   if (homebrew === null) return false
 
-  const row = {
-    ...submission.row,
-    homebrew,
-    summoner: toSummoner(props.sheet.rows, submission.summoner),
-    ...(initiative
-      ? { initiative: initiative + (initiativeModifier ?? 0) }
-      : {}),
-    ...(isDefined(initiativeModifier) ? { initiativeModifier } : {}),
-  }
-
   await props.editRows(
-    appendRows(
-      props.sheet.rows,
-      Array.from({ length: submission.amount ?? 1 }, () => row),
-      props.sheet.settings,
+    addToEncounter(
+      props.sheet,
+      [
+        {
+          row: { ...submission.row, homebrew },
+          roll: submission.initiative,
+          initiativeModifier: submission.initiativeModifier,
+        },
+      ],
+      { amount: submission.amount, summoner: submission.summoner },
     ),
   )
 

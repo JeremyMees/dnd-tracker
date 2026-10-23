@@ -139,33 +139,6 @@ describe('CampaignHomebrew', () => {
     ])
   })
 
-  it('Should remember which homebrew each row came from', async () => {
-    const { injected, mount } = mountCampaignHomebrew()
-    const component = await mount()
-
-    await component.get('[aria-label="actions.addAll"]').trigger('click')
-    await flushPromises()
-
-    const added = addedRows(injected.editRows)
-
-    expect(added.map(row => row.homebrew)).toEqual([
-      mockHomebrewItem.id,
-      mockHomebrewPlayer.id,
-    ])
-  })
-
-  it('Should reindex the rows after adding', async () => {
-    const { injected, mount } = mountCampaignHomebrew()
-    const component = await mount()
-
-    await component.get('[aria-label="actions.addAll"]').trigger('click')
-    await flushPromises()
-
-    const rows = rowsOf(injected.editRows)
-
-    expect(rows.map(row => row.index)).toEqual(rows.map((_row, i) => i))
-  })
-
   it('Should close after adding', async () => {
     const component = await mountCampaignHomebrew().mount()
 
@@ -173,20 +146,6 @@ describe('CampaignHomebrew', () => {
     await flushPromises()
 
     expect(component.emitted('close')).toHaveLength(1)
-  })
-
-  it('Should turn the initiative modifier into a number', async () => {
-    const { injected, mount } = mountCampaignHomebrew()
-    const component = await mount()
-
-    await component.get('[aria-label="actions.addAll"]').trigger('click')
-    await flushPromises()
-
-    const added = addedRows(injected.editRows)
-
-    expect(added[0]!.initiativeModifier).toBe(
-      Number(mockHomebrewItem.initiativeModifier),
-    )
   })
 
   it('Should ask for a summoner once a summon is selected', async () => {

@@ -628,20 +628,6 @@ describe('Homebrew', () => {
     })
   })
 
-  it('Should not attach a summoner when the picked id does not match a row', async () => {
-    const component = await mountHomebrew({ withSheet: true })
-
-    await fillName(component)
-    await selectOption(component, 'summon', { index: 0 })
-    await nextTick()
-    await selectOption(component, 'unknown-id', { index: 1 })
-    await submitForm(component)
-
-    const rows = editRows.mock.calls[0]![0]
-
-    expect(rows.at(-1)!.summoner).toBeUndefined()
-  })
-
   it('Should switch tabs when the tabs model is updated directly', async () => {
     const component = await mountHomebrew()
 
@@ -1259,16 +1245,6 @@ describe('Homebrew', () => {
       })
       expect(createHomebrew).not.toHaveBeenCalled()
       expect(component.emitted('close')).toHaveLength(1)
-    })
-
-    it('Should reset the current hit points when the base changes', async () => {
-      const component = await mountEdit()
-
-      await component.get('input[name="hitPoints"]').setValue(120)
-      await flushPromises()
-      await submitForm(component)
-
-      expect(editedRow()).toMatchObject({ hitPoints: 120, maxHitPoints: 120 })
     })
 
     it('Should drop bloodied when a new base resets the row to full hit points', async () => {

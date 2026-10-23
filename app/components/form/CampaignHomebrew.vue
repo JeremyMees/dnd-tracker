@@ -13,7 +13,7 @@ const { sheet, editRows } = validateInject(INITIATIVE_SHEET)
 const globalFilter = ref<string>('')
 const sorting = ref<SortingState>(initialState?.sorting || [])
 const rowSelection = ref<RowSelectionState>({})
-const summoner = ref<{ name: string; id: string }>()
+const summoner = ref<string>()
 
 const selected = computed<HomebrewItemRow[]>(
   () => data.value?.homebrews.filter(({ id }) => rowSelection.value[id]) || [],
@@ -91,6 +91,11 @@ const table = useTable({
   },
 })
 
+function pickSummoner(value: unknown): void {
+  if (value)
+    summoner.value = toSummoner(sheet.value?.rows ?? [], `${value}`)?.id
+}
+
 async function addHomebrews(addAll: boolean): Promise<void> {
   if (!sheet.value) return
 
@@ -99,15 +104,10 @@ async function addHomebrews(addAll: boolean): Promise<void> {
     : selected.value
 
   await editRows(
-    appendRows(
-      sheet.value.rows,
-      selection.map(hb => ({
-        ...homebrewToRow(hb),
-        ...(hb.type === 'summon' && summoner.value
-          ? { summoner: summoner.value }
-          : {}),
-      })),
-      sheet.value.settings,
+    addToEncounter(
+      sheet.value,
+      selection.map(homebrew => ({ homebrew })),
+      { summoner: summoner.value },
     ),
   )
 
@@ -210,16 +210,7 @@ async function addHomebrews(addAll: boolean): Promise<void> {
       <UiSelect
         id="summoner"
         name="summoner"
-        @update:model-value="
-          value => {
-            if (value) {
-              const filtered = sheet?.rows.find(s => s.id === value)
-              summoner = filtered
-                ? { name: filtered.name, id: filtered.id }
-                : undefined
-            }
-          }
-        "
+        @update:model-value="pickSummoner"
       >
         <UiSelectTrigger>
           <UiSelectValue
