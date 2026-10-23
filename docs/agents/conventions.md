@@ -37,6 +37,14 @@ House rules a reviewer will ask for. Each one came from a real review comment.
   explain it in the PR or chat.
 - **Sets for lookups.** A list only used for membership checks is a `Set` with
   `.has`.
+- **Floating promises.** Use `void` for a promise that can't reject
+  (`invalidateQueries`, `removeChannel`), `.catch(() => undefined)` for one that
+  can (`mutateAsync`, `router.replace`), and `await` for `navigateTo`.
+  `removeChannel` already unsubscribes.
+- **Deliberate oddities.** `shared/utils/dnd/undo.ts` copies with a JSON round
+  trip because `structuredClone` throws on reactive sheets.
+  `scripts/sync-open5e.ts` upserts chunks one after another so it stops at the
+  first failed range.
 - **Narrow parameter types.** When a helper declares a wider type than it reads,
   narrow it with `Pick<…>`. Don't widen a `select()` to satisfy a signature;
   server routes select only the columns they use (see `requireEncounterAccess`).

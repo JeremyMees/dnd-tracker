@@ -37,6 +37,15 @@ Read `docs/agents/testing.md` before writing or debugging a spec: which vitest
 project to use, the shared stubs, the import-order rules, and the harness and
 coverage quirks that look like real bugs.
 
+## Database, build and deploy
+
+- Read `docs/agents/database.md` before writing SQL, changing a jsonb row field,
+  adding an RPC, or touching RLS: how changes reach the one production database,
+  how to test a policy, and the Postgres rules that have bitten before.
+- Read `docs/agents/build-and-deploy.md` when a build hangs or a local build
+  would upload to Sentry, when bumping Sentry, Stripe, VueUse or TypeScript,
+  when measuring bundle size, or when adding an email or a public endpoint.
+
 ## Agent skills
 
 ### Issue tracker
