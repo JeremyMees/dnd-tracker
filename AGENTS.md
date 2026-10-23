@@ -31,6 +31,12 @@ Read `docs/agents/conventions.md` before writing or reviewing app, server or
 shared code: where utils, types and components go, and the house rules for
 forms, icons, toasts, i18n and queries.
 
+## Testing
+
+Read `docs/agents/testing.md` before writing or debugging a spec: which vitest
+project to use, the shared stubs, the import-order rules, and the harness and
+coverage quirks that look like real bugs.
+
 ## Agent skills
 
 ### Issue tracker
