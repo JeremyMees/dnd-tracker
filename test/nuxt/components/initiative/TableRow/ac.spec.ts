@@ -205,7 +205,7 @@ describe('Initiative table row ac', async () => {
       const updatedRow = vm.changeAc(20, 'override-reset')
 
       expect(updatedRow.maxArmorClass).toBe(20)
-      expect(updatedRow.maxArmorClassOld).toBeUndefined()
+      expect(updatedRow.maxArmorClassOld).toBeNull()
     })
   })
 

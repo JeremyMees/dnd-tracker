@@ -31,7 +31,7 @@ const onSubmit = form.handleSubmit(async values => {
     const row = {
       ...props.item,
       maxHitPoints: amount,
-      maxHitPointsOld: undefined,
+      maxHitPointsOld: null,
       hitPoints: amount,
     }
 

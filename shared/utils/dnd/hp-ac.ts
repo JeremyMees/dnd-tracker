@@ -70,7 +70,7 @@ function overrideReset(
       row[old] < row[max] ? row[old] : row[old] - (row[max] - row[type])
   }
 
-  row[old] = undefined
+  row[old] = null
   row[max] = amount
 }
 

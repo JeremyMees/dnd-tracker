@@ -567,7 +567,7 @@ describe('dnd/hp-ac', () => {
 
       expect(mockRow.hitPoints).toBe(20)
       expect(mockRow.maxHitPoints).toBe(30)
-      expect(mockRow.maxHitPointsOld).toBeUndefined()
+      expect(mockRow.maxHitPointsOld).toBeNull()
     })
 
     it('should keep the current/max difference on overrideReset when the old max exceeds the new max', () => {
@@ -656,7 +656,7 @@ describe('dnd/hp-ac', () => {
       ).toMatchObject({
         armorClass: 20,
         maxArmorClass: 20,
-        maxArmorClassOld: undefined,
+        maxArmorClassOld: null,
       })
     })
 
@@ -803,7 +803,25 @@ describe('dnd/hp-ac', () => {
       expect(
         applyHpChange(overridden, { type: 'override-reset', amount: 100 })
           .patch,
-      ).toEqual({ maxHitPoints: 100, maxHitPointsOld: undefined })
+      ).toEqual({ maxHitPoints: 100, maxHitPointsOld: null })
+    })
+
+    it('clears the override in a patch that survives JSON', () => {
+      const overridden = {
+        ...row,
+        hitPoints: 100,
+        maxHitPoints: 120,
+        maxHitPointsOld: 100,
+      }
+      const { patch } = applyHpChange(overridden, {
+        type: 'override-reset',
+        amount: 100,
+      })
+
+      expect(JSON.parse(JSON.stringify(patch))).toEqual({
+        maxHitPoints: 100,
+        maxHitPointsOld: null,
+      })
     })
 
     it('does not change the row it is given', () => {
@@ -860,6 +878,19 @@ describe('dnd/hp-ac', () => {
         armorClass: 17,
         maxArmorClass: 20,
         maxArmorClassOld: 18,
+      })
+    })
+
+    it('clears the override in a patch that survives JSON', () => {
+      const patch = applyAcChange(
+        { ...row, maxArmorClass: 20, maxArmorClassOld: 18 },
+        { type: 'override-reset', amount: 18 },
+      )
+
+      expect(JSON.parse(JSON.stringify(patch))).toEqual({
+        armorClass: 18,
+        maxArmorClass: 18,
+        maxArmorClassOld: null,
       })
     })
   })

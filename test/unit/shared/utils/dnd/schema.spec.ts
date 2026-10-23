@@ -3,6 +3,7 @@ import {
   conditionSchema,
   deathSavesSchema,
   resourceUsesSchema,
+  rowPatchSchema,
 } from '~~/shared/utils/dnd/schema'
 
 describe('dnd/schema', () => {
@@ -193,6 +194,21 @@ describe('dnd/schema', () => {
       expect(() =>
         conditionSchema.parse({ id: 'blinded', name: '', desc: 'Cannot see.' }),
       ).toThrow()
+    })
+  })
+
+  describe('rowPatchSchema', () => {
+    it.each(['maxHitPointsOld', 'maxArmorClassOld'])(
+      'keeps a cleared %s as null',
+      field => {
+        expect(rowPatchSchema.parse({ [field]: null })).toEqual({
+          [field]: null,
+        })
+      },
+    )
+
+    it('rejects null for fields the row needs as a number', () => {
+      expect(() => rowPatchSchema.parse({ hitPoints: null })).toThrow()
     })
   })
 })

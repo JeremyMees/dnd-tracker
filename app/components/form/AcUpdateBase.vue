@@ -34,7 +34,7 @@ const onSubmit = form.handleSubmit(async values => {
     const row = {
       ...props.item,
       maxArmorClass: amount,
-      maxArmorClassOld: undefined,
+      maxArmorClassOld: null,
       armorClass: amount,
     }
 

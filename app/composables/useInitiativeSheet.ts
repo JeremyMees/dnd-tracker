@@ -216,10 +216,10 @@ export function useInitiativeSheet(
           ...(row.hitPoints !== undefined && {
             hitPoints: row.maxHitPointsOld || row.maxHitPoints,
           }),
-          ...(row.maxArmorClassOld !== undefined && {
+          ...(isDefined(row.maxArmorClassOld) && {
             maxArmorClass: row.maxArmorClassOld,
           }),
-          ...(row.maxHitPointsOld !== undefined && {
+          ...(isDefined(row.maxHitPointsOld) && {
             maxHitPoints: row.maxHitPointsOld,
           }),
           readied: undefined,

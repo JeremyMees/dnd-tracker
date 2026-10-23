@@ -202,6 +202,31 @@ describe('useInitiativeSheet', async () => {
     expect(mockSheet.value.rows[0]!.conditions.length).toBe(0)
   })
 
+  it('Should keep the max on a hard reset when a cleared override is stored as null', async () => {
+    mockSheet.value.rows = [
+      {
+        ...mockSheet.value.rows[0]!,
+        hitPoints: 3,
+        maxHitPoints: 30,
+        maxHitPointsOld: null,
+        armorClass: 10,
+        maxArmorClass: 16,
+        maxArmorClassOld: null,
+      },
+    ]
+
+    const { reset } = useInitiativeSheet(sheetComputed, update, nextTurn)
+
+    reset(true)
+
+    expect(mockSheet.value.rows[0]).toMatchObject({
+      hitPoints: 30,
+      maxHitPoints: 30,
+      armorClass: 16,
+      maxArmorClass: 16,
+    })
+  })
+
   it('Should skip dead monsters and select the next living row', async () => {
     mockSheet.value.rows = [
       { ...mockSheet.value.rows[0]!, type: 'player' },

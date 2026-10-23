@@ -106,7 +106,7 @@ describe('HpOverride', () => {
     await submitAmount(component)
 
     expect(updatedRow().maxHitPoints).toBe(overridden.maxHitPointsOld)
-    expect(updatedRow().maxHitPointsOld).toBeUndefined()
+    expect(updatedRow().maxHitPointsOld).toBeNull()
   })
 
   it('Should reset when the given amount equals the old max', async () => {
@@ -117,7 +117,7 @@ describe('HpOverride', () => {
     await submitAmount(component, 50)
 
     expect(updatedRow().maxHitPoints).toBe(50)
-    expect(updatedRow().maxHitPointsOld).toBeUndefined()
+    expect(updatedRow().maxHitPointsOld).toBeNull()
   })
 
   it('Should pass the toasts of the change on', async () => {

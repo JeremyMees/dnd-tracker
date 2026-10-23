@@ -55,7 +55,7 @@ describe('AcUpdateBase', () => {
     expect(updateRow).toHaveBeenCalledWith({
       ...item,
       maxArmorClass: 21,
-      maxArmorClassOld: undefined,
+      maxArmorClassOld: null,
       armorClass: 21,
     })
   })
@@ -65,7 +65,7 @@ describe('AcUpdateBase', () => {
 
     await submitAmount(component, 12)
 
-    expect(updateRow.mock.calls[0]![0].maxArmorClassOld).toBeUndefined()
+    expect(updateRow.mock.calls[0]![0].maxArmorClassOld).toBeNull()
   })
 
   it('Should not update without a sheet', async () => {

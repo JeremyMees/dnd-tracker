@@ -55,7 +55,7 @@ describe('HpUpdateBase', () => {
     expect(updateRow).toHaveBeenCalledWith({
       ...item,
       maxHitPoints: 120,
-      maxHitPointsOld: undefined,
+      maxHitPointsOld: null,
       hitPoints: 120,
     })
   })
